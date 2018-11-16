@@ -4,15 +4,29 @@ using UnityEngine;
 
 public class MapGrid : MonoBehaviour
 {
+    public GameObject[] tiles;
+
+    public int Width = 15;
+    public int Height = 15;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        for (var x = 0; x < Width; x++)
+        {
+            for (var y = 0; y < Height; y++)
+            {
+                var tile = Instantiate(tiles[Random.Range(0, tiles.Length)], transform, true);
+                tile.transform.position = new Vector3(x, y);
+                tile.name = $"Map {x}:{y}";
+            }
+        }
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }
