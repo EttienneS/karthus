@@ -88,6 +88,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaIndirect: 2
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ShowResolutionOverlay: 1
+    m_ExportTrainingData: 0
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -138,12 +139,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 395534379}
   m_Enabled: 1
   m_EditorHideFlags: 0
+  m_GeneratorAsset: {fileID: 0}
   m_Script: {fileID: 11500000, guid: a1d57eb7542a346439e5d75c310d6e81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tiles:
-  - {fileID: 276657141185846139, guid: 67390bdaa51cc294095bf85a1b5c0144, type: 3}
-  - {fileID: 8514592941610595046, guid: d21e0e2ae4181ed459a54277e5e039f4, type: 3}
+  cells:
+  - {fileID: 7005501972593521722, guid: 67390bdaa51cc294095bf85a1b5c0144, type: 3}
+  - {fileID: 7054289596907334738, guid: d21e0e2ae4181ed459a54277e5e039f4, type: 3}
   Width: 128
   Height: 128
 --- !u!4 &395534381
@@ -196,11 +198,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 519420028}
   m_Enabled: 1
   m_EditorHideFlags: 0
+  m_GeneratorAsset: {fileID: 0}
   m_Script: {fileID: 11500000, guid: d8f11b996f1fcc24cae4378c6bee835e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Camera: {fileID: 519420031}
-  Speed: 2
+  Speed: 1.5
   ZoomMax: 100
   ZoomMin: 2
   ZoomStep: 5
@@ -214,7 +217,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MapGrid : MonoBehaviour
 {
-    public GameObject[] tiles;
+    public Cell[] cells;
 
     public int Width = 15;
     public int Height = 15;
@@ -16,7 +16,7 @@ public class MapGrid : MonoBehaviour
         {
             for (var y = 0; y < Height; y++)
             {
-                var tile = Instantiate(tiles[Random.Range(0, tiles.Length)], transform, true);
+                var tile = Instantiate(cells[Random.Range(0, cells.Length)], transform, true);
                 tile.transform.position = new Vector3(x, y);
                 tile.name = $"Map {x}:{y}";
             }
