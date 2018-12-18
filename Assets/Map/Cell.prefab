@@ -8,18 +8,19 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3198154421620141095}
+  - component: {fileID: 3952067081660869241}
   - component: {fileID: 5291983418915422839}
   - component: {fileID: 7005501972593521722}
+  - component: {fileID: 8200612599116938151}
   m_Layer: 0
-  m_Name: Grass1
+  m_Name: Cell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3198154421620141095
-Transform:
+--- !u!224 &3952067081660869241
+RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -32,6 +33,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1.0666667, y: 1.0666667}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &5291983418915422839
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -69,7 +75,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300138, guid: 34e857c27e60d1443a80322979253d50, type: 3}
+  m_Sprite: {fileID: 21300140, guid: 34e857c27e60d1443a80322979253d50, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -90,6 +96,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_GeneratorAsset: {fileID: 0}
-  m_Script: {fileID: 11500000, guid: c11add7e0499caf4cb2d06dad755d905, type: 3}
+  m_Script: {fileID: 11500000, guid: 3452b61db01b91f448d1201f7198203a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Neighbors:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+--- !u!222 &8200612599116938151
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 276657141185846139}
+  m_CullTransparentMesh: 0
