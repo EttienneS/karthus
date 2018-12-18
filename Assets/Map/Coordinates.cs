@@ -21,7 +21,7 @@ public class Coordinates
 
     public override string ToString()
     {
-        return "(" + X + ", " + Y + ")";
+        return "Cell: (" + X + ", " + Y + ")";
     }
 
     public string ToStringOnSeparateLines()
