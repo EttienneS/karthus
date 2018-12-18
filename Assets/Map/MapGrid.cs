@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class MapGrid : MonoBehaviour
@@ -11,7 +12,6 @@ public class MapGrid : MonoBehaviour
 
     public Cell[] Map;
 
-    // Start is called before the first frame update
     void Start()
     {
         Map = new Cell[Width * Height];
@@ -51,9 +51,20 @@ public class MapGrid : MonoBehaviour
         Map[i] = cell;
     }
 
-    // Update is called once per frame
     void Update()
     {
-
+        
     }
+
+    public Cell GetCellAtPoint(Vector3 position)
+    {
+        position = transform.InverseTransformPoint(position);
+        var coordinates = Coordinates.FromPosition(position);
+        var index = coordinates.X + coordinates.Y * Width + coordinates.Y / 2;
+        var cell = Map[index];
+
+        return cell;
+    }
+
+
 }
