@@ -41,11 +41,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_GeneratorAsset: {fileID: 0}
-  m_Script: {fileID: 11500000, guid: a1d57eb7542a346439e5d75c310d6e81, type: 3}
+  m_Script: {fileID: 11500000, guid: 0a2e50b14c390774ea0feb5aaa8185b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cells:
-  - {fileID: 7005501972593521722, guid: 67390bdaa51cc294095bf85a1b5c0144, type: 3}
-  - {fileID: 7054289596907334738, guid: d21e0e2ae4181ed459a54277e5e039f4, type: 3}
-  Width: 64
-  Height: 64
+  cellPrefabs: []
+  Width: 15
+  Height: 15
+  Map: []

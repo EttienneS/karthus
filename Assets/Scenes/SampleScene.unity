@@ -189,6 +189,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 8103325680032718382, guid: a686c04c04506f340be8d41daf44f712,
+        type: 3}
+      propertyPath: cellPrefabs.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8103325680032718383, guid: a686c04c04506f340be8d41daf44f712,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -249,5 +254,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: MapManager
       objectReference: {fileID: 0}
+    - target: {fileID: 8103325680032718382, guid: a686c04c04506f340be8d41daf44f712,
+        type: 3}
+      propertyPath: cellPrefabs.Array.data[0]
+      value: 
+      objectReference: {fileID: 7005501972593521722, guid: 67390bdaa51cc294095bf85a1b5c0144,
+        type: 3}
+    - target: {fileID: 8103325680032718382, guid: a686c04c04506f340be8d41daf44f712,
+        type: 3}
+      propertyPath: cellPrefabs.Array.data[1]
+      value: 
+      objectReference: {fileID: 7005501972593521722, guid: 67390bdaa51cc294095bf85a1b5c0144,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a686c04c04506f340be8d41daf44f712, type: 3}
