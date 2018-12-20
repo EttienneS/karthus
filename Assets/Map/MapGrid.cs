@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class MapGrid : MonoBehaviour
 {
-    public Cell[] cellPrefabs;
+    public Cell cellPrefab;
+    public Text textPrefab;
+    public Canvas mapCanvas;
 
     public int Height = 15;
     public Cell[] Map;
@@ -10,7 +13,7 @@ public class MapGrid : MonoBehaviour
 
     public void CreateCell(int x, int y, int i)
     {
-        var cell = Instantiate(cellPrefabs[Random.Range(0, cellPrefabs.Length)], transform, true);
+        var cell = Instantiate(cellPrefab, transform, true);
         cell.transform.position = new Vector3(x, y);
 
         cell.Coordinates = new Coordinates(x, y);
@@ -33,17 +36,26 @@ public class MapGrid : MonoBehaviour
         }
 
         Map[i] = cell;
+
+        var text = Instantiate(textPrefab, mapCanvas.transform, true);
+        text.name = cell.Coordinates.ToString() + " Label";
+        text.text = cell.Coordinates.ToStringOnSeparateLines();
+        text.transform.position = cell.transform.localPosition;
     }
 
     public Cell GetCellAtPoint(Vector3 position)
     {
         position = transform.InverseTransformPoint(position);
         var coordinates = Coordinates.FromPosition(position);
-        var index = coordinates.X + coordinates.Y * Width + coordinates.Y / 2;
-        var cell = Map[index];
-
-        return cell;
+        var index = coordinates.X + (coordinates.Y * Width) + (coordinates.Y / 2);
+        
+        return Map[index];
     }
+
+    public Cell Cell1;
+    public Cell Cell2;
+
+    public bool Flip;
 
     private void Start()
     {
@@ -57,10 +69,8 @@ public class MapGrid : MonoBehaviour
             }
         }
 
-        var cell1 = Map[(int)(Random.value * Map.Length)];
-        var cell2 = Map[(int)(Random.value * Map.Length)];
-
-        Pathfinder.ShowPath(Pathfinder.FindPath(cell1, cell2));
+        Cell1 = Map[(int)(Random.value * Map.Length)];
+        Cell2 = Map[(int)(Random.value * Map.Length)];
     }
 
     private void Update()

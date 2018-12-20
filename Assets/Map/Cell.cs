@@ -63,14 +63,25 @@ public class Cell : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (!Border.enabled)
+        var manager = GameObject.Find("MapManager").GetComponent<MapGrid>();
+
+        if (manager.Flip)
         {
-            EnableBorder(Color.red);
+            manager.Cell1 = this;
+            manager.Flip = false;
         }
         else
         {
-            DisableBorder();
+            manager.Cell2 = this;
+            manager.Flip = true;
         }
+
+        foreach (var cell in manager.Map)
+        {
+            cell.DisableBorder();
+        }
+
+        Pathfinder.ShowPath(Pathfinder.FindPath(manager.Cell1, manager.Cell2));
     }
 
     private void Update()
