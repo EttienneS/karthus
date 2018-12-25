@@ -4,8 +4,6 @@ using UnityEngine.UI;
 public class MapGrid : MonoBehaviour
 {
     public Cell cellPrefab;
-    public Text textPrefab;
-    public Canvas mapCanvas;
 
     public int Height = 15;
     public Cell[] Map;
@@ -36,11 +34,7 @@ public class MapGrid : MonoBehaviour
         }
 
         Map[i] = cell;
-
-        var text = Instantiate(textPrefab, mapCanvas.transform, true);
-        text.name = cell.Coordinates.ToString() + " Label";
-        text.text = cell.Coordinates.ToStringOnSeparateLines();
-        text.transform.position = cell.transform.localPosition;
+        cell.Text = cell.Coordinates.ToStringOnSeparateLines();
     }
 
     public Cell GetCellAtPoint(Vector3 position)
@@ -71,6 +65,11 @@ public class MapGrid : MonoBehaviour
 
         Cell1 = Map[(int)(Random.value * Map.Length)];
         Cell2 = Map[(int)(Random.value * Map.Length)];
+
+        // weird hack to fix the canvas overlay, we move the canvas over by a % of the width/height, this
+        // fixes the offset to align the labels with the cells underneath them
+        // I am pretty sure this is caused by the scaling (the canvas is very big and then scaled down to fit the grid)
+        //GameObject.Find("MapCanvas").transform.position = new Vector3(Width * 0.19f, -(Height * 0.19f));
     }
 
     private void Update()
