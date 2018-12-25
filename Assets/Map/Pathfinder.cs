@@ -71,7 +71,7 @@ public static class Pathfinder
             cell.EnableBorder(Color.white);
         }
 
-        path.First().EnableBorder(Color.red);
+        path[0].EnableBorder(Color.red);
         path.Last().EnableBorder(Color.blue);
     }
 
@@ -95,7 +95,7 @@ public static class Pathfinder
         while (_searchFrontier.Count > 0)
         {
             var current = _searchFrontier.Dequeue();
-            current.SearchPhase += 1;
+            current.SearchPhase++;
 
             if (current == toCell)
             {
@@ -105,8 +105,8 @@ public static class Pathfinder
             for (var d = Direction.NE; d <= Direction.NW; d++)
             {
                 var neighbor = current.GetNeighbor(d);
-                if (neighbor == null ||
-                    neighbor.SearchPhase > _searchFrontierPhase)
+                if (neighbor == null
+                    || neighbor.SearchPhase > _searchFrontierPhase)
                 {
                     continue;
                 }
@@ -116,7 +116,15 @@ public static class Pathfinder
                     continue;
                 }
 
-                var distance = current.Distance + neighbor.TravelCost;
+                var neighborTravelCost = neighbor.TravelCost;
+
+                if (neighbor.Coordinates.X != current.Coordinates.X && neighbor.Coordinates.Y != current.Coordinates.Y)
+                {
+                    // if both are not true then we are moving diagonally (add 50% cost)
+                    neighborTravelCost *= 2;
+                }
+
+                var distance = current.Distance + neighborTravelCost;
                 if (neighbor.SearchPhase < _searchFrontierPhase)
                 {
                     neighbor.SearchPhase = _searchFrontierPhase;

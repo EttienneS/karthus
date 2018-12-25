@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 
 public class Cell : MonoBehaviour
 {
@@ -58,19 +59,57 @@ public class Cell : MonoBehaviour
 
     private void Awake()
     {
+        
         Border = transform.Find("Border").GetComponent<SpriteRenderer>();
+    }
+
+    private TextMeshPro _textMesh;
+    public TextMeshPro TextMesh
+    {
+        get
+        {
+            if (_textMesh == null)
+            {
+                _textMesh = transform.Find("Text").GetComponent<TextMeshPro>();
+            }
+            return _textMesh;
+        }
+    }
+
+    public string Text
+    {
+        get
+        {
+            return TextMesh.text;
+        }
+        set
+        {
+            TextMesh.enabled = true;
+            TextMesh.text = value;
+        }
     }
 
     private void OnMouseDown()
     {
-        if (!Border.enabled)
+        var manager = GameObject.Find("MapManager").GetComponent<MapGrid>();
+
+        if (manager.Flip)
         {
-            EnableBorder(Color.red);
+            manager.Cell1 = this;
+            manager.Flip = false;
         }
         else
         {
-            DisableBorder();
+            manager.Cell2 = this;
+            manager.Flip = true;
         }
+
+        foreach (var cell in manager.Map)
+        {
+            cell.DisableBorder();
+        }
+
+        Pathfinder.ShowPath(Pathfinder.FindPath(manager.Cell1, manager.Cell2));
     }
 
     private void Update()
