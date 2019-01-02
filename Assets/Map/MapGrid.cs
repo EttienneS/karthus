@@ -64,11 +64,6 @@ public class MapGrid : MonoBehaviour
 
         Cell1 = Map[(int)(Random.value * 64), (int)(Random.value * 64)];
         Cell2 = Map[(int)(Random.value * 64), (int)(Random.value * 64)];
-
-        // weird hack to fix the canvas overlay, we move the canvas over by a % of the width/height, this
-        // fixes the offset to align the labels with the cells underneath them
-        // I am pretty sure this is caused by the scaling (the canvas is very big and then scaled down to fit the grid)
-        //GameObject.Find("MapCanvas").transform.position = new Vector3(Width * 0.19f, -(Height * 0.19f));
     }
 
     private void Update()
