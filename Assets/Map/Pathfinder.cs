@@ -7,6 +7,7 @@ public static class Pathfinder
     private static CellPriorityQueue _searchFrontier;
     private static int _searchFrontierPhase;
 
+   
     public static List<Cell> FindPath(Cell fromCell, Cell toCell)
     {
         var path = new List<Cell>
