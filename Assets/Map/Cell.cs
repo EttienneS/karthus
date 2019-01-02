@@ -93,17 +93,7 @@ public class Cell : MonoBehaviour
     private void OnMouseDown()
     {
         var manager = GameObject.Find("MapManager").GetComponent<MapGrid>();
-
-        if (manager.Flip)
-        {
-            manager.Cell1 = this;
-            manager.Flip = false;
-        }
-        else
-        {
-            manager.Cell2 = this;
-            manager.Flip = true;
-        }
+        manager.Cell2 = this;
 
         foreach (var cell in manager.Map)
         {
@@ -111,8 +101,6 @@ public class Cell : MonoBehaviour
         }
 
         Pathfinder.ShowPath(Pathfinder.FindPath(manager.Cell1, manager.Cell2));
-
-        
     }
 
 
