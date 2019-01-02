@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 using UnityEngine;
 
 public class Cell : MonoBehaviour
@@ -59,11 +60,11 @@ public class Cell : MonoBehaviour
 
     private void Awake()
     {
-        
         Border = transform.Find("Border").GetComponent<SpriteRenderer>();
     }
 
     private TextMeshPro _textMesh;
+
     public TextMeshPro TextMesh
     {
         get
@@ -110,7 +111,10 @@ public class Cell : MonoBehaviour
         }
 
         Pathfinder.ShowPath(Pathfinder.FindPath(manager.Cell1, manager.Cell2));
+
+        
     }
+
 
     private void Update()
     {

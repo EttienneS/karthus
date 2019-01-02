@@ -14,7 +14,7 @@ public class CellPriorityQueue
 
     public void Enqueue(Cell cell)
     {
-        Count += 1;
+        Count++;
         var priority = cell.SearchPriority;
 
         if (priority < minimum)
@@ -34,7 +34,7 @@ public class CellPriorityQueue
 
     public Cell Dequeue()
     {
-        Count -= 1;
+        Count--;
 
         for (; minimum < list.Count; minimum++)
         {
@@ -70,7 +70,7 @@ public class CellPriorityQueue
         }
 
         Enqueue(cell);
-        Count -= 1;
+        Count--;
     }
 
     public void Clear()
