@@ -31,6 +31,46 @@ public class MapGrid : MonoBehaviour
         cell.Text = cell.Coordinates.ToStringOnSeparateLines();
     }
 
+    public void CreateMap()
+    {
+        Map = new Cell[Width, Height];
+        for (var y = 0; y < Width; y++)
+        {
+            for (var x = 0; x < Height; x++)
+            {
+                CreateCell(x, y);
+            }
+        }
+
+        for (var y = 0; y < Width; y++)
+        {
+            for (var x = 0; x < Height; x++)
+            {
+                var cell = Map[x, y];
+
+                if (x > 0)
+                {
+                    cell.SetNeighbor(Direction.W, Map[x - 1, y]);
+
+                    if (y > 0)
+                    {
+                        cell.SetNeighbor(Direction.SW, Map[x - 1, y - 1]);
+
+                        if (x < Width - 1)
+                        {
+                            cell.SetNeighbor(Direction.SE, Map[x + 1, y - 1]);
+                        }
+                    }
+                }
+
+                if (y > 0)
+                {
+                    cell.SetNeighbor(Direction.S, Map[x, y - 1]);
+                }
+            }
+        }
+    }
+
     public Cell GetCellAtPoint(Vector3 position)
     {
         position = transform.InverseTransformPoint(position);
@@ -63,62 +103,44 @@ public class MapGrid : MonoBehaviour
         return cells;
     }
 
-    public void LinkCells()
+    public Cell GetRandomCell()
     {
-        for (var y = 0; y < Width; y++)
+        return Map[(int)(Random.value * Width), (int)(Random.value * Height)];
+    }
+
+    public List<Cell> GetRectangle(int x, int y, int width, int height)
+    {
+        var cells = new List<Cell>();
+
+        for (var i = x; i < x + width; i++)
         {
-            for (var x = 0; x < Height; x++)
+            for (var k = y; k < y + height; k++)
             {
-                var cell = Map[x, y];
-
-                if (x > 0)
-                {
-                    cell.SetNeighbor(Direction.W, Map[x - 1, y]);
-
-                    if (y > 0)
-                    {
-                        cell.SetNeighbor(Direction.SW, Map[x - 1, y - 1]);
-
-                        if (x < Width-1)
-                        {
-                            cell.SetNeighbor(Direction.SE, Map[x + 1, y - 1]);
-                        }
-                    }
-                }
-
-                if (y > 0)
-                {
-                    cell.SetNeighbor(Direction.S, Map[x, y - 1]);
-                }
+                AddCellIfValid(i, k, cells);
             }
+        }
+
+        return cells;
+    }
+
+    public void HighlightCells(List<Cell> cells, Color color)
+    {
+        foreach (var cell in cells)
+        {
+            cell.EnableBorder(color);
         }
     }
 
     private void Start()
     {
-        Map = new Cell[Width, Height];
-        for (var y = 0; y < Width; y++)
-        {
-            for (var x = 0; x < Height; x++)
-            {
-                CreateCell(x, y);
-            }
-        }
-
-        LinkCells();
-
+        CreateMap();
         Cell1 = Map[Width / 2, Height / 2];
     }
 
     private void Update()
     {
-        //for (int i = Width / 2; i > 0; i--)
-        //{
-        //    var color = new Color(Random.value, Random.value, Random.value);
-        //    foreach (var cell in GetCircle(Map[Width / 2, Height / 2], i))
-        //    {
-        //        cell.EnableBorder(color);
-        //    }
-        //}
+        var cell = GetRandomCell();
+        //HighlightCells(GetCircle(cell, (int)(Random.value * 10)), new Color(Random.value, Random.value, Random.value));
+        //HighlightCells(GetRectangle(cell.Coordinates.X,cell.Coordinates.Y, (int)(Random.value * 20), (int)(Random.value * 20)), new Color(Random.value, Random.value, Random.value));
     }
 }
