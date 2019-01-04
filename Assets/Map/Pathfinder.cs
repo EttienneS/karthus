@@ -43,24 +43,24 @@ public static class Pathfinder
         return path.Where(cell => cell != null).Sum(cell => cell.TravelCost);
     }
 
-    public static IEnumerable<Cell> GetReachableCells(Cell[] map, Cell actorLocation, int speed)
+    public static IEnumerable<Cell> GetReachableCells(Cell[] map, Cell startPoint, int speed)
     {
-        if (actorLocation == null)
+        if (startPoint == null)
         {
             return new List<Cell>();
         }
 
         var reachableCells = (from cell in
                     map.Where(c =>
-                        c != null && c.Coordinates.DistanceTo(actorLocation.Coordinates) <= speed)
-                              let path = FindPath(actorLocation, cell)
-                              let pathCost = GetPathCost(path) - actorLocation.TravelCost
+                        c != null && c.Coordinates.DistanceTo(startPoint.Coordinates) <= speed)
+                              let path = FindPath(startPoint, cell)
+                              let pathCost = GetPathCost(path) - startPoint.TravelCost
                               where path.Count > 0 && pathCost <= speed
                               select cell)
             .Distinct()
             .ToList();
 
-        reachableCells.Remove(actorLocation);
+        reachableCells.Remove(startPoint);
 
         return reachableCells;
     }
@@ -103,7 +103,7 @@ public static class Pathfinder
                 return true;
             }
 
-            for (var d = Direction.NE; d <= Direction.NW; d++)
+            for (var d = Direction.N; d <= Direction.NW; d++)
             {
                 var neighbor = current.GetNeighbor(d);
                 if (neighbor == null
@@ -119,11 +119,13 @@ public static class Pathfinder
 
                 var neighborTravelCost = neighbor.TravelCost;
 
-                if (neighbor.Coordinates.X != current.Coordinates.X && neighbor.Coordinates.Y != current.Coordinates.Y)
-                {
-                    // if both are not true then we are moving diagonally (add 50% cost)
-                    neighborTravelCost *= 2;
-                }
+                // todo: Revist later, the concept of diagonal movement costing more _can_ be cool but maybe not 
+                // worth the extra complexity to understand
+                //if (neighbor.Coordinates.X != current.Coordinates.X && neighbor.Coordinates.Y != current.Coordinates.Y)
+                //{
+                //    // if both are not true then we are moving diagonally (add 50% cost)
+                //    neighborTravelCost = Mathf.FloorToInt(neighborTravelCost * 1.5f);
+                //}
 
                 var distance = current.Distance + neighborTravelCost;
                 if (neighbor.SearchPhase < _searchFrontierPhase)

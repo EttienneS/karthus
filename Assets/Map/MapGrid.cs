@@ -7,9 +7,25 @@ public class MapGrid : MonoBehaviour
     public Cell Cell2;
     public Cell cellPrefab;
 
+    public bool DebugPathfinding = false;
     public int Height = 15;
     public Cell[,] Map;
     public int Width = 15;
+
+    private static MapGrid _instance;
+
+    public static MapGrid Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = GameObject.Find("MapManager").GetComponent<MapGrid>();
+            }
+
+            return _instance;
+        }
+    }
 
     public void AddCellIfValid(int x, int y, List<Cell> cells)
     {
