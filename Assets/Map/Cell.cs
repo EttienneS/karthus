@@ -92,15 +92,30 @@ public class Cell : MonoBehaviour
 
     private void OnMouseDown()
     {
-        var manager = GameObject.Find("MapManager").GetComponent<MapGrid>();
-        manager.Cell2 = this;
+        MapGrid.Instance.Cell2 = this;
 
-        foreach (var cell in manager.Map)
+        foreach (var cell in MapGrid.Instance.Map)
         {
             cell.DisableBorder();
+            if (MapGrid.Instance.DebugPathfinding)
+            {
+                cell.Text = "";
+                cell.Distance = 0;
+            }
         }
 
-        Pathfinder.ShowPath(Pathfinder.FindPath(manager.Cell1, manager.Cell2));
+        Pathfinder.ShowPath(Pathfinder.FindPath(MapGrid.Instance.Cell1, MapGrid.Instance.Cell2));
+
+        if (MapGrid.Instance.DebugPathfinding)
+        {
+            foreach (var cell in MapGrid.Instance.Map)
+            {
+                if (cell.Distance != 0)
+                {
+                    cell.Text = cell.Distance.ToString();
+                }
+            }
+        }
     }
 
 
