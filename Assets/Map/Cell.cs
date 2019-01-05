@@ -25,7 +25,9 @@ public class Cell : MonoBehaviour
     public Cell[] Neighbors = new Cell[8];
 
     public int TravelCost = 1;
+
     public SpriteRenderer Border { get; private set; }
+    public SpriteRenderer Terrain { get; private set; }
     public int Distance { get; set; }
     public Cell NextWithSamePriority { get; set; }
     public Cell PathFrom { get; set; }
@@ -61,6 +63,12 @@ public class Cell : MonoBehaviour
     private void Awake()
     {
         Border = transform.Find("Border").GetComponent<SpriteRenderer>();
+        Terrain = transform.Find("Terrain").GetComponent<SpriteRenderer>();
+
+        Terrain.sprite = SpriteStore.Instance.GetRandomSpriteOfType("Grass");
+
+        Terrain.flipX = UnityEngine.Random.value < 0.5f;
+        Terrain.flipY = UnityEngine.Random.value < 0.5f;
     }
 
     private TextMeshPro _textMesh;

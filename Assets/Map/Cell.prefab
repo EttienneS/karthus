@@ -62,6 +62,17 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  TerrainSprites:
+  - {fileID: -153332918294764512, guid: 0296a379bca123b4c97ba34e31847dd6, type: 3}
+  - {fileID: 5863384446047441082, guid: 0296a379bca123b4c97ba34e31847dd6, type: 3}
+  - {fileID: -633266758613963060, guid: 0296a379bca123b4c97ba34e31847dd6, type: 3}
+  - {fileID: 8284128081475575205, guid: 0296a379bca123b4c97ba34e31847dd6, type: 3}
+  - {fileID: -4901889324210049336, guid: 0296a379bca123b4c97ba34e31847dd6, type: 3}
+  - {fileID: 5348350091626266928, guid: 0296a379bca123b4c97ba34e31847dd6, type: 3}
+  - {fileID: 6216346289760720931, guid: 0296a379bca123b4c97ba34e31847dd6, type: 3}
+  - {fileID: 4308014796411322208, guid: 0296a379bca123b4c97ba34e31847dd6, type: 3}
+  - {fileID: 7903149127906423421, guid: 0296a379bca123b4c97ba34e31847dd6, type: 3}
+  - {fileID: -9209379988072171317, guid: 0296a379bca123b4c97ba34e31847dd6, type: 3}
   TravelCost: 1
 --- !u!61 &2631113532422458072
 BoxCollider2D:
@@ -291,7 +302,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 0.6}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -444,7 +455,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300140, guid: 34e857c27e60d1443a80322979253d50, type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -452,6 +463,6 @@ SpriteRenderer:
   m_Size: {x: 1.0666667, y: 1.0666667}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
