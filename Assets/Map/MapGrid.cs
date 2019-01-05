@@ -7,6 +7,7 @@ public class MapGrid : MonoBehaviour
     public Cell Cell2;
     public Cell cellPrefab;
 
+    public bool DebugCoordinates;
     public bool DebugPathfinding = false;
     public int Height = 15;
     public Cell[,] Map;
@@ -26,7 +27,6 @@ public class MapGrid : MonoBehaviour
             return _instance;
         }
     }
-
     public void AddCellIfValid(int x, int y, List<Cell> cells)
     {
         if (x >= 0 && x < Map.GetLength(0) && y >= 0 && y < Map.GetLength(1))
@@ -44,7 +44,12 @@ public class MapGrid : MonoBehaviour
         cell.name = cell.Coordinates.ToString();
 
         Map[x, y] = cell;
-        cell.Text = cell.Coordinates.ToStringOnSeparateLines();
+
+        if (DebugCoordinates)
+        {
+            cell.Text = cell.Coordinates.ToStringOnSeparateLines();
+        }
+
     }
 
     public void CreateMap()
