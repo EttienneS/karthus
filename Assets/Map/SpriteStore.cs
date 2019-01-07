@@ -32,7 +32,7 @@ public class SpriteStore : MonoBehaviour
         return Sprites.First(s => s.name.Equals(spriteName, StringComparison.InvariantCultureIgnoreCase));
     }
 
-    private void Start()
+    private void Awake()
     {
         SpriteTypeDictionary = new Dictionary<string, List<Sprite>>();
 
