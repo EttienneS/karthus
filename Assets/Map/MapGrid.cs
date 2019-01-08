@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class MapGrid : MonoBehaviour
 {
@@ -8,9 +9,17 @@ public class MapGrid : MonoBehaviour
 
     public bool DebugCoordinates;
     public bool DebugPathfinding = false;
+
+    [Range(0f, 1f)]
+    public float JitterProbability = 0.25f;
+
     public Cell[,] Map;
 
     private static MapGrid _instance;
+
+    private CellPriorityQueue _searchFrontier;
+
+    private int _searchFrontierPhase;
 
     public static MapGrid Instance
     {
@@ -30,6 +39,14 @@ public class MapGrid : MonoBehaviour
         if (x >= 0 && x < Map.GetLength(0) && y >= 0 && y < Map.GetLength(1))
         {
             cells.Add(Map[x, y]);
+        }
+    }
+
+    public void Awake()
+    {
+        if (_searchFrontier == null)
+        {
+            _searchFrontier = new CellPriorityQueue();
         }
     }
 
@@ -70,6 +87,43 @@ public class MapGrid : MonoBehaviour
         return Map[(int)(Random.value * (Map.GetLength(0) - 1)), (int)(Random.value * (Map.GetLength(1) - 1))];
     }
 
+    public List<Cell> GetRandomChunk(int chunkSize)
+    {
+        _searchFrontierPhase++;
+        var firstCell = GetRandomCell();
+        firstCell.SearchPhase = _searchFrontierPhase;
+        firstCell.Distance = 0;
+        firstCell.SearchHeuristic = 0;
+        _searchFrontier.Enqueue(firstCell);
+
+        var center = firstCell.Coordinates;
+        int size = 0;
+
+        var chunk = new List<Cell>();
+        while (size < chunkSize && _searchFrontier.Count > 0)
+        {
+            var current = _searchFrontier.Dequeue();
+            chunk.Add(current);
+            size++;
+
+            for (var d = Direction.N; d <= Direction.NW; d++)
+            {
+                var neighbor = current.GetNeighbor(d);
+                if (neighbor && neighbor.SearchPhase < _searchFrontierPhase)
+                {
+                    neighbor.SearchPhase = _searchFrontierPhase;
+                    neighbor.Distance = neighbor.Coordinates.DistanceTo(center);
+                    neighbor.SearchHeuristic = Random.value < JitterProbability ? 1 : 0;
+                    _searchFrontier.Enqueue(neighbor);
+                }
+            }
+        }
+
+        _searchFrontier.Clear();
+
+        return chunk;
+    }
+
     public List<Cell> GetRectangle(int x, int y, int width, int height)
     {
         var cells = new List<Cell>();
@@ -90,6 +144,18 @@ public class MapGrid : MonoBehaviour
         foreach (var cell in cells)
         {
             cell.EnableBorder(color);
+        }
+    }
+
+    internal void ResetSearchPriorities()
+    {
+        // ensure that all cells have their phases reset
+        for (var y = 0; y < Map.GetLength(1); y++)
+        {
+            for (var x = 0; x < Map.GetLength(0); x++)
+            {
+                Map[x, y].SearchPhase = 0;
+            }
         }
     }
 }

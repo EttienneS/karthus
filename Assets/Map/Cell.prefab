@@ -62,17 +62,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  TerrainSprites:
-  - {fileID: -153332918294764512, guid: 0296a379bca123b4c97ba34e31847dd6, type: 3}
-  - {fileID: 5863384446047441082, guid: 0296a379bca123b4c97ba34e31847dd6, type: 3}
-  - {fileID: -633266758613963060, guid: 0296a379bca123b4c97ba34e31847dd6, type: 3}
-  - {fileID: 8284128081475575205, guid: 0296a379bca123b4c97ba34e31847dd6, type: 3}
-  - {fileID: -4901889324210049336, guid: 0296a379bca123b4c97ba34e31847dd6, type: 3}
-  - {fileID: 5348350091626266928, guid: 0296a379bca123b4c97ba34e31847dd6, type: 3}
-  - {fileID: 6216346289760720931, guid: 0296a379bca123b4c97ba34e31847dd6, type: 3}
-  - {fileID: 4308014796411322208, guid: 0296a379bca123b4c97ba34e31847dd6, type: 3}
-  - {fileID: 7903149127906423421, guid: 0296a379bca123b4c97ba34e31847dd6, type: 3}
-  - {fileID: -9209379988072171317, guid: 0296a379bca123b4c97ba34e31847dd6, type: 3}
   TravelCost: 1
 --- !u!61 &2631113532422458072
 BoxCollider2D:
@@ -398,7 +387,7 @@ GameObject:
   - component: {fileID: 6627125393624917967}
   - component: {fileID: 7704085498585977309}
   m_Layer: 0
-  m_Name: Terrain
+  m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
