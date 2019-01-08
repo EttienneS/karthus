@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Creature : MonoBehaviour
 {
@@ -8,21 +6,12 @@ public class Creature : MonoBehaviour
 
     public Cell TargetCell;
 
-    private float nextActionTime;
-    public float period = 1f;
-
-    // Update is called once per frame
-    void Update()
+    public void Act()
     {
-        if (Time.time > nextActionTime)
+        if (TargetCell != null && CurrentCell != TargetCell)
         {
-            nextActionTime += period;
-            if (TargetCell != null && CurrentCell != TargetCell)
-            {
-                MoveToCell(Pathfinder.FindPath(CurrentCell, TargetCell)[1]);
-            }
+            MoveToCell(Pathfinder.FindPath(CurrentCell, TargetCell)[1]);
         }
-       
     }
 
     public void MoveToCell(Cell cell)

@@ -30,7 +30,6 @@ public class GameController : MonoBehaviour
     private void SpawnPlayer()
     {
         Player = CreatureController.Instance.SpawnCreature(MapGrid.Instance.GetRandomPathableCell());
-
         CameraController.Instance.MoveToViewPoint(Player.transform.position);
     }
 
@@ -53,5 +52,7 @@ public class GameController : MonoBehaviour
             Destroy(cell.gameObject);
         }
         Destroy(Player.gameObject);
+
+        CreatureController.Instance.Creatures.Clear();
     }
 }
