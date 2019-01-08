@@ -46,11 +46,18 @@ public class MapEditor : MonoBehaviour
         var cell = Instantiate(cellPrefab, MapGrid.transform, true);
         cell.transform.position = new Vector3(x, y);
         cell.Sprite.sprite = SpriteStore.Instance.GetRandomSpriteOfType("Water");
-
+        
+        // water and any unpathable cells are -1
+        cell.TravelCost = -1;
         cell.Coordinates = new Coordinates(x, y);
         cell.name = cell.Coordinates.ToString();
 
         MapGrid.Map[x, y] = cell;
+
+        if (MapGrid.DebugCoordinates)
+        {
+            cell.Text = cell.Coordinates.ToStringOnSeparateLines();
+        }
     }
 
     public void CreateMap()
@@ -102,16 +109,15 @@ public class MapEditor : MonoBehaviour
             foreach (var cell in MapGrid.GetRandomChunk(Random.Range(GrassChunkMin, GrassChunkMax)))
             {
                 cell.Sprite.sprite = SpriteStore.Instance.GetRandomSpriteOfType("Grass");
-                cell.Height = 1;
+                cell.TravelCost = 1;
             }
         }
 
         MapGrid.ResetSearchPriorities();
     }
 
-    public void Start()
+    public void Awake()
     {
         CreateMap();
-        MapGrid.Cell1 = MapGrid.GetRandomCell();
     }
 }
