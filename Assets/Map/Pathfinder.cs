@@ -10,15 +10,14 @@ public static class Pathfinder
    
     public static List<Cell> FindPath(Cell fromCell, Cell toCell)
     {
-        var path = new List<Cell>
-        {
-            fromCell
-        };
+        var path = new List<Cell>();
 
         if (fromCell != null && toCell != null)
         {
             if (Search(fromCell, toCell))
             {
+                path.Add(toCell);
+
                 var current = toCell;
                 while (current != fromCell)
                 {
@@ -26,10 +25,9 @@ public static class Pathfinder
                     path.Add(current);
                 }
 
-                path.Add(toCell);
             }
         }
-
+        path.Reverse();
         return path;
     }
 
@@ -72,7 +70,7 @@ public static class Pathfinder
             cell.EnableBorder(Color.white);
         }
 
-        path[0].EnableBorder(Color.red);
+        path.First().EnableBorder(Color.red);
         path.Last().EnableBorder(Color.blue);
     }
 

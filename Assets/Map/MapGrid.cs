@@ -4,9 +4,6 @@ using Random = UnityEngine.Random;
 
 public class MapGrid : MonoBehaviour
 {
-    public Cell Cell1;
-    public Cell Cell2;
-
     public bool DebugCoordinates;
     public bool DebugPathfinding = false;
 
@@ -17,7 +14,7 @@ public class MapGrid : MonoBehaviour
 
     private static MapGrid _instance;
 
-    private CellPriorityQueue _searchFrontier;
+    private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
 
     private int _searchFrontierPhase;
 
@@ -42,13 +39,7 @@ public class MapGrid : MonoBehaviour
         }
     }
 
-    public void Awake()
-    {
-        if (_searchFrontier == null)
-        {
-            _searchFrontier = new CellPriorityQueue();
-        }
-    }
+    
 
     public Cell GetCellAtPoint(Vector3 position)
     {
@@ -85,6 +76,18 @@ public class MapGrid : MonoBehaviour
     public Cell GetRandomCell()
     {
         return Map[(int)(Random.value * (Map.GetLength(0) - 1)), (int)(Random.value * (Map.GetLength(1) - 1))];
+    }
+
+    public Cell GetRandomPathableCell()
+    {
+        var cell = GetRandomCell();
+
+        while (cell.TravelCost < 1)
+        {
+            cell = GetRandomCell();
+        }
+
+        return cell;
     }
 
     public List<Cell> GetRandomChunk(int chunkSize)

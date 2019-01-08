@@ -21,25 +21,67 @@ public class Cell : MonoBehaviour
     //      Highlighting/Selection
     //      Borders (selectively highlighting certain edges)
 
+    public Creature ContainedCreature;
+
+    internal void AddCreature(Creature creature)
+    {
+        if (creature.CurrentCell != null)
+        {
+            creature.CurrentCell.RemoveCreature(creature);
+        }
+
+        ContainedCreature = creature;
+        creature.CurrentCell = this;
+        creature.transform.position = transform.position + new Vector3(0, 0, -0.25f);
+    }
+
+    private void RemoveCreature(Creature creature)
+    {
+        ContainedCreature = null;
+        creature.CurrentCell = null;
+    }
+
+    
+
     public Coordinates Coordinates;
 
     public Cell[] Neighbors = new Cell[8];
 
-    public int TravelCost = 1;
+    public int TravelCost = -1;
 
+    private TextMeshPro _textMesh;
     public SpriteRenderer Border { get; private set; }
-    public SpriteRenderer Sprite { get; private set; }
     public int Distance { get; set; }
     public Cell NextWithSamePriority { get; set; }
     public Cell PathFrom { get; set; }
-
     public int SearchHeuristic { private get; set; }
-
     public int SearchPhase { get; set; }
-
     public int SearchPriority => Distance + SearchHeuristic;
+    public SpriteRenderer Sprite { get; private set; }
+    public string Text
+    {
+        get
+        {
+            return TextMesh.text;
+        }
+        set
+        {
+            TextMesh.enabled = true;
+            TextMesh.text = value;
+        }
+    }
 
-    public int Height = 0;
+    public TextMeshPro TextMesh
+    {
+        get
+        {
+            if (_textMesh == null)
+            {
+                _textMesh = transform.Find("Text").GetComponent<TextMeshPro>();
+            }
+            return _textMesh;
+        }
+    }
 
     public void DisableBorder()
     {
@@ -63,78 +105,9 @@ public class Cell : MonoBehaviour
         cell.Neighbors[(int)direction.Opposite()] = this;
     }
 
-    private void Awake()
-    {
-        Border = transform.Find("Border").GetComponent<SpriteRenderer>();
-        Sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
-
-        RandomlyFlipSprite();
-    }
-
-    private void RandomlyFlipSprite()
-    {
-        Sprite.flipX = Random.value < 0.5f;
-        Sprite.flipY = Random.value < 0.5f;
-    }
-
-    private TextMeshPro _textMesh;
-
-    public TextMeshPro TextMesh
-    {
-        get
-        {
-            if (_textMesh == null)
-            {
-                _textMesh = transform.Find("Text").GetComponent<TextMeshPro>();
-            }
-            return _textMesh;
-        }
-    }
-
-    public string Text
-    {
-        get
-        {
-            return TextMesh.text;
-        }
-        set
-        {
-            TextMesh.enabled = true;
-            TextMesh.text = value;
-        }
-    }
-
-    private void OnMouseDown()
-    {
-        MapGrid.Instance.Cell2 = this;
-
-        foreach (var cell in MapGrid.Instance.Map)
-        {
-            cell.DisableBorder();
-            if (MapGrid.Instance.DebugPathfinding)
-            {
-                cell.Text = "";
-                cell.Distance = 0;
-            }
-        }
-
-        Pathfinder.ShowPath(Pathfinder.FindPath(MapGrid.Instance.Cell1, MapGrid.Instance.Cell2));
-
-        if (MapGrid.Instance.DebugPathfinding)
-        {
-            foreach (var cell in MapGrid.Instance.Map)
-            {
-                if (cell.Distance != 0)
-                {
-                    cell.Text = cell.Distance.ToString();
-                }
-            }
-        }
-    }
-
     public void Update()
     {
-        if (Height == 0)
+        if (TravelCost == -1)
         {
             if (Random.value > 0.98f)
             {
@@ -144,4 +117,50 @@ public class Cell : MonoBehaviour
         }
     }
 
+    private void Awake()
+    {
+        Border = transform.Find("Border").GetComponent<SpriteRenderer>();
+        Sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
+
+        RandomlyFlipSprite();
+    }
+
+    private void OnMouseDown()
+    {
+        if (this.Border.enabled)
+        {
+            GameController.Instance.Player.SetTarget(this);
+        }
+        else
+        {
+            foreach (var cell in MapGrid.Instance.Map)
+            {
+                cell.DisableBorder();
+                if (MapGrid.Instance.DebugPathfinding)
+                {
+                    cell.Text = "";
+                    cell.Distance = 0;
+                }
+            }
+
+            Pathfinder.ShowPath(Pathfinder.FindPath(GameController.Instance.Player.CurrentCell, this));
+
+            if (MapGrid.Instance.DebugPathfinding)
+            {
+                foreach (var cell in MapGrid.Instance.Map)
+                {
+                    if (cell.Distance != 0)
+                    {
+                        cell.Text = cell.Distance.ToString();
+                    }
+                }
+            }
+        }
+    }
+
+    private void RandomlyFlipSprite()
+    {
+        Sprite.flipX = Random.value < 0.5f;
+        Sprite.flipY = Random.value < 0.5f;
+    }
 }

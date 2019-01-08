@@ -59,9 +59,12 @@ public class CameraController : MonoBehaviour
             var distCovered = (Time.time - _startTime) * 1000;
             var fracJourney = distCovered / _journeyLength;
 
-            transform.position = Vector3.Lerp(_panSource, _panDesitnation, fracJourney);
+            var lerp = Vector3.Lerp(_panSource, _panDesitnation, fracJourney);
 
-            if (transform.position == _panDesitnation)
+            transform.position = new Vector3(lerp.x, lerp.y, -10);
+
+            if (transform.position.x == _panDesitnation.x 
+                && transform.position.y == _panDesitnation.y)
             {
                 _panning = false;
             }
