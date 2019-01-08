@@ -28,6 +28,11 @@ public class Creature : MonoBehaviour
     public void MoveToCell(Cell cell)
     {
         cell.AddCreature(this);
+
+        foreach (var c in MapGrid.Instance.GetCircle(cell, 3))
+        {
+            c.Fog.enabled = false;
+        }
     }
 
     public void SetTarget(Cell cell)
