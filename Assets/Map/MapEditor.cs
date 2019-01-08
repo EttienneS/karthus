@@ -4,9 +4,20 @@ using UnityEngine;
 public class MapEditor : MonoBehaviour
 {
     public Cell cellPrefab;
-    public int Height = 15;
+
+    [Range(0, 250)]
+    public int GrassChunkMax = 100;
+
+    [Range(0, 250)]
+    public int GrassChunkMin = 50;
+
+    [Range(0, 250)]
+    public int GrassChunks = 25;
+
     public MapGrid MapGrid;
-    public int Width = 15;
+
+    [Range(16, 256)]
+    public int MapSize = 64;
     private static MapEditor _instance;
 
     public static MapEditor Instance
@@ -34,6 +45,7 @@ public class MapEditor : MonoBehaviour
     {
         var cell = Instantiate(cellPrefab, MapGrid.transform, true);
         cell.transform.position = new Vector3(x, y);
+        cell.Sprite.sprite = SpriteStore.Instance.GetRandomSpriteOfType("Water");
 
         cell.Coordinates = new Coordinates(x, y);
         cell.name = cell.Coordinates.ToString();
@@ -41,9 +53,13 @@ public class MapEditor : MonoBehaviour
         MapGrid.Map[x, y] = cell;
     }
 
-    public void CreateMap(int width, int height)
+    public void CreateMap()
     {
+        var width = MapSize;
+        var height = MapSize;
+
         MapGrid.Map = new Cell[width, height];
+
         for (var y = 0; y < width; y++)
         {
             for (var x = 0; x < height; x++)
@@ -79,11 +95,22 @@ public class MapEditor : MonoBehaviour
                 }
             }
         }
+
+        for (int i = 0; i < GrassChunks; i++)
+        {
+            var col = new Color(Random.value, Random.value, Random.value);
+            foreach (var cell in MapGrid.GetRandomChunk(Random.Range(GrassChunkMin, GrassChunkMax)))
+            {
+                cell.Sprite.sprite = SpriteStore.Instance.GetRandomSpriteOfType("Grass");
+            }
+        }
+
+        MapGrid.ResetSearchPriorities();
     }
 
     public void Start()
     {
-        CreateMap(Width, Height);
+        CreateMap();
         MapGrid.Cell1 = MapGrid.GetRandomCell();
     }
 }
