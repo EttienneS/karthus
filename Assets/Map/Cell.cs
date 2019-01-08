@@ -51,6 +51,7 @@ public class Cell : MonoBehaviour
 
     private TextMeshPro _textMesh;
     public SpriteRenderer Border { get; private set; }
+    public SpriteRenderer Fog { get; private set; }
     public int Distance { get; set; }
     public Cell NextWithSamePriority { get; set; }
     public Cell PathFrom { get; set; }
@@ -107,18 +108,23 @@ public class Cell : MonoBehaviour
 
     public void Update()
     {
-        if (TravelCost == -1)
+        if (!Fog.enabled)
         {
-            if (Random.value > 0.98f)
+            // animate cells if fog is nog enabled
+            if (TravelCost == -1)
             {
-                Sprite.sprite = SpriteStore.Instance.GetRandomSpriteOfType("Water");
-                RandomlyFlipSprite();
+                if (Random.value > 0.98f)
+                {
+                    Sprite.sprite = SpriteStore.Instance.GetRandomSpriteOfType("Water");
+                    RandomlyFlipSprite();
+                }
             }
         }
     }
 
     private void Awake()
     {
+        Fog = transform.Find("Fog").GetComponent<SpriteRenderer>();
         Border = transform.Find("Border").GetComponent<SpriteRenderer>();
         Sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
 

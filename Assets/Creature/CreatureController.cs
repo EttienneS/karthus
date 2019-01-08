@@ -24,9 +24,7 @@ public class CreatureController : MonoBehaviour
     public Creature SpawnCreature(Cell spawnLocation)
     {
         var creature = Instantiate(CreaturePrefab, transform, true);
-        // add creature to same square and ensure it is above the terrain
-        spawnLocation.AddCreature(creature);
-
+        creature.MoveToCell(spawnLocation);
         return creature;
     }
 
