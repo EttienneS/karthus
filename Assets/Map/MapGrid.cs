@@ -5,13 +5,10 @@ public class MapGrid : MonoBehaviour
 {
     public Cell Cell1;
     public Cell Cell2;
-    public Cell cellPrefab;
 
     public bool DebugCoordinates;
     public bool DebugPathfinding = false;
-    public int Height = 15;
     public Cell[,] Map;
-    public int Width = 15;
 
     private static MapGrid _instance;
 
@@ -21,74 +18,18 @@ public class MapGrid : MonoBehaviour
         {
             if (_instance == null)
             {
-                _instance = GameObject.Find("MapManager").GetComponent<MapGrid>();
+                _instance = GameObject.Find("MapGrid").GetComponent<MapGrid>();
             }
 
             return _instance;
         }
     }
+
     public void AddCellIfValid(int x, int y, List<Cell> cells)
     {
         if (x >= 0 && x < Map.GetLength(0) && y >= 0 && y < Map.GetLength(1))
         {
             cells.Add(Map[x, y]);
-        }
-    }
-
-    public void CreateCell(int x, int y)
-    {
-        var cell = Instantiate(cellPrefab, transform, true);
-        cell.transform.position = new Vector3(x, y);
-
-        cell.Coordinates = new Coordinates(x, y);
-        cell.name = cell.Coordinates.ToString();
-
-        Map[x, y] = cell;
-
-        if (DebugCoordinates)
-        {
-            cell.Text = cell.Coordinates.ToStringOnSeparateLines();
-        }
-
-    }
-
-    public void CreateMap()
-    {
-        Map = new Cell[Width, Height];
-        for (var y = 0; y < Width; y++)
-        {
-            for (var x = 0; x < Height; x++)
-            {
-                CreateCell(x, y);
-            }
-        }
-
-        for (var y = 0; y < Width; y++)
-        {
-            for (var x = 0; x < Height; x++)
-            {
-                var cell = Map[x, y];
-
-                if (x > 0)
-                {
-                    cell.SetNeighbor(Direction.W, Map[x - 1, y]);
-
-                    if (y > 0)
-                    {
-                        cell.SetNeighbor(Direction.SW, Map[x - 1, y - 1]);
-
-                        if (x < Width - 1)
-                        {
-                            cell.SetNeighbor(Direction.SE, Map[x + 1, y - 1]);
-                        }
-                    }
-                }
-
-                if (y > 0)
-                {
-                    cell.SetNeighbor(Direction.S, Map[x, y - 1]);
-                }
-            }
         }
     }
 
@@ -126,7 +67,7 @@ public class MapGrid : MonoBehaviour
 
     public Cell GetRandomCell()
     {
-        return Map[(int)(Random.value * Width), (int)(Random.value * Height)];
+        return Map[(int)(Random.value * (Map.GetLength(0) - 1)), (int)(Random.value * (Map.GetLength(1) - 1))];
     }
 
     public List<Cell> GetRectangle(int x, int y, int width, int height)
@@ -150,18 +91,5 @@ public class MapGrid : MonoBehaviour
         {
             cell.EnableBorder(color);
         }
-    }
-
-    private void Start()
-    {
-        CreateMap();
-        Cell1 = Map[Width / 2, Height / 2];
-    }
-
-    private void Update()
-    {
-        var cell = GetRandomCell();
-        //HighlightCells(GetCircle(cell, (int)(Random.value * 10)), new Color(Random.value, Random.value, Random.value));
-        //HighlightCells(GetRectangle(cell.Coordinates.X,cell.Coordinates.Y, (int)(Random.value * 20), (int)(Random.value * 20)), new Color(Random.value, Random.value, Random.value));
     }
 }
