@@ -1,6 +1,7 @@
 ﻿using System;
 using TMPro;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Cell : MonoBehaviour
 {
@@ -38,6 +39,8 @@ public class Cell : MonoBehaviour
 
     public int SearchPriority => Distance + SearchHeuristic;
 
+    public int Height = 0;
+
     public void DisableBorder()
     {
         Border.enabled = false;
@@ -64,9 +67,14 @@ public class Cell : MonoBehaviour
     {
         Border = transform.Find("Border").GetComponent<SpriteRenderer>();
         Sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
-               
-        Sprite.flipX = UnityEngine.Random.value < 0.5f;
-        Sprite.flipY = UnityEngine.Random.value < 0.5f;
+
+        RandomlyFlipSprite();
+    }
+
+    private void RandomlyFlipSprite()
+    {
+        Sprite.flipX = Random.value < 0.5f;
+        Sprite.flipY = Random.value < 0.5f;
     }
 
     private TextMeshPro _textMesh;
@@ -120,6 +128,18 @@ public class Cell : MonoBehaviour
                 {
                     cell.Text = cell.Distance.ToString();
                 }
+            }
+        }
+    }
+
+    public void Update()
+    {
+        if (Height == 0)
+        {
+            if (Random.value > 0.98f)
+            {
+                Sprite.sprite = SpriteStore.Instance.GetRandomSpriteOfType("Water");
+                RandomlyFlipSprite();
             }
         }
     }

@@ -102,6 +102,7 @@ public class MapEditor : MonoBehaviour
             foreach (var cell in MapGrid.GetRandomChunk(Random.Range(GrassChunkMin, GrassChunkMax)))
             {
                 cell.Sprite.sprite = SpriteStore.Instance.GetRandomSpriteOfType("Grass");
+                cell.Height = 1;
             }
         }
 
