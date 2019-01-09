@@ -48,4 +48,9 @@ public class SpriteStore : MonoBehaviour
             SpriteTypeDictionary[typeName].Add(sprite);
         }
     }
+
+    internal Sprite GetRandomSpriteOfType(CellType cellType)
+    {
+        return GetRandomSpriteOfType(cellType.ToString());
+    }
 }

@@ -1,5 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Creature : MonoBehaviour
@@ -8,21 +8,24 @@ public class Creature : MonoBehaviour
 
     public Cell TargetCell;
 
-    private float nextActionTime;
-    public float period = 1f;
+    private List<Cell> Path = new List<Cell>();
 
-    // Update is called once per frame
-    void Update()
+    public void Act()
     {
-        if (Time.time > nextActionTime)
+        if (TargetCell != null && CurrentCell != TargetCell && Path != null)
         {
-            nextActionTime += period;
-            if (TargetCell != null && CurrentCell != TargetCell)
+            var nextStep = Path[Path.IndexOf(CurrentCell) - 1];
+
+            if (nextStep.TravelCost < 0)
             {
-                MoveToCell(Pathfinder.FindPath(CurrentCell, TargetCell)[1]);
+                Pathfinder.InvalidPath(CurrentCell, TargetCell);
+                Path = Pathfinder.FindPath(CurrentCell, TargetCell);
+            }
+            else
+            {
+                MoveToCell(nextStep);
             }
         }
-       
     }
 
     public void MoveToCell(Cell cell)
@@ -38,5 +41,6 @@ public class Creature : MonoBehaviour
     public void SetTarget(Cell cell)
     {
         TargetCell = cell;
+        Path = Pathfinder.FindPath(CurrentCell, TargetCell);
     }
 }
