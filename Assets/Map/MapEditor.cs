@@ -11,11 +11,13 @@ public class MapEditor : MonoBehaviour
 {
     public Cell cellPrefab;
 
+    public bool Generating = false;
     public MapGrid MapGrid;
 
     [Range(4, 196)]
     public int MapSize = 64;
 
+    public bool ShowGeneration = true;
     private static MapEditor _instance;
 
     public static MapEditor Instance
@@ -55,19 +57,6 @@ public class MapEditor : MonoBehaviour
             cell.Text = cell.Coordinates.ToStringOnSeparateLines();
         }
     }
-
-    public bool Generating = false;
-
-    private void Update()
-    {
-        if (!Generating)
-        {
-            Generating = true;
-            StartCoroutine("CreateMap");
-        }
-    }
-
-    public bool ShowGeneration = true;
 
     public IEnumerator CreateMap()
     {
@@ -116,18 +105,14 @@ public class MapEditor : MonoBehaviour
         if (ShowGeneration) yield return null;
 
         // generate bedrock
-        for (int i = 0; i < MapSize /2; i++)
+        for (int i = 0; i < MapSize / 2; i++)
         {
             foreach (var cell in MapGrid.GetRandomChunk(Random.Range(1 + (MapSize / 6), 1 + (MapSize / 3))))
             {
                 cell.CellType = CellType.Stone;
             }
-
-            if (i % 8 == 0)
-            {
-                if (ShowGeneration) yield return null;
-            }
         }
+        if (ShowGeneration) yield return null;
 
         // grow mountains
         foreach (var cell in MapGrid.Map)
@@ -139,8 +124,7 @@ public class MapEditor : MonoBehaviour
 
             if (cell.CountNeighborsOfType(null) +
                 cell.CountNeighborsOfType(CellType.Mountain) +
-                cell.CountNeighborsOfType(CellType.Stone) > 7
-                && Random.value > 0.3f)
+                cell.CountNeighborsOfType(CellType.Stone) > 6)
             {
                 cell.CellType = CellType.Mountain;
             }
@@ -157,12 +141,8 @@ public class MapEditor : MonoBehaviour
                     cell.CellType = CellType.Grass;
                 }
             }
-
-            if (i % 8 == 0)
-            {
-                if (ShowGeneration) yield return null;
-            }
         }
+        if (ShowGeneration) yield return null;
 
         // bleed water, this enlarges bodies of water
         // creates more natural looking coastlines/rivers
@@ -195,7 +175,6 @@ public class MapEditor : MonoBehaviour
             {
                 cell.CellType = CellType.Dirt;
             }
-
         }
         if (ShowGeneration) yield return null;
 
@@ -239,5 +218,14 @@ public class MapEditor : MonoBehaviour
         CreatureController.Instance.SpawnCreatures();
 
         if (ShowGeneration) yield return null;
+    }
+
+    private void Update()
+    {
+        if (!Generating)
+        {
+            Generating = true;
+            StartCoroutine("CreateMap");
+        }
     }
 }
