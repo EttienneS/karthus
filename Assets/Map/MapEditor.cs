@@ -45,8 +45,6 @@ public class MapEditor : MonoBehaviour
         cell.transform.position = new Vector3(x, y);
         cell.CellType = CellType.Water;
 
-        // water and any unpathable cells are -1
-        cell.TravelCost = -1;
         cell.Coordinates = new Coordinates(x, y);
         cell.name = cell.Coordinates.ToString();
 
@@ -117,14 +115,47 @@ public class MapEditor : MonoBehaviour
         }
         if (ShowGeneration) yield return null;
 
+        // generate bedrock
+        for (int i = 0; i < MapSize /2; i++)
+        {
+            foreach (var cell in MapGrid.GetRandomChunk(Random.Range(1 + (MapSize / 6), 1 + (MapSize / 3))))
+            {
+                cell.CellType = CellType.Stone;
+            }
+
+            if (i % 8 == 0)
+            {
+                if (ShowGeneration) yield return null;
+            }
+        }
+
+        // grow mountains
+        foreach (var cell in MapGrid.Map)
+        {
+            if (cell.CellType != CellType.Stone)
+            {
+                continue;
+            }
+
+            if (cell.CountNeighborsOfType(null) +
+                cell.CountNeighborsOfType(CellType.Mountain) +
+                cell.CountNeighborsOfType(CellType.Stone) > 7
+                && Random.value > 0.3f)
+            {
+                cell.CellType = CellType.Mountain;
+            }
+        }
+        if (ShowGeneration) yield return null;
 
         // generate landmasses
         for (int i = 0; i < MapSize; i++)
         {
             foreach (var cell in MapGrid.GetRandomChunk(Random.Range(MapSize, MapSize * 2)))
             {
-                cell.CellType = CellType.Grass;
-                cell.TravelCost = 1;
+                if (cell.CellType == CellType.Water)
+                {
+                    cell.CellType = CellType.Grass;
+                }
             }
 
             if (i % 8 == 0)
@@ -154,7 +185,7 @@ public class MapEditor : MonoBehaviour
         // create coast
         foreach (var cell in MapGrid.Map)
         {
-            if (cell.CellType == CellType.Water)
+            if (cell.CellType != CellType.Grass)
             {
                 // already water skip
                 continue;

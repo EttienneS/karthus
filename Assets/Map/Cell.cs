@@ -111,7 +111,7 @@ public class Cell : MonoBehaviour
         if (!Fog.enabled)
         {
             // animate cells if fog is nog enabled
-            if (TravelCost == -1)
+            if (CellType == CellType.Water)
             {
                 if (Random.value > 0.98f)
                 {
@@ -159,14 +159,20 @@ public class Cell : MonoBehaviour
         {
             _cellType = value;
 
-            if (value == CellType.Water)
+            switch (value)
             {
-                TravelCost = -1;
+                case CellType.Mountain:
+                case CellType.Water:
+                    TravelCost = -1;
+                    break;
+                case CellType.Stone:
+                    TravelCost = 10;
+                    break;
+                default:
+                    TravelCost = 1;
+                    break;
             }
-            else
-            {
-                TravelCost = 1;
-            }
+           
 
             Sprite.sprite = SpriteStore.Instance.GetRandomSpriteOfType(_cellType);
             RandomlyFlipSprite();
