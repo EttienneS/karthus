@@ -1,34 +1,80 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 public static class Pathfinder
 {
     private static CellPriorityQueue _searchFrontier;
     private static int _searchFrontierPhase;
 
-   
+    private static Dictionary<string, List<Cell>> _pathCache = new Dictionary<string, List<Cell>>();
+
+    public static void FlushPathCache()
+    {
+        _pathCache = new Dictionary<string, List<Cell>>();
+    }
+
+    public static void InvalidPath(Cell fromCell, Cell toCell)
+    {
+        var pathId = fromCell.name + toCell.name;
+        var pathIdInverse = toCell.name + fromCell.name;
+
+        if (_pathCache.ContainsKey(pathId))
+        {
+            _pathCache.Remove(pathId);
+        }
+
+        if (_pathCache.ContainsKey(pathIdInverse))
+        {
+            _pathCache.Remove(pathIdInverse);
+        }
+    }
+
     public static List<Cell> FindPath(Cell fromCell, Cell toCell)
     {
-        var path = new List<Cell>();
-
         if (fromCell != null && toCell != null)
         {
-            if (Search(fromCell, toCell))
+            var pathId = fromCell.name + toCell.name;
+            var pathIdInverse = toCell.name + fromCell.name;
+
+            if (!_pathCache.ContainsKey(pathId))
             {
-                path.Add(toCell);
-
-                var current = toCell;
-                while (current != fromCell)
+                if (_pathCache.ContainsKey(pathIdInverse))
                 {
-                    current = current.PathFrom;
-                    path.Add(current);
+                    var p = _pathCache[pathIdInverse].Select(c => c).ToList();
+                    p.Reverse();
+                    _pathCache.Add(pathId, p);
                 }
+                else
+                {
+                    var path = new List<Cell>();
 
+                    if (Search(fromCell, toCell))
+                    {
+                        path.Add(toCell);
+
+                        var current = toCell;
+                        while (current != fromCell)
+                        {
+                            current = current.PathFrom;
+                            path.Add(current);
+                        }
+
+                        _pathCache.Add(pathId, path);
+                    }
+                    else
+                    {
+                        _pathCache.Add(pathId, null);
+                    }
+                }
             }
+            return _pathCache[pathId];
         }
-        path.Reverse();
-        return path;
+
+        return null;
     }
 
     public static Cell GetClosestOpenCell(Cell[] map, Cell origin)

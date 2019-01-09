@@ -20,6 +20,7 @@ public class Coordinates
         return new Coordinates((int)x, (int)y);
     }
 
+
     public override string ToString()
     {
         return "Cell: (" + X + ", " + Y + ")";

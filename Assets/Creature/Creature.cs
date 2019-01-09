@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 public class Creature : MonoBehaviour
 {
@@ -6,11 +8,23 @@ public class Creature : MonoBehaviour
 
     public Cell TargetCell;
 
+    private List<Cell> Path = new List<Cell>();
+
     public void Act()
     {
-        if (TargetCell != null && CurrentCell != TargetCell)
+        if (TargetCell != null && CurrentCell != TargetCell && Path != null)
         {
-            MoveToCell(Pathfinder.FindPath(CurrentCell, TargetCell)[1]);
+            var nextStep = Path[Path.IndexOf(CurrentCell) - 1];
+
+            if (nextStep.TravelCost < 0)
+            {
+                Pathfinder.InvalidPath(CurrentCell, TargetCell);
+                Path = Pathfinder.FindPath(CurrentCell, TargetCell);
+            }
+            else
+            {
+                MoveToCell(nextStep);
+            }
         }
     }
 
@@ -27,5 +41,6 @@ public class Creature : MonoBehaviour
     public void SetTarget(Cell cell)
     {
         TargetCell = cell;
+        Path = Pathfinder.FindPath(CurrentCell, TargetCell);
     }
 }

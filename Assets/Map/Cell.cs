@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Random = UnityEngine.Random;
 
 public class Cell : MonoBehaviour
@@ -21,7 +24,7 @@ public class Cell : MonoBehaviour
     //      Highlighting/Selection
     //      Borders (selectively highlighting certain edges)
 
-    public Creature ContainedCreature;
+    public List<Creature> ContainedCreature = new List<Creature>();
 
     internal void AddCreature(Creature creature)
     {
@@ -30,18 +33,15 @@ public class Cell : MonoBehaviour
             creature.CurrentCell.RemoveCreature(creature);
         }
 
-        ContainedCreature = creature;
+        ContainedCreature.Add(creature);
         creature.CurrentCell = this;
         creature.transform.position = transform.position + new Vector3(0, 0, -0.25f);
     }
 
     private void RemoveCreature(Creature creature)
     {
-        ContainedCreature = null;
-        creature.CurrentCell = null;
+        ContainedCreature.Remove(creature);
     }
-
-    
 
     public Coordinates Coordinates;
 
@@ -115,8 +115,7 @@ public class Cell : MonoBehaviour
             {
                 if (Random.value > 0.98f)
                 {
-                    Sprite.sprite = SpriteStore.Instance.GetRandomSpriteOfType("Water");
-                    RandomlyFlipSprite();
+                    CellType = CellType.Water;
                 }
             }
         }
@@ -127,40 +126,50 @@ public class Cell : MonoBehaviour
         Fog = transform.Find("Fog").GetComponent<SpriteRenderer>();
         Border = transform.Find("Border").GetComponent<SpriteRenderer>();
         Sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
-
-        RandomlyFlipSprite();
     }
+
+    internal int CountNeighborsOfType(CellType? cellType)
+    {
+        if (!cellType.HasValue)
+        {
+            return Neighbors.Count(n => n == null);
+        }
+
+        return Neighbors.Count(n => n != null && n.CellType == cellType.Value);
+    }
+
+
 
     private void OnMouseDown()
     {
-        if (this.Border.enabled)
+        foreach (var creature in CreatureController.Instance.Creatures)
         {
-            GameController.Instance.Player.SetTarget(this);
+            creature.SetTarget(this);
         }
-        else
+    }
+
+    private CellType _cellType;
+    public CellType CellType
+    {
+        get
         {
-            foreach (var cell in MapGrid.Instance.Map)
+            return _cellType;
+        }
+        set
+        {
+            _cellType = value;
+
+            if (value == CellType.Water)
             {
-                cell.DisableBorder();
-                if (MapGrid.Instance.DebugPathfinding)
-                {
-                    cell.Text = "";
-                    cell.Distance = 0;
-                }
+                TravelCost = -1;
+            }
+            else
+            {
+                TravelCost = 1;
             }
 
-            Pathfinder.ShowPath(Pathfinder.FindPath(GameController.Instance.Player.CurrentCell, this));
-
-            if (MapGrid.Instance.DebugPathfinding)
-            {
-                foreach (var cell in MapGrid.Instance.Map)
-                {
-                    if (cell.Distance != 0)
-                    {
-                        cell.Text = cell.Distance.ToString();
-                    }
-                }
-            }
+            Sprite.sprite = SpriteStore.Instance.GetRandomSpriteOfType(_cellType);
+            RandomlyFlipSprite();
         }
     }
 

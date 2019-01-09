@@ -1,18 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class CreatureController : MonoBehaviour
 {
+    [Range(0.001f, 0.1f)]
+    public float ActPeriod = 0.01f;
+
     public Creature CreaturePrefab;
 
     public List<Creature> Creatures = new List<Creature>();
     private static CreatureController _instance;
 
     private float nextActionTime;
-
-    private float period = 0.001f;
-
     public static CreatureController Instance
     {
         get
@@ -25,6 +24,7 @@ public class CreatureController : MonoBehaviour
             return _instance;
         }
     }
+
     public Creature SpawnCreature(Cell spawnLocation)
     {
         var creature = Instantiate(CreaturePrefab, transform, true);
@@ -34,18 +34,24 @@ public class CreatureController : MonoBehaviour
         return creature;
     }
 
+    public void SpawnCreatures()
+    {
+        for (var i = 0; i < 5; i++)
+        {
+            SpawnCreature(MapGrid.Instance.GetRandomPathableCell());
+        }
+    }
+    
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (Time.time > nextActionTime)
         {
-            nextActionTime += period;
+            nextActionTime += ActPeriod;
             foreach (var creature in Creatures)
             {
                 creature.Act();
             }
         }
     }
-
-
 }

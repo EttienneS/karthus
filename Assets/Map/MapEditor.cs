@@ -1,23 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+
+public enum CellType
+{
+    Dirt, Forest, Grass, Mountain, Stone, Water
+}
 
 public class MapEditor : MonoBehaviour
 {
     public Cell cellPrefab;
 
-    [Range(0, 250)]
-    public int GrassChunkMax = 100;
-
-    [Range(0, 250)]
-    public int GrassChunkMin = 50;
-
-    [Range(0, 250)]
-    public int GrassChunks = 25;
-
     public MapGrid MapGrid;
 
-    [Range(16, 256)]
+    [Range(4, 196)]
     public int MapSize = 64;
+
     private static MapEditor _instance;
 
     public static MapEditor Instance
@@ -45,8 +43,8 @@ public class MapEditor : MonoBehaviour
     {
         var cell = Instantiate(cellPrefab, MapGrid.transform, true);
         cell.transform.position = new Vector3(x, y);
-        cell.Sprite.sprite = SpriteStore.Instance.GetRandomSpriteOfType("Water");
-        
+        cell.CellType = CellType.Water;
+
         // water and any unpathable cells are -1
         cell.TravelCost = -1;
         cell.Coordinates = new Coordinates(x, y);
@@ -60,12 +58,26 @@ public class MapEditor : MonoBehaviour
         }
     }
 
-    public void CreateMap()
+    public bool Generating = false;
+
+    private void Update()
+    {
+        if (!Generating)
+        {
+            Generating = true;
+            StartCoroutine("CreateMap");
+        }
+    }
+
+    public bool ShowGeneration = true;
+
+    public IEnumerator CreateMap()
     {
         var width = MapSize;
         var height = MapSize;
 
         MapGrid.Map = new Cell[width, height];
+        if (ShowGeneration) yield return null;
 
         for (var y = 0; y < width; y++)
         {
@@ -74,6 +86,7 @@ public class MapEditor : MonoBehaviour
                 CreateCell(x, y);
             }
         }
+        if (ShowGeneration) yield return null;
 
         for (var y = 0; y < width; y++)
         {
@@ -102,22 +115,98 @@ public class MapEditor : MonoBehaviour
                 }
             }
         }
+        if (ShowGeneration) yield return null;
 
-        for (int i = 0; i < GrassChunks; i++)
+
+        // generate landmasses
+        for (int i = 0; i < MapSize; i++)
         {
-            var col = new Color(Random.value, Random.value, Random.value);
-            foreach (var cell in MapGrid.GetRandomChunk(Random.Range(GrassChunkMin, GrassChunkMax)))
+            foreach (var cell in MapGrid.GetRandomChunk(Random.Range(MapSize, MapSize * 2)))
             {
-                cell.Sprite.sprite = SpriteStore.Instance.GetRandomSpriteOfType("Grass");
+                cell.CellType = CellType.Grass;
                 cell.TravelCost = 1;
+            }
+
+            if (i % 8 == 0)
+            {
+                if (ShowGeneration) yield return null;
             }
         }
 
-        MapGrid.ResetSearchPriorities();
-    }
+        // bleed water, this enlarges bodies of water
+        // creates more natural looking coastlines/rivers
+        foreach (var cell in MapGrid.Map)
+        {
+            if (cell.CellType == CellType.Water)
+            {
+                continue;
+            }
 
-    public void Awake()
-    {
-        CreateMap();
+            var waterN = cell.CountNeighborsOfType(CellType.Water);
+            if (waterN > 2 && Random.value > 1.0f - (waterN / 10f))
+            {
+                cell.CellType = CellType.Water;
+            }
+        }
+
+        if (ShowGeneration) yield return null;
+
+        // create coast
+        foreach (var cell in MapGrid.Map)
+        {
+            if (cell.CellType == CellType.Water)
+            {
+                // already water skip
+                continue;
+            }
+
+            if (cell.CountNeighborsOfType(CellType.Water) > 0)
+            {
+                cell.CellType = CellType.Dirt;
+            }
+
+        }
+        if (ShowGeneration) yield return null;
+
+        // bleed desert
+        foreach (var cell in MapGrid.Map)
+        {
+            if (cell.CellType == CellType.Water)
+            {
+                // already water skip
+                continue;
+            }
+
+            if (cell.CountNeighborsOfType(CellType.Dirt) > 2 && Random.value > 0.5)
+            {
+                cell.CellType = CellType.Dirt;
+            }
+        }
+        if (ShowGeneration) yield return null;
+
+        // create forest
+        foreach (var cell in MapGrid.Map)
+        {
+            if (cell.CellType == CellType.Water)
+            {
+                // water skip
+                continue;
+            }
+
+            if (cell.CountNeighborsOfType(null) +
+                cell.CountNeighborsOfType(CellType.Grass) +
+                cell.CountNeighborsOfType(CellType.Forest) > 6
+                && Random.value > 0.2)
+            {
+                cell.CellType = CellType.Forest;
+            }
+        }
+        if (ShowGeneration) yield return null;
+
+        MapGrid.ResetSearchPriorities();
+        Pathfinder.FlushPathCache();
+        CreatureController.Instance.SpawnCreatures();
+
+        if (ShowGeneration) yield return null;
     }
 }

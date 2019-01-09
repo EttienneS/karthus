@@ -1,12 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
     private static GameController _instance;
-
-    public Creature Player;
 
     public static GameController Instance
     {
@@ -21,38 +17,22 @@ public class GameController : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        SpawnPlayer();
-    }
-
-    private void SpawnPlayer()
-    {
-        Player = CreatureController.Instance.SpawnCreature(MapGrid.Instance.GetRandomPathableCell());
-        CameraController.Instance.MoveToViewPoint(Player.transform.position);
-    }
-
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (Input.GetKeyUp(KeyCode.Space))
         {
-            DestroyMap();
+            foreach (var cell in MapGrid.Instance.Map)
+            {
+                Destroy(cell.gameObject);
+            }
 
-            MapEditor.Instance.CreateMap();
-            SpawnPlayer();
+            foreach (var creature in CreatureController.Instance.Creatures)
+            {
+                Destroy(creature.gameObject);
+            }
+            CreatureController.Instance.Creatures.Clear();
+
+            MapEditor.Instance.Generating = false;
         }
-    }
-
-    private void DestroyMap()
-    {
-        foreach (var cell in MapGrid.Instance.Map)
-        {
-            Destroy(cell.gameObject);
-        }
-        Destroy(Player.gameObject);
-
-        CreatureController.Instance.Creatures.Clear();
     }
 }
