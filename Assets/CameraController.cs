@@ -3,6 +3,11 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+    public Camera Camera;
+    [Range(0.1f, 5)] public float Speed = 2;
+    [Range(5, 25)] public int ZoomMax = 15;
+    [Range(1, 50)] public int ZoomMin = 2;
+    [Range(1, 20)] public int ZoomStep = 5;
     private static CameraController _instance;
 
     private float _journeyLength;
@@ -13,16 +18,6 @@ public class CameraController : MonoBehaviour
     private Vector3 _panSource;
 
     private float _startTime;
-
-    public Camera Camera;
-
-    [Range(0.1f, 5)] public float Speed = 2;
-
-    [Range(5, 25)] public int ZoomMax = 15;
-
-    [Range(1, 50)] public int ZoomMin = 2;
-
-    [Range(1, 20)] public int ZoomStep = 5;
 
     public static CameraController Instance
     {
@@ -37,9 +32,18 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    public void Start()
+    public void Load(string location)
     {
-        Camera = GetComponent<Camera>();
+        var path = Path.Combine(location, "camera.data");
+
+        using (var reader = new BinaryReader(File.Open(path, FileMode.Open)))
+        {
+            var x = reader.ReadSingle();
+            var y = reader.ReadSingle();
+            var z = reader.ReadSingle();
+
+            transform.position = new Vector3(x, y, z);
+        }
     }
 
     public void MoveToViewPoint(Vector3 panDesitnation)
@@ -50,6 +54,27 @@ public class CameraController : MonoBehaviour
         _journeyLength = Vector3.Distance(_panSource, _panDesitnation);
 
         _panning = true;
+    }
+
+    public void Save(string location)
+    {
+        var path = Path.Combine(location, "camera.data");
+        using (var writer = new BinaryWriter(File.Open(path, FileMode.Create)))
+        {
+            writer.Write(transform.position.x);
+            writer.Write(transform.position.y);
+            writer.Write(transform.position.z);
+        }
+    }
+
+    public void Start()
+    {
+        Camera = GetComponent<Camera>();
+    }
+
+    internal void MoveToCell(Cell cell)
+    {
+        MoveToViewPoint(cell.transform.position);
     }
 
     private void Update()
@@ -63,7 +88,7 @@ public class CameraController : MonoBehaviour
 
             transform.position = new Vector3(lerp.x, lerp.y, -10);
 
-            if (transform.position.x == _panDesitnation.x 
+            if (transform.position.x == _panDesitnation.x
                 && transform.position.y == _panDesitnation.y)
             {
                 _panning = false;
@@ -84,7 +109,6 @@ public class CameraController : MonoBehaviour
 
             Camera.orthographicSize = Mathf.Clamp(Camera.orthographicSize - Input.GetAxis("Mouse ScrollWheel") * ZoomStep,
                 ZoomMin, ZoomMax);
-
 
 #elif UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
             var zoomSpeed = 0.4f;
@@ -125,32 +149,6 @@ public class CameraController : MonoBehaviour
 
             // move camera to match with change in FOV
             // RotateAndScale(oldFov);
-        }
-    }
-
-    public void Load(string location)
-    {
-        var path = Path.Combine(location, "camera.data");
-
-        using (var reader = new BinaryReader(File.Open(path, FileMode.Open)))
-        {
-            var x = reader.ReadSingle();
-            var y = reader.ReadSingle();
-            var z = reader.ReadSingle();
-
-            transform.position = new Vector3(x, y, z);
-        }
-
-    }
-
-    public void Save(string location)
-    {
-        var path = Path.Combine(location, "camera.data");
-        using (var writer = new BinaryWriter(File.Open(path, FileMode.Create)))
-        {
-            writer.Write(transform.position.x);
-            writer.Write(transform.position.y);
-            writer.Write(transform.position.z);
         }
     }
 }

@@ -3,15 +3,16 @@ using UnityEngine;
 
 public class CreatureController : MonoBehaviour
 {
-    [Range(0.001f, 0.1f)]
-    public float ActPeriod = 0.01f;
+    [Range(0.01f, 2f)]
+    public float ActPeriod = 1f;
 
     public Creature CreaturePrefab;
 
     public List<Creature> Creatures = new List<Creature>();
     private static CreatureController _instance;
 
-    private float nextActionTime;
+    private float deltaTime = 0;
+
     public static CreatureController Instance
     {
         get
@@ -36,17 +37,15 @@ public class CreatureController : MonoBehaviour
 
     public void SpawnCreatures()
     {
-        for (var i = 0; i < 5; i++)
-        {
-            SpawnCreature(MapGrid.Instance.GetRandomPathableCell());
-        }
+        var creature = SpawnCreature(MapGrid.Instance.GetRandomPathableCell());
+        CameraController.Instance.MoveToCell(creature.CurrentCell);
     }
-    
-    // Update is called once per frame
     private void Update()
     {
-        if (Time.time > nextActionTime)
+        deltaTime += Time.deltaTime;
+        if (deltaTime > ActPeriod)
         {
+            deltaTime = 0;
             nextActionTime += ActPeriod;
             foreach (var creature in Creatures)
             {

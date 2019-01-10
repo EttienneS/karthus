@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using Random = UnityEngine.Random;
 
 public class Cell : MonoBehaviour
@@ -26,39 +24,65 @@ public class Cell : MonoBehaviour
 
     public List<Creature> ContainedCreature = new List<Creature>();
 
-    internal void AddCreature(Creature creature)
-    {
-        if (creature.CurrentCell != null)
-        {
-            creature.CurrentCell.RemoveCreature(creature);
-        }
-
-        ContainedCreature.Add(creature);
-        creature.CurrentCell = this;
-        creature.transform.position = transform.position + new Vector3(0, 0, -0.25f);
-    }
-
-    private void RemoveCreature(Creature creature)
-    {
-        ContainedCreature.Remove(creature);
-    }
-
     public Coordinates Coordinates;
 
     public Cell[] Neighbors = new Cell[8];
 
     public int TravelCost = -1;
 
+    private CellType _cellType;
+
     private TextMeshPro _textMesh;
+
     public SpriteRenderer Border { get; private set; }
-    public SpriteRenderer Fog { get; private set; }
+
+    public CellType CellType
+    {
+        get
+        {
+            return _cellType;
+        }
+        set
+        {
+            _cellType = value;
+
+            switch (value)
+            {
+                case CellType.Mountain:
+                case CellType.Water:
+                    TravelCost = -1;
+                    break;
+
+                case CellType.Stone:
+                    TravelCost = 5;
+                    break;
+
+                default:
+                    TravelCost = 1;
+                    break;
+            }
+
+            Sprite.sprite = SpriteStore.Instance.GetRandomSpriteOfType(_cellType);
+            RandomlyFlipSprite();
+        }
+    }
+
     public int Distance { get; set; }
+
+    public SpriteRenderer Fog { get; private set; }
+
     public Cell NextWithSamePriority { get; set; }
+
     public Cell PathFrom { get; set; }
+
     public int SearchHeuristic { private get; set; }
+
     public int SearchPhase { get; set; }
+
     public int SearchPriority => Distance + SearchHeuristic;
+
     public SpriteRenderer Sprite { get; private set; }
+
     public string Text
     {
         get
@@ -111,7 +135,7 @@ public class Cell : MonoBehaviour
         if (!Fog.enabled)
         {
             // animate cells if fog is nog enabled
-            if (TravelCost == -1)
+            if (CellType == CellType.Water)
             {
                 if (Random.value > 0.98f)
                 {
@@ -121,11 +145,16 @@ public class Cell : MonoBehaviour
         }
     }
 
-    private void Awake()
+    internal void AddCreature(Creature creature)
     {
-        Fog = transform.Find("Fog").GetComponent<SpriteRenderer>();
-        Border = transform.Find("Border").GetComponent<SpriteRenderer>();
-        Sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
+        if (creature.CurrentCell != null)
+        {
+            creature.CurrentCell.RemoveCreature(creature);
+        }
+
+        ContainedCreature.Add(creature);
+        creature.CurrentCell = this;
+        creature.transform.position = transform.position + new Vector3(0, 0, -0.25f);
     }
 
     internal int CountNeighborsOfType(CellType? cellType)
@@ -138,44 +167,21 @@ public class Cell : MonoBehaviour
         return Neighbors.Count(n => n != null && n.CellType == cellType.Value);
     }
 
-
-
-    private void OnMouseDown()
+    private void Awake()
     {
-        foreach (var creature in CreatureController.Instance.Creatures)
-        {
-            creature.SetTarget(this);
-        }
-    }
-
-    private CellType _cellType;
-    public CellType CellType
-    {
-        get
-        {
-            return _cellType;
-        }
-        set
-        {
-            _cellType = value;
-
-            if (value == CellType.Water)
-            {
-                TravelCost = -1;
-            }
-            else
-            {
-                TravelCost = 1;
-            }
-
-            Sprite.sprite = SpriteStore.Instance.GetRandomSpriteOfType(_cellType);
-            RandomlyFlipSprite();
-        }
+        Fog = transform.Find("Fog").GetComponent<SpriteRenderer>();
+        Border = transform.Find("Border").GetComponent<SpriteRenderer>();
+        Sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
     }
 
     private void RandomlyFlipSprite()
     {
         Sprite.flipX = Random.value < 0.5f;
         Sprite.flipY = Random.value < 0.5f;
+    }
+
+    private void RemoveCreature(Creature creature)
+    {
+        ContainedCreature.Remove(creature);
     }
 }

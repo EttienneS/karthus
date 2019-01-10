@@ -11,11 +11,13 @@ public class MapEditor : MonoBehaviour
 {
     public Cell cellPrefab;
 
+    public bool Generating = false;
     public MapGrid MapGrid;
 
     [Range(4, 196)]
     public int MapSize = 64;
 
+    public bool ShowGeneration = true;
     private static MapEditor _instance;
 
     public static MapEditor Instance
@@ -45,8 +47,6 @@ public class MapEditor : MonoBehaviour
         cell.transform.position = new Vector3(x, y);
         cell.CellType = CellType.Water;
 
-        // water and any unpathable cells are -1
-        cell.TravelCost = -1;
         cell.Coordinates = new Coordinates(x, y);
         cell.name = cell.Coordinates.ToString();
 
@@ -57,19 +57,6 @@ public class MapEditor : MonoBehaviour
             cell.Text = cell.Coordinates.ToStringOnSeparateLines();
         }
     }
-
-    public bool Generating = false;
-
-    private void Update()
-    {
-        if (!Generating)
-        {
-            Generating = true;
-            StartCoroutine("CreateMap");
-        }
-    }
-
-    public bool ShowGeneration = true;
 
     public IEnumerator CreateMap()
     {
@@ -117,21 +104,45 @@ public class MapEditor : MonoBehaviour
         }
         if (ShowGeneration) yield return null;
 
+        // generate bedrock
+        for (int i = 0; i < MapSize / 2; i++)
+        {
+            foreach (var cell in MapGrid.GetRandomChunk(Random.Range(1 + (MapSize / 6), 1 + (MapSize / 3))))
+            {
+                cell.CellType = CellType.Stone;
+            }
+        }
+        if (ShowGeneration) yield return null;
+
+        // grow mountains
+        foreach (var cell in MapGrid.Map)
+        {
+            if (cell.CellType != CellType.Stone)
+            {
+                continue;
+            }
+
+            if (cell.CountNeighborsOfType(null) +
+                cell.CountNeighborsOfType(CellType.Mountain) +
+                cell.CountNeighborsOfType(CellType.Stone) > 6)
+            {
+                cell.CellType = CellType.Mountain;
+            }
+        }
+        if (ShowGeneration) yield return null;
 
         // generate landmasses
         for (int i = 0; i < MapSize; i++)
         {
             foreach (var cell in MapGrid.GetRandomChunk(Random.Range(MapSize, MapSize * 2)))
             {
-                cell.CellType = CellType.Grass;
-                cell.TravelCost = 1;
-            }
-
-            if (i % 8 == 0)
-            {
-                if (ShowGeneration) yield return null;
+                if (cell.CellType == CellType.Water)
+                {
+                    cell.CellType = CellType.Grass;
+                }
             }
         }
+        if (ShowGeneration) yield return null;
 
         // bleed water, this enlarges bodies of water
         // creates more natural looking coastlines/rivers
@@ -154,7 +165,7 @@ public class MapEditor : MonoBehaviour
         // create coast
         foreach (var cell in MapGrid.Map)
         {
-            if (cell.CellType == CellType.Water)
+            if (cell.CellType != CellType.Grass)
             {
                 // already water skip
                 continue;
@@ -164,7 +175,6 @@ public class MapEditor : MonoBehaviour
             {
                 cell.CellType = CellType.Dirt;
             }
-
         }
         if (ShowGeneration) yield return null;
 
@@ -208,5 +218,14 @@ public class MapEditor : MonoBehaviour
         CreatureController.Instance.SpawnCreatures();
 
         if (ShowGeneration) yield return null;
+    }
+
+    private void Update()
+    {
+        if (!Generating)
+        {
+            Generating = true;
+            StartCoroutine("CreateMap");
+        }
     }
 }
