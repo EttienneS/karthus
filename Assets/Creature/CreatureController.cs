@@ -46,7 +46,6 @@ public class CreatureController : MonoBehaviour
         if (deltaTime > ActPeriod)
         {
             deltaTime = 0;
-            nextActionTime += ActPeriod;
             foreach (var creature in Creatures)
             {
                 creature.Act();

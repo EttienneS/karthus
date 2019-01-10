@@ -82,6 +82,7 @@ public class Cell : MonoBehaviour
     public int SearchPriority => Distance + SearchHeuristic;
 
     public SpriteRenderer Sprite { get; private set; }
+    public SpriteRenderer ContentSprite { get; private set; }
 
     public string Text
     {
@@ -172,6 +173,7 @@ public class Cell : MonoBehaviour
         Fog = transform.Find("Fog").GetComponent<SpriteRenderer>();
         Border = transform.Find("Border").GetComponent<SpriteRenderer>();
         Sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
+        ContentSprite = transform.Find("ContentSprite").GetComponent<SpriteRenderer>();
     }
 
     private void RandomlyFlipSprite()
