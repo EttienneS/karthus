@@ -39,13 +39,9 @@ public class MapGrid : MonoBehaviour
         }
     }
 
-    
-
     public Cell GetCellAtPoint(Vector3 position)
     {
-        position = transform.InverseTransformPoint(position);
         var coordinates = Coordinates.FromPosition(position);
-
         return Map[coordinates.X, coordinates.Y];
     }
 
@@ -76,18 +72,6 @@ public class MapGrid : MonoBehaviour
     public Cell GetRandomCell()
     {
         return Map[(int)(Random.value * (Map.GetLength(0) - 1)), (int)(Random.value * (Map.GetLength(1) - 1))];
-    }
-
-    public Cell GetRandomPathableCell()
-    {
-        var cell = GetRandomCell();
-
-        while (cell.TravelCost < 1)
-        {
-            cell = GetRandomCell();
-        }
-
-        return cell;
     }
 
     public List<Cell> GetRandomChunk(int chunkSize)
@@ -127,6 +111,18 @@ public class MapGrid : MonoBehaviour
         return chunk;
     }
 
+    public Cell GetRandomPathableCell()
+    {
+        var cell = GetRandomCell();
+
+        while (cell.TravelCost < 1)
+        {
+            cell = GetRandomCell();
+        }
+
+        return cell;
+    }
+
     public List<Cell> GetRectangle(int x, int y, int width, int height)
     {
         var cells = new List<Cell>();
@@ -148,6 +144,48 @@ public class MapGrid : MonoBehaviour
         {
             cell.EnableBorder(color);
         }
+    }
+
+    internal Direction GetDirection(Cell fromCell, Cell toCell)
+    {
+        var direction = Direction.S;
+
+        if (fromCell != null && toCell != null)
+        {
+            var x = fromCell.Coordinates.X - toCell.Coordinates.X;
+            var y = fromCell.Coordinates.Y - toCell.Coordinates.Y;
+
+            if (x < 0 && y == 0)
+            {
+                direction = Direction.E;
+            }
+            else if (x < 0 && y > 0)
+            {
+                direction = Direction.NE;
+            }
+            else if (x < 0 && y < 0)
+            {
+                direction = Direction.SE;
+            }
+            else if (x > 0 && y == 0)
+            {
+                direction = Direction.W;
+            }
+            else if (x > 0 && y > 0)
+            {
+                direction = Direction.NW;
+            }
+            else if (x > 0 && y < 0)
+            {
+                direction = Direction.SW;
+            }
+            else if (y < 0)
+            {
+                direction = Direction.N;
+            }
+        }
+
+        return direction;
     }
 
     internal void ResetSearchPriorities()

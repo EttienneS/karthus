@@ -174,14 +174,6 @@ public class Cell : MonoBehaviour
         Sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
     }
 
-    private void OnMouseDown()
-    {
-        foreach (var creature in CreatureController.Instance.Creatures)
-        {
-            creature.SetTarget(this);
-        }
-    }
-
     private void RandomlyFlipSprite()
     {
         Sprite.flipX = Random.value < 0.5f;

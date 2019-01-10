@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4451582240413063813}
   - component: {fileID: 3756487243705356823}
   - component: {fileID: 3374013003364883130}
+  - component: {fileID: 6010202930399055753}
   m_Layer: 0
   m_Name: Creature
   m_TagString: Untagged
@@ -69,7 +70,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 2ce3ca8380ba44f4bb89ba3923249bad, type: 3}
+  m_Sprite: {fileID: 77664098773681066, guid: 3a6206f6066bbd7469d08dabca04c951, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -77,7 +78,7 @@ SpriteRenderer:
   m_Size: {x: 0.64, y: 0.64}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &3374013003364883130
@@ -93,3 +94,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 307ce9d268284cc46bd1c0eb3c433f79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CurrentCell: {fileID: 0}
+  TargetCell: {fileID: 0}
+--- !u!114 &6010202930399055753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3374013003364883131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_GeneratorAsset: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 489699e358a9875428cf163399b41e77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FrontSprites:
+  - {fileID: -2690792559708188323, guid: cb9162fe03f3e2d4f81eabc20310276c, type: 3}
+  - {fileID: 9207541054723020084, guid: cb9162fe03f3e2d4f81eabc20310276c, type: 3}
+  - {fileID: 4333283870218021683, guid: cb9162fe03f3e2d4f81eabc20310276c, type: 3}
+  - {fileID: -204359854808501785, guid: cb9162fe03f3e2d4f81eabc20310276c, type: 3}
+  BackSprites:
+  - {fileID: -4571828015118065507, guid: 3a6206f6066bbd7469d08dabca04c951, type: 3}
+  - {fileID: -2796314236206107100, guid: 3a6206f6066bbd7469d08dabca04c951, type: 3}
+  - {fileID: -8741071136333515919, guid: 3a6206f6066bbd7469d08dabca04c951, type: 3}
+  - {fileID: -4010712506205823437, guid: 3a6206f6066bbd7469d08dabca04c951, type: 3}
+  SideSprites:
+  - {fileID: -5240866651875899914, guid: d5f144d8c56adc749902e43f991c5c44, type: 3}
+  - {fileID: -4285248907806587610, guid: d5f144d8c56adc749902e43f991c5c44, type: 3}
+  - {fileID: -5381216536627614246, guid: d5f144d8c56adc749902e43f991c5c44, type: 3}
+  - {fileID: 8255966939233883970, guid: d5f144d8c56adc749902e43f991c5c44, type: 3}
+  loop: 0
+  frameSeconds: 0.1
+  location: 
