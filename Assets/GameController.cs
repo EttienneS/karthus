@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
@@ -19,6 +20,8 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public bool BuildMode;
+
     private static void DestroyAndRecreateMap()
     {
         foreach (var cell in MapGrid.Instance.Map)
@@ -35,18 +38,30 @@ public class GameController : MonoBehaviour
         MapEditor.Instance.Generating = false;
     }
 
+    public void Build()
+    {
+        var btn = EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
+
+        if (btn.image.color != Color.red)
+        {
+            selectedSprite = btn.image.sprite;
+            btn.image.color = Color.red;
+        }
+        else
+        {
+            selectedSprite = null;
+            btn.image.color = Color.white;
+        }
+    }
+
+    private Sprite selectedSprite;
+
     private void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            DestroyAndRecreateMap();
-        }
-
         if (Input.GetMouseButtonDown(0))
         {
             if (EventSystem.current.IsPointerOverGameObject())
             {
-                Debug.Log("Clicked on the UI");
                 return;
             }
 
@@ -75,7 +90,14 @@ public class GameController : MonoBehaviour
 
                     SelectedCell = clickedCell;
                     SelectedCell.EnableBorder(Color.red);
+
+                    if (selectedSprite != null)
+                    {
+                        SelectedCell.ContentSprite.sprite = selectedSprite;
+                        SelectedCell.TravelCost = -1;
+                    }
                 }
+
             }
         }
     }
