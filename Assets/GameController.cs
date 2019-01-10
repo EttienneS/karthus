@@ -93,7 +93,7 @@ public class GameController : MonoBehaviour
 
                     if (selectedSprite != null)
                     {
-                        SelectedCell.ContentSprite.sprite = selectedSprite;
+                        SelectedCell.Content.sprite = selectedSprite;
                         SelectedCell.TravelCost = -1;
                     }
                 }

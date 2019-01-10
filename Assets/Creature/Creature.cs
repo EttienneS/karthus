@@ -34,6 +34,29 @@ public class Creature : MonoBehaviour
         }
     }
 
+    private float speed = 6f;
+    private float startTime;
+    private float journeyLength;
+    private Vector3 startPos;
+    private Vector3 endPos;
+
+    public void Update()
+    {
+        if (startPos != endPos)
+        {
+            // Distance moved = time * speed.
+            var distCovered = (Time.time - startTime) * speed;
+
+            // Fraction of journey completed = current distance divided by total distance.
+            var fracJourney = distCovered / journeyLength;
+
+            // Set our position as a fraction of the distance between the markers.
+
+            var lerped = Vector3.Lerp(startPos, CurrentCell.transform.position, fracJourney);
+            transform.position = new Vector3(lerped.x, lerped.y, -0.25f);
+        }
+    }
+
     public void MoveToCell(Cell cell)
     {
         if (SpriteAnimator != null)
@@ -42,6 +65,10 @@ public class Creature : MonoBehaviour
         }
 
         cell.AddCreature(this);
+        startTime = Time.time;
+        startPos = transform.position;
+        endPos = new Vector3(cell.transform.position.x, cell.transform.position.y, -0.25f);
+        journeyLength = Vector3.Distance(startPos, endPos);
 
         foreach (var c in MapGrid.Instance.GetCircle(cell, 5))
         {

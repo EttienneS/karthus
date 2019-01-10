@@ -29,6 +29,8 @@ public class CreatureController : MonoBehaviour
     public Creature SpawnCreature(Cell spawnLocation)
     {
         var creature = Instantiate(CreaturePrefab, transform, true);
+
+        transform.position = new Vector3(spawnLocation.transform.position.x, spawnLocation.transform.position.y, -0.25f);
         creature.MoveToCell(spawnLocation);
 
         Creatures.Add(creature);
