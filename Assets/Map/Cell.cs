@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -62,9 +63,14 @@ public class Cell : MonoBehaviour
                     break;
             }
 
-            Sprite.sprite = SpriteStore.Instance.GetRandomSpriteOfType(_cellType);
+            Terrain.sprite = SpriteStore.Instance.GetRandomSpriteOfType(_cellType);
             RandomlyFlipSprite();
         }
+    }
+
+    internal Vector3 GetCreaturePosition()
+    {
+        return new Vector3(transform.position.x, transform.position.y, -0.25f);
     }
 
     public int Distance { get; set; }
@@ -81,8 +87,8 @@ public class Cell : MonoBehaviour
 
     public int SearchPriority => Distance + SearchHeuristic;
 
-    public SpriteRenderer Sprite { get; private set; }
-    public SpriteRenderer ContentSprite { get; private set; }
+    public SpriteRenderer Terrain { get; private set; }
+    public SpriteRenderer Content { get; private set; }
 
     public string Text
     {
@@ -155,7 +161,6 @@ public class Cell : MonoBehaviour
 
         ContainedCreature.Add(creature);
         creature.CurrentCell = this;
-        creature.transform.position = transform.position + new Vector3(0, 0, -0.25f);
     }
 
     internal int CountNeighborsOfType(CellType? cellType)
@@ -172,14 +177,14 @@ public class Cell : MonoBehaviour
     {
         Fog = transform.Find("Fog").GetComponent<SpriteRenderer>();
         Border = transform.Find("Border").GetComponent<SpriteRenderer>();
-        Sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
-        ContentSprite = transform.Find("ContentSprite").GetComponent<SpriteRenderer>();
+        Terrain = transform.Find("Terrain").GetComponent<SpriteRenderer>();
+        Content = transform.Find("Content").GetComponent<SpriteRenderer>();
     }
 
     private void RandomlyFlipSprite()
     {
-        Sprite.flipX = Random.value < 0.5f;
-        Sprite.flipY = Random.value < 0.5f;
+        Terrain.flipX = Random.value < 0.5f;
+        Terrain.flipY = Random.value < 0.5f;
     }
 
     private void RemoveCreature(Creature creature)

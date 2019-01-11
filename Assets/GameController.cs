@@ -75,10 +75,7 @@ public class GameController : MonoBehaviour
 
                 if (clickedCell == SelectedCell)
                 {
-                    foreach (var creature in CreatureController.Instance.Creatures)
-                    {
-                        creature.SetTarget(clickedCell);
-                    }
+                    Taskmaster.Instance.AddTask(new MoveTask(SelectedCell));
                     SelectedCell.EnableBorder(Color.magenta);
                 }
                 else
@@ -93,7 +90,7 @@ public class GameController : MonoBehaviour
 
                     if (selectedSprite != null)
                     {
-                        SelectedCell.ContentSprite.sprite = selectedSprite;
+                        SelectedCell.Content.sprite = selectedSprite;
                         SelectedCell.TravelCost = -1;
                     }
                 }

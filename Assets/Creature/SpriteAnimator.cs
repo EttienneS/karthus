@@ -4,8 +4,10 @@ public class SpriteAnimator : MonoBehaviour
 {
     public Sprite[] BackSprites;
     public Sprite[] FrontSprites;
-    public Direction MoveDirection = Direction.S;
     public Sprite[] SideSprites;
+
+    public Direction MoveDirection = Direction.S;
+
     private float deltaTime = 0;
     private int frame;
     private float frameSeconds = 0.3f;
