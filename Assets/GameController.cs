@@ -94,7 +94,6 @@ public class GameController : MonoBehaviour
                         SelectedCell.TravelCost = -1;
                     }
                 }
-
             }
         }
     }

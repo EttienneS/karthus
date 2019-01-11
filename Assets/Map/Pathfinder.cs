@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
 
 public static class Pathfinder
 {
@@ -163,7 +160,7 @@ public static class Pathfinder
 
                 var neighborTravelCost = neighbor.TravelCost;
 
-                // todo: Revist later, the concept of diagonal movement costing more _can_ be cool but maybe not 
+                // todo: Revist later, the concept of diagonal movement costing more _can_ be cool but maybe not
                 // worth the extra complexity to understand
                 //if (neighbor.Coordinates.X != current.Coordinates.X && neighbor.Coordinates.Y != current.Coordinates.Y)
                 //{
