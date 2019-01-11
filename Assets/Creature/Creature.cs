@@ -1,76 +1,29 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Creature : MonoBehaviour
 {
     public Cell CurrentCell;
 
+    public Cell NextCell;
+
+    public float Speed = 5f;
     public Cell TargetCell;
 
+    public ITask Task;
+    private float _journeyLength;
     private List<Cell> Path = new List<Cell>();
 
-    public SpriteAnimator SpriteAnimator;
-
-    public void Start()
-    {
-        SpriteAnimator = GetComponent<SpriteAnimator>();
-    }
-
-    public void Act()
-    {
-        if (TargetCell != null && CurrentCell != TargetCell && Path != null)
-        {
-            var nextStep = Path[Path.IndexOf(CurrentCell) - 1];
-
-            if (nextStep.TravelCost < 0)
-            {
-                Pathfinder.InvalidPath(CurrentCell, TargetCell);
-                Path = Pathfinder.FindPath(CurrentCell, TargetCell);
-            }
-            else
-            {
-                MoveToCell(nextStep);
-            }
-        }
-    }
-
-    private float speed = 6f;
+    private SpriteAnimator SpriteAnimator;
     private float startTime;
-    private float journeyLength;
-    private Vector3 startPos;
-    private Vector3 endPos;
 
-    public void Update()
+    private Vector3 targetPos;
+
+    public void See()
     {
-        if (startPos != endPos)
-        {
-            // Distance moved = time * speed.
-            var distCovered = (Time.time - startTime) * speed;
-
-            // Fraction of journey completed = current distance divided by total distance.
-            var fracJourney = distCovered / journeyLength;
-
-            // Set our position as a fraction of the distance between the markers.
-
-            var lerped = Vector3.Lerp(startPos, CurrentCell.transform.position, fracJourney);
-            transform.position = new Vector3(lerped.x, lerped.y, -0.25f);
-        }
-    }
-
-    public void MoveToCell(Cell cell)
-    {
-        if (SpriteAnimator != null)
-        {
-            SpriteAnimator.MoveDirection = MapGrid.Instance.GetDirection(CurrentCell, cell);
-        }
-
-        cell.AddCreature(this);
-        startTime = Time.time;
-        startPos = transform.position;
-        endPos = new Vector3(cell.transform.position.x, cell.transform.position.y, -0.25f);
-        journeyLength = Vector3.Distance(startPos, endPos);
-
-        foreach (var c in MapGrid.Instance.GetCircle(cell, 5))
+        foreach (var c in MapGrid.Instance.GetCircle(CurrentCell, 5))
         {
             c.Fog.enabled = false;
         }
@@ -79,6 +32,98 @@ public class Creature : MonoBehaviour
     public void SetTarget(Cell cell)
     {
         TargetCell = cell;
-        Path = Pathfinder.FindPath(CurrentCell, TargetCell);
+    }
+
+    public void Start()
+    {
+        SpriteAnimator = GetComponent<SpriteAnimator>();
+    }
+    public void Update()
+    {
+        if (MoveToTargetCell())
+        {
+            Task = null;
+        }
+    }
+
+    private bool MoveToTargetCell()
+    {
+        if (TargetCell == null)
+        {
+            // at the cell 
+            return true;
+        }
+
+        if (CurrentCell != TargetCell)
+        {
+            if (NextCell == null)
+            {
+                if (Path == null || !Path.Any())
+                {
+                    Path = Pathfinder.FindPath(CurrentCell, TargetCell);
+                }
+
+                if (Path == null)
+                {
+                    // failure, task is no longer possible
+                    Pathfinder.InvalidPath(CurrentCell, TargetCell);
+                    return true;
+                }
+
+                NextCell = Path[Path.IndexOf(CurrentCell) - 1];
+                if (NextCell.TravelCost < 0)
+                {
+                    // something changed the path making it unusable
+                    Pathfinder.InvalidPath(CurrentCell, TargetCell);
+                    Path = null;
+                }
+                else
+                {
+                    // found valid next cell
+                    targetPos = NextCell.GetCreaturePosition();
+
+                    // calculate the movement journey to the next cell, include the cell travelcost to make moving through
+                    // difficults cells take longer
+                    _journeyLength = Vector3.Distance(CurrentCell.transform.position, targetPos) + NextCell.TravelCost;
+
+                    if (SpriteAnimator != null)
+                    {
+                        SpriteAnimator.MoveDirection = MapGrid.Instance.GetDirection(CurrentCell, NextCell);
+                    }
+                    startTime = Time.time;
+                }
+            }
+
+            if (NextCell != null && transform.position != targetPos)
+            {
+                // move between two cells
+                var distCovered = (Time.time - startTime) * Speed;
+                var fracJourney = distCovered / _journeyLength;
+                transform.position = Vector3.Lerp(CurrentCell.transform.position,
+                                          targetPos,
+                                          fracJourney);
+            }
+            else
+            {
+                // reached next cell
+                See();
+                NextCell.AddCreature(this);
+                NextCell = null;
+                Path = null;
+            }
+
+            //  not yet at final destination
+            return false;
+        }
+        else
+        {
+            // final destination reached or is unreachable
+            return true;
+        }
+    }
+
+    internal void DoTask()
+    {
+        Task.DoTask(this);
     }
 }

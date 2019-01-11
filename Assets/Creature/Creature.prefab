@@ -109,21 +109,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 489699e358a9875428cf163399b41e77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FrontSprites:
-  - {fileID: -2690792559708188323, guid: cb9162fe03f3e2d4f81eabc20310276c, type: 3}
-  - {fileID: 9207541054723020084, guid: cb9162fe03f3e2d4f81eabc20310276c, type: 3}
-  - {fileID: 4333283870218021683, guid: cb9162fe03f3e2d4f81eabc20310276c, type: 3}
-  - {fileID: -204359854808501785, guid: cb9162fe03f3e2d4f81eabc20310276c, type: 3}
   BackSprites:
   - {fileID: -4571828015118065507, guid: 3a6206f6066bbd7469d08dabca04c951, type: 3}
   - {fileID: -2796314236206107100, guid: 3a6206f6066bbd7469d08dabca04c951, type: 3}
   - {fileID: -8741071136333515919, guid: 3a6206f6066bbd7469d08dabca04c951, type: 3}
   - {fileID: -4010712506205823437, guid: 3a6206f6066bbd7469d08dabca04c951, type: 3}
+  FrontSprites:
+  - {fileID: -2690792559708188323, guid: cb9162fe03f3e2d4f81eabc20310276c, type: 3}
+  - {fileID: 9207541054723020084, guid: cb9162fe03f3e2d4f81eabc20310276c, type: 3}
+  - {fileID: 4333283870218021683, guid: cb9162fe03f3e2d4f81eabc20310276c, type: 3}
+  - {fileID: -204359854808501785, guid: cb9162fe03f3e2d4f81eabc20310276c, type: 3}
   SideSprites:
   - {fileID: -5240866651875899914, guid: d5f144d8c56adc749902e43f991c5c44, type: 3}
   - {fileID: -4285248907806587610, guid: d5f144d8c56adc749902e43f991c5c44, type: 3}
   - {fileID: -5381216536627614246, guid: d5f144d8c56adc749902e43f991c5c44, type: 3}
   - {fileID: 8255966939233883970, guid: d5f144d8c56adc749902e43f991c5c44, type: 3}
-  loop: 0
-  frameSeconds: 0.1
-  location: 
+  MoveDirection: 4

@@ -31,7 +31,8 @@ public class CreatureController : MonoBehaviour
         var creature = Instantiate(CreaturePrefab, transform, true);
 
         transform.position = new Vector3(spawnLocation.transform.position.x, spawnLocation.transform.position.y, -0.25f);
-        creature.MoveToCell(spawnLocation);
+        spawnLocation.AddCreature(creature);
+        creature.See();
 
         Creatures.Add(creature);
         return creature;
@@ -39,9 +40,13 @@ public class CreatureController : MonoBehaviour
 
     public void SpawnCreatures()
     {
-        var creature = SpawnCreature(MapGrid.Instance.GetRandomPathableCell());
-        CameraController.Instance.MoveToCell(creature.CurrentCell);
+        SpawnCreature(MapGrid.Instance.GetRandomPathableCell()).Speed = 1;
+
+        CameraController.Instance.MoveToCell(SpawnCreature(MapGrid.Instance.GetRandomPathableCell()).CurrentCell);
+
+        SpawnCreature(MapGrid.Instance.GetRandomPathableCell()).Speed = 10;
     }
+
     private void Update()
     {
         deltaTime += Time.deltaTime;
@@ -50,7 +55,11 @@ public class CreatureController : MonoBehaviour
             deltaTime = 0;
             foreach (var creature in Creatures)
             {
-                creature.Act();
+                if (creature.Task == null)
+                {
+                    creature.Task = Taskmaster.Instance.GetTask(creature);
+                    creature.DoTask();
+                }
             }
         }
     }

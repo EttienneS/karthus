@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -65,6 +66,11 @@ public class Cell : MonoBehaviour
             Terrain.sprite = SpriteStore.Instance.GetRandomSpriteOfType(_cellType);
             RandomlyFlipSprite();
         }
+    }
+
+    internal Vector3 GetCreaturePosition()
+    {
+        return new Vector3(transform.position.x, transform.position.y, -0.25f);
     }
 
     public int Distance { get; set; }
