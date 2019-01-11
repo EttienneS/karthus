@@ -50,7 +50,7 @@ public class Creature : MonoBehaviour
     {
         if (TargetCell == null)
         {
-            // at the cell 
+            // at the cell or no target has been set
             return true;
         }
 

@@ -4,6 +4,11 @@
     void DoTask(Creature creature);
 }
 
+public enum TaskStatus
+{
+    Available, InProgress
+}
+
 public class MoveTask : ITask
 {
     public Cell Destination { get; set; }
