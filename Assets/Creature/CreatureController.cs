@@ -40,11 +40,14 @@ public class CreatureController : MonoBehaviour
 
     public void SpawnCreatures()
     {
-        SpawnCreature(MapGrid.Instance.GetRandomPathableCell()).Speed = 1;
+        for (var x = 0; x< 5; x++)
+        {
+            SpawnCreature(MapGrid.Instance.GetRandomPathableCell()).Speed = 1;
 
-        CameraController.Instance.MoveToCell(SpawnCreature(MapGrid.Instance.GetRandomPathableCell()).CurrentCell);
+            CameraController.Instance.MoveToCell(SpawnCreature(MapGrid.Instance.GetRandomPathableCell()).CurrentCell);
 
-        SpawnCreature(MapGrid.Instance.GetRandomPathableCell()).Speed = 10;
+            SpawnCreature(MapGrid.Instance.GetRandomPathableCell()).Speed = 10;
+        }
     }
 
     private void Update()
