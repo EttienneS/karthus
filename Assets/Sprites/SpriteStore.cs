@@ -9,6 +9,12 @@ public class SpriteStore : MonoBehaviour
     public Dictionary<string, List<Sprite>> SpriteTypeDictionary;
     private static SpriteStore _instance;
 
+    public List<Sprite> FrontSprites;
+    public List<Sprite> SideSprites;
+    public List<Sprite> BackSprites;
+
+    public Dictionary<int, List<Sprite>> CreatureSprite = new Dictionary<int, List<Sprite>>();
+
     public static SpriteStore Instance
     {
         get
@@ -46,6 +52,32 @@ public class SpriteStore : MonoBehaviour
             }
 
             SpriteTypeDictionary[typeName].Add(sprite);
+        }
+
+        var creature = -1;
+
+        var side = new List<Sprite>();
+        var back = new List<Sprite>();
+        var front = new List<Sprite>();
+        for (int i = 0; i < SideSprites.Count; i++)
+        {
+            side.Add(SideSprites[i]);
+            back.Add(BackSprites[i]);
+            front.Add(FrontSprites[i]);
+
+            if (i != 0 && (i + 1) % 4 == 0)
+            {
+                creature++;
+                side.AddRange(back);
+                side.AddRange(front);
+                CreatureSprite.Add(creature, side.ToList());
+
+                side.Clear();
+                back.Clear();
+                front.Clear();
+            }
+
+
         }
     }
 

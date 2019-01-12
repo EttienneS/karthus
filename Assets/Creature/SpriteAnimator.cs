@@ -1,10 +1,13 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Linq;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class SpriteAnimator : MonoBehaviour
 {
-    public Sprite[] BackSprites;
-    public Sprite[] FrontSprites;
-    public Sprite[] SideSprites;
+    internal Sprite[] BackSprites;
+    internal Sprite[] FrontSprites;
+    internal Sprite[] SideSprites;
 
     public Direction MoveDirection = Direction.S;
 
@@ -16,6 +19,14 @@ public class SpriteAnimator : MonoBehaviour
     private void Start()
     {
         SpriteRenderer = GetComponent<SpriteRenderer>();
+
+        var creatureId = Random.Range(0, SpriteStore.Instance.CreatureSprite.Keys.Count - 1);
+
+        var sprites = SpriteStore.Instance.CreatureSprite[creatureId];
+
+        BackSprites = sprites.Where(s => s.name.StartsWith("all_back", StringComparison.InvariantCultureIgnoreCase)).ToArray();
+        FrontSprites = sprites.Where(s => s.name.StartsWith("all_front", StringComparison.InvariantCultureIgnoreCase)).ToArray();
+        SideSprites = sprites.Where(s => s.name.StartsWith("all_side", StringComparison.InvariantCultureIgnoreCase)).ToArray();
     }
 
     private void Update()

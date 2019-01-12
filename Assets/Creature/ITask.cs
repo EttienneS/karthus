@@ -1,6 +1,7 @@
 ﻿public interface ITask
 {
     string TaskId { get; set; }
+
     void DoTask(Creature creature);
 }
 

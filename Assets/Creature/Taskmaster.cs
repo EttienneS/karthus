@@ -1,15 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class Taskmaster : MonoBehaviour
 {
-    internal Dictionary<TaskStatus,List<ITask>> Tasks = new Dictionary<TaskStatus, List<ITask>>
+    internal Dictionary<TaskStatus, List<ITask>> Tasks = new Dictionary<TaskStatus, List<ITask>>
     {
         { TaskStatus.Available, new List<ITask>() },
         { TaskStatus.InProgress, new List<ITask>() },
     };
+
     private static Taskmaster _instance;
 
     public static Taskmaster Instance
@@ -24,7 +24,6 @@ public class Taskmaster : MonoBehaviour
             return _instance;
         }
     }
-
 
     public void AddTask(ITask task)
     {
