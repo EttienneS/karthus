@@ -6,6 +6,9 @@ public class CreatureController : MonoBehaviour
     [Range(0.01f, 2f)]
     public float ActPeriod = 1f;
 
+    [Range(0, 1000)]
+    public int CreaturesToSpawn = 10;
+
     public Creature CreaturePrefab;
 
     public List<Creature> Creatures = new List<Creature>();
@@ -40,9 +43,13 @@ public class CreatureController : MonoBehaviour
 
     public void SpawnCreatures()
     {
-        SpawnCreature(MapGrid.Instance.GetRandomPathableCell()).Speed = 1;
+        for (int i = 0; i< CreaturesToSpawn; i++)
+        {
+            SpawnCreature(MapGrid.Instance.GetRandomPathableCell()).Speed = Random.Range(3, 10); ;
+        }
+
         CameraController.Instance.MoveToCell(SpawnCreature(MapGrid.Instance.GetRandomPathableCell()).CurrentCell);
-        SpawnCreature(MapGrid.Instance.GetRandomPathableCell()).Speed = 10;
+
     }
 
     private void Update()
