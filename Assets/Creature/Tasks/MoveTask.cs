@@ -10,6 +10,7 @@ public class MoveTask : ITask
     private List<Cell> Path = new List<Cell>();
     private float startTime;
     private Vector3 targetPos;
+
     public MoveTask(Cell targetCell)
     {
         TargetCell = targetCell;
@@ -26,6 +27,9 @@ public class MoveTask : ITask
     public void Start(Creature creature)
     {
     }
+
+    private int _navigationFailureCount;
+
     public void Update(Creature creature)
     {
         if (creature.CurrentCell != TargetCell)
@@ -41,7 +45,15 @@ public class MoveTask : ITask
                 {
                     // failure, task is no longer possible
                     Pathfinder.InvalidPath(creature.CurrentCell, TargetCell);
-                    return;
+                    _navigationFailureCount++;
+
+                    if (_navigationFailureCount > 10)
+                    {
+                        _navigationFailureCount = 0;
+                        // failed to find a path too many times, short circuit
+                        TargetCell = creature.CurrentCell;
+                        return;
+                    }
                 }
 
                 NextCell = Path[Path.IndexOf(creature.CurrentCell) - 1];
