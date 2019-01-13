@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Taskmaster : MonoBehaviour
 {
@@ -39,6 +41,11 @@ public class Taskmaster : MonoBehaviour
         return null;
     }
 
+    internal void TaskComplete(ITask task)
+    {
+        Tasks[TaskStatus.InProgress].Remove(task);
+    }
+
     public void FlagTaskAsInprogress(ITask task)
     {
         Tasks[TaskStatus.Available].Remove(task);
@@ -50,15 +57,21 @@ public class Taskmaster : MonoBehaviour
         var task = GetNextAvailableTask();
         if (task == null)
         {
-            var wanderCircle = MapGrid.Instance.GetCircle(creature.CurrentCell, 3).Where(c => c.TravelCost == 1).ToList();
-
-            if (wanderCircle.Any())
+            if (Random.value > 0.6)
             {
-                task = new MoveTask(wanderCircle[Random.Range(0, wanderCircle.Count() - 1)]);
+                var wanderCircle = MapGrid.Instance.GetCircle(creature.CurrentCell, 3).Where(c => c.TravelCost == 1).ToList();
+                if (wanderCircle.Any())
+                {
+                    task = new MoveTask(wanderCircle[Random.Range(0, wanderCircle.Count - 1)]);
+                }
+                else
+                {
+                    task = new MoveTask(creature.CurrentCell);
+                }
             }
             else
             {
-                task = new MoveTask(creature.CurrentCell);
+                task = new WaitTask(Random.Range(0.1f, 1f));
             }
 
             AddTask(task);

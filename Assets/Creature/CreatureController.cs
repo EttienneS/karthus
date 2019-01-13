@@ -13,8 +13,7 @@ public class CreatureController : MonoBehaviour
 
     public List<Creature> Creatures = new List<Creature>();
     private static CreatureController _instance;
-
-    private float deltaTime = 0;
+    
 
     public static CreatureController Instance
     {
@@ -51,21 +50,5 @@ public class CreatureController : MonoBehaviour
         CameraController.Instance.MoveToCell(SpawnCreature(MapGrid.Instance.GetRandomPathableCell()).CurrentCell);
 
     }
-
-    private void Update()
-    {
-        deltaTime += Time.deltaTime;
-        if (deltaTime > ActPeriod)
-        {
-            deltaTime = 0;
-            foreach (var creature in Creatures)
-            {
-                if (creature.Task == null)
-                {
-                    creature.Task = Taskmaster.Instance.GetTask(creature);
-                    creature.DoTask();
-                }
-            }
-        }
-    }
+    
 }
