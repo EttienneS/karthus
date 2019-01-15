@@ -22,15 +22,18 @@ public class StructureController : MonoBehaviour
         }
     }
 
-    internal Structure GetStructureBluePrint()
+    internal Structure GetStructureBluePrint(string name)
     {
-        var structure = GetStructure();
+        var structure = GetStructure(name);
         structure.BluePrint = true;
         return structure;
     }
 
-    internal Structure GetStructure()
+    internal Structure GetStructure(string name)
     {
-        return Instantiate(structurePrefab, transform);
+        var structure = Instantiate(structurePrefab, transform);
+        structure.name = name;
+
+        return structure;
     }
 }

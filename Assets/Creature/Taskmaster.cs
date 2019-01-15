@@ -41,6 +41,11 @@ public class Taskmaster : MonoBehaviour
         return null;
     }
 
+    internal bool ContainsJob(string name)
+    {
+        return true;
+    }
+
     internal void TaskComplete(ITask task)
     {
         Tasks[TaskStatus.InProgress].Remove(task);
@@ -62,16 +67,16 @@ public class Taskmaster : MonoBehaviour
                 var wanderCircle = MapGrid.Instance.GetCircle(creature.CurrentCell, 3).Where(c => c.TravelCost == 1).ToList();
                 if (wanderCircle.Any())
                 {
-                    task = new MoveTask(wanderCircle[Random.Range(0, wanderCircle.Count - 1)]);
+                    task = new Move(wanderCircle[Random.Range(0, wanderCircle.Count - 1)]);
                 }
                 else
                 {
-                    task = new MoveTask(creature.CurrentCell);
+                    task = new Move(creature.CurrentCell);
                 }
             }
             else
             {
-                task = new WaitTask(Random.Range(0.1f, 1f));
+                task = new Wait(Random.Range(0.1f, 1f));
             }
 
             AddTask(task);
@@ -80,5 +85,29 @@ public class Taskmaster : MonoBehaviour
         FlagTaskAsInprogress(task);
 
         return task;
+    }
+
+    public static bool QueueComplete(Queue<ITask> queue)
+    {
+        return queue == null || queue.Count == 0;
+    }
+
+    public static void ProcessQueue(Queue<ITask> queue)
+    {
+        if (queue == null || queue.Count == 0)
+        {
+            return;
+        }
+
+        var current = queue.Peek();
+
+        if (current.Done())
+        {
+            queue.Dequeue();
+        }
+        else
+        {
+            current.Update();
+        }
     }
 }

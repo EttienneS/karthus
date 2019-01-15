@@ -5,6 +5,9 @@ using UnityEngine;
 public class Structure : MonoBehaviour
 {
     private bool _bluePrint;
+
+    internal List<Item> ContainedItems = new List<Item>();
+
     internal bool BluePrint
     {
         get
@@ -38,6 +41,12 @@ public class Structure : MonoBehaviour
 
     void Update()
     {
-        
+        if (BluePrint)
+        {
+            if (!Taskmaster.Instance.ContainsJob(name))
+            {
+                Taskmaster.Instance.AddTask(new Build(this, GetComponentInParent<Cell>()));
+            }
+        }
     }
 }

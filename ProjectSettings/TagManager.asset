@@ -41,3 +41,24 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Ground
+    uniqueID: 1735232521
+    locked: 0
+  - name: Border
+    uniqueID: 1765142349
+    locked: 0
+  - name: Structure
+    uniqueID: 615336307
+    locked: 0
+  - name: Item
+    uniqueID: 2300683303
+    locked: 0
+  - name: Creature
+    uniqueID: 3898553017
+    locked: 0
+  - name: CarriedItem
+    uniqueID: 586324981
+    locked: 0
+  - name: Fog
+    uniqueID: 3366600241
+    locked: 0

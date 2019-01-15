@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -8,9 +9,12 @@ public class Creature : MonoBehaviour
     public float Speed = 5f;
 
     public ITask Task;
+
     internal SpriteAnimator SpriteAnimator;
 
     public string TaskName;
+
+    public Item CarriedItem;
 
     public void See()
     {
@@ -25,25 +29,45 @@ public class Creature : MonoBehaviour
         SpriteAnimator = GetComponent<SpriteAnimator>();
     }
 
+    public void AssignTask(ITask task)
+    {
+        task.Creature = this;
+
+        if (task.SubTasks != null)
+        {
+            foreach (var subTask in task.SubTasks.ToList())
+            {
+                AssignTask(subTask);
+            }
+        }
+    }
+
     public void Update()
     {
         if (Task == null)
         {
-            Task = Taskmaster.Instance.GetTask(this);
-            Task.Start(this);
+            var task = Taskmaster.Instance.GetTask(this);
+            AssignTask(task);
+
+            Task = task;
         }
 
         TaskName = Task.ToString();
 
-        if (!Task.Done(this))
+        if (!Task.Done())
         {
-            Task.Update(this);
+            Task.Update();
         }
         else
         {
             Taskmaster.Instance.TaskComplete(Task);
             Task = null;
         }
+
+        if (CarriedItem != null)
+        {
+            CarriedItem.transform.position = transform.position;
+            CarriedItem.SpriteRenderer.sortingLayerName = "CarriedItem";
+        }
     }
-    
 }
