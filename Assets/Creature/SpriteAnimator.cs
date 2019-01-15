@@ -16,6 +16,12 @@ public class SpriteAnimator : MonoBehaviour
     private float frameSeconds = 0.3f;
     private SpriteRenderer SpriteRenderer;
 
+    public void FaceRandomDirection()
+    {
+        var values = Enum.GetValues(typeof(Direction));
+        MoveDirection = (Direction)values.GetValue(Random.Range(0, values.Length));
+    }
+
     private void Start()
     {
         SpriteRenderer = GetComponent<SpriteRenderer>();

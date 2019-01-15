@@ -26,4 +26,9 @@ public class ItemController : MonoBehaviour
     {
         return Instantiate(itemPrefab, transform);
     }
+
+    internal void DestoyItem(Item item)
+    {
+        Destroy(item.gameObject);
+    }
 }

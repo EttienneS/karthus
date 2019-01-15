@@ -20,6 +20,25 @@ public class Cell : MonoBehaviour
 
     public SpriteRenderer Border { get; private set; }
 
+    public List<GameObject> CellContents
+    {
+        get
+        {
+            var allChildren = new List<GameObject>();
+
+            foreach (Transform child in transform)
+            {
+                if (child.gameObject.name == "CellStructure")
+                {
+                    continue;
+                }
+
+                allChildren.Add(child.gameObject);
+            }
+            return allChildren;
+        }
+    }
+
     public CellType CellType
     {
         get
@@ -65,6 +84,7 @@ public class Cell : MonoBehaviour
 
     public int SearchPriority => Distance + SearchHeuristic;
 
+    public Structure Structure { get; set; }
     public SpriteRenderer Terrain { get; private set; }
 
     public string Text
@@ -89,6 +109,17 @@ public class Cell : MonoBehaviour
                 _textMesh = transform.Find("Text").GetComponent<TextMeshPro>();
             }
             return _textMesh;
+        }
+    }
+
+    public void AddContent(GameObject gameObject, bool rotateRandomly = false)
+    {
+        gameObject.transform.SetParent(transform);
+        gameObject.transform.position = transform.position;
+
+        if (rotateRandomly)
+        {
+            gameObject.transform.Rotate(0, 0, Random.Range(-30f, 30f));
         }
     }
 
@@ -152,39 +183,8 @@ public class Cell : MonoBehaviour
 
     internal Vector3 GetCreaturePosition()
     {
-        return new Vector3(transform.position.x, transform.position.y, -0.25f);
+        return transform.position;
     }
-
-    public List<GameObject> CellContents
-    {
-        get
-        {
-            var allChildren = new List<GameObject>();
-
-            foreach (Transform child in transform)
-            {
-                if (child.gameObject.name == "CellStructure")
-                {
-                    continue;
-                }
-
-                allChildren.Add(child.gameObject);
-            }
-            return allChildren;
-        }
-    }
-
-    public void AddContent(GameObject gameObject, bool rotateRandomly = false)
-    {
-        gameObject.transform.SetParent(transform);
-        gameObject.transform.position = transform.position;
-
-        if (rotateRandomly)
-        {
-            gameObject.transform.Rotate(0, 0, Random.Range(-30f, 30f));
-        }
-    }
-
     private void Awake()
     {
         var gridStructure = transform.Find("CellStructure");

@@ -1,66 +1,68 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class MoveTask : ITask
+public class Move : ITask
 {
     public Cell NextCell;
+    public Creature Creature { get; set; }
     private float _journeyLength;
+    private int _navigationFailureCount;
     private List<Cell> Path = new List<Cell>();
     private float startTime;
     private Vector3 targetPos;
 
-    public MoveTask(Cell targetCell)
+    public Move(Cell targetCell)
     {
         TargetCell = targetCell;
         TaskId = $"Move to {TargetCell}";
     }
 
+    public Queue<ITask> SubTasks { get; set; }
     public Cell TargetCell { get; set; }
     public string TaskId { get; set; }
-    public bool Done(Creature creature)
+
+    public bool Done()
     {
-        return creature.CurrentCell == TargetCell;
+        return Creature.CurrentCell == TargetCell;
     }
 
-    public void Start(Creature creature)
+    public override string ToString()
     {
+        return $"Moving to {TargetCell}";
     }
 
-    private int _navigationFailureCount;
-
-    public void Update(Creature creature)
+    public void Update()
     {
-        if (creature.CurrentCell != TargetCell)
+        if (Creature.CurrentCell != TargetCell)
         {
             if (NextCell == null)
             {
                 if (Path == null || !Path.Any())
                 {
-                    Path = Pathfinder.FindPath(creature.CurrentCell, TargetCell);
+                    Path = Pathfinder.FindPath(Creature.CurrentCell, TargetCell);
                 }
 
                 if (Path == null)
                 {
                     // failure, task is no longer possible
-                    Pathfinder.InvalidPath(creature.CurrentCell, TargetCell);
+                    Pathfinder.InvalidPath(Creature.CurrentCell, TargetCell);
                     _navigationFailureCount++;
 
                     if (_navigationFailureCount > 10)
                     {
                         _navigationFailureCount = 0;
                         // failed to find a path too many times, short circuit
-                        TargetCell = creature.CurrentCell;
+                        TargetCell = Creature.CurrentCell;
                         return;
                     }
                 }
 
-                NextCell = Path[Path.IndexOf(creature.CurrentCell) - 1];
+                NextCell = Path[Path.IndexOf(Creature.CurrentCell) - 1];
                 if (NextCell.TravelCost < 0)
                 {
                     // something changed the path making it unusable
-                    Pathfinder.InvalidPath(creature.CurrentCell, TargetCell);
+                    Pathfinder.InvalidPath(Creature.CurrentCell, TargetCell);
                     Path = null;
                 }
                 else
@@ -70,40 +72,34 @@ public class MoveTask : ITask
 
                     // calculate the movement journey to the next cell, include the cell travelcost to make moving through
                     // difficults cells take longer
-                    _journeyLength = Vector3.Distance(creature.CurrentCell.transform.position, targetPos) + NextCell.TravelCost;
+                    _journeyLength = Vector3.Distance(Creature.CurrentCell.transform.position, targetPos) + NextCell.TravelCost;
 
-                    if (creature.SpriteAnimator != null)
+                    if (Creature.SpriteAnimator != null)
                     {
-                        creature.SpriteAnimator.MoveDirection = MapGrid.Instance.GetDirection(creature.CurrentCell, NextCell);
+                        Creature.SpriteAnimator.MoveDirection = MapGrid.Instance.GetDirection(Creature.CurrentCell, NextCell);
                     }
                     startTime = Time.time;
                 }
             }
 
-            if (NextCell != null && creature.transform.position != targetPos)
+            if (NextCell != null && Creature.transform.position != targetPos)
             {
                 // move between two cells
-                var distCovered = (Time.time - startTime) * creature.Speed;
+                var distCovered = (Time.time - startTime) * Creature.Speed;
                 var fracJourney = distCovered / _journeyLength;
-                creature.transform.position = Vector3.Lerp(creature.CurrentCell.transform.position,
+                Creature.transform.position = Vector3.Lerp(Creature.CurrentCell.transform.position,
                                           targetPos,
                                           fracJourney);
             }
             else
             {
                 // reached next cell
-                NextCell.AddCreature(creature);
-                creature.See();
+                NextCell.AddCreature(Creature);
+                Creature.See();
 
                 NextCell = null;
                 Path = null;
             }
         }
     }
-
-    public override string ToString()
-    {
-        return $"Moving to {TargetCell}";
-    }
-
 }

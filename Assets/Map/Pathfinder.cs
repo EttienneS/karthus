@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -28,6 +29,17 @@ public static class Pathfinder
         {
             _pathCache.Remove(pathIdInverse);
         }
+    }
+
+    internal static int Distance(Cell fromCell, Cell toCell)
+    {
+        var distance = 0;
+        foreach (var cell in FindPath(fromCell, toCell))
+        {
+            distance += cell.TravelCost;
+        }
+
+        return distance;
     }
 
     public static List<Cell> FindPath(Cell fromCell, Cell toCell)

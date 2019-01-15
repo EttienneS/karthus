@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -15,6 +16,29 @@ public class MapGrid : MonoBehaviour
     private static MapGrid _instance;
 
     private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
+
+    internal Item FindClosestItem(Cell centerPoint)
+    {
+        var cells = Instance.GetCircle(centerPoint, 15);
+
+        var closest = int.MaxValue;
+        Item closestItem = null;
+        foreach (var cell in cells)
+        {
+            var item = cell.GetComponentInChildren<Item>();
+            if (item != null && !item.Reserved)
+            {
+                var distance = Pathfinder.Distance(centerPoint, cell);
+                if (distance < closest)
+                {
+                    closest = distance;
+                    closestItem = item;
+                }
+            }
+        }
+
+        return closestItem;
+    }
 
     private int _searchFrontierPhase;
 

@@ -56,9 +56,11 @@ public class GameController : MonoBehaviour
 
     private Sprite selectedSprite;
 
+    private Cell lastClickedCell;
+
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0))
         {
             if (EventSystem.current.IsPointerOverGameObject())
             {
@@ -73,12 +75,7 @@ public class GameController : MonoBehaviour
             {
                 var clickedCell = MapGrid.Instance.GetCellAtPoint(hit.point);
 
-                if (clickedCell == SelectedCell)
-                {
-                    Taskmaster.Instance.AddTask(new MoveTask(SelectedCell));
-                    SelectedCell.EnableBorder(Color.magenta);
-                }
-                else
+                if (lastClickedCell == null || clickedCell != lastClickedCell)
                 {
                     if (SelectedCell != null)
                     {
@@ -88,10 +85,19 @@ public class GameController : MonoBehaviour
                     SelectedCell = clickedCell;
                     SelectedCell.EnableBorder(Color.red);
 
-                    if (selectedSprite != null)
+                    if (SelectedCell.Structure == null && SelectedCell.TravelCost > 0)
                     {
-                        SelectedCell.AddContent(StructureController.Instance.GetStructureBluePrint().gameObject);
+                        if (selectedSprite != null)
+                        {
+                            var blueprint = StructureController.Instance.GetStructureBluePrint("Wall_" + SelectedCell.Coordinates.ToString());
+                            SelectedCell.AddContent(blueprint.gameObject);
+                            SelectedCell.Structure = blueprint;
+                            Taskmaster.Instance.AddTask(new Build(blueprint, SelectedCell));
+                        }
                     }
+                    
+
+                    lastClickedCell = clickedCell;
                 }
             }
         }
