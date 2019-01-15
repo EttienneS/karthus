@@ -90,8 +90,7 @@ public class GameController : MonoBehaviour
 
                     if (selectedSprite != null)
                     {
-                        SelectedCell.Content.sprite = selectedSprite;
-                        SelectedCell.TravelCost = -1;
+                        SelectedCell.AddContent(StructureController.Instance.GetStructureBluePrint().gameObject);
                     }
                 }
             }
