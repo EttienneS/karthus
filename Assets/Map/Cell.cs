@@ -6,22 +6,6 @@ using Random = UnityEngine.Random;
 
 public class Cell : MonoBehaviour
 {
-    // A generic container for a block of 2D space in the game world
-    // Supports:
-    //      World context (neighbouring cells)
-    //      Pathfinding (A*)
-    //          SearchHeuristic
-    //          SearchPhase
-    //          SearchPriority
-    //          Distance
-    //          PathOrigin
-    //          PathFrom
-    //          NextWithSamePriority
-    //      Containing other game objects and controlling their layer/visibility
-    //      'Fog of War' states (unexplored, known, visible)
-    //      Highlighting/Selection
-    //      Borders (selectively highlighting certain edges)
-
     public List<Creature> ContainedCreature = new List<Creature>();
 
     public Coordinates Coordinates;
@@ -67,11 +51,6 @@ public class Cell : MonoBehaviour
         }
     }
 
-    internal Vector3 GetCreaturePosition()
-    {
-        return new Vector3(transform.position.x, transform.position.y, -0.25f);
-    }
-
     public int Distance { get; set; }
 
     public SpriteRenderer Fog { get; private set; }
@@ -87,7 +66,6 @@ public class Cell : MonoBehaviour
     public int SearchPriority => Distance + SearchHeuristic;
 
     public SpriteRenderer Terrain { get; private set; }
-    public SpriteRenderer Content { get; private set; }
 
     public string Text
     {
@@ -172,12 +150,48 @@ public class Cell : MonoBehaviour
         return Neighbors.Count(n => n != null && n.CellType == cellType.Value);
     }
 
+    internal Vector3 GetCreaturePosition()
+    {
+        return new Vector3(transform.position.x, transform.position.y, -0.25f);
+    }
+
+    public List<GameObject> CellContents
+    {
+        get
+        {
+            var allChildren = new List<GameObject>();
+
+            foreach (Transform child in transform)
+            {
+                if (child.gameObject.name == "CellStructure")
+                {
+                    continue;
+                }
+
+                allChildren.Add(child.gameObject);
+            }
+            return allChildren;
+        }
+    }
+
+    public void AddContent(GameObject gameObject, bool rotateRandomly = false)
+    {
+        gameObject.transform.SetParent(transform);
+        gameObject.transform.position = transform.position;
+
+        if (rotateRandomly)
+        {
+            gameObject.transform.Rotate(0, 0, Random.Range(-30f, 30f));
+        }
+    }
+
     private void Awake()
     {
-        Fog = transform.Find("Fog").GetComponent<SpriteRenderer>();
-        Border = transform.Find("Border").GetComponent<SpriteRenderer>();
-        Terrain = transform.Find("Terrain").GetComponent<SpriteRenderer>();
-        Content = transform.Find("Content").GetComponent<SpriteRenderer>();
+        var gridStructure = transform.Find("CellStructure");
+
+        Fog = gridStructure.transform.Find("Fog").GetComponent<SpriteRenderer>();
+        Border = gridStructure.transform.Find("Border").GetComponent<SpriteRenderer>();
+        Terrain = gridStructure.transform.Find("Terrain").GetComponent<SpriteRenderer>();
     }
 
     private void RandomlyFlipSprite()

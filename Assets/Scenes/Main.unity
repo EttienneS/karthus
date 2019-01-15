@@ -276,7 +276,7 @@ PrefabInstance:
     - target: {fileID: 6670817098503653708, guid: ccde989a4fe5e06468d51aa2215cf400,
         type: 3}
       propertyPath: CreaturesToSpawn
-      value: 34
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ccde989a4fe5e06468d51aa2215cf400, type: 3}

@@ -64,6 +64,7 @@ public class MapEditor : MonoBehaviour
         var height = MapSize;
 
         MapGrid.Map = new Cell[width, height];
+
         if (ShowGeneration) yield return null;
 
         for (var y = 0; y < width; y++)
@@ -73,6 +74,7 @@ public class MapEditor : MonoBehaviour
                 CreateCell(x, y);
             }
         }
+
         if (ShowGeneration) yield return null;
 
         for (var y = 0; y < width; y++)
@@ -209,8 +211,14 @@ public class MapEditor : MonoBehaviour
                 && Random.value > 0.2)
             {
                 cell.CellType = CellType.Forest;
+
+                if (Random.value > 0.7)
+                {
+                    cell.AddContent(ItemController.Instance.GetItem().gameObject, true);
+                }
             }
         }
+
         if (ShowGeneration) yield return null;
 
         MapGrid.ResetSearchPriorities();
