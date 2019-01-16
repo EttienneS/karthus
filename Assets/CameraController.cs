@@ -96,21 +96,8 @@ public class CameraController : MonoBehaviour
         }
         else
         {
-#if UNITY_STANDALONE || UNITY_WEBPLAYER
-            float horizontal = 0;
-            float vertical = 0;
-            var z = transform.position.z;
-
-            horizontal = Input.GetAxis("Horizontal");
-            vertical = Input.GetAxis("Vertical");
-
-            transform.position = new Vector3(transform.position.x + horizontal * Speed,
-                transform.position.y + vertical * Speed, z);
-
-            Camera.orthographicSize = Mathf.Clamp(Camera.orthographicSize - Input.GetAxis("Mouse ScrollWheel") * ZoomStep,
-                ZoomMin, ZoomMax);
-
-#elif UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
+#if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
+            
             var zoomSpeed = 0.4f;
             var scrollSpeed = 0.05f;
             if (Input.touchCount > 0)
@@ -139,8 +126,7 @@ public class CameraController : MonoBehaviour
                 }
             }
 
-#endif //End of mobile platform dependendent compilation section started above with #elif
-
+            //End of mobile platform dependendent compilation section started above with #elif
             // todo: clamp the camera to stop it from moving off screen
             //var x = transform.position.x;
             //var y = transform.position.y;
@@ -149,6 +135,22 @@ public class CameraController : MonoBehaviour
 
             // move camera to match with change in FOV
             // RotateAndScale(oldFov);
+
+#else
+
+            float horizontal = 0;
+            float vertical = 0;
+            var z = transform.position.z;
+
+            horizontal = Input.GetAxis("Horizontal");
+            vertical = Input.GetAxis("Vertical");
+
+            transform.position = new Vector3(transform.position.x + horizontal * Speed,
+                transform.position.y + vertical * Speed, z);
+
+            Camera.orthographicSize = Mathf.Clamp(Camera.orthographicSize - Input.GetAxis("Mouse ScrollWheel") * ZoomStep,
+                ZoomMin, ZoomMax);
+#endif
         }
     }
 }
