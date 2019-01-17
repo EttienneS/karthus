@@ -20,7 +20,7 @@ public class Structure : MonoBehaviour
 
             if (_bluePrint)
             {
-                SpriteRenderer.color = new Color(0.3f, 1f, 1f, 0.6f);
+                SpriteRenderer.color = new Color(0.3f, 1f, 1f, 0.4f);
                 SpriteRenderer.material.SetFloat("_EffectAmount", 1f);
             }
             else

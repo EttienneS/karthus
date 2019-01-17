@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
+    public bool BuildMode;
     public Cell SelectedCell;
     private static GameController _instance;
+
+    private Cell lastClickedCell;
 
     public static GameController Instance
     {
@@ -19,8 +21,6 @@ public class GameController : MonoBehaviour
             return _instance;
         }
     }
-
-    public bool BuildMode;
 
     private static void DestroyAndRecreateMap()
     {
@@ -38,28 +38,20 @@ public class GameController : MonoBehaviour
         MapEditor.Instance.Generating = false;
     }
 
-    public void Build()
-    {
-        var btn = EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
-
-        if (btn.image.color != Color.red)
-        {
-            selectedSprite = btn.image.sprite;
-            btn.image.color = Color.red;
-        }
-        else
-        {
-            selectedSprite = null;
-            btn.image.color = Color.white;
-        }
-    }
-
-    private Sprite selectedSprite;
-
-    private Cell lastClickedCell;
-
     private void Update()
     {
+        //if (Input.GetButtonDown("Fire1"))
+        //{
+        //    if (Time.timeScale == 1.0f)
+        //        Time.timeScale = 0.0f;
+        //    else
+        //        Time.timeScale = 1.0f;
+
+        //    // Adjust fixed delta time according to timescale
+        //    // The fixed delta time will now be 0.02 frames per real-time second
+        //    Time.fixedDeltaTime = 0.02f * Time.timeScale;
+        //}
+
         if (Input.GetMouseButton(0))
         {
             if (EventSystem.current.IsPointerOverGameObject())
@@ -87,15 +79,14 @@ public class GameController : MonoBehaviour
 
                     if (SelectedCell.Structure == null && SelectedCell.TravelCost > 0)
                     {
-                        if (selectedSprite != null)
+                        if (OrderSelectionController.Instance.selectedStructure != null)
                         {
-                            var blueprint = StructureController.Instance.GetStructureBluePrint("Wall_" + SelectedCell.Coordinates.ToString());
+                            var blueprint = StructureController.Instance.GetStructureBluePrint(OrderSelectionController.Instance.selectedStructure);
                             SelectedCell.AddContent(blueprint.gameObject);
                             SelectedCell.Structure = blueprint;
                             Taskmaster.Instance.AddTask(new Build(blueprint, SelectedCell));
                         }
                     }
-                    
 
                     lastClickedCell = clickedCell;
                 }

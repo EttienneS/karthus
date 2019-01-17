@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8631486459495711160}
   - component: {fileID: 6043331085153451526}
   m_Layer: 0
-  m_Name: Structure
+  m_Name: StoneTile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

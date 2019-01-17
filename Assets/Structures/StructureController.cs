@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class StructureController : MonoBehaviour
 {
-    public Structure structurePrefab;
-
+    public Structure[] structurePrefabs;
+    internal Dictionary<string, Structure> AllStructures = new Dictionary<string, Structure>();
     private static StructureController _instance;
 
     public static StructureController Instance
@@ -22,18 +20,28 @@ public class StructureController : MonoBehaviour
         }
     }
 
-    internal Structure GetStructureBluePrint(string name)
-    {
-        var structure = GetStructure(name);
-        structure.BluePrint = true;
-        return structure;
-    }
-
-    internal Structure GetStructure(string name)
+    internal Structure GetStructure(Structure structurePrefab)
     {
         var structure = Instantiate(structurePrefab, transform);
         structure.name = name;
 
         return structure;
+    }
+
+    internal Structure GetStructureBluePrint(Structure structurePrefab)
+    {
+        var structure = GetStructure(structurePrefab);
+        structure.BluePrint = true;
+        return structure;
+    }
+
+    private void Awake()
+    {
+        foreach (var prefab in structurePrefabs)
+        {
+            var structure = Instantiate(prefab, transform);
+            structure.name = prefab.name;
+            AllStructures.Add(prefab.name, structure);
+        }
     }
 }
