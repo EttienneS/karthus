@@ -44,7 +44,7 @@ public class OrderSelectionController : MonoBehaviour
             button.onClick.AddListener(() => OrderClicked(button, structure));
             button.name = structure.name;
             button.image.sprite = structure.SpriteRenderer.sprite;
-            button.GetComponentInChildren<Text>().text = "Build " + structure.name;
+            button.GetComponentInChildren<Text>().text = "Build " + structure.StructureData.Name;
         }
     }
 

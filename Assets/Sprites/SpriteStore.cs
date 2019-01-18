@@ -5,8 +5,14 @@ using UnityEngine;
 
 public class SpriteStore : MonoBehaviour
 {
-    public List<Sprite> Sprites;
-    public Dictionary<string, List<Sprite>> SpriteTypeDictionary;
+    public List<Sprite> MapSprites;
+
+    public List<Sprite> ItemSprites;
+    public List<Sprite> StructureSprites;
+
+    public Dictionary<string, Sprite> AllSprites;
+
+    public Dictionary<string, List<Sprite>> MapSpriteTypeDictionary;
     private static SpriteStore _instance;
 
     public List<Sprite> FrontSprites;
@@ -30,29 +36,30 @@ public class SpriteStore : MonoBehaviour
 
     internal Sprite GetRandomSpriteOfType(string typeName)
     {
-        return SpriteTypeDictionary[typeName][(int)(UnityEngine.Random.value * SpriteTypeDictionary[typeName].Count())];
+        return MapSpriteTypeDictionary[typeName][(int)(UnityEngine.Random.value * MapSpriteTypeDictionary[typeName].Count())];
     }
 
     internal Sprite GetSpriteByName(string spriteName)
     {
-        return Sprites.First(s => s.name.Equals(spriteName, StringComparison.InvariantCultureIgnoreCase));
+        return AllSprites[spriteName];
     }
 
     private void Awake()
     {
-        SpriteTypeDictionary = new Dictionary<string, List<Sprite>>();
+        MapSpriteTypeDictionary = new Dictionary<string, List<Sprite>>();
 
-        foreach (var sprite in Sprites)
+        foreach (var sprite in MapSprites)
         {
             var typeName = sprite.name.Split('_')[0];
 
-            if (!SpriteTypeDictionary.ContainsKey(typeName))
+            if (!MapSpriteTypeDictionary.ContainsKey(typeName))
             {
-                SpriteTypeDictionary.Add(typeName, new List<Sprite>());
+                MapSpriteTypeDictionary.Add(typeName, new List<Sprite>());
             }
 
-            SpriteTypeDictionary[typeName].Add(sprite);
+            MapSpriteTypeDictionary[typeName].Add(sprite);
         }
+
 
         var creature = -1;
 
@@ -78,6 +85,25 @@ public class SpriteStore : MonoBehaviour
             }
 
 
+        }
+
+
+        AllSprites = new Dictionary<string, Sprite>();
+
+
+        SideSprites.ForEach(AddSpriteToAll);
+        FrontSprites.ForEach(AddSpriteToAll);
+        BackSprites.ForEach(AddSpriteToAll);
+        MapSprites.ForEach(AddSpriteToAll);
+        StructureSprites.ForEach(AddSpriteToAll);
+        ItemSprites.ForEach(AddSpriteToAll);
+    }
+
+    public void AddSpriteToAll(Sprite sprite)
+    {
+        if (!AllSprites.ContainsKey(sprite.name))
+        {
+            AllSprites.Add(sprite.name, sprite);
         }
     }
 

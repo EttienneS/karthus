@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,7 +7,7 @@ public class Structure : MonoBehaviour
 {
     private bool _bluePrint;
 
-    internal List<Item> ContainedItems = new List<Item>();
+    internal StructureData StructureData;
 
     internal bool BluePrint
     {
@@ -33,7 +34,6 @@ public class Structure : MonoBehaviour
 
     internal SpriteRenderer SpriteRenderer;
 
-    // Start is called before the first frame update
     void Awake()
     {
         SpriteRenderer = GetComponent<SpriteRenderer>();
@@ -49,4 +49,23 @@ public class Structure : MonoBehaviour
             }
         }
     }
+
+    internal void Load(string structureData)
+    {
+        StructureData = JsonUtility.FromJson<StructureData>(structureData);
+
+        SpriteRenderer.sprite = SpriteStore.Instance.GetSpriteByName(StructureData.SpriteName);
+        SpriteRenderer.size = Vector2.one;
+    }
+
+    internal List<Item> ContainedItems = new List<Item>();
+    internal string[] RequiredItems;
+
+}
+
+[Serializable]
+public class StructureData
+{
+    public string Name;
+    public string SpriteName;
 }

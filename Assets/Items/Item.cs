@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Item : MonoBehaviour
 {
+    public string ItemType;
 
     internal bool Reserved;
     internal SpriteRenderer SpriteRenderer;

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class StructureController : MonoBehaviour
 {
-    public Structure[] structurePrefabs;
+    public Structure structurePrefab;
     internal Dictionary<string, Structure> AllStructures = new Dictionary<string, Structure>();
     private static StructureController _instance;
 
@@ -24,7 +24,6 @@ public class StructureController : MonoBehaviour
     {
         var structure = Instantiate(structurePrefab, transform);
         structure.name = name;
-
         return structure;
     }
 
@@ -35,13 +34,16 @@ public class StructureController : MonoBehaviour
         return structure;
     }
 
-    private void Awake()
+    private void Start()
     {
-        foreach (var prefab in structurePrefabs)
+        foreach (var structureFile in FileController.Instance.LoadJsonFilesInFolder("Structures"))
         {
-            var structure = Instantiate(prefab, transform);
-            structure.name = prefab.name;
-            AllStructures.Add(prefab.name, structure);
+            var structure = Instantiate(structurePrefab, transform);
+
+            structure.Load(FileController.Instance.GetFile(structureFile));
+            structure.name = structure.StructureData.Name;
+
+            AllStructures.Add(structure.StructureData.Name, structure);
         }
     }
 }
