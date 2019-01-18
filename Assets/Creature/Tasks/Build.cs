@@ -16,13 +16,13 @@ public class Build : ITask
 
         SubTasks = new Queue<ITask>();
 
-
-        var item = MapGrid.Instance.FindClosestItem(Cell);
-        item.Reserved = true;
-
-        SubTasks.Enqueue(new GetItem(item));
-        SubTasks.Enqueue(new Move(Cell));
-        SubTasks.Enqueue(new PlaceHeldItemInStructure(Structure));
+        foreach (var itemType in structure.Data.RequiredItemTypes)
+        {
+            SubTasks.Enqueue(new GetItemOfType(itemType));
+            SubTasks.Enqueue(new Move(Cell));
+            SubTasks.Enqueue(new PlaceHeldItemInStructure(Structure));
+        }
+        
         SubTasks.Enqueue(new Wait(1f));
         SubTasks.Enqueue(new Move(Cell.Neighbors.First(c => c.TravelCost != 0)));
     }
@@ -34,10 +34,7 @@ public class Build : ITask
     {
         if (SubTasks != null && Taskmaster.QueueComplete(SubTasks))
         {
-            foreach (var item in Structure.ContainedItems)
-            {
-                ItemController.Instance.DestoyItem(item);
-            }
+            Structure.Data.DestroyContainedItems();
 
             Structure.BluePrint = false;
 
@@ -48,7 +45,7 @@ public class Build : ITask
 
     public override string ToString()
     {
-        return $"Building to {Structure.name} at {Cell.Coordinates.ToString()}";
+        return $"Building to {Structure.name} at {Cell.Coordinates}";
     }
 
     public void Update()
