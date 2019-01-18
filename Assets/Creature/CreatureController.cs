@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class CreatureController : MonoBehaviour
@@ -46,9 +47,11 @@ public class CreatureController : MonoBehaviour
         firstCreature.Speed = Random.Range(10, 15);
         CameraController.Instance.MoveToCell(firstCreature.CurrentCell);
 
+        var spawns = MapGrid.Instance.GetCircle(firstCreature.CurrentCell, 3).Where(c => c.TravelCost > 0).ToList();
+
         for (int i = 0; i < CreaturesToSpawn - 1; i++)
         {
-            SpawnCreature(MapGrid.Instance.GetRandomPathableCell()).Speed = Random.Range(10, 15);
+            SpawnCreature(spawns[Random.Range(0, spawns.Count())]).Speed = Random.Range(10, 15);
         }
 
 
