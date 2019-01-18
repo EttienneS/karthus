@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2466788886315243383
+--- !u!1 &680293437352031431
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,8 +8,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 86610482413379728}
-  - component: {fileID: 2454427255023321996}
+  - component: {fileID: 3060367387175224096}
+  - component: {fileID: 667879368938610748}
   m_Layer: 0
   m_Name: FileController
   m_TagString: Untagged
@@ -17,30 +17,37 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &86610482413379728
+--- !u!4 &3060367387175224096
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2466788886315243383}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_GameObject: {fileID: 680293437352031431}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 50, y: 50, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2454427255023321996
+--- !u!114 &667879368938610748
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2466788886315243383}
+  m_GameObject: {fileID: 680293437352031431}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_GeneratorAsset: {fileID: 0}
   m_Script: {fileID: 11500000, guid: 90002f2bd5f48c14fad5f46841d0e9fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  StructureJson:
+  - {fileID: 4900000, guid: 70a0e57208e4b55479dd163968b14957, type: 3}
+  - {fileID: 4900000, guid: d63b91e7c9b2bbb43ba7b9794ad2390c, type: 3}
+  - {fileID: 4900000, guid: aaf5defa54f79fb428b6c91cdc750766, type: 3}
+  ItemJson:
+  - {fileID: 4900000, guid: ba6f6cc8abf1f4d4d9c0acdd461eae98, type: 3}
+  - {fileID: 4900000, guid: 60f2a64e4e440bc48a5de8c8f405a80f, type: 3}

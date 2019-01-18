@@ -210,7 +210,7 @@ public class MapEditor : MonoBehaviour
                 cell.CountNeighborsOfType(CellType.Forest) > 6
                 && Random.value > 0.2)
             {
-                cell.CellType = CellType.Forest;                
+                cell.CellType = CellType.Forest;
             }
         }
 
@@ -221,13 +221,13 @@ public class MapEditor : MonoBehaviour
             switch (cell.CellType)
             {
                 case CellType.Forest:
-                    if (Random.value > 0.9)
+                    if (Random.value > 0.6)
                     {
                         cell.AddContent(ItemController.Instance.GetItem("TreeStump").gameObject, true);
                     }
                     break;
                 case CellType.Stone:
-                    if (Random.value > 0.3)
+                    for (int i = 0; i < Random.Range(1, 5); i++)
                     {
                         cell.AddContent(ItemController.Instance.GetItem("Rock").gameObject, true);
                     }

@@ -1,0 +1,7 @@
+{
+	"Name":"Stone Wall",
+	"SpriteName":"StoneWall",
+	"Tiled":"False",
+	"RequiredItemTypes":["Rock", "Rock","Rock", "Rock"],
+	"TravelCost": "-1"
+}

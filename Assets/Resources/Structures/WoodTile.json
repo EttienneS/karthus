@@ -1,5 +1,0 @@
-{
-	"Name":"Wood Tile",
-	"SpriteName":"WoodTile",
-	"RequiredItemTypes":["Wood", "Wood"]
-}

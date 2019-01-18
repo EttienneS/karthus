@@ -30,14 +30,13 @@ public class StructureController : MonoBehaviour
 
     private void Start()
     {
-        foreach (var structureFile in FileController.Instance.LoadJsonFilesInFolder("Structures"))
+        foreach (var structureFile in FileController.Instance.StructureJson)
         {
-            var data = StructureData.GetFromJson(FileController.Instance.GetFile(structureFile));
-            StructureTypeFileMap.Add(data.Name, structureFile);
+            var data = StructureData.GetFromJson(structureFile.text);
+            StructureTypeFileMap.Add(data.Name, structureFile.text);
             StructureDataReference.Add(data.Name, data);
         }
     }
-
 
     public Sprite GetSpriteForStructure(string structureName)
     {
@@ -48,7 +47,7 @@ public class StructureController : MonoBehaviour
     private Structure GetStructure(string name)
     {
         var structure = Instantiate(structurePrefab, transform);
-        structure.Load(FileController.Instance.GetFile(StructureTypeFileMap[name]));
+        structure.Load(StructureTypeFileMap[name]);
         structure.name = structure.Data.Name;
         return structure;
     }

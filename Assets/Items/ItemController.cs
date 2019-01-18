@@ -25,11 +25,11 @@ public class ItemController : MonoBehaviour
 
     public void Start()
     {
-        foreach (var itemFile in FileController.Instance.LoadJsonFilesInFolder("Items"))
+        foreach (var itemFile in FileController.Instance.ItemJson)
         {
             var item = Instantiate(itemPrefab, transform);
 
-            item.Load(FileController.Instance.GetFile(itemFile));
+            item.Load(itemFile.text);
             item.name = item.Data.Name;
 
             AllItems.Add(item.Data.Name, item);

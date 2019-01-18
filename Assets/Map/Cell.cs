@@ -12,7 +12,7 @@ public class Cell : MonoBehaviour
 
     public Cell[] Neighbors = new Cell[8];
 
-    public int TravelCost = -1;
+    public float TravelCost = -1;
 
     private CellType _cellType;
 
@@ -70,7 +70,7 @@ public class Cell : MonoBehaviour
         }
     }
 
-    public int Distance { get; set; }
+    public float Distance { get; set; }
 
     public SpriteRenderer Fog { get; private set; }
 
@@ -82,7 +82,7 @@ public class Cell : MonoBehaviour
 
     public int SearchPhase { get; set; }
 
-    public int SearchPriority => Distance + SearchHeuristic;
+    public int SearchPriority => (int)Distance + SearchHeuristic;
 
     public Structure Structure { get; set; }
     public SpriteRenderer Terrain { get; private set; }
@@ -112,14 +112,15 @@ public class Cell : MonoBehaviour
         }
     }
 
-    public void AddContent(GameObject gameObject, bool rotateRandomly = false)
+    public void AddContent(GameObject gameObject, bool scatter = false)
     {
         gameObject.transform.SetParent(transform);
         gameObject.transform.position = transform.position;
 
-        if (rotateRandomly)
+        if (scatter)
         {
-            gameObject.transform.Rotate(0, 0, Random.Range(-30f, 30f));
+            gameObject.transform.Rotate(0, 0, Random.Range(-45f, 45f));
+            gameObject.transform.position += new Vector3(Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f), 0);
         }
     }
 
