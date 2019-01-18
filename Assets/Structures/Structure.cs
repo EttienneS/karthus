@@ -37,7 +37,15 @@ public class Structure : MonoBehaviour
     {
         Data = StructureData.GetFromJson(structureData);
         SpriteRenderer.sprite = SpriteStore.Instance.GetSpriteByName(Data.SpriteName);
-        SpriteRenderer.size = Vector2.one;
+        if (!Data.Tiled)
+        {
+            SpriteRenderer.drawMode = SpriteDrawMode.Simple;
+        }
+        else
+        {
+            SpriteRenderer.drawMode = SpriteDrawMode.Tiled;
+            SpriteRenderer.size = Vector2.one;
+        }
     }
 
     void Awake()
@@ -64,6 +72,8 @@ public class StructureData
     public string SpriteName;
     public List<string> RequiredItemTypes;
     public bool IsBluePrint;
+    public bool Tiled;
+    public float TravelCost;
 
     private List<Item> _containedItems = new List<Item>();
 

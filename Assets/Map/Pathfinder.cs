@@ -31,9 +31,9 @@ public static class Pathfinder
         }
     }
 
-    internal static int Distance(Cell fromCell, Cell toCell)
+    internal static float Distance(Cell fromCell, Cell toCell)
     {
-        var distance = 0;
+        var distance = 0f;
 
         try
         {
@@ -46,7 +46,7 @@ public static class Pathfinder
         }
         catch
         {
-            return int.MaxValue;
+            return float.MaxValue;
         }
     }
 
@@ -99,7 +99,7 @@ public static class Pathfinder
         return GetReachableCells(map, origin, 3).FirstOrDefault();
     }
 
-    public static int GetPathCost(IEnumerable<Cell> path)
+    public static float GetPathCost(IEnumerable<Cell> path)
     {
         return path.Where(cell => cell != null).Sum(cell => cell.TravelCost);
     }

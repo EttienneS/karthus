@@ -35,7 +35,7 @@ public class Build : ITask
         if (SubTasks != null && Taskmaster.QueueComplete(SubTasks))
         {
             Structure.Data.DestroyContainedItems();
-
+            Cell.TravelCost = Structure.Data.TravelCost;
             Structure.BluePrint = false;
 
             return true;

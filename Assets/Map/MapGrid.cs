@@ -150,7 +150,7 @@ public class MapGrid : MonoBehaviour
     {
         var cells = Instance.GetCircle(centerPoint, 20);
 
-        var closest = int.MaxValue;
+        var closest = float.MaxValue;
         Item closestItem = null;
         foreach (var cell in cells)
         {

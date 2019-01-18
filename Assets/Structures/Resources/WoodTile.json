@@ -1,0 +1,7 @@
+{
+	"Name":"Wood Tile",
+	"SpriteName":"WoodTile",
+	"Tiled":"True",
+	"RequiredItemTypes":["Wood", "Wood"],
+	"TravelCost": "0.5"
+}

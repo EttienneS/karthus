@@ -1,0 +1,7 @@
+{
+	"Name":"Stone Tile",
+	"SpriteName":"StoneTile",
+	"Tiled":"True",
+	"RequiredItemTypes":["Rock", "Rock"],
+	"TravelCost": "0.5"
+}

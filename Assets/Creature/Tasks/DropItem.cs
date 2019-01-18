@@ -14,7 +14,10 @@ public class DropHeldItem : ITask
 
     public void Update()
     {
-        Creature.CarriedItem.SpriteRenderer.sortingLayerName = "Item";
+        var item = Creature.CarriedItem;
         Creature.CarriedItem = null;
+
+        item.SpriteRenderer.sortingLayerName = "Item";
+        Creature.CurrentCell.AddContent(item.gameObject, true);
     }
 }

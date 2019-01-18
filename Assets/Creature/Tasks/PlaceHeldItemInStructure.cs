@@ -22,8 +22,11 @@ public class PlaceHeldItemInStructure : ITask
 
     public void Update()
     {
-        _structure.Data.AddItem(Creature.CarriedItem);
-        Creature.CarriedItem.SpriteRenderer.sortingLayerName = "Item";
+        var item = Creature.CarriedItem;
         Creature.CarriedItem = null;
+
+        Creature.CurrentCell.AddContent(item.gameObject, true);
+        _structure.Data.AddItem(item);
+        item.SpriteRenderer.sortingLayerName = "Item";
     }
 }
