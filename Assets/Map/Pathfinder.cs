@@ -34,12 +34,20 @@ public static class Pathfinder
     internal static int Distance(Cell fromCell, Cell toCell)
     {
         var distance = 0;
-        foreach (var cell in FindPath(fromCell, toCell))
-        {
-            distance += cell.TravelCost;
-        }
 
-        return distance;
+        try
+        {
+            foreach (var cell in FindPath(fromCell, toCell))
+            {
+                distance += cell.TravelCost;
+            }
+
+            return distance;
+        }
+        catch
+        {
+            return int.MaxValue;
+        }
     }
 
     public static List<Cell> FindPath(Cell fromCell, Cell toCell)

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class ItemController : MonoBehaviour
@@ -8,6 +6,9 @@ public class ItemController : MonoBehaviour
     public Item itemPrefab;
 
     private static ItemController _instance;
+
+    internal Dictionary<string, Item> AllItems = new Dictionary<string, Item>();
+
 
     public static ItemController Instance
     {
@@ -22,9 +23,22 @@ public class ItemController : MonoBehaviour
         }
     }
 
-    internal Item GetItem()
+    public void Start()
     {
-        return Instantiate(itemPrefab, transform);
+        foreach (var itemFile in FileController.Instance.LoadJsonFilesInFolder("Items"))
+        {
+            var item = Instantiate(itemPrefab, transform);
+
+            item.Load(FileController.Instance.GetFile(itemFile));
+            item.name = item.Data.Name;
+
+            AllItems.Add(item.Data.Name, item);
+        }
+    }
+
+    internal Item GetItem(string name)
+    {
+        return Instantiate(AllItems[name], transform);
     }
 
     internal void DestoyItem(Item item)

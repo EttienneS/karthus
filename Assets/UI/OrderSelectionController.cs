@@ -5,7 +5,7 @@ public class OrderSelectionController : MonoBehaviour
 {
     public Button OrderButtonPrefab;
 
-    public Structure selectedStructure;
+    public string selectedStructure;
 
     private static OrderSelectionController _instance;
 
@@ -22,12 +22,12 @@ public class OrderSelectionController : MonoBehaviour
         }
     }
 
-    public void OrderClicked(Button btn, Structure structure)
+    public void OrderClicked(Button btn, string structureName)
     {
         if (btn.image.color != Color.red)
         {
             btn.image.color = Color.red;
-            selectedStructure = structure;
+            selectedStructure = structureName;
         }
         else
         {
@@ -38,13 +38,13 @@ public class OrderSelectionController : MonoBehaviour
 
     private void Start()
     {
-        foreach (var structure in StructureController.Instance.AllStructures.Values)
+        foreach (var structureData in StructureController.Instance.StructureDataReference.Values)
         {
             var button = Instantiate(OrderButtonPrefab, transform);
-            button.onClick.AddListener(() => OrderClicked(button, structure));
-            button.name = structure.name;
-            button.image.sprite = structure.SpriteRenderer.sprite;
-            button.GetComponentInChildren<Text>().text = "Build " + structure.StructureData.Name;
+            button.onClick.AddListener(() => OrderClicked(button, structureData.Name));
+            button.name = structureData.Name;
+            button.image.sprite = StructureController.Instance.GetSpriteForStructure(structureData.Name);
+            button.GetComponentInChildren<Text>().text = "Build " + structureData.Name;
         }
     }
 

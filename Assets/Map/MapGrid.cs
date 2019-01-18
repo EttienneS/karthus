@@ -146,22 +146,24 @@ public class MapGrid : MonoBehaviour
         }
     }
 
-    internal Item FindClosestItem(Cell centerPoint)
+    internal Item FindClosestItemOfType(Cell centerPoint, string type)
     {
-        var cells = Instance.GetCircle(centerPoint, 15);
+        var cells = Instance.GetCircle(centerPoint, 20);
 
         var closest = int.MaxValue;
         Item closestItem = null;
         foreach (var cell in cells)
         {
-            var item = cell.GetComponentInChildren<Item>();
-            if (item != null && !item.Reserved)
+            foreach (var item in cell.GetComponentsInChildren<Item>())
             {
-                var distance = Pathfinder.Distance(centerPoint, cell);
-                if (distance < closest)
+                if (item != null && item.Data.ItemType == type && !item.Data.Reserved)
                 {
-                    closest = distance;
-                    closestItem = item;
+                    var distance = Pathfinder.Distance(centerPoint, cell);
+                    if (distance < closest)
+                    {
+                        closest = distance;
+                        closestItem = item;
+                    }
                 }
             }
         }

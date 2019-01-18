@@ -1,40 +1,41 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class GetItem : ITask
+public class GetItemOfType : ITask
 {
     private Cell _itemLocation;
     public Creature Creature { get; set; }
 
-    public GetItem(Item item)
+    public GetItemOfType(string itemType)
     {
-        Item = item;
-        UpdateTargetItem();
+        ItemType = itemType;
+        SubTasks = new Queue<ITask>();
     }
 
-    public Item Item { get; set; }
+    private Item _item;
+
+    public string ItemType { get; set; }
     public Queue<ITask> SubTasks { get; set; }
     public string TaskId { get; set; }
 
     public bool Done()
     {
-        if (Taskmaster.QueueComplete(SubTasks))
+        if (_item != null && Taskmaster.QueueComplete(SubTasks))
         {
-            Creature.CarriedItem = Item;
-            Item.SpriteRenderer.color = Color.white;
+            Creature.CarriedItem = _item;
+            _item.SpriteRenderer.color = Color.white;
             return true;
         }
 
         return false;
     }
 
-
     public void Update()
     {
-        if (Item == null)
+        if (_item == null)
         {
-            Item = MapGrid.Instance.FindClosestItem(_itemLocation);
-            Item.Reserved = true;
+            _item = MapGrid.Instance.FindClosestItemOfType(Creature.CurrentCell, ItemType);
+            _item.Data.Reserved = true;
             UpdateTargetItem();
         }
 
@@ -44,13 +45,13 @@ public class GetItem : ITask
     private void UpdateTargetItem()
     {
         SubTasks = new Queue<ITask>();
-        _itemLocation = MapGrid.Instance.GetCellAtPoint(Item.transform.position);
+        _itemLocation = MapGrid.Instance.GetCellAtPoint(_item.transform.position);
 
         var moveTask = new Move(_itemLocation)
         {
             Creature = Creature
         };
         SubTasks.Enqueue(moveTask);
-        Item.SpriteRenderer.color = Color.magenta;
+        _item.SpriteRenderer.color = Color.magenta;
     }
 }

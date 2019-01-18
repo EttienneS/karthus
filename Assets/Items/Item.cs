@@ -1,26 +1,29 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Item : MonoBehaviour
 {
-    public string ItemType;
-
-    internal bool Reserved;
     internal SpriteRenderer SpriteRenderer;
 
-    // Start is called before the first frame update
-    void Awake()
+    private void Awake()
     {
         SpriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public ItemData Data;
 
-  
+    internal void Load(string structureData)
+    {
+        Data = JsonUtility.FromJson<ItemData>(structureData);
+        SpriteRenderer.sprite = SpriteStore.Instance.GetSpriteByName(Data.SpriteName);
+    }
+}
+
+[Serializable]
+public class ItemData
+{
+    public string ItemType;
+    public bool Reserved;
+    public string SpriteName;
+    public string Name;
 }

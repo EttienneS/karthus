@@ -210,15 +210,30 @@ public class MapEditor : MonoBehaviour
                 cell.CountNeighborsOfType(CellType.Forest) > 6
                 && Random.value > 0.2)
             {
-                cell.CellType = CellType.Forest;
-
-                if (Random.value > 0.7)
-                {
-                    cell.AddContent(ItemController.Instance.GetItem().gameObject, true);
-                }
+                cell.CellType = CellType.Forest;                
             }
         }
 
+        if (ShowGeneration) yield return null;
+
+        foreach (var cell in MapGrid.Map)
+        {
+            switch (cell.CellType)
+            {
+                case CellType.Forest:
+                    if (Random.value > 0.9)
+                    {
+                        cell.AddContent(ItemController.Instance.GetItem("TreeStump").gameObject, true);
+                    }
+                    break;
+                case CellType.Stone:
+                    if (Random.value > 0.3)
+                    {
+                        cell.AddContent(ItemController.Instance.GetItem("Rock").gameObject, true);
+                    }
+                    break;
+            }
+        }
         if (ShowGeneration) yield return null;
 
         MapGrid.ResetSearchPriorities();
