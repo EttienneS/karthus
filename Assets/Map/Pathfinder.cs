@@ -8,29 +8,6 @@ public static class Pathfinder
     private static CellPriorityQueue _searchFrontier;
     private static int _searchFrontierPhase;
 
-    private static Dictionary<string, List<Cell>> _pathCache = new Dictionary<string, List<Cell>>();
-
-    public static void FlushPathCache()
-    {
-        _pathCache = new Dictionary<string, List<Cell>>();
-    }
-
-    public static void InvalidPath(Cell fromCell, Cell toCell)
-    {
-        var pathId = fromCell.name + toCell.name;
-        var pathIdInverse = toCell.name + fromCell.name;
-
-        if (_pathCache.ContainsKey(pathId))
-        {
-            _pathCache.Remove(pathId);
-        }
-
-        if (_pathCache.ContainsKey(pathIdInverse))
-        {
-            _pathCache.Remove(pathIdInverse);
-        }
-    }
-
     internal static float Distance(Cell fromCell, Cell toCell)
     {
         var distance = 0f;
@@ -57,38 +34,22 @@ public static class Pathfinder
             var pathId = fromCell.name + toCell.name;
             var pathIdInverse = toCell.name + fromCell.name;
 
-            if (!_pathCache.ContainsKey(pathId))
+            if (Search(fromCell, toCell))
             {
-                if (_pathCache.ContainsKey(pathIdInverse))
+                var path = new List<Cell>
                 {
-                    var p = _pathCache[pathIdInverse].Select(c => c).ToList();
-                    p.Reverse();
-                    _pathCache.Add(pathId, p);
-                }
-                else
+                    toCell
+                };
+
+                var current = toCell;
+                while (current != fromCell)
                 {
-                    var path = new List<Cell>();
-
-                    if (Search(fromCell, toCell))
-                    {
-                        path.Add(toCell);
-
-                        var current = toCell;
-                        while (current != fromCell)
-                        {
-                            current = current.PathFrom;
-                            path.Add(current);
-                        }
-
-                        _pathCache.Add(pathId, path);
-                    }
-                    else
-                    {
-                        _pathCache.Add(pathId, null);
-                    }
+                    current = current.PathFrom;
+                    path.Add(current);
                 }
-            }
-            return _pathCache[pathId];
+
+                return path;
+            }            
         }
 
         return null;

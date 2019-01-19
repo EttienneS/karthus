@@ -16,14 +16,6 @@ public class Creature : MonoBehaviour
 
     public Item CarriedItem;
 
-    public void See()
-    {
-        foreach (var c in MapGrid.Instance.GetCircle(CurrentCell, 5))
-        {
-            c.Fog.enabled = false;
-        }
-    }
-
     public void Start()
     {
         SpriteAnimator = GetComponent<SpriteAnimator>();

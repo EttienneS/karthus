@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Structure : MonoBehaviour
 {
-    
+
     internal SpriteRenderer SpriteRenderer;
     internal StructureData Data = new StructureData();
 
@@ -37,14 +37,19 @@ public class Structure : MonoBehaviour
     {
         Data = StructureData.GetFromJson(structureData);
         SpriteRenderer.sprite = SpriteStore.Instance.GetSpriteByName(Data.SpriteName);
-        if (!Data.Tiled)
+        Structure.SetTiledMode(SpriteRenderer, Data.Tiled);
+    }
+
+    public static void SetTiledMode(SpriteRenderer spriteRenderer, bool tiled)
+    {
+        if (!tiled)
         {
-            SpriteRenderer.drawMode = SpriteDrawMode.Simple;
+            spriteRenderer.drawMode = SpriteDrawMode.Simple;
         }
         else
         {
-            SpriteRenderer.drawMode = SpriteDrawMode.Tiled;
-            SpriteRenderer.size = Vector2.one;
+            spriteRenderer.drawMode = SpriteDrawMode.Tiled;
+            spriteRenderer.size = Vector2.one;
         }
     }
 
@@ -60,7 +65,7 @@ public class Structure : MonoBehaviour
             if (!Taskmaster.Instance.ContainsJob(name))
             {
                 Taskmaster.Instance.AddTask(new Build(this, GetComponentInParent<Cell>()));
-            }            
+            }
         }
     }
 }

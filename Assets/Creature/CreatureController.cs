@@ -35,7 +35,6 @@ public class CreatureController : MonoBehaviour
 
         transform.position = spawnLocation.transform.position;
         spawnLocation.AddCreature(creature);
-        creature.See();
 
         Creatures.Add(creature);
         return creature;

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -148,27 +149,40 @@ public class MapGrid : MonoBehaviour
 
     internal Item FindClosestItemOfType(Cell centerPoint, string type)
     {
-        var cells = Instance.GetCircle(centerPoint, 20);
-
         var closest = float.MaxValue;
-        Item closestItem = null;
-        foreach (var cell in cells)
+
+        var searchRadius = 3;
+        var maxRadius = Map.GetLength(0);
+        var checkedCells = new HashSet<Cell>();
+        do
         {
-            foreach (var item in cell.GetComponentsInChildren<Item>())
+            var searchArea = Instance.GetCircle(centerPoint, searchRadius);
+            searchArea.Reverse();
+            foreach (var cell in searchArea)
             {
-                if (item != null && item.Data.ItemType == type && !item.Data.Reserved)
+                if (checkedCells.Add(cell))
                 {
-                    var distance = Pathfinder.Distance(centerPoint, cell);
-                    if (distance < closest)
+                    foreach (var item in cell.GetComponentsInChildren<Item>())
                     {
-                        closest = distance;
-                        closestItem = item;
+                        if (item != null && item.Data.ItemType == type && !item.Data.Reserved)
+                        {
+                            var distance = Pathfinder.Distance(centerPoint, cell);
+                            if (distance < closest)
+                            {
+                                closest = distance;
+                                return item;
+                            }
+                        }
                     }
                 }
             }
-        }
 
-        return closestItem;
+            searchRadius += 3;
+        }
+        while (searchRadius <= maxRadius);
+
+
+        return null;
     }
 
     internal Direction GetDirection(Cell fromCell, Cell toCell)

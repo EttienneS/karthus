@@ -237,7 +237,6 @@ public class MapEditor : MonoBehaviour
         if (ShowGeneration) yield return null;
 
         MapGrid.ResetSearchPriorities();
-        Pathfinder.FlushPathCache();
         CreatureController.Instance.SpawnCreatures();
 
         if (ShowGeneration) yield return null;

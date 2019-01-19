@@ -72,7 +72,7 @@ public class Cell : MonoBehaviour
 
     public float Distance { get; set; }
 
-    public SpriteRenderer Fog { get; private set; }
+    //public SpriteRenderer Fog { get; private set; }
 
     public Cell NextWithSamePriority { get; set; }
 
@@ -148,17 +148,17 @@ public class Cell : MonoBehaviour
 
     public void Update()
     {
-        if (!Fog.enabled)
+        //if (!Fog.enabled)
+        //{
+        // animate cells if fog is nog enabled
+        if (CellType == CellType.Water)
         {
-            // animate cells if fog is nog enabled
-            if (CellType == CellType.Water)
+            if (Random.value > 0.98f)
             {
-                if (Random.value > 0.98f)
-                {
-                    CellType = CellType.Water;
-                }
+                CellType = CellType.Water;
             }
         }
+        //}
     }
 
     internal void AddCreature(Creature creature)
@@ -190,7 +190,7 @@ public class Cell : MonoBehaviour
     {
         var gridStructure = transform.Find("CellStructure");
 
-        Fog = gridStructure.transform.Find("Fog").GetComponent<SpriteRenderer>();
+        //Fog = gridStructure.transform.Find("Fog").GetComponent<SpriteRenderer>();
         Border = gridStructure.transform.Find("Border").GetComponent<SpriteRenderer>();
         Terrain = gridStructure.transform.Find("Terrain").GetComponent<SpriteRenderer>();
     }

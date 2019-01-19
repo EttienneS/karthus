@@ -44,9 +44,6 @@ TagManager:
   - name: Ground
     uniqueID: 1735232521
     locked: 0
-  - name: Border
-    uniqueID: 1765142349
-    locked: 0
   - name: Structure
     uniqueID: 615336307
     locked: 0
@@ -61,4 +58,7 @@ TagManager:
     locked: 0
   - name: Fog
     uniqueID: 3366600241
+    locked: 0
+  - name: Border
+    uniqueID: 1765142349
     locked: 0

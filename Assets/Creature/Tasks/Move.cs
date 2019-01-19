@@ -38,7 +38,7 @@ public class Move : ITask
         {
             if (NextCell == null)
             {
-                if (Path == null || !Path.Any())
+                if (Path == null || Path.Count == 0)
                 {
                     Path = Pathfinder.FindPath(Creature.CurrentCell, TargetCell);
                 }
@@ -46,7 +46,6 @@ public class Move : ITask
                 if (Path == null)
                 {
                     // failure, task is no longer possible
-                    Pathfinder.InvalidPath(Creature.CurrentCell, TargetCell);
                     _navigationFailureCount++;
 
                     if (_navigationFailureCount > 10)
@@ -62,7 +61,6 @@ public class Move : ITask
                 if (NextCell.TravelCost < 0)
                 {
                     // something changed the path making it unusable
-                    Pathfinder.InvalidPath(Creature.CurrentCell, TargetCell);
                     Path = null;
                 }
                 else
@@ -95,7 +93,6 @@ public class Move : ITask
             {
                 // reached next cell
                 NextCell.AddCreature(Creature);
-                Creature.See();
 
                 NextCell = null;
                 Path = null;
