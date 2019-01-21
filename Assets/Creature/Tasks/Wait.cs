@@ -25,12 +25,10 @@ public class Wait : ITask
         return ElapsedTime >= Duration;
     }
 
-
     public override string ToString()
     {
         return $"Waiting for {ElapsedTime:F2}/{Duration:F2}";
     }
-
 
     public void Update()
     {

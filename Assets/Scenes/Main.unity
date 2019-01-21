@@ -368,6 +368,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 667879368938610748, guid: 50c5056d9f4c1364194358eaa321df8e,
+        type: 3}
+      propertyPath: StructureJson.Array.size
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 3060367387175224096, guid: 50c5056d9f4c1364194358eaa321df8e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -428,6 +433,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: FileController
       objectReference: {fileID: 0}
+    - target: {fileID: 667879368938610748, guid: 50c5056d9f4c1364194358eaa321df8e,
+        type: 3}
+      propertyPath: StructureJson.Array.data[3]
+      value: 
+      objectReference: {fileID: 4900000, guid: 7166784ac9da62940bddff0c4f62e7fc, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 50c5056d9f4c1364194358eaa321df8e, type: 3}
 --- !u!1001 &3396887646064231152
@@ -903,6 +913,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6306664894144229110, guid: 5223a731d594e30499746cb45660fed3,
+        type: 3}
+      propertyPath: StructureSprites.Array.size
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6306664894144229111, guid: 5223a731d594e30499746cb45660fed3,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -963,6 +978,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: SpriteStore
       objectReference: {fileID: 0}
+    - target: {fileID: 6306664894144229110, guid: 5223a731d594e30499746cb45660fed3,
+        type: 3}
+      propertyPath: StructureSprites.Array.data[3]
+      value: 
+      objectReference: {fileID: 21300000, guid: dc54bec4e78300e4199988f977a0aa85,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5223a731d594e30499746cb45660fed3, type: 3}
 --- !u!1001 &8103325679840787970

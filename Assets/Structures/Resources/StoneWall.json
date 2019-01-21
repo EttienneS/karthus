@@ -3,5 +3,6 @@
 	"SpriteName":"StoneWall",
 	"Tiled":"False",
 	"RequiredItemTypes":["Rock", "Rock","Rock", "Rock"],
-	"TravelCost": "-1"
+	"TravelCost": "-1",
+	"StructureType": "Wall"
 }

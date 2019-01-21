@@ -97,7 +97,7 @@ public class CameraController : MonoBehaviour
         else
         {
 #if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
-            
+
             var zoomSpeed = 0.4f;
             var scrollSpeed = 0.05f;
             if (Input.touchCount > 0)

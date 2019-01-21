@@ -186,6 +186,7 @@ public class Cell : MonoBehaviour
     {
         return transform.position;
     }
+
     private void Awake()
     {
         var gridStructure = transform.Find("CellStructure");

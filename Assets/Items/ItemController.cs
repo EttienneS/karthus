@@ -9,7 +9,6 @@ public class ItemController : MonoBehaviour
 
     internal Dictionary<string, Item> AllItems = new Dictionary<string, Item>();
 
-
     public static ItemController Instance
     {
         get

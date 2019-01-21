@@ -5,9 +5,11 @@ public class OrderSelectionController : MonoBehaviour
 {
     public Button OrderButtonPrefab;
 
-    public string selectedStructure;
-
     private static OrderSelectionController _instance;
+
+    private Button BuildButton;
+
+    public delegate void CellClickedDelegate(Cell cell);
 
     public static OrderSelectionController Instance
     {
@@ -22,21 +24,19 @@ public class OrderSelectionController : MonoBehaviour
         }
     }
 
+    public CellClickedDelegate CellClicked { get; set; }
+
     public void BuildClicked(string structureName)
     {
-        selectedStructure = structureName;
-        BuildButton.GetComponentInChildren<Text>().text = "Build " + selectedStructure;
-    }
+        BuildButton.GetComponentInChildren<Text>().text = "Build " + structureName;
 
-    private Button BuildButton;
-
-    private void Start()
-    {
-        OrderTrayController.Instance.gameObject.SetActive(false);
-
-        BuildButton = Instantiate(OrderButtonPrefab, transform);
-        BuildButton.onClick.AddListener(BuildTypeClicked);
-        BuildButton.GetComponentInChildren<Text>().text = "Select Building";
+        CellClicked = cell =>
+        {
+            var blueprint = StructureController.Instance.GetStructureBluePrint(structureName);
+            cell.AddContent(blueprint.gameObject);
+            cell.Structure = blueprint;
+            Taskmaster.Instance.AddTask(new Build(blueprint, cell));
+        };
     }
 
     public void BuildTypeClicked()
@@ -45,7 +45,7 @@ public class OrderSelectionController : MonoBehaviour
         {
             OrderTrayController.Instance.gameObject.SetActive(false);
             BuildButton.GetComponentInChildren<Text>().text = "Select Building";
-            selectedStructure = null;
+            CellClicked = null;
         }
         else
         {
@@ -68,11 +68,18 @@ public class OrderSelectionController : MonoBehaviour
                     button.image.type = Image.Type.Tiled;
                 }
 
-
                 button.GetComponentInChildren<Text>().text = "Build " + structureData.Name;
             }
         }
+    }
 
+    private void Start()
+    {
+        OrderTrayController.Instance.gameObject.SetActive(false);
+
+        BuildButton = Instantiate(OrderButtonPrefab, transform);
+        BuildButton.onClick.AddListener(BuildTypeClicked);
+        BuildButton.GetComponentInChildren<Text>().text = "Select Building";
     }
 
     // Update is called once per frame

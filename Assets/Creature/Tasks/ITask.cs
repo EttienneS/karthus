@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 public enum TaskStatus
 {
@@ -18,4 +17,3 @@ public interface ITask
 
     void Update();
 }
-
