@@ -142,8 +142,8 @@ public class CameraController : MonoBehaviour
             float vertical = 0;
             var z = transform.position.z;
 
-            horizontal = Input.GetAxis("Horizontal");
-            vertical = Input.GetAxis("Vertical");
+            horizontal = Input.GetAxis("Horizontal") / Time.timeScale;
+            vertical = Input.GetAxis("Vertical") / Time.timeScale;
 
             transform.position = new Vector3(transform.position.x + horizontal * Speed,
                 transform.position.y + vertical * Speed, z);

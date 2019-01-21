@@ -92,6 +92,7 @@ GameObject:
   - component: {fileID: 4298070250121833528}
   - component: {fileID: 5330451810948235704}
   - component: {fileID: 8344148509930784373}
+  - component: {fileID: 4761245780764312616}
   m_Layer: 5
   m_Name: OrderButton
   m_TagString: Untagged
@@ -214,3 +215,16 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &4761245780764312616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5898822674251919647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_GeneratorAsset: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 89d5320d055b1d44582bbabd2c3c9082, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

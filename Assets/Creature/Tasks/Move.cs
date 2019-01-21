@@ -11,15 +11,18 @@ public class Move : ITask
     private float startTime;
     private Vector3 targetPos;
 
-    public Move(Cell targetCell)
+    public Move(Cell targetCell, int maxSpeed = int.MaxValue)
     {
         TargetCell = targetCell;
         TaskId = $"Move to {TargetCell}";
+        MaxSpeed = maxSpeed;
     }
 
     public Queue<ITask> SubTasks { get; set; }
     public Cell TargetCell { get; set; }
     public string TaskId { get; set; }
+
+    public int MaxSpeed { get; set; }
 
     public bool Done()
     {
@@ -82,7 +85,7 @@ public class Move : ITask
             if (NextCell != null && Creature.transform.position != targetPos)
             {
                 // move between two cells
-                var distCovered = (Time.time - startTime) * Creature.Speed;
+                var distCovered = (Time.time - startTime) * Mathf.Min(Creature.Speed, MaxSpeed);
                 var fracJourney = distCovered / _journeyLength;
                 Creature.transform.position = Vector3.Lerp(Creature.CurrentCell.transform.position,
                                           targetPos,

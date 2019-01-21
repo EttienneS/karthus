@@ -8,7 +8,9 @@ public class Creature : MonoBehaviour
 
     public ITask Task;
 
+    internal SpriteRenderer SpriteRenderer;
     internal SpriteAnimator SpriteAnimator;
+    internal SpriteOutline Outline;
 
     public string TaskName;
 
@@ -16,7 +18,9 @@ public class Creature : MonoBehaviour
 
     public void Start()
     {
+        SpriteRenderer = GetComponent<SpriteRenderer>();
         SpriteAnimator = GetComponent<SpriteAnimator>();
+        Outline = GetComponent<SpriteOutline>();
     }
 
     public void AssignTask(ITask task)
