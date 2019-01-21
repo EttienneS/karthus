@@ -3,11 +3,11 @@ using UnityEngine.UI;
 
 public class OrderSelectionController : MonoBehaviour
 {
-    public Button OrderButtonPrefab;
+    public OrderButton OrderButtonPrefab;
 
     private static OrderSelectionController _instance;
 
-    private Button BuildButton;
+    private OrderButton BuildButton;
 
     public delegate void CellClickedDelegate(Cell cell);
 
@@ -24,18 +24,21 @@ public class OrderSelectionController : MonoBehaviour
         }
     }
 
-    public CellClickedDelegate CellClicked { get; set; }
+    public CellClickedDelegate CellClickOrder { get; set; }
 
     public void BuildClicked(string structureName)
     {
-        BuildButton.GetComponentInChildren<Text>().text = "Build " + structureName;
+        BuildButton.Text = "Build " + structureName;
 
-        CellClicked = cell =>
+        CellClickOrder = cell =>
         {
-            var blueprint = StructureController.Instance.GetStructureBluePrint(structureName);
-            cell.AddContent(blueprint.gameObject);
-            cell.Structure = blueprint;
-            Taskmaster.Instance.AddTask(new Build(blueprint, cell));
+            if (cell.Structure == null)
+            {
+                var blueprint = StructureController.Instance.GetStructureBluePrint(structureName);
+                cell.AddContent(blueprint.gameObject);
+                cell.Structure = blueprint;
+                Taskmaster.Instance.AddTask(new Build(blueprint, cell));
+            }
         };
     }
 
@@ -44,8 +47,8 @@ public class OrderSelectionController : MonoBehaviour
         if (OrderTrayController.Instance.gameObject.activeInHierarchy)
         {
             OrderTrayController.Instance.gameObject.SetActive(false);
-            BuildButton.GetComponentInChildren<Text>().text = "Select Building";
-            CellClicked = null;
+            BuildButton.Text = "Select Building";
+            CellClickOrder = null;
         }
         else
         {
@@ -59,16 +62,16 @@ public class OrderSelectionController : MonoBehaviour
             foreach (var structureData in StructureController.Instance.StructureDataReference.Values)
             {
                 var button = Instantiate(OrderButtonPrefab, OrderTrayController.Instance.transform);
-                button.onClick.AddListener(() => BuildClicked(structureData.Name));
+                button.Button.onClick.AddListener(() => BuildClicked(structureData.Name));
                 button.name = structureData.Name;
-                button.image.sprite = StructureController.Instance.GetSpriteForStructure(structureData.Name);
+                button.Button.image.sprite = StructureController.Instance.GetSpriteForStructure(structureData.Name);
 
                 if (structureData.Tiled)
                 {
-                    button.image.type = Image.Type.Tiled;
+                    button.Button.image.type = Image.Type.Tiled;
                 }
 
-                button.GetComponentInChildren<Text>().text = "Build " + structureData.Name;
+                button.Text = "Build " + structureData.Name;
             }
         }
     }
@@ -78,8 +81,8 @@ public class OrderSelectionController : MonoBehaviour
         OrderTrayController.Instance.gameObject.SetActive(false);
 
         BuildButton = Instantiate(OrderButtonPrefab, transform);
-        BuildButton.onClick.AddListener(BuildTypeClicked);
-        BuildButton.GetComponentInChildren<Text>().text = "Select Building";
+        BuildButton.Button.onClick.AddListener(BuildTypeClicked);
+        BuildButton.Text = "Select Building";
     }
 
     // Update is called once per frame

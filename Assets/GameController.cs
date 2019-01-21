@@ -1,12 +1,15 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class GameController : MonoBehaviour
 {
     public bool BuildMode;
     public Cell SelectedCell;
+    public List<Creature> SelectedCreatures;
     private static GameController _instance;
 
+    private TimeStep _oldTimeStep = TimeStep.Normal;
     private Cell lastClickedCell;
 
     public static GameController Instance
@@ -21,6 +24,8 @@ public class GameController : MonoBehaviour
             return _instance;
         }
     }
+
+    public Creature SelectedCreature { get; set; }
 
     private static void DestroyAndRecreateMap()
     {
@@ -37,20 +42,9 @@ public class GameController : MonoBehaviour
 
         MapEditor.Instance.Generating = false;
     }
-
     private void Update()
     {
-        //if (Input.GetButtonDown("Fire1"))
-        //{
-        //    if (Time.timeScale == 1.0f)
-        //        Time.timeScale = 0.0f;
-        //    else
-        //        Time.timeScale = 1.0f;
-
-        //    // Adjust fixed delta time according to timescale
-        //    // The fixed delta time will now be 0.02 frames per real-time second
-        //    Time.fixedDeltaTime = 0.02f * Time.timeScale;
-        //}
+        HandleTimeControls();
 
         if (Input.GetMouseButton(0))
         {
@@ -66,22 +60,69 @@ public class GameController : MonoBehaviour
             if (hit)
             {
                 var clickedCell = MapGrid.Instance.GetCellAtPoint(hit.point);
+                var clickedCreature = CreatureController.Instance.GetCreatureAtPoint(hit.point);
 
-                if (lastClickedCell == null || clickedCell != lastClickedCell)
+                if (clickedCreature != null)
                 {
-                    SelectedCell?.DisableBorder();
-
-                    SelectedCell = clickedCell;
-                    SelectedCell.EnableBorder(Color.red);
-
-                    if (OrderSelectionController.Instance.CellClicked != null)
+                    if (SelectedCreature != null)
                     {
-                        OrderSelectionController.Instance.CellClicked.Invoke(SelectedCell);
+                        SelectedCreature.Outline.outlineSize = 0;
                     }
 
-                    lastClickedCell = clickedCell;
+                    SelectedCreature = clickedCreature;
+                    SelectedCreature.Outline.outlineSize = 1;
+                }
+                else
+                {
+                    if (lastClickedCell == null || clickedCell != lastClickedCell)
+                    {
+                        SelectedCell?.DisableBorder();
+
+                        SelectedCell = clickedCell;
+                        SelectedCell.EnableBorder(Color.red);
+
+                        if (OrderSelectionController.Instance.CellClickOrder != null)
+                        {
+                            OrderSelectionController.Instance.CellClickOrder.Invoke(SelectedCell);
+                        }
+
+                        lastClickedCell = clickedCell;
+                    }
                 }
             }
+        }
+    }
+
+    private void HandleTimeControls()
+    {
+        if (Input.GetKeyDown("space"))
+        {
+            if (TimeManager.Instance.TimeStep == TimeStep.Paused)
+            {
+                TimeManager.Instance.TimeStep = _oldTimeStep;
+            }
+            else
+            {
+                _oldTimeStep = TimeManager.Instance.TimeStep;
+                TimeManager.Instance.TimeStep = TimeStep.Paused;
+            }
+        }
+
+        if (Input.GetKeyDown("1"))
+        {
+            TimeManager.Instance.TimeStep = TimeStep.Slow;
+        }
+        if (Input.GetKeyDown("2"))
+        {
+            TimeManager.Instance.TimeStep = TimeStep.Normal;
+        }
+        if (Input.GetKeyDown("3"))
+        {
+            TimeManager.Instance.TimeStep = TimeStep.Fast;
+        }
+        if (Input.GetKeyDown("4"))
+        {
+            TimeManager.Instance.TimeStep = TimeStep.Hyper;
         }
     }
 }

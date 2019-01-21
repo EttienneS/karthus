@@ -6,13 +6,13 @@ using Random = UnityEngine.Random;
 
 public class Cell : MonoBehaviour
 {
-    public List<Creature> ContainedCreature = new List<Creature>();
+    internal List<Creature> ContainedCreatures = new List<Creature>();
 
     public Coordinates Coordinates;
 
-    public Cell[] Neighbors = new Cell[8];
+    internal Cell[] Neighbors = new Cell[8];
 
-    public float TravelCost = -1;
+    internal float TravelCost = -1;
 
     private CellType _cellType;
 
@@ -168,7 +168,7 @@ public class Cell : MonoBehaviour
             creature.CurrentCell.RemoveCreature(creature);
         }
 
-        ContainedCreature.Add(creature);
+        ContainedCreatures.Add(creature);
         creature.CurrentCell = this;
     }
 
@@ -204,6 +204,6 @@ public class Cell : MonoBehaviour
 
     private void RemoveCreature(Creature creature)
     {
-        ContainedCreature.Remove(creature);
+        ContainedCreatures.Remove(creature);
     }
 }

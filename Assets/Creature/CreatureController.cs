@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class CreatureController : MonoBehaviour
 {
@@ -52,5 +54,19 @@ public class CreatureController : MonoBehaviour
         {
             SpawnCreature(spawns[Random.Range(0, spawns.Count)]).Speed = Random.Range(10, 15);
         }
+    }
+
+    public Creature GetCreatureAtPoint(Vector2 point)
+    {
+        foreach (var creature in Creatures)
+        {
+            var rect = new Rect(creature.transform.position.x - 0.5f, creature.transform.position.y - 0.5f, 1f, 1f);
+            if (rect.Contains(point))
+            {
+                return creature;
+            }
+        }
+
+        return null;
     }
 }
