@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class Structure : MonoBehaviour
 {
-    
     internal SpriteRenderer SpriteRenderer;
     internal StructureData Data = new StructureData();
 
@@ -37,32 +35,40 @@ public class Structure : MonoBehaviour
     {
         Data = StructureData.GetFromJson(structureData);
         SpriteRenderer.sprite = SpriteStore.Instance.GetSpriteByName(Data.SpriteName);
-        if (!Data.Tiled)
+        SetTiledMode(SpriteRenderer, Data.Tiled);
+    }
+
+    public static void SetTiledMode(SpriteRenderer spriteRenderer, bool tiled)
+    {
+        if (!tiled)
         {
-            SpriteRenderer.drawMode = SpriteDrawMode.Simple;
+            spriteRenderer.drawMode = SpriteDrawMode.Simple;
         }
         else
         {
-            SpriteRenderer.drawMode = SpriteDrawMode.Tiled;
-            SpriteRenderer.size = Vector2.one;
+            spriteRenderer.drawMode = SpriteDrawMode.Tiled;
+            spriteRenderer.size = Vector2.one;
         }
     }
 
-    void Awake()
+    private void Awake()
     {
         SpriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    void Update()
+    private void Update()
     {
-        if (BluePrint)
+        if (BluePrint && !Taskmaster.Instance.ContainsJob(name))
         {
-            if (!Taskmaster.Instance.ContainsJob(name))
-            {
-                Taskmaster.Instance.AddTask(new Build(this, GetComponentInParent<Cell>()));
-            }            
+            Taskmaster.Instance.AddTask(new Build(this, GetComponentInParent<Cell>()));
         }
     }
+}
+
+[Serializable]
+public enum StructureType
+{
+    Floor, Wall
 }
 
 [Serializable]
@@ -74,6 +80,8 @@ public class StructureData
     public bool IsBluePrint;
     public bool Tiled;
     public float TravelCost;
+
+    public StructureType Type;
 
     private List<Item> _containedItems = new List<Item>();
 
@@ -105,6 +113,4 @@ public class StructureData
     {
         return JsonUtility.FromJson<StructureData>(json);
     }
-
-
 }

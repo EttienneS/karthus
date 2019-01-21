@@ -226,6 +226,7 @@ public class MapEditor : MonoBehaviour
                         cell.AddContent(ItemController.Instance.GetItem("TreeStump").gameObject, true);
                     }
                     break;
+
                 case CellType.Stone:
                     for (int i = 0; i < Random.Range(1, 5); i++)
                     {
@@ -237,7 +238,6 @@ public class MapEditor : MonoBehaviour
         if (ShowGeneration) yield return null;
 
         MapGrid.ResetSearchPriorities();
-        Pathfinder.FlushPathCache();
         CreatureController.Instance.SpawnCreatures();
 
         if (ShowGeneration) yield return null;

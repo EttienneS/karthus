@@ -3,5 +3,6 @@
 	"SpriteName":"StoneTile",
 	"Tiled":"True",
 	"RequiredItemTypes":["Rock", "Rock"],
-	"TravelCost": "0.5"
+	"TravelCost": "0.5",
+	"StructureType": "Floor"
 }

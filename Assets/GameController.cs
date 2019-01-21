@@ -69,23 +69,14 @@ public class GameController : MonoBehaviour
 
                 if (lastClickedCell == null || clickedCell != lastClickedCell)
                 {
-                    if (SelectedCell != null)
-                    {
-                        SelectedCell.DisableBorder();
-                    }
+                    SelectedCell?.DisableBorder();
 
                     SelectedCell = clickedCell;
                     SelectedCell.EnableBorder(Color.red);
 
-                    if (SelectedCell.Structure == null && SelectedCell.TravelCost > 0)
+                    if (OrderSelectionController.Instance.CellClicked != null)
                     {
-                        if (OrderSelectionController.Instance.selectedStructure != null)
-                        {
-                            var blueprint = StructureController.Instance.GetStructureBluePrint(OrderSelectionController.Instance.selectedStructure);
-                            SelectedCell.AddContent(blueprint.gameObject);
-                            SelectedCell.Structure = blueprint;
-                            Taskmaster.Instance.AddTask(new Build(blueprint, SelectedCell));
-                        }
+                        OrderSelectionController.Instance.CellClicked.Invoke(SelectedCell);
                     }
 
                     lastClickedCell = clickedCell;

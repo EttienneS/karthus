@@ -5,9 +5,11 @@ public class OrderSelectionController : MonoBehaviour
 {
     public Button OrderButtonPrefab;
 
-    public string selectedStructure;
-
     private static OrderSelectionController _instance;
+
+    private Button BuildButton;
+
+    public delegate void CellClickedDelegate(Cell cell);
 
     public static OrderSelectionController Instance
     {
@@ -22,30 +24,62 @@ public class OrderSelectionController : MonoBehaviour
         }
     }
 
-    public void OrderClicked(Button btn, string structureName)
+    public CellClickedDelegate CellClicked { get; set; }
+
+    public void BuildClicked(string structureName)
     {
-        if (btn.image.color != Color.red)
+        BuildButton.GetComponentInChildren<Text>().text = "Build " + structureName;
+
+        CellClicked = cell =>
         {
-            btn.image.color = Color.red;
-            selectedStructure = structureName;
+            var blueprint = StructureController.Instance.GetStructureBluePrint(structureName);
+            cell.AddContent(blueprint.gameObject);
+            cell.Structure = blueprint;
+            Taskmaster.Instance.AddTask(new Build(blueprint, cell));
+        };
+    }
+
+    public void BuildTypeClicked()
+    {
+        if (OrderTrayController.Instance.gameObject.activeInHierarchy)
+        {
+            OrderTrayController.Instance.gameObject.SetActive(false);
+            BuildButton.GetComponentInChildren<Text>().text = "Select Building";
+            CellClicked = null;
         }
         else
         {
-            btn.image.color = Color.white;
-            selectedStructure = null;
+            OrderTrayController.Instance.gameObject.SetActive(true);
+
+            foreach (Transform child in OrderTrayController.Instance.transform)
+            {
+                Destroy(child.gameObject);
+            }
+
+            foreach (var structureData in StructureController.Instance.StructureDataReference.Values)
+            {
+                var button = Instantiate(OrderButtonPrefab, OrderTrayController.Instance.transform);
+                button.onClick.AddListener(() => BuildClicked(structureData.Name));
+                button.name = structureData.Name;
+                button.image.sprite = StructureController.Instance.GetSpriteForStructure(structureData.Name);
+
+                if (structureData.Tiled)
+                {
+                    button.image.type = Image.Type.Tiled;
+                }
+
+                button.GetComponentInChildren<Text>().text = "Build " + structureData.Name;
+            }
         }
     }
 
     private void Start()
     {
-        foreach (var structureData in StructureController.Instance.StructureDataReference.Values)
-        {
-            var button = Instantiate(OrderButtonPrefab, transform);
-            button.onClick.AddListener(() => OrderClicked(button, structureData.Name));
-            button.name = structureData.Name;
-            button.image.sprite = StructureController.Instance.GetSpriteForStructure(structureData.Name);
-            button.GetComponentInChildren<Text>().text = "Build " + structureData.Name;
-        }
+        OrderTrayController.Instance.gameObject.SetActive(false);
+
+        BuildButton = Instantiate(OrderButtonPrefab, transform);
+        BuildButton.onClick.AddListener(BuildTypeClicked);
+        BuildButton.GetComponentInChildren<Text>().text = "Select Building";
     }
 
     // Update is called once per frame

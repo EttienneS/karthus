@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 
 public class Creature : MonoBehaviour
@@ -15,14 +13,6 @@ public class Creature : MonoBehaviour
     public string TaskName;
 
     public Item CarriedItem;
-
-    public void See()
-    {
-        foreach (var c in MapGrid.Instance.GetCircle(CurrentCell, 5))
-        {
-            c.Fog.enabled = false;
-        }
-    }
 
     public void Start()
     {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -60,7 +59,6 @@ public class SpriteStore : MonoBehaviour
             MapSpriteTypeDictionary[typeName].Add(sprite);
         }
 
-
         var creature = -1;
 
         var side = new List<Sprite>();
@@ -83,13 +81,9 @@ public class SpriteStore : MonoBehaviour
                 back.Clear();
                 front.Clear();
             }
-
-
         }
 
-
         AllSprites = new Dictionary<string, Sprite>();
-
 
         SideSprites.ForEach(AddSpriteToAll);
         FrontSprites.ForEach(AddSpriteToAll);

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 
-
 public class PlaceHeldItemInStructure : ITask
 {
     public Creature Creature { get; set; }

@@ -15,7 +15,6 @@ public class CreatureController : MonoBehaviour
     public List<Creature> Creatures = new List<Creature>();
     private static CreatureController _instance;
 
-
     public static CreatureController Instance
     {
         get
@@ -35,7 +34,6 @@ public class CreatureController : MonoBehaviour
 
         transform.position = spawnLocation.transform.position;
         spawnLocation.AddCreature(creature);
-        creature.See();
 
         Creatures.Add(creature);
         return creature;
@@ -55,5 +53,4 @@ public class CreatureController : MonoBehaviour
             SpawnCreature(spawns[Random.Range(0, spawns.Count)]).Speed = Random.Range(10, 15);
         }
     }
-
 }

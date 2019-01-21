@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class StructureController : MonoBehaviour
@@ -8,6 +7,7 @@ public class StructureController : MonoBehaviour
     internal Dictionary<string, string> StructureTypeFileMap = new Dictionary<string, string>();
     internal Dictionary<string, StructureData> StructureDataReference = new Dictionary<string, StructureData>();
     private static StructureController _instance;
+
     public static StructureController Instance
     {
         get
@@ -42,7 +42,6 @@ public class StructureController : MonoBehaviour
     {
         return SpriteStore.Instance.GetSpriteByName(StructureDataReference[structureName].SpriteName);
     }
-
 
     private Structure GetStructure(string name)
     {
