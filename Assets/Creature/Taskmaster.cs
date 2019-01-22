@@ -50,9 +50,10 @@ public class Taskmaster : MonoBehaviour
         return queue == null || queue.Count == 0;
     }
 
-    public void AddTask(ITask task)
+    public ITask AddTask(ITask task)
     {
         Tasks[TaskStatus.Available].Add(task);
+        return task;
     }
 
     public void FlagTaskAsInprogress(ITask task)

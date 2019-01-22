@@ -26,4 +26,6 @@ public class ItemData
     public bool Reserved;
     public string SpriteName;
     public string Name;
+
+    public string StockpileId { get; set; }
 }

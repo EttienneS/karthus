@@ -1,0 +1,8 @@
+{
+	"Name":"Wood Box",
+	"SpriteName":"Box",
+	"Tiled":"False",
+	"RequiredItemTypes":["Wood"],
+	"TravelCost": "2.5",
+	"StructureType": "Stockpile"
+}
