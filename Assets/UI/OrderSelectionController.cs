@@ -69,7 +69,40 @@ public class OrderSelectionController : MonoBehaviour
 
                 button.Text = "Build " + structureData.Name;
             }
+
+            var removeButton = Instantiate(OrderButtonPrefab, OrderTrayController.Instance.transform);
+            removeButton.Button.onClick.AddListener(() => RemoveStructureClicked());
+            removeButton.name = "Remove Structure";
+            removeButton.Text = removeButton.name;
+            removeButton.Button.image.sprite = SpriteStore.Instance.GetSpriteByName("cancel");
         }
+    }
+
+    private void RemoveStructureClicked()
+    {
+        BuildButton.Text = "Remove Structure";
+
+        CellClickOrder = cell =>
+        {
+            if (cell.Filled)
+            {
+                var structure = cell.GetComponentInChildren<Structure>();
+                if (structure == null)
+                {
+                    return;
+                }
+
+                if (structure.Data.IsBluePrint)
+                {
+                    StructureController.Instance.RemoveStructure(structure);
+                }
+                else
+                {
+                    Taskmaster.Instance.AddTask(new RemoveStructure(structure, cell));
+                    structure.SpriteRenderer.color = Color.red;
+                }
+            }
+        };
     }
 
     private void DisableAndReset()
@@ -85,10 +118,14 @@ public class OrderSelectionController : MonoBehaviour
         BuildButton = Instantiate(OrderButtonPrefab, transform);
         BuildButton.Button.onClick.AddListener(BuildTypeClicked);
         BuildButton.Text = "Select Building";
+        BuildButton.Button.image.sprite = SpriteStore.Instance.GetSpriteByName("hammer");
+
 
         StockpileButton = Instantiate(OrderButtonPrefab, transform);
         StockpileButton.Button.onClick.AddListener(StockpileTypeClicked);
         StockpileButton.Text = "Place Stockpile";
+        StockpileButton.Button.image.sprite = SpriteStore.Instance.GetSpriteByName("box");
+
     }
 
     private void StockpileTypeClicked()

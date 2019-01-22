@@ -60,6 +60,5 @@ public class GetItemOfType : ITask
             Creature = Creature
         };
         SubTasks.Enqueue(moveTask);
-        _item.SpriteRenderer.color = Color.magenta;
     }
 }

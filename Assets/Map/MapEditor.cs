@@ -223,7 +223,7 @@ public class MapEditor : MonoBehaviour
                 case CellType.Forest:
                     if (Random.value > 0.6)
                     {
-                        cell.AddContent(ItemController.Instance.GetItem("TreeStump").gameObject, true);
+                        cell.AddContent(ItemController.Instance.GetItem("Wood").gameObject, true);
                     }
                     break;
 

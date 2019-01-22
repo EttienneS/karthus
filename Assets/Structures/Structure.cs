@@ -75,11 +75,11 @@ public class StructureData
     public bool Tiled;
     public float TravelCost;
 
-    private List<Item> _containedItems = new List<Item>();
+    public List<Item> ContainedItems = new List<Item>();
 
     public void AddItem(Item item)
     {
-        _containedItems.Add(item);
+        ContainedItems.Add(item);
 
         if (RequiredItemTypes.Contains(item.Data.ItemType))
         {
@@ -94,11 +94,11 @@ public class StructureData
 
     public void DestroyContainedItems()
     {
-        foreach (var item in _containedItems.ToList())
+        foreach (var item in ContainedItems.ToList())
         {
             ItemController.Instance.DestoyItem(item);
         }
-        _containedItems.Clear();
+        ContainedItems.Clear();
     }
 
     public static StructureData GetFromJson(string json)
