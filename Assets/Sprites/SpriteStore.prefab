@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &989421595414623671
+--- !u!1 &7308512517502387630
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,8 +8,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 989421595414623669}
-  - component: {fileID: 989421595414623668}
+  - component: {fileID: 7308512517502387628}
+  - component: {fileID: 7308512517502387629}
   m_Layer: 0
   m_Name: SpriteStore
   m_TagString: Untagged
@@ -17,13 +17,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &989421595414623669
+--- !u!4 &7308512517502387628
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 989421595414623671}
+  m_GameObject: {fileID: 7308512517502387630}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -31,13 +31,13 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &989421595414623668
+--- !u!114 &7308512517502387629
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 989421595414623671}
+  m_GameObject: {fileID: 7308512517502387630}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_GeneratorAsset: {fileID: 0}
@@ -150,6 +150,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 3d86efcf2d7313e4e987a5a58b345e44, type: 3}
   - {fileID: 21300000, guid: 516ac22ae1ce59c48a443e57c7391f10, type: 3}
   - {fileID: 21300000, guid: bdc954910ab1bca458fbc9278fda2782, type: 3}
+  - {fileID: 21300000, guid: 4e264c75e7263d24ab32bf1cad45e99f, type: 3}
   FrontSprites:
   - {fileID: -4151522841958201881, guid: f86441a8d11368946922e09b161df4e2, type: 3}
   - {fileID: 9130039062645355017, guid: f86441a8d11368946922e09b161df4e2, type: 3}

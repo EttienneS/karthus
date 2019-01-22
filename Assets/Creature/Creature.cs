@@ -48,14 +48,26 @@ public class Creature : MonoBehaviour
 
         TaskName = Task.ToString();
 
-        if (!Task.Done())
+        try
         {
-            Task.Update();
+            if (!Task.Done())
+            {
+                Task.Update();
+            }
+            else
+            {
+                Taskmaster.Instance.TaskComplete(Task);
+                Task = null;
+            }
         }
-        else
+        catch (CancelTaskException)
         {
             Taskmaster.Instance.TaskComplete(Task);
-            Task = null;
+            CarriedItem.Data.Reserved = false;
+            CarriedItem = null;
+
+            Task = Taskmaster.Instance.GetTask(this);
+            AssignTask(Task);
         }
 
         if (CarriedItem != null)

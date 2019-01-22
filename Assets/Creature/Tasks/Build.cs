@@ -31,7 +31,7 @@ public class Build : ITask
 
     public bool Done()
     {
-        if (SubTasks != null && Taskmaster.QueueComplete(SubTasks))
+        if (Taskmaster.QueueComplete(SubTasks))
         {
             Structure.Data.DestroyContainedItems();
             Cell.TravelCost = Structure.Data.TravelCost;
@@ -56,13 +56,13 @@ public class Build : ITask
         return false;
     }
 
-    public override string ToString()
-    {
-        return $"Building to {Structure.name} at {Cell.Coordinates}";
-    }
-
     public void Update()
     {
+        if (Structure == null)
+        {
+            throw new CancelTaskException();
+        }
+
         Taskmaster.ProcessQueue(SubTasks);
     }
 }

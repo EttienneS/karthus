@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class StructureController : MonoBehaviour
@@ -49,5 +50,15 @@ public class StructureController : MonoBehaviour
         structure.Load(StructureTypeFileMap[name]);
         structure.name = structure.Data.Name;
         return structure;
+    }
+
+    internal void RemoveStructure(Structure structure)
+    {
+        foreach (var item in structure.Data.ContainedItems)
+        {
+            item.Data.Reserved = false;
+        }
+
+        Destroy(structure.gameObject);
     }
 }
