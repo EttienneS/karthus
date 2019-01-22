@@ -1,14 +1,15 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class OrderSelectionController : MonoBehaviour
 {
+    public OrderButton BuildButton;
+    public OrderButton StockpileButton;
+
     public OrderButton OrderButtonPrefab;
 
     private static OrderSelectionController _instance;
-
-    private OrderButton BuildButton;
-
     public delegate void CellClickedDelegate(Cell cell);
 
     public static OrderSelectionController Instance
@@ -32,11 +33,11 @@ public class OrderSelectionController : MonoBehaviour
 
         CellClickOrder = cell =>
         {
-            if (cell.Structure == null)
+            if (!cell.Filled)
             {
                 var blueprint = StructureController.Instance.GetStructureBluePrint(structureName);
                 cell.AddContent(blueprint.gameObject);
-                cell.Structure = blueprint;
+                cell.Filled = true;
                 Taskmaster.Instance.AddTask(new Build(blueprint, cell));
             }
         };
@@ -46,18 +47,13 @@ public class OrderSelectionController : MonoBehaviour
     {
         if (OrderTrayController.Instance.gameObject.activeInHierarchy)
         {
-            OrderTrayController.Instance.gameObject.SetActive(false);
+            DisableAndReset();
+
             BuildButton.Text = "Select Building";
-            CellClickOrder = null;
         }
         else
         {
-            OrderTrayController.Instance.gameObject.SetActive(true);
-
-            foreach (Transform child in OrderTrayController.Instance.transform)
-            {
-                Destroy(child.gameObject);
-            }
+            EnableAndClear();
 
             foreach (var structureData in StructureController.Instance.StructureDataReference.Values)
             {
@@ -76,6 +72,12 @@ public class OrderSelectionController : MonoBehaviour
         }
     }
 
+    private void DisableAndReset()
+    {
+        OrderTrayController.Instance.gameObject.SetActive(false);
+        CellClickOrder = null;
+    }
+
     private void Start()
     {
         OrderTrayController.Instance.gameObject.SetActive(false);
@@ -83,6 +85,58 @@ public class OrderSelectionController : MonoBehaviour
         BuildButton = Instantiate(OrderButtonPrefab, transform);
         BuildButton.Button.onClick.AddListener(BuildTypeClicked);
         BuildButton.Text = "Select Building";
+
+        StockpileButton = Instantiate(OrderButtonPrefab, transform);
+        StockpileButton.Button.onClick.AddListener(StockpileTypeClicked);
+        StockpileButton.Text = "Place Stockpile";
+    }
+
+    private void StockpileTypeClicked()
+    {
+        if (OrderTrayController.Instance.gameObject.activeInHierarchy)
+        {
+            DisableAndReset();
+            StockpileButton.Text = "Place Stockpile";
+        }
+        else
+        {
+            EnableAndClear();
+
+            foreach (var item in ItemController.Instance.AllItems.Values)
+            {
+                var button = Instantiate(OrderButtonPrefab, OrderTrayController.Instance.transform);
+                button.Button.onClick.AddListener(() => StockpileClicked(item.Data.ItemType));
+                button.name = $"Place {item.Data.ItemType} Stockpile";
+                button.Button.image.sprite = SpriteStore.Instance.GetSpriteByName(item.Data.SpriteName);
+                button.Button.image.type = Image.Type.Tiled;
+                button.Text = button.name;
+            }
+        }
+    }
+
+    private void StockpileClicked(string itemTypeName)
+    {
+        StockpileButton.Text = $"Place {itemTypeName} Stockpile";
+
+        CellClickOrder = cell =>
+        {
+            if (!cell.Filled && cell.TravelCost > 0)
+            {
+                var stockpile = StockpileController.Instance.AddStockpile(itemTypeName);
+
+                cell.AddContent(stockpile.gameObject);
+                cell.Filled = true;
+            }
+        };
+    }
+
+    private static void EnableAndClear()
+    {
+        OrderTrayController.Instance.gameObject.SetActive(true);
+        foreach (Transform child in OrderTrayController.Instance.transform)
+        {
+            Destroy(child.gameObject);
+        }
     }
 
     // Update is called once per frame

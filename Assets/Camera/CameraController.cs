@@ -137,16 +137,12 @@ public class CameraController : MonoBehaviour
             // RotateAndScale(oldFov);
 
 #else
+            float horizontal = Input.GetAxis("Horizontal") / Time.timeScale;
+            float vertical = Input.GetAxis("Vertical") / Time.timeScale;
 
-            float horizontal = 0;
-            float vertical = 0;
-            var z = transform.position.z;
-
-            horizontal = Input.GetAxis("Horizontal") / Time.timeScale;
-            vertical = Input.GetAxis("Vertical") / Time.timeScale;
-
-            transform.position = new Vector3(transform.position.x + horizontal * Speed,
-                transform.position.y + vertical * Speed, z);
+            var x = Mathf.Clamp(transform.position.x + (horizontal * Speed), 0, MapEditor.Instance.MapSize);
+            var y = Mathf.Clamp(transform.position.y + (vertical * Speed), 0, MapEditor.Instance.MapSize);
+            transform.position = new Vector3(x, y, transform.position.z);
 
             Camera.orthographicSize = Mathf.Clamp(Camera.orthographicSize - Input.GetAxis("Mouse ScrollWheel") * ZoomStep,
                 ZoomMin, ZoomMax);

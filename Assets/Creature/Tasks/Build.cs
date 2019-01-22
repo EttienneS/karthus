@@ -18,8 +18,7 @@ public class Build : ITask
 
         foreach (var itemType in structure.Data.RequiredItemTypes)
         {
-            SubTasks.Enqueue(new GetItemOfType(itemType));
-            SubTasks.Enqueue(new Move(Cell));
+            SubTasks.Enqueue(new MoveItemToCell(itemType, Cell, true));
             SubTasks.Enqueue(new PlaceHeldItemInStructure(Structure));
         }
 
@@ -37,6 +36,20 @@ public class Build : ITask
             Structure.Data.DestroyContainedItems();
             Cell.TravelCost = Structure.Data.TravelCost;
             Structure.BluePrint = false;
+
+            if (Structure.Data.SpriteName == "Box")
+            {
+                var pile = Structure.gameObject.AddComponent<Stockpile>();
+
+                if (Structure.Data.Name.Contains("Wood"))
+                {
+                    pile.ItemType = "Wood";
+                }
+                else
+                {
+                    pile.ItemType = "Rock";
+                }
+            }
 
             return true;
         }

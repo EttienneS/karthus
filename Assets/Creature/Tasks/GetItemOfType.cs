@@ -5,9 +5,11 @@ public class GetItemOfType : ITask
 {
     private Cell _itemLocation;
     public Creature Creature { get; set; }
+    public bool AllowStockpiled { get; set; }
 
-    public GetItemOfType(string itemType)
+    public GetItemOfType(string itemType, bool allowStockpiled)
     {
+        AllowStockpiled = allowStockpiled;
         ItemType = itemType;
         SubTasks = new Queue<ITask>();
     }
@@ -22,6 +24,12 @@ public class GetItemOfType : ITask
     {
         if (_item != null && Taskmaster.QueueComplete(SubTasks))
         {
+            if (!string.IsNullOrEmpty(_item.Data.StockpileId))
+            {
+                var pile = StockpileController.Instance.GetStockpile(_item.Data.StockpileId);
+                _item = pile.GetItem(_item);
+            }
+
             Creature.CarriedItem = _item;
             _item.SpriteRenderer.color = Color.white;
             return true;
@@ -34,7 +42,7 @@ public class GetItemOfType : ITask
     {
         if (_item == null)
         {
-            _item = MapGrid.Instance.FindClosestItemOfType(Creature.CurrentCell, ItemType);
+            _item = MapGrid.Instance.FindClosestItemOfType(Creature.CurrentCell, ItemType, AllowStockpiled);
             _item.Data.Reserved = true;
             UpdateTargetItem();
         }

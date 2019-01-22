@@ -66,12 +66,6 @@ public class Structure : MonoBehaviour
 }
 
 [Serializable]
-public enum StructureType
-{
-    Floor, Wall
-}
-
-[Serializable]
 public class StructureData
 {
     public string Name;
@@ -80,8 +74,6 @@ public class StructureData
     public bool IsBluePrint;
     public bool Tiled;
     public float TravelCost;
-
-    public StructureType Type;
 
     private List<Item> _containedItems = new List<Item>();
 

@@ -84,7 +84,7 @@ public class Cell : MonoBehaviour
 
     public int SearchPriority => (int)Distance + SearchHeuristic;
 
-    public Structure Structure { get; set; }
+    public bool Filled { get; set; }
     public SpriteRenderer Terrain { get; private set; }
 
     public string Text

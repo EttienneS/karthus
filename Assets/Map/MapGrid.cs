@@ -146,8 +146,18 @@ public class MapGrid : MonoBehaviour
         }
     }
 
-    internal Item FindClosestItemOfType(Cell centerPoint, string type)
+    internal Item FindClosestItemOfType(Cell centerPoint, string type, bool allowStockpiled)
     {
+        if (allowStockpiled)
+        {
+            var stockpiledItem = StockpileController.Instance.FindClosestItemInStockpile(type, centerPoint);
+
+            if (stockpiledItem != null)
+            {
+                return stockpiledItem;
+            }
+        }
+
         var closest = float.MaxValue;
 
         var searchRadius = 3;
@@ -165,6 +175,11 @@ public class MapGrid : MonoBehaviour
                     {
                         if (item != null && item.Data.ItemType == type && !item.Data.Reserved)
                         {
+                            if (!string.IsNullOrEmpty(item.Data.StockpileId))
+                            {
+                                continue;
+                            }
+
                             var distance = Pathfinder.Distance(centerPoint, cell);
                             if (distance < closest)
                             {

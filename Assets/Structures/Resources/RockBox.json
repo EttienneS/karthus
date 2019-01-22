@@ -1,0 +1,8 @@
+{
+	"Name":"Rock Box",
+	"SpriteName":"Box",
+	"Tiled":"False",
+	"RequiredItemTypes":["Rock"],
+	"TravelCost": "2.5",
+	"StructureType": "Stockpile"
+}

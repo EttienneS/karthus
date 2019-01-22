@@ -27,6 +27,24 @@ public class GameController : MonoBehaviour
 
     public Creature SelectedCreature { get; set; }
 
+    public void DeselectCell()
+    {
+        if (SelectedCell != null)
+        {
+            SelectedCell.DisableBorder();
+            SelectedCell = null;
+        }
+    }
+
+    public void DeselectCreature()
+    {
+        if (SelectedCreature != null)
+        {
+            SelectedCreature.Outline.outlineSize = 0;
+            SelectedCreature = null;
+        }
+    }
+
     private static void DestroyAndRecreateMap()
     {
         foreach (var cell in MapGrid.Instance.Map)
@@ -41,56 +59,6 @@ public class GameController : MonoBehaviour
         CreatureController.Instance.Creatures.Clear();
 
         MapEditor.Instance.Generating = false;
-    }
-    private void Update()
-    {
-        HandleTimeControls();
-
-        if (Input.GetMouseButton(0))
-        {
-            if (EventSystem.current.IsPointerOverGameObject())
-            {
-                return;
-            }
-
-            var rayPos = new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x,
-                                     Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
-
-            var hit = Physics2D.Raycast(rayPos, Vector2.zero, 0f);
-            if (hit)
-            {
-                var clickedCell = MapGrid.Instance.GetCellAtPoint(hit.point);
-                var clickedCreature = CreatureController.Instance.GetCreatureAtPoint(hit.point);
-
-                if (clickedCreature != null)
-                {
-                    if (SelectedCreature != null)
-                    {
-                        SelectedCreature.Outline.outlineSize = 0;
-                    }
-
-                    SelectedCreature = clickedCreature;
-                    SelectedCreature.Outline.outlineSize = 1;
-                }
-                else
-                {
-                    if (lastClickedCell == null || clickedCell != lastClickedCell)
-                    {
-                        SelectedCell?.DisableBorder();
-
-                        SelectedCell = clickedCell;
-                        SelectedCell.EnableBorder(Color.red);
-
-                        if (OrderSelectionController.Instance.CellClickOrder != null)
-                        {
-                            OrderSelectionController.Instance.CellClickOrder.Invoke(SelectedCell);
-                        }
-
-                        lastClickedCell = clickedCell;
-                    }
-                }
-            }
-        }
     }
 
     private void HandleTimeControls()
@@ -123,6 +91,63 @@ public class GameController : MonoBehaviour
         if (Input.GetKeyDown("4"))
         {
             TimeManager.Instance.TimeStep = TimeStep.Hyper;
+        }
+    }
+
+    private void Update()
+    {
+        HandleTimeControls();
+
+        if (Input.GetMouseButton(1))
+        {
+            // right mouse deselect all
+            DeselectCreature();
+            DeselectCell();
+        }
+        else
+        {
+            if (Input.GetMouseButton(0))
+            {
+                if (EventSystem.current.IsPointerOverGameObject())
+                {
+                    return;
+                }
+
+                var rayPos = new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x,
+                                         Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
+
+                var hit = Physics2D.Raycast(rayPos, Vector2.zero, 0f);
+                if (hit)
+                {
+                    var clickedCell = MapGrid.Instance.GetCellAtPoint(hit.point);
+                    var clickedCreature = CreatureController.Instance.GetCreatureAtPoint(hit.point);
+
+                    if (clickedCreature != null)
+                    {
+                        DeselectCreature();
+
+                        SelectedCreature = clickedCreature;
+                        SelectedCreature.Outline.outlineSize = 1;
+                    }
+                    else
+                    {
+                        if (lastClickedCell == null || clickedCell != lastClickedCell)
+                        {
+                            DeselectCell();
+
+                            SelectedCell = clickedCell;
+                            SelectedCell.EnableBorder(Color.red);
+
+                            if (OrderSelectionController.Instance.CellClickOrder != null)
+                            {
+                                OrderSelectionController.Instance.CellClickOrder.Invoke(SelectedCell);
+                            }
+
+                            lastClickedCell = clickedCell;
+                        }
+                    }
+                }
+            }
         }
     }
 }
