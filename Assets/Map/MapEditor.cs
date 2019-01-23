@@ -14,7 +14,7 @@ public class MapEditor : MonoBehaviour
     public bool Generating = false;
     public MapGrid MapGrid;
 
-    [Range(4, 196)]
+    [Range(4, 300)]
     public int MapSize = 64;
 
     public bool ShowGeneration = true;

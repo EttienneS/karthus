@@ -23,12 +23,14 @@ public class RemoveStructure : ITask
     {
         if (Taskmaster.QueueComplete(SubTasks))
         {
-            StructureController.Instance.RemoveStructure(Structure);
-
             foreach (var itemName in StructureController.Instance.StructureDataReference[Structure.Data.Name].RequiredItemTypes)
             {
                 Cell.AddContent(ItemController.Instance.GetItem(itemName).gameObject, true);
             }
+
+            Cell.Filled = false;
+
+            StructureController.Instance.RemoveStructure(Structure);
 
             return true;
         }

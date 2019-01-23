@@ -34,7 +34,7 @@ public class CreatureController : MonoBehaviour
     {
         var creature = Instantiate(CreaturePrefab, transform, true);
 
-        transform.position = spawnLocation.transform.position;
+        creature.transform.position = spawnLocation.transform.position;
         spawnLocation.AddCreature(creature);
 
         Creatures.Add(creature);
