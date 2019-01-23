@@ -114,6 +114,7 @@ public class OrderSelectionController : MonoBehaviour
     private void Start()
     {
         OrderTrayController.Instance.gameObject.SetActive(false);
+        CreatureInfoPanel.Instance.gameObject.SetActive(false);
 
         BuildButton = Instantiate(OrderButtonPrefab, transform);
         BuildButton.Button.onClick.AddListener(BuildTypeClicked);
