@@ -103,6 +103,8 @@ public class GameController : MonoBehaviour
             // right mouse deselect all
             DeselectCreature();
             DeselectCell();
+
+            CreatureInfoPanel.Instance.Hide();
         }
         else
         {
@@ -128,6 +130,8 @@ public class GameController : MonoBehaviour
 
                         SelectedCreature = clickedCreature;
                         SelectedCreature.Outline.outlineSize = 1;
+
+                        CreatureInfoPanel.Instance.Show();
                     }
                     else
                     {

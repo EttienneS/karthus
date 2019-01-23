@@ -16,6 +16,6 @@ public class Builder
 
     public static void BuildWeb()
     {
-        BuildPipeline.BuildPlayer(Scenes, "Builds/WebGL/", BuildTarget.WebGL, BuildOptions.None);
+        BuildPipeline.BuildPlayer(Scenes, "Builds/WebGL/", BuildTarget.WebGL, BuildOptions.Development);
     }
 }
