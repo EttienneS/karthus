@@ -615,7 +615,7 @@ PrefabInstance:
     - target: {fileID: 9178994232966600077, guid: 7bf1785e44d991f408b7a89a8850def9,
         type: 3}
       propertyPath: MapSize
-      value: 32
+      value: 100
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7bf1785e44d991f408b7a89a8850def9, type: 3}

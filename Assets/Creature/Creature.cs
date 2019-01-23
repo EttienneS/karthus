@@ -63,8 +63,12 @@ public class Creature : MonoBehaviour
         catch (CancelTaskException)
         {
             Taskmaster.Instance.TaskComplete(Task);
-            CarriedItem.Data.Reserved = false;
-            CarriedItem = null;
+
+            if (CarriedItem != null)
+            {
+                CarriedItem.Data.Reserved = false;
+                CarriedItem = null;
+            }
 
             Task = Taskmaster.Instance.GetTask(this);
             AssignTask(Task);
