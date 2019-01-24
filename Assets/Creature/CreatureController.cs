@@ -37,6 +37,8 @@ public class CreatureController : MonoBehaviour
         creature.transform.position = spawnLocation.transform.position;
         spawnLocation.AddCreature(creature);
 
+        creature.name = CreatureHelper.GetRandomName();
+
         Creatures.Add(creature);
         return creature;
     }

@@ -22,6 +22,8 @@ public class CreatureInfoPanel : MonoBehaviour
     }
 
     public Text CreatureName;
+    public Text Hunger;
+    public Text Thirst;
 
     private bool _firstRun = true;
     public void Start()
@@ -30,18 +32,27 @@ public class CreatureInfoPanel : MonoBehaviour
         {
             var children = GetComponentsInChildren<Text>().ToList();
             CreatureName = children.First(t => t.name == "CreatureName");
-
+            Hunger = children.First(t => t.name == "Hunger");
+            Thirst = children.First(t => t.name == "Thirst");
 
             _firstRun = true;
+        }
+    }
+
+    public Creature CurrentCreature;
+
+    public void Update()
+    {
+        if (CurrentCreature != null)
+        {
+            CreatureName.text = CurrentCreature.name;
         }
     }
 
     public void Show()
     {
         Instance.gameObject.SetActive(true);
-
-        var creature = GameController.Instance.SelectedCreature;
-        CreatureName.text = creature.name;
+        CurrentCreature = GameController.Instance.SelectedCreature;
     }
 
     public void Hide()
