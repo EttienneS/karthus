@@ -146,19 +146,20 @@ public class Cell : MonoBehaviour
         cell.Neighbors[(int)direction.Opposite()] = this;
     }
 
+    private float _lastUpdate;
     public void Update()
     {
-        //if (!Fog.enabled)
-        //{
-        // animate cells if fog is nog enabled
         if (CellType == CellType.Water)
         {
-            if (Random.value > 0.98f)
+            _lastUpdate += Time.deltaTime;
+
+            if (_lastUpdate > Random.Range(0.5f, 1f))
             {
                 CellType = CellType.Water;
+                _lastUpdate = 0;
             }
+            
         }
-        //}
     }
 
     internal void AddCreature(Creature creature)
