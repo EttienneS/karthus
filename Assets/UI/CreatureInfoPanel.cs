@@ -24,6 +24,7 @@ public class CreatureInfoPanel : MonoBehaviour
     public Text CreatureName;
     public Text Hunger;
     public Text Thirst;
+    public Text Energy;
 
     private bool _firstRun = true;
     public void Start()
@@ -34,6 +35,7 @@ public class CreatureInfoPanel : MonoBehaviour
             CreatureName = children.First(t => t.name == "CreatureName");
             Hunger = children.First(t => t.name == "Hunger");
             Thirst = children.First(t => t.name == "Thirst");
+            Energy = children.First(t => t.name == "Energy");
 
             _firstRun = true;
         }
@@ -46,6 +48,9 @@ public class CreatureInfoPanel : MonoBehaviour
         if (CurrentCreature != null)
         {
             CreatureName.text = CurrentCreature.name;
+            Hunger.text = CurrentCreature.Hunger.ToString("0");
+            Thirst.text = CurrentCreature.Thirst.ToString("0");
+            Energy.text = CurrentCreature.Energy.ToString("0");
         }
     }
 

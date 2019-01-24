@@ -77,6 +77,8 @@ public class Stockpile : MonoBehaviour
 
     private void Update()
     {
+        if (TimeManager.Instance.Paused) return;
+
         Text = ItemType;
 
         ActiveTasks.RemoveAll(t => t.Done());

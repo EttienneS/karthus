@@ -16,11 +16,19 @@ public class Creature : MonoBehaviour
 
     public Item CarriedItem;
 
+    public float Hunger { get; set; }
+    public float Thirst { get; set; }
+    public float Energy { get; set; }
+
     public void Start()
     {
         SpriteRenderer = GetComponent<SpriteRenderer>();
         SpriteAnimator = GetComponent<SpriteAnimator>();
         Outline = GetComponent<SpriteOutline>();
+
+        Hunger = Random.Range(0, 15);
+        Thirst = Random.Range(0, 15);
+        Energy = Random.Range(80, 100);
     }
 
     public void AssignTask(ITask task)
@@ -36,8 +44,23 @@ public class Creature : MonoBehaviour
         }
     }
 
+    private float _needUpdate;
     public void Update()
     {
+        if (TimeManager.Instance.Paused) return;
+
+        _needUpdate += Time.deltaTime;
+
+        if (_needUpdate >= TimeManager.Instance.TickInterval)
+        {
+            _needUpdate = 0;
+
+            Hunger += Random.value;
+            Thirst += Random.value;
+            Energy -= Random.value;
+        }
+
+
         if (Task == null)
         {
             var task = Taskmaster.Instance.GetTask(this);
@@ -50,6 +73,9 @@ public class Creature : MonoBehaviour
 
         try
         {
+
+
+
             if (!Task.Done())
             {
                 Task.Update();

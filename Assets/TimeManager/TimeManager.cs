@@ -1,10 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TimeManager : MonoBehaviour
 {
     private static TimeManager _instance;
+
+    public Text TimeDisplay;
 
     public static TimeManager Instance
     {
@@ -19,12 +21,54 @@ public class TimeManager : MonoBehaviour
         }
     }
 
+    private float _timeTicks;
+
+    internal int Hour = 12;
+    internal int Minute = 25;
+
+    internal float TickInterval = 0.2f;
+
+    public void Update()
+    {
+        //if (Paused) return;
+
+        _timeTicks += Time.deltaTime;
+
+        if (_timeTicks >= TickInterval)
+        {
+            _timeTicks = 0;
+            Minute += 5;
+
+            if (Minute >= 60)
+            {
+                Hour++;
+                Minute = 0;
+
+                if (Hour > 23)
+                {
+                    Hour = 0;
+                }
+            }
+        }
+
+        TimeDisplay.text = $"{Hour.ToString().PadLeft(2, '0')}:{Minute.ToString().PadLeft(2, '0')}";
+    }
+
     public void Start()
     {
         TimeStep = TimeStep.Normal;
     }
 
     private TimeStep _timeStep;
+
+    internal bool Paused
+    {
+        get
+        {
+            return TimeStep == TimeStep.Paused;
+        }
+    }
+
     public TimeStep TimeStep
     {
         get

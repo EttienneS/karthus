@@ -58,6 +58,8 @@ public class Structure : MonoBehaviour
 
     private void Update()
     {
+        if (TimeManager.Instance.Paused) return;
+
         if (BluePrint && !Taskmaster.Instance.ContainsJob(name))
         {
             Taskmaster.Instance.AddTask(new Build(this, GetComponentInParent<Cell>()));
