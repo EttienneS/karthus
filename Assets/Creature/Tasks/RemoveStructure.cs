@@ -12,7 +12,7 @@ public class RemoveStructure : ITask
 
         SubTasks = new Queue<ITask>();
         SubTasks.Enqueue(new Move(Cell));
-        SubTasks.Enqueue(new Wait(2f));
+        SubTasks.Enqueue(new Wait(2f, "Removing"));
     }
 
     public Queue<ITask> SubTasks { get; set; }

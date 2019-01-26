@@ -22,7 +22,7 @@ public class Build : ITask
             SubTasks.Enqueue(new PlaceHeldItemInStructure(Structure));
         }
 
-        SubTasks.Enqueue(new Wait(1f));
+        SubTasks.Enqueue(new Wait(3f, "Building"));
         SubTasks.Enqueue(new Move(Cell.Neighbors.First(c => c.TravelCost != 0)));
     }
 
