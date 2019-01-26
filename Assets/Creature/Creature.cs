@@ -60,7 +60,6 @@ public class Creature : MonoBehaviour
             Energy -= Random.value;
         }
 
-
         if (Task == null)
         {
             var task = Taskmaster.Instance.GetTask(this);
@@ -73,9 +72,6 @@ public class Creature : MonoBehaviour
 
         try
         {
-
-
-
             if (!Task.Done())
             {
                 Task.Update();

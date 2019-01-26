@@ -6,13 +6,15 @@ public class Wait : ITask
     public float Duration;
     public float ElapsedTime;
     public float LastFacingChange;
+    public string Reason;
 
     public Creature Creature { get; set; }
 
-    public Wait(float duration)
+    public Wait(float duration, string reason)
     {
         Duration = duration;
-        TaskId = $"Wait for {Duration}";
+        Reason = reason;
+        TaskId = $"{Reason} {Duration}";
         ElapsedTime = 0;
         LastFacingChange = 0;
     }
@@ -27,7 +29,8 @@ public class Wait : ITask
 
     public override string ToString()
     {
-        return $"Waiting for {ElapsedTime:F2}/{Duration:F2}";
+        return Reason;
+        //return $"{Reason} for {ElapsedTime:F2}/{Duration:F2}";
     }
 
     public void Update()

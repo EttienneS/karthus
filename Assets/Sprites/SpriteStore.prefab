@@ -145,12 +145,14 @@ MonoBehaviour:
   - {fileID: 21300000, guid: ff16e3e7f5655f241844ec18073459fb, type: 3}
   - {fileID: 21300000, guid: 6738ef099b9cd824bbc53469d03a4905, type: 3}
   - {fileID: 21300000, guid: 58df4dc84cadbaf489a5e6aa63623586, type: 3}
+  - {fileID: 21300000, guid: 869ce47236523f54f91bb08f08a99a09, type: 3}
+  - {fileID: 21300000, guid: b467cefa35b1d6a49aba1fc4c5f1124d, type: 3}
+  - {fileID: 21300000, guid: 526ce46326433534eb698ba424320abc, type: 3}
+  - {fileID: 21300000, guid: ac77a2ecc46e0444485f822430a7612d, type: 3}
   StructureSprites:
   - {fileID: 21300000, guid: fb77dd189d9de3d4b8bde7ec6db54e0f, type: 3}
   - {fileID: 21300000, guid: 3d86efcf2d7313e4e987a5a58b345e44, type: 3}
   - {fileID: 21300000, guid: 516ac22ae1ce59c48a443e57c7391f10, type: 3}
-  - {fileID: 21300000, guid: bdc954910ab1bca458fbc9278fda2782, type: 3}
-  - {fileID: 21300000, guid: 4e264c75e7263d24ab32bf1cad45e99f, type: 3}
   FrontSprites:
   - {fileID: -4151522841958201881, guid: f86441a8d11368946922e09b161df4e2, type: 3}
   - {fileID: 9130039062645355017, guid: f86441a8d11368946922e09b161df4e2, type: 3}

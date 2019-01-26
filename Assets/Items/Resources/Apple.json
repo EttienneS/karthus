@@ -1,0 +1,10 @@
+{
+	"Name":"Apple",
+	"SpriteName":"Apple",
+	"ItemType":"Food",
+	"Properties":[
+		{
+			"Key":"Nutrition",
+			"Value":"55"
+		}]
+}

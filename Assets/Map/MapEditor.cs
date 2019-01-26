@@ -225,6 +225,11 @@ public class MapEditor : MonoBehaviour
                     {
                         cell.AddContent(ItemController.Instance.GetItem("Wood").gameObject, true);
                     }
+
+                    if (Random.value > 0.9)
+                    {
+                        cell.AddContent(ItemController.Instance.GetItem("Apple").gameObject, true);
+                    }
                     break;
 
                 case CellType.Stone:

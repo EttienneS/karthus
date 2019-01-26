@@ -51,3 +51,4 @@ MonoBehaviour:
   ItemJson:
   - {fileID: 4900000, guid: ba6f6cc8abf1f4d4d9c0acdd461eae98, type: 3}
   - {fileID: 4900000, guid: 60f2a64e4e440bc48a5de8c8f405a80f, type: 3}
+  - {fileID: 4900000, guid: 44c5ff02710a906429ba6a070b351ab9, type: 3}

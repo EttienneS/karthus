@@ -73,24 +73,34 @@ public class Taskmaster : MonoBehaviour
 
     public ITask GetTask(Creature creature)
     {
-        var task = GetNextAvailableTask();
-        if (task == null)
-        {
-            if (Random.value > 0.6)
-            {
-                var wanderCircle = MapGrid.Instance.GetCircle(creature.CurrentCell, 3).Where(c => c.TravelCost == 1).ToList();
-                if (wanderCircle.Count > 0)
-                {
-                    task = new Move(wanderCircle[Random.Range(0, wanderCircle.Count - 1)], (int)creature.Speed / 3);
-                }
-            }
+        ITask task = null;
 
+        if (creature.Hunger > 50)
+        {
+            task = new Eat();
+            AddTask(task);
+        }
+        else
+        {
+            task = GetNextAvailableTask();
             if (task == null)
             {
-                task = new Wait(Random.Range(0.1f, 1f));
-            }
+                if (Random.value > 0.6)
+                {
+                    var wanderCircle = MapGrid.Instance.GetCircle(creature.CurrentCell, 3).Where(c => c.TravelCost == 1).ToList();
+                    if (wanderCircle.Count > 0)
+                    {
+                        task = new Move(wanderCircle[Random.Range(0, wanderCircle.Count - 1)], (int)creature.Speed / 3);
+                    }
+                }
 
-            AddTask(task);
+                if (task == null)
+                {
+                    task = new Wait(Random.Range(0.1f, 1f), "Chilling");
+                }
+
+                AddTask(task);
+            }
         }
 
         FlagTaskAsInprogress(task);
