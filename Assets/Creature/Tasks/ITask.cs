@@ -7,7 +7,7 @@ public enum TaskStatus
 
 public interface ITask
 {
-    Queue<ITask> SubTasks { get; set; } 
+    Queue<ITask> SubTasks { get; set; }
 
     Creature Creature { get; set; }
 

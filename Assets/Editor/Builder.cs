@@ -1,4 +1,5 @@
 ﻿using UnityEditor;
+
 public class Builder
 {
     public static string[] Scenes = new[] { "Assets/scenes/Main.unity" };

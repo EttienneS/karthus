@@ -74,7 +74,7 @@ MeshRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -396414279
-  m_SortingLayer: 4
+  m_SortingLayer: 5
   m_SortingOrder: 0
 --- !u!33 &2311482188759415109
 MeshFilter:
@@ -190,11 +190,11 @@ MonoBehaviour:
     lineCount: 0
     pageCount: 0
     materialCount: 1
-  m_havePropertiesChanged: 0
+  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
+  m_isInputParsingRequired: 1
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 7337154666719515497}
@@ -275,8 +275,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 615336307
-  m_SortingLayer: 2
+  m_SortingLayerID: 875916389
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 58df4dc84cadbaf489a5e6aa63623586, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

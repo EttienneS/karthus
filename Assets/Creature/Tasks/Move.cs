@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Move : ITask
@@ -47,16 +48,7 @@ public class Move : ITask
 
                 if (Path == null)
                 {
-                    // failure, task is no longer possible
-                    _navigationFailureCount++;
-
-                    if (_navigationFailureCount > 10)
-                    {
-                        _navigationFailureCount = 0;
-                        // failed to find a path too many times, short circuit
-                        TargetCell = Creature.CurrentCell;
-                        return;
-                    }
+                    throw new CancelTaskException("Unable to find path");
                 }
 
                 NextCell = Path[Path.IndexOf(Creature.CurrentCell) - 1];

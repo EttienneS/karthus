@@ -1,0 +1,7 @@
+{
+	"Name":"Tree",
+	"SpriteName":"TreeStump",
+	"Tiled":"False",
+	"TravelCost": "-1",
+	"StructureType": "Tree"
+}

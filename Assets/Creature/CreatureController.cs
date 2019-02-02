@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -37,6 +36,7 @@ public class CreatureController : MonoBehaviour
         creature.transform.position = spawnLocation.transform.position;
         spawnLocation.AddCreature(creature);
 
+
         creature.name = CreatureHelper.GetRandomName();
 
         Creatures.Add(creature);
@@ -49,8 +49,17 @@ public class CreatureController : MonoBehaviour
         firstCreature.Speed = Random.Range(10, 15);
         CameraController.Instance.MoveToCell(firstCreature.CurrentCell);
 
+
+
         // spawn creatures in a circle around the 'first' one
         var spawns = MapGrid.Instance.GetCircle(firstCreature.CurrentCell, 3).Where(c => c.TravelCost > 0).ToList();
+        var spawnCount = spawns.Count;
+        for (int i = 0; i < spawnCount * 2; i++)
+        {
+            spawns[Random.Range(0, spawnCount)].AddContent(ItemController.Instance.GetItem("Apple").gameObject, true);
+            spawns[Random.Range(0, spawnCount)].AddContent(ItemController.Instance.GetItem("Wood").gameObject, true);
+        }
+
 
         for (int i = 0; i < CreaturesToSpawn - 1; i++)
         {

@@ -221,15 +221,10 @@ public class MapEditor : MonoBehaviour
             switch (cell.CellType)
             {
                 case CellType.Forest:
-                    if (Random.value > 0.6)
+                    if (Random.value > 0.99)
                     {
-                        cell.AddContent(ItemController.Instance.GetItem("Wood").gameObject, true);
-                    }
-
-                    if (Random.value > 0.9)
-                    {
-                        cell.AddContent(ItemController.Instance.GetItem("Apple").gameObject, true);
-                    }
+                        cell.AddContent(StructureController.Instance.GetStructure("Tree").gameObject, false);
+                    }                   
                     break;
 
                 case CellType.Stone:

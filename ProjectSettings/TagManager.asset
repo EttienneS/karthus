@@ -47,6 +47,9 @@ TagManager:
   - name: Structure
     uniqueID: 615336307
     locked: 0
+  - name: Stockpile
+    uniqueID: 875916389
+    locked: 0
   - name: Item
     uniqueID: 2300683303
     locked: 0

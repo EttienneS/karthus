@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -13,6 +12,8 @@ public class Item : MonoBehaviour
     }
 
     public ItemData Data;
+
+    public Cell Cell { get; set; }
 
     public string GetPropertyValue(string key)
     {
@@ -37,8 +38,6 @@ public class ItemData
     public string StockpileId { get; set; }
 
     public ItemProperty[] Properties;
-
-   
 }
 
 [Serializable]

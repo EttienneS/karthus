@@ -42,7 +42,12 @@ public class GetItemOfType : ITask
     {
         if (_item == null)
         {
-            _item = MapGrid.Instance.FindClosestItemOfType(Creature.CurrentCell, ItemType, AllowStockpiled);
+            _item = ItemController.Instance.FindClosestItemOfType(Creature.CurrentCell, ItemType, AllowStockpiled);
+
+            if (_item == null)
+            {
+                throw new CancelTaskException($"Unable to find item: {ItemType}");
+            }
             _item.Data.Reserved = true;
             UpdateTargetItem();
         }

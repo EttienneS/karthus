@@ -86,6 +86,18 @@ public static class Pathfinder
         return reachableCells;
     }
 
+    internal static float GetPathCost(Cell fromCell, Cell toCell)
+    {
+        var path = FindPath(fromCell, toCell);
+
+        if (path == null)
+        {
+            return float.MaxValue;
+        }
+
+        return GetPathCost(path);
+    }
+
     public static void ShowPath(List<Cell> path)
     {
         foreach (var cell in path)

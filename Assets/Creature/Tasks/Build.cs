@@ -34,7 +34,6 @@ public class Build : ITask
         if (Taskmaster.QueueComplete(SubTasks))
         {
             Structure.Data.DestroyContainedItems();
-            Cell.TravelCost = Structure.Data.TravelCost;
             Structure.BluePrint = false;
 
             if (Structure.Data.SpriteName == "Box")

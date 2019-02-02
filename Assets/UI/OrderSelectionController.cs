@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class OrderSelectionController : MonoBehaviour
@@ -10,6 +9,7 @@ public class OrderSelectionController : MonoBehaviour
     public OrderButton OrderButtonPrefab;
 
     private static OrderSelectionController _instance;
+
     public delegate void CellClickedDelegate(Cell cell);
 
     public static OrderSelectionController Instance
@@ -33,11 +33,10 @@ public class OrderSelectionController : MonoBehaviour
 
         CellClickOrder = cell =>
         {
-            if (!cell.Filled)
+            if (cell.Structure == null)
             {
                 var blueprint = StructureController.Instance.GetStructureBluePrint(structureName);
                 cell.AddContent(blueprint.gameObject);
-                cell.Filled = true;
                 Taskmaster.Instance.AddTask(new Build(blueprint, cell));
             }
         };
@@ -71,7 +70,7 @@ public class OrderSelectionController : MonoBehaviour
             }
 
             var removeButton = Instantiate(OrderButtonPrefab, OrderTrayController.Instance.transform);
-            removeButton.Button.onClick.AddListener(() => RemoveStructureClicked());
+            removeButton.Button.onClick.AddListener(RemoveStructureClicked);
             removeButton.name = "Remove Structure";
             removeButton.Text = removeButton.name;
             removeButton.Button.image.sprite = SpriteStore.Instance.GetSpriteByName("cancel");
@@ -84,14 +83,10 @@ public class OrderSelectionController : MonoBehaviour
 
         CellClickOrder = cell =>
         {
-            if (cell.Filled)
+            if (cell.Structure != null)
             {
-                var structure = cell.GetComponentInChildren<Structure>();
-                if (structure == null)
-                {
-                    return;
-                }
-
+                var structure = cell.Structure;
+             
                 if (structure.Data.IsBluePrint)
                 {
                     StructureController.Instance.RemoveStructure(structure);
@@ -121,12 +116,10 @@ public class OrderSelectionController : MonoBehaviour
         BuildButton.Text = "Select Building";
         BuildButton.Button.image.sprite = SpriteStore.Instance.GetSpriteByName("hammer");
 
-
         StockpileButton = Instantiate(OrderButtonPrefab, transform);
         StockpileButton.Button.onClick.AddListener(StockpileTypeClicked);
         StockpileButton.Text = "Place Stockpile";
         StockpileButton.Button.image.sprite = SpriteStore.Instance.GetSpriteByName("box");
-
     }
 
     private void StockpileTypeClicked()
@@ -140,7 +133,7 @@ public class OrderSelectionController : MonoBehaviour
         {
             EnableAndClear();
 
-            foreach (var item in ItemController.Instance.AllItems.Values)
+            foreach (var item in ItemController.Instance.AllItemTypes.Values)
             {
                 var button = Instantiate(OrderButtonPrefab, OrderTrayController.Instance.transform);
                 button.Button.onClick.AddListener(() => StockpileClicked(item.Data.ItemType));
@@ -158,12 +151,10 @@ public class OrderSelectionController : MonoBehaviour
 
         CellClickOrder = cell =>
         {
-            if (!cell.Filled && cell.TravelCost > 0)
+            if (cell.Structure == null && cell.TravelCost > 0)
             {
                 var stockpile = StockpileController.Instance.AddStockpile(itemTypeName);
-
                 cell.AddContent(stockpile.gameObject);
-                cell.Filled = true;
             }
         };
     }
@@ -176,5 +167,4 @@ public class OrderSelectionController : MonoBehaviour
             Destroy(child.gameObject);
         }
     }
-
 }

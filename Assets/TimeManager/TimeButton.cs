@@ -1,12 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class TimeButton : MonoBehaviour
 {
     public TimeStep Step;
-
 
     public void Click()
     {
@@ -19,7 +16,7 @@ public class TimeButton : MonoBehaviour
         name = Step + " Button";
     }
 
-    void Update()
+    private void Update()
     {
         if (TimeManager.Instance.TimeStep == Step)
         {

@@ -45,6 +45,7 @@ public class Creature : MonoBehaviour
     }
 
     private float _needUpdate;
+
     public void Update()
     {
         if (TimeManager.Instance.Paused) return;

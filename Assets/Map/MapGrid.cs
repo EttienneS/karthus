@@ -144,59 +144,7 @@ public class MapGrid : MonoBehaviour
         {
             cell.EnableBorder(color);
         }
-    }
-
-    internal Item FindClosestItemOfType(Cell centerPoint, string type, bool allowStockpiled)
-    {
-        if (allowStockpiled)
-        {
-            var stockpiledItem = StockpileController.Instance.FindClosestItemInStockpile(type, centerPoint);
-
-            if (stockpiledItem != null)
-            {
-                return stockpiledItem;
-            }
-        }
-
-        var closest = float.MaxValue;
-
-        var searchRadius = 3;
-        var maxRadius = Map.GetLength(0);
-        var checkedCells = new HashSet<Cell>();
-        do
-        {
-            var searchArea = Instance.GetCircle(centerPoint, searchRadius);
-            searchArea.Reverse();
-            foreach (var cell in searchArea)
-            {
-                if (checkedCells.Add(cell))
-                {
-                    foreach (var item in cell.GetComponentsInChildren<Item>())
-                    {
-                        if (item != null && item.Data.ItemType == type && !item.Data.Reserved)
-                        {
-                            if (!string.IsNullOrEmpty(item.Data.StockpileId))
-                            {
-                                continue;
-                            }
-
-                            var distance = Pathfinder.Distance(centerPoint, cell);
-                            if (distance < closest)
-                            {
-                                closest = distance;
-                                return item;
-                            }
-                        }
-                    }
-                }
-            }
-
-            searchRadius += 3;
-        }
-        while (searchRadius <= maxRadius);
-
-        return null;
-    }
+    }     
 
     internal Direction GetDirection(Cell fromCell, Cell toCell)
     {
