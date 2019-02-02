@@ -8,6 +8,8 @@ public class Structure : MonoBehaviour
     internal SpriteRenderer SpriteRenderer;
     internal StructureData Data = new StructureData();
 
+    public Cell Cell { get; internal set; }
+
     internal bool BluePrint
     {
         get

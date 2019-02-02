@@ -14,7 +14,6 @@ public class StockpileItem : ITask
         SubTasks.Enqueue(new MoveItemToCell(itemType, stockpile.Cell, false));
     }
 
-
     public bool Done()
     {
         if (Taskmaster.QueueComplete(SubTasks))

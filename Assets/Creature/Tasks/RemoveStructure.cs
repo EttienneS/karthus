@@ -28,8 +28,6 @@ public class RemoveStructure : ITask
                 Cell.AddContent(ItemController.Instance.GetItem(itemName).gameObject, true);
             }
 
-            Cell.Filled = false;
-
             StructureController.Instance.RemoveStructure(Structure);
 
             return true;

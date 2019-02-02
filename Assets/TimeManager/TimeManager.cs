@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class TimeManager : MonoBehaviour
@@ -91,7 +90,6 @@ public class TimeManager : MonoBehaviour
             }
         }
     }
-
 }
 
 public enum TimeStep

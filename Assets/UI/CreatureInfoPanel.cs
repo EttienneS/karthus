@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -28,6 +26,7 @@ public class CreatureInfoPanel : MonoBehaviour
     public Text Task;
 
     private bool _firstRun = true;
+
     public void Start()
     {
         if (_firstRun)
@@ -62,7 +61,6 @@ public class CreatureInfoPanel : MonoBehaviour
             {
                 Task.text = "Finding Task";
             }
-
         }
     }
 
@@ -76,5 +74,4 @@ public class CreatureInfoPanel : MonoBehaviour
     {
         Instance.gameObject.SetActive(false);
     }
-
 }

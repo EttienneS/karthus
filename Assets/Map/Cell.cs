@@ -6,16 +6,34 @@ using Random = UnityEngine.Random;
 
 public class Cell : MonoBehaviour
 {
-    internal List<Creature> ContainedCreatures = new List<Creature>();
-
     public Coordinates Coordinates;
-
+    internal List<Creature> ContainedCreatures = new List<Creature>();
+    internal List<Item> ContainedItems = new List<Item>();
     internal Cell[] Neighbors = new Cell[8];
+    internal Structure Structure;
 
-    internal float TravelCost = -1;
+    private float _baseTravelCost = -1;
+
+    internal float TravelCost
+    {
+        get
+        {
+            if (Structure != null)
+            {
+                return Structure.Data.TravelCost;
+            }
+
+            return _baseTravelCost;
+        }
+        set
+        {
+            _baseTravelCost = value;
+        }
+    }
 
     private CellType _cellType;
 
+    private float _lastUpdate;
     private TextMeshPro _textMesh;
 
     public SpriteRenderer Border { get; private set; }
@@ -83,8 +101,6 @@ public class Cell : MonoBehaviour
     public int SearchPhase { get; set; }
 
     public int SearchPriority => (int)Distance + SearchHeuristic;
-
-    public bool Filled { get; set; }
     public SpriteRenderer Terrain { get; private set; }
 
     public string Text
@@ -114,6 +130,24 @@ public class Cell : MonoBehaviour
 
     public void AddContent(GameObject gameObject, bool scatter = false)
     {
+        var item = gameObject.GetComponent<Item>();
+        var structure = gameObject.GetComponent<Structure>();
+
+        if (item != null)
+        {
+            if (item.Cell != null)
+            {
+                item.Cell.ContainedItems.Remove(item);
+            }
+            ContainedItems.Add(item);
+            item.Cell = this;
+        }
+        else if (structure != null)
+        {
+            structure.Cell = this;
+            Structure = structure;
+        }
+
         gameObject.transform.SetParent(transform);
         gameObject.transform.position = transform.position;
 
@@ -146,7 +180,6 @@ public class Cell : MonoBehaviour
         cell.Neighbors[(int)direction.Opposite()] = this;
     }
 
-    private float _lastUpdate;
     public void Update()
     {
         if (CellType == CellType.Water)
@@ -158,7 +191,6 @@ public class Cell : MonoBehaviour
                 CellType = CellType.Water;
                 _lastUpdate = 0;
             }
-            
         }
     }
 

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class Stockpile : MonoBehaviour
 {
@@ -14,6 +13,7 @@ public class Stockpile : MonoBehaviour
     internal List<ITask> ActiveTasks = new List<ITask>();
 
     private Cell _cell;
+
     internal Cell Cell
     {
         get
@@ -39,6 +39,7 @@ public class Stockpile : MonoBehaviour
             GetTextMesh().text = value;
         }
     }
+
     private TextMeshPro _textMesh;
 
     public TextMeshPro GetTextMesh()
@@ -49,7 +50,6 @@ public class Stockpile : MonoBehaviour
         }
         return _textMesh;
     }
-
 
     private List<Item> _items = new List<Item>();
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class StructureController : MonoBehaviour
@@ -44,16 +43,19 @@ public class StructureController : MonoBehaviour
         return SpriteStore.Instance.GetSpriteByName(StructureDataReference[structureName].SpriteName);
     }
 
-    private Structure GetStructure(string name)
+    public Structure GetStructure(string name)
     {
         var structure = Instantiate(structurePrefab, transform);
         structure.Load(StructureTypeFileMap[name]);
         structure.name = structure.Data.Name;
+        structure.BluePrint = false;
         return structure;
     }
 
     internal void RemoveStructure(Structure structure)
     {
+        structure.Cell.Structure = null;
+
         foreach (var item in structure.Data.ContainedItems)
         {
             item.Data.Reserved = false;

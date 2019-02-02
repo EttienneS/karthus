@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class SpriteStore : MonoBehaviour
 {
     public List<Sprite> MapSprites;
-
     public List<Sprite> ItemSprites;
-    public List<Sprite> StructureSprites;
 
     public Dictionary<string, Sprite> AllSprites;
 
@@ -35,12 +35,26 @@ public class SpriteStore : MonoBehaviour
 
     internal Sprite GetRandomSpriteOfType(string typeName)
     {
-        return MapSpriteTypeDictionary[typeName][(int)(UnityEngine.Random.value * MapSpriteTypeDictionary[typeName].Count())];
+        try
+        {
+            return MapSpriteTypeDictionary[typeName][(int)(Random.value * MapSpriteTypeDictionary[typeName].Count())];
+        }
+        catch
+        {
+            throw new Exception($"No sprite found of type: {typeName}");
+        }
     }
 
     internal Sprite GetSpriteByName(string spriteName)
     {
-        return AllSprites[spriteName];
+        try
+        {
+            return AllSprites[spriteName];
+        }
+        catch
+        {
+            throw new Exception($"No sprite found of name: {spriteName}");
+        }
     }
 
     private void Awake()
@@ -89,7 +103,6 @@ public class SpriteStore : MonoBehaviour
         FrontSprites.ForEach(AddSpriteToAll);
         BackSprites.ForEach(AddSpriteToAll);
         MapSprites.ForEach(AddSpriteToAll);
-        StructureSprites.ForEach(AddSpriteToAll);
         ItemSprites.ForEach(AddSpriteToAll);
     }
 

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 
 public class Eat : ITask
 {
@@ -19,6 +18,11 @@ public class Eat : ITask
     {
         if (Taskmaster.QueueComplete(SubTasks))
         {
+            if (Creature.CarriedItem == null)
+            {
+                throw new CancelTaskException("No food to eat");
+            }
+
             var food = Creature.CarriedItem;
             Creature.CarriedItem = null;
 
