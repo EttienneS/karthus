@@ -66,6 +66,7 @@ public class CreatureInfoPanel : MonoBehaviour
 
     public void Show()
     {
+        CellInfoPanel.Instance.Hide();
         Instance.gameObject.SetActive(true);
         CurrentCreature = GameController.Instance.SelectedCreature;
     }

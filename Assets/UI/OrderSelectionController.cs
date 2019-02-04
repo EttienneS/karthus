@@ -110,6 +110,7 @@ public class OrderSelectionController : MonoBehaviour
     {
         OrderTrayController.Instance.gameObject.SetActive(false);
         CreatureInfoPanel.Instance.gameObject.SetActive(false);
+        CellInfoPanel.Instance.gameObject.SetActive(false);
 
         BuildButton = Instantiate(OrderButtonPrefab, transform);
         BuildButton.Button.onClick.AddListener(BuildTypeClicked);
