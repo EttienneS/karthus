@@ -38,25 +38,6 @@ public class Cell : MonoBehaviour
 
     public SpriteRenderer Border { get; private set; }
 
-    public List<GameObject> CellContents
-    {
-        get
-        {
-            var allChildren = new List<GameObject>();
-
-            foreach (Transform child in transform)
-            {
-                if (child.gameObject.name == "CellStructure")
-                {
-                    continue;
-                }
-
-                allChildren.Add(child.gameObject);
-            }
-            return allChildren;
-        }
-    }
-
     public CellType CellType
     {
         get

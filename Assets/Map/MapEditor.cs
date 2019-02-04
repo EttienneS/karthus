@@ -221,7 +221,7 @@ public class MapEditor : MonoBehaviour
             switch (cell.CellType)
             {
                 case CellType.Forest:
-                    if (Random.value > 0.99)
+                    if (Random.value > 0.95)
                     {
                         cell.AddContent(StructureController.Instance.GetStructure("Tree").gameObject, false);
                     }                   
@@ -235,6 +235,7 @@ public class MapEditor : MonoBehaviour
                     break;
             }
         }
+
         if (ShowGeneration) yield return null;
 
         MapGrid.ResetSearchPriorities();

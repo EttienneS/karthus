@@ -105,6 +105,7 @@ public class GameController : MonoBehaviour
             DeselectCell();
 
             CreatureInfoPanel.Instance.Hide();
+            CellInfoPanel.Instance.Hide();
         }
         else
         {
@@ -148,6 +149,8 @@ public class GameController : MonoBehaviour
                             }
 
                             lastClickedCell = clickedCell;
+
+                            CellInfoPanel.Instance.Show(SelectedCell);
                         }
                     }
                 }
