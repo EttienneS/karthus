@@ -152,7 +152,7 @@ public class OrderSelectionController : MonoBehaviour
 
         CellClickOrder = cell =>
         {
-            if (cell.Structure == null && cell.TravelCost > 0)
+            if (cell.Stockpile == null && cell.TravelCost > 0)
             {
                 var stockpile = StockpileController.Instance.AddStockpile(itemTypeName);
                 cell.AddContent(stockpile.gameObject);

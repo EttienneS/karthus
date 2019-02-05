@@ -11,6 +11,7 @@ public class Cell : MonoBehaviour
     internal List<Item> ContainedItems = new List<Item>();
     internal Cell[] Neighbors = new Cell[8];
     internal Structure Structure;
+    internal Stockpile Stockpile;
 
     private float _baseTravelCost = -1;
 
@@ -109,10 +110,13 @@ public class Cell : MonoBehaviour
         }
     }
 
+    public object StockPile { get; internal set; }
+
     public void AddContent(GameObject gameObject, bool scatter = false)
     {
         var item = gameObject.GetComponent<Item>();
         var structure = gameObject.GetComponent<Structure>();
+        var stockpile = gameObject.GetComponent<Stockpile>();
 
         if (item != null)
         {
@@ -127,6 +131,11 @@ public class Cell : MonoBehaviour
         {
             structure.Cell = this;
             Structure = structure;
+        }
+        else if (stockpile != null)
+        {
+            stockpile.Cell = this;
+            Stockpile = stockpile;
         }
 
         gameObject.transform.SetParent(transform);
