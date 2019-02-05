@@ -77,5 +77,5 @@ Shader "Sprites/GrayScale"
 			ENDCG
 			}
 		}
-			Fallback "Sprites/Default"
+			Fallback "Sprites/Diffuse"
 }

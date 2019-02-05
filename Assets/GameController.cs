@@ -40,7 +40,7 @@ public class GameController : MonoBehaviour
     {
         if (SelectedCreature != null)
         {
-            SelectedCreature.Outline.outlineSize = 0;
+            SelectedCreature.SpriteRenderer.color = Color.white;
             SelectedCreature = null;
         }
     }
@@ -130,7 +130,7 @@ public class GameController : MonoBehaviour
                         DeselectCreature();
 
                         SelectedCreature = clickedCreature;
-                        SelectedCreature.Outline.outlineSize = 1;
+                        SelectedCreature.SpriteRenderer.color = Color.magenta;
 
                         CreatureInfoPanel.Instance.Show();
                     }
