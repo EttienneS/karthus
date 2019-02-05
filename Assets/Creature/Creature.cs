@@ -10,7 +10,6 @@ public class Creature : MonoBehaviour
 
     internal SpriteRenderer SpriteRenderer;
     internal SpriteAnimator SpriteAnimator;
-    internal SpriteOutline Outline;
 
     public string TaskName;
 
@@ -24,7 +23,6 @@ public class Creature : MonoBehaviour
     {
         SpriteRenderer = GetComponent<SpriteRenderer>();
         SpriteAnimator = GetComponent<SpriteAnimator>();
-        Outline = GetComponent<SpriteOutline>();
 
         Hunger = Random.Range(0, 15);
         Thirst = Random.Range(0, 15);

@@ -22,16 +22,20 @@ public class TimeManager : MonoBehaviour
 
     private float _timeTicks;
 
-    internal int Hour = 12;
-    internal int Minute = 25;
+    internal int Hour = 6;
+    internal int Minute = 0;
 
     internal float TickInterval = 0.2f;
+
+
 
     public void Update()
     {
         //if (Paused) return;
 
         _timeTicks += Time.deltaTime;
+
+
 
         if (_timeTicks >= TickInterval)
         {
@@ -47,7 +51,11 @@ public class TimeManager : MonoBehaviour
                 {
                     Hour = 0;
                 }
+
+
             }
+
+            SunController.Instance.UpdatePosition(Hour, Minute);
         }
 
         TimeDisplay.text = $"{Hour.ToString().PadLeft(2, '0')}:{Minute.ToString().PadLeft(2, '0')}";
