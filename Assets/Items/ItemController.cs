@@ -53,19 +53,49 @@ public class ItemController : MonoBehaviour
 
     internal Item FindClosestItemOfType(Cell centerPoint, string type, bool allowStockpiled)
     {
-        if (allowStockpiled)
+        if (!ItemTypeIndex.ContainsKey(type) || ItemTypeIndex[type].Count == 0)
         {
-            var stockpiledItem = StockpileController.Instance.FindClosestItemInStockpile(type, centerPoint);
-
-            if (stockpiledItem != null)
+            // no registred item of the given type exists
+            return null;
+        }
+        else
+        {
+            // registered items found
+            var checkedCells = new HashSet<Cell>();
+            var closest = int.MaxValue;
+            Item closestItem = null;
+            foreach (var item in ItemTypeIndex[type])
             {
-                return stockpiledItem;
+                if (item.Data.Reserved || (!allowStockpiled && !string.IsNullOrEmpty(item.Data.StockpileId)))
+                {
+                    continue;
+                }
+                if (checkedCells.Add(item.Cell))
+                {
+                    var distance = centerPoint.Coordinates.DistanceTo(item.Cell.Coordinates);
+                    if (distance < closest)
+                    {
+                        closest = distance;
+                        closestItem = item;
+                    }
+                }
             }
+
+            return closestItem;
         }
 
+
+
+        return null;
+    }
+
+    public Item FindItemInArea(Cell centerPoint, string type, bool allowStockpiled)
+    {
+        // scan for item in radius in ever growing circles
+        // very slow but potentially useful
+        var checkedCells = new HashSet<Cell>();
         var searchRadius = 3;
         var maxRadius = MapGrid.Instance.Map.GetLength(0);
-        var checkedCells = new HashSet<Cell>();
         do
         {
             var searchArea = MapGrid.Instance.GetCircle(centerPoint, searchRadius);

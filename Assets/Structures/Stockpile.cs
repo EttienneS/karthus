@@ -12,20 +12,7 @@ public class Stockpile : MonoBehaviour
     internal int Size = 12;
     internal List<ITask> ActiveTasks = new List<ITask>();
 
-    private Cell _cell;
-
-    internal Cell Cell
-    {
-        get
-        {
-            if (_cell == null)
-            {
-                _cell = GetComponentInParent<Cell>();
-            }
-
-            return _cell;
-        }
-    }
+    internal Cell Cell;
 
     public string Text
     {
