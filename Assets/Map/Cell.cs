@@ -7,7 +7,6 @@ using Random = UnityEngine.Random;
 
 public class Cell : MonoBehaviour
 {
-    internal List<Creature> ContainedCreatures = new List<Creature>();
     internal CellData Data = new CellData();
     internal Cell[] Neighbors = new Cell[8];
     internal Stockpile Stockpile;
@@ -152,17 +151,6 @@ public class Cell : MonoBehaviour
         }
     }
 
-    internal void AddCreature(Creature creature)
-    {
-        if (creature.Data.CurrentCell != null)
-        {
-            creature.Data.CurrentCell.LinkedGameObject.RemoveCreature(creature);
-        }
-
-        ContainedCreatures.Add(creature);
-        creature.Data.CurrentCell = Data;
-    }
-
     internal int CountNeighborsOfType(CellType? cellType)
     {
         if (!cellType.HasValue)
@@ -178,6 +166,11 @@ public class Cell : MonoBehaviour
         return transform.position;
     }
 
+    internal void MoveToCell(Creature creature)
+    {
+        creature.Data.Coordinates = Data.Coordinates;
+    }
+
     private void Awake()
     {
         var gridStructure = transform.Find("CellStructure");
@@ -191,11 +184,6 @@ public class Cell : MonoBehaviour
     {
         Terrain.flipX = Random.value < 0.5f;
         Terrain.flipY = Random.value < 0.5f;
-    }
-
-    private void RemoveCreature(Creature creature)
-    {
-        ContainedCreatures.Remove(creature);
     }
 }
 

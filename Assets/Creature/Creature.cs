@@ -6,10 +6,9 @@ using Random = UnityEngine.Random;
 public class Creature : MonoBehaviour
 {
     public ITask Task;
+    internal CreatureData Data = new CreatureData();
     internal SpriteAnimator SpriteAnimator;
     internal SpriteRenderer SpriteRenderer;
-
-    internal CreatureData Data = new CreatureData();
 
     public void AssignTask(ITask task)
     {
@@ -29,14 +28,21 @@ public class Creature : MonoBehaviour
         SpriteRenderer = GetComponent<SpriteRenderer>();
         SpriteAnimator = GetComponent<SpriteAnimator>();
 
-       Data.Hunger = Random.Range(0, 15);
-       Data.Thirst = Random.Range(0, 15);
-        Data. Energy = Random.Range(80, 100);
+        Data.Hunger = Random.Range(0, 15);
+        Data.Thirst = Random.Range(0, 15);
+        Data.Energy = Random.Range(80, 100);
     }
 
     public void Update()
     {
         if (TimeManager.Instance.Paused) return;
+
+        // something in the serialization makes the item object
+        // revert when called, so we just clear it here to fix the issue
+        if (Data.CarriedItem != null && string.IsNullOrEmpty(Data.CarriedItem.Name))
+        {
+            Data.CarriedItem = null;
+        }
 
         Data.InternalTick += Time.deltaTime;
 
@@ -56,8 +62,6 @@ public class Creature : MonoBehaviour
 
             Task = task;
         }
-
-        Data.TaskName = Task.ToString();
 
         try
         {
@@ -102,7 +106,7 @@ public class CreatureData
     public ItemData CarriedItem;
 
     [SerializeField]
-    public CellData CurrentCell;
+    public Coordinates Coordinates;
 
     [SerializeField]
     public float Energy;
@@ -111,14 +115,22 @@ public class CreatureData
     public float Hunger;
 
     [SerializeField]
-    public float Speed = 5f;
+    public string Name;
 
     [SerializeField]
-    public string TaskName;
+    public float Speed = 5f;
 
     [SerializeField]
     public float Thirst;
 
     [SerializeField]
     internal float InternalTick;
+
+    public CellData CurrentCell
+    {
+        get
+        {
+            return MapGrid.Instance.GetCellAtCoordinate(Coordinates).Data;
+        }
+    }
 }

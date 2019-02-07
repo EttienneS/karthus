@@ -55,11 +55,6 @@ public class CellInfoPanel : MonoBehaviour
                 CellContent.text += $"Structure:\t{_cell.Structure}\n";
             }
             CellContent.text += "\n";
-
-            foreach (var creature in _cell.ContainedCreatures)
-            {
-                CellContent.text += $"{creature.name} ";
-            }
         }
     }
 

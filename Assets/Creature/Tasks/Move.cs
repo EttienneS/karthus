@@ -86,7 +86,7 @@ public class Move : ITask
             else
             {
                 // reached next cell
-                NextCell.AddCreature(Creature);
+                NextCell.MoveToCell(Creature);
 
                 NextCell = null;
                 Path = null;

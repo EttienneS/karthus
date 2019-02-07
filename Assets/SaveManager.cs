@@ -56,12 +56,12 @@ public class Save
 {
     [SerializeField]
     public CellData[] Cells;
-    //[SerializeField]
-    //public Creature[] Creatures;
+    [SerializeField]
+    public CreatureData[] Creatures;
 
     public Save()
     {
         Cells = MapGrid.Instance.Cells.Select(c => c.Data).ToArray();
-        //Creatures = CreatureController.Instance.Creatures.ToArray();
+        Creatures = CreatureController.Instance.Creatures.Select(c => c.Data).ToArray();
     }
 }
