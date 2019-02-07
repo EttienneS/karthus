@@ -27,7 +27,7 @@ public class Move : ITask
 
     public bool Done()
     {
-        return Creature.CurrentCell == TargetCell;
+        return Creature.Data.CurrentCell.LinkedGameObject == TargetCell;
     }
 
     public override string ToString()
@@ -37,13 +37,13 @@ public class Move : ITask
 
     public void Update()
     {
-        if (Creature.CurrentCell != TargetCell)
+        if (Creature.Data.CurrentCell.LinkedGameObject != TargetCell)
         {
             if (NextCell == null)
             {
                 if (Path == null || Path.Count == 0)
                 {
-                    Path = Pathfinder.FindPath(Creature.CurrentCell, TargetCell);
+                    Path = Pathfinder.FindPath(Creature.Data.CurrentCell.LinkedGameObject, TargetCell);
                 }
 
                 if (Path == null)
@@ -51,7 +51,7 @@ public class Move : ITask
                     throw new CancelTaskException("Unable to find path");
                 }
 
-                NextCell = Path[Path.IndexOf(Creature.CurrentCell) - 1];
+                NextCell = Path[Path.IndexOf(Creature.Data.CurrentCell.LinkedGameObject) - 1];
                 if (NextCell.TravelCost < 0)
                 {
                     // something changed the path making it unusable
@@ -64,11 +64,11 @@ public class Move : ITask
 
                     // calculate the movement journey to the next cell, include the cell travelcost to make moving through
                     // difficults cells take longer
-                    _journeyLength = Vector3.Distance(Creature.CurrentCell.transform.position, targetPos) + NextCell.TravelCost;
+                    _journeyLength = Vector3.Distance(Creature.Data.CurrentCell.LinkedGameObject.transform.position, targetPos) + NextCell.TravelCost;
 
                     if (Creature.SpriteAnimator != null)
                     {
-                        Creature.SpriteAnimator.MoveDirection = MapGrid.Instance.GetDirection(Creature.CurrentCell, NextCell);
+                        Creature.SpriteAnimator.MoveDirection = MapGrid.Instance.GetDirection(Creature.Data.CurrentCell.LinkedGameObject, NextCell);
                     }
                     startTime = Time.time;
                 }
@@ -77,9 +77,9 @@ public class Move : ITask
             if (NextCell != null && Creature.transform.position != targetPos)
             {
                 // move between two cells
-                var distCovered = (Time.time - startTime) * Mathf.Min(Creature.Speed, MaxSpeed);
+                var distCovered = (Time.time - startTime) * Mathf.Min(Creature.Data.Speed, MaxSpeed);
                 var fracJourney = distCovered / _journeyLength;
-                Creature.transform.position = Vector3.Lerp(Creature.CurrentCell.transform.position,
+                Creature.transform.position = Vector3.Lerp(Creature.Data.CurrentCell.LinkedGameObject.transform.position,
                                           targetPos,
                                           fracJourney);
             }

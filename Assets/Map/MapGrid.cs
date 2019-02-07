@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class MapGrid : MonoBehaviour
 {
     public List<Cell> Cells;
+
     [Range(4, 300)]
     public int MapSize = 64;
 
@@ -52,6 +52,12 @@ public class MapGrid : MonoBehaviour
             cells.Add(CellLookup[(x, y)]);
         }
     }
+
+    public Cell GetCellAtCoordinate(Coordinates coordintes)
+    {
+        return CellLookup[(coordintes.X, coordintes.Y)];
+    }
+
     public Cell GetCellAtPoint(Vector3 position)
     {
         var coordinates = Coordinates.FromPosition(position);
@@ -157,7 +163,7 @@ public class MapGrid : MonoBehaviour
         {
             cell.EnableBorder(color);
         }
-    }     
+    }
 
     internal Direction GetDirection(Cell fromCell, Cell toCell)
     {

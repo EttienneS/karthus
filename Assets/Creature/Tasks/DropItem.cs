@@ -9,15 +9,15 @@ public class DropHeldItem : ITask
 
     public bool Done()
     {
-        return Creature.CarriedItem == null;
+        return Creature.Data.CarriedItem == null;
     }
 
     public void Update()
     {
-        var item = Creature.CarriedItem;
-        Creature.CarriedItem = null;
+        var item =ItemController.Instance.ItemDataLookup[ Creature.Data.CarriedItem];
+        Creature.Data.CarriedItem = null;
 
         item.SpriteRenderer.sortingLayerName = "Item";
-        Creature.CurrentCell.AddContent(item.gameObject, true);
+        Creature.Data.CurrentCell.LinkedGameObject.AddContent(item.gameObject, true);
     }
 }

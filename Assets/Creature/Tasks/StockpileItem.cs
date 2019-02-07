@@ -2,11 +2,6 @@
 
 public class StockpileItem : ITask
 {
-    public Queue<ITask> SubTasks { get; set; }
-    public Creature Creature { get; set; }
-    public string TaskId { get; set; }
-    public Stockpile Stockpile { get; set; }
-
     public StockpileItem(string itemType, Stockpile stockpile)
     {
         SubTasks = new Queue<ITask>();
@@ -14,17 +9,22 @@ public class StockpileItem : ITask
         SubTasks.Enqueue(new MoveItemToCell(itemType, stockpile.Cell, false));
     }
 
+    public Creature Creature { get; set; }
+    public Stockpile Stockpile { get; set; }
+    public Queue<ITask> SubTasks { get; set; }
+    public string TaskId { get; set; }
+
     public bool Done()
     {
         if (Taskmaster.QueueComplete(SubTasks))
         {
-            if (Creature.CarriedItem == null)
+            if (Creature.Data.CarriedItem == null)
             {
                 return true;
             }
 
-            Stockpile.AddItem(Creature.CarriedItem);
-            Creature.CarriedItem = null;
+            Stockpile.AddItem(ItemController.Instance.ItemDataLookup[Creature.Data.CarriedItem]);
+            Creature.Data.CarriedItem = null;
             return true;
         }
 

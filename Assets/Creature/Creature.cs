@@ -1,33 +1,15 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Creature : MonoBehaviour
 {
-    public Cell CurrentCell;
-    public float Speed = 5f;
-
     public ITask Task;
-
-    internal SpriteRenderer SpriteRenderer;
     internal SpriteAnimator SpriteAnimator;
+    internal SpriteRenderer SpriteRenderer;
 
-    public string TaskName;
-
-    public Item CarriedItem;
-
-    public float Hunger { get; set; }
-    public float Thirst { get; set; }
-    public float Energy { get; set; }
-
-    public void Start()
-    {
-        SpriteRenderer = GetComponent<SpriteRenderer>();
-        SpriteAnimator = GetComponent<SpriteAnimator>();
-
-        Hunger = Random.Range(0, 15);
-        Thirst = Random.Range(0, 15);
-        Energy = Random.Range(80, 100);
-    }
+    internal CreatureData Data = new CreatureData();
 
     public void AssignTask(ITask task)
     {
@@ -42,21 +24,29 @@ public class Creature : MonoBehaviour
         }
     }
 
-    private float _needUpdate;
+    public void Start()
+    {
+        SpriteRenderer = GetComponent<SpriteRenderer>();
+        SpriteAnimator = GetComponent<SpriteAnimator>();
+
+       Data.Hunger = Random.Range(0, 15);
+       Data.Thirst = Random.Range(0, 15);
+        Data. Energy = Random.Range(80, 100);
+    }
 
     public void Update()
     {
         if (TimeManager.Instance.Paused) return;
 
-        _needUpdate += Time.deltaTime;
+        Data.InternalTick += Time.deltaTime;
 
-        if (_needUpdate >= TimeManager.Instance.TickInterval)
+        if (Data.InternalTick >= TimeManager.Instance.TickInterval)
         {
-            _needUpdate = 0;
+            Data.InternalTick = 0;
 
-            Hunger += Random.value;
-            Thirst += Random.value;
-            Energy -= Random.value;
+            Data.Hunger += Random.value;
+            Data.Thirst += Random.value;
+            Data.Energy -= Random.value;
         }
 
         if (Task == null)
@@ -67,7 +57,7 @@ public class Creature : MonoBehaviour
             Task = task;
         }
 
-        TaskName = Task.ToString();
+        Data.TaskName = Task.ToString();
 
         try
         {
@@ -85,20 +75,50 @@ public class Creature : MonoBehaviour
         {
             Taskmaster.Instance.TaskComplete(Task);
 
-            if (CarriedItem != null)
+            if (Data.CarriedItem != null)
             {
-                CarriedItem.Data.Reserved = false;
-                CarriedItem = null;
+                Data.CarriedItem.Reserved = false;
+                Data.CarriedItem = null;
             }
 
             Task = Taskmaster.Instance.GetTask(this);
             AssignTask(Task);
         }
 
-        if (CarriedItem != null)
+        if (Data.CarriedItem != null)
         {
-            CarriedItem.transform.position = transform.position;
-            CarriedItem.SpriteRenderer.sortingLayerName = "CarriedItem";
+            var item = ItemController.Instance.ItemDataLookup[Data.CarriedItem];
+
+            item.transform.position = transform.position;
+            item.SpriteRenderer.sortingLayerName = "CarriedItem";
         }
     }
+}
+
+[Serializable]
+public class CreatureData
+{
+    [SerializeField]
+    public ItemData CarriedItem;
+
+    [SerializeField]
+    public CellData CurrentCell;
+
+    [SerializeField]
+    public float Energy;
+
+    [SerializeField]
+    public float Hunger;
+
+    [SerializeField]
+    public float Speed = 5f;
+
+    [SerializeField]
+    public string TaskName;
+
+    [SerializeField]
+    public float Thirst;
+
+    [SerializeField]
+    internal float InternalTick;
 }

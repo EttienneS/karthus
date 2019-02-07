@@ -17,11 +17,7 @@ public class Item : MonoBehaviour
 
     public Cell Cell { get; set; }
 
-    public string GetPropertyValue(string key)
-    {
-        return Data.Properties.First(p => p.Key.Equals(key, StringComparison.InvariantCultureIgnoreCase)).Value;
-    }
-
+    
     internal void Load(string structureData)
     {
         Data = JsonUtility.FromJson<ItemData>(structureData);
@@ -46,6 +42,12 @@ public class ItemData
 
     [SerializeField]
     public ItemProperty[] Properties;
+
+    public string GetPropertyValue(string key)
+    {
+        return Properties.First(p => p.Key.Equals(key, StringComparison.InvariantCultureIgnoreCase)).Value;
+    }
+
 }
 
 [Serializable]

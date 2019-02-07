@@ -32,12 +32,12 @@ public class CreatureController : MonoBehaviour
     public Creature SpawnCreature(Cell spawnLocation)
     {
         var creature = Instantiate(CreaturePrefab, transform, true);
+        creature.Data.CarriedItem = null;
+        creature.name = CreatureHelper.GetRandomName();
 
         creature.transform.position = spawnLocation.transform.position;
         spawnLocation.AddCreature(creature);
 
-
-        creature.name = CreatureHelper.GetRandomName();
 
         Creatures.Add(creature);
         return creature;
@@ -46,13 +46,13 @@ public class CreatureController : MonoBehaviour
     public void SpawnCreatures()
     {
         var firstCreature = SpawnCreature(MapGrid.Instance.GetRandomPathableCell());
-        firstCreature.Speed = Random.Range(10, 15);
-        CameraController.Instance.MoveToCell(firstCreature.CurrentCell);
+        firstCreature.Data.Speed = Random.Range(10, 15);
+        CameraController.Instance.MoveToCell(firstCreature.Data.CurrentCell.LinkedGameObject);
 
 
 
         // spawn creatures in a circle around the 'first' one
-        var spawns = MapGrid.Instance.GetCircle(firstCreature.CurrentCell, 3).Where(c => c.TravelCost > 0).ToList();
+        var spawns = MapGrid.Instance.GetCircle(firstCreature.Data.CurrentCell.LinkedGameObject, 3).Where(c => c.TravelCost > 0).ToList();
         var spawnCount = spawns.Count;
         for (int i = 0; i < spawnCount * 2; i++)
         {
@@ -63,7 +63,7 @@ public class CreatureController : MonoBehaviour
 
         for (int i = 0; i < CreaturesToSpawn - 1; i++)
         {
-            SpawnCreature(spawns[Random.Range(0, spawns.Count)]).Speed = Random.Range(10, 15);
+            SpawnCreature(spawns[Random.Range(0, spawns.Count)]).Data.Speed = Random.Range(10, 15);
         }
     }
 

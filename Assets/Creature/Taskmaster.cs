@@ -75,7 +75,7 @@ public class Taskmaster : MonoBehaviour
     {
         ITask task = null;
 
-        if (creature.Hunger > 50)
+        if (creature.Data.Hunger > 50)
         {
             task = new Eat();
             AddTask(task);
@@ -87,10 +87,10 @@ public class Taskmaster : MonoBehaviour
             {
                 if (Random.value > 0.6)
                 {
-                    var wanderCircle = MapGrid.Instance.GetCircle(creature.CurrentCell, 3).Where(c => c.TravelCost == 1).ToList();
+                    var wanderCircle = MapGrid.Instance.GetCircle(creature.Data.CurrentCell.LinkedGameObject, 3).Where(c => c.TravelCost == 1).ToList();
                     if (wanderCircle.Count > 0)
                     {
-                        task = new Move(wanderCircle[Random.Range(0, wanderCircle.Count - 1)], (int)creature.Speed / 3);
+                        task = new Move(wanderCircle[Random.Range(0, wanderCircle.Count - 1)], (int)creature.Data.Speed / 3);
                     }
                 }
 

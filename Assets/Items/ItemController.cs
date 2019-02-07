@@ -1,16 +1,14 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class ItemController : MonoBehaviour
 {
     public Item itemPrefab;
 
-    private static ItemController _instance;
-
     internal Dictionary<string, Item> AllItemTypes = new Dictionary<string, Item>();
-
+    internal Dictionary<ItemData, Item> ItemDataLookup = new Dictionary<ItemData, Item>();
     internal Dictionary<string, List<Item>> ItemTypeIndex = new Dictionary<string, List<Item>>();
+    private static ItemController _instance;
 
     public static ItemController Instance
     {
@@ -38,17 +36,23 @@ public class ItemController : MonoBehaviour
         }
     }
 
-    internal Item GetItem(string name)
+    internal void DestoyItem(ItemData data)
     {
-        var item = Instantiate(AllItemTypes[name], transform);
 
-        if (!ItemTypeIndex.ContainsKey(item.Data.ItemType))
+        DestroyItem(ItemDataLookup[data]);
+    }
+
+    internal void DestroyItem(Item item)
+    {
+        if (item.Cell != null)
         {
-            ItemTypeIndex.Add(item.Data.ItemType, new List<Item>());
+            item.Cell.Data.ContainedItems.Remove(item.Data);
         }
 
-        ItemTypeIndex[item.Data.ItemType].Add(item);
-        return item;
+        ItemTypeIndex[item.Data.ItemType].Remove(item);
+        ItemDataLookup.Remove(item.Data);
+
+        Destroy(item.gameObject);
     }
 
     internal Item FindClosestItemOfType(Cell centerPoint, string type, bool allowStockpiled)
@@ -85,14 +89,17 @@ public class ItemController : MonoBehaviour
         }
     }
 
-    internal void DestoyItem(Item item)
+    internal Item GetItem(string name)
     {
-        if (item.Cell != null)
+        var item = Instantiate(AllItemTypes[name], transform);
+
+        if (!ItemTypeIndex.ContainsKey(item.Data.ItemType))
         {
-            item.Cell.Data.ContainedItems.Remove(item.Data);
+            ItemTypeIndex.Add(item.Data.ItemType, new List<Item>());
         }
 
-        ItemTypeIndex[item.Data.ItemType].Remove(item);
-        Destroy(item.gameObject);
+        ItemTypeIndex[item.Data.ItemType].Add(item);
+        ItemDataLookup.Add(item.Data, item);
+        return item;
     }
 }

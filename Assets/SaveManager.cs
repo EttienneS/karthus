@@ -31,6 +31,24 @@ public class SaveManager : MonoBehaviour
     {
 
     }
+
+    private static void DestroyAndRecreateMap()
+    {
+        foreach (var cell in MapGrid.Instance.Cells)
+        {
+            Destroy(cell.gameObject);
+        }
+
+        foreach (var creature in CreatureController.Instance.Creatures)
+        {
+            Destroy(creature.gameObject);
+        }
+
+        
+
+        CreatureController.Instance.Creatures.Clear();
+        MapEditor.Instance.Generating = false;
+    }
 }
 
 [Serializable]

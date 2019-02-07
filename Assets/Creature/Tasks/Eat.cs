@@ -18,15 +18,15 @@ public class Eat : ITask
     {
         if (Taskmaster.QueueComplete(SubTasks))
         {
-            if (Creature.CarriedItem == null)
+            if (Creature.Data.CarriedItem == null)
             {
                 throw new CancelTaskException("No food to eat");
             }
 
-            var food = Creature.CarriedItem;
-            Creature.CarriedItem = null;
+            var food = Creature.Data.CarriedItem;
+            Creature.Data.CarriedItem = null;
 
-            Creature.Hunger -= int.Parse(food.GetPropertyValue("Nutrition"));
+            Creature.Data.Hunger -= int.Parse(food.GetPropertyValue("Nutrition"));
             ItemController.Instance.DestoyItem(food);
 
             return true;

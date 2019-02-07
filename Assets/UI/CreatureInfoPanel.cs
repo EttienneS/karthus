@@ -49,9 +49,9 @@ public class CreatureInfoPanel : MonoBehaviour
         if (CurrentCreature != null)
         {
             CreatureName.text = CurrentCreature.name;
-            Hunger.text = CurrentCreature.Hunger.ToString("0");
-            Thirst.text = CurrentCreature.Thirst.ToString("0");
-            Energy.text = CurrentCreature.Energy.ToString("0");
+            Hunger.text = CurrentCreature.Data.Hunger.ToString("0");
+            Thirst.text = CurrentCreature.Data.Thirst.ToString("0");
+            Energy.text = CurrentCreature.Data.Energy.ToString("0");
 
             if (CurrentCreature.Task != null)
             {

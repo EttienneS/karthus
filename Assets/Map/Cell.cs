@@ -5,27 +5,18 @@ using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-[Serializable]
-public class CellData
-{
-    [SerializeField]
-    internal List<ItemData> ContainedItems = new List<ItemData>();
-    [SerializeField]
-    internal CellType CellType;
-    [SerializeField]
-    internal float BaseTravelCost = -1;
-    [SerializeField]
-    internal Coordinates Coordinates;
-}
-
 public class Cell : MonoBehaviour
 {
     internal List<Creature> ContainedCreatures = new List<Creature>();
-    internal Cell[] Neighbors = new Cell[8];
-    internal Structure Structure;
-    internal Stockpile Stockpile;
-
     internal CellData Data = new CellData();
+    internal Cell[] Neighbors = new Cell[8];
+    internal Stockpile Stockpile;
+    internal Structure Structure;
+    private float _lastUpdate;
+
+    private TextMeshPro _textMesh;
+
+    public SpriteRenderer Border { get; private set; }
 
     public CellType CellType
     {
@@ -58,6 +49,19 @@ public class Cell : MonoBehaviour
         }
     }
 
+    public float Distance { get; set; }
+
+    public Cell NextWithSamePriority { get; set; }
+
+    public Cell PathFrom { get; set; }
+
+    public int SearchHeuristic { private get; set; }
+
+    public int SearchPhase { get; set; }
+
+    public int SearchPriority => (int)Distance + SearchHeuristic;
+
+    public SpriteRenderer Terrain { get; private set; }
 
     internal float TravelCost
     {
@@ -75,16 +79,6 @@ public class Cell : MonoBehaviour
             Data.BaseTravelCost = value;
         }
     }
-    private float _lastUpdate;
-    private TextMeshPro _textMesh;
-    public SpriteRenderer Border { get; private set; }
-    public SpriteRenderer Terrain { get; private set; }
-    public float Distance { get; set; }
-    public Cell NextWithSamePriority { get; set; }
-    public Cell PathFrom { get; set; }
-    public int SearchHeuristic { private get; set; }
-    public int SearchPhase { get; set; }
-    public int SearchPriority => (int)Distance + SearchHeuristic;
 
     public void AddContent(GameObject gameObject, bool scatter = false)
     {
@@ -160,13 +154,13 @@ public class Cell : MonoBehaviour
 
     internal void AddCreature(Creature creature)
     {
-        if (creature.CurrentCell != null)
+        if (creature.Data.CurrentCell != null)
         {
-            creature.CurrentCell.RemoveCreature(creature);
+            creature.Data.CurrentCell.LinkedGameObject.RemoveCreature(creature);
         }
 
         ContainedCreatures.Add(creature);
-        creature.CurrentCell = this;
+        creature.Data.CurrentCell = Data;
     }
 
     internal int CountNeighborsOfType(CellType? cellType)
@@ -202,5 +196,29 @@ public class Cell : MonoBehaviour
     private void RemoveCreature(Creature creature)
     {
         ContainedCreatures.Remove(creature);
+    }
+}
+
+[Serializable]
+public class CellData
+{
+    [SerializeField]
+    internal float BaseTravelCost = -1;
+
+    [SerializeField]
+    internal CellType CellType;
+
+    [SerializeField]
+    internal List<ItemData> ContainedItems = new List<ItemData>();
+
+    [SerializeField]
+    internal Coordinates Coordinates;
+
+    public Cell LinkedGameObject
+    {
+        get
+        {
+            return MapGrid.Instance.GetCellAtCoordinate(Coordinates);
+        }
     }
 }

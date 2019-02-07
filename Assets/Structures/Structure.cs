@@ -100,7 +100,7 @@ public class StructureData
     {
         foreach (var item in ContainedItems.ToList())
         {
-            ItemController.Instance.DestoyItem(item);
+            ItemController.Instance.DestroyItem(item);
         }
         ContainedItems.Clear();
     }

@@ -3,9 +3,8 @@ using UnityEngine;
 
 public class GetItemOfType : ITask
 {
+    private Item _item;
     private Cell _itemLocation;
-    public Creature Creature { get; set; }
-    public bool AllowStockpiled { get; set; }
 
     public GetItemOfType(string itemType, bool allowStockpiled)
     {
@@ -14,8 +13,8 @@ public class GetItemOfType : ITask
         SubTasks = new Queue<ITask>();
     }
 
-    private Item _item;
-
+    public bool AllowStockpiled { get; set; }
+    public Creature Creature { get; set; }
     public string ItemType { get; set; }
     public Queue<ITask> SubTasks { get; set; }
     public string TaskId { get; set; }
@@ -30,7 +29,7 @@ public class GetItemOfType : ITask
                 _item = pile.GetItem(_item);
             }
 
-            Creature.CarriedItem = _item;
+            Creature.Data.CarriedItem = _item.Data;
             _item.SpriteRenderer.color = Color.white;
             return true;
         }
@@ -42,7 +41,7 @@ public class GetItemOfType : ITask
     {
         if (_item == null)
         {
-            _item = ItemController.Instance.FindClosestItemOfType(Creature.CurrentCell, ItemType, AllowStockpiled);
+            _item = ItemController.Instance.FindClosestItemOfType(Creature.Data.CurrentCell.LinkedGameObject, ItemType, AllowStockpiled);
 
             if (_item == null)
             {

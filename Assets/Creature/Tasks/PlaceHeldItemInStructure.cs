@@ -16,15 +16,15 @@ public class PlaceHeldItemInStructure : ITask
 
     public bool Done()
     {
-        return Creature.CarriedItem == null;
+        return Creature.Data.CarriedItem == null;
     }
 
     public void Update()
     {
-        var item = Creature.CarriedItem;
-        Creature.CarriedItem = null;
+        var item = ItemController.Instance.ItemDataLookup[Creature.Data.CarriedItem];
+        Creature.Data.CarriedItem = null;
 
-        Creature.CurrentCell.AddContent(item.gameObject, true);
+        Creature.Data.CurrentCell.LinkedGameObject.AddContent(item.gameObject, true);
         _structure.Data.AddItem(item);
         item.SpriteRenderer.sortingLayerName = "Item";
     }
