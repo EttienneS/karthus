@@ -30,7 +30,6 @@ public class Wait : ITask
     public override string ToString()
     {
         return Reason;
-        //return $"{Reason} for {ElapsedTime:F2}/{Duration:F2}";
     }
 
     public void Update()
@@ -40,7 +39,7 @@ public class Wait : ITask
 
         if (LastFacingChange > 0.2f && Random.value > 0.95f)
         {
-            Creature.SpriteAnimator.FaceRandomDirection();
+            Creature.FaceRandomDirection();
             LastFacingChange = 0;
         }
     }

@@ -77,4 +77,5 @@ public class CreatureController : MonoBehaviour
             SpawnCreature(spawns[Random.Range(0, spawns.Count)]).Data.Speed = Random.Range(10, 15);
         }
     }
+
 }

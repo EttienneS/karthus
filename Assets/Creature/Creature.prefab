@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 4451582240413063813}
   - component: {fileID: 3756487243705356823}
   - component: {fileID: 3374013003364883130}
-  - component: {fileID: 6010202930399055753}
   m_Layer: 0
   m_Name: Creature
   m_TagString: Untagged
@@ -95,35 +94,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 307ce9d268284cc46bd1c0eb3c433f79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CarriedItemData:
-    ItemType: 
-    Reserved: 0
-    SpriteName: 
-    Name: 
-    Properties: []
-  CurrentCell:
-    BaseTravelCost: -1
-    CellType: 0
-    ContainedItems: []
-    Coordinates:
-      X: 0
-      Y: 0
-  Energy: 0
-  Hunger: 0
-  Thirst: 0
-  Speed: 5
-  TaskName: 
---- !u!114 &6010202930399055753
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3374013003364883131}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_GeneratorAsset: {fileID: 0}
-  m_Script: {fileID: 11500000, guid: 489699e358a9875428cf163399b41e77, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MoveDirection: 4

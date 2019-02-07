@@ -6,9 +6,17 @@ using Random = UnityEngine.Random;
 public class Creature : MonoBehaviour
 {
     public ITask Task;
+    internal Sprite[] BackSprites;
     internal CreatureData Data = new CreatureData();
-    internal SpriteAnimator SpriteAnimator;
+    internal Sprite[] FrontSprites;
+    internal Sprite[] SideSprites;
     internal SpriteRenderer SpriteRenderer;
+
+    private float deltaTime = 0;
+
+    private int frame;
+
+    private float frameSeconds = 0.3f;
 
     public void AssignTask(ITask task)
     {
@@ -23,19 +31,28 @@ public class Creature : MonoBehaviour
         }
     }
 
+    public void FaceRandomDirection()
+    {
+        var values = Enum.GetValues(typeof(Direction));
+        Data.MoveDirection = (Direction)values.GetValue(Random.Range(0, values.Length));
+    }
+
     public void Start()
     {
         SpriteRenderer = GetComponent<SpriteRenderer>();
-        SpriteAnimator = GetComponent<SpriteAnimator>();
 
         Data.Hunger = Random.Range(0, 15);
         Data.Thirst = Random.Range(0, 15);
         Data.Energy = Random.Range(80, 100);
+
+        GetSprite();
     }
 
     public void Update()
     {
         if (TimeManager.Instance.Paused) return;
+
+        AnimateSprite();
 
         // something in the serialization makes the item object
         // revert when called, so we just clear it here to fix the issue
@@ -97,6 +114,58 @@ public class Creature : MonoBehaviour
             item.SpriteRenderer.sortingLayerName = "CarriedItem";
         }
     }
+
+    private void AnimateSprite()
+    {
+        Sprite[] sprites;
+        switch (Data.MoveDirection)
+        {
+            case Direction.N:
+                sprites = BackSprites;
+                break;
+
+            case Direction.SE:
+            case Direction.NE:
+            case Direction.E:
+                sprites = SideSprites;
+                SpriteRenderer.flipX = true;
+                break;
+
+            case Direction.S:
+                sprites = FrontSprites;
+                break;
+            //case Direction.NW:
+            //case Direction.SW:
+            //case Direction.W:
+            default:
+                sprites = SideSprites;
+                SpriteRenderer.flipX = false;
+                break;
+        }
+
+        deltaTime += Time.deltaTime;
+
+        if (deltaTime > frameSeconds)
+        {
+            deltaTime = 0;
+            frame++;
+            if (frame >= sprites.Length)
+            {
+                frame = 0;
+            }
+            SpriteRenderer.sprite = sprites[frame];
+        }
+    }
+
+    private void GetSprite()
+    {
+        Data.SpriteId = Random.Range(0, SpriteStore.Instance.CreatureSprite.Keys.Count - 1);
+
+        var sprites = SpriteStore.Instance.CreatureSprite[Data.SpriteId];
+        BackSprites = sprites.Where(s => s.name.StartsWith("all_back", StringComparison.InvariantCultureIgnoreCase)).ToArray();
+        FrontSprites = sprites.Where(s => s.name.StartsWith("all_front", StringComparison.InvariantCultureIgnoreCase)).ToArray();
+        SideSprites = sprites.Where(s => s.name.StartsWith("all_side", StringComparison.InvariantCultureIgnoreCase)).ToArray();
+    }
 }
 
 [Serializable]
@@ -121,10 +190,17 @@ public class CreatureData
     public float Speed = 5f;
 
     [SerializeField]
+    public int SpriteId;
+
+    [SerializeField]
     public float Thirst;
 
     [SerializeField]
     internal float InternalTick;
+
+    [SerializeField]
+    public Direction MoveDirection = Direction.S;
+
 
     public CellData CurrentCell
     {

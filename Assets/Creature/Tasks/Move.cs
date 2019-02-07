@@ -66,10 +66,7 @@ public class Move : ITask
                     // difficults cells take longer
                     _journeyLength = Vector3.Distance(Creature.Data.CurrentCell.LinkedGameObject.transform.position, targetPos) + NextCell.TravelCost;
 
-                    if (Creature.SpriteAnimator != null)
-                    {
-                        Creature.SpriteAnimator.MoveDirection = MapGrid.Instance.GetDirection(Creature.Data.CurrentCell.LinkedGameObject, NextCell);
-                    }
+                    Creature.Data.MoveDirection = MapGrid.Instance.GetDirection(Creature.Data.CurrentCell.LinkedGameObject, NextCell);
                     startTime = Time.time;
                 }
             }
