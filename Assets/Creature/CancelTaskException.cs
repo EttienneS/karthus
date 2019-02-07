@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-[Serializable]
 internal class CancelTaskException : Exception
 {
     public CancelTaskException()

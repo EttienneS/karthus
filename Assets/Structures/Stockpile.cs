@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -6,14 +7,9 @@ using UnityEngine;
 
 public class Stockpile : MonoBehaviour
 {
-    internal List<TaskBase> ActiveTasks = new List<TaskBase>();
-    internal Coordinates Coordinates;
-    internal string ItemType;
-    internal int MaxConcurrentTasks = 3;
-    internal int Size = 12;
-    internal string StockpileId = Guid.NewGuid().ToString();
-    private List<ItemData> _items = new List<ItemData>();
+    public StockpileData Data = new StockpileData();
 
+    private List<ItemData> _items = new List<ItemData>();
     private TextMeshPro _textMesh;
 
     public string Text
@@ -34,8 +30,8 @@ public class Stockpile : MonoBehaviour
         item.Reserved = false;
         item.LinkedGameObject.SpriteRenderer.sortingLayerName = "Item";
 
-        MapGrid.Instance.GetCellAtCoordinate(Coordinates).AddContent(item.LinkedGameObject.gameObject, true);
-        item.StockpileId = StockpileId;
+        MapGrid.Instance.GetCellAtCoordinate(Data.Coordinates).AddContent(item.LinkedGameObject.gameObject, true);
+        item.StockpileId = Data.StockpileId;
         _items.Add(item);
     }
 
@@ -64,13 +60,25 @@ public class Stockpile : MonoBehaviour
     {
         if (TimeManager.Instance.Paused) return;
 
-        Text = ItemType;
+        Text = Data.ItemType;
 
-        ActiveTasks.RemoveAll(t => t.Done());
+        Data.ActiveTasks.RemoveAll(t => t.Done());
 
-        if (ActiveTasks.Count < MaxConcurrentTasks && _items.Count < Size)
+        if (Data.ActiveTasks.Count < Data.MaxConcurrentTasks && _items.Count < Data.Size)
         {
-            ActiveTasks.Add(Taskmaster.Instance.AddTask(new StockpileItem(ItemType, this)));
+            Data.ActiveTasks.Add(Taskmaster.Instance.AddTask(new StockpileItem(Data.ItemType, Data.StockpileId)));
         }
     }
+}
+
+public class StockpileData
+{
+    [JsonIgnore]
+    public List<TaskBase> ActiveTasks = new List<TaskBase>();
+
+    public Coordinates Coordinates;
+    public string ItemType;
+    public int MaxConcurrentTasks = 3;
+    public int Size = 12;
+    public string StockpileId = Guid.NewGuid().ToString();
 }

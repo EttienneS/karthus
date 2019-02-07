@@ -31,7 +31,7 @@ public class OrderSelectionController : MonoBehaviour
 
         CellClickOrder = cell =>
         {
-            if (cell.Structure == null)
+            if (cell.Data.Structure == null)
             {
                 var blueprint = StructureController.Instance.GetStructureBluePrint(structureName);
                 cell.AddContent(blueprint.gameObject);
@@ -96,18 +96,18 @@ public class OrderSelectionController : MonoBehaviour
 
         CellClickOrder = cell =>
         {
-            if (cell.Structure != null)
+            if (cell.Data.Structure != null)
             {
-                var structure = cell.Structure;
+                var structure = cell.Data.Structure;
 
-                if (structure.Data.IsBluePrint)
+                if (structure.IsBluePrint)
                 {
                     StructureController.Instance.RemoveStructure(structure);
                 }
                 else
                 {
                     Taskmaster.Instance.AddTask(new RemoveStructure(structure, cell.Data.Coordinates));
-                    structure.SpriteRenderer.color = Color.red;
+                    structure.LinkedGameObject.SpriteRenderer.color = Color.red;
                 }
             }
         };
@@ -136,7 +136,7 @@ public class OrderSelectionController : MonoBehaviour
 
         CellClickOrder = cell =>
         {
-            if (cell.Stockpile == null && cell.TravelCost > 0)
+            if (cell.Data.Stockpile == null && cell.TravelCost > 0)
             {
                 var stockpile = StockpileController.Instance.AddStockpile(itemTypeName);
                 cell.AddContent(stockpile.gameObject);

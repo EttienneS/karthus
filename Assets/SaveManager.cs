@@ -65,16 +65,14 @@ public class Save
 {
     public CellData[] Cells;
 
-
     public CreatureData[] Creatures;
 
-    //
-    //public TaskBase[] Tasks;
+    public TaskBase[] Tasks;
 
     public Save()
     {
         Cells = MapGrid.Instance.Cells.Select(c => c.Data).ToArray();
         Creatures = CreatureController.Instance.Creatures.Select(c => c.Data).ToArray();
-        //  Tasks = Taskmaster.Instance.Tasks.ToArray();
+        Tasks = Taskmaster.Instance.Tasks.ToArray();
     }
 }

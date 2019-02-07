@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 [Serializable]
 public class GetItemOfType : TaskBase
 {
-    
-    private ItemData _item;
-    
-    private Coordinates _itemLocation;
+    public bool AllowStockpiled;
+    public ItemData Item;
+    public string ItemType;
 
     public GetItemOfType(string itemType, bool allowStockpiled)
     {
@@ -17,21 +15,17 @@ public class GetItemOfType : TaskBase
         SubTasks = new Queue<TaskBase>();
     }
 
-
-    public bool AllowStockpiled;
-    public string ItemType;
-
     public override bool Done()
     {
-        if (_item != null && Taskmaster.QueueComplete(SubTasks))
+        if (Item != null && Taskmaster.QueueComplete(SubTasks))
         {
-            if (!string.IsNullOrEmpty(_item.StockpileId))
+            if (!string.IsNullOrEmpty(Item.StockpileId))
             {
-                var pile = StockpileController.Instance.GetStockpile(_item.StockpileId);
-                _item = pile.GetItem(_item);
+                var pile = StockpileController.Instance.GetStockpile(Item.StockpileId);
+                Item = pile.GetItem(Item);
             }
 
-            Creature.CarriedItem = _item;
+            Creature.CarriedItem = Item;
             return true;
         }
 
@@ -40,15 +34,15 @@ public class GetItemOfType : TaskBase
 
     public override void Update()
     {
-        if (_item == null)
+        if (Item == null)
         {
-            _item = ItemController.Instance.FindClosestItemOfType(Creature.CurrentCell.LinkedGameObject, ItemType, AllowStockpiled);
+            Item = ItemController.Instance.FindClosestItemOfType(Creature.CurrentCell.LinkedGameObject, ItemType, AllowStockpiled);
 
-            if (_item == null)
+            if (Item == null)
             {
                 throw new CancelTaskException($"Unable to find item: {ItemType}");
             }
-            _item.Reserved = true;
+            Item.Reserved = true;
             UpdateTargetItem();
         }
 
@@ -59,7 +53,7 @@ public class GetItemOfType : TaskBase
     {
         SubTasks = new Queue<TaskBase>();
 
-        var moveTask = new Move(_item.LinkedGameObject.Cell.Data.Coordinates)
+        var moveTask = new Move(Item.LinkedGameObject.Cell.Data.Coordinates)
         {
             Creature = Creature
         };

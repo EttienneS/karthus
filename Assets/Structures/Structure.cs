@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -47,49 +48,29 @@ public class Structure : MonoBehaviour
 [Serializable]
 public class StructureData
 {
-    
+    [JsonIgnore]
     public List<ItemData> ContainedItems = new List<ItemData>();
 
-    
     public Coordinates Coordinates;
 
-    
     public bool IsBluePrint;
 
-    
     public string Name;
 
-    
     public List<string> RequiredItemTypes;
 
-    
     public string SpriteName;
 
-    
     public bool Tiled;
 
-    
     public float TravelCost;
 
+    [JsonIgnore]
     public Structure LinkedGameObject
     {
         get
         {
             return StructureController.Instance.GetStructureForData(this);
-        }
-    }
-
-    public void ToggleBluePrintState(bool force = false)
-    {
-        if (IsBluePrint || force)
-        {
-            LinkedGameObject.SpriteRenderer.color = new Color(0.3f, 1f, 1f, 0.4f);
-            LinkedGameObject.SpriteRenderer.material.SetFloat("_EffectAmount", 1f);
-        }
-        else
-        {
-            LinkedGameObject.SpriteRenderer.color = Color.white;
-            LinkedGameObject.SpriteRenderer.material.SetFloat("_EffectAmount", 0f);
         }
     }
 
@@ -120,5 +101,19 @@ public class StructureData
     public bool ReadyToBuild()
     {
         return IsBluePrint && RequiredItemTypes.Count == 0;
+    }
+
+    public void ToggleBluePrintState(bool force = false)
+    {
+        if (IsBluePrint || force)
+        {
+            LinkedGameObject.SpriteRenderer.color = new Color(0.3f, 1f, 1f, 0.4f);
+            LinkedGameObject.SpriteRenderer.material.SetFloat("_EffectAmount", 1f);
+        }
+        else
+        {
+            LinkedGameObject.SpriteRenderer.color = Color.white;
+            LinkedGameObject.SpriteRenderer.material.SetFloat("_EffectAmount", 0f);
+        }
     }
 }

@@ -171,34 +171,24 @@ public class Creature : MonoBehaviour
 [Serializable]
 public class CreatureData
 {
-    
     public ItemData CarriedItem;
 
-    
     public Coordinates Coordinates;
 
-    
     public float Energy;
 
-    
     public float Hunger;
 
-    
     public Direction MoveDirection = Direction.S;
 
-    
     public string Name;
 
-    
     public float Speed = 5f;
 
-    
     public int SpriteId;
 
-    
     public float Thirst;
 
-    
     internal float InternalTick;
 
     [JsonIgnore]

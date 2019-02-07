@@ -2,19 +2,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class Cell : MonoBehaviour
 {
     internal CellData Data = new CellData();
-    internal Cell[] Neighbors = new Cell[8];
-    internal Stockpile Stockpile;
-    internal Structure Structure;
-    private float _lastUpdate;
 
-    private TextMeshPro _textMesh;
+    internal Cell[] Neighbors = new Cell[8];
+
+  
+
+    private float _lastUpdate;
 
     public SpriteRenderer Border { get; private set; }
 
@@ -67,9 +66,9 @@ public class Cell : MonoBehaviour
     {
         get
         {
-            if (Structure != null)
+            if (Data.Structure != null)
             {
-                return Structure.Data.TravelCost;
+                return Data.Structure.TravelCost;
             }
 
             return Data.BaseTravelCost;
@@ -98,12 +97,12 @@ public class Cell : MonoBehaviour
         else if (structure != null)
         {
             structure.Data.Coordinates = Data.Coordinates;
-            Structure = structure;
+            Data.Structure = structure.Data;
         }
         else if (stockpile != null)
         {
-            stockpile.Coordinates = Data.Coordinates;
-            Stockpile = stockpile;
+            stockpile.Data.Coordinates = Data.Coordinates;
+            Data.Stockpile = stockpile.Data;
         }
 
         gameObject.transform.SetParent(transform);
@@ -167,8 +166,6 @@ public class Cell : MonoBehaviour
         return transform.position;
     }
 
-   
-
     private void Awake()
     {
         var gridStructure = transform.Find("CellStructure");
@@ -188,17 +185,17 @@ public class Cell : MonoBehaviour
 [Serializable]
 public class CellData
 {
-    
-    internal float BaseTravelCost = -1;
+    public float BaseTravelCost = -1;
 
-    
-    internal CellType CellType;
+    public CellType CellType;
 
-    
-    internal List<ItemData> ContainedItems = new List<ItemData>();
+    public List<ItemData> ContainedItems = new List<ItemData>();
 
-    
-    internal Coordinates Coordinates;
+    public Coordinates Coordinates;
+
+    public StockpileData Stockpile;
+
+    public StructureData Structure;
 
     [JsonIgnore]
     public Cell LinkedGameObject

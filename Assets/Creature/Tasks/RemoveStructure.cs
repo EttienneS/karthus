@@ -2,10 +2,10 @@
 
 public class RemoveStructure : TaskBase
 {
-    private Structure Structure;
-    private Coordinates Coordinates;
+    public Coordinates Coordinates;
+    public StructureData Structure;
 
-    public RemoveStructure(Structure structure, Coordinates coordinates)
+    public RemoveStructure(StructureData structure, Coordinates coordinates)
     {
         Structure = structure;
         Coordinates = coordinates;
@@ -19,7 +19,7 @@ public class RemoveStructure : TaskBase
     {
         if (Taskmaster.QueueComplete(SubTasks))
         {
-            foreach (var itemName in StructureController.Instance.StructureDataReference[Structure.Data.Name].RequiredItemTypes)
+            foreach (var itemName in StructureController.Instance.StructureDataReference[Structure.Name].RequiredItemTypes)
             {
                 MapGrid.Instance.GetCellAtCoordinate(Coordinates).AddContent(ItemController.Instance.GetItem(itemName).gameObject, true);
             }

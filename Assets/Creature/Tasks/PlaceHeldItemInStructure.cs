@@ -1,11 +1,11 @@
 ﻿public class PlaceHeldItemInStructure : TaskBase
 {
-    private StructureData _structure { get; set; }
-
     public PlaceHeldItemInStructure(StructureData structure)
     {
-        _structure = structure;
+        Structure = structure;
     }
+
+    public StructureData Structure { get; set; }
 
     public override bool Done()
     {
@@ -18,7 +18,7 @@
         Creature.CarriedItem = null;
 
         Creature.CurrentCell.LinkedGameObject.AddContent(item.gameObject, true);
-        _structure.AddItem(item.Data);
+        Structure.AddItem(item.Data);
         item.SpriteRenderer.sortingLayerName = "Item";
     }
 }

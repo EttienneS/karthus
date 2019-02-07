@@ -1,19 +1,28 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 [Serializable]
 public class StockpileItem : TaskBase
 {
-    public StockpileItem(string itemType, Stockpile stockpile)
+    public StockpileItem(string itemType, string stockpileId)
     {
         SubTasks = new Queue<TaskBase>();
-        Stockpile = stockpile;
-        SubTasks.Enqueue(new MoveItemToCell(itemType, stockpile.Coordinates, false));
+        StockpileId = stockpileId;
+        
+        SubTasks.Enqueue(new MoveItemToCell(itemType, Stockpile.Data.Coordinates, false));
     }
 
-    
-    public Stockpile Stockpile { get; set; }
+    public string StockpileId { get; set; }
+
+    [JsonIgnore]
+    private Stockpile Stockpile
+    {
+        get
+        {
+            return StockpileController.Instance.GetStockpile(StockpileId);
+        }
+    }
 
     public override bool Done()
     {

@@ -14,7 +14,6 @@ public class Wait : TaskBase
     {
         Duration = duration;
         Reason = reason;
-        TaskId = $"{Reason} {Duration}";
         ElapsedTime = 0;
         LastFacingChange = 0;
     }
@@ -26,7 +25,7 @@ public class Wait : TaskBase
 
     public override string ToString()
     {
-        return Reason;
+        return $"{Reason} {Duration}";
     }
 
     public override void Update()

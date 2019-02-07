@@ -43,11 +43,11 @@ public class Build : TaskBase
 
                 if (Structure.Name.Contains("Wood"))
                 {
-                    pile.ItemType = "Wood";
+                    pile.Data.ItemType = "Wood";
                 }
                 else
                 {
-                    pile.ItemType = "Rock";
+                    pile.Data.ItemType = "Rock";
                 }
             }
 

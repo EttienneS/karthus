@@ -1,7 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
+[Serializable]
 public enum CellType
 {
     Dirt, Forest, Grass, Mountain, Stone, Water

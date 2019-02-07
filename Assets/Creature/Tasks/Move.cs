@@ -1,29 +1,27 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Move : TaskBase
 {
-    public Cell NextCell;
-    private float _journeyLength;
-    private List<Cell> Path = new List<Cell>();
-    private float startTime;
-    private Vector3 targetPos;
-    private Cell _targetCell { get; set; }
+    public Coordinates TargetCoordinates;
+
+    [JsonIgnore] private float _journeyLength;
+    [JsonIgnore] private Cell _nextCell;
+    [JsonIgnore] private List<Cell> _path = new List<Cell>();
+    [JsonIgnore] private float _startTime;
+    [JsonIgnore] private Vector3 _targetPos;
 
     public Move(Coordinates targetCoordinates, int maxSpeed = int.MaxValue)
     {
         TargetCoordinates = targetCoordinates;
-        TaskId = $"Move to {targetCoordinates}";
         MaxSpeed = maxSpeed;
 
         _targetCell = MapGrid.Instance.GetCellAtCoordinate(TargetCoordinates);
     }
 
-    public Coordinates TargetCoordinates;
-
-    
-
     public int MaxSpeed { get; set; }
+    private Cell _targetCell { get; set; }
 
     public override bool Done()
     {
@@ -40,55 +38,55 @@ public class Move : TaskBase
         if (Creature.Coordinates == TargetCoordinates)
             return;
 
-        if (NextCell == null)
+        if (_nextCell == null)
         {
             var currentCreatureCell = MapGrid.Instance.GetCellAtCoordinate(Creature.Coordinates);
 
-            if (Path == null || Path.Count == 0)
+            if (_path == null || _path.Count == 0)
             {
-                Path = Pathfinder.FindPath(currentCreatureCell, _targetCell);
+                _path = Pathfinder.FindPath(currentCreatureCell, _targetCell);
             }
 
-            if (Path == null)
+            if (_path == null)
             {
                 throw new CancelTaskException("Unable to find path");
             }
 
-            NextCell = Path[Path.IndexOf(currentCreatureCell) - 1];
-            if (NextCell.TravelCost < 0)
+            _nextCell = _path[_path.IndexOf(currentCreatureCell) - 1];
+            if (_nextCell.TravelCost < 0)
             {
                 // something changed the path making it unusable
-                Path = null;
+                _path = null;
             }
             else
             {
                 // found valid next cell
-                targetPos = NextCell.GetCreaturePosition();
+                _targetPos = _nextCell.GetCreaturePosition();
 
                 // calculate the movement journey to the next cell, include the cell travelcost to make moving through
                 // difficults cells take longer
-                _journeyLength = Vector3.Distance(currentCreatureCell.transform.position, targetPos) + NextCell.TravelCost;
+                _journeyLength = Vector3.Distance(currentCreatureCell.transform.position, _targetPos) + _nextCell.TravelCost;
 
-                Creature.MoveDirection = MapGrid.Instance.GetDirection(currentCreatureCell, NextCell);
-                startTime = Time.time;
+                Creature.MoveDirection = MapGrid.Instance.GetDirection(currentCreatureCell, _nextCell);
+                _startTime = Time.time;
             }
         }
 
-        if (NextCell != null && Creature.LinkedGameObject.transform.position != targetPos)
+        if (_nextCell != null && Creature.LinkedGameObject.transform.position != _targetPos)
         {
             // move between two cells
-            var distCovered = (Time.time - startTime) * Mathf.Min(Creature.Speed, MaxSpeed);
+            var distCovered = (Time.time - _startTime) * Mathf.Min(Creature.Speed, MaxSpeed);
             var fracJourney = distCovered / _journeyLength;
             Creature.LinkedGameObject.transform.position = Vector3.Lerp(Creature.CurrentCell.LinkedGameObject.transform.position,
-                                      targetPos,
+                                      _targetPos,
                                       fracJourney);
         }
         else
         {
             // reached next cell
-            Creature.Coordinates = NextCell.Data.Coordinates;
-            NextCell = null;
-            Path = null;
+            Creature.Coordinates = _nextCell.Data.Coordinates;
+            _nextCell = null;
+            _path = null;
         }
     }
 }

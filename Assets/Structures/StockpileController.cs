@@ -7,21 +7,6 @@ public class StockpileController : MonoBehaviour
 
     public Stockpile StockpilePrefab;
 
-    internal Stockpile GetStockpile(string stockpileId)
-    {
-        return StockpileLookup[stockpileId];
-    }
-
-    public Stockpile AddStockpile(string itemTypeName)
-    {
-        var stockpile = Instantiate(StockpilePrefab, transform);
-        stockpile.ItemType = itemTypeName;
-
-        StockpileLookup.Add(stockpile.StockpileId, stockpile);
-
-        return stockpile;
-    }
-
     private static StockpileController _instance;
 
     public static StockpileController Instance
@@ -35,5 +20,20 @@ public class StockpileController : MonoBehaviour
 
             return _instance;
         }
+    }
+
+    public Stockpile AddStockpile(string itemTypeName)
+    {
+        var stockpile = Instantiate(StockpilePrefab, transform);
+        stockpile.Data.ItemType = itemTypeName;
+
+        StockpileLookup.Add(stockpile.Data.StockpileId, stockpile);
+
+        return stockpile;
+    }
+
+    internal Stockpile GetStockpile(string stockpileId)
+    {
+        return StockpileLookup[stockpileId];
     }
 }

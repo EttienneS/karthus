@@ -49,10 +49,14 @@ public class StructureController : MonoBehaviour
     {
         return StructureLookup[structureData];
     }
+    internal void RemoveStructure(StructureData structure)
+    {
+        RemoveStructure(structure.LinkedGameObject);
+    }
 
     internal void RemoveStructure(Structure structure)
     {
-        MapGrid.Instance.GetCellAtCoordinate(structure.Data.Coordinates).Structure = null;
+        MapGrid.Instance.GetCellAtCoordinate(structure.Data.Coordinates).Data.Structure = null;
 
         foreach (var item in structure.Data.ContainedItems)
         {
