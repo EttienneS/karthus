@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
+[Serializable]
 public class Item : MonoBehaviour
 {
     internal SpriteRenderer SpriteRenderer;
@@ -11,6 +12,7 @@ public class Item : MonoBehaviour
         SpriteRenderer = GetComponent<SpriteRenderer>();
     }
 
+    [SerializeField]
     public ItemData Data;
 
     public Cell Cell { get; set; }
@@ -30,19 +32,27 @@ public class Item : MonoBehaviour
 [Serializable]
 public class ItemData
 {
+    [SerializeField]
     public string ItemType;
+    [SerializeField]
     public bool Reserved;
+    [SerializeField]
     public string SpriteName;
+    [SerializeField]
     public string Name;
 
+    [SerializeField]
     public string StockpileId { get; set; }
 
+    [SerializeField]
     public ItemProperty[] Properties;
 }
 
 [Serializable]
 public class ItemProperty
 {
+    [SerializeField]
     public string Key;
+    [SerializeField]
     public string Value;
 }

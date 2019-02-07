@@ -35,9 +35,9 @@ public class MapEditor : MonoBehaviour
 
     public void AddCellIfValid(int x, int y, List<Cell> cells)
     {
-        if (x >= 0 && x < MapGrid.Map.GetLength(0) && y >= 0 && y < MapGrid.Map.GetLength(1))
+        if (x >= 0 && x < MapGrid.Cells.GetLength(0) && y >= 0 && y < MapGrid.Cells.GetLength(1))
         {
-            cells.Add(MapGrid.Map[x, y]);
+            cells.Add(MapGrid.Cells[x, y]);
         }
     }
 
@@ -47,15 +47,12 @@ public class MapEditor : MonoBehaviour
         cell.transform.position = new Vector3(x, y);
         cell.CellType = CellType.Water;
 
-        cell.Coordinates = new Coordinates(x, y);
-        cell.name = cell.Coordinates.ToString();
+        cell.Data.Coordinates = new Coordinates(x, y);
+        cell.name = cell.Data.Coordinates.ToString();
 
-        MapGrid.Map[x, y] = cell;
+        MapGrid.Cells[x, y] = cell;
 
-        if (MapGrid.DebugCoordinates)
-        {
-            cell.Text = cell.Coordinates.ToStringOnSeparateLines();
-        }
+       
     }
 
     public IEnumerator CreateMap()
@@ -63,7 +60,7 @@ public class MapEditor : MonoBehaviour
         var width = MapSize;
         var height = MapSize;
 
-        MapGrid.Map = new Cell[width, height];
+        MapGrid.Cells = new Cell[width, height];
 
         if (ShowGeneration) yield return null;
 
@@ -81,26 +78,26 @@ public class MapEditor : MonoBehaviour
         {
             for (var x = 0; x < height; x++)
             {
-                var cell = MapGrid.Map[x, y];
+                var cell = MapGrid.Cells[x, y];
 
                 if (x > 0)
                 {
-                    cell.SetNeighbor(Direction.W, MapGrid.Map[x - 1, y]);
+                    cell.SetNeighbor(Direction.W, MapGrid.Cells[x - 1, y]);
 
                     if (y > 0)
                     {
-                        cell.SetNeighbor(Direction.SW, MapGrid.Map[x - 1, y - 1]);
+                        cell.SetNeighbor(Direction.SW, MapGrid.Cells[x - 1, y - 1]);
 
                         if (x < width - 1)
                         {
-                            cell.SetNeighbor(Direction.SE, MapGrid.Map[x + 1, y - 1]);
+                            cell.SetNeighbor(Direction.SE, MapGrid.Cells[x + 1, y - 1]);
                         }
                     }
                 }
 
                 if (y > 0)
                 {
-                    cell.SetNeighbor(Direction.S, MapGrid.Map[x, y - 1]);
+                    cell.SetNeighbor(Direction.S, MapGrid.Cells[x, y - 1]);
                 }
             }
         }
@@ -117,7 +114,7 @@ public class MapEditor : MonoBehaviour
         if (ShowGeneration) yield return null;
 
         // grow mountains
-        foreach (var cell in MapGrid.Map)
+        foreach (var cell in MapGrid.Cells)
         {
             if (cell.CellType != CellType.Stone)
             {
@@ -148,7 +145,7 @@ public class MapEditor : MonoBehaviour
 
         // bleed water, this enlarges bodies of water
         // creates more natural looking coastlines/rivers
-        foreach (var cell in MapGrid.Map)
+        foreach (var cell in MapGrid.Cells)
         {
             if (cell.CellType == CellType.Water)
             {
@@ -165,7 +162,7 @@ public class MapEditor : MonoBehaviour
         if (ShowGeneration) yield return null;
 
         // create coast
-        foreach (var cell in MapGrid.Map)
+        foreach (var cell in MapGrid.Cells)
         {
             if (cell.CellType != CellType.Grass)
             {
@@ -181,7 +178,7 @@ public class MapEditor : MonoBehaviour
         if (ShowGeneration) yield return null;
 
         // bleed desert
-        foreach (var cell in MapGrid.Map)
+        foreach (var cell in MapGrid.Cells)
         {
             if (cell.CellType == CellType.Water)
             {
@@ -197,7 +194,7 @@ public class MapEditor : MonoBehaviour
         if (ShowGeneration) yield return null;
 
         // create forest
-        foreach (var cell in MapGrid.Map)
+        foreach (var cell in MapGrid.Cells)
         {
             if (cell.CellType == CellType.Water)
             {
@@ -216,7 +213,7 @@ public class MapEditor : MonoBehaviour
 
         if (ShowGeneration) yield return null;
 
-        foreach (var cell in MapGrid.Map)
+        foreach (var cell in MapGrid.Cells)
         {
             switch (cell.CellType)
             {

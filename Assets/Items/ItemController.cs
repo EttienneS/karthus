@@ -72,7 +72,7 @@ public class ItemController : MonoBehaviour
                 }
                 if (checkedCells.Add(item.Cell))
                 {
-                    var distance = centerPoint.Coordinates.DistanceTo(item.Cell.Coordinates);
+                    var distance = centerPoint.Data.Coordinates.DistanceTo(item.Cell.Data.Coordinates);
                     if (distance < closest)
                     {
                         closest = distance;
@@ -83,51 +83,13 @@ public class ItemController : MonoBehaviour
 
             return closestItem;
         }
-
-
-
-        return null;
-    }
-
-    public Item FindItemInArea(Cell centerPoint, string type, bool allowStockpiled)
-    {
-        // scan for item in radius in ever growing circles
-        // very slow but potentially useful
-        var checkedCells = new HashSet<Cell>();
-        var searchRadius = 3;
-        var maxRadius = MapGrid.Instance.Map.GetLength(0);
-        do
-        {
-            var searchArea = MapGrid.Instance.GetCircle(centerPoint, searchRadius);
-            searchArea.Reverse();
-            foreach (var cell in searchArea)
-            {
-                if (checkedCells.Add(cell))
-                {
-                    foreach (var item in cell.ContainedItems.Where(i => i.Data.ItemType == type && !i.Data.Reserved))
-                    {
-                        if (!string.IsNullOrEmpty(item.Data.StockpileId))
-                        {
-                            continue;
-                        }
-
-                        return item;
-                    }
-                }
-            }
-
-            searchRadius += 3;
-        }
-        while (searchRadius <= maxRadius);
-
-        return null;
     }
 
     internal void DestoyItem(Item item)
     {
         if (item.Cell != null)
         {
-            item.Cell.ContainedItems.Remove(item);
+            item.Cell.Data.ContainedItems.Remove(item.Data);
         }
 
         ItemTypeIndex[item.Data.ItemType].Remove(item);

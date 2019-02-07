@@ -1,53 +1,41 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+[Serializable]
+public class CellData
+{
+    [SerializeField]
+    internal List<ItemData> ContainedItems = new List<ItemData>();
+    [SerializeField]
+    internal CellType CellType;
+    [SerializeField]
+    internal float BaseTravelCost = -1;
+    [SerializeField]
+    internal Coordinates Coordinates;
+}
+
 public class Cell : MonoBehaviour
 {
-    public Coordinates Coordinates;
     internal List<Creature> ContainedCreatures = new List<Creature>();
-    internal List<Item> ContainedItems = new List<Item>();
     internal Cell[] Neighbors = new Cell[8];
     internal Structure Structure;
     internal Stockpile Stockpile;
 
-    private float _baseTravelCost = -1;
-
-    internal float TravelCost
-    {
-        get
-        {
-            if (Structure != null)
-            {
-                return Structure.Data.TravelCost;
-            }
-
-            return _baseTravelCost;
-        }
-        set
-        {
-            _baseTravelCost = value;
-        }
-    }
-
-    private CellType _cellType;
-
-    private float _lastUpdate;
-    private TextMeshPro _textMesh;
-
-    public SpriteRenderer Border { get; private set; }
+    internal CellData Data = new CellData();
 
     public CellType CellType
     {
         get
         {
-            return _cellType;
+            return Data.CellType;
         }
         set
         {
-            _cellType = value;
+            Data.CellType = value;
 
             switch (value)
             {
@@ -65,52 +53,38 @@ public class Cell : MonoBehaviour
                     break;
             }
 
-            Terrain.sprite = SpriteStore.Instance.GetRandomSpriteOfType(_cellType);
+            Terrain.sprite = SpriteStore.Instance.GetRandomSpriteOfType(Data.CellType);
             RandomlyFlipSprite();
         }
     }
 
-    public float Distance { get; set; }
 
-    //public SpriteRenderer Fog { get; private set; }
-
-    public Cell NextWithSamePriority { get; set; }
-
-    public Cell PathFrom { get; set; }
-
-    public int SearchHeuristic { private get; set; }
-
-    public int SearchPhase { get; set; }
-
-    public int SearchPriority => (int)Distance + SearchHeuristic;
-    public SpriteRenderer Terrain { get; private set; }
-
-    public string Text
+    internal float TravelCost
     {
         get
         {
-            return TextMesh.text;
+            if (Structure != null)
+            {
+                return Structure.Data.TravelCost;
+            }
+
+            return Data.BaseTravelCost;
         }
         set
         {
-            TextMesh.enabled = true;
-            TextMesh.text = value;
+            Data.BaseTravelCost = value;
         }
     }
-
-    public TextMeshPro TextMesh
-    {
-        get
-        {
-            if (_textMesh == null)
-            {
-                _textMesh = transform.Find("Text").GetComponent<TextMeshPro>();
-            }
-            return _textMesh;
-        }
-    }
-
-    public object StockPile { get; internal set; }
+    private float _lastUpdate;
+    private TextMeshPro _textMesh;
+    public SpriteRenderer Border { get; private set; }
+    public SpriteRenderer Terrain { get; private set; }
+    public float Distance { get; set; }
+    public Cell NextWithSamePriority { get; set; }
+    public Cell PathFrom { get; set; }
+    public int SearchHeuristic { private get; set; }
+    public int SearchPhase { get; set; }
+    public int SearchPriority => (int)Distance + SearchHeuristic;
 
     public void AddContent(GameObject gameObject, bool scatter = false)
     {
@@ -122,9 +96,9 @@ public class Cell : MonoBehaviour
         {
             if (item.Cell != null)
             {
-                item.Cell.ContainedItems.Remove(item);
+                item.Cell.Data.ContainedItems.Remove(item.Data);
             }
-            ContainedItems.Add(item);
+            Data.ContainedItems.Add(item.Data);
             item.Cell = this;
         }
         else if (structure != null)

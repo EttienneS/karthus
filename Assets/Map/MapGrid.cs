@@ -4,18 +4,12 @@ using Random = UnityEngine.Random;
 
 public class MapGrid : MonoBehaviour
 {
-    public bool DebugCoordinates;
-    public bool DebugPathfinding = false;
+    internal const float JitterProbability = 0.25f;
 
-    [Range(0f, 1f)]
-    public float JitterProbability = 0.25f;
-
-    public Cell[,] Map;
+    public Cell[,] Cells;
 
     private static MapGrid _instance;
-
     private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
-
     private int _searchFrontierPhase;
 
     public static MapGrid Instance
@@ -33,23 +27,23 @@ public class MapGrid : MonoBehaviour
 
     public void AddCellIfValid(int x, int y, List<Cell> cells)
     {
-        if (x >= 0 && x < Map.GetLength(0) && y >= 0 && y < Map.GetLength(1))
+        if (x >= 0 && x < Cells.GetLength(0) && y >= 0 && y < Cells.GetLength(1))
         {
-            cells.Add(Map[x, y]);
+            cells.Add(Cells[x, y]);
         }
     }
 
     public Cell GetCellAtPoint(Vector3 position)
     {
         var coordinates = Coordinates.FromPosition(position);
-        return Map[coordinates.X, coordinates.Y];
+        return Cells[coordinates.X, coordinates.Y];
     }
 
     public List<Cell> GetCircle(Cell center, int radius)
     {
         var cells = new List<Cell>();
-        var centerX = center.Coordinates.X;
-        var centerY = center.Coordinates.Y;
+        var centerX = center.Data.Coordinates.X;
+        var centerY = center.Data.Coordinates.Y;
 
         for (var x = centerX - radius; x <= centerX; x++)
         {
@@ -71,7 +65,7 @@ public class MapGrid : MonoBehaviour
 
     public Cell GetRandomCell()
     {
-        return Map[(int)(Random.value * (Map.GetLength(0) - 1)), (int)(Random.value * (Map.GetLength(1) - 1))];
+        return Cells[(int)(Random.value * (Cells.GetLength(0) - 1)), (int)(Random.value * (Cells.GetLength(1) - 1))];
     }
 
     public List<Cell> GetRandomChunk(int chunkSize)
@@ -83,7 +77,7 @@ public class MapGrid : MonoBehaviour
         firstCell.SearchHeuristic = 0;
         _searchFrontier.Enqueue(firstCell);
 
-        var center = firstCell.Coordinates;
+        var center = firstCell.Data.Coordinates;
         int size = 0;
 
         var chunk = new List<Cell>();
@@ -99,7 +93,7 @@ public class MapGrid : MonoBehaviour
                 if (neighbor && neighbor.SearchPhase < _searchFrontierPhase)
                 {
                     neighbor.SearchPhase = _searchFrontierPhase;
-                    neighbor.Distance = neighbor.Coordinates.DistanceTo(center);
+                    neighbor.Distance = neighbor.Data.Coordinates.DistanceTo(center);
                     neighbor.SearchHeuristic = Random.value < JitterProbability ? 1 : 0;
                     _searchFrontier.Enqueue(neighbor);
                 }
@@ -152,8 +146,8 @@ public class MapGrid : MonoBehaviour
 
         if (fromCell != null && toCell != null)
         {
-            var x = fromCell.Coordinates.X - toCell.Coordinates.X;
-            var y = fromCell.Coordinates.Y - toCell.Coordinates.Y;
+            var x = fromCell.Data.Coordinates.X - toCell.Data.Coordinates.X;
+            var y = fromCell.Data.Coordinates.Y - toCell.Data.Coordinates.Y;
 
             if (x < 0 && y == 0)
             {
@@ -191,11 +185,11 @@ public class MapGrid : MonoBehaviour
     internal void ResetSearchPriorities()
     {
         // ensure that all cells have their phases reset
-        for (var y = 0; y < Map.GetLength(1); y++)
+        for (var y = 0; y < Cells.GetLength(1); y++)
         {
-            for (var x = 0; x < Map.GetLength(0); x++)
+            for (var x = 0; x < Cells.GetLength(0); x++)
             {
-                Map[x, y].SearchPhase = 0;
+                Cells[x, y].SearchPhase = 0;
             }
         }
     }
