@@ -14,9 +14,7 @@ public class MapEditor : MonoBehaviour
     public bool Generating = false;
     public MapGrid MapGrid;
 
-    [Range(4, 300)]
-    public int MapSize = 64;
-
+    
     public bool ShowGeneration = true;
     private static MapEditor _instance;
 
@@ -35,9 +33,9 @@ public class MapEditor : MonoBehaviour
 
     public void AddCellIfValid(int x, int y, List<Cell> cells)
     {
-        if (x >= 0 && x < MapGrid.Cells.GetLength(0) && y >= 0 && y < MapGrid.Cells.GetLength(1))
+        if (x >= 0 && x < MapGrid.MapSize && y >= 0 && y < MapGrid.MapSize)
         {
-            cells.Add(MapGrid.Cells[x, y]);
+            cells.Add(MapGrid.CellLookup[(x, y)]);
         }
     }
 
@@ -50,23 +48,19 @@ public class MapEditor : MonoBehaviour
         cell.Data.Coordinates = new Coordinates(x, y);
         cell.name = cell.Data.Coordinates.ToString();
 
-        MapGrid.Cells[x, y] = cell;
-
-       
+        MapGrid.Cells.Add(cell);
     }
 
     public IEnumerator CreateMap()
     {
-        var width = MapSize;
-        var height = MapSize;
 
-        MapGrid.Cells = new Cell[width, height];
+        MapGrid.Cells = new List<Cell>();
 
         if (ShowGeneration) yield return null;
 
-        for (var y = 0; y < width; y++)
+        for (var y = 0; y < MapGrid.MapSize; y++)
         {
-            for (var x = 0; x < height; x++)
+            for (var x = 0; x < MapGrid.MapSize; x++)
             {
                 CreateCell(x, y);
             }
@@ -74,39 +68,39 @@ public class MapEditor : MonoBehaviour
 
         if (ShowGeneration) yield return null;
 
-        for (var y = 0; y < width; y++)
+        for (var y = 0; y < MapGrid.MapSize; y++)
         {
-            for (var x = 0; x < height; x++)
+            for (var x = 0; x < MapGrid.MapSize; x++)
             {
-                var cell = MapGrid.Cells[x, y];
+                var cell = MapGrid.CellLookup[(x, y)];
 
                 if (x > 0)
                 {
-                    cell.SetNeighbor(Direction.W, MapGrid.Cells[x - 1, y]);
+                    cell.SetNeighbor(Direction.W, MapGrid.CellLookup[(x - 1, y)]);
 
                     if (y > 0)
                     {
-                        cell.SetNeighbor(Direction.SW, MapGrid.Cells[x - 1, y - 1]);
+                        cell.SetNeighbor(Direction.SW, MapGrid.CellLookup[(x - 1, y - 1)]);
 
-                        if (x < width - 1)
+                        if (x < MapGrid.MapSize - 1)
                         {
-                            cell.SetNeighbor(Direction.SE, MapGrid.Cells[x + 1, y - 1]);
+                            cell.SetNeighbor(Direction.SE, MapGrid.CellLookup[(x + 1, y - 1)]);
                         }
                     }
                 }
 
                 if (y > 0)
                 {
-                    cell.SetNeighbor(Direction.S, MapGrid.Cells[x, y - 1]);
+                    cell.SetNeighbor(Direction.S, MapGrid.CellLookup[(x, y - 1)]);
                 }
             }
         }
         if (ShowGeneration) yield return null;
 
         // generate bedrock
-        for (int i = 0; i < MapSize / 2; i++)
+        for (int i = 0; i < MapGrid.MapSize / 2; i++)
         {
-            foreach (var cell in MapGrid.GetRandomChunk(Random.Range(1 + (MapSize / 6), 1 + (MapSize / 3))))
+            foreach (var cell in MapGrid.GetRandomChunk(Random.Range(1 + (MapGrid.MapSize / 6), 1 + (MapGrid.MapSize / 3))))
             {
                 cell.CellType = CellType.Stone;
             }
@@ -131,9 +125,9 @@ public class MapEditor : MonoBehaviour
         if (ShowGeneration) yield return null;
 
         // generate landmasses
-        for (int i = 0; i < MapSize; i++)
+        for (int i = 0; i < MapGrid.MapSize; i++)
         {
-            foreach (var cell in MapGrid.GetRandomChunk(Random.Range(MapSize, MapSize * 2)))
+            foreach (var cell in MapGrid.GetRandomChunk(Random.Range(MapGrid.MapSize, MapGrid.MapSize * 2)))
             {
                 if (cell.CellType == CellType.Water)
                 {
@@ -221,7 +215,7 @@ public class MapEditor : MonoBehaviour
                     if (Random.value > 0.95)
                     {
                         cell.AddContent(StructureController.Instance.GetStructure("Tree").gameObject, false);
-                    }                   
+                    }
                     break;
 
                 case CellType.Stone:

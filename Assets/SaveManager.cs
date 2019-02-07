@@ -43,7 +43,7 @@ public class Save
 
     public Save()
     {
-        Cells = MapGrid.Instance.Cells.Cast<Cell>().Select(c => c.Data).ToArray();
+        Cells = MapGrid.Instance.Cells.Select(c => c.Data).ToArray();
         //Creatures = CreatureController.Instance.Creatures.ToArray();
     }
 }

@@ -1,14 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class MapGrid : MonoBehaviour
 {
+    public List<Cell> Cells;
+    [Range(4, 300)]
+    public int MapSize = 64;
+
     internal const float JitterProbability = 0.25f;
-
-    public Cell[,] Cells;
-
     private static MapGrid _instance;
+    private Dictionary<(int x, int y), Cell> _cellLookup;
     private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
     private int _searchFrontierPhase;
 
@@ -25,18 +28,34 @@ public class MapGrid : MonoBehaviour
         }
     }
 
-    public void AddCellIfValid(int x, int y, List<Cell> cells)
+    public Dictionary<(int x, int y), Cell> CellLookup
     {
-        if (x >= 0 && x < Cells.GetLength(0) && y >= 0 && y < Cells.GetLength(1))
+        get
         {
-            cells.Add(Cells[x, y]);
+            if (_cellLookup == null)
+            {
+                _cellLookup = new Dictionary<(int x, int y), Cell>();
+
+                foreach (var cell in Cells)
+                {
+                    _cellLookup.Add((cell.Data.Coordinates.X, cell.Data.Coordinates.Y), cell);
+                }
+            }
+            return _cellLookup;
         }
     }
 
+    public void AddCellIfValid(int x, int y, List<Cell> cells)
+    {
+        if (x >= 0 && x < MapSize && y >= 0 && y < MapSize)
+        {
+            cells.Add(CellLookup[(x, y)]);
+        }
+    }
     public Cell GetCellAtPoint(Vector3 position)
     {
         var coordinates = Coordinates.FromPosition(position);
-        return Cells[coordinates.X, coordinates.Y];
+        return CellLookup[(coordinates.X, coordinates.Y)];
     }
 
     public List<Cell> GetCircle(Cell center, int radius)
@@ -65,7 +84,7 @@ public class MapGrid : MonoBehaviour
 
     public Cell GetRandomCell()
     {
-        return Cells[(int)(Random.value * (Cells.GetLength(0) - 1)), (int)(Random.value * (Cells.GetLength(1) - 1))];
+        return CellLookup[((int)(Random.value * (MapSize - 1)), (int)(Random.value * (MapSize - 1)))];
     }
 
     public List<Cell> GetRandomChunk(int chunkSize)
@@ -185,11 +204,11 @@ public class MapGrid : MonoBehaviour
     internal void ResetSearchPriorities()
     {
         // ensure that all cells have their phases reset
-        for (var y = 0; y < Cells.GetLength(1); y++)
+        for (var y = 0; y < MapSize; y++)
         {
-            for (var x = 0; x < Cells.GetLength(0); x++)
+            for (var x = 0; x < MapSize; x++)
             {
-                Cells[x, y].SearchPhase = 0;
+                CellLookup[(x, y)].SearchPhase = 0;
             }
         }
     }

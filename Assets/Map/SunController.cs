@@ -45,7 +45,7 @@ public class SunController : MonoBehaviour
     {
         get
         {
-            return MapGrid.Instance.Cells.GetLength(0) / DayLightHours;
+            return MapGrid.Instance.MapSize / DayLightHours;
         }
     }
     internal void UpdatePosition(int hour, int minutes)
