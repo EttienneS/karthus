@@ -15,6 +15,7 @@ public class CreatureController : MonoBehaviour
     [Range(1, 1000)]
     public int CreaturesToSpawn = 10;
 
+    internal Dictionary<CreatureData, Creature> CreatureLookup = new Dictionary<CreatureData, Creature>();
     private static CreatureController _instance;
 
     public static CreatureController Instance
@@ -51,9 +52,10 @@ public class CreatureController : MonoBehaviour
         creature.Data.Name = CreatureHelper.GetRandomName();
 
         creature.transform.position = spawnLocation.transform.position;
-        spawnLocation.MoveToCell(creature);
+        creature.Data.Coordinates = spawnLocation.Data.Coordinates;
 
         Creatures.Add(creature);
+        CreatureLookup.Add(creature.Data, creature);
         return creature;
     }
 
@@ -78,4 +80,8 @@ public class CreatureController : MonoBehaviour
         }
     }
 
+    internal Creature GetCreatureForCreatureData(CreatureData creatureData)
+    {
+        return CreatureLookup[creatureData];
+    }
 }

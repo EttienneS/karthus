@@ -1,23 +1,20 @@
-﻿using System.Collections.Generic;
+﻿
+using System;
 
-public class DropHeldItem : ITask
+[Serializable]
+public class DropHeldItem : TaskBase
 {
-    public Creature Creature { get; set; }
-
-    public Queue<ITask> SubTasks { get; set; }
-    public string TaskId { get; set; }
-
-    public bool Done()
+    public override bool Done()
     {
-        return Creature.Data.CarriedItem == null;
+        return Creature.CarriedItem == null;
     }
 
-    public void Update()
+    public override void Update()
     {
-        var item =ItemController.Instance.ItemDataLookup[ Creature.Data.CarriedItem];
-        Creature.Data.CarriedItem = null;
+        var item = ItemController.Instance.ItemDataLookup[Creature.CarriedItem];
+        Creature.CarriedItem = null;
 
         item.SpriteRenderer.sortingLayerName = "Item";
-        Creature.Data.CurrentCell.LinkedGameObject.AddContent(item.gameObject, true);
+        Creature.CurrentCell.LinkedGameObject.AddContent(item.gameObject, true);
     }
 }

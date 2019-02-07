@@ -38,8 +38,12 @@ public class ItemController : MonoBehaviour
 
     internal void DestoyItem(ItemData data)
     {
-
         DestroyItem(ItemDataLookup[data]);
+    }
+
+    internal void DestroyItem(ItemData item)
+    {
+        DestroyItem(ItemDataLookup[item]);
     }
 
     internal void DestroyItem(Item item)
@@ -55,7 +59,7 @@ public class ItemController : MonoBehaviour
         Destroy(item.gameObject);
     }
 
-    internal Item FindClosestItemOfType(Cell centerPoint, string type, bool allowStockpiled)
+    internal ItemData FindClosestItemOfType(Cell centerPoint, string type, bool allowStockpiled)
     {
         if (!ItemTypeIndex.ContainsKey(type) || ItemTypeIndex[type].Count == 0)
         {
@@ -67,7 +71,7 @@ public class ItemController : MonoBehaviour
             // registered items found
             var checkedCells = new HashSet<Cell>();
             var closest = int.MaxValue;
-            Item closestItem = null;
+            ItemData closestItem = null;
             foreach (var item in ItemTypeIndex[type])
             {
                 if (item.Data.Reserved || (!allowStockpiled && !string.IsNullOrEmpty(item.Data.StockpileId)))
@@ -80,7 +84,7 @@ public class ItemController : MonoBehaviour
                     if (distance < closest)
                     {
                         closest = distance;
-                        closestItem = item;
+                        closestItem = item.Data;
                     }
                 }
             }

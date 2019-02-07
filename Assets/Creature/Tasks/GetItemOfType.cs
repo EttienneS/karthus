@@ -1,53 +1,54 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class GetItemOfType : ITask
+[Serializable]
+public class GetItemOfType : TaskBase
 {
-    private Item _item;
-    private Cell _itemLocation;
+    
+    private ItemData _item;
+    
+    private Coordinates _itemLocation;
 
     public GetItemOfType(string itemType, bool allowStockpiled)
     {
         AllowStockpiled = allowStockpiled;
         ItemType = itemType;
-        SubTasks = new Queue<ITask>();
+        SubTasks = new Queue<TaskBase>();
     }
 
-    public bool AllowStockpiled { get; set; }
-    public Creature Creature { get; set; }
-    public string ItemType { get; set; }
-    public Queue<ITask> SubTasks { get; set; }
-    public string TaskId { get; set; }
 
-    public bool Done()
+    public bool AllowStockpiled;
+    public string ItemType;
+
+    public override bool Done()
     {
         if (_item != null && Taskmaster.QueueComplete(SubTasks))
         {
-            if (!string.IsNullOrEmpty(_item.Data.StockpileId))
+            if (!string.IsNullOrEmpty(_item.StockpileId))
             {
-                var pile = StockpileController.Instance.GetStockpile(_item.Data.StockpileId);
+                var pile = StockpileController.Instance.GetStockpile(_item.StockpileId);
                 _item = pile.GetItem(_item);
             }
 
-            Creature.Data.CarriedItem = _item.Data;
-            _item.SpriteRenderer.color = Color.white;
+            Creature.CarriedItem = _item;
             return true;
         }
 
         return false;
     }
 
-    public void Update()
+    public override void Update()
     {
         if (_item == null)
         {
-            _item = ItemController.Instance.FindClosestItemOfType(Creature.Data.CurrentCell.LinkedGameObject, ItemType, AllowStockpiled);
+            _item = ItemController.Instance.FindClosestItemOfType(Creature.CurrentCell.LinkedGameObject, ItemType, AllowStockpiled);
 
             if (_item == null)
             {
                 throw new CancelTaskException($"Unable to find item: {ItemType}");
             }
-            _item.Data.Reserved = true;
+            _item.Reserved = true;
             UpdateTargetItem();
         }
 
@@ -56,10 +57,9 @@ public class GetItemOfType : ITask
 
     private void UpdateTargetItem()
     {
-        SubTasks = new Queue<ITask>();
-        _itemLocation = MapGrid.Instance.GetCellAtPoint(_item.transform.position);
+        SubTasks = new Queue<TaskBase>();
 
-        var moveTask = new Move(_itemLocation)
+        var moveTask = new Move(_item.LinkedGameObject.Cell.Data.Coordinates)
         {
             Creature = Creature
         };

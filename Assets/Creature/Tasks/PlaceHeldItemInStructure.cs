@@ -1,31 +1,24 @@
-﻿using System.Collections.Generic;
-
-public class PlaceHeldItemInStructure : ITask
+﻿public class PlaceHeldItemInStructure : TaskBase
 {
-    public Creature Creature { get; set; }
-    private Structure _structure { get; set; }
+    private StructureData _structure { get; set; }
 
-    public Queue<ITask> SubTasks { get; set; }
-
-    public string TaskId { get; set; }
-
-    public PlaceHeldItemInStructure(Structure structure)
+    public PlaceHeldItemInStructure(StructureData structure)
     {
         _structure = structure;
     }
 
-    public bool Done()
+    public override bool Done()
     {
-        return Creature.Data.CarriedItem == null;
+        return Creature.CarriedItem == null;
     }
 
-    public void Update()
+    public override void Update()
     {
-        var item = ItemController.Instance.ItemDataLookup[Creature.Data.CarriedItem];
-        Creature.Data.CarriedItem = null;
+        var item = ItemController.Instance.ItemDataLookup[Creature.CarriedItem];
+        Creature.CarriedItem = null;
 
-        Creature.Data.CurrentCell.LinkedGameObject.AddContent(item.gameObject, true);
-        _structure.Data.AddItem(item);
+        Creature.CurrentCell.LinkedGameObject.AddContent(item.gameObject, true);
+        _structure.AddItem(item.Data);
         item.SpriteRenderer.sortingLayerName = "Item";
     }
 }

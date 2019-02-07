@@ -1,37 +1,38 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 
-public class StockpileItem : ITask
+[Serializable]
+public class StockpileItem : TaskBase
 {
     public StockpileItem(string itemType, Stockpile stockpile)
     {
-        SubTasks = new Queue<ITask>();
+        SubTasks = new Queue<TaskBase>();
         Stockpile = stockpile;
-        SubTasks.Enqueue(new MoveItemToCell(itemType, stockpile.Cell, false));
+        SubTasks.Enqueue(new MoveItemToCell(itemType, stockpile.Coordinates, false));
     }
 
-    public Creature Creature { get; set; }
+    
     public Stockpile Stockpile { get; set; }
-    public Queue<ITask> SubTasks { get; set; }
-    public string TaskId { get; set; }
 
-    public bool Done()
+    public override bool Done()
     {
         if (Taskmaster.QueueComplete(SubTasks))
         {
-            if (Creature.Data.CarriedItem == null)
+            if (Creature.CarriedItem == null)
             {
                 return true;
             }
 
-            Stockpile.AddItem(ItemController.Instance.ItemDataLookup[Creature.Data.CarriedItem]);
-            Creature.Data.CarriedItem = null;
+            Stockpile.AddItem(Creature.CarriedItem);
+            Creature.CarriedItem = null;
             return true;
         }
 
         return false;
     }
 
-    public void Update()
+    public override void Update()
     {
         Taskmaster.ProcessQueue(SubTasks);
     }

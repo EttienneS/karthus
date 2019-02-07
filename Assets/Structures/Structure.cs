@@ -5,40 +5,8 @@ using UnityEngine;
 
 public class Structure : MonoBehaviour
 {
-    internal SpriteRenderer SpriteRenderer;
     internal StructureData Data = new StructureData();
-
-    public Cell Cell { get; internal set; }
-
-    internal bool BluePrint
-    {
-        get
-        {
-            return Data.IsBluePrint;
-        }
-        set
-        {
-            Data.IsBluePrint = value;
-
-            if (Data.IsBluePrint)
-            {
-                SpriteRenderer.color = new Color(0.3f, 1f, 1f, 0.4f);
-                SpriteRenderer.material.SetFloat("_EffectAmount", 1f);
-            }
-            else
-            {
-                SpriteRenderer.color = Color.white;
-                SpriteRenderer.material.SetFloat("_EffectAmount", 0f);
-            }
-        }
-    }
-
-    internal void Load(string structureData)
-    {
-        Data = StructureData.GetFromJson(structureData);
-        SpriteRenderer.sprite = SpriteStore.Instance.GetSpriteByName(Data.SpriteName);
-        SetTiledMode(SpriteRenderer, Data.Tiled);
-    }
+    internal SpriteRenderer SpriteRenderer;
 
     public static void SetTiledMode(SpriteRenderer spriteRenderer, bool tiled)
     {
@@ -53,6 +21,13 @@ public class Structure : MonoBehaviour
         }
     }
 
+    internal void Load(string structureData)
+    {
+        Data = StructureData.GetFromJson(structureData);
+        SpriteRenderer.sprite = SpriteStore.Instance.GetSpriteByName(Data.SpriteName);
+        SetTiledMode(SpriteRenderer, Data.Tiled);
+    }
+
     private void Awake()
     {
         SpriteRenderer = GetComponent<SpriteRenderer>();
@@ -62,9 +37,9 @@ public class Structure : MonoBehaviour
     {
         if (TimeManager.Instance.Paused) return;
 
-        if (BluePrint && !Taskmaster.Instance.ContainsJob(name))
+        if (Data.IsBluePrint && !Taskmaster.Instance.ContainsJob(name))
         {
-            Taskmaster.Instance.AddTask(new Build(this, GetComponentInParent<Cell>()));
+            Taskmaster.Instance.AddTask(new Build(Data, Data.Coordinates));
         }
     }
 }
@@ -72,28 +47,65 @@ public class Structure : MonoBehaviour
 [Serializable]
 public class StructureData
 {
-    public string Name;
-    public string SpriteName;
-    public List<string> RequiredItemTypes;
+    
+    public List<ItemData> ContainedItems = new List<ItemData>();
+
+    
+    public Coordinates Coordinates;
+
+    
     public bool IsBluePrint;
+
+    
+    public string Name;
+
+    
+    public List<string> RequiredItemTypes;
+
+    
+    public string SpriteName;
+
+    
     public bool Tiled;
+
+    
     public float TravelCost;
 
-    public List<Item> ContainedItems = new List<Item>();
-
-    public void AddItem(Item item)
+    public Structure LinkedGameObject
     {
-        ContainedItems.Add(item);
-
-        if (RequiredItemTypes.Contains(item.Data.ItemType))
+        get
         {
-            RequiredItemTypes.Remove(item.Data.ItemType);
+            return StructureController.Instance.GetStructureForData(this);
         }
     }
 
-    public bool ReadyToBuild()
+    public void ToggleBluePrintState(bool force = false)
     {
-        return IsBluePrint && RequiredItemTypes.Count == 0;
+        if (IsBluePrint || force)
+        {
+            LinkedGameObject.SpriteRenderer.color = new Color(0.3f, 1f, 1f, 0.4f);
+            LinkedGameObject.SpriteRenderer.material.SetFloat("_EffectAmount", 1f);
+        }
+        else
+        {
+            LinkedGameObject.SpriteRenderer.color = Color.white;
+            LinkedGameObject.SpriteRenderer.material.SetFloat("_EffectAmount", 0f);
+        }
+    }
+
+    public static StructureData GetFromJson(string json)
+    {
+        return JsonUtility.FromJson<StructureData>(json);
+    }
+
+    public void AddItem(ItemData item)
+    {
+        ContainedItems.Add(item);
+
+        if (RequiredItemTypes.Contains(item.ItemType))
+        {
+            RequiredItemTypes.Remove(item.ItemType);
+        }
     }
 
     public void DestroyContainedItems()
@@ -105,8 +117,8 @@ public class StructureData
         ContainedItems.Clear();
     }
 
-    public static StructureData GetFromJson(string json)
+    public bool ReadyToBuild()
     {
-        return JsonUtility.FromJson<StructureData>(json);
+        return IsBluePrint && RequiredItemTypes.Count == 0;
     }
 }

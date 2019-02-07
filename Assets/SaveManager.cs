@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.IO;
+using Newtonsoft.Json;
 
 public class SaveManager : MonoBehaviour
 {
@@ -24,7 +25,15 @@ public class SaveManager : MonoBehaviour
 
     public void Save()
     {
-        File.WriteAllText("save.json", JsonUtility.ToJson(new Save(), true));
+        try
+        {
+            File.WriteAllText("save.json", JsonConvert.SerializeObject(new Save(), Formatting.Indented));
+
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Unable to save: {ex}");
+        }
     }
 
     public void Load()
@@ -44,7 +53,7 @@ public class SaveManager : MonoBehaviour
             Destroy(creature.gameObject);
         }
 
-        
+
 
         CreatureController.Instance.Creatures.Clear();
         MapEditor.Instance.Generating = false;
@@ -54,14 +63,18 @@ public class SaveManager : MonoBehaviour
 [Serializable]
 public class Save
 {
-    [SerializeField]
     public CellData[] Cells;
-    [SerializeField]
+
+
     public CreatureData[] Creatures;
+
+    //
+    //public TaskBase[] Tasks;
 
     public Save()
     {
         Cells = MapGrid.Instance.Cells.Select(c => c.Data).ToArray();
         Creatures = CreatureController.Instance.Creatures.Select(c => c.Data).ToArray();
+        //  Tasks = Taskmaster.Instance.Tasks.ToArray();
     }
 }

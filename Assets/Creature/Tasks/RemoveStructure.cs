@@ -1,31 +1,27 @@
 ﻿using System.Collections.Generic;
 
-public class RemoveStructure : ITask
+public class RemoveStructure : TaskBase
 {
     private Structure Structure;
-    private Cell Cell;
+    private Coordinates Coordinates;
 
-    public RemoveStructure(Structure structure, Cell cell)
+    public RemoveStructure(Structure structure, Coordinates coordinates)
     {
         Structure = structure;
-        Cell = cell;
+        Coordinates = coordinates;
 
-        SubTasks = new Queue<ITask>();
-        SubTasks.Enqueue(new Move(Cell));
+        SubTasks = new Queue<TaskBase>();
+        SubTasks.Enqueue(new Move(Coordinates));
         SubTasks.Enqueue(new Wait(2f, "Removing"));
     }
 
-    public Queue<ITask> SubTasks { get; set; }
-    public Creature Creature { get; set; }
-    public string TaskId { get; set; }
-
-    public bool Done()
+    public override bool Done()
     {
         if (Taskmaster.QueueComplete(SubTasks))
         {
             foreach (var itemName in StructureController.Instance.StructureDataReference[Structure.Data.Name].RequiredItemTypes)
             {
-                Cell.AddContent(ItemController.Instance.GetItem(itemName).gameObject, true);
+                MapGrid.Instance.GetCellAtCoordinate(Coordinates).AddContent(ItemController.Instance.GetItem(itemName).gameObject, true);
             }
 
             StructureController.Instance.RemoveStructure(Structure);
@@ -36,7 +32,7 @@ public class RemoveStructure : ITask
         return false;
     }
 
-    public void Update()
+    public override void Update()
     {
         Taskmaster.ProcessQueue(SubTasks);
     }

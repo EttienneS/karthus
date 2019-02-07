@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class Creature : MonoBehaviour
 {
-    public ITask Task;
     internal Sprite[] BackSprites;
     internal CreatureData Data = new CreatureData();
     internal Sprite[] FrontSprites;
@@ -18,9 +18,9 @@ public class Creature : MonoBehaviour
 
     private float frameSeconds = 0.3f;
 
-    public void AssignTask(ITask task)
+    public void AssignTask(TaskBase task)
     {
-        task.Creature = this;
+        task.Creature = Data;
 
         if (task.SubTasks != null)
         {
@@ -72,29 +72,29 @@ public class Creature : MonoBehaviour
             Data.Energy -= Random.value;
         }
 
-        if (Task == null)
+        if (Data.Task == null)
         {
             var task = Taskmaster.Instance.GetTask(this);
             AssignTask(task);
 
-            Task = task;
+            Data.Task = task;
         }
 
         try
         {
-            if (!Task.Done())
+            if (!Data.Task.Done())
             {
-                Task.Update();
+                Data.Task.Update();
             }
             else
             {
-                Taskmaster.Instance.TaskComplete(Task);
-                Task = null;
+                Taskmaster.Instance.TaskComplete(Data.Task);
+                Data.Task = null;
             }
         }
         catch (CancelTaskException)
         {
-            Taskmaster.Instance.TaskComplete(Task);
+            Taskmaster.Instance.TaskComplete(Data.Task);
 
             if (Data.CarriedItem != null)
             {
@@ -102,8 +102,8 @@ public class Creature : MonoBehaviour
                 Data.CarriedItem = null;
             }
 
-            Task = Taskmaster.Instance.GetTask(this);
-            AssignTask(Task);
+            Data.Task = Taskmaster.Instance.GetTask(this);
+            AssignTask(Data.Task);
         }
 
         if (Data.CarriedItem != null)
@@ -171,37 +171,37 @@ public class Creature : MonoBehaviour
 [Serializable]
 public class CreatureData
 {
-    [SerializeField]
+    
     public ItemData CarriedItem;
 
-    [SerializeField]
+    
     public Coordinates Coordinates;
 
-    [SerializeField]
+    
     public float Energy;
 
-    [SerializeField]
+    
     public float Hunger;
 
-    [SerializeField]
-    public string Name;
-
-    [SerializeField]
-    public float Speed = 5f;
-
-    [SerializeField]
-    public int SpriteId;
-
-    [SerializeField]
-    public float Thirst;
-
-    [SerializeField]
-    internal float InternalTick;
-
-    [SerializeField]
+    
     public Direction MoveDirection = Direction.S;
 
+    
+    public string Name;
 
+    
+    public float Speed = 5f;
+
+    
+    public int SpriteId;
+
+    
+    public float Thirst;
+
+    
+    internal float InternalTick;
+
+    [JsonIgnore]
     public CellData CurrentCell
     {
         get
@@ -209,4 +209,16 @@ public class CreatureData
             return MapGrid.Instance.GetCellAtCoordinate(Coordinates).Data;
         }
     }
+
+    [JsonIgnore]
+    public Creature LinkedGameObject
+    {
+        get
+        {
+            return CreatureController.Instance.GetCreatureForCreatureData(this);
+        }
+    }
+
+    [JsonIgnore]
+    public TaskBase Task { get; set; }
 }

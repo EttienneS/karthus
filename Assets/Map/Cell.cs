@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -96,12 +97,12 @@ public class Cell : MonoBehaviour
         }
         else if (structure != null)
         {
-            structure.Cell = this;
+            structure.Data.Coordinates = Data.Coordinates;
             Structure = structure;
         }
         else if (stockpile != null)
         {
-            stockpile.Cell = this;
+            stockpile.Coordinates = Data.Coordinates;
             Stockpile = stockpile;
         }
 
@@ -166,10 +167,7 @@ public class Cell : MonoBehaviour
         return transform.position;
     }
 
-    internal void MoveToCell(Creature creature)
-    {
-        creature.Data.Coordinates = Data.Coordinates;
-    }
+   
 
     private void Awake()
     {
@@ -190,18 +188,19 @@ public class Cell : MonoBehaviour
 [Serializable]
 public class CellData
 {
-    [SerializeField]
+    
     internal float BaseTravelCost = -1;
 
-    [SerializeField]
+    
     internal CellType CellType;
 
-    [SerializeField]
+    
     internal List<ItemData> ContainedItems = new List<ItemData>();
 
-    [SerializeField]
+    
     internal Coordinates Coordinates;
 
+    [JsonIgnore]
     public Cell LinkedGameObject
     {
         get

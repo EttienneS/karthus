@@ -7,27 +7,6 @@ public class StockpileController : MonoBehaviour
 
     public Stockpile StockpilePrefab;
 
-    public Item FindClosestItemInStockpile(string itemType, Cell cell)
-    {
-        var cheapestCost = float.MaxValue;
-        Item closestItem = null;
-        foreach (var stockpile in StockpileLookup.Values)
-        {
-            var item = stockpile.GetItemOfType(itemType);
-            if (item != null)
-            {
-                var cost = Pathfinder.GetPathCost(Pathfinder.FindPath(cell, stockpile.Cell));
-                if (cost < cheapestCost)
-                {
-                    cheapestCost = cost;
-                    closestItem = item;
-                }
-            }
-        }
-
-        return closestItem;
-    }
-
     internal Stockpile GetStockpile(string stockpileId)
     {
         return StockpileLookup[stockpileId];
