@@ -80,7 +80,7 @@ public class StructureController : MonoBehaviour
         structure.name = structure.Data.Name;
 
         structure.LoadSprite();
-        //structure.Data.ToggleBluePrintState(structure.Data.IsBluePrint);
+        structure.Data.ToggleBluePrintState(structure.Data.IsBluePrint);
 
         return structure;
     }

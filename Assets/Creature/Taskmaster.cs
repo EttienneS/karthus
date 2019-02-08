@@ -54,7 +54,7 @@ public class Taskmaster : MonoBehaviour
 
     public TaskBase GetNextAvailableTask()
     {
-        return Tasks.FirstOrDefault(t => t.Creature == null);
+        return Tasks.FirstOrDefault(t => t.CreatureId <= 0);
     }
 
     public TaskBase GetTask(Creature creature)
@@ -88,7 +88,7 @@ public class Taskmaster : MonoBehaviour
                 AddTask(task);
             }
         }
-        task.Creature = creature.Data;
+        task.CreatureId = creature.Data.Id;
         return task;
     }
 

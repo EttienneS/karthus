@@ -93,10 +93,12 @@ public class StructureData
         if (IsBluePrint || force)
         {
             LinkedGameObject.SpriteRenderer.color = new Color(0.3f, 1f, 1f, 0.4f);
+            IsBluePrint = true;
         }
         else
         {
             LinkedGameObject.SpriteRenderer.color = Color.white;
+            IsBluePrint = false;
         }
     }
 }

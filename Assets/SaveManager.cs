@@ -67,7 +67,7 @@ public class SaveManager : MonoBehaviour
         {
             var newCell = MapEditor.Instance.CreateCell(saveCell.Coordinates.X, saveCell.Coordinates.Y);
             newCell.Data = saveCell;
-            
+
 
             newCell.CellType = saveCell.CellType;
 
@@ -90,7 +90,7 @@ public class SaveManager : MonoBehaviour
                 newCell.AddContent(ItemController.Instance.LoadItem(savedItem).gameObject, true);
             }
 
-           
+
         }
 
         MapGrid.Instance.ClearCache();
@@ -104,7 +104,12 @@ public class SaveManager : MonoBehaviour
 
         foreach (var task in save.Tasks)
         {
+            Taskmaster.Instance.AddTask(task);
 
+            if (task.CreatureId > 0)
+            {
+                CreatureController.Instance.CreatureIdLookup[task.CreatureId].LinkedGameObject.AssignTask(task);
+            }
         }
 
         save.CameraData.Load(CameraController.Instance.Camera);
@@ -127,6 +132,7 @@ public class SaveManager : MonoBehaviour
 
         CreatureController.Instance.Creatures.Clear();
         CreatureController.Instance.CreatureLookup.Clear();
+        CreatureController.Instance.CreatureIdLookup.Clear();
 
         ItemController.Instance.ItemTypeIndex.Clear();
         ItemController.Instance.ItemDataLookup.Clear();

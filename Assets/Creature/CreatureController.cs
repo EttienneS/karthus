@@ -17,6 +17,8 @@ public class CreatureController : MonoBehaviour
     public int CreaturesToSpawn = 10;
 
     internal Dictionary<CreatureData, Creature> CreatureLookup = new Dictionary<CreatureData, Creature>();
+    internal Dictionary<int, CreatureData> CreatureIdLookup = new Dictionary<int, CreatureData>();
+
     private static CreatureController _instance;
 
     public static CreatureController Instance
@@ -54,6 +56,16 @@ public class CreatureController : MonoBehaviour
         creature.transform.position = spawnLocation.transform.position;
         creature.Data.Coordinates = spawnLocation.Data.Coordinates;
 
+        creature.Data.Id = Creatures.Count + 1;
+
+        creature.Data.Hunger = Random.Range(0, 15);
+        creature.Data.Thirst = Random.Range(0, 15);
+        creature.Data.Energy = Random.Range(80, 100);
+
+        creature.Data.SpriteId = Random.Range(0, SpriteStore.Instance.CreatureSprite.Keys.Count - 1);
+
+        creature.GetSprite();
+
         IndexCreature(creature);
         return creature;
     }
@@ -62,6 +74,7 @@ public class CreatureController : MonoBehaviour
     {
         Creatures.Add(creature);
         CreatureLookup.Add(creature.Data, creature);
+        CreatureIdLookup.Add(creature.Data.Id, creature.Data);
     }
 
     internal void DestroyCreature(Creature creature)

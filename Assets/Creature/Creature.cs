@@ -20,7 +20,7 @@ public class Creature : MonoBehaviour
 
     public void AssignTask(TaskBase task)
     {
-        task.Creature = Data;
+        task.CreatureId = Data.Id;
 
         if (task.SubTasks != null)
         {
@@ -37,15 +37,7 @@ public class Creature : MonoBehaviour
         Data.MoveDirection = (Direction)values.GetValue(Random.Range(0, values.Length));
     }
 
-    public void Start()
-    {
-        Data.Hunger = Random.Range(0, 15);
-        Data.Thirst = Random.Range(0, 15);
-        Data.Energy = Random.Range(80, 100);
-
-        GetSprite();
-    }
-
+   
     public void Update()
     {
         if (TimeManager.Instance.Paused) return;
@@ -109,9 +101,7 @@ public class Creature : MonoBehaviour
     internal void GetSprite()
     {
         SpriteRenderer = GetComponent<SpriteRenderer>();
-
-        Data.SpriteId = Random.Range(0, SpriteStore.Instance.CreatureSprite.Keys.Count - 1);
-
+        
         var sprites = SpriteStore.Instance.CreatureSprite[Data.SpriteId];
         BackSprites = sprites.Where(s => s.name.StartsWith("all_back", StringComparison.InvariantCultureIgnoreCase)).ToArray();
         FrontSprites = sprites.Where(s => s.name.StartsWith("all_front", StringComparison.InvariantCultureIgnoreCase)).ToArray();
@@ -166,6 +156,8 @@ public class Creature : MonoBehaviour
 [Serializable]
 public class CreatureData
 {
+    public int Id;
+
     public int CarriedItemId;
 
     public Coordinates Coordinates;

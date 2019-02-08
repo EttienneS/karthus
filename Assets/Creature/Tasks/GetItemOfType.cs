@@ -58,7 +58,7 @@ public class GetItemOfType : TaskBase
 
         var moveTask = new Move(Item.LinkedGameObject.Cell.Data.Coordinates)
         {
-            Creature = Creature
+            CreatureId = Creature.Id
         };
         SubTasks.Enqueue(moveTask);
     }
