@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ItemController : MonoBehaviour
 {
     public Item itemPrefab;
 
+    internal Dictionary<int, Item> ItemIdLookup = new Dictionary<int, Item>();
     internal Dictionary<string, Item> AllItemTypes = new Dictionary<string, Item>();
     internal Dictionary<ItemData, Item> ItemDataLookup = new Dictionary<ItemData, Item>();
     internal Dictionary<string, List<Item>> ItemTypeIndex = new Dictionary<string, List<Item>>();
@@ -43,7 +45,13 @@ public class ItemController : MonoBehaviour
 
     internal void DestroyItem(ItemData item)
     {
-        DestroyItem(ItemDataLookup[item]);
+        if (ItemDataLookup.ContainsKey(item))
+            DestroyItem(ItemDataLookup[item]);
+    }
+
+    internal void DestroyItem(int itemId)
+    {
+        DestroyItem(ItemIdLookup[itemId]);
     }
 
     internal void DestroyItem(Item item)
@@ -54,6 +62,7 @@ public class ItemController : MonoBehaviour
         }
 
         ItemTypeIndex[item.Data.ItemType].Remove(item);
+        ItemIdLookup.Remove(item.Data.Id);
         ItemDataLookup.Remove(item.Data);
 
         Destroy(item.gameObject);
@@ -93,10 +102,26 @@ public class ItemController : MonoBehaviour
         }
     }
 
+    internal Item LoadItem(ItemData savedItem)
+    {
+        var item = Instantiate(AllItemTypes[savedItem.Name], transform);
+        item.Data = savedItem;
+        IndexItem(item);
+
+        return item;
+    }
+
     internal Item GetItem(string name)
     {
         var item = Instantiate(AllItemTypes[name], transform);
+        item.Data.Id = ItemDataLookup.Keys.Count + 1;
 
+        IndexItem(item);
+        return item;
+    }
+
+    private void IndexItem(Item item)
+    {
         if (!ItemTypeIndex.ContainsKey(item.Data.ItemType))
         {
             ItemTypeIndex.Add(item.Data.ItemType, new List<Item>());
@@ -104,6 +129,6 @@ public class ItemController : MonoBehaviour
 
         ItemTypeIndex[item.Data.ItemType].Add(item);
         ItemDataLookup.Add(item.Data, item);
-        return item;
+        ItemIdLookup.Add(item.Data.Id, item);
     }
 }

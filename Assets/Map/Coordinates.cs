@@ -2,7 +2,7 @@
 using UnityEngine;
 
 [Serializable]
-public class Coordinates
+public class Coordinates : IEquatable<Coordinates>
 {
     public int X;
 
@@ -22,10 +22,41 @@ public class Coordinates
         return new Coordinates(Mathf.FloorToInt(position.x), Mathf.FloorToInt(position.y));
     }
 
+    public static bool operator !=(Coordinates obj1, Coordinates obj2)
+    {
+        return !obj1.Equals(obj2);
+    }
+
+    public static bool operator ==(Coordinates obj1, Coordinates obj2)
+    {
+        return obj1.Equals(obj2);
+    }
+
     public int DistanceTo(Coordinates other)
     {
         return (X < other.X ? other.X - X : X - other.X)
                 + (Y < other.Y ? other.Y - Y : Y - other.Y);
+    }
+
+    public bool Equals(Coordinates other)
+    {
+        return X == other.X && Y == other.Y;
+    }
+
+    public override bool Equals(object obj)
+    {
+        var other = obj as Coordinates;
+        if (other == null)
+        {
+            return false;
+        }
+
+        return this == other;
+    }
+
+    public override int GetHashCode()
+    {
+        return $"{X}:{Y}".GetHashCode();
     }
 
     public override string ToString()

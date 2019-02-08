@@ -5,6 +5,10 @@ public class RemoveStructure : TaskBase
     public Coordinates Coordinates;
     public StructureData Structure;
 
+    public RemoveStructure()
+    {
+    }
+
     public RemoveStructure(StructureData structure, Coordinates coordinates)
     {
         Structure = structure;
@@ -24,7 +28,7 @@ public class RemoveStructure : TaskBase
                 MapGrid.Instance.GetCellAtCoordinate(Coordinates).AddContent(ItemController.Instance.GetItem(itemName).gameObject, true);
             }
 
-            StructureController.Instance.RemoveStructure(Structure);
+            StructureController.Instance.DestroyStructure(Structure);
 
             return true;
         }

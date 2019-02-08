@@ -91,6 +91,12 @@ public class Cell : MonoBehaviour
             {
                 item.Cell.Data.ContainedItems.Remove(item.Data);
             }
+
+            if (Data.Stockpile != null && Data.Stockpile.ItemType == item.Data.ItemType)
+            {
+                Data.Stockpile.AddItem(item.Data);
+            }
+
             Data.ContainedItems.Add(item.Data);
             item.Cell = this;
         }

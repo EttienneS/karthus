@@ -30,8 +30,10 @@ public class Item : MonoBehaviour
 public class ItemData
 {
     
+    public int Id;
+
     public string ItemType;
-    
+
     public bool Reserved;
     
     public string SpriteName;

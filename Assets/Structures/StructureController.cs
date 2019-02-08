@@ -31,7 +31,8 @@ public class StructureController : MonoBehaviour
     {
         var structure = Instantiate(structurePrefab, transform);
         structure.Load(StructureTypeFileMap[name]);
-        StructureLookup.Add(structure.Data, structure);
+
+        IndexStructure(structure);
 
         structure.name = structure.Data.Name;
         structure.Data.ToggleBluePrintState(false);
@@ -49,19 +50,14 @@ public class StructureController : MonoBehaviour
     {
         return StructureLookup[structureData];
     }
-    internal void RemoveStructure(StructureData structure)
+    internal void DestroyStructure(StructureData structure)
     {
-        RemoveStructure(structure.LinkedGameObject);
+        DestroyStructure(structure.LinkedGameObject);
     }
 
-    internal void RemoveStructure(Structure structure)
+    internal void DestroyStructure(Structure structure)
     {
         MapGrid.Instance.GetCellAtCoordinate(structure.Data.Coordinates).Data.Structure = null;
-
-        foreach (var item in structure.Data.ContainedItems)
-        {
-            item.Reserved = false;
-        }
 
         Destroy(structure.gameObject);
     }
@@ -74,5 +70,23 @@ public class StructureController : MonoBehaviour
             StructureTypeFileMap.Add(data.Name, structureFile.text);
             StructureDataReference.Add(data.Name, data);
         }
+    }
+
+    internal Structure LoadStructure(StructureData savedStructure)
+    {
+        var structure = Instantiate(structurePrefab, transform);
+        structure.Data = savedStructure;
+        IndexStructure(structure);
+        structure.name = structure.Data.Name;
+
+        structure.LoadSprite();
+        //structure.Data.ToggleBluePrintState(structure.Data.IsBluePrint);
+
+        return structure;
+    }
+
+    private void IndexStructure(Structure structure)
+    {
+        StructureLookup.Add(structure.Data, structure);
     }
 }

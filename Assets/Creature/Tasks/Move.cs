@@ -12,16 +12,17 @@ public class Move : TaskBase
     [JsonIgnore] private float _startTime;
     [JsonIgnore] private Vector3 _targetPos;
 
+    public Move()
+    {
+    }
+
     public Move(Coordinates targetCoordinates, int maxSpeed = int.MaxValue)
     {
         TargetCoordinates = targetCoordinates;
         MaxSpeed = maxSpeed;
-
-        _targetCell = MapGrid.Instance.GetCellAtCoordinate(TargetCoordinates);
     }
 
     public int MaxSpeed { get; set; }
-    private Cell _targetCell { get; set; }
 
     public override bool Done()
     {
@@ -44,7 +45,7 @@ public class Move : TaskBase
 
             if (_path == null || _path.Count == 0)
             {
-                _path = Pathfinder.FindPath(currentCreatureCell, _targetCell);
+                _path = Pathfinder.FindPath(currentCreatureCell, MapGrid.Instance.GetCellAtCoordinate(TargetCoordinates));
             }
 
             if (_path == null)

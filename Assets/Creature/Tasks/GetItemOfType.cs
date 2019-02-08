@@ -8,6 +8,10 @@ public class GetItemOfType : TaskBase
     public ItemData Item;
     public string ItemType;
 
+    public GetItemOfType()
+    {
+    }
+
     public GetItemOfType(string itemType, bool allowStockpiled)
     {
         AllowStockpiled = allowStockpiled;
@@ -24,8 +28,7 @@ public class GetItemOfType : TaskBase
                 var pile = StockpileController.Instance.GetStockpile(Item.StockpileId);
                 Item = pile.GetItem(Item);
             }
-
-            Creature.CarriedItem = Item;
+            Creature.CarriedItemId = Item.Id;
             return true;
         }
 

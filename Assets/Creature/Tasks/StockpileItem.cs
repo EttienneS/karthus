@@ -5,12 +5,16 @@ using System.Collections.Generic;
 [Serializable]
 public class StockpileItem : TaskBase
 {
+    public StockpileItem()
+    {
+    }
+
     public StockpileItem(string itemType, int stockpileId)
     {
         SubTasks = new Queue<TaskBase>();
         StockpileId = stockpileId;
-        
-        SubTasks.Enqueue(new MoveItemToCell(itemType, Stockpile.Data.Coordinates, false));
+
+        SubTasks.Enqueue(new MoveItemToCell(itemType, Stockpile.Data.Coordinates, false, false));
     }
 
     public int StockpileId { get; set; }
@@ -28,13 +32,7 @@ public class StockpileItem : TaskBase
     {
         if (Taskmaster.QueueComplete(SubTasks))
         {
-            if (Creature.CarriedItem == null)
-            {
-                return true;
-            }
-
-            Stockpile.AddItem(Creature.CarriedItem);
-            Creature.CarriedItem = null;
+            Creature.DropItem();
             return true;
         }
 

@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 [Serializable]
 public class Build : TaskBase
 {
-    
     public Coordinates Coordinates;
 
-    
     public StructureData Structure;
+
+    public Build()
+    {
+    }
 
     public Build(StructureData structure, Coordinates coordinates)
     {
@@ -21,8 +22,7 @@ public class Build : TaskBase
 
         foreach (var itemType in structure.RequiredItemTypes)
         {
-            SubTasks.Enqueue(new MoveItemToCell(itemType, Coordinates, true));
-            SubTasks.Enqueue(new PlaceHeldItemInStructure(Structure));
+            SubTasks.Enqueue(new MoveItemToCell(itemType, Coordinates, true, true));
         }
 
         SubTasks.Enqueue(new Wait(3f, "Building"));
@@ -34,23 +34,12 @@ public class Build : TaskBase
     {
         if (Taskmaster.QueueComplete(SubTasks))
         {
-            Structure.DestroyContainedItems();
-            Structure.ToggleBluePrintState();
-
-            if (Structure.SpriteName == "Box")
+            var thisCell = MapGrid.Instance.GetCellAtCoordinate(Structure.Coordinates);
+            foreach (var item in thisCell.Data.ContainedItems.ToArray())
             {
-                var pile = Structure.LinkedGameObject.gameObject.AddComponent<Stockpile>();
-
-                if (Structure.Name.Contains("Wood"))
-                {
-                    pile.Data.ItemType = "Wood";
-                }
-                else
-                {
-                    pile.Data.ItemType = "Rock";
-                }
+                ItemController.Instance.DestroyItem(item);
             }
-
+            Structure.ToggleBluePrintState();
             return true;
         }
         return false;

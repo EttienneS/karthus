@@ -63,7 +63,7 @@ public class Taskmaster : MonoBehaviour
 
         if (creature.Data.Hunger > 50)
         {
-            task = new Eat();
+            task = new Eat("Food");
             AddTask(task);
         }
         else

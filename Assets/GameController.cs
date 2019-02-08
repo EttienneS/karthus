@@ -58,7 +58,7 @@ public class GameController : MonoBehaviour
             else
             {
                 _oldTimeStep = TimeManager.Instance.TimeStep;
-                TimeManager.Instance.TimeStep = TimeStep.Paused;
+                TimeManager.Instance.Pause();
             }
         }
 

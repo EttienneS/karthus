@@ -6,8 +6,12 @@ public class Eat : TaskBase
 {
     public Eat()
     {
+    }
+
+    public Eat(string itemType)
+    {
         SubTasks = new Queue<TaskBase>();
-        SubTasks.Enqueue(new GetItemOfType("Food", true));
+        SubTasks.Enqueue(new GetItemOfType(itemType, true));
         SubTasks.Enqueue(new Wait(2f, "Eating"));
     }
 
@@ -21,7 +25,7 @@ public class Eat : TaskBase
             }
 
             var food = Creature.CarriedItem;
-            Creature.CarriedItem = null;
+            Creature.DropItem();
 
             Creature.Hunger -= int.Parse(food.GetPropertyValue("Nutrition"));
             ItemController.Instance.DestoyItem(food);

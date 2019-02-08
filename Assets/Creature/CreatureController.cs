@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -48,15 +49,26 @@ public class CreatureController : MonoBehaviour
     public Creature SpawnCreature(Cell spawnLocation)
     {
         var creature = Instantiate(CreaturePrefab, transform, true);
-        creature.Data.CarriedItem = null;
         creature.Data.Name = CreatureHelper.GetRandomName();
 
         creature.transform.position = spawnLocation.transform.position;
         creature.Data.Coordinates = spawnLocation.Data.Coordinates;
 
+        IndexCreature(creature);
+        return creature;
+    }
+
+    private void IndexCreature(Creature creature)
+    {
         Creatures.Add(creature);
         CreatureLookup.Add(creature.Data, creature);
-        return creature;
+    }
+
+    internal void DestroyCreature(Creature creature)
+    {
+        CreatureLookup.Remove(creature.Data);
+
+        Destroy(creature.gameObject);
     }
 
     public void SpawnCreatures()
@@ -78,6 +90,17 @@ public class CreatureController : MonoBehaviour
         {
             SpawnCreature(spawns[Random.Range(0, spawns.Count)]).Data.Speed = Random.Range(10, 15);
         }
+    }
+
+    internal Creature LoadCreature(CreatureData savedCreature)
+    {
+        var creature = Instantiate(CreaturePrefab, transform, true);
+        creature.Data = savedCreature;
+
+        creature.transform.position = MapGrid.Instance.GetCellAtCoordinate(savedCreature.Coordinates).transform.position;
+        creature.GetSprite();
+        IndexCreature(creature);
+        return creature;
     }
 
     internal Creature GetCreatureForCreatureData(CreatureData creatureData)

@@ -42,7 +42,7 @@ public class MapEditor : MonoBehaviour
         }
     }
 
-    public void CreateCell(int x, int y)
+    public Cell CreateCell(int x, int y)
     {
         var cell = Instantiate(cellPrefab, MapGrid.transform, true);
         cell.transform.position = new Vector3(x, y);
@@ -52,6 +52,8 @@ public class MapEditor : MonoBehaviour
         cell.name = cell.Data.Coordinates.ToString();
 
         MapGrid.Cells.Add(cell);
+
+        return cell;
     }
 
     public IEnumerator CreateMap()
@@ -71,33 +73,7 @@ public class MapEditor : MonoBehaviour
 
         if (ShowGeneration) yield return null;
 
-        for (var y = 0; y < MapGrid.MapSize; y++)
-        {
-            for (var x = 0; x < MapGrid.MapSize; x++)
-            {
-                var cell = MapGrid.CellLookup[(x, y)];
-
-                if (x > 0)
-                {
-                    cell.SetNeighbor(Direction.W, MapGrid.CellLookup[(x - 1, y)]);
-
-                    if (y > 0)
-                    {
-                        cell.SetNeighbor(Direction.SW, MapGrid.CellLookup[(x - 1, y - 1)]);
-
-                        if (x < MapGrid.MapSize - 1)
-                        {
-                            cell.SetNeighbor(Direction.SE, MapGrid.CellLookup[(x + 1, y - 1)]);
-                        }
-                    }
-                }
-
-                if (y > 0)
-                {
-                    cell.SetNeighbor(Direction.S, MapGrid.CellLookup[(x, y - 1)]);
-                }
-            }
-        }
+        MapGrid.LinkNeighbours();
         if (ShowGeneration) yield return null;
 
         // generate bedrock
@@ -237,6 +213,8 @@ public class MapEditor : MonoBehaviour
 
         if (ShowGeneration) yield return null;
     }
+
+    
 
     private void Update()
     {

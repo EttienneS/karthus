@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -88,6 +89,11 @@ public class MapGrid : MonoBehaviour
         return cells;
     }
 
+    internal void ClearCache()
+    {
+        _cellLookup = null;
+    }
+
     public Cell GetRandomCell()
     {
         return CellLookup[((int)(Random.value * (MapSize - 1)), (int)(Random.value * (MapSize - 1)))];
@@ -165,6 +171,26 @@ public class MapGrid : MonoBehaviour
         }
     }
 
+    internal void DestroyCell(Cell cell)
+    {
+        foreach (var item in cell.Data.ContainedItems.ToArray())
+        {
+            ItemController.Instance.DestroyItem(item);
+        }
+
+        if (cell.Data.Structure != null)
+        {
+            StructureController.Instance.DestroyStructure(cell.Data.Structure);
+        }
+
+        if (cell.Data.Stockpile != null)
+        {
+            StockpileController.Instance.DestroyStockpile(cell.Data.Stockpile);
+        }
+
+        Destroy(cell.gameObject);
+    }
+
     internal Direction GetDirection(Cell fromCell, Cell toCell)
     {
         var direction = Direction.S;
@@ -205,6 +231,39 @@ public class MapGrid : MonoBehaviour
         }
 
         return direction;
+    }
+
+    internal void LinkNeighbours()
+    {
+        for (var y = 0; y < MapSize; y++)
+        {
+            for (var x = 0; x < MapSize; x++)
+            {
+                var cell = CellLookup[(x, y)];
+
+                if (x > 0)
+                {
+                    cell.SetNeighbor(Direction.W, CellLookup[(x - 1, y)]);
+
+                    if (y > 0)
+                    {
+                        cell.SetNeighbor(Direction.SW, CellLookup[(x - 1, y - 1)]);
+
+                        if (x < MapSize - 1)
+                        {
+                            cell.SetNeighbor(Direction.SE, CellLookup[(x + 1, y - 1)]);
+                        }
+                    }
+                }
+
+                if (y > 0)
+                {
+                    cell.SetNeighbor(Direction.S, CellLookup[(x, y - 1)]);
+                }
+            }
+        }
+
+        
     }
 
     internal void ResetSearchPriorities()

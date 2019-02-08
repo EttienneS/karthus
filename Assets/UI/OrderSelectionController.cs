@@ -102,7 +102,7 @@ public class OrderSelectionController : MonoBehaviour
 
                 if (structure.IsBluePrint)
                 {
-                    StructureController.Instance.RemoveStructure(structure);
+                    StructureController.Instance.DestroyStructure(structure);
                 }
                 else
                 {

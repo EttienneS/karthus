@@ -10,6 +10,10 @@ public class Wait : TaskBase
     public float LastFacingChange;
     public string Reason;
 
+    public Wait()
+    {
+    }
+
     public Wait(float duration, string reason)
     {
         Duration = duration;

@@ -39,8 +39,6 @@ public class Creature : MonoBehaviour
 
     public void Start()
     {
-        SpriteRenderer = GetComponent<SpriteRenderer>();
-
         Data.Hunger = Random.Range(0, 15);
         Data.Thirst = Random.Range(0, 15);
         Data.Energy = Random.Range(80, 100);
@@ -53,13 +51,6 @@ public class Creature : MonoBehaviour
         if (TimeManager.Instance.Paused) return;
 
         AnimateSprite();
-
-        // something in the serialization makes the item object
-        // revert when called, so we just clear it here to fix the issue
-        if (Data.CarriedItem != null && string.IsNullOrEmpty(Data.CarriedItem.Name))
-        {
-            Data.CarriedItem = null;
-        }
 
         Data.InternalTick += Time.deltaTime;
 
@@ -96,17 +87,17 @@ public class Creature : MonoBehaviour
         {
             Taskmaster.Instance.TaskComplete(Data.Task);
 
-            if (Data.CarriedItem != null)
+            if (Data.CarriedItemId > 0)
             {
                 Data.CarriedItem.Reserved = false;
-                Data.CarriedItem = null;
+                Data.CarriedItemId = 0;
             }
 
             Data.Task = Taskmaster.Instance.GetTask(this);
             AssignTask(Data.Task);
         }
 
-        if (Data.CarriedItem != null)
+        if (Data.CarriedItemId > 0)
         {
             var item = ItemController.Instance.ItemDataLookup[Data.CarriedItem];
 
@@ -115,7 +106,21 @@ public class Creature : MonoBehaviour
         }
     }
 
-    private void AnimateSprite()
+    internal void GetSprite()
+    {
+        SpriteRenderer = GetComponent<SpriteRenderer>();
+
+        Data.SpriteId = Random.Range(0, SpriteStore.Instance.CreatureSprite.Keys.Count - 1);
+
+        var sprites = SpriteStore.Instance.CreatureSprite[Data.SpriteId];
+        BackSprites = sprites.Where(s => s.name.StartsWith("all_back", StringComparison.InvariantCultureIgnoreCase)).ToArray();
+        FrontSprites = sprites.Where(s => s.name.StartsWith("all_front", StringComparison.InvariantCultureIgnoreCase)).ToArray();
+        SideSprites = sprites.Where(s => s.name.StartsWith("all_side", StringComparison.InvariantCultureIgnoreCase)).ToArray();
+
+        AnimateSprite(true);
+    }
+
+    private void AnimateSprite(bool force = false)
     {
         Sprite[] sprites;
         switch (Data.MoveDirection)
@@ -145,7 +150,7 @@ public class Creature : MonoBehaviour
 
         deltaTime += Time.deltaTime;
 
-        if (deltaTime > frameSeconds)
+        if (deltaTime > frameSeconds || force)
         {
             deltaTime = 0;
             frame++;
@@ -156,22 +161,12 @@ public class Creature : MonoBehaviour
             SpriteRenderer.sprite = sprites[frame];
         }
     }
-
-    private void GetSprite()
-    {
-        Data.SpriteId = Random.Range(0, SpriteStore.Instance.CreatureSprite.Keys.Count - 1);
-
-        var sprites = SpriteStore.Instance.CreatureSprite[Data.SpriteId];
-        BackSprites = sprites.Where(s => s.name.StartsWith("all_back", StringComparison.InvariantCultureIgnoreCase)).ToArray();
-        FrontSprites = sprites.Where(s => s.name.StartsWith("all_front", StringComparison.InvariantCultureIgnoreCase)).ToArray();
-        SideSprites = sprites.Where(s => s.name.StartsWith("all_side", StringComparison.InvariantCultureIgnoreCase)).ToArray();
-    }
 }
 
 [Serializable]
 public class CreatureData
 {
-    public ItemData CarriedItem;
+    public int CarriedItemId;
 
     public Coordinates Coordinates;
 
@@ -190,6 +185,15 @@ public class CreatureData
     public float Thirst;
 
     internal float InternalTick;
+
+    [JsonIgnore]
+    public ItemData CarriedItem
+    {
+        get
+        {
+            return ItemController.Instance.ItemIdLookup[CarriedItemId].Data;
+        }
+    }
 
     [JsonIgnore]
     public CellData CurrentCell
@@ -211,4 +215,20 @@ public class CreatureData
 
     [JsonIgnore]
     public TaskBase Task { get; set; }
+
+    internal ItemData DropItem()
+    {
+        if (CarriedItemId > 0)
+        {
+            var item = CarriedItem;
+            item.Reserved = false;
+            item.LinkedGameObject.SpriteRenderer.sortingLayerName = "Item";
+            CurrentCell.LinkedGameObject.AddContent(item.LinkedGameObject.gameObject, true);
+
+            CarriedItemId = 0;
+            return item;
+        }
+
+        return null;
+    }
 }

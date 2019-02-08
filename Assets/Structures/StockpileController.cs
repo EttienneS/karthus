@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class StockpileController : MonoBehaviour
@@ -22,6 +23,14 @@ public class StockpileController : MonoBehaviour
         }
     }
 
+    public Stockpile LoadStockpile(StockpileData data)
+    {
+        var stockpile = Instantiate(StockpilePrefab, transform);
+        stockpile.Data = data;
+
+        StockpileLookup.Add(stockpile.Data.Id, stockpile);
+        return stockpile;
+    }
 
 
     public Stockpile AddStockpile(string itemTypeName)
@@ -37,5 +46,10 @@ public class StockpileController : MonoBehaviour
     internal Stockpile GetStockpile(int stockpileId)
     {
         return StockpileLookup[stockpileId];
+    }
+
+    internal void DestroyStockpile(StockpileData stockpile)
+    {
+        StockpileLookup.Remove(stockpile.Id);
     }
 }
