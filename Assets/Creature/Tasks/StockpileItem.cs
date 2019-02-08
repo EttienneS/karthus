@@ -5,7 +5,7 @@ using System.Collections.Generic;
 [Serializable]
 public class StockpileItem : TaskBase
 {
-    public StockpileItem(string itemType, string stockpileId)
+    public StockpileItem(string itemType, int stockpileId)
     {
         SubTasks = new Queue<TaskBase>();
         StockpileId = stockpileId;
@@ -13,7 +13,7 @@ public class StockpileItem : TaskBase
         SubTasks.Enqueue(new MoveItemToCell(itemType, Stockpile.Data.Coordinates, false));
     }
 
-    public string StockpileId { get; set; }
+    public int StockpileId { get; set; }
 
     [JsonIgnore]
     private Stockpile Stockpile

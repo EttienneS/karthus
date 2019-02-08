@@ -19,7 +19,7 @@ public class GetItemOfType : TaskBase
     {
         if (Item != null && Taskmaster.QueueComplete(SubTasks))
         {
-            if (!string.IsNullOrEmpty(Item.StockpileId))
+            if (Item.StockpileId != 0)
             {
                 var pile = StockpileController.Instance.GetStockpile(Item.StockpileId);
                 Item = pile.GetItem(Item);

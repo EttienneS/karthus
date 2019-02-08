@@ -74,7 +74,7 @@ public class ItemController : MonoBehaviour
             ItemData closestItem = null;
             foreach (var item in ItemTypeIndex[type])
             {
-                if (item.Data.Reserved || (!allowStockpiled && !string.IsNullOrEmpty(item.Data.StockpileId)))
+                if (item.Data.Reserved || (!allowStockpiled && item.Data.StockpileId > 0))
                 {
                     continue;
                 }

@@ -39,7 +39,7 @@ public class ItemData
     public string Name;
 
     
-    public string StockpileId { get; set; }
+    public int StockpileId { get; set; }
 
     
     public ItemProperty[] Properties;

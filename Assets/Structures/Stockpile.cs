@@ -31,14 +31,14 @@ public class Stockpile : MonoBehaviour
         item.LinkedGameObject.SpriteRenderer.sortingLayerName = "Item";
 
         MapGrid.Instance.GetCellAtCoordinate(Data.Coordinates).AddContent(item.LinkedGameObject.gameObject, true);
-        item.StockpileId = Data.StockpileId;
+        item.StockpileId = Data.Id;
         _items.Add(item);
     }
 
     public ItemData GetItem(ItemData item)
     {
         _items.Remove(item);
-        item.StockpileId = null;
+        item.StockpileId = 0;
         return item;
     }
 
@@ -66,7 +66,7 @@ public class Stockpile : MonoBehaviour
 
         if (Data.ActiveTasks.Count < Data.MaxConcurrentTasks && _items.Count < Data.Size)
         {
-            Data.ActiveTasks.Add(Taskmaster.Instance.AddTask(new StockpileItem(Data.ItemType, Data.StockpileId)));
+            Data.ActiveTasks.Add(Taskmaster.Instance.AddTask(new StockpileItem(Data.ItemType, Data.Id)));
         }
     }
 }
@@ -80,5 +80,5 @@ public class StockpileData
     public string ItemType;
     public int MaxConcurrentTasks = 3;
     public int Size = 12;
-    public string StockpileId = Guid.NewGuid().ToString();
+    public int Id ;
 }

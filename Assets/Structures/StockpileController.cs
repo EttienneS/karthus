@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class StockpileController : MonoBehaviour
 {
-    public Dictionary<string, Stockpile> StockpileLookup = new Dictionary<string, Stockpile>();
+    public Dictionary<int, Stockpile> StockpileLookup = new Dictionary<int, Stockpile>();
 
     public Stockpile StockpilePrefab;
 
@@ -22,17 +22,19 @@ public class StockpileController : MonoBehaviour
         }
     }
 
+
+
     public Stockpile AddStockpile(string itemTypeName)
     {
         var stockpile = Instantiate(StockpilePrefab, transform);
         stockpile.Data.ItemType = itemTypeName;
-
-        StockpileLookup.Add(stockpile.Data.StockpileId, stockpile);
+        stockpile.Data.Id = StockpileLookup.Count + 1;
+        StockpileLookup.Add(stockpile.Data.Id, stockpile);
 
         return stockpile;
     }
 
-    internal Stockpile GetStockpile(string stockpileId)
+    internal Stockpile GetStockpile(int stockpileId)
     {
         return StockpileLookup[stockpileId];
     }
