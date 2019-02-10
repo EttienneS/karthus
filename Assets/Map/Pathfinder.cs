@@ -73,7 +73,7 @@ public static class Pathfinder
 
         var reachableCells = (from cell in
                     map.Where(c =>
-                        c != null && c.Coordinates.DistanceTo(startPoint.Coordinates) <= speed)
+                        c != null && c.Data.Coordinates.DistanceTo(startPoint.Data.Coordinates) <= speed)
                               let path = FindPath(startPoint, cell)
                               let pathCost = GetPathCost(path) - startPoint.TravelCost
                               where path.Count > 0 && pathCost <= speed
@@ -166,7 +166,7 @@ public static class Pathfinder
                     neighbor.SearchPhase = _searchFrontierPhase;
                     neighbor.Distance = distance;
                     neighbor.PathFrom = current;
-                    neighbor.SearchHeuristic = neighbor.Coordinates.DistanceTo(toCell.Coordinates);
+                    neighbor.SearchHeuristic = neighbor.Data.Coordinates.DistanceTo(toCell.Data.Coordinates);
                     _searchFrontier.Enqueue(neighbor);
                 }
                 else if (distance < neighbor.Distance)

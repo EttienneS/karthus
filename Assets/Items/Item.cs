@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Linq;
 using UnityEngine;
 
+[Serializable]
 public class Item : MonoBehaviour
 {
     internal SpriteRenderer SpriteRenderer;
@@ -15,11 +17,6 @@ public class Item : MonoBehaviour
 
     public Cell Cell { get; set; }
 
-    public string GetPropertyValue(string key)
-    {
-        return Data.Properties.First(p => p.Key.Equals(key, StringComparison.InvariantCultureIgnoreCase)).Value;
-    }
-
     internal void Load(string structureData)
     {
         Data = JsonUtility.FromJson<ItemData>(structureData);
@@ -30,19 +27,39 @@ public class Item : MonoBehaviour
 [Serializable]
 public class ItemData
 {
+    public int Id;
+
     public string ItemType;
+
     public bool Reserved;
+
     public string SpriteName;
+
     public string Name;
 
-    public string StockpileId { get; set; }
+    public int StockpileId { get; set; }
 
     public ItemProperty[] Properties;
+
+    public string GetPropertyValue(string key)
+    {
+        return Properties.First(p => p.Key.Equals(key, StringComparison.InvariantCultureIgnoreCase)).Value;
+    }
+
+    [JsonIgnore]
+    public Item LinkedGameObject
+    {
+        get
+        {
+            return ItemController.Instance.ItemDataLookup[this];
+        }
+    }
 }
 
 [Serializable]
 public class ItemProperty
 {
     public string Key;
+
     public string Value;
 }

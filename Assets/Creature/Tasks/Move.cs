@@ -1,96 +1,93 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Move : ITask
+public class Move : TaskBase
 {
-    public Cell NextCell;
-    public Creature Creature { get; set; }
-    private float _journeyLength;
-    private int _navigationFailureCount;
-    private List<Cell> Path = new List<Cell>();
-    private float startTime;
-    private Vector3 targetPos;
+    public Coordinates TargetCoordinates;
 
-    public Move(Cell targetCell, int maxSpeed = int.MaxValue)
+    [JsonIgnore] private float _journeyLength;
+    [JsonIgnore] private Cell _nextCell;
+    [JsonIgnore] private List<Cell> _path = new List<Cell>();
+    [JsonIgnore] private float _startTime;
+    [JsonIgnore] private Vector3 _targetPos;
+
+    public Move()
     {
-        TargetCell = targetCell;
-        TaskId = $"Move to {TargetCell}";
+    }
+
+    public Move(Coordinates targetCoordinates, int maxSpeed = int.MaxValue)
+    {
+        TargetCoordinates = targetCoordinates;
         MaxSpeed = maxSpeed;
     }
 
-    public Queue<ITask> SubTasks { get; set; }
-    public Cell TargetCell { get; set; }
-    public string TaskId { get; set; }
-
     public int MaxSpeed { get; set; }
 
-    public bool Done()
+    public override bool Done()
     {
-        return Creature.CurrentCell == TargetCell;
+        return Creature.Coordinates == TargetCoordinates;
     }
 
     public override string ToString()
     {
-        return $"Moving to {TargetCell}";
+        return $"Moving to {TargetCoordinates}";
     }
 
-    public void Update()
+    public override void Update()
     {
-        if (Creature.CurrentCell != TargetCell)
+        if (Creature.Coordinates == TargetCoordinates)
+            return;
+
+        if (_nextCell == null)
         {
-            if (NextCell == null)
+            var currentCreatureCell = MapGrid.Instance.GetCellAtCoordinate(Creature.Coordinates);
+
+            if (_path == null || _path.Count == 0)
             {
-                if (Path == null || Path.Count == 0)
-                {
-                    Path = Pathfinder.FindPath(Creature.CurrentCell, TargetCell);
-                }
-
-                if (Path == null)
-                {
-                    throw new CancelTaskException("Unable to find path");
-                }
-
-                NextCell = Path[Path.IndexOf(Creature.CurrentCell) - 1];
-                if (NextCell.TravelCost < 0)
-                {
-                    // something changed the path making it unusable
-                    Path = null;
-                }
-                else
-                {
-                    // found valid next cell
-                    targetPos = NextCell.GetCreaturePosition();
-
-                    // calculate the movement journey to the next cell, include the cell travelcost to make moving through
-                    // difficults cells take longer
-                    _journeyLength = Vector3.Distance(Creature.CurrentCell.transform.position, targetPos) + NextCell.TravelCost;
-
-                    if (Creature.SpriteAnimator != null)
-                    {
-                        Creature.SpriteAnimator.MoveDirection = MapGrid.Instance.GetDirection(Creature.CurrentCell, NextCell);
-                    }
-                    startTime = Time.time;
-                }
+                _path = Pathfinder.FindPath(currentCreatureCell, MapGrid.Instance.GetCellAtCoordinate(TargetCoordinates));
             }
 
-            if (NextCell != null && Creature.transform.position != targetPos)
+            if (_path == null)
             {
-                // move between two cells
-                var distCovered = (Time.time - startTime) * Mathf.Min(Creature.Speed, MaxSpeed);
-                var fracJourney = distCovered / _journeyLength;
-                Creature.transform.position = Vector3.Lerp(Creature.CurrentCell.transform.position,
-                                          targetPos,
-                                          fracJourney);
+                throw new CancelTaskException("Unable to find path");
+            }
+
+            _nextCell = _path[_path.IndexOf(currentCreatureCell) - 1];
+            if (_nextCell.TravelCost < 0)
+            {
+                // something changed the path making it unusable
+                _path = null;
             }
             else
             {
-                // reached next cell
-                NextCell.AddCreature(Creature);
+                // found valid next cell
+                _targetPos = _nextCell.GetCreaturePosition();
 
-                NextCell = null;
-                Path = null;
+                // calculate the movement journey to the next cell, include the cell travelcost to make moving through
+                // difficults cells take longer
+                _journeyLength = Vector3.Distance(currentCreatureCell.transform.position, _targetPos) + _nextCell.TravelCost;
+
+                Creature.MoveDirection = MapGrid.Instance.GetDirection(currentCreatureCell, _nextCell);
+                _startTime = Time.time;
             }
+        }
+
+        if (_nextCell != null && Creature.LinkedGameObject.transform.position != _targetPos)
+        {
+            // move between two cells
+            var distCovered = (Time.time - _startTime) * Mathf.Min(Creature.Speed, MaxSpeed);
+            var fracJourney = distCovered / _journeyLength;
+            Creature.LinkedGameObject.transform.position = Vector3.Lerp(Creature.CurrentCell.LinkedGameObject.transform.position,
+                                      _targetPos,
+                                      fracJourney);
+        }
+        else
+        {
+            // reached next cell
+            Creature.Coordinates = _nextCell.Data.Coordinates;
+            _nextCell = null;
+            _path = null;
         }
     }
 }

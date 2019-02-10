@@ -34,5 +34,8 @@ sysinfo.txt
 
 # Builds
 *.apk
+
+# Game objects
+*save*.json
 *.unitypackage
 /stdout.log

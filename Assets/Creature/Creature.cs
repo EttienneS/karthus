@@ -1,37 +1,26 @@
-﻿using System.Linq;
+﻿using Newtonsoft.Json;
+using System;
+using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Creature : MonoBehaviour
 {
-    public Cell CurrentCell;
-    public float Speed = 5f;
-
-    public ITask Task;
-
+    internal Sprite[] BackSprites;
+    internal CreatureData Data = new CreatureData();
+    internal Sprite[] FrontSprites;
+    internal Sprite[] SideSprites;
     internal SpriteRenderer SpriteRenderer;
-    internal SpriteAnimator SpriteAnimator;
 
-    public string TaskName;
+    private float deltaTime = 0;
 
-    public Item CarriedItem;
+    private int frame;
 
-    public float Hunger { get; set; }
-    public float Thirst { get; set; }
-    public float Energy { get; set; }
+    private float frameSeconds = 0.3f;
 
-    public void Start()
+    public void AssignTask(TaskBase task)
     {
-        SpriteRenderer = GetComponent<SpriteRenderer>();
-        SpriteAnimator = GetComponent<SpriteAnimator>();
-
-        Hunger = Random.Range(0, 15);
-        Thirst = Random.Range(0, 15);
-        Energy = Random.Range(80, 100);
-    }
-
-    public void AssignTask(ITask task)
-    {
-        task.Creature = this;
+        task.CreatureId = Data.Id;
 
         if (task.SubTasks != null)
         {
@@ -42,63 +31,196 @@ public class Creature : MonoBehaviour
         }
     }
 
-    private float _needUpdate;
+    public void FaceRandomDirection()
+    {
+        var values = Enum.GetValues(typeof(Direction));
+        Data.MoveDirection = (Direction)values.GetValue(Random.Range(0, values.Length));
+    }
 
+   
     public void Update()
     {
         if (TimeManager.Instance.Paused) return;
 
-        _needUpdate += Time.deltaTime;
+        AnimateSprite();
 
-        if (_needUpdate >= TimeManager.Instance.TickInterval)
+        Data.InternalTick += Time.deltaTime;
+
+        if (Data.InternalTick >= TimeManager.Instance.TickInterval)
         {
-            _needUpdate = 0;
+            Data.InternalTick = 0;
 
-            Hunger += Random.value;
-            Thirst += Random.value;
-            Energy -= Random.value;
+            Data.Hunger += Random.value;
+            Data.Thirst += Random.value;
+            Data.Energy -= Random.value;
         }
 
-        if (Task == null)
+        if (Data.Task == null)
         {
             var task = Taskmaster.Instance.GetTask(this);
             AssignTask(task);
 
-            Task = task;
+            Data.Task = task;
         }
-
-        TaskName = Task.ToString();
 
         try
         {
-            if (!Task.Done())
+            if (!Data.Task.Done())
             {
-                Task.Update();
+                Data.Task.Update();
             }
             else
             {
-                Taskmaster.Instance.TaskComplete(Task);
-                Task = null;
+                Taskmaster.Instance.TaskComplete(Data.Task);
+                Data.Task = null;
             }
         }
         catch (CancelTaskException)
         {
-            Taskmaster.Instance.TaskComplete(Task);
+            Taskmaster.Instance.TaskComplete(Data.Task);
 
-            if (CarriedItem != null)
+            if (Data.CarriedItemId > 0)
             {
-                CarriedItem.Data.Reserved = false;
-                CarriedItem = null;
+                Data.CarriedItem.Reserved = false;
+                Data.CarriedItemId = 0;
             }
 
-            Task = Taskmaster.Instance.GetTask(this);
-            AssignTask(Task);
+            Data.Task = Taskmaster.Instance.GetTask(this);
+            AssignTask(Data.Task);
         }
 
-        if (CarriedItem != null)
+        if (Data.CarriedItemId > 0)
         {
-            CarriedItem.transform.position = transform.position;
-            CarriedItem.SpriteRenderer.sortingLayerName = "CarriedItem";
+            var item = ItemController.Instance.ItemDataLookup[Data.CarriedItem];
+
+            item.transform.position = transform.position;
+            item.SpriteRenderer.sortingLayerName = "CarriedItem";
         }
+    }
+
+    internal void GetSprite()
+    {
+        SpriteRenderer = GetComponent<SpriteRenderer>();
+        
+        var sprites = SpriteStore.Instance.CreatureSprite[Data.SpriteId];
+        BackSprites = sprites.Where(s => s.name.StartsWith("all_back", StringComparison.InvariantCultureIgnoreCase)).ToArray();
+        FrontSprites = sprites.Where(s => s.name.StartsWith("all_front", StringComparison.InvariantCultureIgnoreCase)).ToArray();
+        SideSprites = sprites.Where(s => s.name.StartsWith("all_side", StringComparison.InvariantCultureIgnoreCase)).ToArray();
+
+        AnimateSprite(true);
+    }
+
+    private void AnimateSprite(bool force = false)
+    {
+        Sprite[] sprites;
+        switch (Data.MoveDirection)
+        {
+            case Direction.N:
+                sprites = BackSprites;
+                break;
+
+            case Direction.SE:
+            case Direction.NE:
+            case Direction.E:
+                sprites = SideSprites;
+                SpriteRenderer.flipX = true;
+                break;
+
+            case Direction.S:
+                sprites = FrontSprites;
+                break;
+            //case Direction.NW:
+            //case Direction.SW:
+            //case Direction.W:
+            default:
+                sprites = SideSprites;
+                SpriteRenderer.flipX = false;
+                break;
+        }
+
+        deltaTime += Time.deltaTime;
+
+        if (deltaTime > frameSeconds || force)
+        {
+            deltaTime = 0;
+            frame++;
+            if (frame >= sprites.Length)
+            {
+                frame = 0;
+            }
+            SpriteRenderer.sprite = sprites[frame];
+        }
+    }
+}
+
+[Serializable]
+public class CreatureData
+{
+    public int Id;
+
+    public int CarriedItemId;
+
+    public Coordinates Coordinates;
+
+    public float Energy;
+
+    public float Hunger;
+
+    public Direction MoveDirection = Direction.S;
+
+    public string Name;
+
+    public float Speed = 5f;
+
+    public int SpriteId;
+
+    public float Thirst;
+
+    internal float InternalTick;
+
+    [JsonIgnore]
+    public ItemData CarriedItem
+    {
+        get
+        {
+            return ItemController.Instance.ItemIdLookup[CarriedItemId].Data;
+        }
+    }
+
+    [JsonIgnore]
+    public CellData CurrentCell
+    {
+        get
+        {
+            return MapGrid.Instance.GetCellAtCoordinate(Coordinates).Data;
+        }
+    }
+
+    [JsonIgnore]
+    public Creature LinkedGameObject
+    {
+        get
+        {
+            return CreatureController.Instance.GetCreatureForCreatureData(this);
+        }
+    }
+
+    [JsonIgnore]
+    public TaskBase Task { get; set; }
+
+    internal ItemData DropItem()
+    {
+        if (CarriedItemId > 0)
+        {
+            var item = CarriedItem;
+            item.Reserved = false;
+            item.LinkedGameObject.SpriteRenderer.sortingLayerName = "Item";
+            CurrentCell.LinkedGameObject.AddContent(item.LinkedGameObject.gameObject, true);
+
+            CarriedItemId = 0;
+            return item;
+        }
+
+        return null;
     }
 }

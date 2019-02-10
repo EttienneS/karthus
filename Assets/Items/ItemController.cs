@@ -1,16 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ItemController : MonoBehaviour
 {
     public Item itemPrefab;
 
-    private static ItemController _instance;
-
+    internal Dictionary<int, Item> ItemIdLookup = new Dictionary<int, Item>();
     internal Dictionary<string, Item> AllItemTypes = new Dictionary<string, Item>();
-
+    internal Dictionary<ItemData, Item> ItemDataLookup = new Dictionary<ItemData, Item>();
     internal Dictionary<string, List<Item>> ItemTypeIndex = new Dictionary<string, List<Item>>();
+    private static ItemController _instance;
 
     public static ItemController Instance
     {
@@ -38,20 +38,37 @@ public class ItemController : MonoBehaviour
         }
     }
 
-    internal Item GetItem(string name)
+    internal void DestoyItem(ItemData data)
     {
-        var item = Instantiate(AllItemTypes[name], transform);
-
-        if (!ItemTypeIndex.ContainsKey(item.Data.ItemType))
-        {
-            ItemTypeIndex.Add(item.Data.ItemType, new List<Item>());
-        }
-
-        ItemTypeIndex[item.Data.ItemType].Add(item);
-        return item;
+        DestroyItem(ItemDataLookup[data]);
     }
 
-    internal Item FindClosestItemOfType(Cell centerPoint, string type, bool allowStockpiled)
+    internal void DestroyItem(ItemData item)
+    {
+        if (ItemDataLookup.ContainsKey(item))
+            DestroyItem(ItemDataLookup[item]);
+    }
+
+    internal void DestroyItem(int itemId)
+    {
+        DestroyItem(ItemIdLookup[itemId]);
+    }
+
+    internal void DestroyItem(Item item)
+    {
+        if (item.Cell != null)
+        {
+            item.Cell.Data.ContainedItems.Remove(item.Data);
+        }
+
+        ItemTypeIndex[item.Data.ItemType].Remove(item);
+        ItemIdLookup.Remove(item.Data.Id);
+        ItemDataLookup.Remove(item.Data);
+
+        Destroy(item.gameObject);
+    }
+
+    internal ItemData FindClosestItemOfType(Cell centerPoint, string type, bool allowStockpiled)
     {
         if (!ItemTypeIndex.ContainsKey(type) || ItemTypeIndex[type].Count == 0)
         {
@@ -63,74 +80,57 @@ public class ItemController : MonoBehaviour
             // registered items found
             var checkedCells = new HashSet<Cell>();
             var closest = int.MaxValue;
-            Item closestItem = null;
+            ItemData closestItem = null;
             foreach (var item in ItemTypeIndex[type])
             {
-                if (item.Data.Reserved || (!allowStockpiled && !string.IsNullOrEmpty(item.Data.StockpileId)))
+                if (item.Data.Reserved || (!allowStockpiled && item.Data.StockpileId > 0))
                 {
                     continue;
                 }
                 if (checkedCells.Add(item.Cell))
                 {
-                    var distance = centerPoint.Coordinates.DistanceTo(item.Cell.Coordinates);
+                    var distance = centerPoint.Data.Coordinates.DistanceTo(item.Cell.Data.Coordinates);
                     if (distance < closest)
                     {
                         closest = distance;
-                        closestItem = item;
+                        closestItem = item.Data;
                     }
                 }
             }
 
             return closestItem;
         }
-
-
-
-        return null;
     }
 
-    public Item FindItemInArea(Cell centerPoint, string type, bool allowStockpiled)
+    internal Item LoadItem(ItemData savedItem)
     {
-        // scan for item in radius in ever growing circles
-        // very slow but potentially useful
-        var checkedCells = new HashSet<Cell>();
-        var searchRadius = 3;
-        var maxRadius = MapGrid.Instance.Map.GetLength(0);
-        do
-        {
-            var searchArea = MapGrid.Instance.GetCircle(centerPoint, searchRadius);
-            searchArea.Reverse();
-            foreach (var cell in searchArea)
-            {
-                if (checkedCells.Add(cell))
-                {
-                    foreach (var item in cell.ContainedItems.Where(i => i.Data.ItemType == type && !i.Data.Reserved))
-                    {
-                        if (!string.IsNullOrEmpty(item.Data.StockpileId))
-                        {
-                            continue;
-                        }
+        var item = Instantiate(AllItemTypes[savedItem.Name], transform);
+        item.Data = savedItem;
+        IndexItem(item);
 
-                        return item;
-                    }
-                }
-            }
-
-            searchRadius += 3;
-        }
-        while (searchRadius <= maxRadius);
-
-        return null;
+        return item;
     }
 
-    internal void DestoyItem(Item item)
+    internal Item GetItem(string name)
     {
-        if (item.Cell != null)
+        var item = Instantiate(AllItemTypes[name], transform);
+        item.Data.Id = ItemDataLookup.Keys.Count + 1;
+
+        IndexItem(item);
+        return item;
+    }
+
+    private void IndexItem(Item item)
+    {
+        if (!ItemTypeIndex.ContainsKey(item.Data.ItemType))
         {
-            item.Cell.ContainedItems.Remove(item);
+            ItemTypeIndex.Add(item.Data.ItemType, new List<Item>());
         }
 
-        ItemTypeIndex[item.Data.ItemType].Remove(item);
-        Destroy(item.gameObject);
+        ItemTypeIndex[item.Data.ItemType].Add(item);
+        ItemDataLookup.Add(item.Data, item);
+        ItemIdLookup.Add(item.Data.Id, item);
+
+        item.name = $"{item.Data.ItemType} ({item.Data.Id})";
     }
 }

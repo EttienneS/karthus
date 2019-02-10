@@ -1,24 +1,37 @@
 ﻿using System.Collections.Generic;
 
-public class MoveItemToCell : ITask
+public class MoveItemToCell : TaskBase
 {
-    public Queue<ITask> SubTasks { get; set; }
-    public Creature Creature { get; set; }
-    public string TaskId { get; set; }
+    public bool Reserve;
 
-    public MoveItemToCell(string itemType, Cell cell, bool allowStockpiled)
+    public MoveItemToCell()
     {
-        SubTasks = new Queue<ITask>();
+    }
+
+    public MoveItemToCell(string itemType, Coordinates coordinates, bool allowStockpiled, bool reserve)
+    {
+        Reserve = reserve;
+        SubTasks = new Queue<TaskBase>();
         SubTasks.Enqueue(new GetItemOfType(itemType, allowStockpiled));
-        SubTasks.Enqueue(new Move(cell));
+        SubTasks.Enqueue(new Move(coordinates));
     }
 
-    public bool Done()
+    public override bool Done()
     {
-        return Taskmaster.QueueComplete(SubTasks);
+        if (Taskmaster.QueueComplete(SubTasks))
+        {
+            var item = Creature.DropItem();
+            if (Reserve)
+            {
+                item.Reserved = true;
+            }
+            return true;
+        }
+
+        return false;
     }
 
-    public void Update()
+    public override void Update()
     {
         Taskmaster.ProcessQueue(SubTasks);
     }

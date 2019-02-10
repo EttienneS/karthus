@@ -1,41 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class Cell : MonoBehaviour
 {
-    public Coordinates Coordinates;
-    internal List<Creature> ContainedCreatures = new List<Creature>();
-    internal List<Item> ContainedItems = new List<Item>();
+    internal CellData Data = new CellData();
+
     internal Cell[] Neighbors = new Cell[8];
-    internal Structure Structure;
-    internal Stockpile Stockpile;
-
-    private float _baseTravelCost = -1;
-
-    internal float TravelCost
-    {
-        get
-        {
-            if (Structure != null)
-            {
-                return Structure.Data.TravelCost;
-            }
-
-            return _baseTravelCost;
-        }
-        set
-        {
-            _baseTravelCost = value;
-        }
-    }
-
-    private CellType _cellType;
 
     private float _lastUpdate;
-    private TextMeshPro _textMesh;
 
     public SpriteRenderer Border { get; private set; }
 
@@ -43,11 +19,11 @@ public class Cell : MonoBehaviour
     {
         get
         {
-            return _cellType;
+            return Data.CellType;
         }
         set
         {
-            _cellType = value;
+            Data.CellType = value;
 
             switch (value)
             {
@@ -65,14 +41,12 @@ public class Cell : MonoBehaviour
                     break;
             }
 
-            Terrain.sprite = SpriteStore.Instance.GetRandomSpriteOfType(_cellType);
+            Terrain.sprite = SpriteStore.Instance.GetRandomSpriteOfType(Data.CellType);
             RandomlyFlipSprite();
         }
     }
 
     public float Distance { get; set; }
-
-    //public SpriteRenderer Fog { get; private set; }
 
     public Cell NextWithSamePriority { get; set; }
 
@@ -83,34 +57,25 @@ public class Cell : MonoBehaviour
     public int SearchPhase { get; set; }
 
     public int SearchPriority => (int)Distance + SearchHeuristic;
+
     public SpriteRenderer Terrain { get; private set; }
 
-    public string Text
+    internal float TravelCost
     {
         get
         {
-            return TextMesh.text;
+            if (Data.Structure != null)
+            {
+                return Data.Structure.TravelCost;
+            }
+
+            return Data.BaseTravelCost;
         }
         set
         {
-            TextMesh.enabled = true;
-            TextMesh.text = value;
+            Data.BaseTravelCost = value;
         }
     }
-
-    public TextMeshPro TextMesh
-    {
-        get
-        {
-            if (_textMesh == null)
-            {
-                _textMesh = transform.Find("Text").GetComponent<TextMeshPro>();
-            }
-            return _textMesh;
-        }
-    }
-
-    public object StockPile { get; internal set; }
 
     public void AddContent(GameObject gameObject, bool scatter = false)
     {
@@ -122,20 +87,26 @@ public class Cell : MonoBehaviour
         {
             if (item.Cell != null)
             {
-                item.Cell.ContainedItems.Remove(item);
+                item.Cell.Data.ContainedItems.Remove(item.Data);
             }
-            ContainedItems.Add(item);
+
+            if (Data.Stockpile != null && Data.Stockpile.ItemType == item.Data.ItemType)
+            {
+                Data.Stockpile.AddItem(item.Data);
+            }
+
+            Data.ContainedItems.Add(item.Data);
             item.Cell = this;
         }
         else if (structure != null)
         {
-            structure.Cell = this;
-            Structure = structure;
+            structure.Data.Coordinates = Data.Coordinates;
+            Data.Structure = structure.Data;
         }
         else if (stockpile != null)
         {
-            stockpile.Cell = this;
-            Stockpile = stockpile;
+            stockpile.Data.Coordinates = Data.Coordinates;
+            Data.Stockpile = stockpile.Data;
         }
 
         gameObject.transform.SetParent(transform);
@@ -184,17 +155,6 @@ public class Cell : MonoBehaviour
         }
     }
 
-    internal void AddCreature(Creature creature)
-    {
-        if (creature.CurrentCell != null)
-        {
-            creature.CurrentCell.RemoveCreature(creature);
-        }
-
-        ContainedCreatures.Add(creature);
-        creature.CurrentCell = this;
-    }
-
     internal int CountNeighborsOfType(CellType? cellType)
     {
         if (!cellType.HasValue)
@@ -224,9 +184,29 @@ public class Cell : MonoBehaviour
         Terrain.flipX = Random.value < 0.5f;
         Terrain.flipY = Random.value < 0.5f;
     }
+}
 
-    private void RemoveCreature(Creature creature)
+[Serializable]
+public class CellData
+{
+    public float BaseTravelCost = -1;
+
+    public CellType CellType;
+
+    public List<ItemData> ContainedItems = new List<ItemData>();
+
+    public Coordinates Coordinates;
+
+    public StockpileData Stockpile;
+
+    public StructureData Structure;
+
+    [JsonIgnore]
+    public Cell LinkedGameObject
     {
-        ContainedCreatures.Remove(creature);
+        get
+        {
+            return MapGrid.Instance.GetCellAtCoordinate(Coordinates);
+        }
     }
 }

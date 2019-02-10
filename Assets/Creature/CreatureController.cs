@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -8,12 +9,16 @@ public class CreatureController : MonoBehaviour
     [Range(0.01f, 2f)]
     public float ActPeriod = 1f;
 
-    [Range(1, 1000)]
-    public int CreaturesToSpawn = 10;
-
     public Creature CreaturePrefab;
 
     public List<Creature> Creatures = new List<Creature>();
+
+    [Range(1, 1000)]
+    public int CreaturesToSpawn = 10;
+
+    internal Dictionary<CreatureData, Creature> CreatureLookup = new Dictionary<CreatureData, Creature>();
+    internal Dictionary<int, CreatureData> CreatureIdLookup = new Dictionary<int, CreatureData>();
+
     private static CreatureController _instance;
 
     public static CreatureController Instance
@@ -29,44 +34,6 @@ public class CreatureController : MonoBehaviour
         }
     }
 
-    public Creature SpawnCreature(Cell spawnLocation)
-    {
-        var creature = Instantiate(CreaturePrefab, transform, true);
-
-        creature.transform.position = spawnLocation.transform.position;
-        spawnLocation.AddCreature(creature);
-
-
-        creature.name = CreatureHelper.GetRandomName();
-
-        Creatures.Add(creature);
-        return creature;
-    }
-
-    public void SpawnCreatures()
-    {
-        var firstCreature = SpawnCreature(MapGrid.Instance.GetRandomPathableCell());
-        firstCreature.Speed = Random.Range(10, 15);
-        CameraController.Instance.MoveToCell(firstCreature.CurrentCell);
-
-
-
-        // spawn creatures in a circle around the 'first' one
-        var spawns = MapGrid.Instance.GetCircle(firstCreature.CurrentCell, 3).Where(c => c.TravelCost > 0).ToList();
-        var spawnCount = spawns.Count;
-        for (int i = 0; i < spawnCount * 2; i++)
-        {
-            spawns[Random.Range(0, spawnCount)].AddContent(ItemController.Instance.GetItem("Apple").gameObject, true);
-            spawns[Random.Range(0, spawnCount)].AddContent(ItemController.Instance.GetItem("Wood").gameObject, true);
-        }
-
-
-        for (int i = 0; i < CreaturesToSpawn - 1; i++)
-        {
-            SpawnCreature(spawns[Random.Range(0, spawns.Count)]).Speed = Random.Range(10, 15);
-        }
-    }
-
     public Creature GetCreatureAtPoint(Vector2 point)
     {
         foreach (var creature in Creatures)
@@ -79,5 +46,80 @@ public class CreatureController : MonoBehaviour
         }
 
         return null;
+    }
+
+    public Creature SpawnCreature(Cell spawnLocation)
+    {
+        var creature = Instantiate(CreaturePrefab, transform, true);
+        creature.Data.Name = CreatureHelper.GetRandomName();
+
+        creature.transform.position = spawnLocation.transform.position;
+        creature.Data.Coordinates = spawnLocation.Data.Coordinates;
+
+        creature.Data.Id = Creatures.Count + 1;
+
+        creature.Data.Hunger = Random.Range(0, 15);
+        creature.Data.Thirst = Random.Range(0, 15);
+        creature.Data.Energy = Random.Range(80, 100);
+
+        creature.Data.SpriteId = Random.Range(0, SpriteStore.Instance.CreatureSprite.Keys.Count - 1);
+
+        creature.GetSprite();
+
+        IndexCreature(creature);
+        return creature;
+    }
+
+    private void IndexCreature(Creature creature)
+    {
+        Creatures.Add(creature);
+        CreatureLookup.Add(creature.Data, creature);
+        CreatureIdLookup.Add(creature.Data.Id, creature.Data);
+
+        creature.name = $"{creature.Data.Name} ({creature.Data.Id})";
+    }
+
+    internal void DestroyCreature(Creature creature)
+    {
+        CreatureLookup.Remove(creature.Data);
+
+        Destroy(creature.gameObject);
+    }
+
+    public void SpawnCreatures()
+    {
+        var firstCreature = SpawnCreature(MapGrid.Instance.GetRandomPathableCell());
+        firstCreature.Data.Speed = Random.Range(10, 15);
+        CameraController.Instance.MoveToCell(firstCreature.Data.CurrentCell.LinkedGameObject);
+
+        // spawn creatures in a circle around the 'first' one
+        var spawns = MapGrid.Instance.GetCircle(firstCreature.Data.CurrentCell.LinkedGameObject, 3).Where(c => c.TravelCost > 0).ToList();
+        var spawnCount = spawns.Count;
+        for (int i = 0; i < spawnCount * 2; i++)
+        {
+            spawns[Random.Range(0, spawnCount)].AddContent(ItemController.Instance.GetItem("Apple").gameObject, true);
+            spawns[Random.Range(0, spawnCount)].AddContent(ItemController.Instance.GetItem("Wood").gameObject, true);
+        }
+
+        for (int i = 0; i < CreaturesToSpawn - 1; i++)
+        {
+            SpawnCreature(spawns[Random.Range(0, spawns.Count)]).Data.Speed = Random.Range(10, 15);
+        }
+    }
+
+    internal Creature LoadCreature(CreatureData savedCreature)
+    {
+        var creature = Instantiate(CreaturePrefab, transform, true);
+        creature.Data = savedCreature;
+
+        creature.transform.position = MapGrid.Instance.GetCellAtCoordinate(savedCreature.Coordinates).transform.position;
+        creature.GetSprite();
+        IndexCreature(creature);
+        return creature;
+    }
+
+    internal Creature GetCreatureForCreatureData(CreatureData creatureData)
+    {
+        return CreatureLookup[creatureData];
     }
 }

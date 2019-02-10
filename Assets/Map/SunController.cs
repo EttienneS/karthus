@@ -1,26 +1,18 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SunController : MonoBehaviour
 {
-    internal DayState State = DayState.Night;
-
+    internal const float BaseIntensity = 0.4f;
+    internal const float DayLightHours = Sunset - Sunrise;
+    internal const float MaxIntensity = 1.3f;
     internal const int SunHeight = -100;
     internal const int Sunrise = 5;
     internal const int Sunset = 19;
-
-    internal const float BaseIntensity = 0.4f;
-    internal const float MaxIntensity = 1.3f;
-
-    internal const float DayLightHours = Sunset - Sunrise;
-
-    internal int MidDay = Sunrise + Mathf.FloorToInt(DayLightHours / 2);
-
     internal float IntensityPerHour = MaxIntensity / (DayLightHours / 2);
-
     internal Light Light;
+    internal int MidDay = Sunrise + Mathf.FloorToInt(DayLightHours / 2);
+    internal DayState State = DayState.Night;
     private static SunController _instance;
 
     public enum DayState
@@ -45,9 +37,15 @@ public class SunController : MonoBehaviour
     {
         get
         {
-            return MapGrid.Instance.Map.GetLength(0) / DayLightHours;
+            return MapGrid.Instance.MapSize / DayLightHours;
         }
     }
+
+    public float GetCurrentIntensity(int hour, float minutePercentage)
+    {
+        return ((hour - 1) * IntensityPerHour) + (IntensityPerHour * minutePercentage);
+    }
+
     internal void UpdatePosition(int hour, int minutes)
     {
         var minutePercentage = minutes / 60f;
@@ -70,7 +68,6 @@ public class SunController : MonoBehaviour
 
                 State = hour <= MidDay + 1 ? DayState.Noon : DayState.AfterNoon;
             }
-
         }
         else
         {
@@ -80,13 +77,8 @@ public class SunController : MonoBehaviour
         }
     }
 
-    public float GetCurrentIntensity(int hour, float minutePercentage)
-    {
-        return ((hour - 1) * IntensityPerHour) + (IntensityPerHour * minutePercentage);
-    }
-
     // Update is called once per frame
-    void Start()
+    private void Start()
     {
         Light = GetComponent<Light>();
     }

@@ -1,61 +1,51 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
-public class Build : ITask
+[Serializable]
+public class Build : TaskBase
 {
-    public ITask _step;
-    public Cell Cell;
-    public Structure Structure;
+    public Coordinates Coordinates;
 
-    public Creature Creature { get; set; }
+    public StructureData Structure;
 
-    public Build(Structure structure, Cell cell)
+    public Build()
+    {
+    }
+
+    public Build(StructureData structure, Coordinates coordinates)
     {
         Structure = structure;
-        Cell = cell;
+        Coordinates = coordinates;
 
-        SubTasks = new Queue<ITask>();
+        SubTasks = new Queue<TaskBase>();
 
-        foreach (var itemType in structure.Data.RequiredItemTypes)
+        foreach (var itemType in structure.RequiredItemTypes)
         {
-            SubTasks.Enqueue(new MoveItemToCell(itemType, Cell, true));
-            SubTasks.Enqueue(new PlaceHeldItemInStructure(Structure));
+            SubTasks.Enqueue(new MoveItemToCell(itemType, Coordinates, true, true));
         }
 
         SubTasks.Enqueue(new Wait(3f, "Building"));
-        SubTasks.Enqueue(new Move(Cell.Neighbors.First(c => c.TravelCost != 0)));
+        SubTasks.Enqueue(new Move(MapGrid.Instance.GetCellAtCoordinate(coordinates).Neighbors
+                                    .First(c => c.TravelCost != 0).Data.Coordinates));
     }
 
-    public string TaskId { get; set; }
-    public Queue<ITask> SubTasks { get; set; }
-
-    public bool Done()
+    public override bool Done()
     {
         if (Taskmaster.QueueComplete(SubTasks))
         {
-            Structure.Data.DestroyContainedItems();
-            Structure.BluePrint = false;
-
-            if (Structure.Data.SpriteName == "Box")
+            var thisCell = MapGrid.Instance.GetCellAtCoordinate(Structure.Coordinates);
+            foreach (var item in thisCell.Data.ContainedItems.ToArray())
             {
-                var pile = Structure.gameObject.AddComponent<Stockpile>();
-
-                if (Structure.Data.Name.Contains("Wood"))
-                {
-                    pile.ItemType = "Wood";
-                }
-                else
-                {
-                    pile.ItemType = "Rock";
-                }
+                ItemController.Instance.DestroyItem(item);
             }
-
+            Structure.ToggleBluePrintState();
             return true;
         }
         return false;
     }
 
-    public void Update()
+    public override void Update()
     {
         if (Structure == null)
         {

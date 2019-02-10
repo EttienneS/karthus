@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -6,13 +7,9 @@ using UnityEngine;
 
 public class Stockpile : MonoBehaviour
 {
-    internal string ItemType;
-    internal int MaxConcurrentTasks = 3;
-    internal string StockpileId = Guid.NewGuid().ToString();
-    internal int Size = 12;
-    internal List<ITask> ActiveTasks = new List<ITask>();
+    public StockpileData Data = new StockpileData();
 
-    internal Cell Cell;
+    private TextMeshPro _textMesh;
 
     public string Text
     {
@@ -27,7 +24,18 @@ public class Stockpile : MonoBehaviour
         }
     }
 
-    private TextMeshPro _textMesh;
+
+    public ItemData GetItem(ItemData item)
+    {
+        Data.Items.Remove(item);
+        item.StockpileId = 0;
+        return item;
+    }
+
+    public ItemData GetItemOfType(string itemType)
+    {
+        return Data.Items.FirstOrDefault(i => i.ItemType == itemType && !i.Reserved);
+    }
 
     public TextMeshPro GetTextMesh()
     {
@@ -38,41 +46,38 @@ public class Stockpile : MonoBehaviour
         return _textMesh;
     }
 
-    private List<Item> _items = new List<Item>();
-
-    public Item GetItemOfType(string itemType)
-    {
-        return _items.FirstOrDefault(i => i.Data.ItemType == itemType && !i.Data.Reserved);
-    }
-
-    public void AddItem(Item item)
-    {
-        item.Data.Reserved = false;
-        item.SpriteRenderer.sortingLayerName = "Item";
-
-        Cell.AddContent(item.gameObject, true);
-        item.Data.StockpileId = StockpileId;
-        _items.Add(item);
-    }
-
-    public Item GetItem(Item item)
-    {
-        _items.Remove(item);
-        item.Data.StockpileId = null;
-        return item;
-    }
-
     private void Update()
     {
         if (TimeManager.Instance.Paused) return;
 
-        Text = ItemType;
+        Text = Data.ItemType;
 
-        ActiveTasks.RemoveAll(t => t.Done());
+        Data.ActiveTasks.RemoveAll(t => t.Done());
 
-        if (ActiveTasks.Count < MaxConcurrentTasks && _items.Count < Size)
+        if (Data.ActiveTasks.Count < Data.MaxConcurrentTasks && Data.Items.Count < Data.Size)
         {
-            ActiveTasks.Add(Taskmaster.Instance.AddTask(new StockpileItem(ItemType, this)));
+            Data.ActiveTasks.Add(Taskmaster.Instance.AddTask(new StockpileItem(Data.ItemType, Data.Id)));
         }
+    }
+}
+
+public class StockpileData
+{
+    [JsonIgnore]
+    public List<TaskBase> ActiveTasks = new List<TaskBase>();
+
+    [JsonIgnore]
+    public List<ItemData> Items = new List<ItemData>();
+
+    public Coordinates Coordinates;
+    public string ItemType;
+    public int MaxConcurrentTasks = 3;
+    public int Size = 12;
+    public int Id ;
+
+    internal void AddItem(ItemData item)
+    {
+        Items.Add(item);
+        item.StockpileId = Id;
     }
 }

@@ -1,7 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
+[Serializable]
 public enum CellType
 {
     Dirt, Forest, Grass, Mountain, Stone, Water
@@ -14,9 +17,7 @@ public class MapEditor : MonoBehaviour
     public bool Generating = false;
     public MapGrid MapGrid;
 
-    [Range(4, 300)]
-    public int MapSize = 64;
-
+    
     public bool ShowGeneration = true;
     private static MapEditor _instance;
 
@@ -35,41 +36,36 @@ public class MapEditor : MonoBehaviour
 
     public void AddCellIfValid(int x, int y, List<Cell> cells)
     {
-        if (x >= 0 && x < MapGrid.Map.GetLength(0) && y >= 0 && y < MapGrid.Map.GetLength(1))
+        if (x >= 0 && x < MapGrid.MapSize && y >= 0 && y < MapGrid.MapSize)
         {
-            cells.Add(MapGrid.Map[x, y]);
+            cells.Add(MapGrid.CellLookup[(x, y)]);
         }
     }
 
-    public void CreateCell(int x, int y)
+    public Cell CreateCell(int x, int y)
     {
         var cell = Instantiate(cellPrefab, MapGrid.transform, true);
         cell.transform.position = new Vector3(x, y);
         cell.CellType = CellType.Water;
 
-        cell.Coordinates = new Coordinates(x, y);
-        cell.name = cell.Coordinates.ToString();
+        cell.Data.Coordinates = new Coordinates(x, y);
+        cell.name = cell.Data.Coordinates.ToString();
 
-        MapGrid.Map[x, y] = cell;
+        MapGrid.Cells.Add(cell);
 
-        if (MapGrid.DebugCoordinates)
-        {
-            cell.Text = cell.Coordinates.ToStringOnSeparateLines();
-        }
+        return cell;
     }
 
     public IEnumerator CreateMap()
     {
-        var width = MapSize;
-        var height = MapSize;
 
-        MapGrid.Map = new Cell[width, height];
+        MapGrid.Cells = new List<Cell>();
 
         if (ShowGeneration) yield return null;
 
-        for (var y = 0; y < width; y++)
+        for (var y = 0; y < MapGrid.MapSize; y++)
         {
-            for (var x = 0; x < height; x++)
+            for (var x = 0; x < MapGrid.MapSize; x++)
             {
                 CreateCell(x, y);
             }
@@ -77,39 +73,13 @@ public class MapEditor : MonoBehaviour
 
         if (ShowGeneration) yield return null;
 
-        for (var y = 0; y < width; y++)
-        {
-            for (var x = 0; x < height; x++)
-            {
-                var cell = MapGrid.Map[x, y];
-
-                if (x > 0)
-                {
-                    cell.SetNeighbor(Direction.W, MapGrid.Map[x - 1, y]);
-
-                    if (y > 0)
-                    {
-                        cell.SetNeighbor(Direction.SW, MapGrid.Map[x - 1, y - 1]);
-
-                        if (x < width - 1)
-                        {
-                            cell.SetNeighbor(Direction.SE, MapGrid.Map[x + 1, y - 1]);
-                        }
-                    }
-                }
-
-                if (y > 0)
-                {
-                    cell.SetNeighbor(Direction.S, MapGrid.Map[x, y - 1]);
-                }
-            }
-        }
+        MapGrid.LinkNeighbours();
         if (ShowGeneration) yield return null;
 
         // generate bedrock
-        for (int i = 0; i < MapSize / 2; i++)
+        for (int i = 0; i < MapGrid.MapSize / 2; i++)
         {
-            foreach (var cell in MapGrid.GetRandomChunk(Random.Range(1 + (MapSize / 6), 1 + (MapSize / 3))))
+            foreach (var cell in MapGrid.GetRandomChunk(Random.Range(1 + (MapGrid.MapSize / 6), 1 + (MapGrid.MapSize / 3))))
             {
                 cell.CellType = CellType.Stone;
             }
@@ -117,7 +87,7 @@ public class MapEditor : MonoBehaviour
         if (ShowGeneration) yield return null;
 
         // grow mountains
-        foreach (var cell in MapGrid.Map)
+        foreach (var cell in MapGrid.Cells)
         {
             if (cell.CellType != CellType.Stone)
             {
@@ -134,9 +104,9 @@ public class MapEditor : MonoBehaviour
         if (ShowGeneration) yield return null;
 
         // generate landmasses
-        for (int i = 0; i < MapSize; i++)
+        for (int i = 0; i < MapGrid.MapSize; i++)
         {
-            foreach (var cell in MapGrid.GetRandomChunk(Random.Range(MapSize, MapSize * 2)))
+            foreach (var cell in MapGrid.GetRandomChunk(Random.Range(MapGrid.MapSize, MapGrid.MapSize * 2)))
             {
                 if (cell.CellType == CellType.Water)
                 {
@@ -148,7 +118,7 @@ public class MapEditor : MonoBehaviour
 
         // bleed water, this enlarges bodies of water
         // creates more natural looking coastlines/rivers
-        foreach (var cell in MapGrid.Map)
+        foreach (var cell in MapGrid.Cells)
         {
             if (cell.CellType == CellType.Water)
             {
@@ -165,7 +135,7 @@ public class MapEditor : MonoBehaviour
         if (ShowGeneration) yield return null;
 
         // create coast
-        foreach (var cell in MapGrid.Map)
+        foreach (var cell in MapGrid.Cells)
         {
             if (cell.CellType != CellType.Grass)
             {
@@ -181,7 +151,7 @@ public class MapEditor : MonoBehaviour
         if (ShowGeneration) yield return null;
 
         // bleed desert
-        foreach (var cell in MapGrid.Map)
+        foreach (var cell in MapGrid.Cells)
         {
             if (cell.CellType == CellType.Water)
             {
@@ -197,7 +167,7 @@ public class MapEditor : MonoBehaviour
         if (ShowGeneration) yield return null;
 
         // create forest
-        foreach (var cell in MapGrid.Map)
+        foreach (var cell in MapGrid.Cells)
         {
             if (cell.CellType == CellType.Water)
             {
@@ -216,7 +186,7 @@ public class MapEditor : MonoBehaviour
 
         if (ShowGeneration) yield return null;
 
-        foreach (var cell in MapGrid.Map)
+        foreach (var cell in MapGrid.Cells)
         {
             switch (cell.CellType)
             {
@@ -224,7 +194,7 @@ public class MapEditor : MonoBehaviour
                     if (Random.value > 0.95)
                     {
                         cell.AddContent(StructureController.Instance.GetStructure("Tree").gameObject, false);
-                    }                   
+                    }
                     break;
 
                 case CellType.Stone:
@@ -243,6 +213,8 @@ public class MapEditor : MonoBehaviour
 
         if (ShowGeneration) yield return null;
     }
+
+    
 
     private void Update()
     {

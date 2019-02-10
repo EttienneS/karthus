@@ -45,21 +45,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private static void DestroyAndRecreateMap()
-    {
-        foreach (var cell in MapGrid.Instance.Map)
-        {
-            Destroy(cell.gameObject);
-        }
-
-        foreach (var creature in CreatureController.Instance.Creatures)
-        {
-            Destroy(creature.gameObject);
-        }
-        CreatureController.Instance.Creatures.Clear();
-
-        MapEditor.Instance.Generating = false;
-    }
+   
 
     private void HandleTimeControls()
     {
@@ -72,7 +58,7 @@ public class GameController : MonoBehaviour
             else
             {
                 _oldTimeStep = TimeManager.Instance.TimeStep;
-                TimeManager.Instance.TimeStep = TimeStep.Paused;
+                TimeManager.Instance.Pause();
             }
         }
 

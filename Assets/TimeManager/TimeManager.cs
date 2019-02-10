@@ -1,11 +1,38 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
+
+public enum TimeStep
+{
+    Paused = 0,
+    Slow = 1,
+    Normal = 2,
+    Fast = 4,
+    Hyper = 8
+}
+
+[Serializable]
+public class TimeData
+{
+    public int Hour;
+    public int Minute;
+}
 
 public class TimeManager : MonoBehaviour
 {
-    private static TimeManager _instance;
-
     public Text TimeDisplay;
+
+    public TimeData Data = new TimeData()
+    {
+        Hour = 11,
+        Minute = 0
+    };
+
+    internal float TickInterval = 0.2f;
+    private static TimeManager _instance;
+    private TimeStep _timeStep;
+
+    private float _timeTicks;
 
     public static TimeManager Instance
     {
@@ -19,61 +46,6 @@ public class TimeManager : MonoBehaviour
             return _instance;
         }
     }
-
-    private float _timeTicks;
-
-    internal int Hour = 11;
-    internal int Minute = 0;
-
-    internal float TickInterval = 0.2f;
-
-
-
-    public void Update()
-    {
-        //if (Paused) return;
-
-        _timeTicks += Time.deltaTime;
-
-        if (_timeTicks >= TickInterval)
-        {
-            _timeTicks = 0;
-            Minute += 5;
-
-            if (Minute >= 60)
-            {
-                Hour++;
-                Minute = 0;
-
-                if (Hour > 23)
-                {
-                    Hour = 0;
-                }
-
-
-            }
-
-            SunController.Instance.UpdatePosition(Hour, Minute);
-        }
-
-        TimeDisplay.text = $"{Hour.ToString().PadLeft(2, '0')}:{Minute.ToString().PadLeft(2, '0')} {SunController.Instance.State}";
-    }
-
-    public void Start()
-    {
-        TimeStep = TimeStep.Normal;
-    }
-
-    private TimeStep _timeStep;
-
-    internal bool Paused
-    {
-        get
-        {
-            return TimeStep == TimeStep.Paused;
-        }
-    }
-
     public TimeStep TimeStep
     {
         get
@@ -96,13 +68,50 @@ public class TimeManager : MonoBehaviour
             }
         }
     }
-}
 
-public enum TimeStep
-{
-    Paused = 0,
-    Slow = 1,
-    Normal = 2,
-    Fast = 4,
-    Hyper = 8
+    internal bool Paused
+    {
+        get
+        {
+            return TimeStep == TimeStep.Paused;
+        }
+    }
+
+    internal void Pause()
+    {
+        TimeStep = TimeStep.Paused;
+    }
+
+    public void Start()
+    {
+        TimeStep = TimeStep.Normal;
+    }
+
+    public void Update()
+    {
+        //if (Paused) return;
+
+        _timeTicks += Time.deltaTime;
+
+        if (_timeTicks >= TickInterval)
+        {
+            _timeTicks = 0;
+            Data.Minute += 5;
+
+            if (Data.Minute >= 60)
+            {
+                Data.Hour++;
+                Data.Minute = 0;
+
+                if (Data.Hour > 23)
+                {
+                    Data.Hour = 0;
+                }
+            }
+
+            SunController.Instance.UpdatePosition(Data.Hour, Data.Minute);
+        }
+
+        TimeDisplay.text = $"{Data.Hour.ToString().PadLeft(2, '0')}:{Data.Minute.ToString().PadLeft(2, '0')} {SunController.Instance.State}";
+    }
 }

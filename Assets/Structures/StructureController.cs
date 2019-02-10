@@ -3,9 +3,10 @@ using UnityEngine;
 
 public class StructureController : MonoBehaviour
 {
+    public Dictionary<StructureData, Structure> StructureLookup = new Dictionary<StructureData, Structure>();
     public Structure structurePrefab;
-    internal Dictionary<string, string> StructureTypeFileMap = new Dictionary<string, string>();
     internal Dictionary<string, StructureData> StructureDataReference = new Dictionary<string, StructureData>();
+    internal Dictionary<string, string> StructureTypeFileMap = new Dictionary<string, string>();
     private static StructureController _instance;
 
     public static StructureController Instance
@@ -21,11 +22,45 @@ public class StructureController : MonoBehaviour
         }
     }
 
+    public Sprite GetSpriteForStructure(string structureName)
+    {
+        return SpriteStore.Instance.GetSpriteByName(StructureDataReference[structureName].SpriteName);
+    }
+
+    public Structure GetStructure(string name)
+    {
+        var structure = Instantiate(structurePrefab, transform);
+        structure.Load(StructureTypeFileMap[name]);
+        structure.Data.Id = StructureLookup.Keys.Count + 1;
+
+        IndexStructure(structure);
+
+        structure.Data.ToggleBluePrintState(false);
+
+        return structure;
+    }
+
     internal Structure GetStructureBluePrint(string name)
     {
         var structure = GetStructure(name);
-        structure.BluePrint = true;
+        structure.Data.ToggleBluePrintState(true);
         return structure;
+    }
+
+    internal Structure GetStructureForData(StructureData structureData)
+    {
+        return StructureLookup[structureData];
+    }
+    internal void DestroyStructure(StructureData structure)
+    {
+        DestroyStructure(structure.LinkedGameObject);
+    }
+
+    internal void DestroyStructure(Structure structure)
+    {
+        MapGrid.Instance.GetCellAtCoordinate(structure.Data.Coordinates).Data.Structure = null;
+
+        Destroy(structure.gameObject);
     }
 
     private void Start()
@@ -38,29 +73,22 @@ public class StructureController : MonoBehaviour
         }
     }
 
-    public Sprite GetSpriteForStructure(string structureName)
-    {
-        return SpriteStore.Instance.GetSpriteByName(StructureDataReference[structureName].SpriteName);
-    }
-
-    public Structure GetStructure(string name)
+    internal Structure LoadStructure(StructureData savedStructure)
     {
         var structure = Instantiate(structurePrefab, transform);
-        structure.Load(StructureTypeFileMap[name]);
-        structure.name = structure.Data.Name;
-        structure.BluePrint = false;
+        structure.Data = savedStructure;
+        IndexStructure(structure);
+
+        structure.LoadSprite();
+        structure.Data.ToggleBluePrintState(structure.Data.IsBluePrint);
+
         return structure;
     }
 
-    internal void RemoveStructure(Structure structure)
+    private void IndexStructure(Structure structure)
     {
-        structure.Cell.Structure = null;
+        StructureLookup.Add(structure.Data, structure);
 
-        foreach (var item in structure.Data.ContainedItems)
-        {
-            item.Data.Reserved = false;
-        }
-
-        Destroy(structure.gameObject);
+        structure.name = $"{structure.Data.Name} ({structure.Data.Id})";
     }
 }

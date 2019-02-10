@@ -5,11 +5,7 @@ using Random = UnityEngine.Random;
 
 public class Taskmaster : MonoBehaviour
 {
-    internal Dictionary<TaskStatus, List<ITask>> Tasks = new Dictionary<TaskStatus, List<ITask>>
-    {
-        { TaskStatus.Available, new List<ITask>() },
-        { TaskStatus.InProgress, new List<ITask>() },
-    };
+    internal List<TaskBase> Tasks = new List<TaskBase>();
 
     private static Taskmaster _instance;
 
@@ -26,7 +22,7 @@ public class Taskmaster : MonoBehaviour
         }
     }
 
-    public static void ProcessQueue(Queue<ITask> queue)
+    public static void ProcessQueue(Queue<TaskBase> queue)
     {
         if (queue == null || queue.Count == 0)
         {
@@ -45,39 +41,29 @@ public class Taskmaster : MonoBehaviour
         }
     }
 
-    public static bool QueueComplete(Queue<ITask> queue)
+    public static bool QueueComplete(Queue<TaskBase> queue)
     {
         return queue == null || queue.Count == 0;
     }
 
-    public ITask AddTask(ITask task)
+    public TaskBase AddTask(TaskBase task)
     {
-        Tasks[TaskStatus.Available].Add(task);
+        Tasks.Add(task);
         return task;
     }
 
-    public void FlagTaskAsInprogress(ITask task)
+    public TaskBase GetNextAvailableTask()
     {
-        Tasks[TaskStatus.Available].Remove(task);
-        Tasks[TaskStatus.InProgress].Add(task);
+        return Tasks.FirstOrDefault(t => t.CreatureId <= 0);
     }
 
-    public ITask GetNextAvailableTask()
+    public TaskBase GetTask(Creature creature)
     {
-        if (Tasks[TaskStatus.Available].Any())
-        {
-            return Tasks[TaskStatus.Available][0];
-        }
-        return null;
-    }
+        TaskBase task = null;
 
-    public ITask GetTask(Creature creature)
-    {
-        ITask task = null;
-
-        if (creature.Hunger > 50)
+        if (creature.Data.Hunger > 50)
         {
-            task = new Eat();
+            task = new Eat("Food");
             AddTask(task);
         }
         else
@@ -87,10 +73,10 @@ public class Taskmaster : MonoBehaviour
             {
                 if (Random.value > 0.6)
                 {
-                    var wanderCircle = MapGrid.Instance.GetCircle(creature.CurrentCell, 3).Where(c => c.TravelCost == 1).ToList();
+                    var wanderCircle = MapGrid.Instance.GetCircle(creature.Data.CurrentCell.LinkedGameObject, 3).Where(c => c.TravelCost == 1).ToList();
                     if (wanderCircle.Count > 0)
                     {
-                        task = new Move(wanderCircle[Random.Range(0, wanderCircle.Count - 1)], (int)creature.Speed / 3);
+                        task = new Move(wanderCircle[Random.Range(0, wanderCircle.Count - 1)].Data.Coordinates, (int)creature.Data.Speed / 3);
                     }
                 }
 
@@ -102,9 +88,7 @@ public class Taskmaster : MonoBehaviour
                 AddTask(task);
             }
         }
-
-        FlagTaskAsInprogress(task);
-
+        task.CreatureId = creature.Data.Id;
         return task;
     }
 
@@ -113,8 +97,8 @@ public class Taskmaster : MonoBehaviour
         return true;
     }
 
-    internal void TaskComplete(ITask task)
+    internal void TaskComplete(TaskBase task)
     {
-        Tasks[TaskStatus.InProgress].Remove(task);
+        Tasks.Remove(task);
     }
 }

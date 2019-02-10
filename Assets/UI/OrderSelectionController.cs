@@ -4,10 +4,8 @@ using UnityEngine.UI;
 public class OrderSelectionController : MonoBehaviour
 {
     public OrderButton BuildButton;
-    public OrderButton StockpileButton;
-
     public OrderButton OrderButtonPrefab;
-
+    public OrderButton StockpileButton;
     private static OrderSelectionController _instance;
 
     public delegate void CellClickedDelegate(Cell cell);
@@ -33,11 +31,11 @@ public class OrderSelectionController : MonoBehaviour
 
         CellClickOrder = cell =>
         {
-            if (cell.Structure == null)
+            if (cell.Data.Structure == null)
             {
                 var blueprint = StructureController.Instance.GetStructureBluePrint(structureName);
                 cell.AddContent(blueprint.gameObject);
-                Taskmaster.Instance.AddTask(new Build(blueprint, cell));
+                Taskmaster.Instance.AddTask(new Build(blueprint.Data, cell.Data.Coordinates));
             }
         };
     }
@@ -77,33 +75,42 @@ public class OrderSelectionController : MonoBehaviour
         }
     }
 
-    private void RemoveStructureClicked()
+    private static void EnableAndClear()
     {
-        BuildButton.Text = "Remove Structure";
-
-        CellClickOrder = cell =>
+        OrderTrayController.Instance.gameObject.SetActive(true);
+        foreach (Transform child in OrderTrayController.Instance.transform)
         {
-            if (cell.Structure != null)
-            {
-                var structure = cell.Structure;
-             
-                if (structure.Data.IsBluePrint)
-                {
-                    StructureController.Instance.RemoveStructure(structure);
-                }
-                else
-                {
-                    Taskmaster.Instance.AddTask(new RemoveStructure(structure, cell));
-                    structure.SpriteRenderer.color = Color.red;
-                }
-            }
-        };
+            Destroy(child.gameObject);
+        }
     }
 
     private void DisableAndReset()
     {
         OrderTrayController.Instance.gameObject.SetActive(false);
         CellClickOrder = null;
+    }
+
+    private void RemoveStructureClicked()
+    {
+        BuildButton.Text = "Remove Structure";
+
+        CellClickOrder = cell =>
+        {
+            if (cell.Data.Structure != null)
+            {
+                var structure = cell.Data.Structure;
+
+                if (structure.IsBluePrint)
+                {
+                    StructureController.Instance.DestroyStructure(structure);
+                }
+                else
+                {
+                    Taskmaster.Instance.AddTask(new RemoveStructure(structure, cell.Data.Coordinates));
+                    structure.LinkedGameObject.SpriteRenderer.color = Color.red;
+                }
+            }
+        };
     }
 
     private void Start()
@@ -121,6 +128,20 @@ public class OrderSelectionController : MonoBehaviour
         StockpileButton.Button.onClick.AddListener(StockpileTypeClicked);
         StockpileButton.Text = "Place Stockpile";
         StockpileButton.Button.image.sprite = SpriteStore.Instance.GetSpriteByName("box");
+    }
+
+    private void StockpileClicked(string itemTypeName)
+    {
+        StockpileButton.Text = $"Place {itemTypeName} Stockpile";
+
+        CellClickOrder = cell =>
+        {
+            if (cell.Data.Stockpile == null && cell.TravelCost > 0)
+            {
+                var stockpile = StockpileController.Instance.AddStockpile(itemTypeName);
+                cell.AddContent(stockpile.gameObject);
+            }
+        };
     }
 
     private void StockpileTypeClicked()
@@ -143,29 +164,6 @@ public class OrderSelectionController : MonoBehaviour
                 button.Button.image.type = Image.Type.Tiled;
                 button.Text = button.name;
             }
-        }
-    }
-
-    private void StockpileClicked(string itemTypeName)
-    {
-        StockpileButton.Text = $"Place {itemTypeName} Stockpile";
-
-        CellClickOrder = cell =>
-        {
-            if (cell.Stockpile == null && cell.TravelCost > 0)
-            {
-                var stockpile = StockpileController.Instance.AddStockpile(itemTypeName);
-                cell.AddContent(stockpile.gameObject);
-            }
-        };
-    }
-
-    private static void EnableAndClear()
-    {
-        OrderTrayController.Instance.gameObject.SetActive(true);
-        foreach (Transform child in OrderTrayController.Instance.transform)
-        {
-            Destroy(child.gameObject);
         }
     }
 }

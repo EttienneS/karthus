@@ -40,26 +40,21 @@ public class CellInfoPanel : MonoBehaviour
     {
         if (_cell != null)
         {
-            CellName.text = _cell.Coordinates.ToString();
+            CellName.text = _cell.Data.Coordinates.ToString();
             CellContent.text = string.Empty;
 
-            foreach (var item in _cell.ContainedItems.GroupBy(g => g.Data.ItemType))
+            foreach (var item in _cell.Data.ContainedItems.GroupBy(g => g.ItemType))
             {
                 CellContent.text += $"{item.Key}:\t{item.Count()}\n";
             }
 
             CellContent.text += "\n";
 
-            if(_cell.Structure != null)
+            if(_cell.Data.Structure != null)
             {
-                CellContent.text += $"Structure:\t{_cell.Structure}\n";
+                CellContent.text += $"Structure:\t{_cell.Data.Structure}\n";
             }
             CellContent.text += "\n";
-
-            foreach (var creature in _cell.ContainedCreatures)
-            {
-                CellContent.text += $"{creature.name} ";
-            }
         }
     }
 
