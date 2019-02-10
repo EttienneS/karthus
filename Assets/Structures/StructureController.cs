@@ -31,11 +31,12 @@ public class StructureController : MonoBehaviour
     {
         var structure = Instantiate(structurePrefab, transform);
         structure.Load(StructureTypeFileMap[name]);
+        structure.Data.Id = StructureLookup.Keys.Count + 1;
 
         IndexStructure(structure);
 
-        structure.name = structure.Data.Name;
         structure.Data.ToggleBluePrintState(false);
+
         return structure;
     }
 
@@ -77,7 +78,6 @@ public class StructureController : MonoBehaviour
         var structure = Instantiate(structurePrefab, transform);
         structure.Data = savedStructure;
         IndexStructure(structure);
-        structure.name = structure.Data.Name;
 
         structure.LoadSprite();
         structure.Data.ToggleBluePrintState(structure.Data.IsBluePrint);
@@ -88,5 +88,7 @@ public class StructureController : MonoBehaviour
     private void IndexStructure(Structure structure)
     {
         StructureLookup.Add(structure.Data, structure);
+
+        structure.name = $"{structure.Data.Name} ({structure.Data.Id})";
     }
 }

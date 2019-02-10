@@ -75,6 +75,8 @@ public class CreatureController : MonoBehaviour
         Creatures.Add(creature);
         CreatureLookup.Add(creature.Data, creature);
         CreatureIdLookup.Add(creature.Data.Id, creature.Data);
+
+        creature.name = $"{creature.Data.Name} ({creature.Data.Id})";
     }
 
     internal void DestroyCreature(Creature creature)

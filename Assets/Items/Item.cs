@@ -13,12 +13,10 @@ public class Item : MonoBehaviour
         SpriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    
     public ItemData Data;
 
     public Cell Cell { get; set; }
 
-    
     internal void Load(string structureData)
     {
         Data = JsonUtility.FromJson<ItemData>(structureData);
@@ -29,21 +27,18 @@ public class Item : MonoBehaviour
 [Serializable]
 public class ItemData
 {
-    
     public int Id;
 
     public string ItemType;
 
     public bool Reserved;
-    
+
     public string SpriteName;
-    
+
     public string Name;
 
-    
     public int StockpileId { get; set; }
 
-    
     public ItemProperty[] Properties;
 
     public string GetPropertyValue(string key)
@@ -59,14 +54,12 @@ public class ItemData
             return ItemController.Instance.ItemDataLookup[this];
         }
     }
-
 }
 
 [Serializable]
 public class ItemProperty
 {
-    
     public string Key;
-    
+
     public string Value;
 }

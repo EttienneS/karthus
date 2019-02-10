@@ -11,8 +11,6 @@ public class Cell : MonoBehaviour
 
     internal Cell[] Neighbors = new Cell[8];
 
-  
-
     private float _lastUpdate;
 
     public SpriteRenderer Border { get; private set; }

@@ -54,8 +54,8 @@ public class StructureData
 {
     public Coordinates Coordinates;
 
+    public int Id;
     public bool IsBluePrint;
-
     public string Name;
 
     public List<string> RequiredItemTypes;

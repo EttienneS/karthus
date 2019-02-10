@@ -130,5 +130,7 @@ public class ItemController : MonoBehaviour
         ItemTypeIndex[item.Data.ItemType].Add(item);
         ItemDataLookup.Add(item.Data, item);
         ItemIdLookup.Add(item.Data.Id, item);
+
+        item.name = $"{item.Data.ItemType} ({item.Data.Id})";
     }
 }
