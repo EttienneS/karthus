@@ -66,6 +66,8 @@ public class CreatureController : MonoBehaviour
 
         creature.GetSprite();
 
+        creature.ShowText("Awee!!!", Random.Range(1f, 3f));
+
         IndexCreature(creature);
         return creature;
     }

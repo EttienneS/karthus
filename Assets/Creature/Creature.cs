@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -12,11 +14,28 @@ public class Creature : MonoBehaviour
     internal Sprite[] SideSprites;
     internal SpriteRenderer SpriteRenderer;
 
+    internal TextMeshPro Text;
+
     private float deltaTime = 0;
 
     private int frame;
 
     private float frameSeconds = 0.3f;
+
+    public void Awake()
+    {
+        Text = transform.Find("Text").GetComponent<TextMeshPro>();
+    }
+
+    internal float RemainingTextDuration;
+
+    public void ShowText(string text, float duration)
+    {
+        Text.text = text;
+        Text.color = Color.white;
+
+        RemainingTextDuration = duration + 1f;
+    }
 
     public void AssignTask(TaskBase task)
     {
@@ -37,24 +56,20 @@ public class Creature : MonoBehaviour
         Data.MoveDirection = (Direction)values.GetValue(Random.Range(0, values.Length));
     }
 
-   
+
     public void Update()
     {
         if (TimeManager.Instance.Paused) return;
 
-        AnimateSprite();
+        Work();
 
-        Data.InternalTick += Time.deltaTime;
+        UpdateSelf();
 
-        if (Data.InternalTick >= TimeManager.Instance.TickInterval)
-        {
-            Data.InternalTick = 0;
 
-            Data.Hunger += Random.value;
-            Data.Thirst += Random.value;
-            Data.Energy -= Random.value;
-        }
+    }
 
+    private void Work()
+    {
         if (Data.Task == null)
         {
             var task = Taskmaster.Instance.GetTask(this);
@@ -88,7 +103,62 @@ public class Creature : MonoBehaviour
             Data.Task = Taskmaster.Instance.GetTask(this);
             AssignTask(Data.Task);
         }
+    }
 
+    private void UpdateSelf()
+    {
+        Data.InternalTick += Time.deltaTime;
+
+        var thoughts = new List<string>();
+        if (Data.InternalTick >= TimeManager.Instance.TickInterval)
+        {
+            Data.InternalTick = 0;
+
+            Data.Hunger += Random.value;
+            Data.Thirst += Random.value;
+            Data.Energy -= Random.value;
+
+            if (Data.Hunger > 40)
+            {
+                thoughts.Add("Jaassss ek kan gaan vir 'n boerie!");
+            }
+
+            if (Data.Energy < 30)
+            {
+                thoughts.Add("*Yawn..*");
+            }
+        }
+
+        if (thoughts.Any() && Random.value > 0.9)
+        {
+            ShowText(thoughts[Random.Range(0, thoughts.Count - 1)], 2f);
+        }
+
+        CarryItem();
+        UpdateFloatingText();
+
+        Animate();
+    }
+
+    private void UpdateFloatingText()
+    {
+        if (RemainingTextDuration > 0)
+        {
+            RemainingTextDuration -= Time.deltaTime;
+
+            if (RemainingTextDuration < 1f)
+            {
+                Text.color = new Color(Text.color.r, Text.color.g, Text.color.b, RemainingTextDuration);
+            }
+        }
+        else
+        {
+            Text.text = "";
+        }
+    }
+
+    private void CarryItem()
+    {
         if (Data.CarriedItemId > 0)
         {
             var item = ItemController.Instance.ItemDataLookup[Data.CarriedItem];
@@ -101,16 +171,16 @@ public class Creature : MonoBehaviour
     internal void GetSprite()
     {
         SpriteRenderer = GetComponent<SpriteRenderer>();
-        
+
         var sprites = SpriteStore.Instance.CreatureSprite[Data.SpriteId];
         BackSprites = sprites.Where(s => s.name.StartsWith("all_back", StringComparison.InvariantCultureIgnoreCase)).ToArray();
         FrontSprites = sprites.Where(s => s.name.StartsWith("all_front", StringComparison.InvariantCultureIgnoreCase)).ToArray();
         SideSprites = sprites.Where(s => s.name.StartsWith("all_side", StringComparison.InvariantCultureIgnoreCase)).ToArray();
 
-        AnimateSprite(true);
+        Animate(true);
     }
 
-    private void AnimateSprite(bool force = false)
+    private void Animate(bool force = false)
     {
         Sprite[] sprites;
         switch (Data.MoveDirection)
