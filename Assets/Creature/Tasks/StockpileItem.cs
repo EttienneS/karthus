@@ -11,7 +11,6 @@ public class StockpileItem : TaskBase
 
     public StockpileItem(string itemType, int stockpileId)
     {
-        SubTasks = new Queue<TaskBase>();
         StockpileId = stockpileId;
 
         SubTasks.Enqueue(new MoveItemToCell(itemType, Stockpile.Data.Coordinates, false, false));

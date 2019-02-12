@@ -18,7 +18,6 @@ public class Build : TaskBase
         Structure = structure;
         Coordinates = coordinates;
 
-        SubTasks = new Queue<TaskBase>();
 
         foreach (var itemType in structure.RequiredItemTypes)
         {

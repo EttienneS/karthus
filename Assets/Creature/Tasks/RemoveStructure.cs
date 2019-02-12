@@ -14,7 +14,6 @@ public class RemoveStructure : TaskBase
         Structure = structure;
         Coordinates = coordinates;
 
-        SubTasks = new Queue<TaskBase>();
         SubTasks.Enqueue(new Move(Coordinates));
         SubTasks.Enqueue(new Wait(2f, "Removing"));
     }

@@ -10,7 +10,6 @@ public class Eat : TaskBase
 
     public Eat(string itemType)
     {
-        SubTasks = new Queue<TaskBase>();
         SubTasks.Enqueue(new GetItemOfType(itemType, true));
         SubTasks.Enqueue(new Wait(2f, "Eating"));
     }
