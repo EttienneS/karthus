@@ -16,7 +16,6 @@ public class GetItemOfType : TaskBase
     {
         AllowStockpiled = allowStockpiled;
         ItemType = itemType;
-        SubTasks = new Queue<TaskBase>();
     }
 
     public override bool Done()
@@ -54,7 +53,6 @@ public class GetItemOfType : TaskBase
 
     private void UpdateTargetItem()
     {
-        SubTasks = new Queue<TaskBase>();
 
         var moveTask = new Move(Item.LinkedGameObject.Cell.Data.Coordinates)
         {

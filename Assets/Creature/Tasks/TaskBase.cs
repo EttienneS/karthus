@@ -17,7 +17,7 @@ public abstract class TaskBase
         }
     }
 
-    public Queue<TaskBase> SubTasks { get; set; }
+    public Queue<TaskBase> SubTasks = new Queue<TaskBase>();
 
     public abstract bool Done();
 

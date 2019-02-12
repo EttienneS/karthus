@@ -11,6 +11,7 @@ public class Creature : MonoBehaviour
     internal Sprite[] BackSprites;
     internal CreatureData Data = new CreatureData();
     internal Sprite[] FrontSprites;
+    internal float RemainingTextDuration;
     internal Sprite[] SideSprites;
     internal SpriteRenderer SpriteRenderer;
 
@@ -21,21 +22,6 @@ public class Creature : MonoBehaviour
     private int frame;
 
     private float frameSeconds = 0.3f;
-
-    public void Awake()
-    {
-        Text = transform.Find("Text").GetComponent<TextMeshPro>();
-    }
-
-    internal float RemainingTextDuration;
-
-    public void ShowText(string text, float duration)
-    {
-        Text.text = text;
-        Text.color = Color.white;
-
-        RemainingTextDuration = duration + 1f;
-    }
 
     public void AssignTask(TaskBase task)
     {
@@ -50,12 +36,24 @@ public class Creature : MonoBehaviour
         }
     }
 
+    public void Awake()
+    {
+        Text = transform.Find("Text").GetComponent<TextMeshPro>();
+    }
+
     public void FaceRandomDirection()
     {
         var values = Enum.GetValues(typeof(Direction));
         Data.MoveDirection = (Direction)values.GetValue(Random.Range(0, values.Length));
     }
 
+    public void ShowText(string text, float duration)
+    {
+        Text.text = text;
+        Text.color = Color.white;
+
+        RemainingTextDuration = duration + 1f;
+    }
 
     public void Update()
     {
@@ -64,108 +62,6 @@ public class Creature : MonoBehaviour
         Work();
 
         UpdateSelf();
-
-
-    }
-
-    private void Work()
-    {
-        if (Data.Task == null)
-        {
-            var task = Taskmaster.Instance.GetTask(this);
-            AssignTask(task);
-
-            Data.Task = task;
-        }
-
-        try
-        {
-            if (!Data.Task.Done())
-            {
-                Data.Task.Update();
-            }
-            else
-            {
-                Taskmaster.Instance.TaskComplete(Data.Task);
-                Data.Task = null;
-            }
-        }
-        catch (CancelTaskException)
-        {
-            Taskmaster.Instance.TaskComplete(Data.Task);
-
-            if (Data.CarriedItemId > 0)
-            {
-                Data.CarriedItem.Reserved = false;
-                Data.CarriedItemId = 0;
-            }
-
-            Data.Task = Taskmaster.Instance.GetTask(this);
-            AssignTask(Data.Task);
-        }
-    }
-
-    private void UpdateSelf()
-    {
-        Data.InternalTick += Time.deltaTime;
-
-        var thoughts = new List<string>();
-        if (Data.InternalTick >= TimeManager.Instance.TickInterval)
-        {
-            Data.InternalTick = 0;
-
-            Data.Hunger += Random.value;
-            Data.Thirst += Random.value;
-            Data.Energy -= Random.value;
-
-            if (Data.Hunger > 40)
-            {
-                thoughts.Add("Jaassss ek kan gaan vir 'n boerie!");
-            }
-
-            if (Data.Energy < 30)
-            {
-                thoughts.Add("*Yawn..*");
-            }
-        }
-
-        if (thoughts.Any() && Random.value > 0.9)
-        {
-            ShowText(thoughts[Random.Range(0, thoughts.Count - 1)], 2f);
-        }
-
-        CarryItem();
-        UpdateFloatingText();
-
-        Animate();
-    }
-
-    private void UpdateFloatingText()
-    {
-        if (RemainingTextDuration > 0)
-        {
-            RemainingTextDuration -= Time.deltaTime;
-
-            if (RemainingTextDuration < 1f)
-            {
-                Text.color = new Color(Text.color.r, Text.color.g, Text.color.b, RemainingTextDuration);
-            }
-        }
-        else
-        {
-            Text.text = "";
-        }
-    }
-
-    private void CarryItem()
-    {
-        if (Data.CarriedItemId > 0)
-        {
-            var item = ItemController.Instance.ItemDataLookup[Data.CarriedItem];
-
-            item.transform.position = transform.position;
-            item.SpriteRenderer.sortingLayerName = "CarriedItem";
-        }
     }
 
     internal void GetSprite()
@@ -182,6 +78,17 @@ public class Creature : MonoBehaviour
 
     private void Animate(bool force = false)
     {
+        if (Data.Sleeping)
+        {
+            SpriteRenderer.sprite = FrontSprites[0];
+            SpriteRenderer.flipY = true;
+            return;
+        }
+        else
+        {
+            SpriteRenderer.flipY = false;
+        }
+
         Sprite[] sprites;
         switch (Data.MoveDirection)
         {
@@ -221,21 +128,125 @@ public class Creature : MonoBehaviour
             SpriteRenderer.sprite = sprites[frame];
         }
     }
+
+    private void CarryItem()
+    {
+        if (Data.CarriedItemId > 0)
+        {
+            var item = ItemController.Instance.ItemDataLookup[Data.CarriedItem];
+
+            item.transform.position = transform.position;
+            item.SpriteRenderer.sortingLayerName = "CarriedItem";
+        }
+    }
+
+    private void UpdateFloatingText()
+    {
+        if (RemainingTextDuration > 0)
+        {
+            RemainingTextDuration -= Time.deltaTime;
+
+            if (RemainingTextDuration < 1f)
+            {
+                Text.color = new Color(Text.color.r, Text.color.g, Text.color.b, RemainingTextDuration);
+            }
+        }
+        else
+        {
+            Text.text = "";
+        }
+    }
+
+    private void UpdateSelf()
+    {
+        Data.InternalTick += Time.deltaTime;
+
+        var thoughts = new List<string>();
+        if (Data.InternalTick >= TimeManager.Instance.TickInterval)
+        {
+            Data.InternalTick = 0;
+
+            if (!Data.Sleeping)
+            {
+                Data.Hunger += Random.value;
+                Data.Thirst += Random.value;
+                Data.Energy -= Random.value;
+
+                if (Data.Hunger > 40)
+                {
+                    thoughts.Add("Jaassss ek kan gaan vir 'n boerie!");
+                }
+
+                if (Data.Energy < 30)
+                {
+                    thoughts.Add("*Yawn..*");
+                }
+            }
+            else
+            {
+                Data.Hunger += Random.value / 2f;
+                Data.Thirst += Random.value / 2f;
+                Data.Energy += Random.value * 1.2f;
+            }
+        }
+
+        if (thoughts.Any() && Random.value > 0.9)
+        {
+            ShowText(thoughts[Random.Range(0, thoughts.Count - 1)], 2f);
+        }
+
+        CarryItem();
+        UpdateFloatingText();
+
+        Animate();
+    }
+
+    private void Work()
+    {
+        if (Data.Task == null)
+        {
+            var task = Taskmaster.Instance.GetTask(this);
+            AssignTask(task);
+
+            Data.Task = task;
+        }
+
+        try
+        {
+            if (!Data.Task.Done())
+            {
+                Data.Task.Update();
+            }
+            else
+            {
+                Taskmaster.Instance.TaskComplete(Data.Task);
+                Data.Task = null;
+            }
+        }
+        catch (CancelTaskException)
+        {
+            Taskmaster.Instance.TaskComplete(Data.Task);
+
+            if (Data.CarriedItemId > 0)
+            {
+                Data.CarriedItem.Reserved = false;
+                Data.CarriedItemId = 0;
+            }
+
+            Data.Task = Taskmaster.Instance.GetTask(this);
+            AssignTask(Data.Task);
+        }
+    }
 }
 
 [Serializable]
 public class CreatureData
 {
-    public int Id;
-
     public int CarriedItemId;
-
     public Coordinates Coordinates;
-
     public float Energy;
-
     public float Hunger;
-
+    public int Id;
     public Direction MoveDirection = Direction.S;
 
     public string Name;
@@ -247,6 +258,8 @@ public class CreatureData
     public float Thirst;
 
     internal float InternalTick;
+
+    public bool Sleeping;
 
     [JsonIgnore]
     public ItemData CarriedItem

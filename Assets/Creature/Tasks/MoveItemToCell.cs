@@ -11,7 +11,6 @@ public class MoveItemToCell : TaskBase
     public MoveItemToCell(string itemType, Coordinates coordinates, bool allowStockpiled, bool reserve)
     {
         Reserve = reserve;
-        SubTasks = new Queue<TaskBase>();
         SubTasks.Enqueue(new GetItemOfType(itemType, allowStockpiled));
         SubTasks.Enqueue(new Move(coordinates));
     }

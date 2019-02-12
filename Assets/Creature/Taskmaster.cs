@@ -66,6 +66,11 @@ public class Taskmaster : MonoBehaviour
             task = new Eat("Food");
             AddTask(task);
         }
+        else if (creature.Data.Energy < 15)
+        {
+            task = new Sleep();
+            AddTask(task);
+        }
         else
         {
             task = GetNextAvailableTask();
