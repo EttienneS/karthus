@@ -44,3 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c9319c38c3fa594db9dd4391edf4906, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BuildMode: 0
+  SelectedCell: {fileID: 0}
+  SelectedCreatures: []
+  selectSquareImage: {fileID: 0}
