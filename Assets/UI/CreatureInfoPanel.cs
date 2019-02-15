@@ -64,11 +64,11 @@ public class CreatureInfoPanel : MonoBehaviour
         }
     }
 
-    public void Show()
+    public void Show(Creature creature)
     {
         CellInfoPanel.Instance.Hide();
         Instance.gameObject.SetActive(true);
-        CurrentCreature = GameController.Instance.SelectedCreature;
+        CurrentCreature = creature;
     }
 
     public void Hide()

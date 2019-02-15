@@ -134,6 +134,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 341f96a8501264242a96b9625f19cf79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &1640372943 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 1925529793, guid: 21216dc22b576ec4785cf4c518463eaa,
+    type: 3}
+  m_PrefabInstance: {fileID: 6943260559078519373}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1910422787
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -201,6 +207,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: selectSquareImage
+      value: 
+      objectReference: {fileID: 1640372943}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8d3d47b53068341448ff13732aef998e, type: 3}
 --- !u!1001 &606839152187272788
@@ -1736,6 +1747,10 @@ PrefabInstance:
         type: 3}
       propertyPath: m_CellSize.y
       value: 75
+      objectReference: {fileID: 0}
+    - target: {fileID: 1925529793, guid: 21216dc22b576ec4785cf4c518463eaa, type: 3}
+      propertyPath: m_RootOrder
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 21216dc22b576ec4785cf4c518463eaa, type: 3}

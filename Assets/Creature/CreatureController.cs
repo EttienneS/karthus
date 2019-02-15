@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -16,9 +15,8 @@ public class CreatureController : MonoBehaviour
     [Range(1, 1000)]
     public int CreaturesToSpawn = 10;
 
-    internal Dictionary<CreatureData, Creature> CreatureLookup = new Dictionary<CreatureData, Creature>();
     internal Dictionary<int, CreatureData> CreatureIdLookup = new Dictionary<int, CreatureData>();
-
+    internal Dictionary<CreatureData, Creature> CreatureLookup = new Dictionary<CreatureData, Creature>();
     private static CreatureController _instance;
 
     public static CreatureController Instance
@@ -72,22 +70,6 @@ public class CreatureController : MonoBehaviour
         return creature;
     }
 
-    private void IndexCreature(Creature creature)
-    {
-        Creatures.Add(creature);
-        CreatureLookup.Add(creature.Data, creature);
-        CreatureIdLookup.Add(creature.Data.Id, creature.Data);
-
-        creature.name = $"{creature.Data.Name} ({creature.Data.Id})";
-    }
-
-    internal void DestroyCreature(Creature creature)
-    {
-        CreatureLookup.Remove(creature.Data);
-
-        Destroy(creature.gameObject);
-    }
-
     public void SpawnCreatures()
     {
         var firstCreature = SpawnCreature(MapGrid.Instance.GetRandomPathableCell());
@@ -109,6 +91,18 @@ public class CreatureController : MonoBehaviour
         }
     }
 
+    internal void DestroyCreature(Creature creature)
+    {
+        CreatureLookup.Remove(creature.Data);
+
+        Destroy(creature.gameObject);
+    }
+
+    internal Creature GetCreatureForCreatureData(CreatureData creatureData)
+    {
+        return CreatureLookup[creatureData];
+    }
+
     internal Creature LoadCreature(CreatureData savedCreature)
     {
         var creature = Instantiate(CreaturePrefab, transform, true);
@@ -120,8 +114,12 @@ public class CreatureController : MonoBehaviour
         return creature;
     }
 
-    internal Creature GetCreatureForCreatureData(CreatureData creatureData)
+    private void IndexCreature(Creature creature)
     {
-        return CreatureLookup[creatureData];
+        Creatures.Add(creature);
+        CreatureLookup.Add(creature.Data, creature);
+        CreatureIdLookup.Add(creature.Data.Id, creature.Data);
+
+        creature.name = $"{creature.Data.Name} ({creature.Data.Id})";
     }
 }

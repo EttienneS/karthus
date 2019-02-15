@@ -11,10 +11,10 @@ public class Creature : MonoBehaviour
     internal Sprite[] BackSprites;
     internal CreatureData Data = new CreatureData();
     internal Sprite[] FrontSprites;
+    internal SpriteRenderer Highlight;
     internal float RemainingTextDuration;
     internal Sprite[] SideSprites;
     internal SpriteRenderer SpriteRenderer;
-
     internal TextMeshPro Text;
 
     private float deltaTime = 0;
@@ -39,6 +39,9 @@ public class Creature : MonoBehaviour
     public void Awake()
     {
         Text = transform.Find("Text").GetComponent<TextMeshPro>();
+        Highlight = transform.Find("Highlight").GetComponent<SpriteRenderer>();
+
+        Highlight.gameObject.SetActive(false);
     }
 
     public void FaceRandomDirection()
@@ -62,6 +65,17 @@ public class Creature : MonoBehaviour
         Work();
 
         UpdateSelf();
+    }
+
+    internal void DisableHightlight()
+    {
+        Highlight.gameObject.SetActive(false);
+    }
+
+    internal void EnableHighlight(Color color )
+    {
+        Highlight.color = color;
+        Highlight.gameObject.SetActive(true);
     }
 
     internal void GetSprite()
@@ -251,6 +265,7 @@ public class CreatureData
 
     public string Name;
 
+    public bool Sleeping;
     public float Speed = 5f;
 
     public int SpriteId;
@@ -258,8 +273,6 @@ public class CreatureData
     public float Thirst;
 
     internal float InternalTick;
-
-    public bool Sleeping;
 
     [JsonIgnore]
     public ItemData CarriedItem
