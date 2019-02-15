@@ -4,9 +4,10 @@ using UnityEngine.UI;
 
 public class OrderSelectionController : MonoBehaviour
 {
-    public OrderButton BuildButton;
     public OrderButton OrderButtonPrefab;
-    public OrderButton StockpileButton;
+    internal OrderButton TaskButton;
+    internal OrderButton BuildButton;
+    internal OrderButton StockpileButton;
     private static OrderSelectionController _instance;
 
     public delegate void CellClickedDelegate(List<Cell> cell);
@@ -41,7 +42,6 @@ public class OrderSelectionController : MonoBehaviour
                     Taskmaster.Instance.AddTask(new Build(blueprint.Data, cell.Data.Coordinates));
                 }
             }
-
         };
     }
 
@@ -80,14 +80,45 @@ public class OrderSelectionController : MonoBehaviour
         }
     }
 
-    private static void EnableAndClear()
+
+    public void DesignateTypeClicked()
     {
-        OrderTrayController.Instance.gameObject.SetActive(true);
-        foreach (Transform child in OrderTrayController.Instance.transform)
+        if (OrderTrayController.Instance.gameObject.activeInHierarchy)
         {
-            Destroy(child.gameObject);
+            DisableAndReset();
+            BuildButton.Text = "Designate";
+        }
+        else
+        {
+            EnableAndClear();
+
+            var cutButton = Instantiate(OrderButtonPrefab, OrderTrayController.Instance.transform);
+            cutButton.Button.onClick.AddListener(CutTreeClicked);
+            cutButton.name = "Cut Tree";
+            cutButton.Text = cutButton.name;
+            cutButton.Button.image.sprite = SpriteStore.Instance.GetSpriteByName("axe");
         }
     }
+
+
+    private void CutTreeClicked()
+    {
+        BuildButton.Text = "Cut Tree";
+        GameController.Instance.SelectionPreference = SelectionPreference.CellOnly;
+        CellClickOrder = cells =>
+        {
+            foreach (var cell in cells)
+            {
+                if (cell.Data.Structure != null)
+                {
+                    var structure = cell.Data.Structure;
+                    structure.LinkedGameObject.StatusSprite.sprite = SpriteStore.Instance.GetSpriteByName("axe");
+                }
+            }
+            GameController.Instance.DeselectCell();
+        };
+    }
+
 
     public void DisableAndReset()
     {
@@ -97,6 +128,14 @@ public class OrderSelectionController : MonoBehaviour
         CellClickOrder = null;
     }
 
+    private static void EnableAndClear()
+    {
+        OrderTrayController.Instance.gameObject.SetActive(true);
+        foreach (Transform child in OrderTrayController.Instance.transform)
+        {
+            Destroy(child.gameObject);
+        }
+    }
     private void RemoveStructureClicked()
     {
         BuildButton.Text = "Remove Structure";
@@ -138,6 +177,12 @@ public class OrderSelectionController : MonoBehaviour
         StockpileButton.Button.onClick.AddListener(StockpileTypeClicked);
         StockpileButton.Text = "Place Stockpile";
         StockpileButton.Button.image.sprite = SpriteStore.Instance.GetSpriteByName("box");
+
+
+        TaskButton = Instantiate(OrderButtonPrefab, transform);
+        TaskButton.Button.onClick.AddListener(DesignateTypeClicked);
+        TaskButton.Text = "Designate";
+        TaskButton.Button.image.sprite = SpriteStore.Instance.GetSpriteByName("designate");
     }
 
     private void StockpileClicked(string itemTypeName)

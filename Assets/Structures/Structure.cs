@@ -7,6 +7,7 @@ public class Structure : MonoBehaviour
 {
     internal StructureData Data = new StructureData();
     internal SpriteRenderer SpriteRenderer;
+    internal SpriteRenderer StatusSprite;
 
     public static void SetTiledMode(SpriteRenderer spriteRenderer, bool tiled)
     {
@@ -36,6 +37,8 @@ public class Structure : MonoBehaviour
     private void Awake()
     {
         SpriteRenderer = GetComponent<SpriteRenderer>();
+
+        StatusSprite = transform.Find("Status").GetComponent<SpriteRenderer>();
     }
 
     private void Update()

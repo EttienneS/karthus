@@ -1053,6 +1053,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1925529793, guid: 21216dc22b576ec4785cf4c518463eaa, type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1925529793, guid: 21216dc22b576ec4785cf4c518463eaa, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1925529793, guid: 21216dc22b576ec4785cf4c518463eaa, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 6943260560187983257, guid: 21216dc22b576ec4785cf4c518463eaa,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1748,10 +1760,6 @@ PrefabInstance:
       propertyPath: m_CellSize.y
       value: 75
       objectReference: {fileID: 0}
-    - target: {fileID: 1925529793, guid: 21216dc22b576ec4785cf4c518463eaa, type: 3}
-      propertyPath: m_RootOrder
-      value: 8
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 21216dc22b576ec4785cf4c518463eaa, type: 3}
 --- !u!114 &6943260559078519374 stripped
@@ -1782,7 +1790,7 @@ PrefabInstance:
     - target: {fileID: 7308512517502387629, guid: 5223a731d594e30499746cb45660fed3,
         type: 3}
       propertyPath: ItemSprites.Array.size
-      value: 11
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 7308512517502387629, guid: 5223a731d594e30499746cb45660fed3,
         type: 3}
@@ -1807,6 +1815,18 @@ PrefabInstance:
       propertyPath: ItemSprites.Array.data[10]
       value: 
       objectReference: {fileID: 21300000, guid: 546f8625d950f054686ce2d1bc13846f,
+        type: 3}
+    - target: {fileID: 7308512517502387629, guid: 5223a731d594e30499746cb45660fed3,
+        type: 3}
+      propertyPath: ItemSprites.Array.data[11]
+      value: 
+      objectReference: {fileID: 21300000, guid: 0c1b27d25c5763943bea2b3ca28bf484,
+        type: 3}
+    - target: {fileID: 7308512517502387629, guid: 5223a731d594e30499746cb45660fed3,
+        type: 3}
+      propertyPath: ItemSprites.Array.data[12]
+      value: 
+      objectReference: {fileID: 21300000, guid: 12a16170e4f1c1947a95e256f901443d,
         type: 3}
     - target: {fileID: 7308512517502387628, guid: 5223a731d594e30499746cb45660fed3,
         type: 3}
