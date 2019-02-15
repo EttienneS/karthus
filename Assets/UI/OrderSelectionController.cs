@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class OrderSelectionController : MonoBehaviour
@@ -8,7 +9,7 @@ public class OrderSelectionController : MonoBehaviour
     public OrderButton StockpileButton;
     private static OrderSelectionController _instance;
 
-    public delegate void CellClickedDelegate(Cell cell);
+    public delegate void CellClickedDelegate(List<Cell> cell);
 
     public static OrderSelectionController Instance
     {
@@ -28,15 +29,19 @@ public class OrderSelectionController : MonoBehaviour
     public void BuildClicked(string structureName)
     {
         BuildButton.Text = "Build " + structureName;
-
-        CellClickOrder = cell =>
+        GameController.Instance.SelectionPreference = SelectionPreference.CellOnly;
+        CellClickOrder = cells =>
         {
-            if (cell.Data.Structure == null)
+            foreach (var cell in cells)
             {
-                var blueprint = StructureController.Instance.GetStructureBluePrint(structureName);
-                cell.AddContent(blueprint.gameObject);
-                Taskmaster.Instance.AddTask(new Build(blueprint.Data, cell.Data.Coordinates));
+                if (cell.Data.Structure == null)
+                {
+                    var blueprint = StructureController.Instance.GetStructureBluePrint(structureName);
+                    cell.AddContent(blueprint.gameObject);
+                    Taskmaster.Instance.AddTask(new Build(blueprint.Data, cell.Data.Coordinates));
+                }
             }
+
         };
     }
 
@@ -84,8 +89,10 @@ public class OrderSelectionController : MonoBehaviour
         }
     }
 
-    private void DisableAndReset()
+    public void DisableAndReset()
     {
+        GameController.Instance.SelectionPreference = SelectionPreference.CreatureOnly;
+
         OrderTrayController.Instance.gameObject.SetActive(false);
         CellClickOrder = null;
     }
@@ -93,21 +100,24 @@ public class OrderSelectionController : MonoBehaviour
     private void RemoveStructureClicked()
     {
         BuildButton.Text = "Remove Structure";
-
-        CellClickOrder = cell =>
+        GameController.Instance.SelectionPreference = SelectionPreference.CellOnly;
+        CellClickOrder = cells =>
         {
-            if (cell.Data.Structure != null)
+            foreach (var cell in cells)
             {
-                var structure = cell.Data.Structure;
+                if (cell.Data.Structure != null)
+                {
+                    var structure = cell.Data.Structure;
 
-                if (structure.IsBluePrint)
-                {
-                    StructureController.Instance.DestroyStructure(structure);
-                }
-                else
-                {
-                    Taskmaster.Instance.AddTask(new RemoveStructure(structure, cell.Data.Coordinates));
-                    structure.LinkedGameObject.SpriteRenderer.color = Color.red;
+                    if (structure.IsBluePrint)
+                    {
+                        StructureController.Instance.DestroyStructure(structure);
+                    }
+                    else
+                    {
+                        Taskmaster.Instance.AddTask(new RemoveStructure(structure, cell.Data.Coordinates));
+                        structure.LinkedGameObject.SpriteRenderer.color = Color.red;
+                    }
                 }
             }
         };
@@ -134,18 +144,22 @@ public class OrderSelectionController : MonoBehaviour
     {
         StockpileButton.Text = $"Place {itemTypeName} Stockpile";
 
-        CellClickOrder = cell =>
+        CellClickOrder = cells =>
         {
-            if (cell.Data.Stockpile == null && cell.TravelCost > 0)
+            foreach (var cell in cells)
             {
-                var stockpile = StockpileController.Instance.AddStockpile(itemTypeName);
-                cell.AddContent(stockpile.gameObject);
+                if (cell.Data.Stockpile == null && cell.TravelCost > 0)
+                {
+                    var stockpile = StockpileController.Instance.AddStockpile(itemTypeName);
+                    cell.AddContent(stockpile.gameObject);
+                }
             }
         };
     }
 
     private void StockpileTypeClicked()
     {
+        GameController.Instance.SelectionPreference = SelectionPreference.CellOnly;
         if (OrderTrayController.Instance.gameObject.activeInHierarchy)
         {
             DisableAndReset();
