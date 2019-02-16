@@ -35,7 +35,7 @@ public class StructureController : MonoBehaviour
 
         IndexStructure(structure);
 
-        structure.Data.ToggleBluePrintState(false);
+        structure.Data.SetBlueprintState(false);
 
         return structure;
     }
@@ -43,7 +43,7 @@ public class StructureController : MonoBehaviour
     internal Structure GetStructureBluePrint(string name)
     {
         var structure = GetStructure(name);
-        structure.Data.ToggleBluePrintState(true);
+        structure.Data.SetBlueprintState(true);
         return structure;
     }
 
@@ -80,7 +80,7 @@ public class StructureController : MonoBehaviour
         IndexStructure(structure);
 
         structure.LoadSprite();
-        structure.Data.ToggleBluePrintState(structure.Data.IsBluePrint);
+        structure.Data.SetBlueprintState(structure.Data.IsBluePrint);
 
         return structure;
     }

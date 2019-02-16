@@ -38,7 +38,7 @@ public class Build : TaskBase
             {
                 ItemController.Instance.DestroyItem(item);
             }
-            Structure.ToggleBluePrintState();
+            Structure.SetBlueprintState(false);
             return true;
         }
         return false;

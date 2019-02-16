@@ -91,16 +91,16 @@ public class StructureData
         }
     }
 
-    public void ToggleBluePrintState(bool force = false)
+    public void SetBlueprintState(bool blueprint)
     {
-        if (IsBluePrint || force)
+        if (blueprint)
         {
             LinkedGameObject.SpriteRenderer.color = new Color(0.3f, 1f, 1f, 0.4f);
             IsBluePrint = true;
         }
         else
         {
-            LinkedGameObject.SpriteRenderer.color = Color.white;
+            LinkedGameObject.SpriteRenderer.color = new Color(0.6f, 0.6f, 0.6f);
             IsBluePrint = false;
         }
     }
