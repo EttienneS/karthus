@@ -59,6 +59,8 @@ public class OrderSelectionController : MonoBehaviour
 
             foreach (var structureData in StructureController.Instance.StructureDataReference.Values)
             {
+                if (!structureData.Buildable) continue;
+
                 var button = Instantiate(OrderButtonPrefab, OrderTrayController.Instance.transform);
                 button.Button.onClick.AddListener(() => BuildClicked(structureData.Name));
                 button.name = structureData.Name;
@@ -86,7 +88,7 @@ public class OrderSelectionController : MonoBehaviour
         if (OrderTrayController.Instance.gameObject.activeInHierarchy)
         {
             DisableAndReset();
-            BuildButton.Text = "Designate";
+            TaskButton.Text = "Designate";
         }
         else
         {

@@ -1,0 +1,8 @@
+{
+  "Name": "Bush",
+  "SpriteName": "Bush2",
+  "Tiled": "False",
+  "TravelCost": "3",
+  "StructureType": "Bush",
+  "Buildable":  "False"
+}

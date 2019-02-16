@@ -557,7 +557,7 @@ PrefabInstance:
     - target: {fileID: 667879368938610748, guid: 50c5056d9f4c1364194358eaa321df8e,
         type: 3}
       propertyPath: StructureJson.Array.size
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 667879368938610748, guid: 50c5056d9f4c1364194358eaa321df8e,
         type: 3}
@@ -568,7 +568,7 @@ PrefabInstance:
         type: 3}
       propertyPath: StructureJson.Array.data[4]
       value: 
-      objectReference: {fileID: 4900000, guid: 7aa108a3413c6cb469e4c6a88541d053, type: 3}
+      objectReference: {fileID: 4900000, guid: 9f0bfa11fb1fe3941b527f6836321244, type: 3}
     - target: {fileID: 667879368938610748, guid: 50c5056d9f4c1364194358eaa321df8e,
         type: 3}
       propertyPath: ItemJson.Array.data[3]
@@ -1790,7 +1790,7 @@ PrefabInstance:
     - target: {fileID: 7308512517502387629, guid: 5223a731d594e30499746cb45660fed3,
         type: 3}
       propertyPath: ItemSprites.Array.size
-      value: 13
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 7308512517502387629, guid: 5223a731d594e30499746cb45660fed3,
         type: 3}
@@ -1827,6 +1827,12 @@ PrefabInstance:
       propertyPath: ItemSprites.Array.data[12]
       value: 
       objectReference: {fileID: 21300000, guid: 12a16170e4f1c1947a95e256f901443d,
+        type: 3}
+    - target: {fileID: 7308512517502387629, guid: 5223a731d594e30499746cb45660fed3,
+        type: 3}
+      propertyPath: ItemSprites.Array.data[13]
+      value: 
+      objectReference: {fileID: 21300000, guid: 8943dc405617e3e4080b1715c862f8e7,
         type: 3}
     - target: {fileID: 7308512517502387628, guid: 5223a731d594e30499746cb45660fed3,
         type: 3}

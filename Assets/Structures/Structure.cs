@@ -59,6 +59,7 @@ public class StructureData
 
     public int Id;
     public bool IsBluePrint;
+    public bool Buildable;
     public string Name;
 
     public List<string> RequiredItemTypes;
