@@ -116,6 +116,7 @@ public class CreatureController : MonoBehaviour
 
     private void IndexCreature(Creature creature)
     {
+        creature.SpriteRenderer.sortingOrder = creature.Data.Id;
         Creatures.Add(creature);
         CreatureLookup.Add(creature.Data, creature);
         CreatureIdLookup.Add(creature.Data.Id, creature.Data);

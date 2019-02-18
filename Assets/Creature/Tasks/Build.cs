@@ -19,7 +19,7 @@ public class Build : TaskBase
         Coordinates = coordinates;
 
 
-        foreach (var itemType in structure.RequiredItemTypes)
+        foreach (var itemType in structure.Require)
         {
             SubTasks.Enqueue(new MoveItemToCell(itemType, Coordinates, true, true));
         }

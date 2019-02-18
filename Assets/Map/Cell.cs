@@ -13,6 +13,7 @@ public class Cell : MonoBehaviour
 
     private float _lastUpdate;
 
+    private int SortCounter = 0;
     public SpriteRenderer Border { get; private set; }
 
     public CellType CellType
@@ -98,6 +99,9 @@ public class Cell : MonoBehaviour
 
             Data.ContainedItems.Add(item.Data);
             item.Cell = this;
+
+            SortCounter++;
+            item.SpriteRenderer.sortingOrder = SortCounter;
         }
         else if (structure != null)
         {

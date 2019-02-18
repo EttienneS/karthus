@@ -2,7 +2,7 @@
 	"Name":"Wood Tile",
 	"SpriteName":"WoodTile",
 	"Tiled":"True",
-	"RequiredItemTypes":["Wood", "Wood"],
+	"Require":["Wood", "Wood"],
 	"TravelCost": "0.5",
 	"StructureType": "Floor",
 	"Scatter": "False",

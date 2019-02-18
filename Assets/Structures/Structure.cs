@@ -63,7 +63,8 @@ public class StructureData
     public bool Scatter;
     public string Name;
 
-    public List<string> RequiredItemTypes;
+    public List<string> Require;
+    public List<string> Yield;
 
     public string SpriteName;
 
@@ -87,9 +88,9 @@ public class StructureData
 
     public void AddItem(ItemData item)
     {
-        if (RequiredItemTypes.Contains(item.ItemType))
+        if (Require.Contains(item.ItemType))
         {
-            RequiredItemTypes.Remove(item.ItemType);
+            Require.Remove(item.ItemType);
         }
     }
 

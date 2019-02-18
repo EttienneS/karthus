@@ -2,7 +2,7 @@
   "Name": "Stone Tile",
   "SpriteName": "StoneTile",
   "Tiled": "True",
-  "RequiredItemTypes": [ "Rock", "Rock" ],
+  "Require": [ "Rock", "Rock" ],
   "TravelCost": "0.5",
   "StructureType": "Floor",
   "Scatter": "False",
