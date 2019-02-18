@@ -78,13 +78,14 @@ public class Cell : MonoBehaviour
         }
     }
 
-    public void AddContent(GameObject gameObject, bool scatter = false)
+    public void AddContent(GameObject gameObject)
     {
         var item = gameObject.GetComponent<Item>();
         var structure = gameObject.GetComponent<Structure>();
         var stockpile = gameObject.GetComponent<Stockpile>();
 
         var scatterIntensity = 0.3f;
+        var scatter = false;
         if (item != null)
         {
             if (item.Cell != null)
@@ -96,6 +97,8 @@ public class Cell : MonoBehaviour
             {
                 Data.Stockpile.AddItem(item.Data);
             }
+
+            scatter = true;
 
             Data.ContainedItems.Add(item.Data);
             item.Cell = this;

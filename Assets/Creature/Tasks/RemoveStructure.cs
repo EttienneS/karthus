@@ -24,7 +24,7 @@ public class RemoveStructure : TaskBase
         {
             foreach (var itemName in StructureController.Instance.StructureDataReference[Structure.Name].Require)
             {
-                MapGrid.Instance.GetCellAtCoordinate(Coordinates).AddContent(ItemController.Instance.GetItem(itemName).gameObject, true);
+                MapGrid.Instance.GetCellAtCoordinate(Coordinates).AddContent(ItemController.Instance.GetItem(itemName).gameObject);
             }
 
             StructureController.Instance.DestroyStructure(Structure);

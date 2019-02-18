@@ -6,5 +6,5 @@
   "StructureType": "Bush",
   "Scatter": "True",
   "Buildable":  "False",
-	"Yield":["1-3:Food"]
+	"Yield":["1-3:Apple"]
 }

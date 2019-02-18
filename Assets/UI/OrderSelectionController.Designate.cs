@@ -21,40 +21,22 @@
         {
             EnableAndClear();
 
-            CreateOrderButton(CutText, CutTreeClicked, CutIcon);
-            CreateOrderButton(HarvestText, HarvestClicked, HarvestIcon);
+            CreateOrderButton(CutText, () => HarvestClicked("Tree"), CutIcon);
+            CreateOrderButton(HarvestText, () => HarvestClicked("Bush"), HarvestIcon);
         }
     }
 
-    private void HarvestClicked()
+    private void HarvestClicked(string type)
     {
-        BuildButton.Text = CutText;
         GameController.Instance.SelectionPreference = SelectionPreference.CellOnly;
         CellClickOrder = cells =>
         {
             foreach (var cell in cells)
             {
-                if (cell.Data.Structure != null && cell.Data.Structure.StructureType == "Bush")
+                if (cell.Data.Structure != null && cell.Data.Structure.StructureType == type)
                 {
                     cell.Data.Structure.LinkedGameObject.StatusSprite.sprite = SpriteStore.Instance.GetSpriteByName(HarvestIcon);
-                }
-            }
-            GameController.Instance.DeselectCell();
-        };
-    }
-
-    private void CutTreeClicked()
-    {
-        BuildButton.Text = CutText;
-        GameController.Instance.SelectionPreference = SelectionPreference.CellOnly;
-        CellClickOrder = cells =>
-        {
-            foreach (var cell in cells)
-            {
-                if (cell.Data.Structure != null && cell.Data.Structure.StructureType == "Tree")
-                {
-                    var structure = cell.Data.Structure;
-                    structure.LinkedGameObject.StatusSprite.sprite = SpriteStore.Instance.GetSpriteByName(CutIcon);
+                    Taskmaster.Instance.AddTask(new Harvest(cell.Data.Structure));
                 }
             }
             GameController.Instance.DeselectCell();

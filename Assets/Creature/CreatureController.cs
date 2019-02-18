@@ -81,8 +81,8 @@ public class CreatureController : MonoBehaviour
         var spawnCount = spawns.Count;
         for (int i = 0; i < spawnCount * 2; i++)
         {
-            spawns[Random.Range(0, spawnCount)].AddContent(ItemController.Instance.GetItem("Apple").gameObject, true);
-            spawns[Random.Range(0, spawnCount)].AddContent(ItemController.Instance.GetItem("Wood").gameObject, true);
+            spawns[Random.Range(0, spawnCount)].AddContent(ItemController.Instance.GetItem("Apple").gameObject);
+            spawns[Random.Range(0, spawnCount)].AddContent(ItemController.Instance.GetItem("Wood").gameObject);
         }
 
         for (int i = 0; i < CreaturesToSpawn - 1; i++)

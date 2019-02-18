@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 [Serializable]
 public class Build : TaskBase
@@ -18,15 +16,13 @@ public class Build : TaskBase
         Structure = structure;
         Coordinates = coordinates;
 
-
         foreach (var itemType in structure.Require)
         {
             SubTasks.Enqueue(new MoveItemToCell(itemType, Coordinates, true, true));
         }
 
         SubTasks.Enqueue(new Wait(3f, "Building"));
-        SubTasks.Enqueue(new Move(MapGrid.Instance.GetCellAtCoordinate(coordinates).Neighbors
-                                    .First(c => c.TravelCost != 0).Data.Coordinates));
+        SubTasks.Enqueue(new Move(MapGrid.Instance.GetPathableNeighbour(Coordinates)));
     }
 
     public override bool Done()

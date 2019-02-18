@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -89,11 +89,6 @@ public class MapGrid : MonoBehaviour
         return cells;
     }
 
-    internal void ClearCache()
-    {
-        _cellLookup = null;
-    }
-
     public Cell GetRandomCell()
     {
         return CellLookup[((int)(Random.value * (MapSize - 1)), (int)(Random.value * (MapSize - 1)))];
@@ -171,6 +166,11 @@ public class MapGrid : MonoBehaviour
         }
     }
 
+    internal void ClearCache()
+    {
+        _cellLookup = null;
+    }
+
     internal void DestroyCell(Cell cell)
     {
         foreach (var item in cell.Data.ContainedItems.ToArray())
@@ -233,6 +233,12 @@ public class MapGrid : MonoBehaviour
         return direction;
     }
 
+    internal Coordinates GetPathableNeighbour(Coordinates coordinates)
+    {
+        return Instance.GetCellAtCoordinate(coordinates).Neighbors
+                                       .First(c => c.TravelCost != 0).Data.Coordinates;
+    }
+
     internal void LinkNeighbours()
     {
         for (var y = 0; y < MapSize; y++)
@@ -262,8 +268,6 @@ public class MapGrid : MonoBehaviour
                 }
             }
         }
-
-        
     }
 
     internal void ResetSearchPriorities()
