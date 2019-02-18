@@ -53,7 +53,7 @@ public class SpriteStore : MonoBehaviour
         }
         catch
         {
-            throw new Exception($"No sprite found of name: {spriteName}");
+            throw new Exception($"No sprite found with name: {spriteName}");
         }
     }
 

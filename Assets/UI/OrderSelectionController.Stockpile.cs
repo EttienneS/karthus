@@ -36,11 +36,9 @@ public partial class OrderSelectionController //.Stockpile
 
             foreach (var item in ItemController.Instance.AllItemTypes.Values)
             {
-                var button = Instantiate(OrderButtonPrefab, OrderTrayController.Instance.transform);
-                button.Button.onClick.AddListener(() => StockpileClicked(item.Data.ItemType));
-                button.name = $"Place {item.Data.ItemType} Stockpile";
-                button.Button.image.sprite = SpriteStore.Instance.GetSpriteByName(item.Data.SpriteName);
+                var button = CreateOrderButton(CutText, () => StockpileClicked(item.Data.ItemType), item.Data.SpriteName);
                 button.Button.image.type = Image.Type.Tiled;
+                button.name = $"Place {item.Data.ItemType} Stockpile";
                 button.Text = button.name;
             }
         }

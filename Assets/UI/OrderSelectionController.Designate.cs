@@ -1,6 +1,13 @@
 ﻿public partial class OrderSelectionController //.Designate
 {
-    public const string DefaultDesignateText = "Designate";
+    internal const string DefaultDesignateText = "Designate";
+
+    internal const string CutText = "Cut Tree";
+    internal const string CutIcon = "axe";
+
+    internal const string HarvestText = "Harvest Plant";
+    internal const string HarvestIcon = "wheat";
+
     internal OrderButton TaskButton;
 
     public void DesignateTypeClicked()
@@ -8,32 +15,46 @@
         if (OrderTrayController.Instance.gameObject.activeInHierarchy)
         {
             DisableAndReset();
-            TaskButton.Text = "Designate";
+            TaskButton.Text = DefaultDesignateText;
         }
         else
         {
             EnableAndClear();
 
-            var cutButton = Instantiate(OrderButtonPrefab, OrderTrayController.Instance.transform);
-            cutButton.Button.onClick.AddListener(CutTreeClicked);
-            cutButton.name = "Cut Tree";
-            cutButton.Text = cutButton.name;
-            cutButton.Button.image.sprite = SpriteStore.Instance.GetSpriteByName("axe");
+            CreateOrderButton(CutText, CutTreeClicked, CutIcon);
+            CreateOrderButton(HarvestText, HarvestClicked, HarvestIcon);
         }
     }
 
-    private void CutTreeClicked()
+    private void HarvestClicked()
     {
-        BuildButton.Text = "Cut Tree";
+        BuildButton.Text = CutText;
         GameController.Instance.SelectionPreference = SelectionPreference.CellOnly;
         CellClickOrder = cells =>
         {
             foreach (var cell in cells)
             {
-                if (cell.Data.Structure != null)
+                if (cell.Data.Structure != null && cell.Data.Structure.StructureType == "Bush")
+                {
+                    cell.Data.Structure.LinkedGameObject.StatusSprite.sprite = SpriteStore.Instance.GetSpriteByName(HarvestIcon);
+                }
+            }
+            GameController.Instance.DeselectCell();
+        };
+    }
+
+    private void CutTreeClicked()
+    {
+        BuildButton.Text = CutText;
+        GameController.Instance.SelectionPreference = SelectionPreference.CellOnly;
+        CellClickOrder = cells =>
+        {
+            foreach (var cell in cells)
+            {
+                if (cell.Data.Structure != null && cell.Data.Structure.StructureType == "Tree")
                 {
                     var structure = cell.Data.Structure;
-                    structure.LinkedGameObject.StatusSprite.sprite = SpriteStore.Instance.GetSpriteByName("axe");
+                    structure.LinkedGameObject.StatusSprite.sprite = SpriteStore.Instance.GetSpriteByName(CutIcon);
                 }
             }
             GameController.Instance.DeselectCell();

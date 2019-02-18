@@ -41,14 +41,17 @@ public partial class OrderSelectionController : MonoBehaviour
         }
     }
 
-    private void CreateOrderTypeButton(string text, UnityAction action, string sprite)
+    private OrderButton CreateOrderButton(string text, UnityAction action, string sprite, bool isSubButton = true)
     {
         // create a top level button for an order type
-        BuildButton = Instantiate(OrderButtonPrefab, transform);
-        BuildButton.Button.onClick.AddListener(action);
-        BuildButton.Text = text;
-        BuildButton.Button.image.sprite = SpriteStore.Instance.GetSpriteByName(sprite);
+        var button = Instantiate(OrderButtonPrefab, isSubButton ? OrderTrayController.Instance.transform : transform);
+        button.Button.onClick.AddListener(action);
+        button.Text = text;
+        button.Button.image.sprite = SpriteStore.Instance.GetSpriteByName(sprite);
+
+        return button;
     }
+
 
     private void Start()
     {
@@ -56,8 +59,8 @@ public partial class OrderSelectionController : MonoBehaviour
         CreatureInfoPanel.Instance.gameObject.SetActive(false);
         CellInfoPanel.Instance.gameObject.SetActive(false);
 
-        CreateOrderTypeButton(DefaultBuildText, BuildTypeClicked, "hammer");
-        CreateOrderTypeButton(DefaultStockpileText, StockpileTypeClicked, "box");
-        CreateOrderTypeButton(DefaultDesignateText, DesignateTypeClicked, "designate");
+        BuildButton = CreateOrderButton(DefaultBuildText, BuildTypeClicked, "hammer", false);
+        StockpileButton = CreateOrderButton(DefaultStockpileText, StockpileTypeClicked, "box", false);
+        TaskButton = CreateOrderButton(DefaultDesignateText, DesignateTypeClicked, "designate", false);
     }
 }

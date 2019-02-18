@@ -41,24 +41,14 @@ public partial class OrderSelectionController //.Structure
             {
                 if (!structureData.Buildable) continue;
 
-                var button = Instantiate(OrderButtonPrefab, OrderTrayController.Instance.transform);
-                button.Button.onClick.AddListener(() => BuildClicked(structureData.Name));
-                button.name = structureData.Name;
-                button.Button.image.sprite = StructureController.Instance.GetSpriteForStructure(structureData.Name);
-
+                var button = CreateOrderButton(structureData.Name, () => BuildClicked(structureData.Name), structureData.SpriteName);
                 if (structureData.Tiled)
                 {
                     button.Button.image.type = Image.Type.Tiled;
                 }
-
-                button.Text = "Build " + structureData.Name;
             }
 
-            var removeButton = Instantiate(OrderButtonPrefab, OrderTrayController.Instance.transform);
-            removeButton.Button.onClick.AddListener(RemoveStructureClicked);
-            removeButton.name = DefaultRemoveText;
-            removeButton.Text = removeButton.name;
-            removeButton.Button.image.sprite = SpriteStore.Instance.GetSpriteByName("cancel");
+            CreateOrderButton(DefaultRemoveText, RemoveStructureClicked, "cancel");
         }
     }
 

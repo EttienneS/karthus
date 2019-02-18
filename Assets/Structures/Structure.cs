@@ -68,6 +68,8 @@ public class StructureData
 
     public string SpriteName;
 
+    public string StructureType;
+
     public bool Tiled;
 
     public float TravelCost;
