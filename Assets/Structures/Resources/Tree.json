@@ -3,5 +3,8 @@
 	"SpriteName":"TreeStump",
 	"Tiled":"False",
 	"TravelCost": "-1",
-	"StructureType": "Tree"
+	"StructureType": "Tree",
+	"Scatter": "True",
+	"Buildable":  "False",
+	"Yield":["10:Wood"]
 }

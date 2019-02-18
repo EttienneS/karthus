@@ -1,0 +1,10 @@
+{
+  "Name": "Bush",
+  "SpriteName": "Bush2",
+  "Tiled": "False",
+  "TravelCost": "3",
+  "StructureType": "Bush",
+  "Scatter": "True",
+  "Buildable":  "False",
+	"Yield":["1-3:Apple"]
+}

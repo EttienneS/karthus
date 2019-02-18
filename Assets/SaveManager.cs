@@ -87,7 +87,7 @@ public class SaveManager : MonoBehaviour
 
             foreach (var savedItem in savedItems)
             {
-                newCell.AddContent(ItemController.Instance.LoadItem(savedItem).gameObject, true);
+                newCell.AddContent(ItemController.Instance.LoadItem(savedItem).gameObject);
             }
 
 

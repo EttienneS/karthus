@@ -311,7 +311,7 @@ public class CreatureData
             var item = CarriedItem;
             item.Reserved = false;
             item.LinkedGameObject.SpriteRenderer.sortingLayerName = "Item";
-            CurrentCell.LinkedGameObject.AddContent(item.LinkedGameObject.gameObject, true);
+            CurrentCell.LinkedGameObject.AddContent(item.LinkedGameObject.gameObject);
 
             CarriedItemId = 0;
             return item;

@@ -24,11 +24,11 @@ public class TimeManager : MonoBehaviour
 
     public TimeData Data = new TimeData()
     {
-        Hour = 11,
+        Hour = 6,
         Minute = 0
     };
 
-    internal float TickInterval = 0.2f;
+    internal float TickInterval = 1f;
     private static TimeManager _instance;
     private TimeStep _timeStep;
 

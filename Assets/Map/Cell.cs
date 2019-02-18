@@ -13,6 +13,7 @@ public class Cell : MonoBehaviour
 
     private float _lastUpdate;
 
+    private int SortCounter = 0;
     public SpriteRenderer Border { get; private set; }
 
     public CellType CellType
@@ -77,12 +78,14 @@ public class Cell : MonoBehaviour
         }
     }
 
-    public void AddContent(GameObject gameObject, bool scatter = false)
+    public void AddContent(GameObject gameObject)
     {
         var item = gameObject.GetComponent<Item>();
         var structure = gameObject.GetComponent<Structure>();
         var stockpile = gameObject.GetComponent<Stockpile>();
 
+        var scatterIntensity = 0.3f;
+        var scatter = false;
         if (item != null)
         {
             if (item.Cell != null)
@@ -95,13 +98,23 @@ public class Cell : MonoBehaviour
                 Data.Stockpile.AddItem(item.Data);
             }
 
+            scatter = true;
+
             Data.ContainedItems.Add(item.Data);
             item.Cell = this;
+
+            SortCounter++;
+            item.SpriteRenderer.sortingOrder = SortCounter;
         }
         else if (structure != null)
         {
             structure.Data.Coordinates = Data.Coordinates;
             Data.Structure = structure.Data;
+            if (structure.Data.Scatter)
+            {
+                scatter = true;
+                scatterIntensity = 0.1f;
+            }
         }
         else if (stockpile != null)
         {
@@ -115,7 +128,7 @@ public class Cell : MonoBehaviour
         if (scatter)
         {
             gameObject.transform.Rotate(0, 0, Random.Range(-45f, 45f));
-            gameObject.transform.position += new Vector3(Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f), 0);
+            gameObject.transform.position += new Vector3(Random.Range(-scatterIntensity, scatterIntensity), Random.Range(-scatterIntensity, scatterIntensity), 0);
         }
     }
 

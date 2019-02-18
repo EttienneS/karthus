@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.Events;
 
-public class OrderSelectionController : MonoBehaviour
+public partial class OrderSelectionController : MonoBehaviour
 {
-    public OrderButton BuildButton;
     public OrderButton OrderButtonPrefab;
-    public OrderButton StockpileButton;
     private static OrderSelectionController _instance;
 
     public delegate void CellClickedDelegate(List<Cell> cell);
@@ -26,58 +24,12 @@ public class OrderSelectionController : MonoBehaviour
 
     public CellClickedDelegate CellClickOrder { get; set; }
 
-    public void BuildClicked(string structureName)
+    public void DisableAndReset()
     {
-        BuildButton.Text = "Build " + structureName;
-        GameController.Instance.SelectionPreference = SelectionPreference.CellOnly;
-        CellClickOrder = cells =>
-        {
-            foreach (var cell in cells)
-            {
-                if (cell.Data.Structure == null)
-                {
-                    var blueprint = StructureController.Instance.GetStructureBluePrint(structureName);
-                    cell.AddContent(blueprint.gameObject);
-                    Taskmaster.Instance.AddTask(new Build(blueprint.Data, cell.Data.Coordinates));
-                }
-            }
+        GameController.Instance.SelectionPreference = SelectionPreference.CreatureOnly;
 
-        };
-    }
-
-    public void BuildTypeClicked()
-    {
-        if (OrderTrayController.Instance.gameObject.activeInHierarchy)
-        {
-            DisableAndReset();
-
-            BuildButton.Text = "Select Building";
-        }
-        else
-        {
-            EnableAndClear();
-
-            foreach (var structureData in StructureController.Instance.StructureDataReference.Values)
-            {
-                var button = Instantiate(OrderButtonPrefab, OrderTrayController.Instance.transform);
-                button.Button.onClick.AddListener(() => BuildClicked(structureData.Name));
-                button.name = structureData.Name;
-                button.Button.image.sprite = StructureController.Instance.GetSpriteForStructure(structureData.Name);
-
-                if (structureData.Tiled)
-                {
-                    button.Button.image.type = Image.Type.Tiled;
-                }
-
-                button.Text = "Build " + structureData.Name;
-            }
-
-            var removeButton = Instantiate(OrderButtonPrefab, OrderTrayController.Instance.transform);
-            removeButton.Button.onClick.AddListener(RemoveStructureClicked);
-            removeButton.name = "Remove Structure";
-            removeButton.Text = removeButton.name;
-            removeButton.Button.image.sprite = SpriteStore.Instance.GetSpriteByName("cancel");
-        }
+        OrderTrayController.Instance.gameObject.SetActive(false);
+        CellClickOrder = null;
     }
 
     private static void EnableAndClear()
@@ -89,39 +41,17 @@ public class OrderSelectionController : MonoBehaviour
         }
     }
 
-    public void DisableAndReset()
+    private OrderButton CreateOrderButton(string text, UnityAction action, string sprite, bool isSubButton = true)
     {
-        GameController.Instance.SelectionPreference = SelectionPreference.CreatureOnly;
+        // create a top level button for an order type
+        var button = Instantiate(OrderButtonPrefab, isSubButton ? OrderTrayController.Instance.transform : transform);
+        button.Button.onClick.AddListener(action);
+        button.Text = text;
+        button.Button.image.sprite = SpriteStore.Instance.GetSpriteByName(sprite);
 
-        OrderTrayController.Instance.gameObject.SetActive(false);
-        CellClickOrder = null;
+        return button;
     }
 
-    private void RemoveStructureClicked()
-    {
-        BuildButton.Text = "Remove Structure";
-        GameController.Instance.SelectionPreference = SelectionPreference.CellOnly;
-        CellClickOrder = cells =>
-        {
-            foreach (var cell in cells)
-            {
-                if (cell.Data.Structure != null)
-                {
-                    var structure = cell.Data.Structure;
-
-                    if (structure.IsBluePrint)
-                    {
-                        StructureController.Instance.DestroyStructure(structure);
-                    }
-                    else
-                    {
-                        Taskmaster.Instance.AddTask(new RemoveStructure(structure, cell.Data.Coordinates));
-                        structure.LinkedGameObject.SpriteRenderer.color = Color.red;
-                    }
-                }
-            }
-        };
-    }
 
     private void Start()
     {
@@ -129,55 +59,8 @@ public class OrderSelectionController : MonoBehaviour
         CreatureInfoPanel.Instance.gameObject.SetActive(false);
         CellInfoPanel.Instance.gameObject.SetActive(false);
 
-        BuildButton = Instantiate(OrderButtonPrefab, transform);
-        BuildButton.Button.onClick.AddListener(BuildTypeClicked);
-        BuildButton.Text = "Select Building";
-        BuildButton.Button.image.sprite = SpriteStore.Instance.GetSpriteByName("hammer");
-
-        StockpileButton = Instantiate(OrderButtonPrefab, transform);
-        StockpileButton.Button.onClick.AddListener(StockpileTypeClicked);
-        StockpileButton.Text = "Place Stockpile";
-        StockpileButton.Button.image.sprite = SpriteStore.Instance.GetSpriteByName("box");
-    }
-
-    private void StockpileClicked(string itemTypeName)
-    {
-        StockpileButton.Text = $"Place {itemTypeName} Stockpile";
-
-        CellClickOrder = cells =>
-        {
-            foreach (var cell in cells)
-            {
-                if (cell.Data.Stockpile == null && cell.TravelCost > 0)
-                {
-                    var stockpile = StockpileController.Instance.AddStockpile(itemTypeName);
-                    cell.AddContent(stockpile.gameObject);
-                }
-            }
-        };
-    }
-
-    private void StockpileTypeClicked()
-    {
-        GameController.Instance.SelectionPreference = SelectionPreference.CellOnly;
-        if (OrderTrayController.Instance.gameObject.activeInHierarchy)
-        {
-            DisableAndReset();
-            StockpileButton.Text = "Place Stockpile";
-        }
-        else
-        {
-            EnableAndClear();
-
-            foreach (var item in ItemController.Instance.AllItemTypes.Values)
-            {
-                var button = Instantiate(OrderButtonPrefab, OrderTrayController.Instance.transform);
-                button.Button.onClick.AddListener(() => StockpileClicked(item.Data.ItemType));
-                button.name = $"Place {item.Data.ItemType} Stockpile";
-                button.Button.image.sprite = SpriteStore.Instance.GetSpriteByName(item.Data.SpriteName);
-                button.Button.image.type = Image.Type.Tiled;
-                button.Text = button.name;
-            }
-        }
+        BuildButton = CreateOrderButton(DefaultBuildText, BuildTypeClicked, "hammer", false);
+        StockpileButton = CreateOrderButton(DefaultStockpileText, StockpileTypeClicked, "box", false);
+        TaskButton = CreateOrderButton(DefaultDesignateText, DesignateTypeClicked, "designate", false);
     }
 }

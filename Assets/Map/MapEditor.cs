@@ -17,7 +17,7 @@ public class MapEditor : MonoBehaviour
     public bool Generating = false;
     public MapGrid MapGrid;
 
-    
+
     public bool ShowGeneration = true;
     private static MapEditor _instance;
 
@@ -188,19 +188,31 @@ public class MapEditor : MonoBehaviour
 
         foreach (var cell in MapGrid.Cells)
         {
+            var value = Random.value;
+
             switch (cell.CellType)
             {
-                case CellType.Forest:
-                    if (Random.value > 0.95)
+                case CellType.Grass:
+                    if (value > 0.65)
                     {
-                        cell.AddContent(StructureController.Instance.GetStructure("Tree").gameObject, false);
+                        cell.AddContent(StructureController.Instance.GetStructure("Bush").gameObject);
+                    }
+                    break;
+                case CellType.Forest:
+                    if (value > 0.95)
+                    {
+                        cell.AddContent(StructureController.Instance.GetStructure("Tree").gameObject);
+                    }
+                    else if (value > 0.65)
+                    {
+                        cell.AddContent(StructureController.Instance.GetStructure("Bush").gameObject);
                     }
                     break;
 
                 case CellType.Stone:
                     for (int i = 0; i < Random.Range(1, 5); i++)
                     {
-                        cell.AddContent(ItemController.Instance.GetItem("Rock").gameObject, true);
+                        cell.AddContent(ItemController.Instance.GetItem("Rock").gameObject);
                     }
                     break;
             }
@@ -214,7 +226,7 @@ public class MapEditor : MonoBehaviour
         if (ShowGeneration) yield return null;
     }
 
-    
+
 
     private void Update()
     {

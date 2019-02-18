@@ -129,13 +129,14 @@ public class GameController : MonoBehaviour
 
                 DeselectCreature();
                 DeselectCell();
+                selectSquareImage.gameObject.SetActive(false);
 
                 var endPoint = Camera.main.ScreenToWorldPoint(_selectionEnd);
 
-                var startX = Mathf.Min(_selectionStart.x, endPoint.x);
-                var startY = Mathf.Min(_selectionStart.y, endPoint.y);
-                var endX = Mathf.Max(_selectionStart.x, endPoint.x);
-                var endY = Mathf.Max(_selectionStart.y, endPoint.y);
+                var startX = Mathf.Clamp(Mathf.Min(_selectionStart.x, endPoint.x), 0, MapGrid.Instance.MapSize);
+                var startY = Mathf.Clamp(Mathf.Min(_selectionStart.y, endPoint.y), 0, MapGrid.Instance.MapSize);
+                var endX = Mathf.Clamp(Mathf.Max(_selectionStart.x, endPoint.x), 0, MapGrid.Instance.MapSize);
+                var endY = Mathf.Clamp(Mathf.Max(_selectionStart.y, endPoint.y), 0, MapGrid.Instance.MapSize);
 
                 if (startX == endX && startY == endY)
                 {
@@ -186,7 +187,6 @@ public class GameController : MonoBehaviour
                         break;
                 }
 
-                selectSquareImage.gameObject.SetActive(false);
             }
 
             if (Input.GetMouseButton(0))

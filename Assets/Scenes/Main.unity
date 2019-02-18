@@ -369,7 +369,7 @@ PrefabInstance:
     - target: {fileID: 1169824505746064976, guid: 7e20ca7795e2e4a42b402127e35b4447,
         type: 3}
       propertyPath: m_Intensity
-      value: 0.4
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1169824505746064976, guid: 7e20ca7795e2e4a42b402127e35b4447,
         type: 3}
@@ -548,31 +548,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: FileController
-      objectReference: {fileID: 0}
-    - target: {fileID: 667879368938610748, guid: 50c5056d9f4c1364194358eaa321df8e,
-        type: 3}
-      propertyPath: ItemJson.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 667879368938610748, guid: 50c5056d9f4c1364194358eaa321df8e,
-        type: 3}
-      propertyPath: StructureJson.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 667879368938610748, guid: 50c5056d9f4c1364194358eaa321df8e,
-        type: 3}
-      propertyPath: StructureJson.Array.data[3]
-      value: 
-      objectReference: {fileID: 4900000, guid: fa939b0c583d14549b0f48362a3de3e7, type: 3}
-    - target: {fileID: 667879368938610748, guid: 50c5056d9f4c1364194358eaa321df8e,
-        type: 3}
-      propertyPath: StructureJson.Array.data[4]
-      value: 
-      objectReference: {fileID: 4900000, guid: 7aa108a3413c6cb469e4c6a88541d053, type: 3}
-    - target: {fileID: 667879368938610748, guid: 50c5056d9f4c1364194358eaa321df8e,
-        type: 3}
-      propertyPath: ItemJson.Array.data[3]
-      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 3060367387175224096, guid: 50c5056d9f4c1364194358eaa321df8e,
         type: 3}
@@ -1053,6 +1028,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1925529793, guid: 21216dc22b576ec4785cf4c518463eaa, type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1925529793, guid: 21216dc22b576ec4785cf4c518463eaa, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1925529793, guid: 21216dc22b576ec4785cf4c518463eaa, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 6943260560187983257, guid: 21216dc22b576ec4785cf4c518463eaa,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1748,10 +1735,6 @@ PrefabInstance:
       propertyPath: m_CellSize.y
       value: 75
       objectReference: {fileID: 0}
-    - target: {fileID: 1925529793, guid: 21216dc22b576ec4785cf4c518463eaa, type: 3}
-      propertyPath: m_RootOrder
-      value: 8
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 21216dc22b576ec4785cf4c518463eaa, type: 3}
 --- !u!114 &6943260559078519374 stripped
@@ -1779,35 +1762,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: SpriteStore
       objectReference: {fileID: 0}
-    - target: {fileID: 7308512517502387629, guid: 5223a731d594e30499746cb45660fed3,
-        type: 3}
-      propertyPath: ItemSprites.Array.size
-      value: 11
-      objectReference: {fileID: 0}
-    - target: {fileID: 7308512517502387629, guid: 5223a731d594e30499746cb45660fed3,
-        type: 3}
-      propertyPath: ItemSprites.Array.data[7]
-      value: 
-      objectReference: {fileID: 21300000, guid: fb77dd189d9de3d4b8bde7ec6db54e0f,
-        type: 3}
-    - target: {fileID: 7308512517502387629, guid: 5223a731d594e30499746cb45660fed3,
-        type: 3}
-      propertyPath: ItemSprites.Array.data[8]
-      value: 
-      objectReference: {fileID: 21300000, guid: 516ac22ae1ce59c48a443e57c7391f10,
-        type: 3}
-    - target: {fileID: 7308512517502387629, guid: 5223a731d594e30499746cb45660fed3,
-        type: 3}
-      propertyPath: ItemSprites.Array.data[9]
-      value: 
-      objectReference: {fileID: 21300000, guid: 3d86efcf2d7313e4e987a5a58b345e44,
-        type: 3}
-    - target: {fileID: 7308512517502387629, guid: 5223a731d594e30499746cb45660fed3,
-        type: 3}
-      propertyPath: ItemSprites.Array.data[10]
-      value: 
-      objectReference: {fileID: 21300000, guid: 546f8625d950f054686ce2d1bc13846f,
-        type: 3}
     - target: {fileID: 7308512517502387628, guid: 5223a731d594e30499746cb45660fed3,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1937,5 +1891,10 @@ PrefabInstance:
       propertyPath: TimeDisplay
       value: 
       objectReference: {fileID: 6943260559078519374}
+    - target: {fileID: 9194236107572277703, guid: 1f3bbfb9d49d8964c9a1953cac20d915,
+        type: 3}
+      propertyPath: Data.Hour
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1f3bbfb9d49d8964c9a1953cac20d915, type: 3}
