@@ -83,6 +83,7 @@ public class Cell : MonoBehaviour
         var structure = gameObject.GetComponent<Structure>();
         var stockpile = gameObject.GetComponent<Stockpile>();
 
+        var scatterIntensity = 0.3f;
         if (item != null)
         {
             if (item.Cell != null)
@@ -102,6 +103,11 @@ public class Cell : MonoBehaviour
         {
             structure.Data.Coordinates = Data.Coordinates;
             Data.Structure = structure.Data;
+            if (structure.Data.Scatter)
+            {
+                scatter = true;
+                scatterIntensity = 0.1f;
+            }
         }
         else if (stockpile != null)
         {
@@ -115,7 +121,7 @@ public class Cell : MonoBehaviour
         if (scatter)
         {
             gameObject.transform.Rotate(0, 0, Random.Range(-45f, 45f));
-            gameObject.transform.position += new Vector3(Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f), 0);
+            gameObject.transform.position += new Vector3(Random.Range(-scatterIntensity, scatterIntensity), Random.Range(-scatterIntensity, scatterIntensity), 0);
         }
     }
 

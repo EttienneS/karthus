@@ -4,6 +4,7 @@
 	"Tiled":"False",
 	"RequiredItemTypes":["Rock", "Rock","Rock", "Rock"],
 	"TravelCost": "-1",
-	"StructureType": "Wall",
+	"StructureType": "Wall",	
+	"Scatter": "False",
 	"Buildable":  "True"
 }

@@ -55,11 +55,12 @@ public class Structure : MonoBehaviour
 [Serializable]
 public class StructureData
 {
+    public bool Buildable;
     public Coordinates Coordinates;
 
     public int Id;
     public bool IsBluePrint;
-    public bool Buildable;
+    public bool Scatter;
     public string Name;
 
     public List<string> RequiredItemTypes;

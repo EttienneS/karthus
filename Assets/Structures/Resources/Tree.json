@@ -4,5 +4,6 @@
 	"Tiled":"False",
 	"TravelCost": "-1",
 	"StructureType": "Tree",
+	"Scatter": "True",
 	"Buildable":  "False"
 }
