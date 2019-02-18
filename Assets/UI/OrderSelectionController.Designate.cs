@@ -21,12 +21,12 @@
         {
             EnableAndClear();
 
-            CreateOrderButton(CutText, () => HarvestClicked("Tree"), CutIcon);
-            CreateOrderButton(HarvestText, () => HarvestClicked("Bush"), HarvestIcon);
+            CreateOrderButton(CutText, () => HarvestClicked("Tree", CutIcon), CutIcon);
+            CreateOrderButton(HarvestText, () => HarvestClicked("Bush", HarvestIcon), HarvestIcon);
         }
     }
 
-    private void HarvestClicked(string type)
+    private void HarvestClicked(string type, string icon)
     {
         GameController.Instance.SelectionPreference = SelectionPreference.CellOnly;
         CellClickOrder = cells =>
@@ -35,7 +35,7 @@
             {
                 if (cell.Data.Structure != null && cell.Data.Structure.StructureType == type)
                 {
-                    cell.Data.Structure.LinkedGameObject.StatusSprite.sprite = SpriteStore.Instance.GetSpriteByName(HarvestIcon);
+                    cell.Data.Structure.LinkedGameObject.StatusSprite.sprite = SpriteStore.Instance.GetSpriteByName(icon);
                     Taskmaster.Instance.AddTask(new Harvest(cell.Data.Structure));
                 }
             }
