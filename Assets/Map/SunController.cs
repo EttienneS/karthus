@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class SunController : MonoBehaviour
 {
-    internal const float BaseIntensity = 0.4f;
+    internal const float BaseIntensity = 0.6f;
     internal const float DayLightHours = Sunset - Sunrise;
-    internal const float MaxIntensity = 1.3f;
+    internal const float MaxIntensity = 1.7f;
     internal const int SunHeight = -100;
-    internal const int Sunrise = 5;
-    internal const int Sunset = 19;
+    internal const int Sunrise = 4;
+    internal const int Sunset = 17;
     internal float IntensityPerHour = MaxIntensity / (DayLightHours / 2);
     internal Light Light;
     internal int MidDay = Sunrise + Mathf.FloorToInt(DayLightHours / 2);

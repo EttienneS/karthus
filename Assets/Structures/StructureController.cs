@@ -37,6 +37,11 @@ public class StructureController : MonoBehaviour
 
         structure.Data.SetBlueprintState(false);
 
+        if (structure.Data.StructureType == "Tree")
+        {
+            structure.SpriteRenderer.sortingLayerName = "Tree";
+        }
+
         return structure;
     }
 

@@ -13,7 +13,6 @@ public class Cell : MonoBehaviour
 
     private float _lastUpdate;
 
-    private int SortCounter = 0;
     public SpriteRenderer Border { get; private set; }
 
     public CellType CellType
@@ -103,8 +102,7 @@ public class Cell : MonoBehaviour
             Data.ContainedItems.Add(item.Data);
             item.Cell = this;
 
-            SortCounter++;
-            item.SpriteRenderer.sortingOrder = SortCounter;
+            item.SpriteRenderer.sortingOrder = item.Data.Id;
         }
         else if (structure != null)
         {
@@ -115,6 +113,8 @@ public class Cell : MonoBehaviour
                 scatter = true;
                 scatterIntensity = 0.1f;
             }
+
+            structure.SpriteRenderer.sortingOrder = structure.Data.Id;
         }
         else if (stockpile != null)
         {
@@ -129,6 +129,19 @@ public class Cell : MonoBehaviour
         {
             gameObject.transform.Rotate(0, 0, Random.Range(-45f, 45f));
             gameObject.transform.position += new Vector3(Random.Range(-scatterIntensity, scatterIntensity), Random.Range(-scatterIntensity, scatterIntensity), 0);
+        }
+
+        if (structure != null)
+        {
+            if (structure.SpriteRenderer.bounds.size.x > 1.0f)
+            {
+                gameObject.transform.position += new Vector3(structure.SpriteRenderer.bounds.size.x / 2, 0);
+            }
+
+            if (structure.SpriteRenderer.bounds.size.y > 1.0f)
+            {
+                gameObject.transform.position += new Vector3(0, structure.SpriteRenderer.bounds.size.y / 2);
+            }
         }
     }
 

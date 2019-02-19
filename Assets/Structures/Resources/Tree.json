@@ -1,10 +1,10 @@
 {
 	"Name":"Tree",
-	"SpriteName":"TreeStump",
+	"SpriteName":"Tree",
 	"Tiled":"False",
 	"TravelCost": "-1",
 	"StructureType": "Tree",
-	"Scatter": "True",
+	"Scatter": "False",
 	"Buildable":  "False",
 	"Yield":["10:Wood"]
 }
