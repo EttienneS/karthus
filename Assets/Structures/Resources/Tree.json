@@ -4,7 +4,7 @@
 	"Tiled":"False",
 	"TravelCost": "-1",
 	"StructureType": "Tree",
-	"Scatter": "False",
+	"Scatter": "True",
 	"Buildable":  "False",
 	"Yield":["10:Wood"]
 }

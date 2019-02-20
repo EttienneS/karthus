@@ -111,7 +111,7 @@ public class Cell : MonoBehaviour
             if (structure.Data.Scatter)
             {
                 scatter = true;
-                scatterIntensity = 0.1f;
+                scatterIntensity = 0.3f;
             }
 
             structure.SpriteRenderer.sortingOrder = structure.Data.Id;
@@ -127,7 +127,7 @@ public class Cell : MonoBehaviour
 
         if (scatter)
         {
-            gameObject.transform.Rotate(0, 0, Random.Range(-45f, 45f));
+            //gameObject.transform.Rotate(0, 0, Random.Range(-45f, 45f));
             gameObject.transform.position += new Vector3(Random.Range(-scatterIntensity, scatterIntensity), Random.Range(-scatterIntensity, scatterIntensity), 0);
         }
 

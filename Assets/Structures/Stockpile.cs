@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -23,7 +22,6 @@ public class Stockpile : MonoBehaviour
             GetTextMesh().text = value;
         }
     }
-
 
     public ItemData GetItem(ItemData item)
     {
@@ -72,8 +70,8 @@ public class StockpileData
     public Coordinates Coordinates;
     public string ItemType;
     public int MaxConcurrentTasks = 3;
-    public int Size = 12;
-    public int Id ;
+    public int Size = 24;
+    public int Id;
 
     internal void AddItem(ItemData item)
     {
