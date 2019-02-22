@@ -14,7 +14,6 @@ public class MapGrid : MonoBehaviour
 {
     public TerrainBlock TerrainBlockPrefab;
 
-    internal Sprite MapSprite;
     private static MapGrid _instance;
     private Dictionary<(int x, int y), CellData> _cellLookup;
     private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
@@ -368,7 +367,9 @@ public class MapGrid : MonoBehaviour
                 var terrainBlock = Instantiate(TerrainBlockPrefab, transform);
                 terrainBlock.name = $"Block {x}-{y}";
 
-                terrainBlock.Renderer.sprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, Constants.PixelsPerBlock, Constants.PixelsPerBlock), new Vector2(0, 0), Constants.PixelsPerCell);
+                //System.IO.File.WriteAllBytes(terrainBlock.name + ".png", texture.EncodeToPNG());
+
+                terrainBlock.Renderer.sprite = Sprite.Create(texture, new Rect(0, 0, Constants.PixelsPerBlock, Constants.PixelsPerBlock), new Vector2(0, 0), Constants.PixelsPerCell);
                 terrainBlock.Renderer.sortingOrder = counter++;
                 terrainBlock.transform.position = new Vector2(x * Constants.CellsPerTerrainBlock, y * Constants.CellsPerTerrainBlock);
             }

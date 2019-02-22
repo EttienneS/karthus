@@ -429,7 +429,7 @@ PrefabInstance:
     - target: {fileID: 1169824505746064976, guid: 7e20ca7795e2e4a42b402127e35b4447,
         type: 3}
       propertyPath: m_Range
-      value: 2000
+      value: 10000
       objectReference: {fileID: 0}
     - target: {fileID: 1169824505746064976, guid: 7e20ca7795e2e4a42b402127e35b4447,
         type: 3}
@@ -857,6 +857,12 @@ PrefabInstance:
       propertyPath: MapSize
       value: 48
       objectReference: {fileID: 0}
+    - target: {fileID: 4463792733002690004, guid: 7bf1785e44d991f408b7a89a8850def9,
+        type: 3}
+      propertyPath: TerrainBlockPrefab
+      value: 
+      objectReference: {fileID: 4109625264356320886, guid: 97c834c2b6c42bc4db6a743723fb3f5f,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7bf1785e44d991f408b7a89a8850def9, type: 3}
 --- !u!1001 &5246461426214547476

@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -60,15 +59,6 @@ public class CellData
 
     [JsonIgnore]
     public CellData[] Neighbors = new CellData[8];
-
-    //[JsonIgnore]
-    //public Cell LinkedGameObject
-    //{
-    //    get
-    //    {
-    //        return MapGrid.Instance.GetCellAtCoordinate(Coordinates);
-    //    }
-    //}
 
     public void AddContent(GameObject gameObject)
     {
