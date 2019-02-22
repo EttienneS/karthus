@@ -38,7 +38,7 @@ public class GetItemOfType : TaskBase
     {
         if (Item == null)
         {
-            Item = ItemController.Instance.FindClosestItemOfType(Creature.CurrentCell.LinkedGameObject, ItemType, AllowStockpiled);
+            Item = ItemController.Instance.FindClosestItemOfType(Creature.CurrentCell, ItemType, AllowStockpiled);
 
             if (Item == null)
             {
@@ -54,7 +54,7 @@ public class GetItemOfType : TaskBase
     private void UpdateTargetItem()
     {
 
-        var moveTask = new Move(Item.LinkedGameObject.Cell.Data.Coordinates)
+        var moveTask = new Move(Item.LinkedGameObject.Cell.Coordinates)
         {
             CreatureId = Creature.Id
         };

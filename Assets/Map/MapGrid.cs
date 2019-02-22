@@ -1,21 +1,29 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+[Serializable]
+public enum CellType
+{
+    Dirt, Forest, Grass, Mountain, Stone, Water
+}
+
 public class MapGrid : MonoBehaviour
 {
-    public List<Cell> Cells;
-
     [Range(4, 300)]
     public int MapSize = 64;
 
+    public SpriteRenderer MapSpriteRenderer;
     internal const float JitterProbability = 0.25f;
+
+    internal List<CellData> Cells { get; set; }
+
     private static MapGrid _instance;
-    private Dictionary<(int x, int y), Cell> _cellLookup;
+    private Dictionary<(int x, int y), CellData> _cellLookup;
     private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
     private int _searchFrontierPhase;
-
     public static MapGrid Instance
     {
         get
@@ -29,24 +37,24 @@ public class MapGrid : MonoBehaviour
         }
     }
 
-    public Dictionary<(int x, int y), Cell> CellLookup
+    public Dictionary<(int x, int y), CellData> CellLookup
     {
         get
         {
             if (_cellLookup == null)
             {
-                _cellLookup = new Dictionary<(int x, int y), Cell>();
+                _cellLookup = new Dictionary<(int x, int y), CellData>();
 
                 foreach (var cell in Cells)
                 {
-                    _cellLookup.Add((cell.Data.Coordinates.X, cell.Data.Coordinates.Y), cell);
+                    _cellLookup.Add((cell.Coordinates.X, cell.Coordinates.Y), cell);
                 }
             }
             return _cellLookup;
         }
     }
 
-    public void AddCellIfValid(int x, int y, List<Cell> cells)
+    public void AddCellIfValid(int x, int y, List<CellData> cells)
     {
         if (x >= 0 && x < MapSize && y >= 0 && y < MapSize)
         {
@@ -54,22 +62,234 @@ public class MapGrid : MonoBehaviour
         }
     }
 
-    public Cell GetCellAtCoordinate(Coordinates coordintes)
+    public void Awake()
+    {
+        MapSpriteRenderer = GetComponent<SpriteRenderer>();
+        CreateMap();
+    }
+    public CellData CreateCell(int x, int y, CellType type)
+    {
+        var cell = new CellData
+        {
+            CellType = type,
+            Coordinates = new Coordinates(x, y)
+        };
+
+        Cells.Add(cell);
+
+        return cell;
+    }
+
+    public void CreateMap()
+    {
+        Cells = new List<CellData>();
+
+        for (var y = 0; y < MapSize; y++)
+        {
+            for (var x = 0; x < MapSize; x++)
+            {
+                CreateCell(x, y, CellType.Water);
+            }
+        }
+
+        LinkNeighbours();
+
+        // generate bedrock
+        for (int i = 0; i < MapSize / 2; i++)
+        {
+            foreach (var cell in GetRandomChunk(Random.Range(1 + (MapSize / 6), 1 + (MapSize / 3))))
+            {
+                cell.CellType = CellType.Stone;
+            }
+        }
+
+        // grow mountains
+        foreach (var cell in Cells)
+        {
+            if (cell.CellType != CellType.Stone)
+            {
+                continue;
+            }
+
+            if (cell.CountNeighborsOfType(null) +
+                cell.CountNeighborsOfType(CellType.Mountain) +
+                cell.CountNeighborsOfType(CellType.Stone) > 6)
+            {
+                cell.CellType = CellType.Mountain;
+            }
+        }
+
+        // generate landmasses
+        for (int i = 0; i < MapSize; i++)
+        {
+            foreach (var cell in GetRandomChunk(Random.Range(MapSize, MapSize * 2)))
+            {
+                if (cell.CellType == CellType.Water)
+                {
+                    cell.CellType = CellType.Grass;
+                }
+            }
+        }
+
+        // bleed water, this enlarges bodies of water
+        // creates more natural looking coastlines/rivers
+        foreach (var cell in Cells)
+        {
+            if (cell.CellType == CellType.Water)
+            {
+                continue;
+            }
+
+            var waterN = cell.CountNeighborsOfType(CellType.Water);
+            if (waterN > 2 && Random.value > 1.0f - (waterN / 10f))
+            {
+                cell.CellType = CellType.Water;
+            }
+        }
+
+        // create coast
+        foreach (var cell in Cells)
+        {
+            if (cell.CellType != CellType.Grass)
+            {
+                // already water skip
+                continue;
+            }
+
+            if (cell.CountNeighborsOfType(CellType.Water) > 0)
+            {
+                cell.CellType = CellType.Dirt;
+            }
+        }
+
+        // bleed desert
+        foreach (var cell in Cells)
+        {
+            if (cell.CellType == CellType.Water)
+            {
+                // already water skip
+                continue;
+            }
+
+            if (cell.CountNeighborsOfType(CellType.Dirt) > 2 && Random.value > 0.5)
+            {
+                cell.CellType = CellType.Dirt;
+            }
+        }
+
+        // create forest
+        foreach (var cell in Cells)
+        {
+            if (cell.CellType == CellType.Water)
+            {
+                // water skip
+                continue;
+            }
+
+            if (cell.CountNeighborsOfType(null) +
+                cell.CountNeighborsOfType(CellType.Grass) +
+                cell.CountNeighborsOfType(CellType.Forest) > 6
+                && Random.value > 0.2)
+            {
+                cell.CellType = CellType.Forest;
+            }
+        }
+
+        const int pixelsPerCell = 100;
+        var texture = new Texture2D(Instance.MapSize * pixelsPerCell, Instance.MapSize * pixelsPerCell);
+
+        foreach (var cell in Cells)
+        {
+            var type = cell.CellType;
+
+            var x = cell.Coordinates.X * pixelsPerCell;
+            var y = cell.Coordinates.Y * pixelsPerCell;
+
+            var xStart = x;
+            var xEnd = x + pixelsPerCell;
+            foreach (var pixel in SpriteStore.Instance.GetGroundTextureFor(type.ToString(), pixelsPerCell))
+            {
+                texture.SetPixel(x, y, pixel);
+                x++;
+
+                if (x >= xEnd)
+                {
+                    x = xStart;
+                    y++;
+                }
+            }
+
+            var value = Random.value;
+
+            switch (cell.CellType)
+            {
+                case CellType.Grass:
+                    cell.TravelCost = 1;
+                    if (value > 0.65)
+                    {
+                        cell.AddContent(StructureController.Instance.GetStructure("Bush").gameObject);
+                    }
+                    break;
+                case CellType.Forest:
+                    cell.TravelCost = 1;
+                    if (value > 0.95)
+                    {
+                        cell.AddContent(StructureController.Instance.GetStructure("Tree").gameObject);
+                    }
+                    else if (value > 0.65)
+                    {
+                        cell.AddContent(StructureController.Instance.GetStructure("Bush").gameObject);
+                    }
+                    break;
+
+                case CellType.Stone:
+                    cell.TravelCost = 1;
+                    for (int i = 0; i < Random.Range(1, 5); i++)
+                    {
+                        cell.AddContent(ItemController.Instance.GetItem("Rock").gameObject);
+                    }
+                    break;
+            }
+        }
+
+        ResetSearchPriorities();
+
+        texture.Apply();
+        // System.IO.File.WriteAllBytes("tex.png", texture.EncodeToPNG());
+
+        MapSprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, Instance.MapSize * pixelsPerCell, Instance.MapSize * pixelsPerCell), new Vector2(0.5f, 0.5f), pixelsPerCell);
+
+        transform.position = new Vector2(Instance.MapSize / 2, Instance.MapSize / 2);
+
+        MapSpriteRenderer.sprite = MapSprite;
+
+        CreatureController.Instance.SpawnCreatures();
+
+
+    }
+
+    internal Sprite MapSprite;
+
+    public void Update()
+    {
+    }
+
+    public CellData GetCellAtCoordinate(Coordinates coordintes)
     {
         return CellLookup[(coordintes.X, coordintes.Y)];
     }
 
-    public Cell GetCellAtPoint(Vector3 position)
+    public CellData GetCellAtPoint(Vector3 position)
     {
         var coordinates = Coordinates.FromPosition(position);
         return CellLookup[(coordinates.X, coordinates.Y)];
     }
 
-    public List<Cell> GetCircle(Cell center, int radius)
+    public List<CellData> GetCircle(CellData center, int radius)
     {
-        var cells = new List<Cell>();
-        var centerX = center.Data.Coordinates.X;
-        var centerY = center.Data.Coordinates.Y;
+        var cells = new List<CellData>();
+        var centerX = center.Coordinates.X;
+        var centerY = center.Coordinates.Y;
 
         for (var x = centerX - radius; x <= centerX; x++)
         {
@@ -89,12 +309,12 @@ public class MapGrid : MonoBehaviour
         return cells;
     }
 
-    public Cell GetRandomCell()
+    public CellData GetRandomCell()
     {
         return CellLookup[((int)(Random.value * (MapSize - 1)), (int)(Random.value * (MapSize - 1)))];
     }
 
-    public List<Cell> GetRandomChunk(int chunkSize)
+    public List<CellData> GetRandomChunk(int chunkSize)
     {
         _searchFrontierPhase++;
         var firstCell = GetRandomCell();
@@ -103,10 +323,10 @@ public class MapGrid : MonoBehaviour
         firstCell.SearchHeuristic = 0;
         _searchFrontier.Enqueue(firstCell);
 
-        var center = firstCell.Data.Coordinates;
+        var center = firstCell.Coordinates;
         int size = 0;
 
-        var chunk = new List<Cell>();
+        var chunk = new List<CellData>();
         while (size < chunkSize && _searchFrontier.Count > 0)
         {
             var current = _searchFrontier.Dequeue();
@@ -116,10 +336,10 @@ public class MapGrid : MonoBehaviour
             for (var d = Direction.N; d <= Direction.NW; d++)
             {
                 var neighbor = current.GetNeighbor(d);
-                if (neighbor && neighbor.SearchPhase < _searchFrontierPhase)
+                if (neighbor != null && neighbor.SearchPhase < _searchFrontierPhase)
                 {
                     neighbor.SearchPhase = _searchFrontierPhase;
-                    neighbor.Distance = neighbor.Data.Coordinates.DistanceTo(center);
+                    neighbor.Distance = neighbor.Coordinates.DistanceTo(center);
                     neighbor.SearchHeuristic = Random.value < JitterProbability ? 1 : 0;
                     _searchFrontier.Enqueue(neighbor);
                 }
@@ -131,7 +351,7 @@ public class MapGrid : MonoBehaviour
         return chunk;
     }
 
-    public Cell GetRandomPathableCell()
+    public CellData GetRandomPathableCell()
     {
         var cell = GetRandomCell();
 
@@ -143,9 +363,9 @@ public class MapGrid : MonoBehaviour
         return cell;
     }
 
-    public List<Cell> GetRectangle(int x, int y, int width, int height)
+    public List<CellData> GetRectangle(int x, int y, int width, int height)
     {
-        var cells = new List<Cell>();
+        var cells = new List<CellData>();
 
         for (var i = x; i < x + width; i++)
         {
@@ -158,7 +378,7 @@ public class MapGrid : MonoBehaviour
         return cells;
     }
 
-    public void HighlightCells(List<Cell> cells, Color color)
+    public void HighlightCells(List<CellData> cells, Color color)
     {
         foreach (var cell in cells)
         {
@@ -171,34 +391,34 @@ public class MapGrid : MonoBehaviour
         _cellLookup = null;
     }
 
-    internal void DestroyCell(Cell cell)
+    internal void DestroyCell(CellData cell)
     {
-        foreach (var item in cell.Data.ContainedItems.ToArray())
+        foreach (var item in cell.ContainedItems.ToArray())
         {
             ItemController.Instance.DestroyItem(item);
         }
 
-        if (cell.Data.Structure != null)
+        if (cell.Structure != null)
         {
-            StructureController.Instance.DestroyStructure(cell.Data.Structure);
+            StructureController.Instance.DestroyStructure(cell.Structure);
         }
 
-        if (cell.Data.Stockpile != null)
+        if (cell.Stockpile != null)
         {
-            StockpileController.Instance.DestroyStockpile(cell.Data.Stockpile);
+            StockpileController.Instance.DestroyStockpile(cell.Stockpile);
         }
 
-        Destroy(cell.gameObject);
+        //  Destroy(cell.gameObject);
     }
 
-    internal Direction GetDirection(Cell fromCell, Cell toCell)
+    internal Direction GetDirection(CellData fromCell, CellData toCell)
     {
         var direction = Direction.S;
 
         if (fromCell != null && toCell != null)
         {
-            var x = fromCell.Data.Coordinates.X - toCell.Data.Coordinates.X;
-            var y = fromCell.Data.Coordinates.Y - toCell.Data.Coordinates.Y;
+            var x = fromCell.Coordinates.X - toCell.Coordinates.X;
+            var y = fromCell.Coordinates.Y - toCell.Coordinates.Y;
 
             if (x < 0 && y == 0)
             {
@@ -236,7 +456,7 @@ public class MapGrid : MonoBehaviour
     internal Coordinates GetPathableNeighbour(Coordinates coordinates)
     {
         return Instance.GetCellAtCoordinate(coordinates).Neighbors
-                                       .First(c => c.TravelCost != 0).Data.Coordinates;
+                                       .First(c => c.TravelCost != 0).Coordinates;
     }
 
     internal void LinkNeighbours()

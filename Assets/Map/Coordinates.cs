@@ -22,6 +22,11 @@ public class Coordinates : IEquatable<Coordinates>
         return new Coordinates(Mathf.FloorToInt(position.x), Mathf.FloorToInt(position.y));
     }
 
+    public Vector2 ToMapVector()
+    {
+        return new Vector2(Mathf.FloorToInt(X), Mathf.FloorToInt(Y));
+    }
+
     public static bool operator !=(Coordinates obj1, Coordinates obj2)
     {
         return !obj1.Equals(obj2);

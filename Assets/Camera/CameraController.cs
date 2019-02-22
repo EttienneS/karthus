@@ -72,9 +72,9 @@ public class CameraController : MonoBehaviour
         Camera = GetComponent<Camera>();
     }
 
-    internal void MoveToCell(Cell cell)
+    internal void MoveToCell(CellData cell)
     {
-        MoveToViewPoint(cell.transform.position);
+        MoveToViewPoint(cell.Coordinates.ToMapVector());
     }
 
     private void Update()

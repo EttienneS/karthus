@@ -2,7 +2,7 @@
 
 public class CellPriorityQueue
 {
-    private readonly List<Cell> list = new List<Cell>();
+    private readonly List<CellData> list = new List<CellData>();
     private int minimum = int.MaxValue;
 
     public CellPriorityQueue()
@@ -12,7 +12,7 @@ public class CellPriorityQueue
 
     public int Count { get; private set; }
 
-    public void Enqueue(Cell cell)
+    public void Enqueue(CellData cell)
     {
         Count++;
         var priority = cell.SearchPriority;
@@ -32,7 +32,7 @@ public class CellPriorityQueue
         list[priority] = cell;
     }
 
-    public Cell Dequeue()
+    public CellData Dequeue()
     {
         Count--;
 
@@ -49,7 +49,7 @@ public class CellPriorityQueue
         return null;
     }
 
-    public void Change(Cell cell, int oldPriority)
+    public void Change(CellData cell, int oldPriority)
     {
         var current = list[oldPriority];
         var next = current.NextWithSamePriority;

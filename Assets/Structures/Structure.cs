@@ -112,7 +112,7 @@ public class StructureData
         {
             foreach (var item in ParseItemString(yieldString))
             {
-                cell.LinkedGameObject.AddContent(ItemController.Instance.GetItem(item).gameObject);
+                cell.AddContent(ItemController.Instance.GetItem(item).gameObject);
             }
         }
     }

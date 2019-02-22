@@ -22,7 +22,7 @@ public class Harvest : TaskBase
     {
         if (Taskmaster.QueueComplete(SubTasks))
         {
-            Target.SpawnYield(MapGrid.Instance.GetCellAtCoordinate(Target.Coordinates).Data);
+            Target.SpawnYield(MapGrid.Instance.GetCellAtCoordinate(Target.Coordinates));
             StructureController.Instance.DestroyStructure(Target);
             return true;
         }

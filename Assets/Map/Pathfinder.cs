@@ -7,7 +7,7 @@ public static class Pathfinder
     private static CellPriorityQueue _searchFrontier;
     private static int _searchFrontierPhase;
 
-    internal static float Distance(Cell fromCell, Cell toCell)
+    internal static float Distance(CellData fromCell, CellData toCell)
     {
         var distance = 0f;
 
@@ -26,16 +26,13 @@ public static class Pathfinder
         }
     }
 
-    public static List<Cell> FindPath(Cell fromCell, Cell toCell)
+    public static List<CellData> FindPath(CellData fromCell, CellData toCell)
     {
         if (fromCell != null && toCell != null)
         {
-            var pathId = fromCell.name + toCell.name;
-            var pathIdInverse = toCell.name + fromCell.name;
-
             if (Search(fromCell, toCell))
             {
-                var path = new List<Cell>
+                var path = new List<CellData>
                 {
                     toCell
                 };
@@ -54,26 +51,26 @@ public static class Pathfinder
         return null;
     }
 
-    public static Cell GetClosestOpenCell(Cell[] map, Cell origin)
+    public static CellData GetClosestOpenCell(CellData[] map, CellData origin)
     {
         return GetReachableCells(map, origin, 3).FirstOrDefault();
     }
 
-    public static float GetPathCost(IEnumerable<Cell> path)
+    public static float GetPathCost(IEnumerable<CellData> path)
     {
         return path.Where(cell => cell != null).Sum(cell => cell.TravelCost);
     }
 
-    public static IEnumerable<Cell> GetReachableCells(Cell[] map, Cell startPoint, int speed)
+    public static IEnumerable<CellData> GetReachableCells(CellData[] map, CellData startPoint, int speed)
     {
         if (startPoint == null)
         {
-            return new List<Cell>();
+            return new List<CellData>();
         }
 
         var reachableCells = (from cell in
                     map.Where(c =>
-                        c != null && c.Data.Coordinates.DistanceTo(startPoint.Data.Coordinates) <= speed)
+                        c != null && c.Coordinates.DistanceTo(startPoint.Coordinates) <= speed)
                               let path = FindPath(startPoint, cell)
                               let pathCost = GetPathCost(path) - startPoint.TravelCost
                               where path.Count > 0 && pathCost <= speed
@@ -86,7 +83,7 @@ public static class Pathfinder
         return reachableCells;
     }
 
-    internal static float GetPathCost(Cell fromCell, Cell toCell)
+    internal static float GetPathCost(CellData fromCell, CellData toCell)
     {
         var path = FindPath(fromCell, toCell);
 
@@ -98,7 +95,7 @@ public static class Pathfinder
         return GetPathCost(path);
     }
 
-    public static void ShowPath(List<Cell> path)
+    public static void ShowPath(List<CellData> path)
     {
         foreach (var cell in path)
         {
@@ -109,7 +106,7 @@ public static class Pathfinder
         path.Last().EnableBorder(Color.blue);
     }
 
-    private static bool Search(Cell fromCell, Cell toCell)
+    private static bool Search(CellData fromCell, CellData toCell)
     {
         _searchFrontierPhase += 2;
 
@@ -166,7 +163,7 @@ public static class Pathfinder
                     neighbor.SearchPhase = _searchFrontierPhase;
                     neighbor.Distance = distance;
                     neighbor.PathFrom = current;
-                    neighbor.SearchHeuristic = neighbor.Data.Coordinates.DistanceTo(toCell.Data.Coordinates);
+                    neighbor.SearchHeuristic = neighbor.Coordinates.DistanceTo(toCell.Coordinates);
                     _searchFrontier.Enqueue(neighbor);
                 }
                 else if (distance < neighbor.Distance)

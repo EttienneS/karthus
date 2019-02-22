@@ -30,7 +30,7 @@ public class Build : TaskBase
         if (Taskmaster.QueueComplete(SubTasks))
         {
             var thisCell = MapGrid.Instance.GetCellAtCoordinate(Structure.Coordinates);
-            foreach (var item in thisCell.Data.ContainedItems.ToArray())
+            foreach (var item in thisCell.ContainedItems.ToArray())
             {
                 ItemController.Instance.DestroyItem(item);
             }

@@ -15,11 +15,11 @@ public partial class OrderSelectionController //.Structure
         {
             foreach (var cell in cells)
             {
-                if (cell.Data.Structure == null)
+                if (cell.Structure == null)
                 {
                     var blueprint = StructureController.Instance.GetStructureBluePrint(structureName);
                     cell.AddContent(blueprint.gameObject);
-                    Taskmaster.Instance.AddTask(new Build(blueprint.Data, cell.Data.Coordinates));
+                    Taskmaster.Instance.AddTask(new Build(blueprint.Data, cell.Coordinates));
                 }
             }
         };
@@ -60,9 +60,9 @@ public partial class OrderSelectionController //.Structure
         {
             foreach (var cell in cells)
             {
-                if (cell.Data.Structure?.Buildable == true)
+                if (cell.Structure?.Buildable == true)
                 {
-                    var structure = cell.Data.Structure;
+                    var structure = cell.Structure;
 
                     if (structure.IsBluePrint)
                     {
@@ -70,7 +70,7 @@ public partial class OrderSelectionController //.Structure
                     }
                     else
                     {
-                        Taskmaster.Instance.AddTask(new RemoveStructure(structure, cell.Data.Coordinates));
+                        Taskmaster.Instance.AddTask(new RemoveStructure(structure, cell.Coordinates));
                         structure.LinkedGameObject.SpriteRenderer.color = Color.red;
                     }
                 }
