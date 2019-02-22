@@ -45,7 +45,21 @@ public class CellData
         return Neighbors.Count(n => n != null && n.CellType == cellType.Value);
     }
 
-    public float TravelCost = -1;
+    [JsonIgnore]
+    public float TravelCost
+    {
+        get
+        {
+            switch (CellType)
+            {
+                case CellType.Water:
+                case CellType.Mountain:
+                    return -1;
+            }
+
+            return Structure != null ? Structure.TravelCost : 1;
+        }
+    }
 
     public CellType CellType;
 
