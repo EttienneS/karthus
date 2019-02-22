@@ -7,8 +7,8 @@ public class Move : TaskBase
     public Coordinates TargetCoordinates;
 
     [JsonIgnore] private float _journeyLength;
-    [JsonIgnore] private Cell _nextCell;
-    [JsonIgnore] private List<Cell> _path = new List<Cell>();
+    [JsonIgnore] private CellData _nextCell;
+    [JsonIgnore] private List<CellData> _path = new List<CellData>();
     [JsonIgnore] private float _startTime;
     [JsonIgnore] private Vector3 _targetPos;
 
@@ -62,11 +62,11 @@ public class Move : TaskBase
             else
             {
                 // found valid next cell
-                _targetPos = _nextCell.GetCreaturePosition();
+                _targetPos = _nextCell.Coordinates.ToMapVector();
 
                 // calculate the movement journey to the next cell, include the cell travelcost to make moving through
                 // difficults cells take longer
-                _journeyLength = Vector3.Distance(currentCreatureCell.transform.position, _targetPos) + _nextCell.TravelCost;
+                _journeyLength = Vector3.Distance(currentCreatureCell.Coordinates.ToMapVector(), _targetPos) + _nextCell.TravelCost;
 
                 Creature.MoveDirection = MapGrid.Instance.GetDirection(currentCreatureCell, _nextCell);
                 _startTime = Time.time;
@@ -78,14 +78,14 @@ public class Move : TaskBase
             // move between two cells
             var distCovered = (Time.time - _startTime) * Mathf.Min(Creature.Speed, MaxSpeed);
             var fracJourney = distCovered / _journeyLength;
-            Creature.LinkedGameObject.transform.position = Vector3.Lerp(Creature.CurrentCell.LinkedGameObject.transform.position,
+            Creature.LinkedGameObject.transform.position = Vector3.Lerp(Creature.CurrentCell.Coordinates.ToMapVector(),
                                       _targetPos,
                                       fracJourney);
         }
         else
         {
             // reached next cell
-            Creature.Coordinates = _nextCell.Data.Coordinates;
+            Creature.Coordinates = _nextCell.Coordinates;
             _nextCell = null;
             _path = null;
         }

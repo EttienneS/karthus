@@ -15,7 +15,7 @@ public class Item : MonoBehaviour
 
     public ItemData Data;
 
-    public Cell Cell { get; set; }
+    public CellData Cell { get; set; }
 
     internal void Load(string structureData)
     {

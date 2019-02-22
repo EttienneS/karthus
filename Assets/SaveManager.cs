@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Linq;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using Newtonsoft.Json;
 using System;
 using System.IO;
-using Newtonsoft.Json;
+using System.Linq;
+using UnityEngine;
 
 public class SaveManager : MonoBehaviour
 {
@@ -40,7 +38,6 @@ public class SaveManager : MonoBehaviour
             {
                 serializer.Serialize(writer, new Save(), typeof(Save));
             }
-
         }
         catch (Exception ex)
         {
@@ -60,16 +57,13 @@ public class SaveManager : MonoBehaviour
             NullValueHandling = NullValueHandling.Ignore,
         });
 
-
         TimeManager.Instance.Data = save.Time;
 
         foreach (var saveCell in save.Cells)
         {
-            var newCell = MapEditor.Instance.CreateCell(saveCell.Coordinates.X, saveCell.Coordinates.Y);
-            newCell.Data = saveCell;
+            var newCell = MapGrid.Instance.CreateCell(saveCell.Coordinates.X, saveCell.Coordinates.Y, saveCell.CellType);
+            newCell = saveCell;
 
-
-            newCell.CellType = saveCell.CellType;
 
             if (saveCell.Structure != null)
             {
@@ -83,14 +77,12 @@ public class SaveManager : MonoBehaviour
 
             // ensure we do not add duplicates
             var savedItems = saveCell.ContainedItems.ToArray();
-            newCell.Data.ContainedItems.Clear();
+            newCell.ContainedItems.Clear();
 
             foreach (var savedItem in savedItems)
             {
                 newCell.AddContent(ItemController.Instance.LoadItem(savedItem).gameObject);
             }
-
-
         }
 
         MapGrid.Instance.ClearCache();
@@ -157,10 +149,9 @@ public class Save
 
     public CameraData CameraData;
 
-
     public Save()
     {
-        Cells = MapGrid.Instance.Cells.Select(c => c.Data).ToArray();
+        Cells = MapGrid.Instance.Cells.ToArray();
         Creatures = CreatureController.Instance.Creatures.Select(c => c.Data).ToArray();
         Tasks = Taskmaster.Instance.Tasks.ToArray();
         Time = TimeManager.Instance.Data;
@@ -176,7 +167,9 @@ public class CameraData
 
     public float Zoom;
 
-    public CameraData() { }
+    public CameraData()
+    {
+    }
 
     public CameraData(Camera c)
     {

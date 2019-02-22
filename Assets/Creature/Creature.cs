@@ -288,7 +288,7 @@ public class CreatureData
     {
         get
         {
-            return MapGrid.Instance.GetCellAtCoordinate(Coordinates).Data;
+            return MapGrid.Instance.GetCellAtCoordinate(Coordinates);
         }
     }
 
@@ -311,7 +311,7 @@ public class CreatureData
             var item = CarriedItem;
             item.Reserved = false;
             item.LinkedGameObject.SpriteRenderer.sortingLayerName = "Item";
-            CurrentCell.LinkedGameObject.AddContent(item.LinkedGameObject.gameObject);
+            CurrentCell.AddContent(item.LinkedGameObject.gameObject);
 
             CarriedItemId = 0;
             return item;

@@ -39,3 +39,4 @@ sysinfo.txt
 *save*.json
 *.unitypackage
 /stdout.log
+*.png

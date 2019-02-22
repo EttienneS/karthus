@@ -7,10 +7,33 @@ public class ItemController : MonoBehaviour
     public Item itemPrefab;
 
     internal Dictionary<int, Item> ItemIdLookup = new Dictionary<int, Item>();
-    internal Dictionary<string, Item> AllItemTypes = new Dictionary<string, Item>();
     internal Dictionary<ItemData, Item> ItemDataLookup = new Dictionary<ItemData, Item>();
     internal Dictionary<string, List<Item>> ItemTypeIndex = new Dictionary<string, List<Item>>();
     private static ItemController _instance;
+
+    private Dictionary<string, Item> _allItemTypes;
+
+    internal Dictionary<string, Item> AllItemTypes
+    {
+        get
+        {
+            if (_allItemTypes == null)
+            {
+                _allItemTypes = new Dictionary<string, Item>();
+                foreach (var itemFile in FileController.Instance.ItemJson)
+                {
+                    var item = Instantiate(itemPrefab, transform);
+
+                    item.Load(itemFile.text);
+                    item.name = item.Data.Name;
+
+                    AllItemTypes.Add(item.Data.Name, item);
+                }
+            }
+            return _allItemTypes;
+        }
+    }
+
 
     public static ItemController Instance
     {
@@ -22,19 +45,6 @@ public class ItemController : MonoBehaviour
             }
 
             return _instance;
-        }
-    }
-
-    public void Start()
-    {
-        foreach (var itemFile in FileController.Instance.ItemJson)
-        {
-            var item = Instantiate(itemPrefab, transform);
-
-            item.Load(itemFile.text);
-            item.name = item.Data.Name;
-
-            AllItemTypes.Add(item.Data.Name, item);
         }
     }
 
@@ -58,7 +68,7 @@ public class ItemController : MonoBehaviour
     {
         if (item.Cell != null)
         {
-            item.Cell.Data.ContainedItems.Remove(item.Data);
+            item.Cell.ContainedItems.Remove(item.Data);
         }
 
         ItemTypeIndex[item.Data.ItemType].Remove(item);
@@ -68,7 +78,7 @@ public class ItemController : MonoBehaviour
         Destroy(item.gameObject);
     }
 
-    internal ItemData FindClosestItemOfType(Cell centerPoint, string type, bool allowStockpiled)
+    internal ItemData FindClosestItemOfType(CellData centerPoint, string type, bool allowStockpiled)
     {
         if (!ItemTypeIndex.ContainsKey(type) || ItemTypeIndex[type].Count == 0)
         {
@@ -78,7 +88,7 @@ public class ItemController : MonoBehaviour
         else
         {
             // registered items found
-            var checkedCells = new HashSet<Cell>();
+            var checkedCells = new HashSet<CellData>();
             var closest = int.MaxValue;
             ItemData closestItem = null;
             foreach (var item in ItemTypeIndex[type])
@@ -89,7 +99,7 @@ public class ItemController : MonoBehaviour
                 }
                 if (checkedCells.Add(item.Cell))
                 {
-                    var distance = centerPoint.Data.Coordinates.DistanceTo(item.Cell.Data.Coordinates);
+                    var distance = centerPoint.Coordinates.DistanceTo(item.Cell.Coordinates);
                     if (distance < closest)
                     {
                         closest = distance;

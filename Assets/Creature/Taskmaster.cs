@@ -78,10 +78,10 @@ public class Taskmaster : MonoBehaviour
             {
                 if (Random.value > 0.6)
                 {
-                    var wanderCircle = MapGrid.Instance.GetCircle(creature.Data.CurrentCell.LinkedGameObject, 3).Where(c => c.TravelCost == 1).ToList();
+                    var wanderCircle = MapGrid.Instance.GetCircle(creature.Data.CurrentCell, 3).Where(c => c.TravelCost == 1).ToList();
                     if (wanderCircle.Count > 0)
                     {
-                        task = new Move(wanderCircle[Random.Range(0, wanderCircle.Count - 1)].Data.Coordinates, (int)creature.Data.Speed / 3);
+                        task = new Move(wanderCircle[Random.Range(0, wanderCircle.Count - 1)].Coordinates, (int)creature.Data.Speed / 3);
                     }
                 }
 

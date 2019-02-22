@@ -33,10 +33,10 @@
         {
             foreach (var cell in cells)
             {
-                if (cell.Data.Structure != null && cell.Data.Structure.StructureType == type)
+                if (cell.Structure != null && cell.Structure.StructureType == type)
                 {
-                    cell.Data.Structure.LinkedGameObject.StatusSprite.sprite = SpriteStore.Instance.GetSpriteByName(icon);
-                    Taskmaster.Instance.AddTask(new Harvest(cell.Data.Structure));
+                    cell.Structure.LinkedGameObject.StatusSprite.sprite = SpriteStore.Instance.GetSpriteByName(icon);
+                    Taskmaster.Instance.AddTask(new Harvest(cell.Structure));
                 }
             }
             GameController.Instance.DeselectCell();

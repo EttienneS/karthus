@@ -40,27 +40,27 @@ public class CellInfoPanel : MonoBehaviour
     {
         if (_cell != null)
         {
-            CellName.text = _cell.Data.Coordinates.ToString();
+            CellName.text = _cell.Coordinates.ToString();
             CellContent.text = string.Empty;
 
-            foreach (var item in _cell.Data.ContainedItems.GroupBy(g => g.ItemType))
+            foreach (var item in _cell.ContainedItems.GroupBy(g => g.ItemType))
             {
                 CellContent.text += $"{item.Key}:\t{item.Count()}\n";
             }
 
             CellContent.text += "\n";
 
-            if(_cell.Data.Structure != null)
+            if(_cell.Structure != null)
             {
-                CellContent.text += $"Structure:\t{_cell.Data.Structure}\n";
+                CellContent.text += $"Structure:\t{_cell.Structure}\n";
             }
             CellContent.text += "\n";
         }
     }
 
-    private Cell _cell;
+    private CellData _cell;
 
-    public void Show(Cell cell)
+    public void Show(CellData cell)
     {
         _cell = cell;
         CreatureInfoPanel.Instance.Hide();

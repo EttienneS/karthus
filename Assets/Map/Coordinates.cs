@@ -22,6 +22,12 @@ public class Coordinates : IEquatable<Coordinates>
         return new Coordinates(Mathf.FloorToInt(position.x), Mathf.FloorToInt(position.y));
     }
 
+    public Vector2 ToMapVector()
+    {
+        // add half a unit to each position to account for offset (cells are at point 0,0 in the very center)
+        return new Vector2(Mathf.FloorToInt(X) + 0.5f, Mathf.FloorToInt(Y) + 0.5f);
+    }
+
     public static bool operator !=(Coordinates obj1, Coordinates obj2)
     {
         return !obj1.Equals(obj2);

@@ -6,7 +6,26 @@ public class StructureController : MonoBehaviour
     public Dictionary<StructureData, Structure> StructureLookup = new Dictionary<StructureData, Structure>();
     public Structure structurePrefab;
     internal Dictionary<string, StructureData> StructureDataReference = new Dictionary<string, StructureData>();
-    internal Dictionary<string, string> StructureTypeFileMap = new Dictionary<string, string>();
+
+    private Dictionary<string, string> _structureTypeFileMap;
+
+    internal Dictionary<string, string> StructureTypeFileMap
+    {
+        get
+        {
+            if (_structureTypeFileMap == null)
+            {
+                _structureTypeFileMap = new Dictionary<string, string>();
+                foreach (var structureFile in FileController.Instance.StructureJson)
+                {
+                    var data = StructureData.GetFromJson(structureFile.text);
+                    StructureTypeFileMap.Add(data.Name, structureFile.text);
+                    StructureDataReference.Add(data.Name, data);
+                }
+            }
+            return _structureTypeFileMap;
+        }
+    }
     private static StructureController _instance;
 
     public static StructureController Instance
@@ -37,6 +56,11 @@ public class StructureController : MonoBehaviour
 
         structure.Data.SetBlueprintState(false);
 
+        if (structure.Data.StructureType == "Tree")
+        {
+            structure.SpriteRenderer.sortingLayerName = "Tree";
+        }
+
         return structure;
     }
 
@@ -58,20 +82,11 @@ public class StructureController : MonoBehaviour
 
     internal void DestroyStructure(Structure structure)
     {
-        MapGrid.Instance.GetCellAtCoordinate(structure.Data.Coordinates).Data.Structure = null;
+        MapGrid.Instance.GetCellAtCoordinate(structure.Data.Coordinates).Structure = null;
 
         Destroy(structure.gameObject);
     }
 
-    private void Start()
-    {
-        foreach (var structureFile in FileController.Instance.StructureJson)
-        {
-            var data = StructureData.GetFromJson(structureFile.text);
-            StructureTypeFileMap.Add(data.Name, structureFile.text);
-            StructureDataReference.Add(data.Name, data);
-        }
-    }
 
     internal Structure LoadStructure(StructureData savedStructure)
     {

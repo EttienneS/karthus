@@ -37,7 +37,9 @@ public class SpriteStore : MonoBehaviour
     {
         try
         {
-            return MapSpriteTypeDictionary[typeName][(int)(Random.value * MapSpriteTypeDictionary[typeName].Count())];
+            var sprite = MapSpriteTypeDictionary[typeName][(int)(Random.value * MapSpriteTypeDictionary[typeName].Count())];
+
+            return sprite;
         }
         catch
         {
@@ -117,5 +119,10 @@ public class SpriteStore : MonoBehaviour
     internal Sprite GetRandomSpriteOfType(CellType cellType)
     {
         return GetRandomSpriteOfType(cellType.ToString());
+    }
+
+    internal Color[] GetGroundTextureFor(string typeName, int size)
+    {
+        return MapSpriteTypeDictionary[typeName][0].texture.GetPixels(Random.Range(0, 150), Random.Range(0, 150), size, size);
     }
 }

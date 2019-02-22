@@ -46,13 +46,13 @@ public class CreatureController : MonoBehaviour
         return null;
     }
 
-    public Creature SpawnCreature(Cell spawnLocation)
+    public Creature SpawnCreature(CellData spawnLocation)
     {
         var creature = Instantiate(CreaturePrefab, transform, true);
         creature.Data.Name = CreatureHelper.GetRandomName();
 
-        creature.transform.position = spawnLocation.transform.position;
-        creature.Data.Coordinates = spawnLocation.Data.Coordinates;
+        creature.transform.position = spawnLocation.Coordinates.ToMapVector();
+        creature.Data.Coordinates = spawnLocation.Coordinates;
 
         creature.Data.Id = Creatures.Count + 1;
 
@@ -74,10 +74,10 @@ public class CreatureController : MonoBehaviour
     {
         var firstCreature = SpawnCreature(MapGrid.Instance.GetRandomPathableCell());
         firstCreature.Data.Speed = Random.Range(10, 15);
-        CameraController.Instance.MoveToCell(firstCreature.Data.CurrentCell.LinkedGameObject);
+        CameraController.Instance.MoveToCell(firstCreature.Data.CurrentCell);
 
         // spawn creatures in a circle around the 'first' one
-        var spawns = MapGrid.Instance.GetCircle(firstCreature.Data.CurrentCell.LinkedGameObject, 3).Where(c => c.TravelCost > 0).ToList();
+        var spawns = MapGrid.Instance.GetCircle(firstCreature.Data.CurrentCell, 3).Where(c => c.TravelCost > 0).ToList();
         var spawnCount = spawns.Count;
         for (int i = 0; i < spawnCount * 2; i++)
         {
@@ -108,7 +108,7 @@ public class CreatureController : MonoBehaviour
         var creature = Instantiate(CreaturePrefab, transform, true);
         creature.Data = savedCreature;
 
-        creature.transform.position = MapGrid.Instance.GetCellAtCoordinate(savedCreature.Coordinates).transform.position;
+        creature.transform.position = savedCreature.Coordinates.ToMapVector();
         creature.GetSprite();
         IndexCreature(creature);
         return creature;

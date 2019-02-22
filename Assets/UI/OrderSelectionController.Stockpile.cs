@@ -13,7 +13,7 @@ public partial class OrderSelectionController //.Stockpile
         {
             foreach (var cell in cells)
             {
-                if (cell.Data.Stockpile == null && cell.TravelCost > 0)
+                if (cell.Stockpile == null && cell.TravelCost > 0)
                 {
                     var stockpile = StockpileController.Instance.AddStockpile(itemTypeName);
                     cell.AddContent(stockpile.gameObject);
