@@ -37,7 +37,7 @@ public class SunController : MonoBehaviour
     {
         get
         {
-            return MapGrid.Instance.MapSize / DayLightHours;
+            return Constants.MapSize / DayLightHours;
         }
     }
 

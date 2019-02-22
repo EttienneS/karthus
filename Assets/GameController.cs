@@ -36,11 +36,6 @@ public class GameController : MonoBehaviour
 
     public void DeselectCell()
     {
-        foreach (var cell in SelectedCells)
-        {
-            cell.DisableBorder();
-        }
-
         SelectedCells.Clear();
     }
 
@@ -101,11 +96,6 @@ public class GameController : MonoBehaviour
 
     private void SelectCell()
     {
-        foreach (var cell in SelectedCells)
-        {
-            cell.EnableBorder(Color.red);
-        }
-
         if (SelectedCells.Count == 1)
         {
             var cell = SelectedCells.First();
@@ -180,10 +170,10 @@ public class GameController : MonoBehaviour
 
                 var endPoint = Camera.main.ScreenToWorldPoint(_selectionEnd);
 
-                var startX = Mathf.Clamp(Mathf.Min(_selectionStart.x, endPoint.x), 0, MapGrid.Instance.MapSize);
-                var startY = Mathf.Clamp(Mathf.Min(_selectionStart.y, endPoint.y), 0, MapGrid.Instance.MapSize);
-                var endX = Mathf.Clamp(Mathf.Max(_selectionStart.x, endPoint.x), 0, MapGrid.Instance.MapSize);
-                var endY = Mathf.Clamp(Mathf.Max(_selectionStart.y, endPoint.y), 0, MapGrid.Instance.MapSize);
+                var startX = Mathf.Clamp(Mathf.Min(_selectionStart.x, endPoint.x), 0, Constants.MapSize);
+                var startY = Mathf.Clamp(Mathf.Min(_selectionStart.y, endPoint.y), 0, Constants.MapSize);
+                var endX = Mathf.Clamp(Mathf.Max(_selectionStart.x, endPoint.x), 0, Constants.MapSize);
+                var endY = Mathf.Clamp(Mathf.Max(_selectionStart.y, endPoint.y), 0, Constants.MapSize);
 
                 if (startX == endX && startY == endY)
                 {

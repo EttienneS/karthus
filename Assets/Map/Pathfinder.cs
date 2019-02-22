@@ -95,17 +95,6 @@ public static class Pathfinder
         return GetPathCost(path);
     }
 
-    public static void ShowPath(List<CellData> path)
-    {
-        foreach (var cell in path)
-        {
-            cell.EnableBorder(Color.white);
-        }
-
-        path.First().EnableBorder(Color.red);
-        path.Last().EnableBorder(Color.blue);
-    }
-
     private static bool Search(CellData fromCell, CellData toCell)
     {
         _searchFrontierPhase += 2;

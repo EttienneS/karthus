@@ -24,7 +24,8 @@ public class Coordinates : IEquatable<Coordinates>
 
     public Vector2 ToMapVector()
     {
-        return new Vector2(Mathf.FloorToInt(X), Mathf.FloorToInt(Y));
+        // add half a unit to each position to account for offset (cells are at point 0,0 in the very center)
+        return new Vector2(Mathf.FloorToInt(X) + 0.5f, Mathf.FloorToInt(Y) + 0.5f);
     }
 
     public static bool operator !=(Coordinates obj1, Coordinates obj2)

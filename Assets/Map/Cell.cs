@@ -136,14 +136,4 @@ public class CellData
             }
         }
     }
-
-    public void DisableBorder()
-    {
-        // Border.enabled = false;
-    }
-
-    internal void EnableBorder(Color red)
-    {
-        throw new NotImplementedException();
-    }
 }

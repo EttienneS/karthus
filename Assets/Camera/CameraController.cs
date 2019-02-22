@@ -140,8 +140,8 @@ public class CameraController : MonoBehaviour
             float horizontal = Input.GetAxis("Horizontal") / Time.timeScale;
             float vertical = Input.GetAxis("Vertical") / Time.timeScale;
 
-            var x = Mathf.Clamp(transform.position.x + (horizontal * Speed), 0, MapGrid.Instance.MapSize);
-            var y = Mathf.Clamp(transform.position.y + (vertical * Speed), 0, MapGrid.Instance.MapSize);
+            var x = Mathf.Clamp(transform.position.x + (horizontal * Speed), 0, Constants.MapSize);
+            var y = Mathf.Clamp(transform.position.y + (vertical * Speed), 0, Constants.MapSize);
             transform.position = new Vector3(x, y, transform.position.z);
 
             Camera.orthographicSize = Mathf.Clamp(Camera.orthographicSize - Input.GetAxis("Mouse ScrollWheel") * ZoomStep,
