@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -46,7 +45,21 @@ public class CellData
         return Neighbors.Count(n => n != null && n.CellType == cellType.Value);
     }
 
-    public float TravelCost = -1;
+    [JsonIgnore]
+    public float TravelCost
+    {
+        get
+        {
+            switch (CellType)
+            {
+                case CellType.Water:
+                case CellType.Mountain:
+                    return -1;
+            }
+
+            return Structure != null && !Structure.IsBluePrint ? Structure.TravelCost : 1;
+        }
+    }
 
     public CellType CellType;
 
@@ -61,15 +74,6 @@ public class CellData
     [JsonIgnore]
     public CellData[] Neighbors = new CellData[8];
 
-    //[JsonIgnore]
-    //public Cell LinkedGameObject
-    //{
-    //    get
-    //    {
-    //        return MapGrid.Instance.GetCellAtCoordinate(Coordinates);
-    //    }
-    //}
-
     public void AddContent(GameObject gameObject)
     {
         var item = gameObject.GetComponent<Item>();
@@ -78,6 +82,9 @@ public class CellData
 
         var scatterIntensity = 0.3f;
         var scatter = false;
+
+        gameObject.transform.position = Coordinates.ToMapVector();
+
         if (item != null)
         {
             if (item.Cell != null)
@@ -101,13 +108,9 @@ public class CellData
         {
             structure.Data.Coordinates = Coordinates;
             Structure = structure.Data;
-            if (structure.Data.Scatter)
-            {
-                scatter = true;
-                scatterIntensity = 0.3f;
-            }
 
-            structure.SpriteRenderer.sortingOrder = structure.Data.Id;
+            structure.Shift();
+            structure.SpriteRenderer.sortingOrder = Constants.MapSize - Coordinates.Y;
         }
         else if (stockpile != null)
         {
@@ -115,25 +118,10 @@ public class CellData
             Stockpile = stockpile.Data;
         }
 
-        gameObject.transform.position = Coordinates.ToMapVector();
 
         if (scatter)
         {
-            //gameObject.transform.Rotate(0, 0, Random.Range(-45f, 45f));
             gameObject.transform.position += new Vector3(Random.Range(-scatterIntensity, scatterIntensity), Random.Range(-scatterIntensity, scatterIntensity), 0);
-        }
-
-        if (structure != null)
-        {
-            if (structure.SpriteRenderer.bounds.size.x > 1.0f)
-            {
-                gameObject.transform.position += new Vector3(structure.SpriteRenderer.bounds.size.x / 2, 0);
-            }
-
-            if (structure.SpriteRenderer.bounds.size.y > 1.0f)
-            {
-                gameObject.transform.position += new Vector3(0, structure.SpriteRenderer.bounds.size.y / 2);
-            }
         }
     }
 }

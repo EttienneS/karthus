@@ -14,7 +14,6 @@ public class MapGrid : MonoBehaviour
 {
     public TerrainBlock TerrainBlockPrefab;
 
-    internal Sprite MapSprite;
     private static MapGrid _instance;
     private Dictionary<(int x, int y), CellData> _cellLookup;
     private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
@@ -107,7 +106,8 @@ public class MapGrid : MonoBehaviour
 
     public CellData GetCellAtPoint(Vector3 position)
     {
-        var coordinates = Coordinates.FromPosition(position);
+        // subtract half a unit to compensate for cell offset
+        var coordinates = Coordinates.FromPosition(position - new Vector3(0.5f, 0.5f));
         return CellLookup[(coordinates.X, coordinates.Y)];
     }
 
@@ -368,7 +368,11 @@ public class MapGrid : MonoBehaviour
                 var terrainBlock = Instantiate(TerrainBlockPrefab, transform);
                 terrainBlock.name = $"Block {x}-{y}";
 
-                terrainBlock.Renderer.sprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, Constants.PixelsPerBlock, Constants.PixelsPerBlock), new Vector2(0, 0), Constants.PixelsPerCell);
+                //System.IO.File.WriteAllBytes(terrainBlock.name + ".png", texture.EncodeToPNG());
+
+                terrainBlock.Renderer.sprite = Sprite.Create(texture, new Rect(0, 0, Constants.PixelsPerBlock, Constants.PixelsPerBlock), new Vector2(0, 0), Constants.PixelsPerCell, 2);
+
+
                 terrainBlock.Renderer.sortingOrder = counter++;
                 terrainBlock.transform.position = new Vector2(x * Constants.CellsPerTerrainBlock, y * Constants.CellsPerTerrainBlock);
             }
@@ -488,7 +492,6 @@ public class MapGrid : MonoBehaviour
             switch (cell.CellType)
             {
                 case CellType.Grass:
-                    cell.TravelCost = 1;
                     if (value > 0.65)
                     {
                         cell.AddContent(StructureController.Instance.GetStructure("Bush").gameObject);
@@ -496,7 +499,6 @@ public class MapGrid : MonoBehaviour
                     break;
 
                 case CellType.Forest:
-                    cell.TravelCost = 1;
                     if (value > 0.95)
                     {
                         cell.AddContent(StructureController.Instance.GetStructure("Tree").gameObject);
@@ -507,13 +509,12 @@ public class MapGrid : MonoBehaviour
                     }
                     break;
 
-                case CellType.Stone:
-                    cell.TravelCost = 1;
-                    for (int i = 0; i < Random.Range(1, 2); i++)
-                    {
-                        cell.AddContent(ItemController.Instance.GetItem("Rock").gameObject);
-                    }
-                    break;
+                    //case CellType.Stone:
+                    //    for (int i = 0; i < Random.Range(1, 2); i++)
+                    //    {
+                    //        cell.AddContent(ItemController.Instance.GetItem("Rock").gameObject);
+                    //    }
+                    //    break;
             }
         }
     }

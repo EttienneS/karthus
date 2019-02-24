@@ -429,7 +429,7 @@ PrefabInstance:
     - target: {fileID: 1169824505746064976, guid: 7e20ca7795e2e4a42b402127e35b4447,
         type: 3}
       propertyPath: m_Range
-      value: 2000
+      value: 10000
       objectReference: {fileID: 0}
     - target: {fileID: 1169824505746064976, guid: 7e20ca7795e2e4a42b402127e35b4447,
         type: 3}
@@ -659,6 +659,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 667879368938610748, guid: 50c5056d9f4c1364194358eaa321df8e,
+        type: 3}
+      propertyPath: StructureJson.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 667879368938610748, guid: 50c5056d9f4c1364194358eaa321df8e,
+        type: 3}
+      propertyPath: StructureJson.Array.data[5]
+      value: 
+      objectReference: {fileID: 4900000, guid: 21bcf2c9bdda1f84bafe99436dfead01, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 50c5056d9f4c1364194358eaa321df8e, type: 3}
 --- !u!1001 &4020483076621638979
@@ -857,6 +867,12 @@ PrefabInstance:
       propertyPath: MapSize
       value: 48
       objectReference: {fileID: 0}
+    - target: {fileID: 4463792733002690004, guid: 7bf1785e44d991f408b7a89a8850def9,
+        type: 3}
+      propertyPath: TerrainBlockPrefab
+      value: 
+      objectReference: {fileID: 4109625264356320886, guid: 97c834c2b6c42bc4db6a743723fb3f5f,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7bf1785e44d991f408b7a89a8850def9, type: 3}
 --- !u!1001 &5246461426214547476
@@ -1800,6 +1816,15 @@ PrefabInstance:
       propertyPath: m_CellSize.y
       value: 75
       objectReference: {fileID: 0}
+    - target: {fileID: 1925529794, guid: 21216dc22b576ec4785cf4c518463eaa, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 68478486265407d428cb9701cad63a32,
+        type: 3}
+    - target: {fileID: 1925529794, guid: 21216dc22b576ec4785cf4c518463eaa, type: 3}
+      propertyPath: m_Type
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 21216dc22b576ec4785cf4c518463eaa, type: 3}
 --- !u!114 &6943260559078519374 stripped
@@ -1885,19 +1910,19 @@ PrefabInstance:
     - target: {fileID: 7308512517502387629, guid: 5223a731d594e30499746cb45660fed3,
         type: 3}
       propertyPath: ItemSprites.Array.size
-      value: 17
+      value: 16
       objectReference: {fileID: 0}
+    - target: {fileID: 7308512517502387629, guid: 5223a731d594e30499746cb45660fed3,
+        type: 3}
+      propertyPath: ItemSprites.Array.data[1]
+      value: 
+      objectReference: {fileID: 21300000, guid: 1f4b0eab352fa0e47bf65382335a032c,
+        type: 3}
     - target: {fileID: 7308512517502387629, guid: 5223a731d594e30499746cb45660fed3,
         type: 3}
       propertyPath: ItemSprites.Array.data[15]
       value: 
       objectReference: {fileID: 21300000, guid: 2fd26f407a726b3459181f4c1fdddc86,
-        type: 3}
-    - target: {fileID: 7308512517502387629, guid: 5223a731d594e30499746cb45660fed3,
-        type: 3}
-      propertyPath: ItemSprites.Array.data[16]
-      value: 
-      objectReference: {fileID: 21300000, guid: 9657207ab40da7449bc707a7b38e11f1,
         type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5223a731d594e30499746cb45660fed3, type: 3}

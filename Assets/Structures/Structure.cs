@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class Structure : MonoBehaviour
 {
@@ -35,6 +34,27 @@ public class Structure : MonoBehaviour
         LoadSprite();
     }
 
+    internal void Shift()
+    {
+        if (!string.IsNullOrEmpty(Data.Scale))
+        {
+            float scale = Helpers.GetValueFromFloatRange(Data.Scale);
+            transform.localScale = new Vector3(0, scale, 0);
+        }
+
+        if (!string.IsNullOrEmpty(Data.ShiftX))
+        {
+            float shiftX = Helpers.GetValueFromFloatRange(Data.ShiftX);
+            transform.position += new Vector3(shiftX, 0, 0);
+        }
+
+        if (!string.IsNullOrEmpty(Data.ShiftY))
+        {
+            float shiftY = Helpers.GetValueFromFloatRange(Data.ShiftY);
+            transform.position += new Vector3(0, shiftY, 0);
+        }
+    }
+
     private void Awake()
     {
         SpriteRenderer = GetComponent<SpriteRenderer>();
@@ -61,61 +81,17 @@ public class StructureData
 
     public int Id;
     public bool IsBluePrint;
-    public bool Scatter;
+    public string Layer;
     public string Name;
-
     public List<string> Require;
-    public List<string> Yield;
-
+    public string Scale;
+    public string ShiftX;
+    public string ShiftY;
     public string SpriteName;
-
     public string StructureType;
-
     public bool Tiled;
-
     public float TravelCost;
-
-    public static List<string> ParseItemString(string itemString)
-    {
-        //"10:Wood"
-        //"1-3:Food"
-        var items = new List<string>();
-        var parts = itemString.Split(':');
-
-        var type = parts[1];
-        var countString = parts[0].Split('-');
-
-        int count = 0;
-        if (countString.Length > 1)
-        {
-            var min = int.Parse(countString[0]);
-            var max = int.Parse(countString[1]);
-
-            count = Random.Range(min, max);
-        }
-        else
-        {
-            count = int.Parse(countString[0]);
-        }
-
-        for (var i = 0; i < count; i++)
-        {
-            items.Add(type);
-        }
-
-        return items;
-    }
-
-    public void SpawnYield(CellData cell)
-    {
-        foreach (var yieldString in Yield)
-        {
-            foreach (var item in ParseItemString(yieldString))
-            {
-                cell.AddContent(ItemController.Instance.GetItem(item).gameObject);
-            }
-        }
-    }
+    public List<string> Yield;
 
     [JsonIgnore]
     public Structure LinkedGameObject
@@ -150,6 +126,17 @@ public class StructureData
         {
             LinkedGameObject.SpriteRenderer.color = new Color(0.6f, 0.6f, 0.6f);
             IsBluePrint = false;
+        }
+    }
+
+    public void SpawnYield(CellData cell)
+    {
+        foreach (var yieldString in Yield)
+        {
+            foreach (var item in Helpers.ParseItemString(yieldString))
+            {
+                cell.AddContent(ItemController.Instance.GetItem(item).gameObject);
+            }
         }
     }
 }

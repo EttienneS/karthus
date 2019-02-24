@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 
 public class StructureController : MonoBehaviour
@@ -56,9 +57,10 @@ public class StructureController : MonoBehaviour
 
         structure.Data.SetBlueprintState(false);
 
-        if (structure.Data.StructureType == "Tree")
+
+        if (!string.IsNullOrEmpty(structure.Data.Layer))
         {
-            structure.SpriteRenderer.sortingLayerName = "Tree";
+            structure.SpriteRenderer.sortingLayerName = structure.Data.Layer;
         }
 
         return structure;
