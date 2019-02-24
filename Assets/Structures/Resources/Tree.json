@@ -1,10 +1,12 @@
 {
-	"Name":"Tree",
-	"SpriteName":"Tree",
-	"Tiled":"False",
-	"TravelCost": "-1",
-	"StructureType": "Tree",
-	"Scatter": "True",
-	"Buildable":  "False",
-	"Yield":["10:Wood"]
+  "Name": "Tree",
+  "SpriteName": "Tree",
+  "Tiled": "False",
+  "TravelCost": "-1",
+  "StructureType": "Tree",
+  "Buildable": "False",
+  "Yield": [ "10:Wood" ],
+  "Layer": "Tree",
+  "ShiftY": "0.7~1",
+  "ShiftX": "-0.2~0.2"
 }

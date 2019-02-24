@@ -1,0 +1,10 @@
+{
+	"Name":"Table",
+	"SpriteName":"Table",
+	"Tiled":"False",
+	"Require":["Wood", "Wood"],
+	"TravelCost": "4",
+	"StructureType": "Table",
+	"Scatter": "False",
+	"Buildable":  "True"
+}

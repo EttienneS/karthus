@@ -106,7 +106,8 @@ public class MapGrid : MonoBehaviour
 
     public CellData GetCellAtPoint(Vector3 position)
     {
-        var coordinates = Coordinates.FromPosition(position);
+        // subtract half a unit to compensate for cell offset
+        var coordinates = Coordinates.FromPosition(position - new Vector3(0.5f, 0.5f));
         return CellLookup[(coordinates.X, coordinates.Y)];
     }
 
@@ -508,12 +509,12 @@ public class MapGrid : MonoBehaviour
                     }
                     break;
 
-                case CellType.Stone:
-                    for (int i = 0; i < Random.Range(1, 2); i++)
-                    {
-                        cell.AddContent(ItemController.Instance.GetItem("Rock").gameObject);
-                    }
-                    break;
+                    //case CellType.Stone:
+                    //    for (int i = 0; i < Random.Range(1, 2); i++)
+                    //    {
+                    //        cell.AddContent(ItemController.Instance.GetItem("Rock").gameObject);
+                    //    }
+                    //    break;
             }
         }
     }

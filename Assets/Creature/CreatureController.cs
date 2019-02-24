@@ -77,15 +77,30 @@ public class CreatureController : MonoBehaviour
         CameraController.Instance.MoveToCell(firstCreature.Data.CurrentCell);
 
         // spawn creatures in a circle around the 'first' one
-        var spawns = MapGrid.Instance.GetCircle(firstCreature.Data.CurrentCell, 3).Where(c => c.TravelCost > 0).ToList();
-        var spawnCount = spawns.Count;
-        for (int i = 0; i < spawnCount * 2; i++)
+        var spawns = MapGrid.Instance.GetCircle(firstCreature.Data.CurrentCell, 4).Where(c => c.TravelCost == 1).ToList();
+
+        var foodCell = spawns[Random.Range(0, spawns.Count)];
+
+        for (var i = 0; i < 30; i++)
         {
-            spawns[Random.Range(0, spawnCount)].AddContent(ItemController.Instance.GetItem("Apple").gameObject);
-            spawns[Random.Range(0, spawnCount)].AddContent(ItemController.Instance.GetItem("Wood").gameObject);
+            foodCell.AddContent(ItemController.Instance.GetItem("Apple").gameObject);
         }
 
-        for (int i = 0; i < CreaturesToSpawn - 1; i++)
+        var woodCell = spawns[Random.Range(0, spawns.Count)];
+
+        for (var i = 0; i < 15; i++)
+        {
+            woodCell.AddContent(ItemController.Instance.GetItem("Rock").gameObject);
+        }
+
+        var rockCell = spawns[Random.Range(0, spawns.Count)];
+
+        for (var i = 0; i < 15; i++)
+        {
+            rockCell.AddContent(ItemController.Instance.GetItem("Wood").gameObject);
+        }
+
+        for (var i = 0; i < CreaturesToSpawn - 1; i++)
         {
             SpawnCreature(spawns[Random.Range(0, spawns.Count)]).Data.Speed = Random.Range(10, 15);
         }
