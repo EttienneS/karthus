@@ -115,8 +115,8 @@ public class ItemController : MonoBehaviour
         item.Load(FileController.Instance.ItemLookup[name].text);
 
         item.Data.Id = ItemDataLookup.Keys.Count + 1;
-
         IndexItem(item);
+
         return item;
     }
 

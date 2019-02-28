@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-
-public class Eat : TaskBase
+﻿public class Eat : TaskBase
 {
     public Eat()
     {
@@ -26,7 +22,7 @@ public class Eat : TaskBase
             var food = Creature.CarriedItem;
             Creature.DropItem();
 
-            Creature.Hunger -= int.Parse(food.GetPropertyValue("Nutrition"));
+            Creature.Hunger -= int.Parse(food.Properties["Nutrition"]);
             ItemController.Instance.DestoyItem(food);
 
             return true;

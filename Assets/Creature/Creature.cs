@@ -279,7 +279,11 @@ public class CreatureData
     {
         get
         {
-            return ItemController.Instance.ItemIdLookup[CarriedItemId].Data;
+            if (ItemController.Instance.ItemIdLookup.ContainsKey(CarriedItemId))
+            {
+                return ItemController.Instance.ItemIdLookup[CarriedItemId].Data;
+            }
+            return null;
         }
     }
 
