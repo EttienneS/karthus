@@ -1,6 +1,6 @@
 ﻿using System;
 
-[Serializable]
+
 public class Build : TaskBase
 {
     public Coordinates Coordinates;

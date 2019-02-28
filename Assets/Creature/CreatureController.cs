@@ -5,15 +5,10 @@ using Random = UnityEngine.Random;
 
 public class CreatureController : MonoBehaviour
 {
-    [Range(0.01f, 2f)]
-    public float ActPeriod = 1f;
 
     public Creature CreaturePrefab;
 
-    public List<Creature> Creatures = new List<Creature>();
-
-    [Range(1, 1000)]
-    public int CreaturesToSpawn = 10;
+    internal List<Creature> Creatures = new List<Creature>();
 
     internal Dictionary<int, CreatureData> CreatureIdLookup = new Dictionary<int, CreatureData>();
     internal Dictionary<CreatureData, Creature> CreatureLookup = new Dictionary<CreatureData, Creature>();
@@ -73,7 +68,6 @@ public class CreatureController : MonoBehaviour
     public void SpawnCreatures()
     {
         var firstCreature = SpawnCreature(MapGrid.Instance.GetRandomPathableCell());
-        firstCreature.Data.Speed = Random.Range(10, 15);
         CameraController.Instance.MoveToCell(firstCreature.Data.CurrentCell);
 
         // spawn creatures in a circle around the 'first' one
@@ -100,7 +94,7 @@ public class CreatureController : MonoBehaviour
             rockCell.AddContent(ItemController.Instance.GetItem("Wood").gameObject);
         }
 
-        for (var i = 0; i < CreaturesToSpawn - 1; i++)
+        for (var i = 0; i < 2; i++)
         {
             SpawnCreature(spawns[Random.Range(0, spawns.Count)]).Data.Speed = Random.Range(10, 15);
         }

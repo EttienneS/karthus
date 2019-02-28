@@ -1,11 +1,8 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 
-[Serializable]
 public abstract class TaskBase
 {
-
     public int CreatureId;
 
     [JsonIgnore]

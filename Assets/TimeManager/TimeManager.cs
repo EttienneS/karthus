@@ -11,7 +11,7 @@ public enum TimeStep
     Hyper = 8
 }
 
-[Serializable]
+
 public class TimeData
 {
     public int Hour;

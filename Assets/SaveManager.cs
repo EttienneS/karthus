@@ -136,7 +136,7 @@ public class SaveManager : MonoBehaviour
     }
 }
 
-[Serializable]
+
 public class Save
 {
     public CellData[] Cells;

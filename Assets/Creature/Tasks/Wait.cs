@@ -2,7 +2,7 @@
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-[Serializable]
+
 public class Wait : TaskBase
 {
     public float Duration;

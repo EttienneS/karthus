@@ -26,7 +26,7 @@ public partial class OrderSelectionController : MonoBehaviour
 
     public void DisableAndReset()
     {
-        GameController.Instance.SelectionPreference = SelectionPreference.CreatureOnly;
+        GameController.Instance.SelectionPreference = SelectionPreference.CreatureOrStructure;
 
         OrderTrayController.Instance.gameObject.SetActive(false);
         CellClickOrder = null;

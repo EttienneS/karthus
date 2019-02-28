@@ -73,7 +73,7 @@ public class Structure : MonoBehaviour
     }
 }
 
-[Serializable]
+
 public class StructureData
 {
     public bool Buildable;
@@ -93,6 +93,8 @@ public class StructureData
     public float TravelCost;
     public List<string> Yield;
 
+    public List<TaskBase> Tasks = new List<TaskBase>();
+
     [JsonIgnore]
     public Structure LinkedGameObject
     {
@@ -104,7 +106,11 @@ public class StructureData
 
     public static StructureData GetFromJson(string json)
     {
-        return JsonUtility.FromJson<StructureData>(json);
+        return JsonConvert.DeserializeObject<StructureData>(json, new JsonSerializerSettings
+        {
+            TypeNameHandling = TypeNameHandling.Auto,
+            NullValueHandling = NullValueHandling.Ignore,
+        });
     }
 
     public void AddItem(ItemData item)

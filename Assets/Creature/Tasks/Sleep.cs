@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Random = UnityEngine.Random;
 
-[Serializable]
+
 public class Sleep : TaskBase
 {
     public override bool Done()

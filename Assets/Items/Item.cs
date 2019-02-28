@@ -3,7 +3,6 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-[Serializable]
 public class Item : MonoBehaviour
 {
     internal SpriteRenderer SpriteRenderer;
@@ -17,14 +16,14 @@ public class Item : MonoBehaviour
 
     public CellData Cell { get; set; }
 
-    internal void Load(string structureData)
+    internal void Load(string itemData)
     {
-        Data = JsonUtility.FromJson<ItemData>(structureData);
+        Data = JsonUtility.FromJson<ItemData>(itemData);
+
         SpriteRenderer.sprite = SpriteStore.Instance.GetSpriteByName(Data.SpriteName);
     }
 }
 
-[Serializable]
 public class ItemData
 {
     public int Id;
@@ -56,7 +55,6 @@ public class ItemData
     }
 }
 
-[Serializable]
 public class ItemProperty
 {
     public string Key;

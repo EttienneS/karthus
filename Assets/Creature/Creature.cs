@@ -253,7 +253,7 @@ public class Creature : MonoBehaviour
     }
 }
 
-[Serializable]
+
 public class CreatureData
 {
     public int CarriedItemId;
@@ -266,7 +266,7 @@ public class CreatureData
     public string Name;
 
     public bool Sleeping;
-    public float Speed = 5f;
+    public float Speed = 10f;
 
     public int SpriteId;
 

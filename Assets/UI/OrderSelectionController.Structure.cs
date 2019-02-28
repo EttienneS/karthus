@@ -10,7 +10,7 @@ public partial class OrderSelectionController //.Structure
     public void BuildClicked(string structureName)
     {
         BuildButton.Text = "Build " + structureName;
-        GameController.Instance.SelectionPreference = SelectionPreference.CellOnly;
+        GameController.Instance.SelectionPreference = SelectionPreference.Cell;
         CellClickOrder = cells =>
         {
             foreach (var cell in cells)
@@ -55,7 +55,7 @@ public partial class OrderSelectionController //.Structure
     private void RemoveStructureClicked()
     {
         BuildButton.Text = DefaultRemoveText;
-        GameController.Instance.SelectionPreference = SelectionPreference.CellOnly;
+        GameController.Instance.SelectionPreference = SelectionPreference.Cell;
         CellClickOrder = cells =>
         {
             foreach (var cell in cells)

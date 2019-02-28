@@ -1,10 +1,16 @@
 {
-	"Name":"Table",
-	"SpriteName":"Table",
-	"Tiled":"False",
-	"Require":["Wood", "Wood"],
-	"TravelCost": "4",
-	"StructureType": "Table",
-	"Scatter": "False",
-	"Buildable":  "True"
+  "Name": "Table",
+  "SpriteName": "Table",
+  "Tiled": "False",
+  "Require": [ "Wood", "Wood" ],
+  "TravelCost": "4",
+  "StructureType": "Table",
+  "Scatter": "False",
+  "Buildable": "True",
+  "Tasks": [
+    {
+      "$type": "Craft, Assembly-CSharp",
+      "ItemType": "Brick"
+    }
+  ]
 }

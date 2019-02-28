@@ -28,7 +28,7 @@
 
     private void HarvestClicked(string type, string icon)
     {
-        GameController.Instance.SelectionPreference = SelectionPreference.CellOnly;
+        GameController.Instance.SelectionPreference = SelectionPreference.Cell;
         CellClickOrder = cells =>
         {
             foreach (var cell in cells)
