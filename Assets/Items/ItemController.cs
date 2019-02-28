@@ -1,17 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class ItemController : MonoBehaviour
 {
     public Item itemPrefab;
 
-    internal Dictionary<int, Item> ItemIdLookup = new Dictionary<int, Item>();
     internal Dictionary<ItemData, Item> ItemDataLookup = new Dictionary<ItemData, Item>();
+    internal Dictionary<int, Item> ItemIdLookup = new Dictionary<int, Item>();
     internal Dictionary<string, List<Item>> ItemTypeIndex = new Dictionary<string, List<Item>>();
     private static ItemController _instance;
 
     private Dictionary<string, Item> _allItemTypes;
+
+    public static ItemController Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = GameObject.Find("ItemController").GetComponent<ItemController>();
+            }
+
+            return _instance;
+        }
+    }
 
     internal Dictionary<string, Item> AllItemTypes
     {
@@ -33,21 +45,6 @@ public class ItemController : MonoBehaviour
             return _allItemTypes;
         }
     }
-
-
-    public static ItemController Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = GameObject.Find("ItemController").GetComponent<ItemController>();
-            }
-
-            return _instance;
-        }
-    }
-
     internal void DestoyItem(ItemData data)
     {
         DestroyItem(ItemDataLookup[data]);
@@ -112,6 +109,17 @@ public class ItemController : MonoBehaviour
         }
     }
 
+    internal Item GetItem(string name)
+    {
+        var item = Instantiate(AllItemTypes[name], transform);
+        item.Load(FileController.Instance.ItemLookup[name].text);
+
+        item.Data.Id = ItemDataLookup.Keys.Count + 1;
+
+        IndexItem(item);
+        return item;
+    }
+
     internal Item LoadItem(ItemData savedItem)
     {
         var item = Instantiate(AllItemTypes[savedItem.Name], transform);
@@ -120,16 +128,6 @@ public class ItemController : MonoBehaviour
 
         return item;
     }
-
-    internal Item GetItem(string name)
-    {
-        var item = Instantiate(AllItemTypes[name], transform);
-        item.Data.Id = ItemDataLookup.Keys.Count + 1;
-
-        IndexItem(item);
-        return item;
-    }
-
     private void IndexItem(Item item)
     {
         if (!ItemTypeIndex.ContainsKey(item.Data.ItemType))
