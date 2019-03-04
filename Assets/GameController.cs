@@ -144,9 +144,14 @@ public class GameController : MonoBehaviour
             structure.LinkedGameObject.SpriteRenderer.color = Color.red;
         }
 
-        if (SelectedCreatures.Count == 1)
+        if (SelectedStructures.Count == 1)
         {
-          //  CellInfoPanel.Instance.Show(SelectedStructures.First());
+            var structure = SelectedStructures[0];
+
+            if (!structure.IsBluePrint && structure.Tasks.Count > 0)
+            {
+                CraftingScreen.Instance.Show(structure);
+            }
         }
     }
 
@@ -166,6 +171,7 @@ public class GameController : MonoBehaviour
             DeselectCell();
             DeselectStructure();
 
+            CraftingScreen.Instance.Hide();
             CreatureInfoPanel.Instance.Hide();
             CellInfoPanel.Instance.Hide();
 

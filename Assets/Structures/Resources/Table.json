@@ -10,7 +10,27 @@
   "Tasks": [
     {
       "$type": "Craft, Assembly-CSharp",
-      "ItemType": "Brick"
+      "ItemType": "Apple"
+    },
+    {
+      "$type": "Craft, Assembly-CSharp",
+      "ItemType": "axe"
+    },
+    {
+      "$type": "Craft, Assembly-CSharp",
+      "ItemType": "Apple"
+    },
+    {
+      "$type": "Craft, Assembly-CSharp",
+      "ItemType": "axe"
+    },
+    {
+      "$type": "Craft, Assembly-CSharp",
+      "ItemType": "Apple"
+    },
+    {
+      "$type": "Craft, Assembly-CSharp",
+      "ItemType": "axe"
     }
   ]
 }
