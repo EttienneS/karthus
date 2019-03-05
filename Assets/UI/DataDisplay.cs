@@ -1,12 +1,21 @@
-﻿using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class DataDisplay : MonoBehaviour
 {
-    internal Text Description;
-    internal Image Image;
-    internal Text Title;
+    public Text Description;
+    public Image Image;
+    public Text Title;
+
+    public delegate void Click();
+
+    public event Click Clicked;
+
+    public void OnClick()
+    {
+        Clicked?.Invoke();
+    }
+
     public void SetData(string title, string description, Sprite sprite)
     {
         Title.text = title;
@@ -27,12 +36,5 @@ public class DataDisplay : MonoBehaviour
     internal void SetData(CellData cell)
     {
         SetData(cell.Coordinates.ToString(), cell.Coordinates.ToString(), SpriteStore.Instance.MapSpriteTypeDictionary[cell.CellType.ToString()][0]);
-    }
-
-    void Awake()
-    {
-        Title = GetComponentsInChildren<Text>().First(t => t.name == "Title");
-        Description = GetComponentsInChildren<Text>().First(t => t.name == "Description");
-        Image = GetComponentsInChildren<Image>().First(t => t.name == "Image");
     }
 }
