@@ -3,22 +3,24 @@
 
 public class Craft : TaskBase
 {
-    public string ItemType;
+    public string OutputItemType;
+    public string[] RequiredItemTypes;
 
     public Craft()
     {
     }
 
-    public Craft(string itemType)
+    public Craft(string itemType, string[] requiredItems)
     {
-        ItemType = itemType;
+        OutputItemType = itemType;
+        RequiredItemTypes = requiredItems;
     }
 
     public override bool Done()
     {
         if (Taskmaster.QueueComplete(SubTasks))
         {
-            ItemController.Instance.GetItem(ItemType);
+            ItemController.Instance.GetItem(OutputItemType);
             return true;
         }
         return false;

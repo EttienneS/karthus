@@ -1,0 +1,17 @@
+{
+  "Name": "Table",
+  "SpriteName": "Table",
+  "Tiled": "False",
+  "RequireStrings": [ "2:Wood" ],
+  "TravelCost": "4",
+  "StructureType": "Table",
+  "Scatter": "False",
+  "Buildable": "True",
+  "Tasks": [
+    {
+      "$type": "Craft, Assembly-CSharp",
+      "OutputItemType": "Apple Pie",
+      "RequiredItemTypes": [ "4:Apple", "1:Wood" ]
+    }
+  ]
+}

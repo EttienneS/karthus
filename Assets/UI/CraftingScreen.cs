@@ -38,7 +38,7 @@ public class CraftingScreen : MonoBehaviour
             {
                 SetRecipe(craftingTask);
             };
-            optionDisplay.SetData(craftingTask.ItemType, craftingTask.ItemType, SpriteStore.Instance.GetSpriteByName(craftingTask.ItemType));
+            optionDisplay.SetData(craftingTask.OutputItemType, craftingTask.OutputItemType, SpriteStore.Instance.GetSpriteByName(craftingTask.OutputItemType));
         }
         OptionsPanel.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, craftSource.Tasks.Count * 70f);
         //OptionsPanel.transform.position = new Vector3(0)
@@ -49,7 +49,7 @@ public class CraftingScreen : MonoBehaviour
         SelectedRecipe = task;
         RequirementsText.text = string.Empty;
 
-        foreach (var item in task.ItemType)
+        foreach (var item in task.RequiredItemTypes)
         {
             RequirementsText.text += $"- {item}\n";
         }
