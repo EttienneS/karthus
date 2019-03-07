@@ -23,15 +23,20 @@ public class Creature : MonoBehaviour
 
     private float frameSeconds = 0.3f;
 
-    public void AssignTask(TaskBase task)
+    public void AssignTask(TaskBase task, string originator ="")
     {
         task.CreatureId = Data.Id;
 
+        if (!string.IsNullOrEmpty(originator))
+        {
+            task.Originator = originator;
+        }
+        
         if (task.SubTasks != null)
         {
             foreach (var subTask in task.SubTasks.ToList())
             {
-                AssignTask(subTask);
+                AssignTask(subTask, task.Originator);
             }
         }
     }

@@ -12,26 +12,6 @@
       "$type": "Craft, Assembly-CSharp",
       "OutputItemType": "Apple Pie",
       "RequiredItemTypes": [ "4:Apple", "1:Wood" ]
-    },
-    {
-      "$type": "Craft, Assembly-CSharp",
-      "OutputItemType": "Apple Pie",
-      "RequiredItemTypes": [ "4:Apple", "1:Wood" ]
-    },
-    {
-      "$type": "Craft, Assembly-CSharp",
-      "OutputItemType": "Apple Pie",
-      "RequiredItemTypes": [ "4:Apple", "1:Wood" ]
-    },
-    {
-      "$type": "Craft, Assembly-CSharp",
-      "OutputItemType": "Apple Pie",
-      "RequiredItemTypes": [ "4:Apple", "1:Wood" ]
-    },
-    {
-      "$type": "Craft, Assembly-CSharp",
-      "OutputItemType": "Apple Pie",
-      "RequiredItemTypes": [ "4:Apple", "1:Wood" ]
     }
   ]
 }

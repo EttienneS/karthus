@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Globalization;
 using UnityEngine;
 
 public class StructureController : MonoBehaviour
 {
+    public Dictionary<int, StructureData> StructureIdLookup = new Dictionary<int, StructureData>();
     public Dictionary<StructureData, Structure> StructureLookup = new Dictionary<StructureData, Structure>();
     public Structure structurePrefab;
     internal Dictionary<string, StructureData> StructureDataReference = new Dictionary<string, StructureData>();
@@ -27,6 +27,7 @@ public class StructureController : MonoBehaviour
             return _structureTypeFileMap;
         }
     }
+
     private static StructureController _instance;
 
     public static StructureController Instance
@@ -57,7 +58,6 @@ public class StructureController : MonoBehaviour
 
         structure.Data.SetBlueprintState(false);
 
-
         if (!string.IsNullOrEmpty(structure.Data.Layer))
         {
             structure.SpriteRenderer.sortingLayerName = structure.Data.Layer;
@@ -77,6 +77,7 @@ public class StructureController : MonoBehaviour
     {
         return StructureLookup[structureData];
     }
+
     internal void DestroyStructure(StructureData structure)
     {
         DestroyStructure(structure.LinkedGameObject);
@@ -88,7 +89,6 @@ public class StructureController : MonoBehaviour
 
         Destroy(structure.gameObject);
     }
-
 
     internal Structure LoadStructure(StructureData savedStructure)
     {
@@ -105,6 +105,7 @@ public class StructureController : MonoBehaviour
     private void IndexStructure(Structure structure)
     {
         StructureLookup.Add(structure.Data, structure);
+        StructureIdLookup.Add(structure.Data.Id, structure.Data);
 
         structure.name = $"{structure.Data.Name} ({structure.Data.Id})";
     }

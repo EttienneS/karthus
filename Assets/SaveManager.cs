@@ -96,7 +96,7 @@ public class SaveManager : MonoBehaviour
 
         foreach (var task in save.Tasks)
         {
-            Taskmaster.Instance.AddTask(task);
+            Taskmaster.Instance.AddTask(task, task.Originator);
 
             if (task.CreatureId > 0)
             {

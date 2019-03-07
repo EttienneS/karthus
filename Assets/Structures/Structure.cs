@@ -68,7 +68,7 @@ public class Structure : MonoBehaviour
 
         if (Data.IsBluePrint && !Taskmaster.Instance.ContainsJob(name))
         {
-            Taskmaster.Instance.AddTask(new Build(Data, Data.Coordinates));
+            Taskmaster.Instance.AddTask(new Build(Data, Data.Coordinates), Data.GetGameId());
         }
     }
 }

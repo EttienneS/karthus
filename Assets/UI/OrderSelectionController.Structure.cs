@@ -19,7 +19,7 @@ public partial class OrderSelectionController //.Structure
                 {
                     var blueprint = StructureController.Instance.GetStructureBluePrint(structureName);
                     cell.AddContent(blueprint.gameObject);
-                    Taskmaster.Instance.AddTask(new Build(blueprint.Data, cell.Coordinates));
+                    Taskmaster.Instance.AddTask(new Build(blueprint.Data, cell.Coordinates), string.Empty);
                 }
             }
         };
@@ -70,7 +70,7 @@ public partial class OrderSelectionController //.Structure
                     }
                     else
                     {
-                        Taskmaster.Instance.AddTask(new RemoveStructure(structure, cell.Coordinates));
+                        Taskmaster.Instance.AddTask(new RemoveStructure(structure, cell.Coordinates), string.Empty);
                         structure.LinkedGameObject.SpriteRenderer.color = Color.red;
                     }
                 }

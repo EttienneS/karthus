@@ -46,8 +46,14 @@ public class Taskmaster : MonoBehaviour
         return queue == null || queue.Count == 0;
     }
 
-    public TaskBase AddTask(TaskBase task)
+    public IEnumerable<TaskBase> GetTaskByOriginator(string originatorId)
     {
+        return Tasks.Where(t => t.Originator == originatorId);
+    }
+
+    public TaskBase AddTask(TaskBase task, string originatorId)
+    {
+        task.Originator = originatorId;
         Tasks.Add(task);
         return task;
     }
@@ -64,12 +70,12 @@ public class Taskmaster : MonoBehaviour
         if (creature.Data.Hunger > 50)
         {
             task = new Eat("Food");
-            AddTask(task);
+            AddTask(task, creature.Data.GetGameId());
         }
         else if (creature.Data.Energy < 15)
         {
             task = new Sleep();
-            AddTask(task);
+            AddTask(task, creature.Data.GetGameId());
         }
         else
         {
@@ -90,7 +96,7 @@ public class Taskmaster : MonoBehaviour
                     task = new Wait(Random.Range(0.1f, 1f), "Chilling");
                 }
 
-                AddTask(task);
+                AddTask(task, creature.Data.GetGameId());
             }
         }
         task.CreatureId = creature.Data.Id;

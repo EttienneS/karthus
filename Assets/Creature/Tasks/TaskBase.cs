@@ -5,6 +5,8 @@ public abstract class TaskBase
 {
     public int CreatureId;
 
+    public string Originator;
+
     [JsonIgnore]
     public CreatureData Creature
     {

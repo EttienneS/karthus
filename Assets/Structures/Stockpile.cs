@@ -54,7 +54,7 @@ public class Stockpile : MonoBehaviour
 
         if (Data.ActiveTasks.Count < Data.MaxConcurrentTasks && Data.Items.Count < Data.Size)
         {
-            Data.ActiveTasks.Add(Taskmaster.Instance.AddTask(new StockpileItem(Data.ItemType, Data.Id)));
+            Data.ActiveTasks.Add(Taskmaster.Instance.AddTask(new StockpileItem(Data.ItemType, Data.Id), Data.GetGameId()));
         }
     }
 }
