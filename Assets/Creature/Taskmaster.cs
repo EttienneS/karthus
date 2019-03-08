@@ -69,7 +69,7 @@ public class Taskmaster : MonoBehaviour
 
         if (creature.Data.Hunger > 50)
         {
-            task = new Eat("Food");
+            task = new Eat("Apple");
             AddTask(task, creature.Data.GetGameId());
         }
         else if (creature.Data.Energy < 15)

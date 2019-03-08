@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-public class MoveItemToCell : TaskBase
+﻿public class MoveItemToCell : TaskBase
 {
     public bool Reserve;
 

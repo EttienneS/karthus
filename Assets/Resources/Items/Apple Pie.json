@@ -1,7 +1,7 @@
 {
   "Name": "Apple Pie",
   "SpriteName": "Apple",
-  "ItemType": "Food",
+  "ItemType": "Apple Pie",
   "Properties": {
     "Nutrition": "200"
   }
