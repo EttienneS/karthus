@@ -231,7 +231,6 @@ public class Creature : MonoBehaviour
         if (Data.Task == null)
         {
             var task = Taskmaster.Instance.GetTask(this);
-
             var context = $"{Data.GetGameId()} - {task} - {TimeManager.Instance.Now}";
 
             Data.Know(context);
@@ -249,6 +248,8 @@ public class Creature : MonoBehaviour
             }
             else
             {
+                Data.Forget(Data.Task.Context);
+
                 Taskmaster.Instance.TaskComplete(Data.Task);
                 Data.Task = null;
             }
@@ -338,6 +339,12 @@ public class CreatureData
         }
 
         return null;
+    }
+
+    internal void Forget(string context)
+    {
+        // if !LongTerm?
+        Mind.Remove(context);
     }
 
     internal void Know(string context)
