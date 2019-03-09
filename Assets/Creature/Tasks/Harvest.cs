@@ -14,8 +14,8 @@ public class Harvest : TaskBase
     {
         Target = structure;
 
-        SubTasks.Enqueue(new Move(MapGrid.Instance.GetPathableNeighbour(Target.Coordinates)));
-        SubTasks.Enqueue(new Wait(2f, "Harvesting"));
+        AddSubTask(new Move(MapGrid.Instance.GetPathableNeighbour(Target.Coordinates)));
+        AddSubTask(new Wait(2f, "Harvesting"));
     }
 
     public override bool Done()

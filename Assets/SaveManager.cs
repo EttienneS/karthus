@@ -98,9 +98,9 @@ public class SaveManager : MonoBehaviour
         {
             Taskmaster.Instance.AddTask(task, task.Originator);
 
-            if (task.CreatureId > 0)
+            if (task.AssignedCreatureId > 0)
             {
-                CreatureController.Instance.CreatureIdLookup[task.CreatureId].LinkedGameObject.AssignTask(task);
+                CreatureController.Instance.CreatureIdLookup[task.AssignedCreatureId].LinkedGameObject.AssignTask(task, task.Context);
             }
         }
 

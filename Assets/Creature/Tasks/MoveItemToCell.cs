@@ -9,8 +9,8 @@
     public MoveItemToCell(string itemType, Coordinates coordinates, bool allowStockpiled, bool reserve)
     {
         Reserve = reserve;
-        SubTasks.Enqueue(new GetItemOfType(itemType, allowStockpiled));
-        SubTasks.Enqueue(new Move(coordinates));
+        AddSubTask(new GetItemOfType(itemType, allowStockpiled));
+        AddSubTask(new Move(coordinates));
     }
 
     public override bool Done()

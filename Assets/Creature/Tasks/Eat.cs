@@ -6,8 +6,8 @@
 
     public Eat(string itemType)
     {
-        SubTasks.Enqueue(new GetItemOfType(itemType, true));
-        SubTasks.Enqueue(new Wait(2f, "Eating"));
+        AddSubTask(new GetItemOfType(itemType, true));
+        AddSubTask(new Wait(2f, "Eating"));
     }
 
     public override bool Done()

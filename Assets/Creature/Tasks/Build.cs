@@ -18,23 +18,24 @@ public class Build : TaskBase
 
         foreach (var itemType in structure.Require)
         {
-            SubTasks.Enqueue(new MoveItemToCell(itemType, Coordinates, true, true));
+            AddSubTask(new MoveItemToCell(itemType, Coordinates, true, true));
         }
 
-        SubTasks.Enqueue(new Wait(3f, "Building"));
-        SubTasks.Enqueue(new Move(MapGrid.Instance.GetPathableNeighbour(Coordinates)));
+        AddSubTask(new Wait(3f, "Building"));
+        AddSubTask(new Move(MapGrid.Instance.GetPathableNeighbour(Coordinates)));
     }
 
     public override bool Done()
     {
         if (Taskmaster.QueueComplete(SubTasks))
         {
-            var thisCell = MapGrid.Instance.GetCellAtCoordinate(Structure.Coordinates);
-            foreach (var item in thisCell.ContainedItems.ToArray())
+            foreach (var item in Creature.Mind[Context][MemoryType.Item])
             {
-                ItemController.Instance.DestroyItem(item);
+                ItemController.Instance.DestroyItem(GameIdHelper.GetItemFromId(item));
             }
+
             Structure.SetBlueprintState(false);
+            Creature.UpdateMemory(Context, MemoryType.Structure, Structure.GetGameId());
             return true;
         }
         return false;

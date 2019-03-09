@@ -1,7 +1,4 @@
-﻿using System;
-
-
-public class Craft : TaskBase
+﻿public class Craft : TaskBase
 {
     public string OutputItemType;
     public string[] RequiredItemTypes;
@@ -23,24 +20,26 @@ public class Craft : TaskBase
         {
             foreach (var item in Helpers.ParseItemString(itemString))
             {
-                SubTasks.Enqueue(new MoveItemToCell(item, Location, true, true));
+                AddSubTask(new MoveItemToCell(item, Location, true, true));
             }
         }
 
-        SubTasks.Enqueue(new Wait(3f, "Crafting"));
+        AddSubTask(new Wait(3f, "Crafting"));
     }
 
     public override bool Done()
     {
         if (Taskmaster.QueueComplete(SubTasks))
         {
-            var location = MapGrid.Instance.GetCellAtCoordinate(Location);
-            foreach (var item in location.ContainedItems.ToArray())
+            foreach (var item in Creature.Mind[Context][MemoryType.Item])
             {
-                ItemController.Instance.DestroyItem(item);
+                ItemController.Instance.DestroyItem(GameIdHelper.GetItemFromId(item));
             }
-            location.AddContent(ItemController.Instance
-                    .GetItem(OutputItemType).gameObject);
+
+            var craftedItem = ItemController.Instance.GetItem(OutputItemType);
+            MapGrid.Instance.GetCellAtCoordinate(Location).AddContent(craftedItem.gameObject);
+
+            Creature.UpdateMemory(Context, MemoryType.Craft, craftedItem.Data.GetGameId());
 
             return true;
         }

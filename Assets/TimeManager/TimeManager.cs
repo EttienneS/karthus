@@ -34,6 +34,14 @@ public class TimeManager : MonoBehaviour
 
     private float _timeTicks;
 
+    public string Now
+    {
+        get
+        {
+            return $"{Data.Hour}:{Data.Minute}:{_timeTicks}";
+        }
+    }
+
     public static TimeManager Instance
     {
         get

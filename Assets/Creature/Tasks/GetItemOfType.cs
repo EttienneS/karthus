@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-
-public class GetItemOfType : TaskBase
+﻿public class GetItemOfType : TaskBase
 {
     public bool AllowStockpiled;
     public ItemData Item;
@@ -28,6 +24,7 @@ public class GetItemOfType : TaskBase
                 Item = pile.GetItem(Item);
             }
             Creature.CarriedItemId = Item.Id;
+            Creature.UpdateMemory(Context, MemoryType.Item, Item.GetGameId());
             return true;
         }
 
@@ -53,11 +50,6 @@ public class GetItemOfType : TaskBase
 
     private void UpdateTargetItem()
     {
-
-        var moveTask = new Move(Item.LinkedGameObject.Cell.Coordinates)
-        {
-            CreatureId = Creature.Id
-        };
-        SubTasks.Enqueue(moveTask);
+        AddSubTask(new Move(Item.LinkedGameObject.Cell.Coordinates));
     }
 }
