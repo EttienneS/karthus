@@ -6,10 +6,37 @@ using Random = UnityEngine.Random;
 
 public class SpriteStore : MonoBehaviour
 {
-    public List<Sprite> MapSprites;
-    public List<Sprite> ItemSprites;
-
+    internal List<Sprite> BackSprites = new List<Sprite>();
+    internal List<Sprite> FrontSprites = new List<Sprite>();
+    internal List<Sprite> ItemSprites = new List<Sprite>();
+    internal List<Sprite> MapSprites = new List<Sprite>();
+    internal List<Sprite> SideSprites = new List<Sprite>();
+    private static SpriteStore _instance;
     private Dictionary<string, Sprite> _allSprites;
+
+    private Dictionary<int, List<Sprite>> _creatureSprite;
+
+    private Dictionary<string, List<Sprite>> _mapSprites;
+
+    public static SpriteStore Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = GameObject.Find("SpriteStore").GetComponent<SpriteStore>();
+                _instance.ItemSprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Item"));
+                _instance.ItemSprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Gui"));
+                _instance.MapSprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Map"));
+
+                _instance.BackSprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Character/all_back"));
+                _instance.FrontSprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Character/all_front"));
+                _instance.SideSprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Character/all_side"));
+            }
+
+            return _instance;
+        }
+    }
 
     public Dictionary<string, Sprite> AllSprites
     {
@@ -18,49 +45,13 @@ public class SpriteStore : MonoBehaviour
             if (_allSprites == null)
             {
                 _allSprites = new Dictionary<string, Sprite>();
+
                 ItemSprites.ForEach(AddSpriteToAll);
             }
 
             return _allSprites;
         }
     }
-
-    private Dictionary<string, List<Sprite>> _mapSprites;
-
-    public Dictionary<string, List<Sprite>> MapSpriteTypeDictionary
-    {
-        get
-        {
-            if (_mapSprites == null)
-            {
-                Debug.Log("load map sprites");
-
-                _mapSprites = new Dictionary<string, List<Sprite>>();
-
-                foreach (var sprite in MapSprites)
-                {
-                    var typeName = sprite.name.Split('_')[0];
-
-                    if (!_mapSprites.ContainsKey(typeName))
-                    {
-                        MapSpriteTypeDictionary.Add(typeName, new List<Sprite>());
-                    }
-
-                    _mapSprites[typeName].Add(sprite);
-                }
-            }
-            return _mapSprites;
-        }
-    }
-
-    private static SpriteStore _instance;
-
-    public List<Sprite> FrontSprites;
-    public List<Sprite> SideSprites;
-    public List<Sprite> BackSprites;
-
-    private Dictionary<int, List<Sprite>> _creatureSprite;
-
     public Dictionary<int, List<Sprite>> CreatureSprite
     {
         get
@@ -100,17 +91,42 @@ public class SpriteStore : MonoBehaviour
         }
     }
 
-    public static SpriteStore Instance
+    internal Dictionary<string, List<Sprite>> MapSpriteTypeDictionary
     {
         get
         {
-            if (_instance == null)
+            if (_mapSprites == null)
             {
-                _instance = GameObject.Find("SpriteStore").GetComponent<SpriteStore>();
-            }
+                Debug.Log("load map sprites");
 
-            return _instance;
+                _mapSprites = new Dictionary<string, List<Sprite>>();
+
+                foreach (var sprite in MapSprites)
+                {
+                    var typeName = sprite.name.Split('_')[0];
+
+                    if (!_mapSprites.ContainsKey(typeName))
+                    {
+                        MapSpriteTypeDictionary.Add(typeName, new List<Sprite>());
+                    }
+
+                    _mapSprites[typeName].Add(sprite);
+                }
+            }
+            return _mapSprites;
         }
+    }
+    public void AddSpriteToAll(Sprite sprite)
+    {
+        if (!AllSprites.ContainsKey(sprite.name))
+        {
+            AllSprites.Add(sprite.name, sprite);
+        }
+    }
+
+    internal Color[] GetGroundTextureFor(string typeName, int size)
+    {
+        return MapSpriteTypeDictionary[typeName][0].texture.GetPixels(Random.Range(0, 150), Random.Range(0, 150), size, size);
     }
 
     internal Sprite GetSpriteByName(string spriteName)
@@ -123,18 +139,5 @@ public class SpriteStore : MonoBehaviour
         {
             throw new Exception($"No sprite found with name: {spriteName}");
         }
-    }
-
-    public void AddSpriteToAll(Sprite sprite)
-    {
-        if (!AllSprites.ContainsKey(sprite.name))
-        {
-            AllSprites.Add(sprite.name, sprite);
-        }
-    }
-
-    internal Color[] GetGroundTextureFor(string typeName, int size)
-    {
-        return MapSpriteTypeDictionary[typeName][0].texture.GetPixels(Random.Range(0, 150), Random.Range(0, 150), size, size);
     }
 }

@@ -28,7 +28,7 @@
 
     private void HarvestClicked(string type, string icon)
     {
-        GameController.Instance.SelectionPreference = SelectionPreference.CellOnly;
+        GameController.Instance.SelectionPreference = SelectionPreference.Cell;
         CellClickOrder = cells =>
         {
             foreach (var cell in cells)
@@ -36,7 +36,7 @@
                 if (cell.Structure != null && cell.Structure.StructureType == type)
                 {
                     cell.Structure.LinkedGameObject.StatusSprite.sprite = SpriteStore.Instance.GetSpriteByName(icon);
-                    Taskmaster.Instance.AddTask(new Harvest(cell.Structure));
+                    Taskmaster.Instance.AddTask(new Harvest(cell.Structure), string.Empty);
                 }
             }
             GameController.Instance.DeselectCell();

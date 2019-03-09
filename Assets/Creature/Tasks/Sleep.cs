@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Random = UnityEngine.Random;
 
-[Serializable]
+
 public class Sleep : TaskBase
 {
     public override bool Done()
@@ -11,8 +11,8 @@ public class Sleep : TaskBase
         {
             if (Creature.Energy < Random.Range(80,100))
             {
-                var wait = new Wait(0.5f, "Sleeping") { CreatureId = CreatureId };
-                SubTasks.Enqueue(wait);
+                var wait = new Wait(0.5f, "Sleeping") { AssignedCreatureId = AssignedCreatureId };
+                AddSubTask(wait);
 
                 Creature.LinkedGameObject.ShowText("Zzz..", 0.25f);
                 return false;

@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-[Serializable]
+
 public enum CellType
 {
     Dirt, Forest, Grass, Mountain, Stone, Water

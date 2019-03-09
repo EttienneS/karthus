@@ -6,6 +6,11 @@ using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+public enum MemoryType
+{
+    Item, Craft, Location, Creature, Stockpile, Structure
+}
+
 public class Creature : MonoBehaviour
 {
     internal Sprite[] BackSprites;
@@ -23,15 +28,21 @@ public class Creature : MonoBehaviour
 
     private float frameSeconds = 0.3f;
 
-    public void AssignTask(TaskBase task)
+    public void AssignTask(TaskBase task, string originator = "")
     {
-        task.CreatureId = Data.Id;
+        task.AssignedCreatureId = Data.Id;
+
+        if (!string.IsNullOrEmpty(originator))
+        {
+            task.Originator = originator;
+        }
 
         if (task.SubTasks != null)
         {
             foreach (var subTask in task.SubTasks.ToList())
             {
-                AssignTask(subTask);
+                subTask.Context = task.Context;
+                AssignTask(subTask, task.Originator);
             }
         }
     }
@@ -72,7 +83,7 @@ public class Creature : MonoBehaviour
         Highlight.gameObject.SetActive(false);
     }
 
-    internal void EnableHighlight(Color color )
+    internal void EnableHighlight(Color color)
     {
         Highlight.color = color;
         Highlight.gameObject.SetActive(true);
@@ -204,7 +215,7 @@ public class Creature : MonoBehaviour
             }
         }
 
-        if (thoughts.Any() && Random.value > 0.9)
+        if (thoughts.Count > 0 && Random.value > 0.9)
         {
             ShowText(thoughts[Random.Range(0, thoughts.Count - 1)], 2f);
         }
@@ -220,8 +231,12 @@ public class Creature : MonoBehaviour
         if (Data.Task == null)
         {
             var task = Taskmaster.Instance.GetTask(this);
-            AssignTask(task);
+            var context = $"{Data.GetGameId()} - {task} - {TimeManager.Instance.Now}";
 
+            Data.Know(context);
+            task.Context = context;
+
+            AssignTask(task);
             Data.Task = task;
         }
 
@@ -233,6 +248,8 @@ public class Creature : MonoBehaviour
             }
             else
             {
+                Data.Forget(Data.Task.Context);
+
                 Taskmaster.Instance.TaskComplete(Data.Task);
                 Data.Task = null;
             }
@@ -248,12 +265,11 @@ public class Creature : MonoBehaviour
             }
 
             Data.Task = Taskmaster.Instance.GetTask(this);
-            AssignTask(Data.Task);
+            AssignTask(Data.Task, Data.Task.Context);
         }
     }
 }
 
-[Serializable]
 public class CreatureData
 {
     public int CarriedItemId;
@@ -261,12 +277,13 @@ public class CreatureData
     public float Energy;
     public float Hunger;
     public int Id;
-    public Direction MoveDirection = Direction.S;
 
+    public Dictionary<string, Memory> Mind = new Dictionary<string, Memory>();
+    public Direction MoveDirection = Direction.S;
     public string Name;
 
     public bool Sleeping;
-    public float Speed = 5f;
+    public float Speed = 10f;
 
     public int SpriteId;
 
@@ -279,7 +296,11 @@ public class CreatureData
     {
         get
         {
-            return ItemController.Instance.ItemIdLookup[CarriedItemId].Data;
+            if (ItemController.Instance.ItemIdLookup.ContainsKey(CarriedItemId))
+            {
+                return ItemController.Instance.ItemIdLookup[CarriedItemId].Data;
+            }
+            return null;
         }
     }
 
@@ -318,5 +339,36 @@ public class CreatureData
         }
 
         return null;
+    }
+
+    internal void Forget(string context)
+    {
+        // if !LongTerm?
+        Mind.Remove(context);
+    }
+
+    internal void Know(string context)
+    {
+        Mind.Add(context, new Memory());
+    }
+
+    internal void UpdateMemory(string context, MemoryType craft, string info)
+    {
+        Mind[context].AddInfo(craft, info);
+    }
+}
+
+public class Memory : Dictionary<MemoryType, List<string>>
+{
+    public string AddInfo(MemoryType type, string entry)
+    {
+        if (!ContainsKey(type))
+        {
+            Add(type, new List<string>());
+        }
+
+        this[type].Add(entry);
+
+        return entry;
     }
 }

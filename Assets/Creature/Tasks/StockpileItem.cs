@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-[Serializable]
+
 public class StockpileItem : TaskBase
 {
     public StockpileItem()
@@ -13,7 +13,7 @@ public class StockpileItem : TaskBase
     {
         StockpileId = stockpileId;
 
-        SubTasks.Enqueue(new MoveItemToCell(itemType, Stockpile.Data.Coordinates, false, false));
+        AddSubTask(new MoveItemToCell(itemType, Stockpile.Data.Coordinates, false, false));
     }
 
     public int StockpileId { get; set; }
@@ -32,6 +32,8 @@ public class StockpileItem : TaskBase
         if (Taskmaster.QueueComplete(SubTasks))
         {
             Creature.DropItem();
+
+            Creature.UpdateMemory(Context, MemoryType.Stockpile, Stockpile.Data.GetGameId());
             return true;
         }
 

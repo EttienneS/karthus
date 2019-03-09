@@ -14,8 +14,8 @@ public class RemoveStructure : TaskBase
         Structure = structure;
         Coordinates = coordinates;
 
-        SubTasks.Enqueue(new Move(Coordinates));
-        SubTasks.Enqueue(new Wait(2f, "Removing"));
+        AddSubTask(new Move(Coordinates));
+        AddSubTask(new Wait(2f, "Removing"));
     }
 
     public override bool Done()

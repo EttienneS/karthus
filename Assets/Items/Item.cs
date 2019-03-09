@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-[Serializable]
 public class Item : MonoBehaviour
 {
     internal SpriteRenderer SpriteRenderer;
@@ -17,9 +17,14 @@ public class Item : MonoBehaviour
 
     public CellData Cell { get; set; }
 
-    internal void Load(string structureData)
+    internal void Load(string itemData)
     {
-        Data = JsonUtility.FromJson<ItemData>(structureData);
+        Data = JsonConvert.DeserializeObject<ItemData>(itemData, new JsonSerializerSettings
+        {
+            TypeNameHandling = TypeNameHandling.Auto,
+            NullValueHandling = NullValueHandling.Ignore,
+        });
+
         SpriteRenderer.sprite = SpriteStore.Instance.GetSpriteByName(Data.SpriteName);
     }
 }
@@ -39,12 +44,7 @@ public class ItemData
 
     public int StockpileId { get; set; }
 
-    public ItemProperty[] Properties;
-
-    public string GetPropertyValue(string key)
-    {
-        return Properties.First(p => p.Key.Equals(key, StringComparison.InvariantCultureIgnoreCase)).Value;
-    }
+    public Dictionary<string, string> Properties;
 
     [JsonIgnore]
     public Item LinkedGameObject
@@ -56,10 +56,3 @@ public class ItemData
     }
 }
 
-[Serializable]
-public class ItemProperty
-{
-    public string Key;
-
-    public string Value;
-}

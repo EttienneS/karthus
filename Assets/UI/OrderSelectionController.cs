@@ -26,7 +26,7 @@ public partial class OrderSelectionController : MonoBehaviour
 
     public void DisableAndReset()
     {
-        GameController.Instance.SelectionPreference = SelectionPreference.CreatureOnly;
+        GameController.Instance.SelectionPreference = SelectionPreference.CreatureOrStructure;
 
         OrderTrayController.Instance.gameObject.SetActive(false);
         CellClickOrder = null;
@@ -58,6 +58,7 @@ public partial class OrderSelectionController : MonoBehaviour
         OrderTrayController.Instance.gameObject.SetActive(false);
         CreatureInfoPanel.Instance.gameObject.SetActive(false);
         CellInfoPanel.Instance.gameObject.SetActive(false);
+        CraftingScreen.Instance.gameObject.SetActive(false);
 
         BuildButton = CreateOrderButton(DefaultBuildText, BuildTypeClicked, "hammer", false);
         StockpileButton = CreateOrderButton(DefaultStockpileText, StockpileTypeClicked, "box", false);

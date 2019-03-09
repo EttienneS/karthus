@@ -11,7 +11,7 @@ public enum TimeStep
     Hyper = 8
 }
 
-[Serializable]
+
 public class TimeData
 {
     public int Hour;
@@ -33,6 +33,14 @@ public class TimeManager : MonoBehaviour
     private TimeStep _timeStep;
 
     private float _timeTicks;
+
+    public string Now
+    {
+        get
+        {
+            return $"{Data.Hour}:{Data.Minute}:{_timeTicks}";
+        }
+    }
 
     public static TimeManager Instance
     {

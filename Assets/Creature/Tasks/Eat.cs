@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-[Serializable]
-public class Eat : TaskBase
+﻿public class Eat : TaskBase
 {
     public Eat()
     {
@@ -10,8 +6,8 @@ public class Eat : TaskBase
 
     public Eat(string itemType)
     {
-        SubTasks.Enqueue(new GetItemOfType(itemType, true));
-        SubTasks.Enqueue(new Wait(2f, "Eating"));
+        AddSubTask(new GetItemOfType(itemType, true));
+        AddSubTask(new Wait(2f, "Eating"));
     }
 
     public override bool Done()
@@ -26,7 +22,7 @@ public class Eat : TaskBase
             var food = Creature.CarriedItem;
             Creature.DropItem();
 
-            Creature.Hunger -= int.Parse(food.GetPropertyValue("Nutrition"));
+            Creature.Hunger -= int.Parse(food.Properties["Nutrition"]);
             ItemController.Instance.DestoyItem(food);
 
             return true;

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-public class MoveItemToCell : TaskBase
+﻿public class MoveItemToCell : TaskBase
 {
     public bool Reserve;
 
@@ -11,8 +9,8 @@ public class MoveItemToCell : TaskBase
     public MoveItemToCell(string itemType, Coordinates coordinates, bool allowStockpiled, bool reserve)
     {
         Reserve = reserve;
-        SubTasks.Enqueue(new GetItemOfType(itemType, allowStockpiled));
-        SubTasks.Enqueue(new Move(coordinates));
+        AddSubTask(new GetItemOfType(itemType, allowStockpiled));
+        AddSubTask(new Move(coordinates));
     }
 
     public override bool Done()
@@ -20,7 +18,7 @@ public class MoveItemToCell : TaskBase
         if (Taskmaster.QueueComplete(SubTasks))
         {
             var item = Creature.DropItem();
-            if (Reserve)
+            if (item != null && Reserve)
             {
                 item.Reserved = true;
             }

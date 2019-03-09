@@ -5,12 +5,13 @@ using UnityEngine.EventSystems;
 
 public enum SelectionPreference
 {
-    CreatureOnly, CellOnly
+    CreatureOrStructure, Cell
 }
 
 public class GameController : MonoBehaviour
 {
-    public SelectionPreference SelectionPreference = SelectionPreference.CreatureOnly;
+    public SelectionPreference SelectionPreference = SelectionPreference.CreatureOrStructure;
+    internal List<StructureData> SelectedStructures = new List<StructureData>();
     internal List<CellData> SelectedCells = new List<CellData>();
     internal List<Creature> SelectedCreatures = new List<Creature>();
     public RectTransform selectSquareImage;
@@ -37,6 +38,15 @@ public class GameController : MonoBehaviour
     public void DeselectCell()
     {
         SelectedCells.Clear();
+    }
+
+    public void DeselectStructure()
+    {
+        foreach (var structure in SelectedStructures)
+        {
+            structure.LinkedGameObject.SpriteRenderer.color = Color.white;
+        }
+        SelectedStructures.Clear();
     }
 
     public void DeselectCreature()
@@ -111,6 +121,8 @@ public class GameController : MonoBehaviour
     private void SelectCreature()
     {
         DeselectCell();
+        DeselectStructure();
+
         foreach (var creature in SelectedCreatures)
         {
             creature.EnableHighlight(Color.red);
@@ -119,6 +131,27 @@ public class GameController : MonoBehaviour
         if (SelectedCreatures.Count == 1)
         {
             CreatureInfoPanel.Instance.Show(SelectedCreatures.First());
+        }
+    }
+
+    private void SelectStructure()
+    {
+        DeselectCell();
+        DeselectCreature();
+
+        foreach (var structure in SelectedStructures)
+        {
+            structure.LinkedGameObject.SpriteRenderer.color = Color.red;
+        }
+
+        if (SelectedStructures.Count == 1)
+        {
+            var structure = SelectedStructures[0];
+
+            if (!structure.IsBluePrint && structure.Tasks.Count > 0)
+            {
+                CraftingScreen.Instance.Show(structure);
+            }
         }
     }
 
@@ -136,7 +169,9 @@ public class GameController : MonoBehaviour
             // right mouse deselect all
             DeselectCreature();
             DeselectCell();
+            DeselectStructure();
 
+            CraftingScreen.Instance.Hide();
             CreatureInfoPanel.Instance.Hide();
             CellInfoPanel.Instance.Hide();
 
@@ -164,6 +199,7 @@ public class GameController : MonoBehaviour
                     return;
                 }
 
+                DeselectStructure();
                 DeselectCreature();
                 DeselectCell();
                 selectSquareImage.gameObject.SetActive(false);
@@ -181,7 +217,13 @@ public class GameController : MonoBehaviour
 
                     var clickedCell = MapGrid.Instance.GetCellAtPoint(point);
                     if (clickedCell != null)
+                    {
                         SelectedCells.Add(clickedCell);
+                        if (clickedCell.Structure != null)
+                        {
+                            SelectedStructures.Add(clickedCell.Structure);
+                        }
+                    }
 
                     var clickedCreature = CreatureController.Instance.GetCreatureAtPoint(point);
                     if (clickedCreature != null)
@@ -199,7 +241,13 @@ public class GameController : MonoBehaviour
 
                             var clickedCell = MapGrid.Instance.GetCellAtPoint(point);
                             if (clickedCell != null && !SelectedCells.Contains(clickedCell))
+                            {
                                 SelectedCells.Add(clickedCell);
+                                if (clickedCell.Structure != null)
+                                {
+                                    SelectedStructures.Add(clickedCell.Structure);
+                                }
+                            }
 
                             var clickedCreature = CreatureController.Instance.GetCreatureAtPoint(point);
                             if (clickedCreature != null && !SelectedCreatures.Contains(clickedCreature))
@@ -210,17 +258,21 @@ public class GameController : MonoBehaviour
 
                 switch (SelectionPreference)
                 {
-                    case SelectionPreference.CellOnly:
+                    case SelectionPreference.Cell:
                         if (SelectedCells.Count > 0)
                         {
                             SelectCell();
                         }
                         break;
 
-                    case SelectionPreference.CreatureOnly:
+                    case SelectionPreference.CreatureOrStructure:
                         if (SelectedCreatures.Count > 0)
                         {
                             SelectCreature();
+                        }
+                        if (SelectedStructures.Count > 0)
+                        {
+                            SelectStructure();
                         }
                         break;
                 }

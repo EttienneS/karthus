@@ -24,7 +24,7 @@ public partial class OrderSelectionController //.Stockpile
 
     private void StockpileTypeClicked()
     {
-        GameController.Instance.SelectionPreference = SelectionPreference.CellOnly;
+        GameController.Instance.SelectionPreference = SelectionPreference.Cell;
         if (OrderTrayController.Instance.gameObject.activeInHierarchy)
         {
             DisableAndReset();

@@ -10,7 +10,7 @@ public partial class OrderSelectionController //.Structure
     public void BuildClicked(string structureName)
     {
         BuildButton.Text = "Build " + structureName;
-        GameController.Instance.SelectionPreference = SelectionPreference.CellOnly;
+        GameController.Instance.SelectionPreference = SelectionPreference.Cell;
         CellClickOrder = cells =>
         {
             foreach (var cell in cells)
@@ -19,7 +19,7 @@ public partial class OrderSelectionController //.Structure
                 {
                     var blueprint = StructureController.Instance.GetStructureBluePrint(structureName);
                     cell.AddContent(blueprint.gameObject);
-                    Taskmaster.Instance.AddTask(new Build(blueprint.Data, cell.Coordinates));
+                    Taskmaster.Instance.AddTask(new Build(blueprint.Data, cell.Coordinates), string.Empty);
                 }
             }
         };
@@ -55,7 +55,7 @@ public partial class OrderSelectionController //.Structure
     private void RemoveStructureClicked()
     {
         BuildButton.Text = DefaultRemoveText;
-        GameController.Instance.SelectionPreference = SelectionPreference.CellOnly;
+        GameController.Instance.SelectionPreference = SelectionPreference.Cell;
         CellClickOrder = cells =>
         {
             foreach (var cell in cells)
@@ -70,7 +70,7 @@ public partial class OrderSelectionController //.Structure
                     }
                     else
                     {
-                        Taskmaster.Instance.AddTask(new RemoveStructure(structure, cell.Coordinates));
+                        Taskmaster.Instance.AddTask(new RemoveStructure(structure, cell.Coordinates), string.Empty);
                         structure.LinkedGameObject.SpriteRenderer.color = Color.red;
                     }
                 }

@@ -68,12 +68,12 @@ public class Structure : MonoBehaviour
 
         if (Data.IsBluePrint && !Taskmaster.Instance.ContainsJob(name))
         {
-            Taskmaster.Instance.AddTask(new Build(Data, Data.Coordinates));
+            Taskmaster.Instance.AddTask(new Build(Data, Data.Coordinates), Data.GetGameId());
         }
     }
 }
 
-[Serializable]
+
 public class StructureData
 {
     public bool Buildable;
@@ -83,7 +83,7 @@ public class StructureData
     public bool IsBluePrint;
     public string Layer;
     public string Name;
-    public List<string> Require;
+    public List<string> RequireStrings;
     public string Scale;
     public string ShiftX;
     public string ShiftY;
@@ -92,6 +92,27 @@ public class StructureData
     public bool Tiled;
     public float TravelCost;
     public List<string> Yield;
+
+    private List<string> _require;
+
+    [JsonIgnore]
+    public List<string> Require
+    {
+        get
+        {
+            if (_require == null)
+            {
+                _require = new List<string>();
+                foreach (var reqString in RequireStrings)
+                {
+                    _require.AddRange(Helpers.ParseItemString(reqString));
+                }
+            }
+            return _require;
+        }
+    }
+
+    public List<TaskBase> Tasks = new List<TaskBase>();
 
     [JsonIgnore]
     public Structure LinkedGameObject
@@ -104,7 +125,11 @@ public class StructureData
 
     public static StructureData GetFromJson(string json)
     {
-        return JsonUtility.FromJson<StructureData>(json);
+        return JsonConvert.DeserializeObject<StructureData>(json, new JsonSerializerSettings
+        {
+            TypeNameHandling = TypeNameHandling.Auto,
+            NullValueHandling = NullValueHandling.Ignore,
+        });
     }
 
     public void AddItem(ItemData item)
