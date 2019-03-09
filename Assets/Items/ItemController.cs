@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ItemController : MonoBehaviour
@@ -109,12 +110,13 @@ public class ItemController : MonoBehaviour
         }
     }
 
+    private int IdCounter = 0;
     internal Item GetItem(string name)
     {
         var item = Instantiate(AllItemTypes[name], transform);
         item.Load(FileController.Instance.ItemLookup[name].text);
 
-        item.Data.Id = ItemDataLookup.Keys.Count + 1;
+        item.Data.Id = IdCounter++;
         IndexItem(item);
 
         return item;

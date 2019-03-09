@@ -18,7 +18,7 @@
         if (Taskmaster.QueueComplete(SubTasks))
         {
             var item = Creature.DropItem();
-            if (Reserve)
+            if (item != null && Reserve)
             {
                 item.Reserved = true;
             }
