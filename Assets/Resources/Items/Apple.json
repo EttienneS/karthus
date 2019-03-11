@@ -1,7 +1,7 @@
 {
   "Name": "Apple",
   "SpriteName": "Apple",
-  "ItemType": "Apple",
+  "Category": "Food",
   "Properties": {
     "Nutrition": "40"
   }

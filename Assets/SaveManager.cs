@@ -125,7 +125,7 @@ public class SaveManager : MonoBehaviour
         CreatureController.Instance.CreatureLookup.Clear();
         CreatureController.Instance.CreatureIdLookup.Clear();
 
-        ItemController.Instance.ItemTypeIndex.Clear();
+        ItemController.Instance.ItemCategoryIndex.Clear();
         ItemController.Instance.ItemDataLookup.Clear();
         ItemController.Instance.ItemIdLookup.Clear();
 

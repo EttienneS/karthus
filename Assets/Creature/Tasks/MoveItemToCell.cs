@@ -6,10 +6,10 @@
     {
     }
 
-    public MoveItemToCell(string itemType, Coordinates coordinates, bool allowStockpiled, bool reserve)
+    public MoveItemToCell(string itemId, Coordinates coordinates, bool allowStockpiled, bool reserve, GetItem.SearchBy search)
     {
         Reserve = reserve;
-        AddSubTask(new GetItemOfType(itemType, allowStockpiled));
+        AddSubTask(new GetItem(itemId, allowStockpiled, search));
         AddSubTask(new Move(coordinates));
     }
 

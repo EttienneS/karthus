@@ -33,7 +33,7 @@ public class ItemData
 {
     public int Id;
 
-    public string ItemType;
+    public string Category;
 
     public bool Reserved;
 

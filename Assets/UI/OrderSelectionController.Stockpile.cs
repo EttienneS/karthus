@@ -5,9 +5,9 @@ public partial class OrderSelectionController //.Stockpile
     public const string DefaultStockpileText = "Place Stockpile";
     internal OrderButton StockpileButton;
 
-    private void StockpileClicked(string itemTypeName)
+    private void StockpileClicked(string itemCategory)
     {
-        StockpileButton.Text = $"Place {itemTypeName} Stockpile";
+        StockpileButton.Text = $"Place {itemCategory} Stockpile";
 
         CellClickOrder = cells =>
         {
@@ -15,7 +15,7 @@ public partial class OrderSelectionController //.Stockpile
             {
                 if (cell.Stockpile == null && cell.TravelCost > 0)
                 {
-                    var stockpile = StockpileController.Instance.AddStockpile(itemTypeName);
+                    var stockpile = StockpileController.Instance.AddStockpile(itemCategory);
                     cell.AddContent(stockpile.gameObject);
                 }
             }
@@ -34,11 +34,11 @@ public partial class OrderSelectionController //.Stockpile
         {
             EnableAndClear();
 
-            foreach (var item in ItemController.Instance.AllItemTypes.Values)
+            foreach (var item in ItemController.Instance.AllItemNames.Values)
             {
-                var button = CreateOrderButton(CutText, () => StockpileClicked(item.Data.ItemType), item.Data.SpriteName);
+                var button = CreateOrderButton(CutText, () => StockpileClicked(item.Data.Category), item.Data.SpriteName);
                 button.Button.image.type = Image.Type.Tiled;
-                button.name = $"Place {item.Data.ItemType} Stockpile";
+                button.name = $"Place {item.Data.Category} Stockpile";
                 button.Text = button.name;
             }
         }

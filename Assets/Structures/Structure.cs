@@ -141,9 +141,9 @@ public class StructureData
 
     public void AddItem(ItemData item)
     {
-        if (Require.Contains(item.ItemType))
+        if (Require.Contains(item.Name))
         {
-            Require.Remove(item.ItemType);
+            Require.Remove(item.Name);
         }
     }
 

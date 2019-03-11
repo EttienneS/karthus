@@ -4,9 +4,9 @@
     {
     }
 
-    public Eat(string itemType)
+    public Eat(string itemCategory)
     {
-        AddSubTask(new GetItemOfType(itemType, true));
+        AddSubTask(new GetItem(itemCategory, true, GetItem.SearchBy.Category));
         AddSubTask(new Wait(2f, "Eating"));
     }
 

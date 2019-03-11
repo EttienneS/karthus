@@ -30,11 +30,11 @@ public class Stockpile : MonoBehaviour
         return item;
     }
 
-    public ItemData GetItemOfType(string itemType)
+    public ItemData GetItemOfCategory(string category)
     {
-        return Data.Items.FirstOrDefault(i => i.ItemType == itemType && !i.Reserved);
+        return Data.Items.FirstOrDefault(i => i.Category == category && !i.Reserved);
     }
-
+    
     public TextMeshPro GetTextMesh()
     {
         if (_textMesh == null)
@@ -48,13 +48,13 @@ public class Stockpile : MonoBehaviour
     {
         if (TimeManager.Instance.Paused) return;
 
-        Text = Data.ItemType;
+        Text = Data.ItemCategory;
 
         Data.ActiveTasks.RemoveAll(t => t.Done());
 
         if (Data.ActiveTasks.Count < Data.MaxConcurrentTasks && Data.Items.Count < Data.Size)
         {
-            Data.ActiveTasks.Add(Taskmaster.Instance.AddTask(new StockpileItem(Data.ItemType, Data.Id), Data.GetGameId()));
+            Data.ActiveTasks.Add(Taskmaster.Instance.AddTask(new StockpileItem(Data.ItemCategory, Data.Id), Data.GetGameId()));
         }
     }
 }
@@ -68,7 +68,7 @@ public class StockpileData
     public List<ItemData> Items = new List<ItemData>();
 
     public Coordinates Coordinates;
-    public string ItemType;
+    public string ItemCategory;
     public int MaxConcurrentTasks = 3;
     public int Size = 24;
     public int Id;

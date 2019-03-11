@@ -1,7 +1,7 @@
 ﻿public class Craft : TaskBase
 {
-    public string OutputItemType;
-    public string[] RequiredItemTypes;
+    public string OutputItemName;
+    public string[] RequiredItemNames;
 
     public Coordinates Location;
 
@@ -9,10 +9,10 @@
     {
     }
 
-    public Craft(string itemType, string[] requiredItems, Coordinates location)
+    public Craft(string itemName, string[] requiredItems, Coordinates location)
     {
-        OutputItemType = itemType;
-        RequiredItemTypes = requiredItems;
+        OutputItemName = itemName;
+        RequiredItemNames = requiredItems;
 
         Location = location;
 
@@ -20,7 +20,7 @@
         {
             foreach (var item in Helpers.ParseItemString(itemString))
             {
-                AddSubTask(new MoveItemToCell(item, Location, true, true));
+                AddSubTask(new MoveItemToCell(item, Location, true, true, GetItem.SearchBy.Name));
             }
         }
 
@@ -36,7 +36,7 @@
                 ItemController.Instance.DestroyItem(IdService.GetItemFromId(item));
             }
 
-            var craftedItem = ItemController.Instance.GetItem(OutputItemType);
+            var craftedItem = ItemController.Instance.GetItem(OutputItemName);
             MapGrid.Instance.GetCellAtCoordinate(Location).AddContent(craftedItem.gameObject);
 
             Creature.UpdateMemory(Context, MemoryType.Craft, craftedItem.Data.GetGameId());

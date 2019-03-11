@@ -67,8 +67,8 @@ public class CraftingScreen : MonoBehaviour
     {
         for (var i = 0; i < amount; i++)
         {
-            Taskmaster.Instance.AddTask(new Craft(SelectedRecipe.OutputItemType,
-                                                  SelectedRecipe.RequiredItemTypes,
+            Taskmaster.Instance.AddTask(new Craft(SelectedRecipe.OutputItemName,
+                                                  SelectedRecipe.RequiredItemNames,
                                                   _craftSource.Coordinates), _craftSource.GetGameId());
             AddDisplay(QueuePanel.transform, SelectedRecipe);
         }
@@ -88,7 +88,7 @@ public class CraftingScreen : MonoBehaviour
     private DataDisplay AddDisplay(Transform parent, Craft recipe)
     {
         var display = Instantiate(DataPrefab, parent);
-        display.SetData(recipe.OutputItemType, recipe.OutputItemType, SpriteStore.Instance.GetSpriteByName(recipe.OutputItemType));
+        display.SetData(recipe.OutputItemName, recipe.OutputItemName, SpriteStore.Instance.GetSpriteByName(recipe.OutputItemName));
 
         return display;
     }
@@ -98,12 +98,12 @@ public class CraftingScreen : MonoBehaviour
         SelectedRecipe = task;
         RequirementsText.text = string.Empty;
 
-        foreach (var item in task.RequiredItemTypes)
+        foreach (var item in task.RequiredItemNames)
         {
             RequirementsText.text += $"- {item}\n";
         }
 
-        RecipeImage.sprite = SpriteStore.Instance.GetSpriteByName(task.OutputItemType);
+        RecipeImage.sprite = SpriteStore.Instance.GetSpriteByName(task.OutputItemName);
     }
 
     public void Hide()
