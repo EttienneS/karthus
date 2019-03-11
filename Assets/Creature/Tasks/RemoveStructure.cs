@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-public class RemoveStructure : TaskBase
+﻿public class RemoveStructure : TaskBase
 {
     public Coordinates Coordinates;
     public StructureData Structure;

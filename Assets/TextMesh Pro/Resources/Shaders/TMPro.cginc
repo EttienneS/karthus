@@ -35,8 +35,8 @@ float3 GetSurfaceNormal(float4 h, float bias)
 	h /= bevelWidth;
 	h = saturate(h + .5);
 
-	if (raisedBevel) h = 1 - abs(h*2.0 - 1.0);
-	h = lerp(h, sin(h*3.141592 / 2.0), _BevelRoundness);
+	if (raisedBevel) h = 1 - abs(h * 2.0 - 1.0);
+	h = lerp(h, sin(h * 3.141592 / 2.0), _BevelRoundness);
 	h = min(h, 1.0 - _BevelClamp);
 	h *= _Bevel * bevelWidth * _GradientScale * -2.0;
 
@@ -60,12 +60,12 @@ float3 GetSurfaceNormal(float2 uv, float bias, float3 delta)
 float3 GetSpecular(float3 n, float3 l)
 {
 	float spec = pow(max(0.0, dot(n, l)), _Reflectivity);
-	return _SpecularColor.rgb * spec * _SpecularPower;
+	return _SpecularColor.rgb* spec* _SpecularPower;
 }
 
 float4 GetGlowColor(float d, float scale)
 {
-	float glow = d - (_GlowOffset*_ScaleRatioB) * 0.5 * scale;
+	float glow = d - (_GlowOffset * _ScaleRatioB) * 0.5 * scale;
 	float t = lerp(_GlowInner, (_GlowOuter * _ScaleRatioB), step(0.0, glow)) * 0.5 * scale;
 	glow = saturate(abs(glow / (1.0 + t)));
 	glow = 1.0 - pow(glow, _GlowPower);
@@ -77,7 +77,7 @@ float4 BlendARGB(float4 overlying, float4 underlying)
 {
 	overlying.rgb *= overlying.a;
 	underlying.rgb *= underlying.a;
-	float3 blended = overlying.rgb + ((1 - overlying.a)*underlying.rgb);
-	float alpha = underlying.a + (1 - underlying.a)*overlying.a;
+	float3 blended = overlying.rgb + ((1 - overlying.a) * underlying.rgb);
+	float alpha = underlying.a + (1 - underlying.a) * overlying.a;
 	return float4(blended, alpha);
 }

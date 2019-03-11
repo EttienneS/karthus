@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -73,7 +72,6 @@ public class Structure : MonoBehaviour
     }
 }
 
-
 public class StructureData
 {
     public bool Buildable;
@@ -89,11 +87,22 @@ public class StructureData
     public string ShiftY;
     public string SpriteName;
     public string StructureType;
+    public List<TaskBase> Tasks = new List<TaskBase>();
     public bool Tiled;
     public float TravelCost;
     public List<string> Yield;
-
     private List<string> _require;
+
+    public string InUseBy;
+
+    [JsonIgnore]
+    public Structure LinkedGameObject
+    {
+        get
+        {
+            return StructureController.Instance.GetStructureForData(this);
+        }
+    }
 
     [JsonIgnore]
     public List<string> Require
@@ -112,14 +121,12 @@ public class StructureData
         }
     }
 
-    public List<TaskBase> Tasks = new List<TaskBase>();
-
     [JsonIgnore]
-    public Structure LinkedGameObject
+    public bool InUseByAnyone
     {
         get
         {
-            return StructureController.Instance.GetStructureForData(this);
+            return !string.IsNullOrEmpty(InUseBy);
         }
     }
 
@@ -144,12 +151,12 @@ public class StructureData
     {
         if (blueprint)
         {
-            LinkedGameObject.SpriteRenderer.color = new Color(0.3f, 1f, 1f, 0.4f);
+            LinkedGameObject.SpriteRenderer.color = StructureController.BluePrintColor;
             IsBluePrint = true;
         }
         else
         {
-            LinkedGameObject.SpriteRenderer.color = new Color(0.6f, 0.6f, 0.6f);
+            LinkedGameObject.SpriteRenderer.color = StructureController.StructureColor;
             IsBluePrint = false;
         }
     }
@@ -163,5 +170,15 @@ public class StructureData
                 cell.AddContent(ItemController.Instance.GetItem(item).gameObject);
             }
         }
+    }
+
+    internal void Reserve(string reservedBy)
+    {
+        InUseBy = reservedBy;
+    }
+
+    internal void Free()
+    {
+        InUseBy = string.Empty;
     }
 }

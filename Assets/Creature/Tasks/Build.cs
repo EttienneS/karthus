@@ -1,7 +1,4 @@
-﻿using System;
-
-
-public class Build : TaskBase
+﻿public class Build : TaskBase
 {
     public Coordinates Coordinates;
 
@@ -31,7 +28,7 @@ public class Build : TaskBase
         {
             foreach (var item in Creature.Mind[Context][MemoryType.Item])
             {
-                ItemController.Instance.DestroyItem(GameIdHelper.GetItemFromId(item));
+                ItemController.Instance.DestroyItem(IdService.GetItemFromId(item));
             }
 
             Structure.SetBlueprintState(false);

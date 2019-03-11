@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class StockpileController : MonoBehaviour
@@ -31,7 +30,6 @@ public class StockpileController : MonoBehaviour
         StockpileLookup.Add(stockpile.Data.Id, stockpile);
         return stockpile;
     }
-
 
     public Stockpile AddStockpile(string itemTypeName)
     {

@@ -183,7 +183,7 @@ Shader "TextMeshPro/Distance Field" {
 					underlayColor.rgb *= underlayColor.a;
 
 					float bScale = scale;
-					bScale /= 1 + ((_UnderlaySoftness*_ScaleRatioC) * bScale);
+					bScale /= 1 + ((_UnderlaySoftness * _ScaleRatioC) * bScale);
 					float bBias = (0.5 - weight) * bScale - 0.5 - ((_UnderlayDilate * _ScaleRatioC) * 0.5 * bScale);
 
 					float x = -(_UnderlayOffsetX * _ScaleRatioC) * _GradientScale / _TextureWidth;
@@ -255,8 +255,8 @@ Shader "TextMeshPro/Distance Field" {
 
 					float3 col = GetSpecular(n, light);
 					faceColor.rgb += col * faceColor.a;
-					faceColor.rgb *= 1 - (dot(n, light)*_Diffuse);
-					faceColor.rgb *= lerp(_Ambient, 1, n.z*n.z);
+					faceColor.rgb *= 1 - (dot(n, light) * _Diffuse);
+					faceColor.rgb *= lerp(_Ambient, 1, n.z * n.z);
 
 					fixed4 reflcol = texCUBE(_Cube, reflect(input.viewDir, -n));
 					faceColor.rgb += reflcol.rgb * lerp(_ReflectFaceColor.rgb, _ReflectOutlineColor.rgb, saturate(sd + outline * 0.5)) * faceColor.a;

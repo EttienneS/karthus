@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Random = UnityEngine.Random;
-
+﻿using Random = UnityEngine.Random;
 
 public class Sleep : TaskBase
 {
@@ -9,7 +6,7 @@ public class Sleep : TaskBase
     {
         if (Taskmaster.QueueComplete(SubTasks))
         {
-            if (Creature.Energy < Random.Range(80,100))
+            if (Creature.Energy < Random.Range(80, 100))
             {
                 var wait = new Wait(0.5f, "Sleeping") { AssignedCreatureId = AssignedCreatureId };
                 AddSubTask(wait);

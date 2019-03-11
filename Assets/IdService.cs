@@ -1,4 +1,4 @@
-﻿public static class GameIdHelper
+﻿public static class IdService
 {
     public const string CreaturePrefix = "C-";
     public const string ItemPrefix = "I-";
@@ -40,6 +40,30 @@
         return ItemController.Instance.ItemIdLookup[GetId(id)].Data;
     }
 
+    public static Coordinates GetLocation(string id)
+    {
+        if (IsCreature(id))
+        {
+            return GetCreatureFromId(id).Coordinates;
+        }
+        if (IsStructure(id))
+        {
+            return GetStructureFromId(id).Coordinates;
+        }
+
+        if (IsItem(id))
+        {
+            return GetItemFromId(id).LinkedGameObject.Cell.Coordinates;
+        }
+
+        if (IsStockpile(id))
+        {
+            return GetStockpileFromId(id).Coordinates;
+        }
+
+        return null;
+    }
+
     public static StockpileData GetStockpileFromId(string id)
     {
         return StockpileController.Instance.StockpileLookup[GetId(id)].Data;
@@ -68,29 +92,5 @@
     public static bool IsStructure(string id)
     {
         return id.StartsWith(StructurePrefix);
-    }
-
-    public static Coordinates GetLocation(string id)
-    {
-        if (IsCreature(id))
-        {
-            return GetCreatureFromId(id).Coordinates;
-        }
-        if (IsStructure(id))
-        {
-            return GetStructureFromId(id).Coordinates;
-        }
-
-        if (IsItem(id))
-        {
-            return GetItemFromId(id).LinkedGameObject.Cell.Coordinates;
-        }
-
-        if (IsStockpile(id))
-        {
-            return GetStockpileFromId(id).Coordinates;
-        }
-
-        return null;
     }
 }

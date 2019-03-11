@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class ItemController : MonoBehaviour
@@ -46,6 +45,7 @@ public class ItemController : MonoBehaviour
             return _allItemTypes;
         }
     }
+
     internal void DestoyItem(ItemData data)
     {
         DestroyItem(ItemDataLookup[data]);
@@ -111,6 +111,7 @@ public class ItemController : MonoBehaviour
     }
 
     private int IdCounter = 0;
+
     internal Item GetItem(string name)
     {
         var item = Instantiate(AllItemTypes[name], transform);
@@ -130,6 +131,7 @@ public class ItemController : MonoBehaviour
 
         return item;
     }
+
     private void IndexItem(Item item)
     {
         if (!ItemTypeIndex.ContainsKey(item.Data.ItemType))

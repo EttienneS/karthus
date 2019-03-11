@@ -33,13 +33,18 @@
         {
             foreach (var item in Creature.Mind[Context][MemoryType.Item])
             {
-                ItemController.Instance.DestroyItem(GameIdHelper.GetItemFromId(item));
+                ItemController.Instance.DestroyItem(IdService.GetItemFromId(item));
             }
 
             var craftedItem = ItemController.Instance.GetItem(OutputItemType);
             MapGrid.Instance.GetCellAtCoordinate(Location).AddContent(craftedItem.gameObject);
 
             Creature.UpdateMemory(Context, MemoryType.Craft, craftedItem.Data.GetGameId());
+
+            if (IdService.IsStructure(Originator))
+            {
+                Creature.UpdateMemory(Context, MemoryType.Structure, Originator);
+            }
 
             return true;
         }
