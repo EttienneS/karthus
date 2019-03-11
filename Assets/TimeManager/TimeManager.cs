@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public enum TimeStep
@@ -10,7 +9,6 @@ public enum TimeStep
     Fast = 4,
     Hyper = 8
 }
-
 
 public class TimeData
 {
@@ -54,6 +52,7 @@ public class TimeManager : MonoBehaviour
             return _instance;
         }
     }
+
     public TimeStep TimeStep
     {
         get

@@ -248,6 +248,8 @@ public class Creature : MonoBehaviour
             }
             else
             {
+                Data.FreeStructures(Data.Task.Context);
+
                 Data.Forget(Data.Task.Context);
 
                 Taskmaster.Instance.TaskComplete(Data.Task);
@@ -343,17 +345,37 @@ public class CreatureData
 
     internal void Forget(string context)
     {
+        Debug.Log($"Forget context: {context}");
         // if !LongTerm?
         Mind.Remove(context);
     }
 
+    internal void FreeStructures(string context)
+    {
+        // see if character remembers any structures used in this current task context
+        // if any exist and they were reserved by this creature, free them
+        if (Mind[context].ContainsKey(MemoryType.Structure))
+        {
+            foreach (var structureId in Mind[context][MemoryType.Structure])
+            {
+                var structure = IdService.GetStructureFromId(structureId);
+                if (structure.InUseBy == this.GetGameId())
+                {
+                    structure.Free();
+                }
+            }
+        }
+    }
+
     internal void Know(string context)
     {
+        Debug.Log($"Add context: {context}");
         Mind.Add(context, new Memory());
     }
 
     internal void UpdateMemory(string context, MemoryType craft, string info)
     {
+        Debug.Log($"Remember: {context}, {craft}: '{info}'");
         Mind[context].AddInfo(craft, info);
     }
 }

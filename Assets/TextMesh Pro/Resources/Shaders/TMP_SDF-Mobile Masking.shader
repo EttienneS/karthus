@@ -220,7 +220,7 @@ Shader "TextMeshPro/Mobile/Distance Field - Masking" {
 					float a = abs(_MaskInverse - tex2D(_MaskTex, input.texcoord0.zw).a);
 					float t = a + (1 - _MaskWipeControl) * _MaskEdgeSoftness - _MaskWipeControl;
 					a = saturate(t / _MaskEdgeSoftness);
-					c.rgb = lerp(_MaskEdgeColor.rgb*c.a, c.rgb, a);
+					c.rgb = lerp(_MaskEdgeColor.rgb * c.a, c.rgb, a);
 					c *= a;
 
 					#if (UNDERLAY_ON | UNDERLAY_INNER)

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
-
 
 public enum CellType
 {
@@ -371,7 +369,6 @@ public class MapGrid : MonoBehaviour
                 //System.IO.File.WriteAllBytes(terrainBlock.name + ".png", texture.EncodeToPNG());
 
                 terrainBlock.Renderer.sprite = Sprite.Create(texture, new Rect(0, 0, Constants.PixelsPerBlock, Constants.PixelsPerBlock), new Vector2(0, 0), Constants.PixelsPerCell, 2);
-
 
                 terrainBlock.Renderer.sortingOrder = counter++;
                 terrainBlock.transform.position = new Vector2(x * Constants.CellsPerTerrainBlock, y * Constants.CellsPerTerrainBlock);

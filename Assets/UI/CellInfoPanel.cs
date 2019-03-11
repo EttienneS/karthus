@@ -50,7 +50,7 @@ public class CellInfoPanel : MonoBehaviour
 
             CellContent.text += "\n";
 
-            if(_cell.Structure != null)
+            if (_cell.Structure != null)
             {
                 CellContent.text += $"Structure:\t{_cell.Structure}\n";
             }

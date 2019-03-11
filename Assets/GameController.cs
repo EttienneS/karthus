@@ -44,7 +44,7 @@ public class GameController : MonoBehaviour
     {
         foreach (var structure in SelectedStructures)
         {
-            structure.LinkedGameObject.SpriteRenderer.color = Color.white;
+            structure.LinkedGameObject.SpriteRenderer.color = StructureController.StructureColor;
         }
         SelectedStructures.Clear();
     }

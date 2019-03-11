@@ -59,7 +59,7 @@
 					[unroll(16)]
 					for (int i = 1; i < _OutlineSize + 1; i++) {
 						fixed4 pixelUp = tex2D(_MainTex, IN.texcoord + fixed2(0, i * _MainTex_TexelSize.y));
-						fixed4 pixelDown = tex2D(_MainTex, IN.texcoord - fixed2(0,i *  _MainTex_TexelSize.y));
+						fixed4 pixelDown = tex2D(_MainTex, IN.texcoord - fixed2(0,i * _MainTex_TexelSize.y));
 						fixed4 pixelRight = tex2D(_MainTex, IN.texcoord + fixed2(i * _MainTex_TexelSize.x, 0));
 						fixed4 pixelLeft = tex2D(_MainTex, IN.texcoord - fixed2(i * _MainTex_TexelSize.x, 0));
 

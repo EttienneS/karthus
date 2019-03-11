@@ -5,7 +5,6 @@ using Random = UnityEngine.Random;
 
 public class CreatureController : MonoBehaviour
 {
-
     public Creature CreaturePrefab;
 
     internal List<Creature> Creatures = new List<Creature>();

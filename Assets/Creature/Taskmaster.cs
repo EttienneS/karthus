@@ -58,9 +58,33 @@ public class Taskmaster : MonoBehaviour
         return task;
     }
 
-    public TaskBase GetNextAvailableTask()
+    public TaskBase GetNextAvailableTask(Creature creature)
     {
-        return Tasks.FirstOrDefault(t => t.AssignedCreatureId <= 0);
+        TaskBase task = null;
+        foreach (var availableTask in Tasks.Where(t => t.AssignedCreatureId <= 0))
+        {
+            var craftTask = availableTask as Craft;
+            if (craftTask != null)
+            {
+                if (IdService.IsStructure(craftTask.Originator))
+                {
+                    var structure = IdService.GetStructureFromId(craftTask.Originator);
+
+                    if (structure.InUseByAnyone)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        structure.Reserve(creature.Data.GetGameId());
+                    }
+                }
+            }
+
+            task = availableTask;
+            break;
+        }
+        return task;
     }
 
     public TaskBase GetTask(Creature creature)
@@ -79,7 +103,7 @@ public class Taskmaster : MonoBehaviour
         }
         else
         {
-            task = GetNextAvailableTask();
+            task = GetNextAvailableTask(creature);
             if (task == null)
             {
                 if (Random.value > 0.6)

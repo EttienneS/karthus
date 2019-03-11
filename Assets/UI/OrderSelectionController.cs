@@ -52,7 +52,6 @@ public partial class OrderSelectionController : MonoBehaviour
         return button;
     }
 
-
     private void Start()
     {
         OrderTrayController.Instance.gameObject.SetActive(false);

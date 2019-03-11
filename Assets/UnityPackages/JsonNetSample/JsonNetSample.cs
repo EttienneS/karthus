@@ -1,15 +1,15 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 public class JsonNetSample : MonoBehaviour
 {
     public Text Output;
 
-    void Start()
+    private void Start()
     {
         Output.text = "Start!\n\n";
 
@@ -22,7 +22,7 @@ public class JsonNetSample : MonoBehaviour
         WriteLine("\nDone!");
     }
 
-    void WriteLine(string msg)
+    private void WriteLine(string msg)
     {
         Output.text = Output.text + msg + "\n";
     }
@@ -62,7 +62,7 @@ public class JsonNetSample : MonoBehaviour
         public string Sex { get; set; }
     }
 
-    void TestJson()
+    private void TestJson()
     {
         WriteLine("* TestJson");
         var json = "{\"Id\":51, \"Name\":\"padre\", \"Level\":0, \"Class\":\"Vampire\", \"Sex\":\"F\"}";
@@ -70,7 +70,7 @@ public class JsonNetSample : MonoBehaviour
         WriteLine(c.Id + " " + c.Name);
     }
 
-    void SerailizeJson()
+    private void SerailizeJson()
     {
         WriteLine("* SerailizeJson");
 
@@ -93,7 +93,7 @@ public class JsonNetSample : MonoBehaviour
         public List<string> ReleaseCountries { get; set; }
     }
 
-    void DeserializeJson()
+    private void DeserializeJson()
     {
         WriteLine("* DeserializeJson");
 
@@ -112,7 +112,7 @@ public class JsonNetSample : MonoBehaviour
         WriteLine(name);
     }
 
-    void LinqToJson()
+    private void LinqToJson()
     {
         WriteLine("* LinqToJson");
 

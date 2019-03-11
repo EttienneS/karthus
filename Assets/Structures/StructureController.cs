@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class StructureController : MonoBehaviour
 {
+    internal static Color BluePrintColor = new Color(0.3f, 1f, 1f, 0.4f);
+    internal static Color StructureColor = new Color(0.6f, 0.6f, 0.6f);
+
     public Dictionary<int, StructureData> StructureIdLookup = new Dictionary<int, StructureData>();
     public Dictionary<StructureData, Structure> StructureLookup = new Dictionary<StructureData, Structure>();
     public Structure structurePrefab;

@@ -52,6 +52,7 @@ public class SpriteStore : MonoBehaviour
             return _allSprites;
         }
     }
+
     public Dictionary<int, List<Sprite>> CreatureSprite
     {
         get
@@ -116,6 +117,7 @@ public class SpriteStore : MonoBehaviour
             return _mapSprites;
         }
     }
+
     public void AddSpriteToAll(Sprite sprite)
     {
         if (!AllSprites.ContainsKey(sprite.name))

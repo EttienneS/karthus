@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-
-public class Harvest : TaskBase
+﻿public class Harvest : TaskBase
 {
     public StructureData Target;
 

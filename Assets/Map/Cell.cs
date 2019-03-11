@@ -118,7 +118,6 @@ public class CellData
             Stockpile = stockpile.Data;
         }
 
-
         if (scatter)
         {
             gameObject.transform.position += new Vector3(Random.Range(-scatterIntensity, scatterIntensity), Random.Range(-scatterIntensity, scatterIntensity), 0);

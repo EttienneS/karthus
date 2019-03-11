@@ -64,7 +64,6 @@ public class SaveManager : MonoBehaviour
             var newCell = MapGrid.Instance.CreateCell(saveCell.Coordinates.X, saveCell.Coordinates.Y, saveCell.CellType);
             newCell = saveCell;
 
-
             if (saveCell.Structure != null)
             {
                 newCell.AddContent(StructureController.Instance.LoadStructure(saveCell.Structure).gameObject);
@@ -135,7 +134,6 @@ public class SaveManager : MonoBehaviour
         Taskmaster.Instance.Tasks.Clear();
     }
 }
-
 
 public class Save
 {
