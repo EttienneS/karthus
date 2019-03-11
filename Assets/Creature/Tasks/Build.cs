@@ -13,9 +13,9 @@
         Structure = structure;
         Coordinates = coordinates;
 
-        foreach (var itemType in structure.Require)
+        foreach (var requiredItem in structure.Require)
         {
-            AddSubTask(new MoveItemToCell(itemType, Coordinates, true, true));
+            AddSubTask(new MoveItemToCell(requiredItem, Coordinates, true, true, GetItem.SearchBy.Name));
         }
 
         AddSubTask(new Wait(3f, "Building"));

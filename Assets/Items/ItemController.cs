@@ -7,10 +7,11 @@ public class ItemController : MonoBehaviour
 
     internal Dictionary<ItemData, Item> ItemDataLookup = new Dictionary<ItemData, Item>();
     internal Dictionary<int, Item> ItemIdLookup = new Dictionary<int, Item>();
-    internal Dictionary<string, List<Item>> ItemTypeIndex = new Dictionary<string, List<Item>>();
+    internal Dictionary<string, List<Item>> ItemCategoryIndex = new Dictionary<string, List<Item>>();
+    internal Dictionary<string, List<Item>> ItemNameIndex = new Dictionary<string, List<Item>>();
     private static ItemController _instance;
 
-    private Dictionary<string, Item> _allItemTypes;
+    private Dictionary<string, Item> _allItemNames;
 
     public static ItemController Instance
     {
@@ -25,13 +26,13 @@ public class ItemController : MonoBehaviour
         }
     }
 
-    internal Dictionary<string, Item> AllItemTypes
+    internal Dictionary<string, Item> AllItemNames
     {
         get
         {
-            if (_allItemTypes == null)
+            if (_allItemNames == null)
             {
-                _allItemTypes = new Dictionary<string, Item>();
+                _allItemNames = new Dictionary<string, Item>();
                 foreach (var itemFile in FileController.Instance.ItemJson)
                 {
                     var item = Instantiate(itemPrefab, transform);
@@ -39,10 +40,10 @@ public class ItemController : MonoBehaviour
                     item.Load(itemFile.text);
                     item.name = item.Data.Name;
 
-                    AllItemTypes.Add(item.Data.Name, item);
+                    AllItemNames.Add(item.Data.Name, item);
                 }
             }
-            return _allItemTypes;
+            return _allItemNames;
         }
     }
 
@@ -69,16 +70,27 @@ public class ItemController : MonoBehaviour
             item.Cell.ContainedItems.Remove(item.Data);
         }
 
-        ItemTypeIndex[item.Data.ItemType].Remove(item);
+        ItemCategoryIndex[item.Data.Category].Remove(item);
+        ItemNameIndex[item.Data.Name].Remove(item);
         ItemIdLookup.Remove(item.Data.Id);
         ItemDataLookup.Remove(item.Data);
 
         Destroy(item.gameObject);
     }
 
+    internal ItemData FindClosestItemByName(CellData centerPoint, string type, bool allowStockpiled)
+    {
+        return FindClosestItem(ItemNameIndex, centerPoint, type, allowStockpiled);
+    }
+
     internal ItemData FindClosestItemOfType(CellData centerPoint, string type, bool allowStockpiled)
     {
-        if (!ItemTypeIndex.ContainsKey(type) || ItemTypeIndex[type].Count == 0)
+        return FindClosestItem(ItemCategoryIndex, centerPoint, type, allowStockpiled);
+    }
+
+    internal ItemData FindClosestItem(Dictionary<string, List<Item>> lookup, CellData centerPoint, string type, bool allowStockpiled)
+    {
+        if (!lookup.ContainsKey(type) || lookup[type].Count == 0)
         {
             // no registred item of the given type exists
             return null;
@@ -89,7 +101,7 @@ public class ItemController : MonoBehaviour
             var checkedCells = new HashSet<CellData>();
             var closest = int.MaxValue;
             ItemData closestItem = null;
-            foreach (var item in ItemTypeIndex[type])
+            foreach (var item in lookup[type])
             {
                 if (item.Data.Reserved || (!allowStockpiled && item.Data.StockpileId > 0))
                 {
@@ -114,7 +126,7 @@ public class ItemController : MonoBehaviour
 
     internal Item GetItem(string name)
     {
-        var item = Instantiate(AllItemTypes[name], transform);
+        var item = Instantiate(AllItemNames[name], transform);
         item.Load(FileController.Instance.ItemLookup[name].text);
 
         item.Data.Id = IdCounter++;
@@ -125,7 +137,7 @@ public class ItemController : MonoBehaviour
 
     internal Item LoadItem(ItemData savedItem)
     {
-        var item = Instantiate(AllItemTypes[savedItem.Name], transform);
+        var item = Instantiate(AllItemNames[savedItem.Name], transform);
         item.Data = savedItem;
         IndexItem(item);
 
@@ -134,15 +146,20 @@ public class ItemController : MonoBehaviour
 
     private void IndexItem(Item item)
     {
-        if (!ItemTypeIndex.ContainsKey(item.Data.ItemType))
+        if (!ItemCategoryIndex.ContainsKey(item.Data.Category))
         {
-            ItemTypeIndex.Add(item.Data.ItemType, new List<Item>());
+            ItemCategoryIndex.Add(item.Data.Category, new List<Item>());
         }
+        ItemCategoryIndex[item.Data.Category].Add(item);
 
-        ItemTypeIndex[item.Data.ItemType].Add(item);
+        if (!ItemNameIndex.ContainsKey(item.Data.Name))
+        {
+            ItemNameIndex.Add(item.Data.Name, new List<Item>());
+        }
+        ItemNameIndex[item.Data.Name].Add(item);
         ItemDataLookup.Add(item.Data, item);
         ItemIdLookup.Add(item.Data.Id, item);
 
-        item.name = $"{item.Data.ItemType} ({item.Data.Id})";
+        item.name = $"{item.Data.Category} ({item.Data.Id})";
     }
 }

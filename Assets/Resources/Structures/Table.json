@@ -10,8 +10,8 @@
   "Tasks": [
     {
       "$type": "Craft, Assembly-CSharp",
-      "OutputItemType": "Apple Pie",
-      "RequiredItemTypes": [ "4:Apple", "1:Wood" ]
+      "OutputItemName": "Apple Pie",
+      "RequiredItemNames": [ "4:Apple", "1:Wood" ]
     }
   ]
 }

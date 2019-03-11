@@ -1,17 +1,25 @@
-﻿public class GetItemOfType : TaskBase
+﻿public class GetItem : TaskBase
 {
     public bool AllowStockpiled;
     public ItemData Item;
-    public string ItemType;
+    public string ItemId;
 
-    public GetItemOfType()
+    public SearchBy Search;
+
+    public enum SearchBy
+    {
+        Name, Category
+    }
+
+    public GetItem()
     {
     }
 
-    public GetItemOfType(string itemType, bool allowStockpiled)
+    public GetItem(string item, bool allowStockpiled, SearchBy search)
     {
         AllowStockpiled = allowStockpiled;
-        ItemType = itemType;
+        ItemId = item;
+        Search = search;
     }
 
     public override bool Done()
@@ -35,11 +43,18 @@
     {
         if (Item == null)
         {
-            Item = ItemController.Instance.FindClosestItemOfType(Creature.CurrentCell, ItemType, AllowStockpiled);
+            if (Search == SearchBy.Category)
+            {
+                Item = ItemController.Instance.FindClosestItemOfType(Creature.CurrentCell, ItemId, AllowStockpiled);
+            }
+            else
+            {
+                Item = ItemController.Instance.FindClosestItemByName(Creature.CurrentCell, ItemId, AllowStockpiled);
+            }
 
             if (Item == null)
             {
-                throw new CancelTaskException($"Unable to find item: {ItemType}");
+                throw new CancelTaskException($"Unable to find item: {ItemId}");
             }
             Item.Reserved = true;
             UpdateTargetItem();

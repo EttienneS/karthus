@@ -31,10 +31,10 @@ public class StockpileController : MonoBehaviour
         return stockpile;
     }
 
-    public Stockpile AddStockpile(string itemTypeName)
+    public Stockpile AddStockpile(string itemCategory)
     {
         var stockpile = Instantiate(StockpilePrefab, transform);
-        stockpile.Data.ItemType = itemTypeName;
+        stockpile.Data.ItemCategory = itemCategory;
         stockpile.Data.Id = StockpileLookup.Count + 1;
         StockpileLookup.Add(stockpile.Data.Id, stockpile);
 

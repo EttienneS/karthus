@@ -92,7 +92,7 @@ public class CellData
                 item.Cell.ContainedItems.Remove(item.Data);
             }
 
-            if (Stockpile != null && Stockpile.ItemType == item.Data.ItemType)
+            if (Stockpile != null && Stockpile.ItemCategory == item.Data.Category)
             {
                 Stockpile.AddItem(item.Data);
             }

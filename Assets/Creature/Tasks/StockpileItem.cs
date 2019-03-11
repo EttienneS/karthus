@@ -6,11 +6,11 @@ public class StockpileItem : TaskBase
     {
     }
 
-    public StockpileItem(string itemType, int stockpileId)
+    public StockpileItem(string itemCategory, int stockpileId)
     {
         StockpileId = stockpileId;
 
-        AddSubTask(new MoveItemToCell(itemType, Stockpile.Data.Coordinates, false, false));
+        AddSubTask(new MoveItemToCell(itemCategory, Stockpile.Data.Coordinates, false, false, GetItem.SearchBy.Category));
     }
 
     public int StockpileId { get; set; }

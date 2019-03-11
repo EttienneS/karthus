@@ -43,7 +43,7 @@ public class CellInfoPanel : MonoBehaviour
             CellName.text = _cell.Coordinates.ToString();
             CellContent.text = string.Empty;
 
-            foreach (var item in _cell.ContainedItems.GroupBy(g => g.ItemType))
+            foreach (var item in _cell.ContainedItems.GroupBy(g => g.Name))
             {
                 CellContent.text += $"{item.Key}:\t{item.Count()}\n";
             }
