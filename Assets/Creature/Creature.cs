@@ -248,7 +248,7 @@ public class Creature : MonoBehaviour
             }
             else
             {
-                Data.FreeStructures(Data.Task.Context);
+                Data.FreeResources(Data.Task.Context);
 
                 Data.Forget(Data.Task.Context);
 
@@ -350,8 +350,14 @@ public class CreatureData
         Mind.Remove(context);
     }
 
-    internal void FreeStructures(string context)
+    internal void FreeResources(string context)
     {
+        if (!Mind.ContainsKey(context))
+        {
+            // already forgot about this context, do nothing
+            return;
+        }
+
         // see if character remembers any structures used in this current task context
         // if any exist and they were reserved by this creature, free them
         if (Mind[context].ContainsKey(MemoryType.Structure))

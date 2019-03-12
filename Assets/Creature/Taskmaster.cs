@@ -93,34 +93,18 @@ public class Taskmaster : MonoBehaviour
 
         if (creature.Data.Hunger > 50)
         {
-            task = new Eat("Food");
-            AddTask(task, creature.Data.GetGameId());
+            task = AddTask(new Eat("Food"), creature.Data.GetGameId());
         }
         else if (creature.Data.Energy < 15)
         {
-            task = new Sleep();
-            AddTask(task, creature.Data.GetGameId());
+            task = AddTask(new Sleep(), creature.Data.GetGameId());
         }
         else
         {
             task = GetNextAvailableTask(creature);
             if (task == null)
             {
-                if (Random.value > 0.6)
-                {
-                    var wanderCircle = MapGrid.Instance.GetCircle(creature.Data.CurrentCell, 3).Where(c => c.TravelCost == 1).ToList();
-                    if (wanderCircle.Count > 0)
-                    {
-                        task = new Move(wanderCircle[Random.Range(0, wanderCircle.Count - 1)].Coordinates, (int)creature.Data.Speed / 3);
-                    }
-                }
-
-                if (task == null)
-                {
-                    task = new Wait(Random.Range(0.1f, 1f), "Chilling");
-                }
-
-                AddTask(task, creature.Data.GetGameId());
+                task = AddTask(new Idle(creature.Data), creature.Data.GetGameId());
             }
         }
         task.AssignedCreatureId = creature.Data.Id;
