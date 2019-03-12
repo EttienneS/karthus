@@ -345,7 +345,7 @@ public class CreatureData
 
     internal void Forget(string context)
     {
-        Debug.Log($"Forget context: {context}");
+        // Debug.Log($"Forget context: {context}");
         // if !LongTerm?
         Mind.Remove(context);
     }
@@ -369,7 +369,7 @@ public class CreatureData
 
     internal void Know(string context)
     {
-        Debug.Log($"Add context: {context}");
+        // Debug.Log($"Add context: {context}");
         Mind.Add(context, new Memory());
     }
 
