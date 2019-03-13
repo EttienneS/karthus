@@ -50,7 +50,7 @@ public class Move : TaskBase
 
             if (_path == null)
             {
-                throw new CancelTaskException("Unable to find path");
+                throw new TaskFailedException("Unable to find path");
             }
 
             _nextCell = _path[_path.IndexOf(currentCreatureCell) - 1];

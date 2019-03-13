@@ -54,7 +54,7 @@
 
             if (Item == null)
             {
-                throw new CancelTaskException($"Unable to find item: {ItemId}");
+                throw new TaskFailedException($"Unable to find item: {ItemId}");
             }
             Item.Reserved = true;
             UpdateTargetItem();
