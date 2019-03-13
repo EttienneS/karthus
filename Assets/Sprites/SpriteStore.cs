@@ -38,6 +38,11 @@ public class SpriteStore : MonoBehaviour
         }
     }
 
+    internal Sprite GetPlaceholder()
+    {
+       return GetSpriteByName("Placeholder");
+    }
+
     public Dictionary<string, Sprite> AllSprites
     {
         get

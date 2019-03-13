@@ -34,11 +34,10 @@ public partial class OrderSelectionController //.Stockpile
         {
             EnableAndClear();
 
-            foreach (var item in ItemController.Instance.AllItemNames.Values)
+            foreach (var category in ItemController.Instance.ItemCategoryIndex.Keys)
             {
-                var button = CreateOrderButton(CutText, () => StockpileClicked(item.Data.Category), item.Data.SpriteName);
-                button.Button.image.type = Image.Type.Tiled;
-                button.name = $"Place {item.Data.Category} Stockpile";
+                var button = CreateOrderButton(CutText, () => StockpileClicked(category), category);
+                button.name = $"Place {category} Stockpile";
                 button.Text = button.name;
             }
         }

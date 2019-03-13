@@ -34,7 +34,7 @@ public class Stockpile : MonoBehaviour
     {
         return Data.Items.FirstOrDefault(i => i.Category == category && !i.Reserved);
     }
-    
+
     public TextMeshPro GetTextMesh()
     {
         if (_textMesh == null)
@@ -50,20 +50,15 @@ public class Stockpile : MonoBehaviour
 
         Text = Data.ItemCategory;
 
-        Data.ActiveTasks.RemoveAll(t => t.Done());
-
-        if (Data.ActiveTasks.Count < Data.MaxConcurrentTasks && Data.Items.Count < Data.Size)
+        if (Taskmaster.Instance.Tasks.OfType<StockpileItem>().Count(t => t.StockpileId == Data.Id) < Data.MaxConcurrentTasks)
         {
-            Data.ActiveTasks.Add(Taskmaster.Instance.AddTask(new StockpileItem(Data.ItemCategory, Data.Id), Data.GetGameId()));
+            Taskmaster.Instance.AddTask(new StockpileItem(Data.ItemCategory, Data.Id), Data.GetGameId());
         }
     }
 }
 
 public class StockpileData
 {
-    [JsonIgnore]
-    public List<TaskBase> ActiveTasks = new List<TaskBase>();
-
     [JsonIgnore]
     public List<ItemData> Items = new List<ItemData>();
 

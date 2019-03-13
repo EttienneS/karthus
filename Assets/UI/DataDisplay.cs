@@ -37,4 +37,20 @@ public class DataDisplay : MonoBehaviour
     {
         SetData(cell.Coordinates.ToString(), cell.Coordinates.ToString(), SpriteStore.Instance.MapSpriteTypeDictionary[cell.CellType.ToString()][0]);
     }
+
+    internal void SetData(TaskBase task)
+    {
+        SetData(task.GetType().Name, task.ToString(), task.AssignedCreatureId > 0 ?
+                                                        task.Creature.LinkedGameObject.FrontSprites[0] :
+                                                        SpriteStore.Instance.GetPlaceholder());
+
+        if (task.Failed)
+        {
+            GetComponent<Image>().color = Color.red;
+        }
+        else
+        {
+            GetComponent<Image>().color = Color.white;
+        }
+    }
 }

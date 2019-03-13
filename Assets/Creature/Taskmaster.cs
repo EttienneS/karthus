@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class Taskmaster : MonoBehaviour
 {
@@ -19,6 +18,26 @@ public class Taskmaster : MonoBehaviour
             }
 
             return _instance;
+        }
+    }
+
+    public int LastRecyle;
+
+    public const int RecyleTime = 3;
+    public const int RecyleCount = 5;
+
+    public void Update()
+    {
+        if (TimeManager.Instance.Data.Hour - LastRecyle > RecyleTime)
+        {
+            LastRecyle = TimeManager.Instance.Data.Hour;
+
+            var failedTasks = Tasks.Where(t => t.Failed);
+
+            foreach (var task in failedTasks.Take(RecyleCount))
+            {
+                task.Failed = false;
+            }
         }
     }
 
@@ -61,7 +80,7 @@ public class Taskmaster : MonoBehaviour
     public TaskBase GetNextAvailableTask(Creature creature)
     {
         TaskBase task = null;
-        foreach (var availableTask in Tasks.Where(t => t.AssignedCreatureId <= 0))
+        foreach (var availableTask in Tasks.Where(t => t.AssignedCreatureId <= 0 && !t.Failed))
         {
             var craftTask = availableTask as Craft;
             if (craftTask != null)
@@ -89,38 +108,22 @@ public class Taskmaster : MonoBehaviour
 
     public TaskBase GetTask(Creature creature)
     {
-        TaskBase task = null;
+        TaskBase task;
 
         if (creature.Data.Hunger > 50)
         {
-            task = new Eat("Food");
-            AddTask(task, creature.Data.GetGameId());
+            task = AddTask(new Eat("Food"), creature.Data.GetGameId());
         }
         else if (creature.Data.Energy < 15)
         {
-            task = new Sleep();
-            AddTask(task, creature.Data.GetGameId());
+            task = AddTask(new Sleep(), creature.Data.GetGameId());
         }
         else
         {
             task = GetNextAvailableTask(creature);
             if (task == null)
             {
-                if (Random.value > 0.6)
-                {
-                    var wanderCircle = MapGrid.Instance.GetCircle(creature.Data.CurrentCell, 3).Where(c => c.TravelCost == 1).ToList();
-                    if (wanderCircle.Count > 0)
-                    {
-                        task = new Move(wanderCircle[Random.Range(0, wanderCircle.Count - 1)].Coordinates, (int)creature.Data.Speed / 3);
-                    }
-                }
-
-                if (task == null)
-                {
-                    task = new Wait(Random.Range(0.1f, 1f), "Chilling");
-                }
-
-                AddTask(task, creature.Data.GetGameId());
+                task = AddTask(new Idle(creature.Data), creature.Data.GetGameId());
             }
         }
         task.AssignedCreatureId = creature.Data.Id;
@@ -136,5 +139,26 @@ public class Taskmaster : MonoBehaviour
     internal void TaskComplete(TaskBase task)
     {
         Tasks.Remove(task);
+    }
+
+    internal void TaskFailed(TaskBase task)
+    {
+        task.Failed = true;
+
+        if (task.AssignedCreatureId > 0)
+        {
+            task.Creature.Task = null;
+            if (task.Creature.CarriedItemId > 0)
+            {
+                task.Creature.CarriedItem.Reserved = false;
+                task.Creature.CarriedItemId = 0;
+            }
+        }
+
+        task.AssignedCreatureId = -1;
+
+        // move task to bottom of the list
+        Tasks.Remove(task);
+        Tasks.Add(task);
     }
 }

@@ -16,7 +16,7 @@
         {
             if (Creature.CarriedItem == null)
             {
-                throw new CancelTaskException("No food to eat");
+                throw new TaskFailedException("No food to eat");
             }
 
             var food = Creature.CarriedItem;

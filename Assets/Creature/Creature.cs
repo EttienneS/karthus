@@ -248,7 +248,7 @@ public class Creature : MonoBehaviour
             }
             else
             {
-                Data.FreeStructures(Data.Task.Context);
+                Data.FreeResources(Data.Task.Context);
 
                 Data.Forget(Data.Task.Context);
 
@@ -256,18 +256,9 @@ public class Creature : MonoBehaviour
                 Data.Task = null;
             }
         }
-        catch (CancelTaskException)
+        catch (TaskFailedException)
         {
-            Taskmaster.Instance.TaskComplete(Data.Task);
-
-            if (Data.CarriedItemId > 0)
-            {
-                Data.CarriedItem.Reserved = false;
-                Data.CarriedItemId = 0;
-            }
-
-            Data.Task = Taskmaster.Instance.GetTask(this);
-            AssignTask(Data.Task, Data.Task.Context);
+            Taskmaster.Instance.TaskFailed(Data.Task);
         }
     }
 }
@@ -345,13 +336,19 @@ public class CreatureData
 
     internal void Forget(string context)
     {
-        Debug.Log($"Forget context: {context}");
+        // Debug.Log($"Forget context: {context}");
         // if !LongTerm?
         Mind.Remove(context);
     }
 
-    internal void FreeStructures(string context)
+    internal void FreeResources(string context)
     {
+        if (!Mind.ContainsKey(context))
+        {
+            // already forgot about this context, do nothing
+            return;
+        }
+
         // see if character remembers any structures used in this current task context
         // if any exist and they were reserved by this creature, free them
         if (Mind[context].ContainsKey(MemoryType.Structure))
@@ -369,7 +366,7 @@ public class CreatureData
 
     internal void Know(string context)
     {
-        Debug.Log($"Add context: {context}");
+        // Debug.Log($"Add context: {context}");
         Mind.Add(context, new Memory());
     }
 

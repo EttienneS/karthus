@@ -1,11 +1,14 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
+
 public abstract class TaskBase
 {
     public int AssignedCreatureId;
     public string Originator;
     public string Context;
+
+    public bool Failed;
 
     public Queue<TaskBase> SubTasks = new Queue<TaskBase>();
 

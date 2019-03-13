@@ -42,7 +42,7 @@
     {
         if (Structure == null)
         {
-            throw new CancelTaskException();
+            throw new TaskFailedException();
         }
 
         Taskmaster.ProcessQueue(SubTasks);
