@@ -258,16 +258,7 @@ public class Creature : MonoBehaviour
         }
         catch (TaskFailedException)
         {
-            Taskmaster.Instance.TaskComplete(Data.Task);
-
-            if (Data.CarriedItemId > 0)
-            {
-                Data.CarriedItem.Reserved = false;
-                Data.CarriedItemId = 0;
-            }
-
-            Data.Task = Taskmaster.Instance.GetTask(this);
-            AssignTask(Data.Task, Data.Task.Context);
+            Taskmaster.Instance.TaskFailed(Data.Task);
         }
     }
 }

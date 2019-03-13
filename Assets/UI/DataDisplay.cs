@@ -43,5 +43,14 @@ public class DataDisplay : MonoBehaviour
         SetData(task.GetType().Name, task.ToString(), task.AssignedCreatureId > 0 ?
                                                         task.Creature.LinkedGameObject.FrontSprites[0] :
                                                         SpriteStore.Instance.GetPlaceholder());
+
+        if (task.Failed)
+        {
+            GetComponent<Image>().color = Color.red;
+        }
+        else
+        {
+            GetComponent<Image>().color = Color.white;
+        }
     }
 }

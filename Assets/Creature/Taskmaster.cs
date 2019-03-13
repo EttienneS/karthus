@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class Taskmaster : MonoBehaviour
 {
@@ -19,6 +18,26 @@ public class Taskmaster : MonoBehaviour
             }
 
             return _instance;
+        }
+    }
+
+    public int LastRecyle;
+
+    public const int RecyleTime = 3;
+    public const int RecyleCount = 5;
+
+    public void Update()
+    {
+        if (TimeManager.Instance.Data.Hour - LastRecyle > RecyleTime)
+        {
+            LastRecyle = TimeManager.Instance.Data.Hour;
+
+            var failedTasks = Tasks.Where(t => t.Failed);
+
+            foreach (var task in failedTasks.Take(RecyleCount))
+            {
+                task.Failed = false;
+            }
         }
     }
 
@@ -61,7 +80,7 @@ public class Taskmaster : MonoBehaviour
     public TaskBase GetNextAvailableTask(Creature creature)
     {
         TaskBase task = null;
-        foreach (var availableTask in Tasks.Where(t => t.AssignedCreatureId <= 0))
+        foreach (var availableTask in Tasks.Where(t => t.AssignedCreatureId <= 0 && !t.Failed))
         {
             var craftTask = availableTask as Craft;
             if (craftTask != null)
@@ -89,7 +108,7 @@ public class Taskmaster : MonoBehaviour
 
     public TaskBase GetTask(Creature creature)
     {
-        TaskBase task = null;
+        TaskBase task;
 
         if (creature.Data.Hunger > 50)
         {
@@ -120,5 +139,26 @@ public class Taskmaster : MonoBehaviour
     internal void TaskComplete(TaskBase task)
     {
         Tasks.Remove(task);
+    }
+
+    internal void TaskFailed(TaskBase task)
+    {
+        task.Failed = true;
+
+        if (task.AssignedCreatureId > 0)
+        {
+            task.Creature.Task = null;
+            if (task.Creature.CarriedItemId > 0)
+            {
+                task.Creature.CarriedItem.Reserved = false;
+                task.Creature.CarriedItemId = 0;
+            }
+        }
+
+        task.AssignedCreatureId = -1;
+
+        // move task to bottom of the list
+        Tasks.Remove(task);
+        Tasks.Add(task);
     }
 }

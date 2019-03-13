@@ -12,8 +12,7 @@ public class TaskQueue : MonoBehaviour
 
     private void Update()
     {
-        var removals = Lookup.Keys.Except(Taskmaster.Instance.Tasks).ToList();
-        foreach (var remove in removals)
+        foreach (var remove in Lookup.Keys.Except(Taskmaster.Instance.Tasks).ToList())
         {
             Destroy(Lookup[remove].gameObject);
             Lookup.Remove(remove);
@@ -24,12 +23,26 @@ public class TaskQueue : MonoBehaviour
             if (!Lookup.ContainsKey(task))
             {
                 Lookup.Add(task, Instantiate(DisplayPrefab, Content.transform));
+
+                Lookup[task].Clicked += () => TaskQueue_Clicked(task);
             }
 
             Lookup[task].SetData(task);
         }
 
         Scale();
+    }
+
+    private void TaskQueue_Clicked(TaskBase task)
+    {
+        if (task.Failed)
+        {
+            task.Failed = false;
+        }
+        else
+        {
+            Taskmaster.Instance.TaskFailed(task);
+        }
     }
 
     private void Scale()
