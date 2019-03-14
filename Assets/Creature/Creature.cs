@@ -256,9 +256,10 @@ public class Creature : MonoBehaviour
                 Data.Task = null;
             }
         }
-        catch (TaskFailedException)
+        catch (TaskFailedException ex)
         {
-            Taskmaster.Instance.TaskFailed(Data.Task);
+            Debug.LogWarning($"Task failed: {ex}");
+            Taskmaster.Instance.TaskFailed(Data.Task, ex.ToString());
         }
     }
 }

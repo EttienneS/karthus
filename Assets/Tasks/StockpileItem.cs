@@ -11,6 +11,8 @@ public class StockpileItem : TaskBase
         StockpileId = stockpileId;
 
         AddSubTask(new MoveItemToCell(itemCategory, Stockpile.Data.Coordinates, false, false, GetItem.SearchBy.Category));
+
+        Message = $"Adding {itemCategory} to {stockpileId}";
     }
 
     public int StockpileId { get; set; }

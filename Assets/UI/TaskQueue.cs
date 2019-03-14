@@ -41,7 +41,7 @@ public class TaskQueue : MonoBehaviour
         }
         else
         {
-            Taskmaster.Instance.TaskFailed(task);
+            Taskmaster.Instance.TaskFailed(task, "SUSPENDED");
         }
     }
 

@@ -20,6 +20,8 @@ public class Move : TaskBase
     {
         TargetCoordinates = targetCoordinates;
         MaxSpeed = maxSpeed;
+
+        Message = $"Moving to {TargetCoordinates}";
     }
 
     public int MaxSpeed { get; set; }
@@ -27,11 +29,6 @@ public class Move : TaskBase
     public override bool Done()
     {
         return Creature.Coordinates == TargetCoordinates;
-    }
-
-    public override string ToString()
-    {
-        return $"Moving to {TargetCoordinates}";
     }
 
     public override void Update()

@@ -11,6 +11,8 @@
         Reserve = reserve;
         AddSubTask(new GetItem(itemId, allowStockpiled, search));
         AddSubTask(new Move(coordinates));
+
+        Message = $"Moving {itemId} to {coordinates}";
     }
 
     public override bool Done()

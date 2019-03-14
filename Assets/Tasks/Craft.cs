@@ -25,6 +25,8 @@
         }
 
         AddSubTask(new Wait(3f, "Crafting"));
+
+        Message = $"Making {OutputItemName} at {location}";
     }
 
     public override bool Done()

@@ -14,6 +14,8 @@
 
         AddSubTask(new Move(Coordinates));
         AddSubTask(new Wait(2f, "Removing"));
+
+        Message = $"Removing {Structure.Name} at {coordinates}";
     }
 
     public override bool Done()

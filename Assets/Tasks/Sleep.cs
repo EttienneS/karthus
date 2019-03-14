@@ -2,6 +2,11 @@
 
 public class Sleep : TaskBase
 {
+    public Sleep()
+    {
+        Message = "Zzzz..";
+    }
+
     public override bool Done()
     {
         if (Taskmaster.QueueComplete(SubTasks))

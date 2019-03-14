@@ -141,7 +141,7 @@ public class Taskmaster : MonoBehaviour
         Tasks.Remove(task);
     }
 
-    internal void TaskFailed(TaskBase task)
+    internal void TaskFailed(TaskBase task, string reason)
     {
         task.Failed = true;
 
@@ -155,6 +155,7 @@ public class Taskmaster : MonoBehaviour
             }
         }
 
+        task.Message += $"\n{reason}";
         task.AssignedCreatureId = -1;
 
         // move task to bottom of the list

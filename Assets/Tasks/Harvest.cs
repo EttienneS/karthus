@@ -12,6 +12,8 @@
 
         AddSubTask(new Move(MapGrid.Instance.GetPathableNeighbour(Target.Coordinates)));
         AddSubTask(new Wait(2f, "Harvesting"));
+
+        Message = $"Harvesting {structure.Name} at {structure.Coordinates}";
     }
 
     public override bool Done()

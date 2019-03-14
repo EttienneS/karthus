@@ -20,6 +20,8 @@
 
         AddSubTask(new Wait(3f, "Building"));
         AddSubTask(new Move(MapGrid.Instance.GetPathableNeighbour(Coordinates)));
+
+        Message = $"Building {structure.Name} at {coordinates}";
     }
 
     public override bool Done()

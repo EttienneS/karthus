@@ -20,6 +20,8 @@
         AllowStockpiled = allowStockpiled;
         ItemId = item;
         Search = search;
+
+        Message = $"Getting {item}";
     }
 
     public override bool Done()

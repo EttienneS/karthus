@@ -21,6 +21,8 @@ public class Idle : TaskBase
         {
             AddSubTask(new Wait(Random.Range(2f, 4f), "Chilling"));
         }
+
+        Message = "Waiting for something to do.";
     }
 
     public override bool Done()

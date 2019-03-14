@@ -7,6 +7,7 @@ public abstract class TaskBase
     public int AssignedCreatureId;
     public string Originator;
     public string Context;
+    public string Message;
 
     public bool Failed;
 

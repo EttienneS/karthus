@@ -8,6 +8,8 @@
     {
         AddSubTask(new GetItem(itemCategory, true, GetItem.SearchBy.Category));
         AddSubTask(new Wait(2f, "Eating"));
+
+        Message = $"Eating {itemCategory}";
     }
 
     public override bool Done()

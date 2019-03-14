@@ -18,16 +18,13 @@ public class Wait : TaskBase
         Reason = reason;
         ElapsedTime = 0;
         LastFacingChange = 0;
+
+        Message = $"{Reason} {Duration}";
     }
 
     public override bool Done()
     {
         return ElapsedTime >= Duration;
-    }
-
-    public override string ToString()
-    {
-        return $"{Reason} {Duration}";
     }
 
     public override void Update()
