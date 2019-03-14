@@ -50,6 +50,11 @@ public class CellData
     {
         get
         {
+            if (!Bound)
+            {
+                return 99;
+            }
+
             switch (CellType)
             {
                 case CellType.Water:
@@ -70,6 +75,8 @@ public class CellData
     public StockpileData Stockpile;
 
     public StructureData Structure;
+
+    public bool Bound;
 
     [JsonIgnore]
     public CellData[] Neighbors = new CellData[8];

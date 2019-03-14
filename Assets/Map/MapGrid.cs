@@ -5,7 +5,7 @@ using Random = UnityEngine.Random;
 
 public enum CellType
 {
-    Dirt, Forest, Grass, Mountain, Stone, Water
+    Abyss, Dirt, Forest, Grass, Mountain, Stone, Water
 }
 
 public class MapGrid : MonoBehaviour
@@ -131,6 +131,35 @@ public class MapGrid : MonoBehaviour
         }
 
         return cells;
+    }
+
+    public List<CellData> BleedGroup(List<CellData> group, int count)
+    {
+        for (var i = 0; i < count; i++)
+        {
+            group = BleedGroup(group.ToList());
+        }
+
+        return group;
+    }
+
+    public List<CellData> BleedGroup(List<CellData> group)
+    {
+        var newGroup = group.ToList();
+
+        foreach (var cell in group)
+        {
+            foreach (var neighbour in cell.Neighbors.Where(n => n != null && !group.Contains(n)))
+            {
+                if (Random.value > 0.7f)
+                {
+                    newGroup.Add(neighbour);
+                }
+            }
+        }
+
+        newGroup.Distinct();
+        return newGroup;
     }
 
     public CellData GetRandomCell()
@@ -318,62 +347,73 @@ public class MapGrid : MonoBehaviour
         }
     }
 
+    private Texture2D[,] _textures = new Texture2D[Constants.TotalTextures, Constants.TotalTextures];
+
+    private Dictionary<Texture2D, SpriteRenderer> _textureLookup = new Dictionary<Texture2D, SpriteRenderer>();
+
     private void CreateMapTexturesFromCells()
     {
-        var totalTextures = Mathf.CeilToInt(Constants.MapSize / Constants.CellsPerTerrainBlock);
-        var textures = new Texture2D[totalTextures, totalTextures];
-
-        for (var x = 0; x < totalTextures; x++)
+        for (var x = 0; x < Constants.TotalTextures; x++)
         {
-            for (var y = 0; y < totalTextures; y++)
+            for (var y = 0; y < Constants.TotalTextures; y++)
             {
-                textures[x, y] = new Texture2D(Constants.PixelsPerBlock, Constants.PixelsPerBlock);
+                _textures[x, y] = new Texture2D(Constants.PixelsPerBlock, Constants.PixelsPerBlock);
             }
         }
 
         foreach (var cell in Cells)
         {
-            var cellX = cell.Coordinates.X;
-            var cellY = cell.Coordinates.Y;
-            var texture = textures[Mathf.FloorToInt(cellX / Constants.CellsPerTerrainBlock), Mathf.FloorToInt(cellY / Constants.CellsPerTerrainBlock)];
-
-            var x = cellX * Constants.PixelsPerCell;
-            var y = cellY * Constants.PixelsPerCell;
-
-            var xStart = x;
-            var xEnd = x + Constants.PixelsPerCell;
-
-            foreach (var pixel in SpriteStore.Instance.GetGroundTextureFor(cell.CellType.ToString(), Constants.PixelsPerCell))
-            {
-                texture.SetPixel(x, y, pixel);
-                x++;
-
-                if (x >= xEnd)
-                {
-                    x = xStart;
-                    y++;
-                }
-            }
+            UpdateTextureForCell(cell);
         }
 
         var counter = 0;
-        for (var x = 0; x < totalTextures; x++)
+        for (var x = 0; x < Constants.TotalTextures; x++)
         {
-            for (var y = 0; y < totalTextures; y++)
+            for (var y = 0; y < Constants.TotalTextures; y++)
             {
-                var texture = textures[x, y];
+                var texture = _textures[x, y];
                 texture.Apply();
                 var terrainBlock = Instantiate(TerrainBlockPrefab, transform);
                 terrainBlock.name = $"Block {x}-{y}";
 
-                //System.IO.File.WriteAllBytes(terrainBlock.name + ".png", texture.EncodeToPNG());
-
                 terrainBlock.Renderer.sprite = Sprite.Create(texture, new Rect(0, 0, Constants.PixelsPerBlock, Constants.PixelsPerBlock), new Vector2(0, 0), Constants.PixelsPerCell, 2);
+
+                _textureLookup.Add(texture, terrainBlock.Renderer);
 
                 terrainBlock.Renderer.sortingOrder = counter++;
                 terrainBlock.transform.position = new Vector2(x * Constants.CellsPerTerrainBlock, y * Constants.CellsPerTerrainBlock);
             }
         }
+    }
+
+    private Texture2D UpdateTextureForCell(CellData cell)
+    {
+        var cellX = cell.Coordinates.X;
+        var cellY = cell.Coordinates.Y;
+        var texture = _textures[Mathf.FloorToInt(cellX / Constants.CellsPerTerrainBlock),
+                                Mathf.FloorToInt(cellY / Constants.CellsPerTerrainBlock)];
+
+        var x = cellX * Constants.PixelsPerCell;
+        var y = cellY * Constants.PixelsPerCell;
+
+        var xStart = x;
+        var xEnd = x + Constants.PixelsPerCell;
+
+        var type = cell.Bound ? cell.CellType : CellType.Abyss;
+
+        foreach (var pixel in SpriteStore.Instance.GetGroundTextureFor(type.ToString(), Constants.PixelsPerCell))
+        {
+            texture.SetPixel(x, y, pixel);
+            x++;
+
+            if (x >= xEnd)
+            {
+                x = xStart;
+                y++;
+            }
+        }
+
+        return texture;
     }
 
     private void GenerateMapCells()
@@ -480,39 +520,66 @@ public class MapGrid : MonoBehaviour
         }
     }
 
+    public Texture2D SummonCell(CellData cell)
+    {
+        cell.Bound = true;
+        PopulateCell(cell);
+        return UpdateTextureForCell(cell);
+    }
+
+    public Texture2D ChangeCell(CellData cell, CellType type)
+    {
+        cell.CellType = type;
+        return UpdateTextureForCell(cell);
+    }
+
+    public void UpdateSprite(Texture2D texture)
+    {
+        texture.Apply();
+        _textureLookup[texture].sprite = Sprite.Create(texture, new Rect(0, 0, Constants.PixelsPerBlock, Constants.PixelsPerBlock), new Vector2(0, 0), Constants.PixelsPerCell, 2);
+    }
+
     private void Populatecells()
     {
         foreach (var cell in Cells)
         {
-            var value = Random.value;
-
-            switch (cell.CellType)
+            if (cell.Bound)
             {
-                case CellType.Grass:
-                    if (value > 0.65)
-                    {
-                        cell.AddContent(StructureController.Instance.GetStructure("Bush").gameObject);
-                    }
-                    break;
-
-                case CellType.Forest:
-                    if (value > 0.95)
-                    {
-                        cell.AddContent(StructureController.Instance.GetStructure("Tree").gameObject);
-                    }
-                    else if (value > 0.65)
-                    {
-                        cell.AddContent(StructureController.Instance.GetStructure("Bush").gameObject);
-                    }
-                    break;
-
-                    //case CellType.Stone:
-                    //    for (int i = 0; i < Random.Range(1, 2); i++)
-                    //    {
-                    //        cell.AddContent(ItemController.Instance.GetItem("Rock").gameObject);
-                    //    }
-                    //    break;
+                PopulateCell(cell);
             }
+        }
+    }
+
+    private static void PopulateCell(CellData cell)
+    {
+        var value = Random.value;
+
+        switch (cell.CellType)
+        {
+            case CellType.Grass:
+                if (value > 0.65)
+                {
+                    cell.AddContent(StructureController.Instance.GetStructure("Bush").gameObject);
+                }
+                break;
+
+            case CellType.Forest:
+                if (value > 0.95)
+                {
+                    cell.AddContent(StructureController.Instance.GetStructure("Tree").gameObject);
+                }
+                else if (value > 0.65)
+                {
+                    cell.AddContent(StructureController.Instance.GetStructure("Bush").gameObject);
+                }
+                break;
+
+                //case CellType.Stone:
+                //    for (int i = 0; i < Random.Range(1, 2); i++)
+                //    {
+                //        cell.AddContent(ItemController.Instance.GetItem("Rock").gameObject);
+                //    }
+                //    break;
         }
     }
 }

@@ -66,7 +66,25 @@ public class CreatureController : MonoBehaviour
 
     public void SpawnCreatures()
     {
-        var firstCreature = SpawnCreature(MapGrid.Instance.GetRandomPathableCell());
+        var midCell = MapGrid.Instance.GetCircle(MapGrid.Instance.GetCellAtCoordinate(new Coordinates(Constants.MapSize / 2, Constants.MapSize / 2)), 10)
+            .First(c => c.CellType != CellType.Water || c.CellType != CellType.Mountain);
+
+        var firstCreature = SpawnCreature(midCell);
+
+        HashSet<Texture2D> redraws = new HashSet<Texture2D>();
+
+        var summonArea = MapGrid.Instance.GetCircle(firstCreature.Data.CurrentCell, 15);
+        summonArea = MapGrid.Instance.BleedGroup(summonArea, 4);
+        foreach (var cell in summonArea)
+        {
+            redraws.Add(MapGrid.Instance.SummonCell(cell));
+        }
+
+        foreach (var redraw in redraws)
+        {
+            MapGrid.Instance.UpdateSprite(redraw);
+        }
+
         CameraController.Instance.MoveToCell(firstCreature.Data.CurrentCell);
 
         // spawn creatures in a circle around the 'first' one

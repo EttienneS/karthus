@@ -1,7 +1,9 @@
-﻿public static class Constants
+﻿using UnityEngine;
+
+public static class Constants
 {
     // this is only one axis of the map so a size 5 map would be 5xCellPerBlock(25)  125 blocks tall and 125 cells wide (15625 cells total)
-    internal const int MapSizeBlocks = 2;
+    internal const int MapSizeBlocks = 4;
 
     internal const int PixelsPerCell = 64;
     internal const int CellsPerTerrainBlock = 25;
@@ -11,4 +13,6 @@
     internal const int MapSize = MapSizeBlocks * CellsPerTerrainBlock;
 
     internal const int PixelsPerBlock = CellsPerTerrainBlock * PixelsPerCell;
+
+    internal static int TotalTextures = Mathf.CeilToInt(MapSize / CellsPerTerrainBlock);
 }

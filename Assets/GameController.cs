@@ -74,6 +74,16 @@ public class GameController : MonoBehaviour
             }
         }
 
+        //if (Input.GetKeyDown("u"))
+        //{
+        //    var cell = MapGrid.Instance.GetRandomCell();
+        //    CameraController.Instance.MoveToCell(cell);
+
+        //    var texture = MapGrid.Instance.ChangeCell(cell, CellType.Abyss);
+
+        //    MapGrid.Instance.UpdateSprite(texture);
+        //}
+
         if (Input.GetKeyDown("1"))
         {
             TimeManager.Instance.TimeStep = TimeStep.Slow;
