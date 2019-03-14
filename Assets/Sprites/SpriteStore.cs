@@ -140,7 +140,11 @@ public class SpriteStore : MonoBehaviour
     {
         try
         {
-            return AllSprites[spriteName];
+            if (AllSprites.ContainsKey(spriteName))
+            {
+                return AllSprites[spriteName];
+            }
+            return GetPlaceholder();
         }
         catch
         {
