@@ -71,19 +71,7 @@ public class CreatureController : MonoBehaviour
 
         var firstCreature = SpawnCreature(midCell);
 
-        HashSet<Texture2D> redraws = new HashSet<Texture2D>();
-
-        var summonArea = MapGrid.Instance.GetCircle(firstCreature.Data.CurrentCell, 15);
-        summonArea = MapGrid.Instance.BleedGroup(summonArea, 4);
-        foreach (var cell in summonArea)
-        {
-            redraws.Add(MapGrid.Instance.SummonCell(cell));
-        }
-
-        foreach (var redraw in redraws)
-        {
-            MapGrid.Instance.UpdateSprite(redraw);
-        }
+        SummonCells(firstCreature);
 
         CameraController.Instance.MoveToCell(firstCreature.Data.CurrentCell);
 
@@ -114,6 +102,23 @@ public class CreatureController : MonoBehaviour
         for (var i = 0; i < 2; i++)
         {
             SpawnCreature(spawns[Random.Range(0, spawns.Count)]).Data.Speed = Random.Range(10, 15);
+        }
+    }
+
+    private static void SummonCells(Creature firstCreature)
+    {
+        var summonArea = MapGrid.Instance.GetCircle(firstCreature.Data.CurrentCell, 10);
+        summonArea = MapGrid.Instance.BleedGroup(summonArea, 4, 0.5f);
+
+        var redraws = new HashSet<Texture2D>();
+        foreach (var cell in summonArea)
+        {
+            redraws.Add(MapGrid.Instance.SummonCell(cell));
+        }
+
+        foreach (var redraw in redraws)
+        {
+            MapGrid.Instance.UpdateSprite(redraw);
         }
     }
 

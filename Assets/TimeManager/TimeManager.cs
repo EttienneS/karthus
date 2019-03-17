@@ -28,7 +28,7 @@ public class TimeManager : MonoBehaviour
 
     internal float TickInterval = 1f;
     private static TimeManager _instance;
-    private TimeStep _timeStep;
+    private TimeStep _timeStep = TimeStep.Paused;
 
     private float _timeTicks;
 

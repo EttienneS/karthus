@@ -92,7 +92,6 @@ public class MapGrid : MonoBehaviour
         CreateMapTexturesFromCells();
 
         ResetSearchPriorities();
-        Populatecells();
 
         CreatureController.Instance.SpawnCreatures();
     }
@@ -129,21 +128,21 @@ public class MapGrid : MonoBehaviour
                 }
             }
         }
-
+        
         return cells;
     }
 
-    public List<CellData> BleedGroup(List<CellData> group, int count)
+    public List<CellData> BleedGroup(List<CellData> group, int count, float percentage = 0.7f)
     {
         for (var i = 0; i < count; i++)
         {
-            group = BleedGroup(group.ToList());
+            group = BleedGroup(group.ToList(), percentage);
         }
-
+        
         return group;
     }
 
-    public List<CellData> BleedGroup(List<CellData> group)
+    public List<CellData> BleedGroup(List<CellData> group, float percentage = 0.7f)
     {
         var newGroup = group.ToList();
 
@@ -151,15 +150,14 @@ public class MapGrid : MonoBehaviour
         {
             foreach (var neighbour in cell.Neighbors.Where(n => n != null && !group.Contains(n)))
             {
-                if (Random.value > 0.7f)
+                if (Random.value > percentage)
                 {
                     newGroup.Add(neighbour);
                 }
             }
         }
 
-        newGroup.Distinct();
-        return newGroup;
+        return newGroup.Distinct().ToList();
     }
 
     public CellData GetRandomCell()
@@ -522,8 +520,11 @@ public class MapGrid : MonoBehaviour
 
     public Texture2D SummonCell(CellData cell)
     {
-        cell.Bound = true;
-        PopulateCell(cell);
+        if (!cell.Bound)
+        {
+            PopulateCell(cell);
+            cell.Bound = true;
+        }
         return UpdateTextureForCell(cell);
     }
 
