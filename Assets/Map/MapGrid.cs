@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -108,11 +109,11 @@ public class MapGrid : MonoBehaviour
         return CellLookup[(coordinates.X, coordinates.Y)];
     }
 
-    public List<CellData> GetCircle(CellData center, int radius)
+    public List<CellData> GetCircle(Coordinates center, int radius)
     {
         var cells = new List<CellData>();
-        var centerX = center.Coordinates.X;
-        var centerY = center.Coordinates.Y;
+        var centerX = center.X;
+        var centerY = center.Y;
 
         for (var x = centerX - radius; x <= centerX; x++)
         {
@@ -128,7 +129,7 @@ public class MapGrid : MonoBehaviour
                 }
             }
         }
-        
+
         return cells;
     }
 
@@ -138,7 +139,7 @@ public class MapGrid : MonoBehaviour
         {
             group = BleedGroup(group.ToList(), percentage);
         }
-        
+
         return group;
     }
 
@@ -518,14 +519,23 @@ public class MapGrid : MonoBehaviour
         }
     }
 
-    public Texture2D SummonCell(CellData cell)
+    public Dictionary<string, List<CellData>> CellsToBind = new Dictionary<string, List<CellData>>();
+
+    public void BindCell(CellData cell, string binderId)
     {
-        if (!cell.Bound)
+        if (cell.Bound)
         {
-            PopulateCell(cell);
-            cell.Bound = true;
+            cell.Binding = binderId;
         }
-        return UpdateTextureForCell(cell);
+        else
+        {
+            if (!CellsToBind.ContainsKey(binderId))
+            {
+                CellsToBind.Add(binderId, new List<CellData>());
+            }
+
+            CellsToBind[binderId].Add(cell);
+        }
     }
 
     public Texture2D ChangeCell(CellData cell, CellType type)
@@ -548,6 +558,46 @@ public class MapGrid : MonoBehaviour
             {
                 PopulateCell(cell);
             }
+        }
+    }
+
+    public void Start()
+    {
+        StartCoroutine(UpdateCells());
+    }
+
+    private IEnumerator UpdateCells()
+    {
+        while (true)
+        {
+            HashSet<Texture2D> redraws = new HashSet<Texture2D>();
+            foreach (var kvp in CellsToBind)
+            {
+                List<CellData> done = new List<CellData>();
+                foreach (var cell in kvp.Value)
+                {
+                    if (!cell.Bound)
+                    {
+                        PopulateCell(cell);
+                        cell.Binding = kvp.Key;
+
+                        redraws.Add(UpdateTextureForCell(cell));
+                    }
+                    else
+                    {
+                        done.Add(cell);
+                    }
+                }
+
+                done.ForEach(c => kvp.Value.Remove(c));
+            }
+
+            foreach (var redraw in redraws)
+            {
+                UpdateSprite(redraw);
+            }
+
+            yield return null;
         }
     }
 
