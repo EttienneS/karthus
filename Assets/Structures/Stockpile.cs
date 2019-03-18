@@ -7,6 +7,7 @@ using UnityEngine;
 public class Stockpile : MonoBehaviour
 {
     public StockpileData Data = new StockpileData();
+    internal SpriteRenderer SpriteRenderer;
 
     private TextMeshPro _textMesh;
 
@@ -44,11 +45,15 @@ public class Stockpile : MonoBehaviour
         return _textMesh;
     }
 
+    public void Awake()
+    {
+        SpriteRenderer = GetComponent<SpriteRenderer>();
+        Text = Data.ItemCategory;
+    }
+
     private void Update()
     {
         if (TimeManager.Instance.Paused) return;
-
-        Text = Data.ItemCategory;
 
         if (Taskmaster.Instance.Tasks.OfType<StockpileItem>().Count(t => t.StockpileId == Data.Id) < Data.MaxConcurrentTasks)
         {
@@ -67,6 +72,15 @@ public class StockpileData
     public int MaxConcurrentTasks = 3;
     public int Size = 24;
     public int Id;
+
+    [JsonIgnore]
+    public Stockpile LinkedGameObject
+    {
+        get
+        {
+            return StockpileController.Instance.GetStockpile(Id);
+        }
+    }
 
     internal void AddItem(ItemData item)
     {

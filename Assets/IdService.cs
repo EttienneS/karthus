@@ -1,4 +1,7 @@
-﻿public static class IdService
+﻿using System;
+using UnityEngine;
+
+public static class IdService
 {
     public const string CreaturePrefix = "C-";
     public const string ItemPrefix = "I-";
@@ -13,6 +16,54 @@
     public static string GetGameId(this CreatureData creature)
     {
         return $"{CreaturePrefix}{creature.Id}";
+    }
+
+    internal static SpriteRenderer GetSpriteRendererForId(string gameObjectId)
+    {
+        switch (GetObjectTypeForId(gameObjectId))
+        {
+            case ObjectType.Creature:
+                return GetCreatureFromId(gameObjectId).LinkedGameObject.SpriteRenderer;
+
+            case ObjectType.Item:
+                return GetItemFromId(gameObjectId).LinkedGameObject.SpriteRenderer;
+
+            case ObjectType.Structure:
+                return GetStructureFromId(gameObjectId).LinkedGameObject.SpriteRenderer;
+
+            case ObjectType.Stockpile:
+                return GetStockpileFromId(gameObjectId).LinkedGameObject.SpriteRenderer;
+
+            default:
+                throw new NotImplementedException();
+        }
+    }
+
+    public enum ObjectType
+    {
+        Creature, Item, Structure, Stockpile
+    }
+
+    internal static ObjectType GetObjectTypeForId(string gameObjectId)
+    {
+        if (IsStructure(gameObjectId))
+        {
+            return ObjectType.Structure;
+        }
+        if (IsCreature(gameObjectId))
+        {
+            return ObjectType.Creature;
+        }
+        if (IsItem(gameObjectId))
+        {
+            return ObjectType.Item;
+        }
+        if (IsStockpile(gameObjectId))
+        {
+            return ObjectType.Stockpile;
+        }
+
+        throw new NotImplementedException();
     }
 
     public static string GetGameId(this StructureData structure)

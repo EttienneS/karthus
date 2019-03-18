@@ -81,7 +81,7 @@ public class CellData
     [JsonIgnore]
     public CellData[] Neighbors = new CellData[8];
 
-    public void AddContent(GameObject gameObject)
+    public void AddContent(GameObject gameObject, bool force = false)
     {
         var item = gameObject.GetComponent<Item>();
         var structure = gameObject.GetComponent<Structure>();
@@ -113,6 +113,14 @@ public class CellData
         }
         else if (structure != null)
         {
+            if (force)
+            {
+                if (Structure != null)
+                {
+                    StructureController.Instance.DestroyStructure(Structure);
+                }
+            }
+
             structure.Data.Coordinates = Coordinates;
             Structure = structure.Data;
 

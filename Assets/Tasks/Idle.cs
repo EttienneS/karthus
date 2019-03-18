@@ -30,8 +30,5 @@ public class Idle : TaskBase
         return Taskmaster.QueueComplete(SubTasks);
     }
 
-    public override void Update()
-    {
-        Taskmaster.ProcessQueue(SubTasks);
-    }
+    
 }

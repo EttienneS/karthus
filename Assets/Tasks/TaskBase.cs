@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
-
-public abstract class TaskBase
+public class TaskBase 
 {
     public int AssignedCreatureId;
     public string Originator;
@@ -33,7 +33,13 @@ public abstract class TaskBase
         return subTask;
     }
 
-    public abstract bool Done();
+    public virtual bool Done()
+    {
+        return false;
+    }
 
-    public abstract void Update();
+    public virtual void Update()
+    {
+        Taskmaster.ProcessQueue(SubTasks);
+    }
 }

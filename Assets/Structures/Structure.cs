@@ -65,6 +65,14 @@ public class Structure : MonoBehaviour
     {
         if (TimeManager.Instance.Paused) return;
 
+        if (Data.Behaviour != null)
+        {
+            if (!Data.Behaviour.Done())
+            {
+                Data.Behaviour.Update();
+            }
+        }
+
         if (Data.IsBluePrint && !Taskmaster.Instance.ContainsJob(name))
         {
             Taskmaster.Instance.AddTask(new Build(Data, Data.Coordinates), Data.GetGameId());
@@ -74,6 +82,17 @@ public class Structure : MonoBehaviour
 
 public class StructureData
 {
+    public StructureData()
+    {
+
+    }
+
+    public StructureData(string name, string sprite)
+    {
+        Name = name;
+        SpriteName = sprite;
+    }
+
     public bool Buildable;
     public Coordinates Coordinates;
 
@@ -92,6 +111,8 @@ public class StructureData
     public float TravelCost;
     public List<string> Yield;
     private List<string> _require;
+
+    public TaskBase Behaviour;
 
     public string InUseBy;
 
