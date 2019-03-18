@@ -40,22 +40,24 @@ public class Bind : TaskBase
         {
             if (Power > 1)
             {
-                var cell = _affectAbleCells.FirstOrDefault(c => !c.Bound);
+                var cell = _affectAbleCells.Find(c => !c.Bound);
 
                 if (cell != null)
                 {
                     MapGrid.Instance.BindCell(cell, BinderId);
                     Power--;
-                    AddSubTask(new Pulse(BinderId, Color.red, Color.cyan, 0.3f, 0.1f));
+                    AddSubTask(new Pulse(BinderId, Color.white, Color.red, Random.Range(0.1f, 0.5f), Random.Range(0.1f, 0.3f)));
                 }
                 else
                 {
-                    AddSubTask(new Pulse(BinderId, Color.green, Color.cyan, 0.3f, 0.1f));
-
                     if (Power < 10)
                     {
                         AddSubTask(new Pulse(BinderId, Color.white, Color.blue, BindTime / PowerRate, 0.3f));
                         Power += BindTime;
+                    }
+                    else
+                    {
+                        AddSubTask(new Pulse(BinderId, Color.white, Color.green, 1f, 1f));
                     }
                 }
             }

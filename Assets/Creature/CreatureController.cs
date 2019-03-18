@@ -109,6 +109,11 @@ public class CreatureController : MonoBehaviour
         rune.Data.Behaviour = new Bind(rune.Data.GetGameId(), location.Coordinates, 6, 30, 0.5f);
 
         MapGrid.Instance.BindCell(location, rune.Data.GetGameId());
+
+        if (location.Structure != null)
+        {
+            StructureController.Instance.DestroyStructure(location.Structure);
+        }
         location.AddContent(rune.gameObject);
     }
 
@@ -118,10 +123,10 @@ public class CreatureController : MonoBehaviour
         //var summonArea = MapGrid.Instance.GetCircle(center.Coordinates, 8);
         //summonArea = MapGrid.Instance.BleedGroup(summonArea, 3, 0.4f);
 
-        GetRune(1, center.GetNeighbor(Direction.N));
-        GetRune(2, center.GetNeighbor(Direction.E));
-        GetRune(3, center.GetNeighbor(Direction.S));
-        GetRune(4, center.GetNeighbor(Direction.W));
+        GetRune(1, center.GetNeighbor(Direction.N).GetNeighbor(Direction.N));
+        GetRune(2, center.GetNeighbor(Direction.E).GetNeighbor(Direction.E));
+        GetRune(3, center.GetNeighbor(Direction.S).GetNeighbor(Direction.S));
+        GetRune(4, center.GetNeighbor(Direction.W).GetNeighbor(Direction.W));
 
         //var redraws = new HashSet<Texture2D>();
         //foreach (var cell in summonArea)
