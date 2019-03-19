@@ -72,25 +72,27 @@ public class CreatureController : MonoBehaviour
 
         SummonCells(midCell);
 
-        var firstCreature = SpawnCreature(midCell);
+        var firstCreature = SpawnCreature(midCell.GetNeighbor(Direction.E));
+
+        midCell.AddContent(StructureController.Instance.GetStructure("Table").gameObject);
 
         CameraController.Instance.MoveToCell(firstCreature.Data.CurrentCell);
 
         var spawns = midCell.Neighbors.ToList();
 
-        var foodCell = spawns[Random.Range(0, spawns.Count)];
+        var foodCell = midCell.GetNeighbor(Direction.SE);
         for (var i = 0; i < 30; i++)
         {
             foodCell.AddContent(ItemController.Instance.GetItem("Apple").gameObject);
         }
 
-        var woodCell = spawns[Random.Range(0, spawns.Count)];
+        var woodCell = midCell.GetNeighbor(Direction.SW);
         for (var i = 0; i < 15; i++)
         {
             woodCell.AddContent(ItemController.Instance.GetItem("Rock").gameObject);
         }
 
-        var rockCell = spawns[Random.Range(0, spawns.Count)];
+        var rockCell = midCell.GetNeighbor(Direction.S);
         for (var i = 0; i < 15; i++)
         {
             rockCell.AddContent(ItemController.Instance.GetItem("Wood").gameObject);
@@ -100,21 +102,6 @@ public class CreatureController : MonoBehaviour
         //{
         //    SpawnCreature(spawns[Random.Range(0, spawns.Count)]).Data.Speed = Random.Range(10, 15);
         //}
-    }
-
-    public static void GetRune(int number, CellData location)
-    {
-        var rune = StructureController.Instance.GetStructure(new StructureData("rune", $"runeBlue_slab_00{number}"));
-        rune.Data.Behaviour = new Bind(rune.Data.GetGameId(), location.Coordinates, 6, 30, 0.5f);
-
-        location.CellType = CellType.Stone;
-        MapGrid.Instance.BindCell(location, rune.Data.GetGameId());
-
-        if (location.Structure != null)
-        {
-            StructureController.Instance.DestroyStructure(location.Structure);
-        }
-        location.AddContent(rune.gameObject);
     }
 
     private static void SummonCells(CellData center)
@@ -128,10 +115,18 @@ public class CreatureController : MonoBehaviour
             MapGrid.Instance.BindCell(cell, "X");
         }
 
-        GetRune(1, center.GetNeighbor(Direction.N).GetNeighbor(Direction.N));
-        GetRune(2, center.GetNeighbor(Direction.E).GetNeighbor(Direction.E));
-        GetRune(3, center.GetNeighbor(Direction.S).GetNeighbor(Direction.S));
-        GetRune(4, center.GetNeighbor(Direction.W).GetNeighbor(Direction.W));
+        GetRune(center.GetNeighbor(Direction.N).GetNeighbor(Direction.N));
+        GetRune(center.GetNeighbor(Direction.E).GetNeighbor(Direction.E));
+        GetRune(center.GetNeighbor(Direction.S).GetNeighbor(Direction.S));
+        GetRune(center.GetNeighbor(Direction.W).GetNeighbor(Direction.W));
+    }
+
+    public static void GetRune(CellData location)
+    {
+        var rune = StructureController.Instance.GetStructure("BindRune");
+        location.CellType = CellType.Stone;
+        MapGrid.Instance.BindCell(location, rune.Data.GetGameId());
+        location.AddContent(rune.gameObject);
     }
 
     internal void DestroyCreature(Creature creature)

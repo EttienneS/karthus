@@ -65,8 +65,9 @@ public class Structure : MonoBehaviour
     {
         if (TimeManager.Instance.Paused) return;
 
-        if (Data.Behaviour != null)
+        if (!Data.IsBluePrint && Data.Behaviour != null)
         {
+            Data.Behaviour.Originator = Data.GetGameId();
             if (!Data.Behaviour.Done())
             {
                 Data.Behaviour.Update();
