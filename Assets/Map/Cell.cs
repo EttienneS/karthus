@@ -6,6 +6,30 @@ using Random = UnityEngine.Random;
 
 public class CellData
 {
+    public string Binding;
+
+    public CellType CellType;
+
+    public List<ItemData> ContainedItems = new List<ItemData>();
+
+    public Coordinates Coordinates;
+
+    [JsonIgnore]
+    public CellData[] Neighbors = new CellData[8];
+
+    public StockpileData Stockpile;
+
+    public StructureData Structure;
+
+    [JsonIgnore]
+    public bool Bound
+    {
+        get
+        {
+            return !string.IsNullOrEmpty(Binding);
+        }
+    }
+
     [JsonIgnore]
     public float Distance { get; set; }
 
@@ -24,27 +48,6 @@ public class CellData
     [JsonIgnore]
     public int SearchPriority => (int)Distance + SearchHeuristic;
 
-    public CellData GetNeighbor(Direction direction)
-    {
-        return Neighbors[(int)direction];
-    }
-
-    public void SetNeighbor(Direction direction, CellData cell)
-    {
-        Neighbors[(int)direction] = cell;
-        cell.Neighbors[(int)direction.Opposite()] = this;
-    }
-
-    internal int CountNeighborsOfType(CellType? cellType)
-    {
-        if (!cellType.HasValue)
-        {
-            return Neighbors.Count(n => n == null);
-        }
-
-        return Neighbors.Count(n => n != null && n.CellType == cellType.Value);
-    }
-
     [JsonIgnore]
     public float TravelCost
     {
@@ -52,7 +55,7 @@ public class CellData
         {
             if (!Bound)
             {
-                return 99;
+                return 25;
             }
 
             switch (CellType)
@@ -66,22 +69,7 @@ public class CellData
         }
     }
 
-    public CellType CellType;
-
-    public List<ItemData> ContainedItems = new List<ItemData>();
-
-    public Coordinates Coordinates;
-
-    public StockpileData Stockpile;
-
-    public StructureData Structure;
-
-    public bool Bound;
-
-    [JsonIgnore]
-    public CellData[] Neighbors = new CellData[8];
-
-    public void AddContent(GameObject gameObject)
+    public void AddContent(GameObject gameObject, bool force = false)
     {
         var item = gameObject.GetComponent<Item>();
         var structure = gameObject.GetComponent<Structure>();
@@ -113,6 +101,14 @@ public class CellData
         }
         else if (structure != null)
         {
+            if (force)
+            {
+                if (Structure != null)
+                {
+                    StructureController.Instance.DestroyStructure(Structure);
+                }
+            }
+
             structure.Data.Coordinates = Coordinates;
             Structure = structure.Data;
 
@@ -129,5 +125,26 @@ public class CellData
         {
             gameObject.transform.position += new Vector3(Random.Range(-scatterIntensity, scatterIntensity), Random.Range(-scatterIntensity, scatterIntensity), 0);
         }
+    }
+
+    public CellData GetNeighbor(Direction direction)
+    {
+        return Neighbors[(int)direction];
+    }
+
+    public void SetNeighbor(Direction direction, CellData cell)
+    {
+        Neighbors[(int)direction] = cell;
+        cell.Neighbors[(int)direction.Opposite()] = this;
+    }
+
+    internal int CountNeighborsOfType(CellType? cellType)
+    {
+        if (!cellType.HasValue)
+        {
+            return Neighbors.Count(n => n == null);
+        }
+
+        return Neighbors.Count(n => n != null && n.CellType == cellType.Value);
     }
 }

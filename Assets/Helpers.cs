@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
 using UnityEngine.UI;
@@ -56,6 +58,19 @@ public static class Helpers
     public static string GlobalizeFloatString(string input)
     {
         return input.Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
+    }
+}
+
+public static class ColorExtensions
+{
+    public static float[] ToFloatArray(this Color color)
+    {
+        return new[] { color.r, color.g, color.b, color.a };
+    }
+
+    public static Color ToColor(this float[] arr)
+    {
+        return new Color(arr[0], arr[1], arr[2], arr[3]);
     }
 }
 

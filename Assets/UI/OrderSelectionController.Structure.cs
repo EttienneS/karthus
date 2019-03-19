@@ -15,7 +15,7 @@ public partial class OrderSelectionController //.Structure
         {
             foreach (var cell in cells)
             {
-                if (cell.Structure == null)
+                if (cell.Bound && cell.Structure == null)
                 {
                     var blueprint = StructureController.Instance.GetStructureBluePrint(structureName);
                     cell.AddContent(blueprint.gameObject);

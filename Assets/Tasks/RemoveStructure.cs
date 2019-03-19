@@ -35,8 +35,5 @@
         return false;
     }
 
-    public override void Update()
-    {
-        Taskmaster.ProcessQueue(SubTasks);
-    }
+    
 }

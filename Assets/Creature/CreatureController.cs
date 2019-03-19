@@ -66,55 +66,67 @@ public class CreatureController : MonoBehaviour
 
     public void SpawnCreatures()
     {
-        var midCell = MapGrid.Instance.GetCircle(MapGrid.Instance.GetCellAtCoordinate(new Coordinates(Constants.MapSize / 2, Constants.MapSize / 2)), 10)
+        var midCell = MapGrid.Instance
+            .GetCircle(new Coordinates(Constants.MapSize / 2, Constants.MapSize / 2), 10)
             .First(c => c.CellType != CellType.Water || c.CellType != CellType.Mountain);
 
-        var firstCreature = SpawnCreature(midCell);
+        SummonCells(midCell);
 
-        HashSet<Texture2D> redraws = new HashSet<Texture2D>();
+        var firstCreature = SpawnCreature(midCell.GetNeighbor(Direction.E));
 
-        var summonArea = MapGrid.Instance.GetCircle(firstCreature.Data.CurrentCell, 15);
-        summonArea = MapGrid.Instance.BleedGroup(summonArea, 4);
-        foreach (var cell in summonArea)
-        {
-            redraws.Add(MapGrid.Instance.SummonCell(cell));
-        }
-
-        foreach (var redraw in redraws)
-        {
-            MapGrid.Instance.UpdateSprite(redraw);
-        }
+        midCell.AddContent(StructureController.Instance.GetStructure("Table").gameObject);
 
         CameraController.Instance.MoveToCell(firstCreature.Data.CurrentCell);
 
-        // spawn creatures in a circle around the 'first' one
-        var spawns = MapGrid.Instance.GetCircle(firstCreature.Data.CurrentCell, 4).Where(c => c.TravelCost == 1).ToList();
+        var spawns = midCell.Neighbors.ToList();
 
-        var foodCell = spawns[Random.Range(0, spawns.Count)];
-
+        var foodCell = midCell.GetNeighbor(Direction.SE);
         for (var i = 0; i < 30; i++)
         {
             foodCell.AddContent(ItemController.Instance.GetItem("Apple").gameObject);
         }
 
-        var woodCell = spawns[Random.Range(0, spawns.Count)];
-
+        var woodCell = midCell.GetNeighbor(Direction.SW);
         for (var i = 0; i < 15; i++)
         {
             woodCell.AddContent(ItemController.Instance.GetItem("Rock").gameObject);
         }
 
-        var rockCell = spawns[Random.Range(0, spawns.Count)];
-
+        var rockCell = midCell.GetNeighbor(Direction.S);
         for (var i = 0; i < 15; i++)
         {
             rockCell.AddContent(ItemController.Instance.GetItem("Wood").gameObject);
         }
 
-        for (var i = 0; i < 2; i++)
+        //for (var i = 0; i < 2; i++)
+        //{
+        //    SpawnCreature(spawns[Random.Range(0, spawns.Count)]).Data.Speed = Random.Range(10, 15);
+        //}
+    }
+
+    private static void SummonCells(CellData center)
+    {
+        center.CellType = CellType.Stone;
+        MapGrid.Instance.BindCell(center, "X");
+
+        foreach (var cell in center.Neighbors)
         {
-            SpawnCreature(spawns[Random.Range(0, spawns.Count)]).Data.Speed = Random.Range(10, 15);
+            cell.CellType = CellType.Stone;
+            MapGrid.Instance.BindCell(cell, "X");
         }
+
+        GetRune(center.GetNeighbor(Direction.N).GetNeighbor(Direction.N));
+        GetRune(center.GetNeighbor(Direction.E).GetNeighbor(Direction.E));
+        GetRune(center.GetNeighbor(Direction.S).GetNeighbor(Direction.S));
+        GetRune(center.GetNeighbor(Direction.W).GetNeighbor(Direction.W));
+    }
+
+    public static void GetRune(CellData location)
+    {
+        var rune = StructureController.Instance.GetStructure("BindRune");
+        location.CellType = CellType.Stone;
+        MapGrid.Instance.BindCell(location, rune.Data.GetGameId());
+        location.AddContent(rune.gameObject);
     }
 
     internal void DestroyCreature(Creature creature)

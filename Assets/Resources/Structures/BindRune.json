@@ -1,0 +1,15 @@
+{
+  "Name": "BindRune",
+  "Behaviour": {
+    "$type": "Bind, Assembly-CSharp",
+    "Power": "10.0",
+    "PowerRate": "0.5",
+    "Size": "6"
+  },
+  "Buildable": true,
+  "RequireStrings": [ "5:Rock" ],
+  "SpriteName": "runeBlue_slab_001",
+  "Tasks": [],
+  "Tiled": false,
+  "TravelCost": "10"
+}
