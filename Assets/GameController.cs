@@ -42,6 +42,7 @@ public class GameController : MonoBehaviour
 
     public void DeselectStructure()
     {
+        ClearLine();
         foreach (var structure in SelectedStructures)
         {
             structure.LinkedGameObject.SpriteRenderer.color = StructureController.StructureColor;
@@ -151,7 +152,16 @@ public class GameController : MonoBehaviour
 
         foreach (var structure in SelectedStructures)
         {
+            var id = structure.GetGameId();
             structure.LinkedGameObject.SpriteRenderer.color = Color.red;
+
+            if (MapGrid.Instance.CellBinding.ContainsKey(id))
+            {
+                foreach (var boundCell in MapGrid.Instance.CellBinding[id])
+                {
+                    AddLine(structure.Coordinates, boundCell.Coordinates);
+                }
+            }
         }
 
         if (SelectedStructures.Count == 1)
@@ -163,6 +173,30 @@ public class GameController : MonoBehaviour
                 CraftingScreen.Instance.Show(structure);
             }
         }
+    }
+
+    public void ClearLine()
+    {
+        GetComponent<LineRenderer>().positionCount = 0;
+    }
+
+    public void AddLine(Coordinates start, Coordinates end)
+    {
+        var lineRenderer = GetComponent<LineRenderer>();
+
+        lineRenderer.startColor = Color.red;
+        lineRenderer.endColor = Color.red;
+
+        lineRenderer.positionCount += 3;
+
+        lineRenderer.SetPosition(lineRenderer.positionCount - 3, start.ToTopOfMapVector());
+        lineRenderer.SetPosition(lineRenderer.positionCount - 2, end.ToTopOfMapVector());
+        lineRenderer.SetPosition(lineRenderer.positionCount - 1, start.ToTopOfMapVector());
+
+        lineRenderer.startWidth = 0.1f;
+        lineRenderer.endWidth = 0.1f;
+
+        Debug.Log("rendered line");
     }
 
     private void Start()

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 using UnityEngine.UI;
 
 public partial class OrderSelectionController //.Structure
@@ -70,6 +71,11 @@ public partial class OrderSelectionController //.Structure
                     }
                     else
                     {
+                        if (Taskmaster.Instance.Tasks.OfType<RemoveStructure>().Any(t => t.Structure == structure))
+                        {
+                            Debug.Log("Structure already flagged to remove");
+                            continue;
+                        }
                         Taskmaster.Instance.AddTask(new RemoveStructure(structure, cell.Coordinates), string.Empty);
                         structure.LinkedGameObject.SpriteRenderer.color = Color.red;
                     }

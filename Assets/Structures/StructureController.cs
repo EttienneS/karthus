@@ -96,6 +96,7 @@ public class StructureController : MonoBehaviour
 
     internal void DestroyStructure(StructureData structure)
     {
+        MapGrid.Instance.Unbind(structure.GetGameId());
         DestroyStructure(structure.LinkedGameObject);
     }
 

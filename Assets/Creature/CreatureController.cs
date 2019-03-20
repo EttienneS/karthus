@@ -51,7 +51,7 @@ public class CreatureController : MonoBehaviour
         creature.Data.Id = Creatures.Count + 1;
 
         creature.Data.Hunger = Random.Range(0, 15);
-        creature.Data.Thirst = Random.Range(0, 15);
+        creature.Data.Thirst = Random.Range(35, 50);
         creature.Data.Energy = Random.Range(80, 100);
 
         creature.Data.SpriteId = Random.Range(0, SpriteStore.Instance.CreatureSprite.Keys.Count - 1);
@@ -79,6 +79,9 @@ public class CreatureController : MonoBehaviour
         CameraController.Instance.MoveToCell(firstCreature.Data.CurrentCell);
 
         var spawns = midCell.Neighbors.ToList();
+
+        var waterCell = midCell.GetNeighbor(Direction.N);
+        waterCell.CellType = CellType.Water;
 
         var foodCell = midCell.GetNeighbor(Direction.SE);
         for (var i = 0; i < 30; i++)

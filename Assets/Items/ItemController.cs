@@ -124,6 +124,16 @@ public class ItemController : MonoBehaviour
 
     private int IdCounter = 0;
 
+    public Item GetItem(ItemData data)
+    {
+        var item = Instantiate(itemPrefab, transform);
+        item.Data = data;
+        item.Data.Id = IdCounter++;
+
+        IndexItem(item);
+        return item;
+    }
+
     internal Item GetItem(string name)
     {
         var item = Instantiate(AllItemNames[name], transform);

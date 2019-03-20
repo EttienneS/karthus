@@ -1,8 +1,10 @@
-﻿public class GetItem : TaskBase
+﻿using System.Collections.Generic;
+
+public class GetItem : TaskBase
 {
     public bool AllowStockpiled;
     public ItemData Item;
-    public string ItemId;
+    public string SearchItem;
 
     public SearchBy Search;
 
@@ -18,7 +20,7 @@
     public GetItem(string item, bool allowStockpiled, SearchBy search)
     {
         AllowStockpiled = allowStockpiled;
-        ItemId = item;
+        SearchItem = item;
         Search = search;
 
         Message = $"Getting {item}";
@@ -47,16 +49,32 @@
         {
             if (Search == SearchBy.Category)
             {
-                Item = ItemController.Instance.FindClosestItemOfType(Creature.CurrentCell, ItemId, AllowStockpiled);
+                Item = ItemController.Instance.FindClosestItemOfType(Creature.CurrentCell, SearchItem, AllowStockpiled);
+
+                if (Item == null && SearchItem == "Drink")
+                {
+                    Item = ItemController.Instance.GetItem(new ItemData()
+                    {
+                        Name = "Water",
+                        Category = "Drink",
+                        Properties = new Dictionary<string, string> { { "Quench", "50" } }
+                    }).Data;
+
+                    MapGrid.Instance
+                        .GetCellAtCoordinate(MapGrid.Instance
+                        .GetPathableNeighbour(MapGrid.Instance
+                        .GetNearestCellOfType(Creature.Coordinates, CellType.Water, 20).Coordinates))
+                        .AddContent(Item.LinkedGameObject.gameObject);
+                }
             }
             else
             {
-                Item = ItemController.Instance.FindClosestItemByName(Creature.CurrentCell, ItemId, AllowStockpiled);
+                Item = ItemController.Instance.FindClosestItemByName(Creature.CurrentCell, SearchItem, AllowStockpiled);
             }
 
             if (Item == null)
             {
-                throw new TaskFailedException($"Unable to find item: {ItemId}");
+                throw new TaskFailedException($"Unable to find item: {SearchItem}");
             }
             Item.Reserved = true;
             UpdateTargetItem();

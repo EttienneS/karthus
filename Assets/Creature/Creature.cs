@@ -259,7 +259,7 @@ public class Creature : MonoBehaviour
         catch (TaskFailedException ex)
         {
             Debug.LogWarning($"Task failed: {ex}");
-            Taskmaster.Instance.TaskFailed(Data.Task, ex.ToString());
+            Taskmaster.Instance.TaskFailed(Data.Task, ex.Message);
         }
     }
 }
