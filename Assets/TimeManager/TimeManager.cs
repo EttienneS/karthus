@@ -6,8 +6,8 @@ public enum TimeStep
     Paused = 0,
     Slow = 1,
     Normal = 2,
-    Fast = 4,
-    Hyper = 8
+    Fast = 8,
+    Hyper = 16
 }
 
 public class TimeData
