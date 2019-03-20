@@ -191,6 +191,11 @@ public class Creature : MonoBehaviour
         {
             Data.InternalTick = 0;
 
+            if (Random.value > 0.65)
+            {
+                Data.Task?.ShowBusyEmote();
+            }
+
             if (!Data.Sleeping)
             {
                 Data.Hunger += Random.value;
@@ -248,13 +253,15 @@ public class Creature : MonoBehaviour
             }
             else
             {
+                Data.Task.ShowDoneEmote();
+
                 Data.FreeResources(Data.Task.Context);
 
                 Data.Forget(Data.Task.Context);
 
                 Taskmaster.Instance.TaskComplete(Data.Task);
                 Data.Task = null;
-            }
+            }            
         }
         catch (TaskFailedException ex)
         {
@@ -319,14 +326,30 @@ public class CreatureData
     [JsonIgnore]
     public TaskBase Task { get; set; }
 
-    internal ItemData DropItem()
+    internal ItemData DropItem(Coordinates coordinates = null)
     {
         if (CarriedItemId > 0)
         {
             var item = CarriedItem;
             item.Reserved = false;
             item.LinkedGameObject.SpriteRenderer.sortingLayerName = "Item";
-            CurrentCell.AddContent(item.LinkedGameObject.gameObject);
+
+            if (coordinates != null)
+            {
+                var cell = MapGrid.Instance.GetCellAtCoordinate(coordinates);
+                if (CurrentCell.Neighbors.Contains(cell))
+                {
+                    cell.AddContent(item.LinkedGameObject.gameObject);
+                }
+                else
+                {
+                    CurrentCell.AddContent(item.LinkedGameObject.gameObject);
+                }
+            }
+            else
+            {
+                CurrentCell.AddContent(item.LinkedGameObject.gameObject);
+            }
 
             CarriedItemId = 0;
             return item;

@@ -2,6 +2,7 @@
 {
     public string OutputItemName;
     public string[] RequiredItemNames;
+    public float CraftTime;
 
     public Coordinates Location;
 
@@ -9,12 +10,12 @@
     {
     }
 
-    public Craft(string itemName, string[] requiredItems, Coordinates location)
+    public Craft(string itemName, string[] requiredItems, Coordinates location, float craftTime)
     {
         OutputItemName = itemName;
         RequiredItemNames = requiredItems;
-
         Location = location;
+        CraftTime = craftTime;
 
         foreach (var itemString in requiredItems)
         {
@@ -24,7 +25,8 @@
             }
         }
 
-        AddSubTask(new Wait(3f, "Crafting"));
+        AddSubTask(new Move(MapGrid.Instance.GetPathableNeighbour(Location)));
+        AddSubTask(new Wait(CraftTime, "Crafting"));
 
         Message = $"Making {OutputItemName} at {location}";
     }
@@ -33,9 +35,12 @@
     {
         if (Taskmaster.QueueComplete(SubTasks))
         {
-            foreach (var item in Creature.Mind[Context][MemoryType.Item])
+            if (RequiredItemNames.Length > 0)
             {
-                ItemController.Instance.DestroyItem(IdService.GetItemFromId(item));
+                foreach (var item in Creature.Mind[Context][MemoryType.Item])
+                {
+                    ItemController.Instance.DestroyItem(IdService.GetItemFromId(item));
+                }
             }
 
             var craftedItem = ItemController.Instance.GetItem(OutputItemName);

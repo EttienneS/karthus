@@ -659,7 +659,7 @@ public class MapGrid : MonoBehaviour
                 kvp.Value.Remove(cell);
             }
 
-            if (draws < maxDraws)
+            if (draws < maxDraws && Random.value > 0.9f)
             {
                 for (int i = 0; i < maxDraws - draws; i++)
                 {

@@ -9,6 +9,9 @@ public class TaskBase
     public string Context;
     public string Message;
 
+    public string BusyEmote;
+    public string DoneEmote;
+
     public bool Failed;
 
     public Queue<TaskBase> SubTasks = new Queue<TaskBase>();
@@ -41,5 +44,21 @@ public class TaskBase
     public virtual void Update()
     {
         Taskmaster.ProcessQueue(SubTasks);
+    }
+
+    public void ShowBusyEmote()
+    {
+        if (!string.IsNullOrEmpty(BusyEmote))
+        {
+            Creature.LinkedGameObject.ShowText(BusyEmote, 1f);
+        }
+    }
+
+    public void ShowDoneEmote()
+    {
+        if (!string.IsNullOrEmpty(DoneEmote))
+        {
+            Creature.LinkedGameObject.ShowText(DoneEmote, 1f);
+        }
     }
 }

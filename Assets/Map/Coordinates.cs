@@ -34,6 +34,11 @@ public class Coordinates : IEquatable<Coordinates>
 
     public static bool operator !=(Coordinates obj1, Coordinates obj2)
     {
+        if (ReferenceEquals(obj1, null))
+        {
+            return !ReferenceEquals(obj2, null);
+        }
+
         return !obj1.Equals(obj2);
     }
 
