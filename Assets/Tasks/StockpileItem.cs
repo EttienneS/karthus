@@ -38,6 +38,4 @@ public class StockpileItem : TaskBase
 
         return false;
     }
-
-    
 }

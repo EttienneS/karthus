@@ -51,7 +51,6 @@ public class StructureController : MonoBehaviour
         return SpriteStore.Instance.GetSpriteByName(StructureDataReference[structureName].SpriteName);
     }
 
-
     public Structure GetStructure(StructureData data)
     {
         var structure = Instantiate(structurePrefab, transform);

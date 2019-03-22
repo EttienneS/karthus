@@ -5,11 +5,27 @@ using UnityEngine;
 
 public class Bind : TaskBase
 {
-    public int Size;
-    public float PowerRate;
-    public float Power;
-
     public const float BindTime = 1f;
+
+    [JsonIgnore]
+    public CellData _epicentreCell;
+
+    public float Power;
+    public float PowerRate;
+    public int Size;
+    private static Color charge = Color.cyan;
+
+    private static Color fire = Color.red;
+
+    private static Color full = Color.green;
+
+    private static Color neutral = new Color(0.3f, 0.3f, 0.3f);
+
+    [JsonIgnore]
+    private List<CellData> _affectAbleCells;
+
+    [JsonIgnore]
+    private Coordinates _epicenter;
 
     public Bind()
     {
@@ -21,9 +37,6 @@ public class Bind : TaskBase
         PowerRate = powerRate;
         Power = initialPower;
     }
-
-    [JsonIgnore]
-    private Coordinates _epicenter;
 
     [JsonIgnore]
     public Coordinates Epicentre
@@ -39,12 +52,17 @@ public class Bind : TaskBase
     }
 
     [JsonIgnore]
-    private List<CellData> _affectAbleCells;
-
-    private static Color neutral = new Color(0.3f, 0.3f, 0.3f);
-    private static Color fire = Color.red;
-    private static Color charge = Color.cyan;
-    private static Color full = Color.green;
+    public CellData EpicentreCell
+    {
+        get
+        {
+            if (_epicentreCell == null)
+            {
+                _epicentreCell = MapGrid.Instance.GetCellAtCoordinate(Epicentre);
+            }
+            return _epicentreCell;
+        }
+    }
 
     public override bool Done()
     {
@@ -57,7 +75,15 @@ public class Bind : TaskBase
         {
             if (Power > 1)
             {
-                var cell = _affectAbleCells.Find(c => !c.Bound);
+                CellData cell;
+                if (EpicentreCell.Binding != Originator)
+                {
+                    cell = EpicentreCell;
+                }
+                else
+                {
+                    cell = _affectAbleCells.Find(c => !c.Bound);
+                }
 
                 if (cell != null)
                 {

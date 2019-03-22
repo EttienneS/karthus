@@ -85,7 +85,6 @@ public class StructureData
 {
     public StructureData()
     {
-
     }
 
     public StructureData(string name, string sprite)

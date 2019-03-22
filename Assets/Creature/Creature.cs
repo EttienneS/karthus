@@ -261,7 +261,7 @@ public class Creature : MonoBehaviour
 
                 Taskmaster.Instance.TaskComplete(Data.Task);
                 Data.Task = null;
-            }            
+            }
         }
         catch (TaskFailedException ex)
         {

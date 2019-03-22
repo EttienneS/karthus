@@ -1,8 +1,7 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 
-public class TaskBase 
+public class TaskBase
 {
     public int AssignedCreatureId;
     public string Originator;

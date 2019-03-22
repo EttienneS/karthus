@@ -74,6 +74,17 @@ public class MapGrid : MonoBehaviour
     {
         if (cell.Bound)
         {
+            if (!CellBinding.ContainsKey(binderId))
+            {
+                CellBinding.Add(binderId, new List<CellData>());
+            }
+
+            if (CellBinding.ContainsKey(cell.Binding))
+            {
+                CellBinding[cell.Binding].Remove(cell);
+            }
+
+            CellBinding[binderId].Add(cell);
             cell.Binding = binderId;
         }
         else
@@ -113,18 +124,6 @@ public class MapGrid : MonoBehaviour
         }
 
         return newGroup.Distinct().ToList();
-    }
-
-    internal void Unbind(string id)
-    {
-        if (CellBinding.ContainsKey(id))
-        {
-            if (!PendingUnbinding.ContainsKey(id))
-            {
-                PendingUnbinding.Add(id, new List<CellData>());
-            }
-            PendingUnbinding[id].AddRange(CellBinding[id]);
-        }
     }
 
     public Texture2D ChangeCell(CellData cell, CellType type)
@@ -406,6 +405,18 @@ public class MapGrid : MonoBehaviour
             {
                 CellLookup[(x, y)].SearchPhase = 0;
             }
+        }
+    }
+
+    internal void Unbind(string id)
+    {
+        if (CellBinding.ContainsKey(id))
+        {
+            if (!PendingUnbinding.ContainsKey(id))
+            {
+                PendingUnbinding.Add(id, new List<CellData>());
+            }
+            PendingUnbinding[id].AddRange(CellBinding[id]);
         }
     }
 
