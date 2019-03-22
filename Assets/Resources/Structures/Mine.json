@@ -6,6 +6,7 @@
   "TravelCost": "8",
   "StructureType": "Mine",
   "Scatter": "False",
+  "Size": "2x2",
   "Buildable": "True",
   "Tasks": [
     {

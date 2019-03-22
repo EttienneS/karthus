@@ -11,12 +11,20 @@ public partial class OrderSelectionController //.Structure
     public void BuildClicked(string structureName)
     {
         BuildButton.Text = "Build " + structureName;
+
+        var structure = StructureController.Instance.StructureDataReference[structureName];
         GameController.Instance.SelectionPreference = SelectionPreference.Cell;
+        GameController.Instance.SetMouseSprite(SpriteStore.Instance.GetSpriteByName(structure.SpriteName),
+                                               structure.Width,
+                                               structure.Height,
+                                               structure.Tiled,
+                                               (CellData) => structure.ValidateCellLocationForStructure(CellData));
+
         CellClickOrder = cells =>
         {
             foreach (var cell in cells)
             {
-                if (cell.Bound && cell.Structure == null)
+                if (structure.ValidateCellLocationForStructure(cell))
                 {
                     var blueprint = StructureController.Instance.GetStructureBluePrint(structureName);
                     cell.AddContent(blueprint.gameObject);

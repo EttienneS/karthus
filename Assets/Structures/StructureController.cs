@@ -3,15 +3,28 @@ using UnityEngine;
 
 public class StructureController : MonoBehaviour
 {
-    internal static Color BluePrintColor = new Color(0.3f, 1f, 1f, 0.4f);
-    internal static Color StructureColor = new Color(0.6f, 0.6f, 0.6f);
-
     public Dictionary<int, StructureData> StructureIdLookup = new Dictionary<int, StructureData>();
     public Dictionary<StructureData, Structure> StructureLookup = new Dictionary<StructureData, Structure>();
     public Structure structurePrefab;
+    internal static Color BluePrintColor = new Color(0.3f, 1f, 1f, 0.4f);
+    internal static Color StructureColor = new Color(0.6f, 0.6f, 0.6f);
     internal Dictionary<string, StructureData> StructureDataReference = new Dictionary<string, StructureData>();
 
+    private static StructureController _instance;
     private Dictionary<string, string> _structureTypeFileMap;
+
+    public static StructureController Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = GameObject.Find("StructureController").GetComponent<StructureController>();
+            }
+
+            return _instance;
+        }
+    }
 
     internal Dictionary<string, string> StructureTypeFileMap
     {
@@ -28,21 +41,6 @@ public class StructureController : MonoBehaviour
                 }
             }
             return _structureTypeFileMap;
-        }
-    }
-
-    private static StructureController _instance;
-
-    public static StructureController Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = GameObject.Find("StructureController").GetComponent<StructureController>();
-            }
-
-            return _instance;
         }
     }
 
@@ -81,18 +79,6 @@ public class StructureController : MonoBehaviour
         return structure;
     }
 
-    internal Structure GetStructureBluePrint(string name)
-    {
-        var structure = GetStructure(name);
-        structure.Data.SetBlueprintState(true);
-        return structure;
-    }
-
-    internal Structure GetStructureForData(StructureData structureData)
-    {
-        return StructureLookup[structureData];
-    }
-
     internal void DestroyStructure(StructureData structure)
     {
         MapGrid.Instance.Unbind(structure.GetGameId());
@@ -104,6 +90,18 @@ public class StructureController : MonoBehaviour
         MapGrid.Instance.GetCellAtCoordinate(structure.Data.Coordinates).Structure = null;
 
         Destroy(structure.gameObject);
+    }
+
+    internal Structure GetStructureBluePrint(string name)
+    {
+        var structure = GetStructure(name);
+        structure.Data.SetBlueprintState(true);
+        return structure;
+    }
+
+    internal Structure GetStructureForData(StructureData structureData)
+    {
+        return StructureLookup[structureData];
     }
 
     internal Structure LoadStructure(StructureData savedStructure)

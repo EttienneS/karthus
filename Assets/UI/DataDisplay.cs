@@ -8,7 +8,6 @@ public class DataDisplay : MonoBehaviour
     public Text Title;
 
     public delegate void Click();
-
     public event Click Clicked;
 
     public void OnClick()

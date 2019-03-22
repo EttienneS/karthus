@@ -8,17 +8,19 @@ public enum SelectionPreference
     CreatureOrStructure, Cell
 }
 
-public class GameController : MonoBehaviour
+public partial class GameController : MonoBehaviour
 {
     public SelectionPreference SelectionPreference = SelectionPreference.CreatureOrStructure;
-    internal List<StructureData> SelectedStructures = new List<StructureData>();
+    public RectTransform selectSquareImage;
+
+    internal LineRenderer LineRenderer;
     internal List<CellData> SelectedCells = new List<CellData>();
     internal List<Creature> SelectedCreatures = new List<Creature>();
-    public RectTransform selectSquareImage;
+    internal List<StructureData> SelectedStructures = new List<StructureData>();
+
     private static GameController _instance;
 
     private TimeStep _oldTimeStep = TimeStep.Normal;
-
     private Vector3 _selectionEnd;
     private Vector3 _selectionStart;
 
@@ -35,19 +37,31 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public void AddLine(Coordinates start, Coordinates end)
+    {
+        LineRenderer.startColor = Color.red;
+        LineRenderer.endColor = Color.red;
+
+        LineRenderer.positionCount += 3;
+
+        LineRenderer.SetPosition(LineRenderer.positionCount - 3, start.ToTopOfMapVector());
+        LineRenderer.SetPosition(LineRenderer.positionCount - 2, end.ToTopOfMapVector());
+        LineRenderer.SetPosition(LineRenderer.positionCount - 1, start.ToTopOfMapVector());
+
+        LineRenderer.startWidth = 0.1f;
+        LineRenderer.endWidth = 0.1f;
+
+        Debug.Log("rendered line");
+    }
+
+    public void ClearLine()
+    {
+        LineRenderer.positionCount = 0;
+    }
+
     public void DeselectCell()
     {
         SelectedCells.Clear();
-    }
-
-    public void DeselectStructure()
-    {
-        ClearLine();
-        foreach (var structure in SelectedStructures)
-        {
-            structure.LinkedGameObject.SpriteRenderer.color = StructureController.StructureColor;
-        }
-        SelectedStructures.Clear();
     }
 
     public void DeselectCreature()
@@ -58,6 +72,21 @@ public class GameController : MonoBehaviour
         }
         CreatureInfoPanel.Instance.Hide();
         SelectedCreatures.Clear();
+    }
+
+    public void DeselectStructure(bool stopGhost)
+    {
+        if (stopGhost)
+        {
+            DisableMouseSprite();
+        }
+
+        ClearLine();
+        foreach (var structure in SelectedStructures)
+        {
+            structure.LinkedGameObject.SpriteRenderer.color = StructureController.StructureColor;
+        }
+        SelectedStructures.Clear();
     }
 
     private void HandleTimeControls()
@@ -132,7 +161,7 @@ public class GameController : MonoBehaviour
     private void SelectCreature()
     {
         DeselectCell();
-        DeselectStructure();
+        DeselectStructure(true);
 
         foreach (var creature in SelectedCreatures)
         {
@@ -175,45 +204,27 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void ClearLine()
-    {
-        GetComponent<LineRenderer>().positionCount = 0;
-    }
-
-    public void AddLine(Coordinates start, Coordinates end)
-    {
-        var lineRenderer = GetComponent<LineRenderer>();
-
-        lineRenderer.startColor = Color.red;
-        lineRenderer.endColor = Color.red;
-
-        lineRenderer.positionCount += 3;
-
-        lineRenderer.SetPosition(lineRenderer.positionCount - 3, start.ToTopOfMapVector());
-        lineRenderer.SetPosition(lineRenderer.positionCount - 2, end.ToTopOfMapVector());
-        lineRenderer.SetPosition(lineRenderer.positionCount - 1, start.ToTopOfMapVector());
-
-        lineRenderer.startWidth = 0.1f;
-        lineRenderer.endWidth = 0.1f;
-
-        Debug.Log("rendered line");
-    }
-
     private void Start()
     {
+        LineRenderer = GetComponent<LineRenderer>();
+
         selectSquareImage.gameObject.SetActive(false);
+        MouseSpriteRenderer.gameObject.SetActive(false);
     }
 
     private void Update()
     {
+        var mousePosition = Input.mousePosition;
+
         HandleTimeControls();
+        MoveMouseSprite(mousePosition);
 
         if (Input.GetMouseButton(1))
         {
             // right mouse deselect all
             DeselectCreature();
             DeselectCell();
-            DeselectStructure();
+            DeselectStructure(true);
 
             CraftingScreen.Instance.Hide();
             CreatureInfoPanel.Instance.Hide();
@@ -225,8 +236,8 @@ public class GameController : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0))
             {
-                var rayPos = new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x,
-                                         Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
+                var rayPos = new Vector2(Camera.main.ScreenToWorldPoint(mousePosition).x,
+                                         Camera.main.ScreenToWorldPoint(mousePosition).y);
 
                 var hit = Physics2D.Raycast(rayPos, Vector2.zero, Mathf.Infinity);
 
@@ -243,7 +254,7 @@ public class GameController : MonoBehaviour
                     return;
                 }
 
-                DeselectStructure();
+                DeselectStructure(false);
                 DeselectCreature();
                 DeselectCell();
                 selectSquareImage.gameObject.SetActive(false);
@@ -334,7 +345,7 @@ public class GameController : MonoBehaviour
                     selectSquareImage.gameObject.SetActive(true);
                 }
 
-                _selectionEnd = Input.mousePosition;
+                _selectionEnd = mousePosition;
 
                 var start = Camera.main.WorldToScreenPoint(_selectionStart);
                 start.z = 0f;

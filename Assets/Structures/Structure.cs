@@ -8,7 +8,13 @@ public class Structure : MonoBehaviour
     internal SpriteRenderer SpriteRenderer;
     internal SpriteRenderer StatusSprite;
 
-    public static void SetTiledMode(SpriteRenderer spriteRenderer, bool tiled)
+    public void LoadSprite()
+    {
+        SpriteRenderer.sprite = SpriteStore.Instance.GetSpriteByName(Data.SpriteName);
+        SetTiledMode(SpriteRenderer, Data.Tiled);
+    }
+
+    public void SetTiledMode(SpriteRenderer spriteRenderer, bool tiled)
     {
         if (!tiled)
         {
@@ -19,12 +25,8 @@ public class Structure : MonoBehaviour
             spriteRenderer.drawMode = SpriteDrawMode.Tiled;
             spriteRenderer.size = Vector2.one;
         }
-    }
 
-    public void LoadSprite()
-    {
-        SpriteRenderer.sprite = SpriteStore.Instance.GetSpriteByName(Data.SpriteName);
-        SetTiledMode(SpriteRenderer, Data.Tiled);
+        spriteRenderer.transform.localScale = new Vector3(Data.Width, Data.Height, 1);
     }
 
     internal void Load(string structureData)
@@ -35,12 +37,6 @@ public class Structure : MonoBehaviour
 
     internal void Shift()
     {
-        if (!string.IsNullOrEmpty(Data.Scale))
-        {
-            float scale = Helpers.GetValueFromFloatRange(Data.Scale);
-            transform.localScale = new Vector3(0, scale, 0);
-        }
-
         if (!string.IsNullOrEmpty(Data.ShiftX))
         {
             float shiftX = Helpers.GetValueFromFloatRange(Data.ShiftX);
@@ -51,6 +47,11 @@ public class Structure : MonoBehaviour
         {
             float shiftY = Helpers.GetValueFromFloatRange(Data.ShiftY);
             transform.position += new Vector3(0, shiftY, 0);
+        }
+
+        if (Data.Width > 1 || Data.Height > 1)
+        {
+            transform.position += new Vector3((Data.Width / 2) - 0.5f, (Data.Height / 2) - 0.5f, 0);
         }
     }
 
@@ -83,6 +84,47 @@ public class Structure : MonoBehaviour
 
 public class StructureData
 {
+    public TaskBase Behaviour;
+
+    public bool Buildable;
+
+    public Coordinates Coordinates;
+
+    public int Id;
+
+    public string InUseBy;
+
+    public bool IsBluePrint;
+
+    public string Layer;
+
+    public string Name;
+
+    public List<string> RequireStrings;
+
+    public string ShiftX;
+
+    public string ShiftY;
+
+    public string Size;
+
+    public string SpriteName;
+
+    public string StructureType;
+
+    public List<TaskBase> Tasks = new List<TaskBase>();
+
+    public bool Tiled;
+
+    public float TravelCost;
+
+    public List<string> Yield;
+
+    private List<string> _require;
+
+    [JsonIgnore]
+    private int _width, _height = -1;
+
     public StructureData()
     {
     }
@@ -93,28 +135,24 @@ public class StructureData
         SpriteName = sprite;
     }
 
-    public bool Buildable;
-    public Coordinates Coordinates;
+    [JsonIgnore]
+    public int Height
+    {
+        get
+        {
+            ParseHeight();
+            return _width;
+        }
+    }
 
-    public int Id;
-    public bool IsBluePrint;
-    public string Layer;
-    public string Name;
-    public List<string> RequireStrings;
-    public string Scale;
-    public string ShiftX;
-    public string ShiftY;
-    public string SpriteName;
-    public string StructureType;
-    public List<TaskBase> Tasks = new List<TaskBase>();
-    public bool Tiled;
-    public float TravelCost;
-    public List<string> Yield;
-    private List<string> _require;
-
-    public TaskBase Behaviour;
-
-    public string InUseBy;
+    [JsonIgnore]
+    public bool InUseByAnyone
+    {
+        get
+        {
+            return !string.IsNullOrEmpty(InUseBy);
+        }
+    }
 
     [JsonIgnore]
     public Structure LinkedGameObject
@@ -143,11 +181,12 @@ public class StructureData
     }
 
     [JsonIgnore]
-    public bool InUseByAnyone
+    public int Width
     {
         get
         {
-            return !string.IsNullOrEmpty(InUseBy);
+            ParseHeight();
+            return _width;
         }
     }
 
@@ -166,6 +205,20 @@ public class StructureData
         {
             Require.Remove(item.Name);
         }
+    }
+
+    public List<CellData> GetCellsForStructure(Coordinates origin)
+    {
+        List<CellData> cells = new List<CellData>();
+        for (int x = 0; x < Width; x++)
+        {
+            for (int y = 0; y < Height; y++)
+            {
+                cells.Add(MapGrid.Instance.GetCellAtCoordinate(new Coordinates(origin.X + x, origin.Y + y)));
+            }
+        }
+
+        return cells;
     }
 
     public void SetBlueprintState(bool blueprint)
@@ -193,13 +246,43 @@ public class StructureData
         }
     }
 
-    internal void Reserve(string reservedBy)
+    public bool ValidateCellLocationForStructure(CellData CellData)
     {
-        InUseBy = reservedBy;
+        foreach (var cell in GetCellsForStructure(CellData.Coordinates))
+        {
+            if (!cell.Bound || cell.TravelCost < 0 || cell.Structure != null)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     internal void Free()
     {
         InUseBy = string.Empty;
+    }
+
+    internal void Reserve(string reservedBy)
+    {
+        InUseBy = reservedBy;
+    }
+
+    private void ParseHeight()
+    {
+        if (_width == -1 || _height == -1)
+        {
+            if (!string.IsNullOrEmpty(Size))
+            {
+                var parts = Size.Split('x');
+                _height = int.Parse(parts[0]);
+                _width = int.Parse(parts[1]);
+            }
+            else
+            {
+                _width = 1;
+                _height = 1;
+            }
+        }
     }
 }
