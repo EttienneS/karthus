@@ -28,25 +28,6 @@ public class Creature : MonoBehaviour
 
     private float frameSeconds = 0.3f;
 
-    public void AssignTask(TaskBase task, string originator = "")
-    {
-        task.AssignedCreatureId = Data.Id;
-
-        if (!string.IsNullOrEmpty(originator))
-        {
-            task.Originator = originator;
-        }
-
-        if (task.SubTasks != null)
-        {
-            foreach (var subTask in task.SubTasks.ToList())
-            {
-                subTask.Context = task.Context;
-                AssignTask(subTask, task.Originator);
-            }
-        }
-    }
-
     public void Awake()
     {
         Text = transform.Find("Text").GetComponent<TextMeshPro>();
@@ -241,32 +222,34 @@ public class Creature : MonoBehaviour
             Data.Know(context);
             task.Context = context;
 
-            AssignTask(task);
+            Taskmaster.AssignTask(Data, task);
             Data.Task = task;
         }
-
-        try
+        else
         {
-            if (!Data.Task.Done())
+            try
             {
-                Data.Task.Update();
+                Taskmaster.AssignTask(Data, Data.Task);
+
+                if (!Data.Task.Done())
+                {
+                    Data.Task.Update();
+                }
+                else
+                {
+                    Data.Task.ShowDoneEmote();
+                    Data.FreeResources(Data.Task.Context);
+                    Data.Forget(Data.Task.Context);
+
+                    Taskmaster.Instance.TaskComplete(Data.Task);
+                    Data.Task = null;
+                }
             }
-            else
+            catch (TaskFailedException ex)
             {
-                Data.Task.ShowDoneEmote();
-
-                Data.FreeResources(Data.Task.Context);
-
-                Data.Forget(Data.Task.Context);
-
-                Taskmaster.Instance.TaskComplete(Data.Task);
-                Data.Task = null;
+                Debug.LogWarning($"Task failed: {ex}");
+                Taskmaster.Instance.TaskFailed(Data.Task, ex.Message);
             }
-        }
-        catch (TaskFailedException ex)
-        {
-            Debug.LogWarning($"Task failed: {ex}");
-            Taskmaster.Instance.TaskFailed(Data.Task, ex.Message);
         }
     }
 }

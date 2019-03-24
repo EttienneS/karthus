@@ -166,4 +166,23 @@ public class Taskmaster : MonoBehaviour
         Tasks.Remove(task);
         Tasks.Add(task);
     }
+
+    public static void AssignTask(CreatureData creature, TaskBase task, string originator = "")
+    {
+        task.AssignedCreatureId = creature.Id;
+
+        if (!string.IsNullOrEmpty(originator))
+        {
+            task.Originator = originator;
+        }
+
+        if (task.SubTasks != null)
+        {
+            foreach (var subTask in task.SubTasks.ToList())
+            {
+                subTask.Context = task.Context;
+                AssignTask(creature, subTask, task.Originator);
+            }
+        }
+    }
 }

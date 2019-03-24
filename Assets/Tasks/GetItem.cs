@@ -10,7 +10,7 @@ public class GetItem : TaskBase
 
     public enum SearchBy
     {
-        Name, Category
+        Name, Category, Id
     }
 
     public GetItem()
@@ -45,7 +45,7 @@ public class GetItem : TaskBase
 
     public override void Update()
     {
-        if (Item == null)
+       if (Item == null)
         {
             if (Search == SearchBy.Category)
             {
@@ -65,6 +65,17 @@ public class GetItem : TaskBase
                         .GetPathableNeighbour(MapGrid.Instance
                         .GetNearestCellOfType(Creature.Coordinates, CellType.Water, 20).Coordinates))
                         .AddContent(Item.LinkedGameObject.gameObject);
+                }
+            }
+            else if (Search == SearchBy.Id)
+            {
+                if (IdService.IsItem(SearchItem))
+                {
+                    Item = IdService.GetItemFromId(SearchItem);
+                }
+                else
+                {
+                    throw new TaskFailedException($"Search object is not an existing item: {SearchItem}");
                 }
             }
             else
