@@ -2,7 +2,7 @@
   "Name": "BindRune",
   "Behaviour": {
     "$type": "Bind, Assembly-CSharp",
-    "Power": "10.0",
+    "Power": "20.0",
     "PowerRate": "0.5",
     "Size": "6"
   },
