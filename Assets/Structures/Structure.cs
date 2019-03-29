@@ -100,6 +100,8 @@ public class StructureData
 
     public string Name;
 
+    public Dictionary<string, string> Properties = new Dictionary<string, string>();
+
     public List<string> RequireStrings;
 
     public string ShiftX;
@@ -121,7 +123,6 @@ public class StructureData
     public List<string> Yield;
 
     private List<string> _require;
-
     [JsonIgnore]
     private int _width, _height = -1;
 

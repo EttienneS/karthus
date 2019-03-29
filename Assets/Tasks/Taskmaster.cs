@@ -120,7 +120,24 @@ public class Taskmaster : MonoBehaviour
         }
         else if (creature.Data.Energy < 15)
         {
-            task = AddTask(new Sleep(), creature.Data.GetGameId());
+            var bed = creature.Data.Self.Structures.FirstOrDefault(s => s.Properties.ContainsKey("RecoveryRate"));
+
+            if (bed == null)
+            {
+                bed = StructureController.Instance.StructureLookup.Keys
+                                         .FirstOrDefault(s =>
+                                                !s.InUseByAnyone
+                                                && s.Properties.ContainsKey("RecoveryRate"));
+            }
+
+            if (bed == null)
+            {
+                task = AddTask(new Sleep(creature.Data.Coordinates, 0.25f), creature.Data.GetGameId());
+            }
+            else
+            {
+                task = AddTask(new Sleep(bed), creature.Data.GetGameId());
+            }
         }
         else
         {
