@@ -27,8 +27,18 @@ public class Coordinates : IEquatable<Coordinates>
         return new Vector2(Mathf.FloorToInt(X) + 0.5f, Mathf.FloorToInt(Y) + 0.5f);
     }
 
+    public Vector3 ToTopOfMapVector()
+    {
+        return new Vector3(Mathf.FloorToInt(X) + 0.5f, Mathf.FloorToInt(Y) + 0.5f, -1);
+    }
+
     public static bool operator !=(Coordinates obj1, Coordinates obj2)
     {
+        if (ReferenceEquals(obj1, null))
+        {
+            return !ReferenceEquals(obj2, null);
+        }
+
         return !obj1.Equals(obj2);
     }
 

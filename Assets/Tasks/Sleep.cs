@@ -1,10 +1,30 @@
-﻿using Random = UnityEngine.Random;
+﻿using Newtonsoft.Json;
+using Random = UnityEngine.Random;
 
 public class Sleep : TaskBase
 {
+    public float RecoveryRate;
+    public Coordinates Location;
+
+    [JsonIgnore]
+    private StructureData _bed;
+
     public Sleep()
     {
-        Message = "Zzzz..";
+    }
+
+    public Sleep(StructureData bed) : this(bed.Coordinates, float.Parse(bed.Properties["RecoveryRate"]))
+    {
+        _bed = bed;
+    }
+
+    public Sleep(Coordinates location, float recoveryRate)
+    {
+        BusyEmote = Message = "Zzzz..";
+        RecoveryRate = recoveryRate;
+        Location = location;
+
+        AddSubTask(new Move(location));
     }
 
     public override bool Done()
@@ -16,12 +36,16 @@ public class Sleep : TaskBase
                 var wait = new Wait(0.5f, "Sleeping") { AssignedCreatureId = AssignedCreatureId };
                 AddSubTask(wait);
 
-                Creature.LinkedGameObject.ShowText("Zzz..", 0.25f);
+                Creature.Energy += RecoveryRate;
                 return false;
             }
 
-            Creature.LinkedGameObject.ShowText("*stretch* Ow my back!", 1f);
-            Creature.Sleeping = false;
+            if (RecoveryRate < 1f)
+            {
+                Creature.LinkedGameObject.ShowText("*stretch* Ow my back!", 1f);
+            }
+
+            Creature.Animate = true;
             return true;
         }
 
@@ -30,7 +54,11 @@ public class Sleep : TaskBase
 
     public override void Update()
     {
-        Creature.Sleeping = true;
+        if (_bed != null)
+        {
+            _bed.Reserve(Creature.GetGameId());
+            Creature.Animate = false;
+        }
         Taskmaster.ProcessQueue(SubTasks);
     }
 }

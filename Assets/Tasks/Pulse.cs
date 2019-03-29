@@ -49,5 +49,4 @@ public class Pulse : TaskBase
 
         _attachedRenderer.color = Color.Lerp(ColorArray1.ToColor(), ColorArray2.ToColor(), Mathf.PingPong(Time.time, Frequency));
     }
-
 }

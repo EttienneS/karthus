@@ -13,6 +13,8 @@
         Structure = structure;
         Coordinates = coordinates;
 
+        // AddSubTask(new ClearCell(Coordinates));
+
         foreach (var requiredItem in structure.Require)
         {
             AddSubTask(new MoveItemToCell(requiredItem, Coordinates, true, true, GetItem.SearchBy.Name));

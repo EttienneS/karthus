@@ -1,6 +1,4 @@
-﻿using UnityEngine.UI;
-
-public partial class OrderSelectionController //.Stockpile
+﻿public partial class OrderSelectionController //.Stockpile
 {
     public const string DefaultStockpileText = "Place Stockpile";
     internal OrderButton StockpileButton;

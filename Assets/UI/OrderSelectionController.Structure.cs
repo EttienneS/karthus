@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 using UnityEngine.UI;
 
 public partial class OrderSelectionController //.Structure
@@ -10,12 +11,20 @@ public partial class OrderSelectionController //.Structure
     public void BuildClicked(string structureName)
     {
         BuildButton.Text = "Build " + structureName;
+
+        var structure = StructureController.Instance.StructureDataReference[structureName];
         GameController.Instance.SelectionPreference = SelectionPreference.Cell;
+        GameController.Instance.SetMouseSprite(SpriteStore.Instance.GetSpriteByName(structure.SpriteName),
+                                               structure.Width,
+                                               structure.Height,
+                                               structure.Tiled,
+                                               (CellData) => structure.ValidateCellLocationForStructure(CellData));
+
         CellClickOrder = cells =>
         {
             foreach (var cell in cells)
             {
-                if (cell.Bound && cell.Structure == null)
+                if (structure.ValidateCellLocationForStructure(cell))
                 {
                     var blueprint = StructureController.Instance.GetStructureBluePrint(structureName);
                     cell.AddContent(blueprint.gameObject);
@@ -70,6 +79,11 @@ public partial class OrderSelectionController //.Structure
                     }
                     else
                     {
+                        if (Taskmaster.Instance.Tasks.OfType<RemoveStructure>().Any(t => t.Structure == structure))
+                        {
+                            Debug.Log("Structure already flagged to remove");
+                            continue;
+                        }
                         Taskmaster.Instance.AddTask(new RemoveStructure(structure, cell.Coordinates), string.Empty);
                         structure.LinkedGameObject.SpriteRenderer.color = Color.red;
                     }

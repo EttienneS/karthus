@@ -6,10 +6,6 @@ using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public enum MemoryType
-{
-    Item, Craft, Location, Creature, Stockpile, Structure
-}
 
 public class Creature : MonoBehaviour
 {
@@ -27,25 +23,6 @@ public class Creature : MonoBehaviour
     private int frame;
 
     private float frameSeconds = 0.3f;
-
-    public void AssignTask(TaskBase task, string originator = "")
-    {
-        task.AssignedCreatureId = Data.Id;
-
-        if (!string.IsNullOrEmpty(originator))
-        {
-            task.Originator = originator;
-        }
-
-        if (task.SubTasks != null)
-        {
-            foreach (var subTask in task.SubTasks.ToList())
-            {
-                subTask.Context = task.Context;
-                AssignTask(subTask, task.Originator);
-            }
-        }
-    }
 
     public void Awake()
     {
@@ -103,15 +80,9 @@ public class Creature : MonoBehaviour
 
     private void Animate(bool force = false)
     {
-        if (Data.Sleeping)
+        if (!Data.Animate && !force)
         {
-            SpriteRenderer.sprite = FrontSprites[0];
-            SpriteRenderer.flipY = true;
             return;
-        }
-        else
-        {
-            SpriteRenderer.flipY = false;
         }
 
         Sprite[] sprites;
@@ -191,28 +162,14 @@ public class Creature : MonoBehaviour
         {
             Data.InternalTick = 0;
 
-            if (!Data.Sleeping)
+            if (Random.value > 0.65)
             {
-                Data.Hunger += Random.value;
-                Data.Thirst += Random.value;
-                Data.Energy -= Random.value;
-
-                if (Data.Hunger > 40)
-                {
-                    thoughts.Add("Jaassss ek kan gaan vir 'n boerie!");
-                }
-
-                if (Data.Energy < 30)
-                {
-                    thoughts.Add("*Yawn..*");
-                }
+                Data.Task?.ShowBusyEmote();
             }
-            else
-            {
-                Data.Hunger += Random.value / 2f;
-                Data.Thirst += Random.value / 2f;
-                Data.Energy += Random.value * 1.2f;
-            }
+
+            Data.Hunger += Random.value;
+            Data.Thirst += Random.value;
+            Data.Energy -= Random.Range(0.1f,0.25f);
         }
 
         if (thoughts.Count > 0 && Random.value > 0.9)
@@ -236,47 +193,52 @@ public class Creature : MonoBehaviour
             Data.Know(context);
             task.Context = context;
 
-            AssignTask(task);
+            Taskmaster.AssignTask(Data, task);
             Data.Task = task;
         }
-
-        try
+        else
         {
-            if (!Data.Task.Done())
+            try
             {
-                Data.Task.Update();
+                Taskmaster.AssignTask(Data, Data.Task);
+
+                if (!Data.Task.Done())
+                {
+                    Data.Task.Update();
+                }
+                else
+                {
+                    Data.Task.ShowDoneEmote();
+                    Data.FreeResources(Data.Task.Context);
+                    Data.Forget(Data.Task.Context);
+
+                    Taskmaster.Instance.TaskComplete(Data.Task);
+                    Data.Task = null;
+                }
             }
-            else
+            catch (TaskFailedException ex)
             {
-                Data.FreeResources(Data.Task.Context);
-
-                Data.Forget(Data.Task.Context);
-
-                Taskmaster.Instance.TaskComplete(Data.Task);
-                Data.Task = null;
+                Debug.LogWarning($"Task failed: {ex}");
+                Taskmaster.Instance.TaskFailed(Data.Task, ex.Message);
             }
-        }
-        catch (TaskFailedException ex)
-        {
-            Debug.LogWarning($"Task failed: {ex}");
-            Taskmaster.Instance.TaskFailed(Data.Task, ex.ToString());
         }
     }
 }
 
 public class CreatureData
 {
+    public const string SelfKey = "Self";
     public int CarriedItemId;
     public Coordinates Coordinates;
     public float Energy;
     public float Hunger;
     public int Id;
-
     public Dictionary<string, Memory> Mind = new Dictionary<string, Memory>();
+
     public Direction MoveDirection = Direction.S;
+
     public string Name;
 
-    public bool Sleeping;
     public float Speed = 10f;
 
     public int SpriteId;
@@ -284,6 +246,8 @@ public class CreatureData
     public float Thirst;
 
     internal float InternalTick;
+
+    public bool Animate = true;
 
     [JsonIgnore]
     public ItemData CarriedItem
@@ -317,16 +281,45 @@ public class CreatureData
     }
 
     [JsonIgnore]
+    public Memory Self
+    {
+        get
+        {
+            if (!Mind.ContainsKey(SelfKey))
+            {
+                Mind.Add(SelfKey, new Memory());
+            }
+
+            return Mind[SelfKey];
+        }
+    }
+    [JsonIgnore]
     public TaskBase Task { get; set; }
 
-    internal ItemData DropItem()
+    internal ItemData DropItem(Coordinates coordinates = null)
     {
         if (CarriedItemId > 0)
         {
             var item = CarriedItem;
             item.Reserved = false;
             item.LinkedGameObject.SpriteRenderer.sortingLayerName = "Item";
-            CurrentCell.AddContent(item.LinkedGameObject.gameObject);
+
+            if (coordinates != null)
+            {
+                var cell = MapGrid.Instance.GetCellAtCoordinate(coordinates);
+                if (CurrentCell.Neighbors.Contains(cell))
+                {
+                    cell.AddContent(item.LinkedGameObject.gameObject);
+                }
+                else
+                {
+                    CurrentCell.AddContent(item.LinkedGameObject.gameObject);
+                }
+            }
+            else
+            {
+                CurrentCell.AddContent(item.LinkedGameObject.gameObject);
+            }
 
             CarriedItemId = 0;
             return item;
@@ -371,24 +364,14 @@ public class CreatureData
         Mind.Add(context, new Memory());
     }
 
-    internal void UpdateMemory(string context, MemoryType craft, string info)
+    internal void UpdateMemory(string context, MemoryType memoryType, string info)
     {
-        Debug.Log($"Remember: {context}, {craft}: '{info}'");
-        Mind[context].AddInfo(craft, info);
+        Debug.Log($"Remember: {context}, {memoryType}: '{info}'");
+        Mind[context].AddInfo(memoryType, info);
     }
-}
 
-public class Memory : Dictionary<MemoryType, List<string>>
-{
-    public string AddInfo(MemoryType type, string entry)
+    internal void UpdateSelfMemory( MemoryType memoryType, string info)
     {
-        if (!ContainsKey(type))
-        {
-            Add(type, new List<string>());
-        }
-
-        this[type].Add(entry);
-
-        return entry;
+        UpdateMemory(SelfKey, memoryType, info);
     }
 }

@@ -67,9 +67,16 @@ public class CraftingScreen : MonoBehaviour
     {
         for (var i = 0; i < amount; i++)
         {
-            Taskmaster.Instance.AddTask(new Craft(SelectedRecipe.OutputItemName,
-                                                  SelectedRecipe.RequiredItemNames,
-                                                  _craftSource.Coordinates), _craftSource.GetGameId());
+            var task = new Craft(SelectedRecipe.OutputItemName,
+                                 SelectedRecipe.RequiredItemNames,
+                                 _craftSource.Coordinates,
+                                 SelectedRecipe.CraftTime)
+            {
+                BusyEmote = SelectedRecipe.BusyEmote,
+                DoneEmote = SelectedRecipe.DoneEmote
+            };
+
+            Taskmaster.Instance.AddTask(task, _craftSource.GetGameId());
             AddDisplay(QueuePanel.transform, SelectedRecipe);
         }
 

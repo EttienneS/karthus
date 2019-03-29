@@ -11,7 +11,9 @@
     {
       "$type": "Craft, Assembly-CSharp",
       "OutputItemName": "Apple Pie",
-      "RequiredItemNames": [ "4:Apple", "1:Wood" ]
+      "RequiredItemNames": [ "4:Apple", "1:Wood" ],
+      "CraftTime": "5",
+      "DoneEmote": "Yum!"
     }
   ]
 }

@@ -1,15 +1,15 @@
-﻿public class Eat : TaskBase
+﻿public class Drink : TaskBase
 {
-    public Eat()
+    public Drink()
     {
     }
 
-    public Eat(string itemCategory)
+    public Drink(string itemCategory)
     {
         AddSubTask(new GetItem(itemCategory, true, GetItem.SearchBy.Category));
-        AddSubTask(new Wait(2f, "Eating"));
+        AddSubTask(new Wait(3f, "Drinking"));
 
-        Message = $"Eating {itemCategory}";
+        Message = $"Drinking {itemCategory}";
     }
 
     public override bool Done()
@@ -18,13 +18,13 @@
         {
             if (Creature.CarriedItem == null)
             {
-                throw new TaskFailedException("No food to eat");
+                throw new TaskFailedException("Nothing to drink");
             }
 
             var food = Creature.CarriedItem;
             Creature.DropItem();
 
-            Creature.Hunger -= int.Parse(food.Properties["Nutrition"]);
+            Creature.Thirst -= int.Parse(food.Properties["Quench"]);
             ItemController.Instance.DestoyItem(food);
 
             return true;

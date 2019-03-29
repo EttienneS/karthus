@@ -110,7 +110,10 @@ public class CellData
             }
 
             structure.Data.Coordinates = Coordinates;
-            Structure = structure.Data;
+            foreach (var cell in structure.Data.GetCellsForStructure(Coordinates))
+            {
+                cell.Structure = structure.Data;
+            }
 
             structure.Shift();
             structure.SpriteRenderer.sortingOrder = Constants.MapSize - Coordinates.Y;

@@ -43,7 +43,7 @@ public class ItemData
 
     public int StockpileId { get; set; }
 
-    public Dictionary<string, string> Properties;
+    public Dictionary<string, string> Properties = new Dictionary<string, string>();
 
     [JsonIgnore]
     public Item LinkedGameObject

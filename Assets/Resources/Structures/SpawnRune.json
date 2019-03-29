@@ -1,0 +1,14 @@
+{
+  "Name": "SpawnRune",
+  "Behaviour": {
+    "$type": "Spawn, Assembly-CSharp",
+    "Power": "0.0",
+    "PowerRate": "0.005"
+  },
+  "Buildable": true,
+  "RequireStrings": [ "5:Rock" ],
+  "SpriteName": "runeBlue_slab_031",
+  "Tasks": [],
+  "Tiled": false,
+  "TravelCost": "10"
+}
