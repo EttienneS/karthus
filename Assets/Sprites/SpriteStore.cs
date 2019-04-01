@@ -131,11 +131,6 @@ public class SpriteStore : MonoBehaviour
         }
     }
 
-    internal Color[] GetGroundTextureFor(string typeName, int size)
-    {
-        return MapSpriteTypeDictionary[typeName][0].texture.GetPixels(Random.Range(0, 150), Random.Range(0, 150), size, size);
-    }
-
     internal Sprite GetSpriteByName(string spriteName)
     {
         try
@@ -150,5 +145,11 @@ public class SpriteStore : MonoBehaviour
         {
             throw new Exception($"No sprite found with name: {spriteName}");
         }
+    }
+
+    internal Sprite GetSpriteForTerrainType(CellType cellType)
+    {
+        var typeList = MapSpriteTypeDictionary[cellType.ToString()];
+        return typeList[Random.Range(0, typeList.Count - 1)];
     }
 }
