@@ -226,12 +226,12 @@ public class StructureData
     {
         if (blueprint)
         {
-            LinkedGameObject.SpriteRenderer.color = StructureController.BluePrintColor;
+            LinkedGameObject.SpriteRenderer.color = ColorConstants.BluePrintColor;
             IsBluePrint = true;
         }
         else
         {
-            LinkedGameObject.SpriteRenderer.color = StructureController.StructureColor;
+            LinkedGameObject.SpriteRenderer.color = ColorConstants.StructureColor;
             IsBluePrint = false;
         }
     }

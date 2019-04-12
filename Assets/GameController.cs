@@ -84,9 +84,22 @@ public partial class GameController : MonoBehaviour
         ClearLine();
         foreach (var structure in SelectedStructures)
         {
-            structure.LinkedGameObject.SpriteRenderer.color = StructureController.StructureColor;
+            structure.LinkedGameObject.SpriteRenderer.color = ColorConstants.StructureColor;
         }
         SelectedStructures.Clear();
+    }
+
+    private void HandleHotkeys()
+    {
+        if (Input.GetKeyDown("b"))
+        {
+            OrderSelectionController.Instance.BuildTypeClicked();
+        }
+
+        if (Input.GetKeyDown("n"))
+        {
+            OrderSelectionController.Instance.DesignateTypeClicked();
+        }
     }
 
     private void HandleTimeControls()
@@ -216,6 +229,7 @@ public partial class GameController : MonoBehaviour
     {
         var mousePosition = Input.mousePosition;
 
+        HandleHotkeys();
         HandleTimeControls();
         MoveMouseSprite(mousePosition);
 

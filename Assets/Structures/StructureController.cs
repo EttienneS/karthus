@@ -6,8 +6,6 @@ public class StructureController : MonoBehaviour
     public Dictionary<int, StructureData> StructureIdLookup = new Dictionary<int, StructureData>();
     public Dictionary<StructureData, Structure> StructureLookup = new Dictionary<StructureData, Structure>();
     public Structure structurePrefab;
-    internal static Color BluePrintColor = new Color(0.3f, 1f, 1f, 0.4f);
-    internal static Color StructureColor = new Color(0.6f, 0.6f, 0.6f);
     internal Dictionary<string, StructureData> StructureDataReference = new Dictionary<string, StructureData>();
 
     private static StructureController _instance;
@@ -70,12 +68,7 @@ public class StructureController : MonoBehaviour
         IndexStructure(structure);
 
         structure.Data.SetBlueprintState(false);
-
-        if (!string.IsNullOrEmpty(structure.Data.Layer))
-        {
-            structure.SpriteRenderer.sortingLayerName = structure.Data.Layer;
-        }
-
+      
         return structure;
     }
 

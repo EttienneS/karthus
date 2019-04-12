@@ -153,7 +153,7 @@ public class MapGrid : MonoBehaviour
 
         LinkNeighbours();
         GenerateMapCells();
-        //CreateMapTexturesFromCells();
+        Populatecells();
 
         ResetSearchPriorities();
 
@@ -439,41 +439,6 @@ public class MapGrid : MonoBehaviour
         }
     }
 
-    //private void CreateMapTexturesFromCells()
-    //{
-    //    for (var x = 0; x < Constants.TotalTextures; x++)
-    //    {
-    //        for (var y = 0; y < Constants.TotalTextures; y++)
-    //        {
-    //            _textures[x, y] = new Texture2D(Constants.PixelsPerBlock, Constants.PixelsPerBlock);
-    //        }
-    //    }
-
-    //    foreach (var cell in Cells)
-    //    {
-    //        RefreshCell(cell);
-    //    }
-
-    //    var counter = 0;
-    //    for (var x = 0; x < Constants.TotalTextures; x++)
-    //    {
-    //        for (var y = 0; y < Constants.TotalTextures; y++)
-    //        {
-    //            var texture = _textures[x, y];
-    //            texture.Apply();
-    //            var terrainBlock = Instantiate(TerrainBlockPrefab, transform);
-    //            terrainBlock.name = $"Block {x}-{y}";
-
-    //            terrainBlock.Renderer.sprite = Sprite.Create(texture, new Rect(0, 0, Constants.PixelsPerBlock, Constants.PixelsPerBlock), new Vector2(0, 0), Constants.PixelsPerCell, 2);
-
-    //            _textureLookup.Add(texture, terrainBlock.Renderer);
-
-    //            terrainBlock.Renderer.sortingOrder = counter++;
-    //            terrainBlock.transform.position = new Vector2(x * Constants.CellsPerTerrainBlock, y * Constants.CellsPerTerrainBlock);
-    //        }
-    //    }
-    //}
-
     private void GenerateMapCells()
     {
         // generate bedrock
@@ -582,10 +547,7 @@ public class MapGrid : MonoBehaviour
     {
         foreach (var cell in Cells)
         {
-            if (cell.Bound)
-            {
-                PopulateCell(cell);
-            }
+            PopulateCell(cell);
         }
     }
 
@@ -602,7 +564,6 @@ public class MapGrid : MonoBehaviour
                 {
                     if (!cell.Bound)
                     {
-                        PopulateCell(cell);
                         cell.Binding = kvp.Key;
 
                         if (!CellBinding.ContainsKey(kvp.Key))
@@ -672,6 +633,9 @@ public class MapGrid : MonoBehaviour
         {
             sprite = SpriteStore.Instance.GetSpriteForTerrainType(cell.Bound ? cell.CellType : CellType.Abyss)
         };
+
         Tilemap.SetTile(new Vector3Int(cell.Coordinates.X, cell.Coordinates.Y, 0), tile);
+
+        cell.ColorStructure();
     }
 }

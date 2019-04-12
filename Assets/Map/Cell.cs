@@ -117,6 +117,8 @@ public class CellData
 
             structure.Shift();
             structure.SpriteRenderer.sortingOrder = Constants.MapSize - Coordinates.Y;
+
+            ColorStructure();
         }
         else if (stockpile != null)
         {
@@ -149,5 +151,27 @@ public class CellData
         }
 
         return Neighbors.Count(n => n != null && n.CellType == cellType.Value);
+    }
+
+    internal void ColorStructure()
+    {
+        if (Structure != null)
+        {
+            var renderer = Structure.LinkedGameObject.SpriteRenderer;
+
+            if (Bound)
+            {
+                //renderer.sortingLayerName = !string.IsNullOrEmpty(cell.Structure.Layer) ?
+                //    cell.Structure.Layer :
+                //    LayerConstants.Structure;
+
+                renderer.color = ColorConstants.StructureColor;
+            }
+            else
+            {
+                renderer.color = ColorConstants.UnboundStructureColor;
+                //renderer.sortingLayerName = LayerConstants.Bottom;
+            }
+        }
     }
 }

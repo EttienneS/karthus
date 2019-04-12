@@ -132,7 +132,7 @@ public class Creature : MonoBehaviour
             var item = ItemController.Instance.ItemDataLookup[Data.CarriedItem];
 
             item.transform.position = transform.position;
-            item.SpriteRenderer.sortingLayerName = "CarriedItem";
+            item.SpriteRenderer.sortingLayerName = LayerConstants.CarriedItem;
         }
     }
 
@@ -302,7 +302,7 @@ public class CreatureData
         {
             var item = CarriedItem;
             item.Reserved = false;
-            item.LinkedGameObject.SpriteRenderer.sortingLayerName = "Item";
+            item.LinkedGameObject.SpriteRenderer.sortingLayerName = LayerConstants.Item;
 
             if (coordinates != null)
             {
