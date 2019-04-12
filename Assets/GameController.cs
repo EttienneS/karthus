@@ -272,10 +272,10 @@ public partial class GameController : MonoBehaviour
 
                 var endPoint = Camera.main.ScreenToWorldPoint(_selectionEnd);
 
-                var startX = Mathf.Clamp(Mathf.Min(_selectionStart.x, endPoint.x), 0, Constants.MapSize);
-                var startY = Mathf.Clamp(Mathf.Min(_selectionStart.y, endPoint.y), 0, Constants.MapSize);
-                var endX = Mathf.Clamp(Mathf.Max(_selectionStart.x, endPoint.x), 0, Constants.MapSize);
-                var endY = Mathf.Clamp(Mathf.Max(_selectionStart.y, endPoint.y), 0, Constants.MapSize);
+                var startX = Mathf.Clamp(Mathf.Min(_selectionStart.x, endPoint.x), 0, MapConstants.MapSize);
+                var startY = Mathf.Clamp(Mathf.Min(_selectionStart.y, endPoint.y), 0, MapConstants.MapSize);
+                var endX = Mathf.Clamp(Mathf.Max(_selectionStart.x, endPoint.x), 0, MapConstants.MapSize);
+                var endY = Mathf.Clamp(Mathf.Max(_selectionStart.y, endPoint.y), 0, MapConstants.MapSize);
 
                 if (startX == endX && startY == endY)
                 {

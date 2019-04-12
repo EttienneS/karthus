@@ -67,7 +67,7 @@ public class CreatureController : MonoBehaviour
     public void SpawnCreatures()
     {
         var midCell = MapGrid.Instance
-            .GetCircle(new Coordinates(Constants.MapSize / 2, Constants.MapSize / 2), 10)
+            .GetCircle(new Coordinates(MapConstants.MapSize / 2, MapConstants.MapSize / 2), 10)
             .First(c => c.CellType != CellType.Water || c.CellType != CellType.Mountain);
 
         SummonCells(midCell);

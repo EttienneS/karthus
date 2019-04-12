@@ -116,7 +116,7 @@ public class CellData
             }
 
             structure.Shift();
-            structure.SpriteRenderer.sortingOrder = Constants.MapSize - Coordinates.Y;
+            structure.SpriteRenderer.sortingOrder = MapConstants.MapSize - Coordinates.Y;
 
             ColorStructure();
         }
