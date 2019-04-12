@@ -84,9 +84,22 @@ public partial class GameController : MonoBehaviour
         ClearLine();
         foreach (var structure in SelectedStructures)
         {
-            structure.LinkedGameObject.SpriteRenderer.color = StructureController.StructureColor;
+            structure.LinkedGameObject.SpriteRenderer.color = ColorConstants.StructureColor;
         }
         SelectedStructures.Clear();
+    }
+
+    private void HandleHotkeys()
+    {
+        if (Input.GetKeyDown("b"))
+        {
+            OrderSelectionController.Instance.BuildTypeClicked();
+        }
+
+        if (Input.GetKeyDown("n"))
+        {
+            OrderSelectionController.Instance.DesignateTypeClicked();
+        }
     }
 
     private void HandleTimeControls()
@@ -216,6 +229,7 @@ public partial class GameController : MonoBehaviour
     {
         var mousePosition = Input.mousePosition;
 
+        HandleHotkeys();
         HandleTimeControls();
         MoveMouseSprite(mousePosition);
 
@@ -236,15 +250,12 @@ public partial class GameController : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0))
             {
-                var rayPos = new Vector2(Camera.main.ScreenToWorldPoint(mousePosition).x,
-                                         Camera.main.ScreenToWorldPoint(mousePosition).y);
-
-                var hit = Physics2D.Raycast(rayPos, Vector2.zero, Mathf.Infinity);
-
-                if (hit)
+                if (MouseOverUi())
                 {
-                    _selectionStart = hit.point;
+                    return;
                 }
+
+                _selectionStart = Camera.main.ScreenToWorldPoint(mousePosition);
             }
 
             if (Input.GetMouseButtonUp(0))

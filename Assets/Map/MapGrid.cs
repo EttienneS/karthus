@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
 public enum CellType
@@ -14,16 +15,13 @@ public class MapGrid : MonoBehaviour
     public Dictionary<string, List<CellData>> CellBinding = new Dictionary<string, List<CellData>>();
     public Dictionary<string, List<CellData>> PendingBinding = new Dictionary<string, List<CellData>>();
     public Dictionary<string, List<CellData>> PendingUnbinding = new Dictionary<string, List<CellData>>();
-    public TerrainBlock TerrainBlockPrefab;
+
+    internal Tilemap Tilemap;
 
     private static MapGrid _instance;
     private Dictionary<(int x, int y), CellData> _cellLookup;
     private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
     private int _searchFrontierPhase;
-
-    private Dictionary<Texture2D, SpriteRenderer> _textureLookup = new Dictionary<Texture2D, SpriteRenderer>();
-
-    private Texture2D[,] _textures = new Texture2D[Constants.TotalTextures, Constants.TotalTextures];
 
     public static MapGrid Instance
     {
@@ -31,7 +29,7 @@ public class MapGrid : MonoBehaviour
         {
             if (_instance == null)
             {
-                _instance = GameObject.Find("MapGrid").GetComponent<MapGrid>();
+                _instance = GameObject.Find("Map").GetComponent<MapGrid>();
             }
 
             return _instance;
@@ -67,6 +65,7 @@ public class MapGrid : MonoBehaviour
 
     public void Awake()
     {
+        Tilemap = GetComponentInChildren<Tilemap>();
         CreateMap();
     }
 
@@ -126,12 +125,6 @@ public class MapGrid : MonoBehaviour
         return newGroup.Distinct().ToList();
     }
 
-    public Texture2D ChangeCell(CellData cell, CellType type)
-    {
-        cell.CellType = type;
-        return UpdateTextureForCell(cell);
-    }
-
     public CellData CreateCell(int x, int y, CellType type)
     {
         var cell = new CellData
@@ -141,6 +134,7 @@ public class MapGrid : MonoBehaviour
         };
 
         Cells.Add(cell);
+        RefreshCell(cell);
 
         return cell;
     }
@@ -159,7 +153,7 @@ public class MapGrid : MonoBehaviour
 
         LinkNeighbours();
         GenerateMapCells();
-        CreateMapTexturesFromCells();
+        Populatecells();
 
         ResetSearchPriorities();
 
@@ -276,12 +270,6 @@ public class MapGrid : MonoBehaviour
         StartCoroutine(UpdateCells());
     }
 
-    public void UpdateSprite(Texture2D texture)
-    {
-        texture.Apply();
-        _textureLookup[texture].sprite = Sprite.Create(texture, new Rect(0, 0, Constants.PixelsPerBlock, Constants.PixelsPerBlock), new Vector2(0, 0), Constants.PixelsPerCell, 2);
-    }
-
     internal void ClearCache()
     {
         _cellLookup = null;
@@ -303,8 +291,6 @@ public class MapGrid : MonoBehaviour
         {
             StockpileController.Instance.DestroyStockpile(cell.Stockpile);
         }
-
-        //  Destroy(cell.gameObject);
     }
 
     internal Direction GetDirection(CellData fromCell, CellData toCell)
@@ -453,41 +439,6 @@ public class MapGrid : MonoBehaviour
         }
     }
 
-    private void CreateMapTexturesFromCells()
-    {
-        for (var x = 0; x < Constants.TotalTextures; x++)
-        {
-            for (var y = 0; y < Constants.TotalTextures; y++)
-            {
-                _textures[x, y] = new Texture2D(Constants.PixelsPerBlock, Constants.PixelsPerBlock);
-            }
-        }
-
-        foreach (var cell in Cells)
-        {
-            UpdateTextureForCell(cell);
-        }
-
-        var counter = 0;
-        for (var x = 0; x < Constants.TotalTextures; x++)
-        {
-            for (var y = 0; y < Constants.TotalTextures; y++)
-            {
-                var texture = _textures[x, y];
-                texture.Apply();
-                var terrainBlock = Instantiate(TerrainBlockPrefab, transform);
-                terrainBlock.name = $"Block {x}-{y}";
-
-                terrainBlock.Renderer.sprite = Sprite.Create(texture, new Rect(0, 0, Constants.PixelsPerBlock, Constants.PixelsPerBlock), new Vector2(0, 0), Constants.PixelsPerCell, 2);
-
-                _textureLookup.Add(texture, terrainBlock.Renderer);
-
-                terrainBlock.Renderer.sortingOrder = counter++;
-                terrainBlock.transform.position = new Vector2(x * Constants.CellsPerTerrainBlock, y * Constants.CellsPerTerrainBlock);
-            }
-        }
-    }
-
     private void GenerateMapCells()
     {
         // generate bedrock
@@ -596,20 +547,16 @@ public class MapGrid : MonoBehaviour
     {
         foreach (var cell in Cells)
         {
-            if (cell.Bound)
-            {
-                PopulateCell(cell);
-            }
+            PopulateCell(cell);
         }
     }
 
     private IEnumerator UpdateCells()
     {
-        const int maxDraws = 2;
+        const int maxDraws = 25;
         while (true)
         {
             var draws = 0;
-            HashSet<Texture2D> redraws = new HashSet<Texture2D>();
             foreach (var kvp in PendingBinding)
             {
                 List<CellData> done = new List<CellData>();
@@ -617,7 +564,6 @@ public class MapGrid : MonoBehaviour
                 {
                     if (!cell.Bound)
                     {
-                        PopulateCell(cell);
                         cell.Binding = kvp.Key;
 
                         if (!CellBinding.ContainsKey(kvp.Key))
@@ -626,8 +572,7 @@ public class MapGrid : MonoBehaviour
                         }
 
                         CellBinding[kvp.Key].Add(cell);
-
-                        redraws.Add(UpdateTextureForCell(cell));
+                        RefreshCell(cell);
                         if (draws++ > maxDraws)
                         {
                             break;
@@ -659,7 +604,7 @@ public class MapGrid : MonoBehaviour
                         CellBinding[kvp.Key].Remove(cell);
                     }
 
-                    redraws.Add(UpdateTextureForCell(cell));
+                    RefreshCell(cell);
 
                     if (draws++ > maxDraws)
                     {
@@ -674,46 +619,23 @@ public class MapGrid : MonoBehaviour
             {
                 for (int i = 0; i < maxDraws - draws; i++)
                 {
-                    redraws.Add(UpdateTextureForCell(GetRandomCell()));
+                    RefreshCell(GetRandomCell());
                 }
-            }
-
-            foreach (var redraw in redraws)
-            {
-                UpdateSprite(redraw);
             }
 
             yield return null;
         }
     }
 
-    private Texture2D UpdateTextureForCell(CellData cell)
+    private void RefreshCell(CellData cell)
     {
-        var cellX = cell.Coordinates.X;
-        var cellY = cell.Coordinates.Y;
-        var texture = _textures[Mathf.FloorToInt(cellX / Constants.CellsPerTerrainBlock),
-                                Mathf.FloorToInt(cellY / Constants.CellsPerTerrainBlock)];
-
-        var x = cellX * Constants.PixelsPerCell;
-        var y = cellY * Constants.PixelsPerCell;
-
-        var xStart = x;
-        var xEnd = x + Constants.PixelsPerCell;
-
-        var type = cell.Bound ? cell.CellType : CellType.Abyss;
-
-        foreach (var pixel in SpriteStore.Instance.GetGroundTextureFor(type.ToString(), Constants.PixelsPerCell))
+        var tile = new Tile
         {
-            texture.SetPixel(x, y, pixel);
-            x++;
+            sprite = SpriteStore.Instance.GetSpriteForTerrainType(cell.Bound ? cell.CellType : CellType.Abyss)
+        };
 
-            if (x >= xEnd)
-            {
-                x = xStart;
-                y++;
-            }
-        }
+        Tilemap.SetTile(new Vector3Int(cell.Coordinates.X, cell.Coordinates.Y, 0), tile);
 
-        return texture;
+        cell.ColorStructure();
     }
 }
