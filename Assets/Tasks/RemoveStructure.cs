@@ -22,12 +22,12 @@
     {
         if (Taskmaster.QueueComplete(SubTasks))
         {
-            foreach (var itemName in StructureController.Instance.StructureDataReference[Structure.Name].Require)
+            foreach (var itemName in Game.StructureController.StructureDataReference[Structure.Name].Require)
             {
-                MapGrid.Instance.GetCellAtCoordinate(Coordinates).AddContent(ItemController.Instance.GetItem(itemName).gameObject);
+                Game.MapGrid.GetCellAtCoordinate(Coordinates).AddContent(Game.ItemController.GetItem(itemName).gameObject);
             }
 
-            StructureController.Instance.DestroyStructure(Structure);
+            Game.StructureController.DestroyStructure(Structure);
 
             return true;
         }

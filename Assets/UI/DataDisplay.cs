@@ -24,24 +24,24 @@ public class DataDisplay : MonoBehaviour
 
     internal void SetData(StructureData structure)
     {
-        SetData(structure.Name, structure.Name, SpriteStore.Instance.GetSpriteByName(structure.SpriteName));
+        SetData(structure.Name, structure.Name, Game.SpriteStore.GetSpriteByName(structure.SpriteName));
     }
 
     internal void SetData(ItemData item)
     {
-        SetData(item.Name, item.Name, SpriteStore.Instance.GetSpriteByName(item.SpriteName));
+        SetData(item.Name, item.Name, Game.SpriteStore.GetSpriteByName(item.SpriteName));
     }
 
     internal void SetData(CellData cell)
     {
-        SetData(cell.Coordinates.ToString(), cell.Coordinates.ToString(), SpriteStore.Instance.MapSpriteTypeDictionary[cell.CellType.ToString()][0]);
+        SetData(cell.Coordinates.ToString(), cell.Coordinates.ToString(), Game.SpriteStore.MapSpriteTypeDictionary[cell.CellType.ToString()][0]);
     }
 
     internal void SetData(TaskBase task)
     {
         SetData(task.GetType().Name, task.Message, task.AssignedCreatureId > 0 ?
                                                         task.Creature.LinkedGameObject.FrontSprites[0] :
-                                                        SpriteStore.Instance.GetPlaceholder());
+                                                        Game.SpriteStore.GetPlaceholder());
 
         if (task.Failed)
         {

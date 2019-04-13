@@ -12,13 +12,13 @@ public class TaskQueue : MonoBehaviour
 
     private void Update()
     {
-        foreach (var remove in Lookup.Keys.Except(Taskmaster.Instance.Tasks).ToList())
+        foreach (var remove in Lookup.Keys.Except(Game.Taskmaster.Tasks).ToList())
         {
             Destroy(Lookup[remove].gameObject);
             Lookup.Remove(remove);
         }
 
-        foreach (var task in Taskmaster.Instance.Tasks)
+        foreach (var task in Game.Taskmaster.Tasks)
         {
             if (!Lookup.ContainsKey(task))
             {
@@ -41,7 +41,7 @@ public class TaskQueue : MonoBehaviour
         }
         else
         {
-            Taskmaster.Instance.TaskFailed(task, "SUSPENDED");
+            Game.Taskmaster.TaskFailed(task, "SUSPENDED");
         }
     }
 

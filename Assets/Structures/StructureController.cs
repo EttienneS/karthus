@@ -8,21 +8,8 @@ public class StructureController : MonoBehaviour
     public Structure structurePrefab;
     internal Dictionary<string, StructureData> StructureDataReference = new Dictionary<string, StructureData>();
 
-    private static StructureController _instance;
     private Dictionary<string, string> _structureTypeFileMap;
-
-    public static StructureController Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = GameObject.Find(ControllerConstants.StructureController).GetComponent<StructureController>();
-            }
-
-            return _instance;
-        }
-    }
+    
 
     internal Dictionary<string, string> StructureTypeFileMap
     {
@@ -31,7 +18,7 @@ public class StructureController : MonoBehaviour
             if (_structureTypeFileMap == null)
             {
                 _structureTypeFileMap = new Dictionary<string, string>();
-                foreach (var structureFile in FileController.Instance.StructureJson)
+                foreach (var structureFile in Game.FileController.StructureJson)
                 {
                     var data = StructureData.GetFromJson(structureFile.text);
                     StructureTypeFileMap.Add(data.Name, structureFile.text);
@@ -44,7 +31,7 @@ public class StructureController : MonoBehaviour
 
     public Sprite GetSpriteForStructure(string structureName)
     {
-        return SpriteStore.Instance.GetSpriteByName(StructureDataReference[structureName].SpriteName);
+        return Game.SpriteStore.GetSpriteByName(StructureDataReference[structureName].SpriteName);
     }
 
     public Structure GetStructure(StructureData data)
@@ -74,13 +61,13 @@ public class StructureController : MonoBehaviour
 
     internal void DestroyStructure(StructureData structure)
     {
-        MapGrid.Instance.Unbind(structure.GetGameId());
+        Game.MapGrid.Unbind(structure.GetGameId());
         DestroyStructure(structure.LinkedGameObject);
     }
 
     internal void DestroyStructure(Structure structure)
     {
-        MapGrid.Instance.GetCellAtCoordinate(structure.Data.Coordinates).Structure = null;
+        Game.MapGrid.GetCellAtCoordinate(structure.Data.Coordinates).Structure = null;
 
         Destroy(structure.gameObject);
     }

@@ -6,26 +6,13 @@ using UnityEngine;
 
 public class SaveManager : MonoBehaviour
 {
-    private static SaveManager _instance;
-
-    public static SaveManager Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = GameObject.Find("SaveManager").GetComponent<SaveManager>();
-            }
-
-            return _instance;
-        }
-    }
+    
 
     public void Save()
     {
         try
         {
-            TimeManager.Instance.Pause();
+            Game.TimeManager.Pause();
 
             var serializer = new JsonSerializer();
             serializer.Converters.Add(new Newtonsoft.Json.Converters.JavaScriptDateTimeConverter());
@@ -47,7 +34,7 @@ public class SaveManager : MonoBehaviour
 
     public void Load()
     {
-        TimeManager.Instance.Pause();
+        Game.TimeManager.Pause();
 
         DestroyScene();
 
@@ -57,21 +44,21 @@ public class SaveManager : MonoBehaviour
             NullValueHandling = NullValueHandling.Ignore,
         });
 
-        TimeManager.Instance.Data = save.Time;
+        Game.TimeManager.Data = save.Time;
 
         foreach (var saveCell in save.Cells)
         {
-            var newCell = MapGrid.Instance.CreateCell(saveCell.Coordinates.X, saveCell.Coordinates.Y, saveCell.CellType);
+            var newCell = Game.MapGrid.CreateCell(saveCell.Coordinates.X, saveCell.Coordinates.Y, saveCell.CellType);
             newCell = saveCell;
 
             if (saveCell.Structure != null)
             {
-                newCell.AddContent(StructureController.Instance.LoadStructure(saveCell.Structure).gameObject);
+                newCell.AddContent(Game.StructureController.LoadStructure(saveCell.Structure).gameObject);
             }
 
             if (saveCell.Stockpile != null)
             {
-                newCell.AddContent(StockpileController.Instance.LoadStockpile(saveCell.Stockpile).gameObject);
+                newCell.AddContent(Game.StockpileController.LoadStockpile(saveCell.Stockpile).gameObject);
             }
 
             // ensure we do not add duplicates
@@ -80,58 +67,58 @@ public class SaveManager : MonoBehaviour
 
             foreach (var savedItem in savedItems)
             {
-                newCell.AddContent(ItemController.Instance.LoadItem(savedItem).gameObject);
+                newCell.AddContent(Game.ItemController.LoadItem(savedItem).gameObject);
             }
         }
 
-        MapGrid.Instance.ClearCache();
-        MapGrid.Instance.LinkNeighbours();
-        MapGrid.Instance.ResetSearchPriorities();
+        Game.MapGrid.ClearCache();
+        Game.MapGrid.LinkNeighbours();
+        Game.MapGrid.ResetSearchPriorities();
 
         foreach (var SavedCreature in save.Creatures)
         {
-            CreatureController.Instance.LoadCreature(SavedCreature);
+            Game.CreatureController.LoadCreature(SavedCreature);
         }
 
         foreach (var task in save.Tasks)
         {
-            Taskmaster.Instance.AddTask(task, task.Originator);
+            Game.Taskmaster.AddTask(task, task.Originator);
 
             if (task.AssignedCreatureId > 0)
             {
-                Taskmaster.AssignTask(CreatureController.Instance.CreatureIdLookup[task.AssignedCreatureId], task, task.Context);
+                Taskmaster.AssignTask(Game.CreatureController.CreatureIdLookup[task.AssignedCreatureId], task, task.Context);
             }
         }
 
-        save.CameraData.Load(CameraController.Instance.Camera);
+        save.CameraData.Load(Game.CameraController.Camera);
     }
 
     private static void DestroyScene()
     {
-        foreach (var cell in MapGrid.Instance.Cells)
+        foreach (var cell in Game.MapGrid.Cells)
         {
-            MapGrid.Instance.DestroyCell(cell);
+            Game.MapGrid.DestroyCell(cell);
         }
 
-        foreach (var creature in CreatureController.Instance.Creatures)
+        foreach (var creature in Game.CreatureController.Creatures)
         {
-            CreatureController.Instance.DestroyCreature(creature);
+            Game.CreatureController.DestroyCreature(creature);
         }
 
-        MapGrid.Instance.CellLookup.Clear();
-        MapGrid.Instance.Cells.Clear();
+        Game.MapGrid.CellLookup.Clear();
+        Game.MapGrid.Cells.Clear();
 
-        CreatureController.Instance.Creatures.Clear();
-        CreatureController.Instance.CreatureLookup.Clear();
-        CreatureController.Instance.CreatureIdLookup.Clear();
+        Game.CreatureController.Creatures.Clear();
+        Game.CreatureController.CreatureLookup.Clear();
+        Game.CreatureController.CreatureIdLookup.Clear();
 
-        ItemController.Instance.ItemCategoryIndex.Clear();
-        ItemController.Instance.ItemDataLookup.Clear();
-        ItemController.Instance.ItemIdLookup.Clear();
+        Game.ItemController.ItemCategoryIndex.Clear();
+        Game.ItemController.ItemDataLookup.Clear();
+        Game.ItemController.ItemIdLookup.Clear();
 
-        StructureController.Instance.StructureLookup.Clear();
+        Game.StructureController.StructureLookup.Clear();
 
-        Taskmaster.Instance.Tasks.Clear();
+        Game.Taskmaster.Tasks.Clear();
     }
 }
 
@@ -149,11 +136,11 @@ public class Save
 
     public Save()
     {
-        Cells = MapGrid.Instance.Cells.ToArray();
-        Creatures = CreatureController.Instance.Creatures.Select(c => c.Data).ToArray();
-        Tasks = Taskmaster.Instance.Tasks.ToArray();
-        Time = TimeManager.Instance.Data;
-        CameraData = new CameraData(CameraController.Instance.Camera);
+        Cells = Game.MapGrid.Cells.ToArray();
+        Creatures = Game.CreatureController.Creatures.Select(c => c.Data).ToArray();
+        Tasks = Game.Taskmaster.Tasks.ToArray();
+        Time = Game.TimeManager.Data;
+        CameraData = new CameraData(Game.CameraController.Camera);
     }
 }
 

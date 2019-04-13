@@ -10,7 +10,7 @@ public class Structure : MonoBehaviour
 
     public void LoadSprite()
     {
-        SpriteRenderer.sprite = SpriteStore.Instance.GetSpriteByName(Data.SpriteName);
+        SpriteRenderer.sprite = Game.SpriteStore.GetSpriteByName(Data.SpriteName);
         SetTiledMode(SpriteRenderer, Data.Tiled);
     }
 
@@ -64,7 +64,7 @@ public class Structure : MonoBehaviour
 
     private void Update()
     {
-        if (TimeManager.Instance.Paused) return;
+        if (Game.TimeManager.Paused) return;
 
         if (!Data.IsBluePrint && Data.Behaviour != null)
         {
@@ -75,9 +75,9 @@ public class Structure : MonoBehaviour
             }
         }
 
-        if (Data.IsBluePrint && !Taskmaster.Instance.ContainsJob(name))
+        if (Data.IsBluePrint && !Game.Taskmaster.ContainsJob(name))
         {
-            Taskmaster.Instance.AddTask(new Build(Data, Data.Coordinates), Data.GetGameId());
+            Game.Taskmaster.AddTask(new Build(Data, Data.Coordinates), Data.GetGameId());
         }
     }
 }
@@ -160,7 +160,7 @@ public class StructureData
     {
         get
         {
-            return StructureController.Instance.GetStructureForData(this);
+            return Game.StructureController.GetStructureForData(this);
         }
     }
 
@@ -215,7 +215,7 @@ public class StructureData
         {
             for (int y = 0; y < Height; y++)
             {
-                cells.Add(MapGrid.Instance.GetCellAtCoordinate(new Coordinates(origin.X + x, origin.Y + y)));
+                cells.Add(Game.MapGrid.GetCellAtCoordinate(new Coordinates(origin.X + x, origin.Y + y)));
             }
         }
 
@@ -242,7 +242,7 @@ public class StructureData
         {
             foreach (var item in Helpers.ParseItemString(yieldString))
             {
-                cell.AddContent(ItemController.Instance.GetItem(item).gameObject);
+                cell.AddContent(Game.ItemController.GetItem(item).gameObject);
             }
         }
     }

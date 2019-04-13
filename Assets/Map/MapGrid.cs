@@ -18,23 +18,9 @@ public class MapGrid : MonoBehaviour
 
     internal Tilemap Tilemap;
 
-    private static MapGrid _instance;
     private Dictionary<(int x, int y), CellData> _cellLookup;
     private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
     private int _searchFrontierPhase;
-
-    public static MapGrid Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = GameObject.Find(ControllerConstants.MapController).GetComponent<MapGrid>();
-            }
-
-            return _instance;
-        }
-    }
 
     public Dictionary<(int x, int y), CellData> CellLookup
     {
@@ -157,7 +143,7 @@ public class MapGrid : MonoBehaviour
 
         ResetSearchPriorities();
 
-        CreatureController.Instance.SpawnCreatures();
+        Game.CreatureController.SpawnCreatures();
     }
 
     public CellData GetCellAtCoordinate(Coordinates coordintes)
@@ -279,17 +265,17 @@ public class MapGrid : MonoBehaviour
     {
         foreach (var item in cell.ContainedItems.ToArray())
         {
-            ItemController.Instance.DestroyItem(item);
+            Game.ItemController.DestroyItem(item);
         }
 
         if (cell.Structure != null)
         {
-            StructureController.Instance.DestroyStructure(cell.Structure);
+            Game.StructureController.DestroyStructure(cell.Structure);
         }
 
         if (cell.Stockpile != null)
         {
-            StockpileController.Instance.DestroyStockpile(cell.Stockpile);
+            Game.StockpileController.DestroyStockpile(cell.Stockpile);
         }
     }
 
@@ -345,7 +331,7 @@ public class MapGrid : MonoBehaviour
 
     internal Coordinates GetPathableNeighbour(Coordinates coordinates)
     {
-        return Instance.GetCellAtCoordinate(coordinates).Neighbors
+        return GetCellAtCoordinate(coordinates).Neighbors
                                        .Where(c => c.Bound && c.TravelCost > 0)
                                        .OrderBy(c => c.TravelCost)
                                        .First().Coordinates;
@@ -415,25 +401,25 @@ public class MapGrid : MonoBehaviour
             case CellType.Grass:
                 if (value > 0.65)
                 {
-                    cell.AddContent(StructureController.Instance.GetStructure("Bush").gameObject);
+                    cell.AddContent(Game.StructureController.GetStructure("Bush").gameObject);
                 }
                 break;
 
             case CellType.Forest:
                 if (value > 0.95)
                 {
-                    cell.AddContent(StructureController.Instance.GetStructure("Tree").gameObject);
+                    cell.AddContent(Game.StructureController.GetStructure("Tree").gameObject);
                 }
                 else if (value > 0.65)
                 {
-                    cell.AddContent(StructureController.Instance.GetStructure("Bush").gameObject);
+                    cell.AddContent(Game.StructureController.GetStructure("Bush").gameObject);
                 }
                 break;
 
                 //case CellType.Stone:
                 //    for (int i = 0; i < Random.Range(1, 2); i++)
                 //    {
-                //        cell.AddContent(ItemController.Instance.GetItem("Rock").gameObject);
+                //        cell.AddContent(Game.ItemController.GetItem("Rock").gameObject);
                 //    }
                 //    break;
         }
@@ -596,7 +582,7 @@ public class MapGrid : MonoBehaviour
 
                     if (cell.Structure != null)
                     {
-                        StructureController.Instance.DestroyStructure(cell.Structure);
+                        Game.StructureController.DestroyStructure(cell.Structure);
                     }
 
                     if (CellBinding.ContainsKey(kvp.Key))
@@ -629,10 +615,8 @@ public class MapGrid : MonoBehaviour
 
     private void RefreshCell(CellData cell)
     {
-        var tile = new Tile
-        {
-            sprite = SpriteStore.Instance.GetSpriteForTerrainType(cell.Bound ? cell.CellType : CellType.Abyss)
-        };
+        var tile = ScriptableObject.CreateInstance<Tile>();
+        tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(cell.Bound ? cell.CellType : CellType.Abyss);
 
         Tilemap.SetTile(new Vector3Int(cell.Coordinates.X, cell.Coordinates.Y, 0), tile);
 

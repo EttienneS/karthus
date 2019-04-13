@@ -5,26 +5,15 @@ public class ItemController : MonoBehaviour
 {
     public Item itemPrefab;
 
+    internal Dictionary<string, List<Item>> ItemCategoryIndex = new Dictionary<string, List<Item>>();
     internal Dictionary<ItemData, Item> ItemDataLookup = new Dictionary<ItemData, Item>();
     internal Dictionary<int, Item> ItemIdLookup = new Dictionary<int, Item>();
-    internal Dictionary<string, List<Item>> ItemCategoryIndex = new Dictionary<string, List<Item>>();
     internal Dictionary<string, List<Item>> ItemNameIndex = new Dictionary<string, List<Item>>();
-    private static ItemController _instance;
 
     private Dictionary<string, Item> _allItemNames;
 
-    public static ItemController Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = GameObject.Find(ControllerConstants.ItemController).GetComponent<ItemController>();
-            }
 
-            return _instance;
-        }
-    }
+    private int IdCounter = 0;
 
     internal Dictionary<string, Item> AllItemNames
     {
@@ -33,7 +22,7 @@ public class ItemController : MonoBehaviour
             if (_allItemNames == null)
             {
                 _allItemNames = new Dictionary<string, Item>();
-                foreach (var itemFile in FileController.Instance.ItemJson)
+                foreach (var itemFile in Game.FileController.ItemJson)
                 {
                     var item = Instantiate(itemPrefab, transform);
 
@@ -45,6 +34,16 @@ public class ItemController : MonoBehaviour
             }
             return _allItemNames;
         }
+    }
+
+    public Item GetItem(ItemData data)
+    {
+        var item = Instantiate(itemPrefab, transform);
+        item.Data = data;
+        item.Data.Id = IdCounter++;
+
+        IndexItem(item);
+        return item;
     }
 
     internal void DestoyItem(ItemData data)
@@ -76,16 +75,6 @@ public class ItemController : MonoBehaviour
         ItemDataLookup.Remove(item.Data);
 
         Destroy(item.gameObject);
-    }
-
-    internal ItemData FindClosestItemByName(CellData centerPoint, string type, bool allowStockpiled)
-    {
-        return FindClosestItem(ItemNameIndex, centerPoint, type, allowStockpiled);
-    }
-
-    internal ItemData FindClosestItemOfType(CellData centerPoint, string type, bool allowStockpiled)
-    {
-        return FindClosestItem(ItemCategoryIndex, centerPoint, type, allowStockpiled);
     }
 
     internal ItemData FindClosestItem(Dictionary<string, List<Item>> lookup, CellData centerPoint, string type, bool allowStockpiled)
@@ -122,22 +111,19 @@ public class ItemController : MonoBehaviour
         }
     }
 
-    private int IdCounter = 0;
-
-    public Item GetItem(ItemData data)
+    internal ItemData FindClosestItemByName(CellData centerPoint, string type, bool allowStockpiled)
     {
-        var item = Instantiate(itemPrefab, transform);
-        item.Data = data;
-        item.Data.Id = IdCounter++;
-
-        IndexItem(item);
-        return item;
+        return FindClosestItem(ItemNameIndex, centerPoint, type, allowStockpiled);
     }
 
+    internal ItemData FindClosestItemOfType(CellData centerPoint, string type, bool allowStockpiled)
+    {
+        return FindClosestItem(ItemCategoryIndex, centerPoint, type, allowStockpiled);
+    }
     internal Item GetItem(string name)
     {
         var item = Instantiate(AllItemNames[name], transform);
-        item.Load(FileController.Instance.ItemLookup[name].text);
+        item.Load(Game.FileController.ItemLookup[name].text);
 
         item.Data.Id = IdCounter++;
         IndexItem(item);

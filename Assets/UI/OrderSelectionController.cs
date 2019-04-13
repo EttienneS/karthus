@@ -5,37 +5,24 @@ using UnityEngine.Events;
 public partial class OrderSelectionController : MonoBehaviour
 {
     public OrderButton OrderButtonPrefab;
-    private static OrderSelectionController _instance;
 
     public delegate void CellClickedDelegate(List<CellData> cell);
-
-    public static OrderSelectionController Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = GameObject.Find("OrderPanel").GetComponent<OrderSelectionController>();
-            }
-
-            return _instance;
-        }
-    }
+    
 
     public CellClickedDelegate CellClickOrder { get; set; }
 
     public void DisableAndReset()
     {
-        GameController.Instance.SelectionPreference = SelectionPreference.CreatureOrStructure;
+        Game.Controller.SelectionPreference = SelectionPreference.CreatureOrStructure;
 
-        OrderTrayController.Instance.gameObject.SetActive(false);
+        Game.OrderTrayController.gameObject.SetActive(false);
         CellClickOrder = null;
     }
 
     private static void EnableAndClear()
     {
-        OrderTrayController.Instance.gameObject.SetActive(true);
-        foreach (Transform child in OrderTrayController.Instance.transform)
+        Game.OrderTrayController.gameObject.SetActive(true);
+        foreach (Transform child in Game.OrderTrayController.transform)
         {
             Destroy(child.gameObject);
         }
@@ -44,20 +31,20 @@ public partial class OrderSelectionController : MonoBehaviour
     private OrderButton CreateOrderButton(string text, UnityAction action, string sprite, bool isSubButton = true)
     {
         // create a top level button for an order type
-        var button = Instantiate(OrderButtonPrefab, isSubButton ? OrderTrayController.Instance.transform : transform);
+        var button = Instantiate(OrderButtonPrefab, isSubButton ? Game.OrderTrayController.transform : transform);
         button.Button.onClick.AddListener(action);
         button.Text = text;
-        button.Button.image.sprite = SpriteStore.Instance.GetSpriteByName(sprite);
+        button.Button.image.sprite = Game.SpriteStore.GetSpriteByName(sprite);
 
         return button;
     }
 
     private void Start()
     {
-        OrderTrayController.Instance.gameObject.SetActive(false);
-        CreatureInfoPanel.Instance.gameObject.SetActive(false);
-        CellInfoPanel.Instance.gameObject.SetActive(false);
-        CraftingScreen.Instance.gameObject.SetActive(false);
+        Game.OrderTrayController.gameObject.SetActive(false);
+        Game.CreatureInfoPanel.gameObject.SetActive(false);
+        Game.CellInfoPanel.gameObject.SetActive(false);
+        Game.CraftingScreen.gameObject.SetActive(false);
 
         BuildButton = CreateOrderButton(DefaultBuildText, BuildTypeClicked, "hammer", false);
         StockpileButton = CreateOrderButton(DefaultStockpileText, StockpileTypeClicked, "box", false);

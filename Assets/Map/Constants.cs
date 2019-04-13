@@ -17,6 +17,8 @@ public static class ControllerConstants
     public const string StockpileController = "StockpileController";
     public const string StructureController = "StructureController";
     public const string TimeController = "TimeManager";
+    public const string GameController = "GameController";
+    public const string OrderSelectionController = "OrderPanel";
 }
 
 public static class LayerConstants

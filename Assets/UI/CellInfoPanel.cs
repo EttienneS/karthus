@@ -4,21 +4,7 @@ using UnityEngine.UI;
 
 public class CellInfoPanel : MonoBehaviour
 {
-    private static CellInfoPanel _instance;
-
-    public static CellInfoPanel Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = GameObject.Find("CellInfoPanel").GetComponent<CellInfoPanel>();
-            }
-
-            return _instance;
-        }
-    }
-
+    
     public Text CellName;
     public Text CellContent;
 
@@ -63,12 +49,12 @@ public class CellInfoPanel : MonoBehaviour
     public void Show(CellData cell)
     {
         _cell = cell;
-        CreatureInfoPanel.Instance.Hide();
-        Instance.gameObject.SetActive(true);
+        Game.CreatureInfoPanel.Hide();
+        gameObject.SetActive(true);
     }
 
     public void Hide()
     {
-        Instance.gameObject.SetActive(false);
+        gameObject.SetActive(false);
     }
 }

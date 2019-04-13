@@ -7,7 +7,7 @@ public class TimeButton : MonoBehaviour
 
     public void Click()
     {
-        TimeManager.Instance.TimeStep = Step;
+        Game.TimeManager.TimeStep = Step;
     }
 
     public void Start()
@@ -18,7 +18,7 @@ public class TimeButton : MonoBehaviour
 
     private void Update()
     {
-        if (TimeManager.Instance.TimeStep == Step)
+        if (Game.TimeManager.TimeStep == Step)
         {
             GetComponent<Image>().color = Color.red;
         }

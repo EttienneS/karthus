@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public partial class GameController // .Mouse
+public partial class Game // .Mouse
 {
     public SpriteRenderer MouseSpriteRenderer;
 
@@ -27,7 +27,7 @@ public partial class GameController // .Mouse
     {
         if (MouseSpriteRenderer.gameObject.activeInHierarchy)
         {
-            var cell = MapGrid.Instance.GetCellAtPoint(Camera.main.ScreenToWorldPoint(mousePosition));
+            var cell = global::Game.MapGrid.GetCellAtPoint(Camera.main.ScreenToWorldPoint(mousePosition));
 
             float x = cell.Coordinates.X + (MouseSpriteRenderer.transform.localScale.x / 2);
             float y = cell.Coordinates.Y + (MouseSpriteRenderer.transform.localScale.y / 2);

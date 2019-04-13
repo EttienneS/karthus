@@ -13,7 +13,7 @@
         Coordinates = coordinates;
 
         AddSubTask(new GetItem(itemId, allowStockpiled, search));
-        AddSubTask(new Move(MapGrid.Instance.GetPathableNeighbour(coordinates)));
+        AddSubTask(new Move(Game.MapGrid.GetPathableNeighbour(coordinates)));
         Message = $"Moving {itemId} to {coordinates}";
     }
 

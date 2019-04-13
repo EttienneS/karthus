@@ -24,7 +24,7 @@ public class Item : MonoBehaviour
             NullValueHandling = NullValueHandling.Ignore,
         });
 
-        SpriteRenderer.sprite = SpriteStore.Instance.GetSpriteByName(Data.SpriteName);
+        SpriteRenderer.sprite = Game.SpriteStore.GetSpriteByName(Data.SpriteName);
     }
 }
 
@@ -50,7 +50,7 @@ public class ItemData
     {
         get
         {
-            return ItemController.Instance.ItemDataLookup[this];
+            return Game.ItemController.ItemDataLookup[this];
         }
     }
 }

@@ -8,7 +8,7 @@ public enum SelectionPreference
     CreatureOrStructure, Cell
 }
 
-public partial class GameController : MonoBehaviour
+public partial class Game : MonoBehaviour
 {
     public SelectionPreference SelectionPreference = SelectionPreference.CreatureOrStructure;
     public RectTransform selectSquareImage;
@@ -18,24 +18,9 @@ public partial class GameController : MonoBehaviour
     internal List<Creature> SelectedCreatures = new List<Creature>();
     internal List<StructureData> SelectedStructures = new List<StructureData>();
 
-    private static GameController _instance;
-
     private TimeStep _oldTimeStep = TimeStep.Normal;
     private Vector3 _selectionEnd;
     private Vector3 _selectionStart;
-
-    public static GameController Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = GameObject.Find("GameController").GetComponent<GameController>();
-            }
-
-            return _instance;
-        }
-    }
 
     public void AddLine(Coordinates start, Coordinates end)
     {
@@ -70,7 +55,7 @@ public partial class GameController : MonoBehaviour
         {
             creature.DisableHightlight();
         }
-        CreatureInfoPanel.Instance.Hide();
+        CreatureInfoPanel.Hide();
         SelectedCreatures.Clear();
     }
 
@@ -93,12 +78,12 @@ public partial class GameController : MonoBehaviour
     {
         if (Input.GetKeyDown("b"))
         {
-            OrderSelectionController.Instance.BuildTypeClicked();
+            OrderSelectionController.BuildTypeClicked();
         }
 
         if (Input.GetKeyDown("n"))
         {
-            OrderSelectionController.Instance.DesignateTypeClicked();
+            OrderSelectionController.DesignateTypeClicked();
         }
     }
 
@@ -106,42 +91,42 @@ public partial class GameController : MonoBehaviour
     {
         if (Input.GetKeyDown("space"))
         {
-            if (TimeManager.Instance.TimeStep == TimeStep.Paused)
+            if (TimeManager.TimeStep == TimeStep.Paused)
             {
-                TimeManager.Instance.TimeStep = _oldTimeStep;
+                TimeManager.TimeStep = _oldTimeStep;
             }
             else
             {
-                _oldTimeStep = TimeManager.Instance.TimeStep;
-                TimeManager.Instance.Pause();
+                _oldTimeStep = TimeManager.TimeStep;
+                TimeManager.Pause();
             }
         }
 
         //if (Input.GetKeyDown("u"))
         //{
-        //    var cell = MapGrid.Instance.GetRandomCell();
-        //    CameraController.Instance.MoveToCell(cell);
+        //    var cell = MapGrid.GetRandomCell();
+        //    CameraController.MoveToCell(cell);
 
-        //    var texture = MapGrid.Instance.ChangeCell(cell, CellType.Abyss);
+        //    var texture = MapGrid.ChangeCell(cell, CellType.Abyss);
 
-        //    MapGrid.Instance.UpdateSprite(texture);
+        //    MapGrid.UpdateSprite(texture);
         //}
 
         if (Input.GetKeyDown("1"))
         {
-            TimeManager.Instance.TimeStep = TimeStep.Slow;
+            TimeManager.TimeStep = TimeStep.Slow;
         }
         if (Input.GetKeyDown("2"))
         {
-            TimeManager.Instance.TimeStep = TimeStep.Normal;
+            TimeManager.TimeStep = TimeStep.Normal;
         }
         if (Input.GetKeyDown("3"))
         {
-            TimeManager.Instance.TimeStep = TimeStep.Fast;
+            TimeManager.TimeStep = TimeStep.Fast;
         }
         if (Input.GetKeyDown("4"))
         {
-            TimeManager.Instance.TimeStep = TimeStep.Hyper;
+            TimeManager.TimeStep = TimeStep.Hyper;
         }
     }
 
@@ -162,12 +147,12 @@ public partial class GameController : MonoBehaviour
         if (SelectedCells.Count == 1)
         {
             var cell = SelectedCells.First();
-            CellInfoPanel.Instance.Show(cell);
+            CellInfoPanel.Show(cell);
         }
 
-        if (OrderSelectionController.Instance.CellClickOrder != null)
+        if (OrderSelectionController.CellClickOrder != null)
         {
-            OrderSelectionController.Instance.CellClickOrder.Invoke(SelectedCells);
+            OrderSelectionController.CellClickOrder.Invoke(SelectedCells);
         }
     }
 
@@ -183,7 +168,7 @@ public partial class GameController : MonoBehaviour
 
         if (SelectedCreatures.Count == 1)
         {
-            CreatureInfoPanel.Instance.Show(SelectedCreatures.First());
+            CreatureInfoPanel.Show(SelectedCreatures.First());
         }
     }
 
@@ -197,9 +182,9 @@ public partial class GameController : MonoBehaviour
             var id = structure.GetGameId();
             structure.LinkedGameObject.SpriteRenderer.color = Color.red;
 
-            if (MapGrid.Instance.CellBinding.ContainsKey(id))
+            if (MapGrid.CellBinding.ContainsKey(id))
             {
-                foreach (var boundCell in MapGrid.Instance.CellBinding[id])
+                foreach (var boundCell in MapGrid.CellBinding[id])
                 {
                     AddLine(structure.Coordinates, boundCell.Coordinates);
                 }
@@ -212,7 +197,7 @@ public partial class GameController : MonoBehaviour
 
             if (!structure.IsBluePrint && structure.Tasks.Count > 0)
             {
-                CraftingScreen.Instance.Show(structure);
+                CraftingScreen.Show(structure);
             }
         }
     }
@@ -240,11 +225,11 @@ public partial class GameController : MonoBehaviour
             DeselectCell();
             DeselectStructure(true);
 
-            CraftingScreen.Instance.Hide();
-            CreatureInfoPanel.Instance.Hide();
-            CellInfoPanel.Instance.Hide();
+            CraftingScreen.Hide();
+            CreatureInfoPanel.Hide();
+            CellInfoPanel.Hide();
 
-            OrderSelectionController.Instance.DisableAndReset();
+            OrderSelectionController.DisableAndReset();
         }
         else
         {
@@ -281,7 +266,7 @@ public partial class GameController : MonoBehaviour
                 {
                     var point = new Vector3(startX, endY);
 
-                    var clickedCell = MapGrid.Instance.GetCellAtPoint(point);
+                    var clickedCell = MapGrid.GetCellAtPoint(point);
                     if (clickedCell != null)
                     {
                         SelectedCells.Add(clickedCell);
@@ -291,7 +276,7 @@ public partial class GameController : MonoBehaviour
                         }
                     }
 
-                    var clickedCreature = CreatureController.Instance.GetCreatureAtPoint(point);
+                    var clickedCreature = CreatureController.GetCreatureAtPoint(point);
                     if (clickedCreature != null)
                         SelectedCreatures.Add(clickedCreature);
                 }
@@ -305,7 +290,7 @@ public partial class GameController : MonoBehaviour
                         {
                             var point = new Vector3(selX, selY);
 
-                            var clickedCell = MapGrid.Instance.GetCellAtPoint(point);
+                            var clickedCell = MapGrid.GetCellAtPoint(point);
                             if (clickedCell != null && !SelectedCells.Contains(clickedCell))
                             {
                                 SelectedCells.Add(clickedCell);
@@ -315,7 +300,7 @@ public partial class GameController : MonoBehaviour
                                 }
                             }
 
-                            var clickedCreature = CreatureController.Instance.GetCreatureAtPoint(point);
+                            var clickedCreature = CreatureController.GetCreatureAtPoint(point);
                             if (clickedCreature != null && !SelectedCreatures.Contains(clickedCreature))
                                 SelectedCreatures.Add(clickedCreature);
                         }

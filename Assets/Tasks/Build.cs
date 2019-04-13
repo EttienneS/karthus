@@ -21,7 +21,7 @@
         }
 
         AddSubTask(new Wait(3f, "Building"));
-        AddSubTask(new Move(MapGrid.Instance.GetPathableNeighbour(Coordinates)));
+        AddSubTask(new Move(Game.MapGrid.GetPathableNeighbour(Coordinates)));
 
         Message = $"Building {structure.Name} at {coordinates}";
     }
@@ -32,7 +32,7 @@
         {
             foreach (var item in Creature.Mind[Context][MemoryType.Item])
             {
-                ItemController.Instance.DestroyItem(IdService.GetItemFromId(item));
+                Game.ItemController.DestroyItem(IdService.GetItemFromId(item));
             }
 
             Structure.SetBlueprintState(false);

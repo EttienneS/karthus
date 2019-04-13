@@ -8,7 +8,6 @@ public class CameraController : MonoBehaviour
     [Range(5, 25)] public int ZoomMax = 15;
     [Range(1, 50)] public int ZoomMin = 2;
     [Range(1, 20)] public int ZoomStep = 5;
-    private static CameraController _instance;
 
     private float _journeyLength;
     private Vector3 _panDesitnation;
@@ -19,18 +18,7 @@ public class CameraController : MonoBehaviour
 
     private float _startTime;
 
-    public static CameraController Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = GameObject.Find(ControllerConstants.CameraController).GetComponent<CameraController>();
-            }
-
-            return _instance;
-        }
-    }
+   
 
     public void MoveToViewPoint(Vector3 panDesitnation)
     {

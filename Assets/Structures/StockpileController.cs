@@ -7,20 +7,7 @@ public class StockpileController : MonoBehaviour
 
     public Stockpile StockpilePrefab;
 
-    private static StockpileController _instance;
-
-    public static StockpileController Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = GameObject.Find(ControllerConstants.StockpileController).GetComponent<StockpileController>();
-            }
-
-            return _instance;
-        }
-    }
+    
 
     public Stockpile LoadStockpile(StockpileData data)
     {

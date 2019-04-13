@@ -105,7 +105,7 @@ public class CellData
             {
                 if (Structure != null)
                 {
-                    StructureController.Instance.DestroyStructure(Structure);
+                    Game.StructureController.DestroyStructure(Structure);
                 }
             }
 

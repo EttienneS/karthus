@@ -11,31 +11,22 @@ public class SpriteStore : MonoBehaviour
     internal List<Sprite> ItemSprites = new List<Sprite>();
     internal List<Sprite> MapSprites = new List<Sprite>();
     internal List<Sprite> SideSprites = new List<Sprite>();
-    private static SpriteStore _instance;
     private Dictionary<string, Sprite> _allSprites;
 
     private Dictionary<int, List<Sprite>> _creatureSprite;
 
     private Dictionary<string, List<Sprite>> _mapSprites;
+    
 
-    public static SpriteStore Instance
+    public void LoadResources()
     {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = GameObject.Find(ControllerConstants.SpriteController).GetComponent<SpriteStore>();
-                _instance.ItemSprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Item"));
-                _instance.ItemSprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Gui"));
-                _instance.MapSprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Map"));
+        ItemSprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Item"));
+        ItemSprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Gui"));
+        MapSprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Map"));
 
-                _instance.BackSprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Character/all_back"));
-                _instance.FrontSprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Character/all_front"));
-                _instance.SideSprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Character/all_side"));
-            }
-
-            return _instance;
-        }
+        BackSprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Character/all_back"));
+        FrontSprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Character/all_front"));
+        SideSprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Character/all_side"));
     }
 
     internal Sprite GetPlaceholder()

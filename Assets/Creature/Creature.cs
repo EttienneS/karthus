@@ -48,7 +48,7 @@ public class Creature : MonoBehaviour
 
     public void Update()
     {
-        if (TimeManager.Instance.Paused) return;
+        if (Game.TimeManager.Paused) return;
 
         Work();
 
@@ -70,7 +70,7 @@ public class Creature : MonoBehaviour
     {
         SpriteRenderer = GetComponent<SpriteRenderer>();
 
-        var sprites = SpriteStore.Instance.CreatureSprite[Data.SpriteId];
+        var sprites = Game.SpriteStore.CreatureSprite[Data.SpriteId];
         BackSprites = sprites.Where(s => s.name.StartsWith("all_back", StringComparison.InvariantCultureIgnoreCase)).ToArray();
         FrontSprites = sprites.Where(s => s.name.StartsWith("all_front", StringComparison.InvariantCultureIgnoreCase)).ToArray();
         SideSprites = sprites.Where(s => s.name.StartsWith("all_side", StringComparison.InvariantCultureIgnoreCase)).ToArray();
@@ -129,7 +129,7 @@ public class Creature : MonoBehaviour
     {
         if (Data.CarriedItemId > 0)
         {
-            var item = ItemController.Instance.ItemDataLookup[Data.CarriedItem];
+            var item = Game.ItemController.ItemDataLookup[Data.CarriedItem];
 
             item.transform.position = transform.position;
             item.SpriteRenderer.sortingLayerName = LayerConstants.CarriedItem;
@@ -158,7 +158,7 @@ public class Creature : MonoBehaviour
         Data.InternalTick += Time.deltaTime;
 
         var thoughts = new List<string>();
-        if (Data.InternalTick >= TimeManager.Instance.TickInterval)
+        if (Data.InternalTick >= Game.TimeManager.TickInterval)
         {
             Data.InternalTick = 0;
 
@@ -187,8 +187,8 @@ public class Creature : MonoBehaviour
     {
         if (Data.Task == null)
         {
-            var task = Taskmaster.Instance.GetTask(this);
-            var context = $"{Data.GetGameId()} - {task} - {TimeManager.Instance.Now}";
+            var task = Game.Taskmaster.GetTask(this);
+            var context = $"{Data.GetGameId()} - {task} - {Game.TimeManager.Now}";
 
             Data.Know(context);
             task.Context = context;
@@ -212,14 +212,14 @@ public class Creature : MonoBehaviour
                     Data.FreeResources(Data.Task.Context);
                     Data.Forget(Data.Task.Context);
 
-                    Taskmaster.Instance.TaskComplete(Data.Task);
+                    Game.Taskmaster.TaskComplete(Data.Task);
                     Data.Task = null;
                 }
             }
             catch (TaskFailedException ex)
             {
                 Debug.LogWarning($"Task failed: {ex}");
-                Taskmaster.Instance.TaskFailed(Data.Task, ex.Message);
+                Game.Taskmaster.TaskFailed(Data.Task, ex.Message);
             }
         }
     }
@@ -254,9 +254,9 @@ public class CreatureData
     {
         get
         {
-            if (ItemController.Instance.ItemIdLookup.ContainsKey(CarriedItemId))
+            if (Game.ItemController.ItemIdLookup.ContainsKey(CarriedItemId))
             {
-                return ItemController.Instance.ItemIdLookup[CarriedItemId].Data;
+                return Game.ItemController.ItemIdLookup[CarriedItemId].Data;
             }
             return null;
         }
@@ -267,7 +267,7 @@ public class CreatureData
     {
         get
         {
-            return MapGrid.Instance.GetCellAtCoordinate(Coordinates);
+            return Game.MapGrid.GetCellAtCoordinate(Coordinates);
         }
     }
 
@@ -276,7 +276,7 @@ public class CreatureData
     {
         get
         {
-            return CreatureController.Instance.GetCreatureForCreatureData(this);
+            return Game.CreatureController.GetCreatureForCreatureData(this);
         }
     }
 
@@ -306,7 +306,7 @@ public class CreatureData
 
             if (coordinates != null)
             {
-                var cell = MapGrid.Instance.GetCellAtCoordinate(coordinates);
+                var cell = Game.MapGrid.GetCellAtCoordinate(coordinates);
                 if (CurrentCell.Neighbors.Contains(cell))
                 {
                     cell.AddContent(item.LinkedGameObject.gameObject);

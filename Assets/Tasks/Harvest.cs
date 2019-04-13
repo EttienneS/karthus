@@ -10,7 +10,7 @@
     {
         Target = structure;
 
-        AddSubTask(new Move(MapGrid.Instance.GetPathableNeighbour(Target.Coordinates)));
+        AddSubTask(new Move(Game.MapGrid.GetPathableNeighbour(Target.Coordinates)));
         AddSubTask(new Wait(2f, "Harvesting"));
 
         Message = $"Harvesting {structure.Name} at {structure.Coordinates}";
@@ -20,8 +20,8 @@
     {
         if (Taskmaster.QueueComplete(SubTasks))
         {
-            Target.SpawnYield(MapGrid.Instance.GetCellAtCoordinate(Target.Coordinates));
-            StructureController.Instance.DestroyStructure(Target);
+            Target.SpawnYield(Game.MapGrid.GetCellAtCoordinate(Target.Coordinates));
+            Game.StructureController.DestroyStructure(Target);
             return true;
         }
 

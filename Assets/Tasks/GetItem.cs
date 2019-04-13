@@ -32,7 +32,7 @@ public class GetItem : TaskBase
         {
             if (Item.StockpileId != 0)
             {
-                var pile = StockpileController.Instance.GetStockpile(Item.StockpileId);
+                var pile = Game.StockpileController.GetStockpile(Item.StockpileId);
                 Item = pile.GetItem(Item);
             }
             Creature.CarriedItemId = Item.Id;
@@ -49,20 +49,20 @@ public class GetItem : TaskBase
         {
             if (Search == SearchBy.Category)
             {
-                Item = ItemController.Instance.FindClosestItemOfType(Creature.CurrentCell, SearchItem, AllowStockpiled);
+                Item = Game.ItemController.FindClosestItemOfType(Creature.CurrentCell, SearchItem, AllowStockpiled);
 
                 if (Item == null && SearchItem == "Drink")
                 {
-                    Item = ItemController.Instance.GetItem(new ItemData()
+                    Item = Game.ItemController.GetItem(new ItemData()
                     {
                         Name = "Water",
                         Category = "Drink",
                         Properties = new Dictionary<string, string> { { "Quench", "50" } }
                     }).Data;
 
-                    MapGrid.Instance
-                        .GetCellAtCoordinate(MapGrid.Instance
-                        .GetPathableNeighbour(MapGrid.Instance
+                    Game.MapGrid
+                        .GetCellAtCoordinate(Game.MapGrid
+                        .GetPathableNeighbour(Game.MapGrid
                         .GetNearestCellOfType(Creature.Coordinates, CellType.Water, 20).Coordinates))
                         .AddContent(Item.LinkedGameObject.gameObject);
                 }
@@ -80,7 +80,7 @@ public class GetItem : TaskBase
             }
             else
             {
-                Item = ItemController.Instance.FindClosestItemByName(Creature.CurrentCell, SearchItem, AllowStockpiled);
+                Item = Game.ItemController.FindClosestItemByName(Creature.CurrentCell, SearchItem, AllowStockpiled);
             }
 
             if (Item == null)

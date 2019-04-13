@@ -20,7 +20,7 @@ public class TaskBase
     {
         get
         {
-            return CreatureController.Instance.CreatureIdLookup[AssignedCreatureId];
+            return Game.CreatureController.CreatureIdLookup[AssignedCreatureId];
         }
     }
 

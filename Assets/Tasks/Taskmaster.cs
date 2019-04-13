@@ -6,20 +6,7 @@ public class Taskmaster : MonoBehaviour
 {
     internal List<TaskBase> Tasks = new List<TaskBase>();
 
-    private static Taskmaster _instance;
-
-    public static Taskmaster Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = GameObject.Find("Taskmaster").GetComponent<Taskmaster>();
-            }
-
-            return _instance;
-        }
-    }
+   
 
     public int LastRecyle;
 
@@ -28,9 +15,9 @@ public class Taskmaster : MonoBehaviour
 
     public void Update()
     {
-        if (TimeManager.Instance.Data.Hour - LastRecyle > RecyleTime)
+        if (Game.TimeManager.Data.Hour - LastRecyle > RecyleTime)
         {
-            LastRecyle = TimeManager.Instance.Data.Hour;
+            LastRecyle = Game.TimeManager.Data.Hour;
 
             var failedTasks = Tasks.Where(t => t.Failed);
 
@@ -124,7 +111,7 @@ public class Taskmaster : MonoBehaviour
 
             if (bed == null)
             {
-                bed = StructureController.Instance.StructureLookup.Keys
+                bed = Game.StructureController.StructureLookup.Keys
                                          .FirstOrDefault(s =>
                                                 !s.InUseByAnyone
                                                 && s.Properties.ContainsKey("RecoveryRate"));
