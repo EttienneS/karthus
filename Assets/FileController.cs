@@ -3,21 +3,21 @@ using UnityEngine;
 
 public class FileController : MonoBehaviour
 {
-
     internal TextAsset[] StructureJson;
     internal TextAsset[] ItemJson;
+    internal TextAsset[] ConstructFiles;
 
     public Dictionary<string, TextAsset> ItemLookup;
 
     public string ItemFolder = "Items";
     public string StructureFolder = "Structures";
-
-    
+    public string ConstructFolder = "Constructs";
 
     public void Load()
     {
         ItemJson = Resources.LoadAll<TextAsset>(ItemFolder);
         StructureJson = Resources.LoadAll<TextAsset>(StructureFolder);
+        ConstructFiles = Resources.LoadAll<TextAsset>(ConstructFolder);
 
         ItemLookup = new Dictionary<string, TextAsset>();
 

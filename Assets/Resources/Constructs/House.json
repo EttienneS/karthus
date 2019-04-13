@@ -1,0 +1,25 @@
+{
+	"Name": "House",
+	"SpriteName": "House",
+	"Floor": "WoodTile",
+	"Key": {
+		"W": "WoodWall",
+		"B": "Bed",
+		"T": "Table",
+		"C": "Chair",
+		"D": "Door",
+		".": "Nothing"
+	},
+	"Plan": [
+		"..........",
+		".WWWWWWWW.",
+		".W    B W.",
+		".W      W.",
+		".WDWWWWWW.",
+		".W   C  W.",
+		".W  CTC W.",
+		".W   C  W.",
+		".WDWWWWWW.",
+		".........."
+	]
+}
