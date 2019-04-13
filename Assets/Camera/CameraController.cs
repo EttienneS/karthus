@@ -25,24 +25,10 @@ public class CameraController : MonoBehaviour
         {
             if (_instance == null)
             {
-                _instance = GameObject.Find("Main Camera").GetComponent<CameraController>();
+                _instance = GameObject.Find(ControllerConstants.CameraController).GetComponent<CameraController>();
             }
 
             return _instance;
-        }
-    }
-
-    public void Load(string location)
-    {
-        var path = Path.Combine(location, "camera.data");
-
-        using (var reader = new BinaryReader(File.Open(path, FileMode.Open)))
-        {
-            var x = reader.ReadSingle();
-            var y = reader.ReadSingle();
-            var z = reader.ReadSingle();
-
-            transform.position = new Vector3(x, y, z);
         }
     }
 
@@ -56,16 +42,6 @@ public class CameraController : MonoBehaviour
         _panning = true;
     }
 
-    public void Save(string location)
-    {
-        var path = Path.Combine(location, "camera.data");
-        using (var writer = new BinaryWriter(File.Open(path, FileMode.Create)))
-        {
-            writer.Write(transform.position.x);
-            writer.Write(transform.position.y);
-            writer.Write(transform.position.z);
-        }
-    }
 
     public void Start()
     {

@@ -19,7 +19,7 @@ public class ItemController : MonoBehaviour
         {
             if (_instance == null)
             {
-                _instance = GameObject.Find("ItemController").GetComponent<ItemController>();
+                _instance = GameObject.Find(ControllerConstants.ItemController).GetComponent<ItemController>();
             }
 
             return _instance;

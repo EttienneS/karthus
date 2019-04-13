@@ -24,7 +24,7 @@ public class SpriteStore : MonoBehaviour
         {
             if (_instance == null)
             {
-                _instance = GameObject.Find("SpriteStore").GetComponent<SpriteStore>();
+                _instance = GameObject.Find(ControllerConstants.SpriteController).GetComponent<SpriteStore>();
                 _instance.ItemSprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Item"));
                 _instance.ItemSprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Gui"));
                 _instance.MapSprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Map"));

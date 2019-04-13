@@ -19,7 +19,7 @@ public class CreatureController : MonoBehaviour
         {
             if (_instance == null)
             {
-                _instance = GameObject.Find("CreatureController").GetComponent<CreatureController>();
+                _instance = GameObject.Find(ControllerConstants.CreatureController).GetComponent<CreatureController>();
             }
 
             return _instance;

@@ -29,7 +29,7 @@ public class MapGrid : MonoBehaviour
         {
             if (_instance == null)
             {
-                _instance = GameObject.Find("Map").GetComponent<MapGrid>();
+                _instance = GameObject.Find(ControllerConstants.MapController).GetComponent<MapGrid>();
             }
 
             return _instance;

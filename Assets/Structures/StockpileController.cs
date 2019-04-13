@@ -15,7 +15,7 @@ public class StockpileController : MonoBehaviour
         {
             if (_instance == null)
             {
-                _instance = GameObject.Find("StockpileController").GetComponent<StockpileController>();
+                _instance = GameObject.Find(ControllerConstants.StockpileController).GetComponent<StockpileController>();
             }
 
             return _instance;

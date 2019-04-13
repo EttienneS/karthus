@@ -17,7 +17,7 @@ public class StructureController : MonoBehaviour
         {
             if (_instance == null)
             {
-                _instance = GameObject.Find("StructureController").GetComponent<StructureController>();
+                _instance = GameObject.Find(ControllerConstants.StructureController).GetComponent<StructureController>();
             }
 
             return _instance;

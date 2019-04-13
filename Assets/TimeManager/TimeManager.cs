@@ -46,7 +46,7 @@ public class TimeManager : MonoBehaviour
         {
             if (_instance == null)
             {
-                _instance = GameObject.Find("TimeManager").GetComponent<TimeManager>();
+                _instance = GameObject.Find(ControllerConstants.TimeController).GetComponent<TimeManager>();
             }
 
             return _instance;

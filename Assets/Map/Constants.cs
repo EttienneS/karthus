@@ -7,6 +7,18 @@ public static class ColorConstants
     public static Color UnboundStructureColor = new Color(0.66f, 0.18f, 0.6f, 0.6f);
 }
 
+public static class ControllerConstants
+{
+    public const string CameraController = "Main Camera";
+    public const string CreatureController = "CreatureController";
+    public const string ItemController = "ItemController";
+    public const string MapController = "Map";
+    public const string SpriteController = "SpriteStore";
+    public const string StockpileController = "StockpileController";
+    public const string StructureController = "StructureController";
+    public const string TimeController = "TimeManager";
+}
+
 public static class LayerConstants
 {
     public const string Border = "Border";
