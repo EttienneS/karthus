@@ -20,7 +20,7 @@ public class TimeButton : MonoBehaviour
     {
         if (Game.TimeManager.TimeStep == Step)
         {
-            GetComponent<Image>().color = Color.red;
+            GetComponent<Image>().color = ColorConstants.InvalidColor;
         }
         else
         {

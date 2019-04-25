@@ -231,7 +231,7 @@ public class StructureData
         }
         else
         {
-            LinkedGameObject.SpriteRenderer.color = ColorConstants.StructureColor;
+            LinkedGameObject.SpriteRenderer.color = ColorConstants.BaseColor;
             IsBluePrint = false;
         }
     }

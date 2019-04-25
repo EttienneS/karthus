@@ -45,7 +45,7 @@ public class DataDisplay : MonoBehaviour
 
         if (task.Failed)
         {
-            GetComponent<Image>().color = Color.red;
+            GetComponent<Image>().color = ColorConstants.InvalidColor;
         }
         else
         {

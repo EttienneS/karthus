@@ -3,17 +3,14 @@
   "SpriteName": "House",
   "Floor": "WoodTile",
   "Key": {
-    "W": "WoodWall",
+    "W": "StoneWall",
     "B": "Bed",
-    "T": "Table",
-    "C": "Chair",
-    "D": "Door",
-    ".": "Nothing"
+    "T": "Table"
   },
   "Plan": [
     "WWWW",
-    "WTCW",
+    "W TW",
     "W BW",
-    "WDWW"
+    "W WW"
   ]
 }

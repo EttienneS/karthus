@@ -7,7 +7,6 @@ public partial class OrderSelectionController : MonoBehaviour
     public OrderButton OrderButtonPrefab;
 
     public delegate void CellClickedDelegate(List<CellData> cell);
-    
 
     public CellClickedDelegate CellClickOrder { get; set; }
 
@@ -30,11 +29,16 @@ public partial class OrderSelectionController : MonoBehaviour
 
     private OrderButton CreateOrderButton(string text, UnityAction action, string sprite, bool isSubButton = true)
     {
+        return CreateOrderButton(text, action, Game.SpriteStore.GetSpriteByName(sprite), isSubButton);
+    }
+
+    private OrderButton CreateOrderButton(string text, UnityAction action, Sprite sprite, bool isSubButton = true)
+    {
         // create a top level button for an order type
         var button = Instantiate(OrderButtonPrefab, isSubButton ? Game.OrderTrayController.transform : transform);
         button.Button.onClick.AddListener(action);
         button.Text = text;
-        button.Button.image.sprite = Game.SpriteStore.GetSpriteByName(sprite);
+        button.Button.image.sprite = sprite;
 
         return button;
     }

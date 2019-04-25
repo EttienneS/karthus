@@ -24,8 +24,8 @@ public partial class Game : MonoBehaviour
 
     public void AddLine(Coordinates start, Coordinates end)
     {
-        LineRenderer.startColor = Color.red;
-        LineRenderer.endColor = Color.red;
+        LineRenderer.startColor = ColorConstants.InvalidColor;
+        LineRenderer.endColor = ColorConstants.InvalidColor;
 
         LineRenderer.positionCount += 3;
 
@@ -69,7 +69,7 @@ public partial class Game : MonoBehaviour
         ClearLine();
         foreach (var structure in SelectedStructures)
         {
-            structure.LinkedGameObject.SpriteRenderer.color = ColorConstants.StructureColor;
+            structure.LinkedGameObject.SpriteRenderer.color = ColorConstants.BaseColor;
         }
         SelectedStructures.Clear();
     }
@@ -163,7 +163,7 @@ public partial class Game : MonoBehaviour
 
         foreach (var creature in SelectedCreatures)
         {
-            creature.EnableHighlight(Color.red);
+            creature.EnableHighlight(ColorConstants.InvalidColor);
         }
 
         if (SelectedCreatures.Count == 1)
@@ -180,7 +180,7 @@ public partial class Game : MonoBehaviour
         foreach (var structure in SelectedStructures)
         {
             var id = structure.GetGameId();
-            structure.LinkedGameObject.SpriteRenderer.color = Color.red;
+            structure.LinkedGameObject.SpriteRenderer.color = ColorConstants.InvalidColor;
 
             if (MapGrid.CellBinding.ContainsKey(id))
             {

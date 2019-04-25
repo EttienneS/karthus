@@ -165,7 +165,7 @@ public class CellData
                 //    cell.Structure.Layer :
                 //    LayerConstants.Structure;
 
-                renderer.color = ColorConstants.StructureColor;
+                renderer.color = ColorConstants.BaseColor;
             }
             else
             {

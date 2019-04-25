@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Construct
@@ -29,57 +30,69 @@ public class Construct
     }
 
     [JsonIgnore]
-    public Sprite Sprite
+    private Sprite _sprite;
+
+    [JsonIgnore]
+    internal Sprite Sprite
     {
         get
         {
-            return Game.SpriteStore.GetSpriteByName(SpriteName);
-        }
-    }
-
-    internal Sprite GetConstructSprite()
-    {
-        var texture = new Texture2D(Width * MapConstants.PixelsPerCell, Width * MapConstants.PixelsPerCell);
-
-        var y = 0;
-        var x = 0;
-
-        foreach (var line in Plan)
-        {
-            var startX = x * MapConstants.PixelsPerCell;
-            var startY = y * MapConstants.PixelsPerCell;
-
-            foreach (var character in line)
+            if (_sprite == null)
             {
-                Texture2D constructTexture;
-                if (character == ' ')
-                {
-                    constructTexture = Game.SpriteStore.GetSpriteByName(Floor).texture;
-                }
-                else
-                {
-                    constructTexture = Game.SpriteStore.GetSpriteByName(Key[character]).texture;
-                }
+                var texture = new Texture2D(Width * MapConstants.PixelsPerCell, Width * MapConstants.PixelsPerCell);
 
-                for (var subTexX = 0; subTexX < MapConstants.PixelsPerCell; subTexX++)
+                var y = 0;
+                var x = 0;
+
+                // easier to just flip the plan order than to invert the drawing
+                var flippedPlan = Plan.ToList();
+                flippedPlan.Reverse();
+
+                foreach (var line in flippedPlan)
                 {
-                    for (var subTexY = 0; subTexY < MapConstants.PixelsPerCell; subTexY++)
+                    foreach (var character in line)
                     {
-                        var pixel = constructTexture.GetPixel(subTexX, subTexY);
-                        texture.SetPixel(startX + subTexX,
-                                         startY + subTexY,
-                                         pixel);
+                        var startX = x * MapConstants.PixelsPerCell;
+                        var startY = y * MapConstants.PixelsPerCell;
+
+                        Texture2D sourceTexture;
+                        if (character == ' ')
+                        {
+                            sourceTexture = Game.SpriteStore.GetSpriteByName(Floor).texture;
+                        }
+                        else
+                        {
+                            sourceTexture = Game.SpriteStore.GetSpriteByName(Key[character]).texture;
+                        }
+
+                        var constructTexture = new Texture2D(sourceTexture.width, sourceTexture.height);
+                        constructTexture.SetPixels(sourceTexture.GetPixels(0, 0, sourceTexture.width, sourceTexture.height));
+                        constructTexture.Apply();
+
+                        TextureScale.scale(constructTexture, MapConstants.PixelsPerCell, MapConstants.PixelsPerCell);
+
+                        for (var subTexX = 0; subTexX < MapConstants.PixelsPerCell; subTexX++)
+                        {
+                            for (var subTexY = 0; subTexY < MapConstants.PixelsPerCell; subTexY++)
+                            {
+                                var pixel = constructTexture.GetPixel(subTexX, subTexY);
+                                texture.SetPixel(startX + subTexX,
+                                                 startY + subTexY,
+                                                 pixel);
+                            }
+                        }
+
+                        x++;
                     }
+                    y++;
                 }
+                texture.Apply();
 
-                x++;
+                _sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), MapConstants.PixelsPerCell);
             }
-            y++;
+
+            return _sprite;
         }
-
-        texture.Apply();
-
-        return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), MapConstants.PixelsPerCell);
     }
 
     internal bool ValidateStartPos(CellData cellData)

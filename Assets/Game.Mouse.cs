@@ -15,6 +15,7 @@ public partial class Game // .Mouse
     }
 
     internal float MouseOffset = 0;
+    internal Color ValidColor = ColorConstants.BluePrintColor;
 
     public void SetMouseSprite(Sprite sprite, int width, int height, bool tiled, ValidateMouseSpriteDelegate validation, float offset = 0)
     {
@@ -26,8 +27,6 @@ public partial class Game // .Mouse
         MouseOffset = offset;
 
         ValidateMouse = validation;
-
-
     }
 
     private void MoveMouseSprite(Vector3 mousePosition)
@@ -45,11 +44,11 @@ public partial class Game // .Mouse
             {
                 if (!ValidateMouse(cell))
                 {
-                    MouseSpriteRenderer.color = Color.red;
+                    MouseSpriteRenderer.color = ColorConstants.InvalidColor;
                 }
                 else
                 {
-                    MouseSpriteRenderer.color = Color.white;
+                    MouseSpriteRenderer.color = ValidColor;
                 }
             }
         }

@@ -11,7 +11,7 @@ public partial class OrderSelectionController //.Construct
 
         ConstructButton.Text = DefaultConstructText;
 
-        Game.Controller.SetMouseSprite(constuct.GetConstructSprite(), 1, 1, false,
+        Game.Controller.SetMouseSprite(constuct.Sprite, 1, 1, false,
                                        CellData => constuct.ValidateStartPos(CellData), 0.5f);
 
         //CellClickOrder = cells =>
@@ -43,7 +43,7 @@ public partial class OrderSelectionController //.Construct
 
             foreach (var construct in ConstructController.Constructs)
             {
-                var button = CreateOrderButton(construct.Name, () => ConstructClicked(construct), construct.SpriteName);
+                var button = CreateOrderButton(construct.Name, () => ConstructClicked(construct), construct.Sprite);
                 button.name = construct.Name;
                 button.Text = button.name;
             }

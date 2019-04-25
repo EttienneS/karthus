@@ -85,7 +85,7 @@ public partial class OrderSelectionController //.Structure
                             continue;
                         }
                         Game.Taskmaster.AddTask(new RemoveStructure(structure, cell.Coordinates), string.Empty);
-                        structure.LinkedGameObject.SpriteRenderer.color = Color.red;
+                        structure.LinkedGameObject.SpriteRenderer.color = ColorConstants.InvalidColor;
                     }
                 }
             }
