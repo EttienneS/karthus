@@ -1,27 +1,36 @@
-﻿public partial class OrderSelectionController //.Construct
+﻿using UnityEngine;
+
+public partial class OrderSelectionController //.Construct
 {
     public const string DefaultConstructText = "Place Construct";
     internal OrderButton ConstructButton;
 
     private void ConstructClicked(Construct constuct)
     {
+        Debug.Log($"Construct clicked {constuct.Name}");
+
         ConstructButton.Text = DefaultConstructText;
 
-        CellClickOrder = cells =>
-        {
-            //foreach (var cell in cells)
-            //{
-            //    if (cell.Construct == null && cell.TravelCost > 0)
-            //    {
-            //        var Construct = Game.ConstructController.AddConstruct(itemCategory);
-            //        cell.AddContent(Construct.gameObject);
-            //    }
-            //}
-        };
+        Game.Controller.SetMouseSprite(constuct.GetConstructSprite(), 1, 1, false,
+                                       CellData => constuct.ValidateStartPos(CellData), 0.5f);
+
+        //CellClickOrder = cells =>
+        //{
+        //    foreach (var cell in cells)
+        //    {
+        //        if (cell.Construct == null && cell.TravelCost > 0)
+        //        {
+        //            var Construct = ConstructController.AddConstruct(itemCategory);
+        //            cell.AddContent(Construct.gameObject);
+        //        }
+        //    }
+        //};
     }
 
     private void ConstructTypeClicked()
     {
+        Debug.Log("Construct clicked");
+
         Game.Controller.SelectionPreference = SelectionPreference.Cell;
         if (Game.OrderTrayController.gameObject.activeInHierarchy)
         {

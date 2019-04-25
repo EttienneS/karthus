@@ -155,6 +155,11 @@ public class MapGrid : MonoBehaviour
     {
         // subtract half a unit to compensate for cell offset
         var coordinates = Coordinates.FromPosition(position - new Vector3(0.5f, 0.5f));
+
+        if (coordinates.X < 0 || coordinates.Y < 0 || coordinates.X >= MapConstants.MapSize || coordinates.Y >= MapConstants.MapSize)
+        {
+            return null;
+        }
         return CellLookup[(coordinates.X, coordinates.Y)];
     }
 
