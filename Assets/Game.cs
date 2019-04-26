@@ -152,6 +152,7 @@ public partial class Game : MonoBehaviour
 
         if (OrderSelectionController.CellClickOrder != null)
         {
+            Debug.Log($"Clicked: {SelectedCells.Count}: {SelectedCells[0].Coordinates}");
             OrderSelectionController.CellClickOrder.Invoke(SelectedCells);
         }
     }

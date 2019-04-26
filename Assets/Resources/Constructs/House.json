@@ -1,6 +1,5 @@
 {
   "Name": "House",
-  "SpriteName": "House",
   "Floor": "WoodTile",
   "Key": {
     "W": "StoneWall",

@@ -11,26 +11,20 @@ public partial class OrderSelectionController //.Construct
 
         ConstructButton.Text = DefaultConstructText;
 
-        Game.Controller.SetMouseSprite(constuct.Sprite, 1, 1, false,
-                                       CellData => constuct.ValidateStartPos(CellData), 0.5f);
+        Game.Controller.SetMouseSprite(constuct.Texture, constuct.Width, constuct.Height, 
+                                       CellData => constuct.ValidateStartPos(CellData));
 
-        //CellClickOrder = cells =>
-        //{
-        //    foreach (var cell in cells)
-        //    {
-        //        if (cell.Construct == null && cell.TravelCost > 0)
-        //        {
-        //            var Construct = ConstructController.AddConstruct(itemCategory);
-        //            cell.AddContent(Construct.gameObject);
-        //        }
-        //    }
-        //};
+        CellClickOrder = cells =>
+        {
+            if (constuct.ValidateStartPos(cells[0]))
+            {
+                constuct.Place(cells[0]);
+            }
+        };
     }
 
     private void ConstructTypeClicked()
     {
-        Debug.Log("Construct clicked");
-
         Game.Controller.SelectionPreference = SelectionPreference.Cell;
         if (Game.OrderTrayController.gameObject.activeInHierarchy)
         {

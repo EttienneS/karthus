@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Structure : MonoBehaviour
@@ -75,7 +76,7 @@ public class Structure : MonoBehaviour
             }
         }
 
-        if (Data.IsBluePrint && !Game.Taskmaster.ContainsJob(name))
+        if (Data.IsBluePrint && !Game.Taskmaster.Tasks.OfType<Build>().Any(t => t.Structure == Data))
         {
             Game.Taskmaster.AddTask(new Build(Data, Data.Coordinates), Data.GetGameId());
         }
@@ -123,6 +124,7 @@ public class StructureData
     public List<string> Yield;
 
     private List<string> _require;
+
     [JsonIgnore]
     private int _width, _height = -1;
 
@@ -251,7 +253,7 @@ public class StructureData
     {
         foreach (var cell in GetCellsForStructure(CellData.Coordinates))
         {
-            if (!cell.Bound || cell.TravelCost < 0 || cell.Structure != null)
+            if (!cell.Buildable)
             {
                 return false;
             }

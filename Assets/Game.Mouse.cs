@@ -14,18 +14,15 @@ public partial class Game // .Mouse
         ValidateMouse = null;
     }
 
-    internal float MouseOffset = 0;
-    internal Color ValidColor = ColorConstants.BluePrintColor;
-
-    public void SetMouseSprite(Sprite sprite, int width, int height, bool tiled, ValidateMouseSpriteDelegate validation, float offset = 0)
+    public void SetMouseSprite(Texture2D texture, int width, int height, ValidateMouseSpriteDelegate validation)
     {
+        var mouseTex = texture.Clone();
+        mouseTex.ScaleToGridSize(width, height);
+
         MouseSpriteRenderer.gameObject.SetActive(true);
-        MouseSpriteRenderer.sprite = sprite;
-        MouseSpriteRenderer.transform.localScale = new Vector3(width, height, 1);
-        MouseSpriteRenderer.drawMode = tiled ? SpriteDrawMode.Tiled : SpriteDrawMode.Simple;
-
-        MouseOffset = offset;
-
+        MouseSpriteRenderer.sprite = Sprite.Create(mouseTex,
+                                                   new Rect(0, 0, width * MapConstants.PixelsPerCell, height * MapConstants.PixelsPerCell),
+                                                   new Vector2(0, 0), MapConstants.PixelsPerCell);
         ValidateMouse = validation;
     }
 
@@ -34,9 +31,8 @@ public partial class Game // .Mouse
         if (MouseSpriteRenderer.gameObject.activeInHierarchy)
         {
             var cell = MapGrid.GetCellAtPoint(Camera.main.ScreenToWorldPoint(mousePosition));
-
-            float x = cell.Coordinates.X + (MouseSpriteRenderer.transform.localScale.x / 2) + MouseOffset;
-            float y = cell.Coordinates.Y + (MouseSpriteRenderer.transform.localScale.y / 2) + MouseOffset;
+            float x = cell.Coordinates.X;
+            float y = cell.Coordinates.Y;
 
             MouseSpriteRenderer.transform.position = new Vector2(x, y);
 
@@ -48,7 +44,7 @@ public partial class Game // .Mouse
                 }
                 else
                 {
-                    MouseSpriteRenderer.color = ValidColor;
+                    MouseSpriteRenderer.color = ColorConstants.BluePrintColor;
                 }
             }
         }

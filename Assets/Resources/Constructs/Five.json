@@ -1,0 +1,14 @@
+{
+  "Name": "Five",
+  "Floor": "WoodTile",
+  "Key": {
+    "W": "StoneWall"
+  },
+  "Plan": [
+    "WWWWW",
+    "WWWWW",
+    "WWWWW",
+    "WWWWW",
+    "WWWWW"
+  ]
+}

@@ -139,11 +139,6 @@ public class Taskmaster : MonoBehaviour
         return task;
     }
 
-    internal bool ContainsJob(string name)
-    {
-        return true;
-    }
-
     internal void TaskComplete(TaskBase task)
     {
         Tasks.Remove(task);

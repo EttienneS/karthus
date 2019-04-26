@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class StructureController : MonoBehaviour
@@ -49,7 +50,19 @@ public class StructureController : MonoBehaviour
     public Structure GetStructure(string name)
     {
         var structure = Instantiate(structurePrefab, transform);
-        structure.Load(StructureTypeFileMap[name]);
+
+        string structureData = string.Empty;
+        if (!StructureTypeFileMap.ContainsKey(name))
+        {
+            structureData = StructureTypeFileMap.Values.First(f => f.Contains(name));
+        }
+        else
+        {
+            structureData = StructureTypeFileMap[name];
+        }
+
+
+        structure.Load(structureData);
         structure.Data.Id = StructureLookup.Keys.Count + 1;
 
         IndexStructure(structure);
