@@ -10,7 +10,7 @@ public class BaseRune : TaskBase
     public static Color ChargeColor = Color.cyan;
     public static Color FullColor = Color.green;
     public static Color NeutralColor = new Color(0.3f, 0.3f, 0.3f);
-    public static Color FiringColor = Color.red;
+    public static Color FiringColor = ColorConstants.InvalidColor;
 
     public BaseRune()
     {

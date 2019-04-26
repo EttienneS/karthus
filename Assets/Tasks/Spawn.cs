@@ -14,7 +14,7 @@
     {
         if (Taskmaster.QueueComplete(SubTasks))
         {
-            FireRune(() => CreatureController.Instance.SpawnCreature(MapGrid.Instance.GetCellAtCoordinate(IdService.GetLocation(Originator))));
+            FireRune(() => Game.CreatureController.SpawnCreature(Game.MapGrid.GetCellAtCoordinate(IdService.GetLocation(Originator))));
         }
 
         return false;

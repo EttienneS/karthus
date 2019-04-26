@@ -8,7 +8,6 @@ public class CameraController : MonoBehaviour
     [Range(5, 25)] public int ZoomMax = 15;
     [Range(1, 50)] public int ZoomMin = 2;
     [Range(1, 20)] public int ZoomStep = 5;
-    private static CameraController _instance;
 
     private float _journeyLength;
     private Vector3 _panDesitnation;
@@ -19,32 +18,7 @@ public class CameraController : MonoBehaviour
 
     private float _startTime;
 
-    public static CameraController Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = GameObject.Find("Main Camera").GetComponent<CameraController>();
-            }
-
-            return _instance;
-        }
-    }
-
-    public void Load(string location)
-    {
-        var path = Path.Combine(location, "camera.data");
-
-        using (var reader = new BinaryReader(File.Open(path, FileMode.Open)))
-        {
-            var x = reader.ReadSingle();
-            var y = reader.ReadSingle();
-            var z = reader.ReadSingle();
-
-            transform.position = new Vector3(x, y, z);
-        }
-    }
+   
 
     public void MoveToViewPoint(Vector3 panDesitnation)
     {
@@ -56,16 +30,6 @@ public class CameraController : MonoBehaviour
         _panning = true;
     }
 
-    public void Save(string location)
-    {
-        var path = Path.Combine(location, "camera.data");
-        using (var writer = new BinaryWriter(File.Open(path, FileMode.Create)))
-        {
-            writer.Write(transform.position.x);
-            writer.Write(transform.position.y);
-            writer.Write(transform.position.z);
-        }
-    }
 
     public void Start()
     {
@@ -140,8 +104,8 @@ public class CameraController : MonoBehaviour
             float horizontal = Input.GetAxis("Horizontal") / Time.timeScale;
             float vertical = Input.GetAxis("Vertical") / Time.timeScale;
 
-            var x = Mathf.Clamp(transform.position.x + (horizontal * Speed), 0, Constants.MapSize);
-            var y = Mathf.Clamp(transform.position.y + (vertical * Speed), 0, Constants.MapSize);
+            var x = Mathf.Clamp(transform.position.x + (horizontal * Speed), 0, MapConstants.MapSize);
+            var y = Mathf.Clamp(transform.position.y + (vertical * Speed), 0, MapConstants.MapSize);
             transform.position = new Vector3(x, y, transform.position.z);
 
             Camera.orthographicSize = Mathf.Clamp(Camera.orthographicSize - Input.GetAxis("Mouse ScrollWheel") * ZoomStep,

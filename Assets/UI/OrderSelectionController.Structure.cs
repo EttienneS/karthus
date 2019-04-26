@@ -12,13 +12,11 @@ public partial class OrderSelectionController //.Structure
     {
         BuildButton.Text = "Build " + structureName;
 
-        var structure = StructureController.Instance.StructureDataReference[structureName];
-        GameController.Instance.SelectionPreference = SelectionPreference.Cell;
-        GameController.Instance.SetMouseSprite(SpriteStore.Instance.GetSpriteByName(structure.SpriteName),
-                                               structure.Width,
-                                               structure.Height,
-                                               structure.Tiled,
-                                               (CellData) => structure.ValidateCellLocationForStructure(CellData));
+        var structure = Game.StructureController.StructureDataReference[structureName];
+        Game.Controller.SelectionPreference = SelectionPreference.Cell;
+        Game.Controller.SetMouseSprite(Game.SpriteStore.GetSpriteByName(structure.SpriteName).texture,
+                                       structure.Width, structure.Height,
+                                       (CellData) => structure.ValidateCellLocationForStructure(CellData));
 
         CellClickOrder = cells =>
         {
@@ -26,9 +24,9 @@ public partial class OrderSelectionController //.Structure
             {
                 if (structure.ValidateCellLocationForStructure(cell))
                 {
-                    var blueprint = StructureController.Instance.GetStructureBluePrint(structureName);
+                    var blueprint = Game.StructureController.GetStructureBluePrint(structureName);
                     cell.AddContent(blueprint.gameObject);
-                    Taskmaster.Instance.AddTask(new Build(blueprint.Data, cell.Coordinates), string.Empty);
+                    Game.Taskmaster.AddTask(new Build(blueprint.Data, cell.Coordinates), string.Empty);
                 }
             }
         };
@@ -36,7 +34,7 @@ public partial class OrderSelectionController //.Structure
 
     public void BuildTypeClicked()
     {
-        if (OrderTrayController.Instance.gameObject.activeInHierarchy)
+        if (Game.OrderTrayController.gameObject.activeInHierarchy)
         {
             DisableAndReset();
 
@@ -46,7 +44,7 @@ public partial class OrderSelectionController //.Structure
         {
             EnableAndClear();
 
-            foreach (var structureData in StructureController.Instance.StructureDataReference.Values)
+            foreach (var structureData in Game.StructureController.StructureDataReference.Values)
             {
                 if (!structureData.Buildable) continue;
 
@@ -64,7 +62,7 @@ public partial class OrderSelectionController //.Structure
     private void RemoveStructureClicked()
     {
         BuildButton.Text = DefaultRemoveText;
-        GameController.Instance.SelectionPreference = SelectionPreference.Cell;
+        Game.Controller.SelectionPreference = SelectionPreference.Cell;
         CellClickOrder = cells =>
         {
             foreach (var cell in cells)
@@ -75,17 +73,17 @@ public partial class OrderSelectionController //.Structure
 
                     if (structure.IsBluePrint)
                     {
-                        StructureController.Instance.DestroyStructure(structure);
+                        Game.StructureController.DestroyStructure(structure);
                     }
                     else
                     {
-                        if (Taskmaster.Instance.Tasks.OfType<RemoveStructure>().Any(t => t.Structure == structure))
+                        if (Game.Taskmaster.Tasks.OfType<RemoveStructure>().Any(t => t.Structure == structure))
                         {
                             Debug.Log("Structure already flagged to remove");
                             continue;
                         }
-                        Taskmaster.Instance.AddTask(new RemoveStructure(structure, cell.Coordinates), string.Empty);
-                        structure.LinkedGameObject.SpriteRenderer.color = Color.red;
+                        Game.Taskmaster.AddTask(new RemoveStructure(structure, cell.Coordinates), string.Empty);
+                        structure.LinkedGameObject.SpriteRenderer.color = ColorConstants.InvalidColor;
                     }
                 }
             }

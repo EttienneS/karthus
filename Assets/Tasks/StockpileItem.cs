@@ -22,7 +22,7 @@ public class StockpileItem : TaskBase
     {
         get
         {
-            return StockpileController.Instance.GetStockpile(StockpileId);
+            return Game.StockpileController.GetStockpile(StockpileId);
         }
     }
 

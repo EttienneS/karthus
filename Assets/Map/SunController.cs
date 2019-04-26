@@ -13,31 +13,18 @@ public class SunController : MonoBehaviour
     internal Light Light;
     internal int MidDay = Sunrise + Mathf.FloorToInt(DayLightHours / 2);
     internal DayState State = DayState.Night;
-    private static SunController _instance;
 
     public enum DayState
     {
         SunRise, Morning, Noon, AfterNoon, Night
     }
-
-    public static SunController Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = GameObject.Find("SunController").GetComponent<SunController>();
-            }
-
-            return _instance;
-        }
-    }
+    
 
     internal float JumpDistance
     {
         get
         {
-            return Constants.MapSize / DayLightHours;
+            return MapConstants.MapSize / DayLightHours;
         }
     }
 

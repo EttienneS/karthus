@@ -13,7 +13,7 @@
             {
                 if (cell.Stockpile == null && cell.TravelCost > 0)
                 {
-                    var stockpile = StockpileController.Instance.AddStockpile(itemCategory);
+                    var stockpile = Game.StockpileController.AddStockpile(itemCategory);
                     cell.AddContent(stockpile.gameObject);
                 }
             }
@@ -22,8 +22,8 @@
 
     private void StockpileTypeClicked()
     {
-        GameController.Instance.SelectionPreference = SelectionPreference.Cell;
-        if (OrderTrayController.Instance.gameObject.activeInHierarchy)
+        Game.Controller.SelectionPreference = SelectionPreference.Cell;
+        if (Game.OrderTrayController.gameObject.activeInHierarchy)
         {
             DisableAndReset();
             StockpileButton.Text = DefaultStockpileText;
@@ -32,7 +32,7 @@
         {
             EnableAndClear();
 
-            foreach (var category in ItemController.Instance.ItemCategoryIndex.Keys)
+            foreach (var category in Game.ItemController.ItemCategoryIndex.Keys)
             {
                 var button = CreateOrderButton(CutText, () => StockpileClicked(category), category);
                 button.name = $"Place {category} Stockpile";

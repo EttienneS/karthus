@@ -4,20 +4,7 @@ using UnityEngine.UI;
 
 public class CreatureInfoPanel : MonoBehaviour
 {
-    private static CreatureInfoPanel _instance;
-
-    public static CreatureInfoPanel Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = GameObject.Find("CreatureInfoPanel").GetComponent<CreatureInfoPanel>();
-            }
-
-            return _instance;
-        }
-    }
+    
 
     public Text CreatureName;
     public Text Hunger;
@@ -66,13 +53,13 @@ public class CreatureInfoPanel : MonoBehaviour
 
     public void Show(Creature creature)
     {
-        CellInfoPanel.Instance.Hide();
-        Instance.gameObject.SetActive(true);
+        Game.CellInfoPanel.Hide();
+        gameObject.SetActive(true);
         CurrentCreature = creature;
     }
 
     public void Hide()
     {
-        Instance.gameObject.SetActive(false);
+        gameObject.SetActive(false);
     }
 }

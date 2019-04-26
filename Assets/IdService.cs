@@ -10,7 +10,7 @@ public static class IdService
 
     public static CreatureData GetCreatureFromId(string id)
     {
-        return CreatureController.Instance.CreatureIdLookup[GetId(id)];
+        return Game.CreatureController.CreatureIdLookup[GetId(id)];
     }
 
     public static string GetGameId(this CreatureData creature)
@@ -88,7 +88,7 @@ public static class IdService
 
     public static ItemData GetItemFromId(string id)
     {
-        return ItemController.Instance.ItemIdLookup[GetId(id)].Data;
+        return Game.ItemController.ItemIdLookup[GetId(id)].Data;
     }
 
     public static Coordinates GetLocation(string id)
@@ -117,12 +117,12 @@ public static class IdService
 
     public static StockpileData GetStockpileFromId(string id)
     {
-        return StockpileController.Instance.StockpileLookup[GetId(id)].Data;
+        return Game.StockpileController.StockpileLookup[GetId(id)].Data;
     }
 
     public static StructureData GetStructureFromId(string id)
     {
-        return StructureController.Instance.StructureIdLookup[GetId(id)];
+        return Game.StructureController.StructureIdLookup[GetId(id)];
     }
 
     public static bool IsCreature(string id)

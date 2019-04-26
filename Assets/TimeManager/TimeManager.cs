@@ -27,7 +27,6 @@ public class TimeManager : MonoBehaviour
     };
 
     internal float TickInterval = 1f;
-    private static TimeManager _instance;
     private TimeStep _timeStep = TimeStep.Paused;
 
     private float _timeTicks;
@@ -39,20 +38,7 @@ public class TimeManager : MonoBehaviour
             return $"{Data.Hour}:{Data.Minute}:{_timeTicks}";
         }
     }
-
-    public static TimeManager Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = GameObject.Find("TimeManager").GetComponent<TimeManager>();
-            }
-
-            return _instance;
-        }
-    }
-
+    
     public TimeStep TimeStep
     {
         get
@@ -116,9 +102,9 @@ public class TimeManager : MonoBehaviour
                 }
             }
 
-            SunController.Instance.UpdatePosition(Data.Hour, Data.Minute);
+            Game.SunController.UpdatePosition(Data.Hour, Data.Minute);
         }
 
-        TimeDisplay.text = $"{Data.Hour.ToString().PadLeft(2, '0')}:{Data.Minute.ToString().PadLeft(2, '0')} {SunController.Instance.State}";
+        TimeDisplay.text = $"{Data.Hour.ToString().PadLeft(2, '0')}:{Data.Minute.ToString().PadLeft(2, '0')} {Game.SunController.State}";
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public enum CellType
@@ -17,24 +18,13 @@ public class MapGrid : MonoBehaviour
     public Dictionary<string, List<CellData>> PendingUnbinding = new Dictionary<string, List<CellData>>();
 
     internal Tilemap Tilemap;
+    internal Canvas WorldCanvas;
 
-    private static MapGrid _instance;
+    public Text CellLabel;
+
     private Dictionary<(int x, int y), CellData> _cellLookup;
     private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
     private int _searchFrontierPhase;
-
-    public static MapGrid Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = GameObject.Find("Map").GetComponent<MapGrid>();
-            }
-
-            return _instance;
-        }
-    }
 
     public Dictionary<(int x, int y), CellData> CellLookup
     {
@@ -57,7 +47,7 @@ public class MapGrid : MonoBehaviour
 
     public void AddCellIfValid(int x, int y, List<CellData> cells)
     {
-        if (x >= 0 && x < Constants.MapSize && y >= 0 && y < Constants.MapSize)
+        if (x >= 0 && x < MapConstants.MapSize && y >= 0 && y < MapConstants.MapSize)
         {
             cells.Add(CellLookup[(x, y)]);
         }
@@ -66,6 +56,8 @@ public class MapGrid : MonoBehaviour
     public void Awake()
     {
         Tilemap = GetComponentInChildren<Tilemap>();
+        WorldCanvas = GetComponentInChildren<Canvas>();
+
         CreateMap();
     }
 
@@ -136,6 +128,14 @@ public class MapGrid : MonoBehaviour
         Cells.Add(cell);
         RefreshCell(cell);
 
+        if (WorldCanvas != null)
+        {
+            var label = Instantiate(CellLabel, WorldCanvas.transform);
+            label.name = $"CL_{cell.Coordinates}";
+            label.transform.position = cell.Coordinates.ToTopOfMapVector();
+            label.text = cell.Coordinates.ToStringOnSeparateLines();
+        }
+
         return cell;
     }
 
@@ -143,9 +143,9 @@ public class MapGrid : MonoBehaviour
     {
         Cells = new List<CellData>();
 
-        for (var y = 0; y < Constants.MapSize; y++)
+        for (var y = 0; y < MapConstants.MapSize; y++)
         {
-            for (var x = 0; x < Constants.MapSize; x++)
+            for (var x = 0; x < MapConstants.MapSize; x++)
             {
                 CreateCell(x, y, CellType.Water);
             }
@@ -157,7 +157,7 @@ public class MapGrid : MonoBehaviour
 
         ResetSearchPriorities();
 
-        CreatureController.Instance.SpawnCreatures();
+        Game.CreatureController.SpawnCreatures();
     }
 
     public CellData GetCellAtCoordinate(Coordinates coordintes)
@@ -169,6 +169,11 @@ public class MapGrid : MonoBehaviour
     {
         // subtract half a unit to compensate for cell offset
         var coordinates = Coordinates.FromPosition(position - new Vector3(0.5f, 0.5f));
+
+        if (coordinates.X < 0 || coordinates.Y < 0 || coordinates.X >= MapConstants.MapSize || coordinates.Y >= MapConstants.MapSize)
+        {
+            return null;
+        }
         return CellLookup[(coordinates.X, coordinates.Y)];
     }
 
@@ -198,7 +203,7 @@ public class MapGrid : MonoBehaviour
 
     public CellData GetRandomCell()
     {
-        return CellLookup[((int)(Random.value * (Constants.MapSize - 1)), (int)(Random.value * (Constants.MapSize - 1)))];
+        return CellLookup[((int)(Random.value * (MapConstants.MapSize - 1)), (int)(Random.value * (MapConstants.MapSize - 1)))];
     }
 
     public List<CellData> GetRandomChunk(int chunkSize)
@@ -227,7 +232,7 @@ public class MapGrid : MonoBehaviour
                 {
                     neighbor.SearchPhase = _searchFrontierPhase;
                     neighbor.Distance = neighbor.Coordinates.DistanceTo(center);
-                    neighbor.SearchHeuristic = Random.value < Constants.JitterProbability ? 1 : 0;
+                    neighbor.SearchHeuristic = Random.value < MapConstants.JitterProbability ? 1 : 0;
                     _searchFrontier.Enqueue(neighbor);
                 }
             }
@@ -279,17 +284,17 @@ public class MapGrid : MonoBehaviour
     {
         foreach (var item in cell.ContainedItems.ToArray())
         {
-            ItemController.Instance.DestroyItem(item);
+            Game.ItemController.DestroyItem(item);
         }
 
         if (cell.Structure != null)
         {
-            StructureController.Instance.DestroyStructure(cell.Structure);
+            Game.StructureController.DestroyStructure(cell.Structure);
         }
 
         if (cell.Stockpile != null)
         {
-            StockpileController.Instance.DestroyStockpile(cell.Stockpile);
+            Game.StockpileController.DestroyStockpile(cell.Stockpile);
         }
     }
 
@@ -345,7 +350,7 @@ public class MapGrid : MonoBehaviour
 
     internal Coordinates GetPathableNeighbour(Coordinates coordinates)
     {
-        return Instance.GetCellAtCoordinate(coordinates).Neighbors
+        return GetCellAtCoordinate(coordinates).Neighbors
                                        .Where(c => c.Bound && c.TravelCost > 0)
                                        .OrderBy(c => c.TravelCost)
                                        .First().Coordinates;
@@ -353,9 +358,9 @@ public class MapGrid : MonoBehaviour
 
     internal void LinkNeighbours()
     {
-        for (var y = 0; y < Constants.MapSize; y++)
+        for (var y = 0; y < MapConstants.MapSize; y++)
         {
-            for (var x = 0; x < Constants.MapSize; x++)
+            for (var x = 0; x < MapConstants.MapSize; x++)
             {
                 var cell = CellLookup[(x, y)];
 
@@ -367,7 +372,7 @@ public class MapGrid : MonoBehaviour
                     {
                         cell.SetNeighbor(Direction.SW, CellLookup[(x - 1, y - 1)]);
 
-                        if (x < Constants.MapSize - 1)
+                        if (x < MapConstants.MapSize - 1)
                         {
                             cell.SetNeighbor(Direction.SE, CellLookup[(x + 1, y - 1)]);
                         }
@@ -385,9 +390,9 @@ public class MapGrid : MonoBehaviour
     internal void ResetSearchPriorities()
     {
         // ensure that all cells have their phases reset
-        for (var y = 0; y < Constants.MapSize; y++)
+        for (var y = 0; y < MapConstants.MapSize; y++)
         {
-            for (var x = 0; x < Constants.MapSize; x++)
+            for (var x = 0; x < MapConstants.MapSize; x++)
             {
                 CellLookup[(x, y)].SearchPhase = 0;
             }
@@ -415,25 +420,25 @@ public class MapGrid : MonoBehaviour
             case CellType.Grass:
                 if (value > 0.65)
                 {
-                    cell.AddContent(StructureController.Instance.GetStructure("Bush").gameObject);
+                    cell.AddContent(Game.StructureController.GetStructure("Bush").gameObject);
                 }
                 break;
 
             case CellType.Forest:
                 if (value > 0.95)
                 {
-                    cell.AddContent(StructureController.Instance.GetStructure("Tree").gameObject);
+                    cell.AddContent(Game.StructureController.GetStructure("Tree").gameObject);
                 }
                 else if (value > 0.65)
                 {
-                    cell.AddContent(StructureController.Instance.GetStructure("Bush").gameObject);
+                    cell.AddContent(Game.StructureController.GetStructure("Bush").gameObject);
                 }
                 break;
 
                 //case CellType.Stone:
                 //    for (int i = 0; i < Random.Range(1, 2); i++)
                 //    {
-                //        cell.AddContent(ItemController.Instance.GetItem("Rock").gameObject);
+                //        cell.AddContent(Game.ItemController.GetItem("Rock").gameObject);
                 //    }
                 //    break;
         }
@@ -442,9 +447,9 @@ public class MapGrid : MonoBehaviour
     private void GenerateMapCells()
     {
         // generate bedrock
-        for (int i = 0; i < Constants.MapSize / 2; i++)
+        for (int i = 0; i < MapConstants.MapSize / 2; i++)
         {
-            foreach (var cell in GetRandomChunk(Random.Range(1 + (Constants.MapSize / 6), 1 + (Constants.MapSize / 3))))
+            foreach (var cell in GetRandomChunk(Random.Range(1 + (MapConstants.MapSize / 6), 1 + (MapConstants.MapSize / 3))))
             {
                 cell.CellType = CellType.Stone;
             }
@@ -467,9 +472,9 @@ public class MapGrid : MonoBehaviour
         }
 
         // generate landmasses
-        for (int i = 0; i < Constants.MapSize; i++)
+        for (int i = 0; i < MapConstants.MapSize; i++)
         {
-            foreach (var cell in GetRandomChunk(Random.Range(Constants.MapSize, Constants.MapSize * 2)))
+            foreach (var cell in GetRandomChunk(Random.Range(MapConstants.MapSize, MapConstants.MapSize * 2)))
             {
                 if (cell.CellType == CellType.Water)
                 {
@@ -596,7 +601,7 @@ public class MapGrid : MonoBehaviour
 
                     if (cell.Structure != null)
                     {
-                        StructureController.Instance.DestroyStructure(cell.Structure);
+                        Game.StructureController.DestroyStructure(cell.Structure);
                     }
 
                     if (CellBinding.ContainsKey(kvp.Key))
@@ -629,10 +634,8 @@ public class MapGrid : MonoBehaviour
 
     private void RefreshCell(CellData cell)
     {
-        var tile = new Tile
-        {
-            sprite = SpriteStore.Instance.GetSpriteForTerrainType(cell.Bound ? cell.CellType : CellType.Abyss)
-        };
+        var tile = ScriptableObject.CreateInstance<Tile>();
+        tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(cell.Bound ? cell.CellType : CellType.Abyss);
 
         Tilemap.SetTile(new Vector3Int(cell.Coordinates.X, cell.Coordinates.Y, 0), tile);
 

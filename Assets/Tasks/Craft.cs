@@ -25,7 +25,7 @@
             }
         }
 
-        AddSubTask(new Move(MapGrid.Instance.GetPathableNeighbour(Location)));
+        AddSubTask(new Move(Game.MapGrid.GetPathableNeighbour(Location)));
         AddSubTask(new Wait(CraftTime, "Crafting"));
 
         Message = $"Making {OutputItemName} at {location}";
@@ -39,12 +39,12 @@
             {
                 foreach (var item in Creature.Mind[Context][MemoryType.Item])
                 {
-                    ItemController.Instance.DestroyItem(IdService.GetItemFromId(item));
+                    Game.ItemController.DestroyItem(IdService.GetItemFromId(item));
                 }
             }
 
-            var craftedItem = ItemController.Instance.GetItem(OutputItemName);
-            MapGrid.Instance.GetCellAtCoordinate(Location).AddContent(craftedItem.gameObject);
+            var craftedItem = Game.ItemController.GetItem(OutputItemName);
+            Game.MapGrid.GetCellAtCoordinate(Location).AddContent(craftedItem.gameObject);
 
             Creature.UpdateMemory(Context, MemoryType.Craft, craftedItem.Data.GetGameId());
 

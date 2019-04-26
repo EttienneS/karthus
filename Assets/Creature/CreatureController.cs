@@ -11,20 +11,7 @@ public class CreatureController : MonoBehaviour
 
     internal Dictionary<int, CreatureData> CreatureIdLookup = new Dictionary<int, CreatureData>();
     internal Dictionary<CreatureData, Creature> CreatureLookup = new Dictionary<CreatureData, Creature>();
-    private static CreatureController _instance;
-
-    public static CreatureController Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = GameObject.Find("CreatureController").GetComponent<CreatureController>();
-            }
-
-            return _instance;
-        }
-    }
+    
 
     public Creature GetCreatureAtPoint(Vector2 point)
     {
@@ -54,7 +41,7 @@ public class CreatureController : MonoBehaviour
         creature.Data.Thirst = Random.Range(35, 50);
         creature.Data.Energy = Random.Range(80, 100);
 
-        creature.Data.SpriteId = Random.Range(0, SpriteStore.Instance.CreatureSprite.Keys.Count - 1);
+        creature.Data.SpriteId = Random.Range(0, Game.SpriteStore.CreatureSprite.Keys.Count - 1);
 
         creature.GetSprite();
 
@@ -66,17 +53,17 @@ public class CreatureController : MonoBehaviour
 
     public void SpawnCreatures()
     {
-        var midCell = MapGrid.Instance
-            .GetCircle(new Coordinates(Constants.MapSize / 2, Constants.MapSize / 2), 10)
+        var midCell = Game.MapGrid
+            .GetCircle(new Coordinates(MapConstants.MapSize / 2, MapConstants.MapSize / 2), 10)
             .First(c => c.CellType != CellType.Water || c.CellType != CellType.Mountain);
 
         SummonCells(midCell);
 
         var firstCreature = SpawnCreature(midCell.GetNeighbor(Direction.E));
 
-        midCell.AddContent(StructureController.Instance.GetStructure("Table").gameObject);
+        midCell.AddContent(Game.StructureController.GetStructure("Table").gameObject);
 
-        CameraController.Instance.MoveToCell(firstCreature.Data.CurrentCell);
+        Game.CameraController.MoveToCell(firstCreature.Data.CurrentCell);
 
         var spawns = midCell.Neighbors.ToList();
 
@@ -86,19 +73,19 @@ public class CreatureController : MonoBehaviour
         var foodCell = midCell.GetNeighbor(Direction.SE);
         for (var i = 0; i < 30; i++)
         {
-            foodCell.AddContent(ItemController.Instance.GetItem("Apple").gameObject);
+            foodCell.AddContent(Game.ItemController.GetItem("Apple").gameObject);
         }
 
         var woodCell = midCell.GetNeighbor(Direction.SW);
         for (var i = 0; i < 15; i++)
         {
-            woodCell.AddContent(ItemController.Instance.GetItem("Rock").gameObject);
+            woodCell.AddContent(Game.ItemController.GetItem("Rock").gameObject);
         }
 
         var rockCell = midCell.GetNeighbor(Direction.S);
         for (var i = 0; i < 15; i++)
         {
-            rockCell.AddContent(ItemController.Instance.GetItem("Wood").gameObject);
+            rockCell.AddContent(Game.ItemController.GetItem("Wood").gameObject);
         }
 
         //for (var i = 0; i < 2; i++)
@@ -110,12 +97,12 @@ public class CreatureController : MonoBehaviour
     private static void SummonCells(CellData center)
     {
         center.CellType = CellType.Stone;
-        MapGrid.Instance.BindCell(center, "X");
+        Game.MapGrid.BindCell(center, "X");
 
         foreach (var cell in center.Neighbors)
         {
             cell.CellType = CellType.Stone;
-            MapGrid.Instance.BindCell(cell, "X");
+            Game.MapGrid.BindCell(cell, "X");
         }
 
         GetRune(center.GetNeighbor(Direction.N).GetNeighbor(Direction.N));
@@ -126,9 +113,9 @@ public class CreatureController : MonoBehaviour
 
     public static void GetRune(CellData location)
     {
-        var rune = StructureController.Instance.GetStructure("BindRune");
+        var rune = Game.StructureController.GetStructure("BindRune");
         location.CellType = CellType.Stone;
-        MapGrid.Instance.BindCell(location, rune.Data.GetGameId());
+        Game.MapGrid.BindCell(location, rune.Data.GetGameId());
         location.AddContent(rune.gameObject);
     }
 

@@ -12,7 +12,7 @@ public class ClearCell : TaskBase
         {
             if (_cellData == null)
             {
-                _cellData = MapGrid.Instance.GetCellAtCoordinate(Coordinates);
+                _cellData = Game.MapGrid.GetCellAtCoordinate(Coordinates);
             }
 
             return _cellData;
@@ -38,7 +38,7 @@ public class ClearCell : TaskBase
             if (Cell.ContainedItems.Count > 0)
             {
                 AddSubTask(new MoveItemToCell(Cell.ContainedItems[0].GetGameId(),
-                                              MapGrid.Instance.GetPathableNeighbour(Coordinates),
+                                              Game.MapGrid.GetPathableNeighbour(Coordinates),
                                               true,
                                               true,
                                               GetItem.SearchBy.Id));

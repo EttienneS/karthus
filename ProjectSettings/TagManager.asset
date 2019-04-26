@@ -68,3 +68,6 @@ TagManager:
   - name: Border
     uniqueID: 1765142349
     locked: 0
+  - name: FRONT
+    uniqueID: 3813890271
+    locked: 0

@@ -3,36 +3,27 @@ using UnityEngine;
 
 public class FileController : MonoBehaviour
 {
-    private static FileController _instance;
-
     internal TextAsset[] StructureJson;
     internal TextAsset[] ItemJson;
+    internal TextAsset[] ConstructFiles;
 
     public Dictionary<string, TextAsset> ItemLookup;
 
     public string ItemFolder = "Items";
     public string StructureFolder = "Structures";
+    public string ConstructFolder = "Constructs";
 
-    public static FileController Instance
+    public void Load()
     {
-        get
+        ItemJson = Resources.LoadAll<TextAsset>(ItemFolder);
+        StructureJson = Resources.LoadAll<TextAsset>(StructureFolder);
+        ConstructFiles = Resources.LoadAll<TextAsset>(ConstructFolder);
+
+        ItemLookup = new Dictionary<string, TextAsset>();
+
+        foreach (var file in ItemJson)
         {
-            if (_instance == null)
-            {
-                _instance = GameObject.Find("FileController").GetComponent<FileController>();
-
-                _instance.ItemJson = Resources.LoadAll<TextAsset>(_instance.ItemFolder);
-                _instance.StructureJson = Resources.LoadAll<TextAsset>(_instance.StructureFolder);
-
-                _instance.ItemLookup = new Dictionary<string, TextAsset>();
-
-                foreach (var file in _instance.ItemJson)
-                {
-                    _instance.ItemLookup.Add(file.name, file);
-                }
-            }
-
-            return _instance;
+            ItemLookup.Add(file.name, file);
         }
     }
 }

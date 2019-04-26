@@ -213,6 +213,16 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 779386f1026081545885b6da147544c6, type: 2}
+    - target: {fileID: 4395502561622324067, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4395502561622324067, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8d3d47b53068341448ff13732aef998e, type: 3}
 --- !u!1001 &606839152187272788
@@ -916,15 +926,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5952559973161452221, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
-        type: 3}
+    - target: {fileID: 616382008, guid: fd9fe2ef5313abb4aa06105b1ebd9a97, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 616382012, guid: fd9fe2ef5313abb4aa06105b1ebd9a97, type: 3}
       propertyPath: m_SortingLayerID
       value: 1735232521
-      objectReference: {fileID: 0}
-    - target: {fileID: 5952559973161452221, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
-        type: 3}
-      propertyPath: m_SortingLayer
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fd9fe2ef5313abb4aa06105b1ebd9a97, type: 3}

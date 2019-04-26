@@ -12,7 +12,7 @@
 
     public void DesignateTypeClicked()
     {
-        if (OrderTrayController.Instance.gameObject.activeInHierarchy)
+        if (Game.OrderTrayController.gameObject.activeInHierarchy)
         {
             DisableAndReset();
             TaskButton.Text = DefaultDesignateText;
@@ -28,18 +28,18 @@
 
     private void HarvestClicked(string type, string icon)
     {
-        GameController.Instance.SelectionPreference = SelectionPreference.Cell;
+        Game.Controller.SelectionPreference = SelectionPreference.Cell;
         CellClickOrder = cells =>
         {
             foreach (var cell in cells)
             {
                 if (cell.Structure != null && cell.Structure.StructureType == type)
                 {
-                    cell.Structure.LinkedGameObject.StatusSprite.sprite = SpriteStore.Instance.GetSpriteByName(icon);
-                    Taskmaster.Instance.AddTask(new Harvest(cell.Structure), string.Empty);
+                    cell.Structure.LinkedGameObject.StatusSprite.sprite = Game.SpriteStore.GetSpriteByName(icon);
+                    Game.Taskmaster.AddTask(new Harvest(cell.Structure), string.Empty);
                 }
             }
-            GameController.Instance.DeselectCell();
+            Game.Controller.DeselectCell();
         };
     }
 }

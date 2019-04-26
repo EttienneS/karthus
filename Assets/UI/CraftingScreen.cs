@@ -6,7 +6,7 @@ public class CraftingScreen : MonoBehaviour
 {
     public DataDisplay DataPrefab;
 
-    private static CraftingScreen _instance;
+    
     private StructureData _craftSource;
     public GameObject SourcePanel;
     public GameObject OptionsPanel;
@@ -20,7 +20,7 @@ public class CraftingScreen : MonoBehaviour
     public void Show(StructureData craftSource)
     {
         _craftSource = craftSource;
-        Instance.gameObject.SetActive(true);
+        gameObject.SetActive(true);
 
         ClearPanel();
 
@@ -39,7 +39,7 @@ public class CraftingScreen : MonoBehaviour
             AddDisplay(OptionsPanel.transform, craftingTask).Clicked += () => SetRecipe(craftingTask);
         }
 
-        foreach (Craft task in Taskmaster.Instance.GetTaskByOriginator(_craftSource.GetGameId()))
+        foreach (Craft task in Game.Taskmaster.GetTaskByOriginator(_craftSource.GetGameId()))
         {
             AddDisplay(QueuePanel.transform, task);
         }
@@ -76,7 +76,7 @@ public class CraftingScreen : MonoBehaviour
                 DoneEmote = SelectedRecipe.DoneEmote
             };
 
-            Taskmaster.Instance.AddTask(task, _craftSource.GetGameId());
+            Game.Taskmaster.AddTask(task, _craftSource.GetGameId());
             AddDisplay(QueuePanel.transform, SelectedRecipe);
         }
 
@@ -86,7 +86,7 @@ public class CraftingScreen : MonoBehaviour
     private void Scale()
     {
         OptionsPanel.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _craftSource.Tasks.Count * 70f);
-        QueuePanel.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Taskmaster.Instance.GetTaskByOriginator(_craftSource.GetGameId()).Count() * 70f);
+        QueuePanel.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Game.Taskmaster.GetTaskByOriginator(_craftSource.GetGameId()).Count() * 70f);
 
         //OptionsPanel.transform.position = new Vector2(0, 0);
         //QueuePanel.transform.position = new Vector2(0, 0);
@@ -95,7 +95,7 @@ public class CraftingScreen : MonoBehaviour
     private DataDisplay AddDisplay(Transform parent, Craft recipe)
     {
         var display = Instantiate(DataPrefab, parent);
-        display.SetData(recipe.OutputItemName, recipe.OutputItemName, SpriteStore.Instance.GetSpriteByName(recipe.OutputItemName));
+        display.SetData(recipe.OutputItemName, recipe.OutputItemName, Game.SpriteStore.GetSpriteByName(recipe.OutputItemName));
 
         return display;
     }
@@ -110,19 +110,13 @@ public class CraftingScreen : MonoBehaviour
             RequirementsText.text += $"- {item}\n";
         }
 
-        RecipeImage.sprite = SpriteStore.Instance.GetSpriteByName(task.OutputItemName);
+        RecipeImage.sprite = Game.SpriteStore.GetSpriteByName(task.OutputItemName);
     }
 
     public void Hide()
     {
-        Instance.gameObject.SetActive(false);
+        gameObject.SetActive(false);
     }
 
-    public static CraftingScreen Instance
-    {
-        get
-        {
-            return _instance ?? (_instance = GameObject.Find("CraftingPanel").GetComponent<CraftingScreen>());
-        }
-    }
+    
 }

@@ -91,6 +91,6 @@ public class Coordinates : IEquatable<Coordinates>
 
     public string ToStringOnSeparateLines()
     {
-        return X + "\n" + Y;
+        return $"X: {X}\nY: {Y}";
     }
 }

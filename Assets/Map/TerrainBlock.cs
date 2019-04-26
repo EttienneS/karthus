@@ -10,7 +10,7 @@ public class TerrainBlock : MonoBehaviour
         Renderer = GetComponent<SpriteRenderer>();
         Collider = GetComponent<BoxCollider2D>();
 
-        Collider.size = new Vector2(Constants.CellsPerTerrainBlock, Constants.CellsPerTerrainBlock);
-        Collider.offset = new Vector2(Constants.CellsPerTerrainBlock / 2, Constants.CellsPerTerrainBlock / 2);
+        Collider.size = new Vector2(MapConstants.CellsPerTerrainBlock, MapConstants.CellsPerTerrainBlock);
+        Collider.offset = new Vector2(MapConstants.CellsPerTerrainBlock / 2, MapConstants.CellsPerTerrainBlock / 2);
     }
 }

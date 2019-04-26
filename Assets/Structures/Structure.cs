@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Structure : MonoBehaviour
@@ -10,7 +11,7 @@ public class Structure : MonoBehaviour
 
     public void LoadSprite()
     {
-        SpriteRenderer.sprite = SpriteStore.Instance.GetSpriteByName(Data.SpriteName);
+        SpriteRenderer.sprite = Game.SpriteStore.GetSpriteByName(Data.SpriteName);
         SetTiledMode(SpriteRenderer, Data.Tiled);
     }
 
@@ -64,7 +65,7 @@ public class Structure : MonoBehaviour
 
     private void Update()
     {
-        if (TimeManager.Instance.Paused) return;
+        if (Game.TimeManager.Paused) return;
 
         if (!Data.IsBluePrint && Data.Behaviour != null)
         {
@@ -75,9 +76,9 @@ public class Structure : MonoBehaviour
             }
         }
 
-        if (Data.IsBluePrint && !Taskmaster.Instance.ContainsJob(name))
+        if (Data.IsBluePrint && !Game.Taskmaster.Tasks.OfType<Build>().Any(t => t.Structure == Data))
         {
-            Taskmaster.Instance.AddTask(new Build(Data, Data.Coordinates), Data.GetGameId());
+            Game.Taskmaster.AddTask(new Build(Data, Data.Coordinates), Data.GetGameId());
         }
     }
 }
@@ -123,6 +124,7 @@ public class StructureData
     public List<string> Yield;
 
     private List<string> _require;
+
     [JsonIgnore]
     private int _width, _height = -1;
 
@@ -160,7 +162,7 @@ public class StructureData
     {
         get
         {
-            return StructureController.Instance.GetStructureForData(this);
+            return Game.StructureController.GetStructureForData(this);
         }
     }
 
@@ -215,7 +217,7 @@ public class StructureData
         {
             for (int y = 0; y < Height; y++)
             {
-                cells.Add(MapGrid.Instance.GetCellAtCoordinate(new Coordinates(origin.X + x, origin.Y + y)));
+                cells.Add(Game.MapGrid.GetCellAtCoordinate(new Coordinates(origin.X + x, origin.Y + y)));
             }
         }
 
@@ -231,7 +233,7 @@ public class StructureData
         }
         else
         {
-            LinkedGameObject.SpriteRenderer.color = ColorConstants.StructureColor;
+            LinkedGameObject.SpriteRenderer.color = ColorConstants.BaseColor;
             IsBluePrint = false;
         }
     }
@@ -242,7 +244,7 @@ public class StructureData
         {
             foreach (var item in Helpers.ParseItemString(yieldString))
             {
-                cell.AddContent(ItemController.Instance.GetItem(item).gameObject);
+                cell.AddContent(Game.ItemController.GetItem(item).gameObject);
             }
         }
     }
@@ -251,7 +253,7 @@ public class StructureData
     {
         foreach (var cell in GetCellsForStructure(CellData.Coordinates))
         {
-            if (!cell.Bound || cell.TravelCost < 0 || cell.Structure != null)
+            if (!cell.Buildable)
             {
                 return false;
             }

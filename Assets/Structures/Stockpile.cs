@@ -53,11 +53,11 @@ public class Stockpile : MonoBehaviour
 
     private void Update()
     {
-        if (TimeManager.Instance.Paused) return;
+        if (Game.TimeManager.Paused) return;
 
-        if (Taskmaster.Instance.Tasks.OfType<StockpileItem>().Count(t => t.StockpileId == Data.Id) < Data.MaxConcurrentTasks)
+        if (Game.Taskmaster.Tasks.OfType<StockpileItem>().Count(t => t.StockpileId == Data.Id) < Data.MaxConcurrentTasks)
         {
-            Taskmaster.Instance.AddTask(new StockpileItem(Data.ItemCategory, Data.Id), Data.GetGameId());
+            Game.Taskmaster.AddTask(new StockpileItem(Data.ItemCategory, Data.Id), Data.GetGameId());
         }
     }
 }
@@ -78,7 +78,7 @@ public class StockpileData
     {
         get
         {
-            return StockpileController.Instance.GetStockpile(Id);
+            return Game.StockpileController.GetStockpile(Id);
         }
     }
 

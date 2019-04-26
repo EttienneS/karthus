@@ -69,6 +69,14 @@ public class CellData
         }
     }
 
+    public bool Buildable
+    {
+        get
+        {
+            return Bound && TravelCost > 0 && Structure == null;
+        }
+    }
+
     public void AddContent(GameObject gameObject, bool force = false)
     {
         var item = gameObject.GetComponent<Item>();
@@ -105,7 +113,7 @@ public class CellData
             {
                 if (Structure != null)
                 {
-                    StructureController.Instance.DestroyStructure(Structure);
+                    Game.StructureController.DestroyStructure(Structure);
                 }
             }
 
@@ -116,7 +124,7 @@ public class CellData
             }
 
             structure.Shift();
-            structure.SpriteRenderer.sortingOrder = Constants.MapSize - Coordinates.Y;
+            structure.SpriteRenderer.sortingOrder = MapConstants.MapSize - Coordinates.Y;
 
             ColorStructure();
         }
@@ -161,16 +169,11 @@ public class CellData
 
             if (Bound)
             {
-                //renderer.sortingLayerName = !string.IsNullOrEmpty(cell.Structure.Layer) ?
-                //    cell.Structure.Layer :
-                //    LayerConstants.Structure;
-
-                renderer.color = ColorConstants.StructureColor;
+                renderer.color = Structure.IsBluePrint ? ColorConstants.BluePrintColor : ColorConstants.BaseColor;
             }
             else
             {
                 renderer.color = ColorConstants.UnboundStructureColor;
-                //renderer.sortingLayerName = LayerConstants.Bottom;
             }
         }
     }

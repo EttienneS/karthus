@@ -38,11 +38,11 @@ public class Move : TaskBase
 
         if (_nextCell == null)
         {
-            var currentCreatureCell = MapGrid.Instance.GetCellAtCoordinate(Creature.Coordinates);
+            var currentCreatureCell = Game.MapGrid.GetCellAtCoordinate(Creature.Coordinates);
 
             if (_path == null || _path.Count == 0)
             {
-                _path = Pathfinder.FindPath(currentCreatureCell, MapGrid.Instance.GetCellAtCoordinate(TargetCoordinates));
+                _path = Pathfinder.FindPath(currentCreatureCell, Game.MapGrid.GetCellAtCoordinate(TargetCoordinates));
             }
 
             if (_path == null)
@@ -65,7 +65,7 @@ public class Move : TaskBase
                 // difficults cells take longer
                 _journeyLength = Vector3.Distance(currentCreatureCell.Coordinates.ToMapVector(), _targetPos) + _nextCell.TravelCost;
 
-                Creature.MoveDirection = MapGrid.Instance.GetDirection(currentCreatureCell, _nextCell);
+                Creature.MoveDirection = Game.MapGrid.GetDirection(currentCreatureCell, _nextCell);
                 _startTime = Time.time;
             }
         }

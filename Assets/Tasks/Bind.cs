@@ -49,7 +49,7 @@ public class Bind : BaseRune
         {
             if (_epicentreCell == null)
             {
-                _epicentreCell = MapGrid.Instance.GetCellAtCoordinate(Epicentre);
+                _epicentreCell = Game.MapGrid.GetCellAtCoordinate(Epicentre);
             }
             return _epicentreCell;
         }
@@ -59,7 +59,7 @@ public class Bind : BaseRune
     {
         if (_affectAbleCells == null)
         {
-            _affectAbleCells = MapGrid.Instance.GetCircle(Epicentre, Size).OrderBy(c => c.Coordinates.DistanceTo(Epicentre)).ToList();
+            _affectAbleCells = Game.MapGrid.GetCircle(Epicentre, Size).OrderBy(c => c.Coordinates.DistanceTo(Epicentre)).ToList();
         }
 
         if (Taskmaster.QueueComplete(SubTasks))
@@ -76,7 +76,7 @@ public class Bind : BaseRune
 
             if (cell != null)
             {
-                FireRune(() => MapGrid.Instance.BindCell(cell, Originator));
+                FireRune(() => Game.MapGrid.BindCell(cell, Originator));
             }
             else
             {

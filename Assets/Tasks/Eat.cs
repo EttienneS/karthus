@@ -25,7 +25,7 @@
             Creature.DropItem();
 
             Creature.Hunger -= int.Parse(food.Properties["Nutrition"]);
-            ItemController.Instance.DestoyItem(food);
+            Game.ItemController.DestoyItem(food);
 
             return true;
         }
