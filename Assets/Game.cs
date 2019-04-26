@@ -85,6 +85,16 @@ public partial class Game : MonoBehaviour
         {
             OrderSelectionController.DesignateTypeClicked();
         }
+
+        if (Input.GetKeyDown("e"))
+        {
+            RotateMouseRight?.Invoke();
+        }
+
+        if (Input.GetKeyDown("q"))
+        {
+            RotateMouseLeft?.Invoke();
+        }
     }
 
     private void HandleTimeControls()

@@ -10,7 +10,6 @@ public class StructureController : MonoBehaviour
     internal Dictionary<string, StructureData> StructureDataReference = new Dictionary<string, StructureData>();
 
     private Dictionary<string, string> _structureTypeFileMap;
-    
 
     internal Dictionary<string, string> StructureTypeFileMap
     {
@@ -51,16 +50,7 @@ public class StructureController : MonoBehaviour
     {
         var structure = Instantiate(structurePrefab, transform);
 
-        string structureData = string.Empty;
-        if (!StructureTypeFileMap.ContainsKey(name))
-        {
-            structureData = StructureTypeFileMap.Values.First(f => f.Contains(name));
-        }
-        else
-        {
-            structureData = StructureTypeFileMap[name];
-        }
-
+        string structureData = StructureTypeFileMap[name];
 
         structure.Load(structureData);
         structure.Data.Id = StructureLookup.Keys.Count + 1;
@@ -68,7 +58,7 @@ public class StructureController : MonoBehaviour
         IndexStructure(structure);
 
         structure.Data.SetBlueprintState(false);
-      
+
         return structure;
     }
 

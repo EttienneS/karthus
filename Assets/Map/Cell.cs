@@ -77,6 +77,14 @@ public class CellData
         }
     }
 
+    public bool Pathable
+    {
+        get
+        {
+            return Bound && TravelCost > 0;
+        }
+    }
+
     public void AddContent(GameObject gameObject, bool force = false)
     {
         var item = gameObject.GetComponent<Item>();

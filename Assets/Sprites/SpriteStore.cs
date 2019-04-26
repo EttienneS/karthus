@@ -126,6 +126,11 @@ public class SpriteStore : MonoBehaviour
     {
         try
         {
+            if (!AllSprites.ContainsKey(spriteName))
+            {
+                spriteName = spriteName.Replace(" ", "");
+            }
+
             if (AllSprites.ContainsKey(spriteName))
             {
                 return AllSprites[spriteName];

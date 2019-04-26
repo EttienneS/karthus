@@ -1,8 +1,8 @@
 {
   "Name": "Four",
-  "Floor": "WoodTile",
+  "Floor": "Wood Tile",
   "Key": {
-    "W": "StoneWall"
+    "W": "Stone Wall"
   },
   "Plan": [
     "WW W",

@@ -11,8 +11,22 @@ public partial class OrderSelectionController //.Construct
 
         ConstructButton.Text = DefaultConstructText;
 
-        Game.Controller.SetMouseSprite(constuct.Texture, constuct.Width, constuct.Height, 
+        Game.Controller.SetMouseSprite(constuct.Texture, constuct.Width, constuct.Height,
                                        CellData => constuct.ValidateStartPos(CellData));
+
+        Game.Controller.RotateMouseRight += () =>
+        {
+            constuct.RotateRight();
+            Game.Controller.SetMouseSprite(constuct.GetTexture(), constuct.Width, constuct.Height,
+                                           CellData => constuct.ValidateStartPos(CellData));
+        };
+
+        Game.Controller.RotateMouseLeft += () =>
+        {
+            constuct.RotateLeft();
+            Game.Controller.SetMouseSprite(constuct.GetTexture(), constuct.Width, constuct.Height,
+                                           CellData => constuct.ValidateStartPos(CellData));
+        };
 
         CellClickOrder = cells =>
         {

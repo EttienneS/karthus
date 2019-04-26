@@ -5,13 +5,17 @@ public partial class Game // .Mouse
     public SpriteRenderer MouseSpriteRenderer;
 
     public ValidateMouseSpriteDelegate ValidateMouse;
+    public Rotate RotateMouseRight;
+    public Rotate RotateMouseLeft;
 
+    public delegate void Rotate();
     public delegate bool ValidateMouseSpriteDelegate(CellData currentCell);
 
     public void DisableMouseSprite()
     {
         MouseSpriteRenderer.gameObject.SetActive(false);
         ValidateMouse = null;
+        RotateMouseRight = null;
     }
 
     public void SetMouseSprite(Texture2D texture, int width, int height, ValidateMouseSpriteDelegate validation)
