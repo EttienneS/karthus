@@ -1,12 +1,12 @@
 {
-  "Name": "Three",
+  "Name": "Tall",
   "Floor": "WoodTile",
   "Key": {
     "W": "StoneWall"
   },
   "Plan": [
-    "WW ",
-    " WW",
-    " WW"
+    " ",
+    "W",
+    "W"
   ]
 }

@@ -11,6 +11,25 @@ public class Construct
     public List<string> Plan;
 
     [JsonIgnore]
+    private List<string> _flippedPlan;
+
+    [JsonIgnore]
+    public List<string> FlippedPlan
+    {
+        get
+        {
+            if (_flippedPlan == null)
+            {
+                // easier to just flip the plan order than to invert the drawing
+                _flippedPlan = Plan.ToList();
+                _flippedPlan.Reverse();
+            }
+
+            return _flippedPlan;
+        }
+    }
+
+    [JsonIgnore]
     private Texture2D _texture;
 
     [JsonIgnore]
@@ -60,11 +79,7 @@ public class Construct
                 var y = 0;
                 var x = 0;
 
-                // easier to just flip the plan order than to invert the drawing
-                var flippedPlan = Plan.ToList();
-                flippedPlan.Reverse();
-
-                foreach (var line in flippedPlan)
+                foreach (var line in FlippedPlan)
                 {
                     foreach (var character in line)
                     {
@@ -112,7 +127,7 @@ public class Construct
     {
         var x = 0;
         var y = 0;
-        foreach (var line in Plan)
+        foreach (var line in FlippedPlan)
         {
             foreach (var character in line)
             {
@@ -126,6 +141,7 @@ public class Construct
 
                 x++;
             }
+            x = 0;
             y++;
         }
         return true;
@@ -135,7 +151,7 @@ public class Construct
     {
         var x = 0;
         var y = 0;
-        foreach (var line in Plan)
+        foreach (var line in FlippedPlan)
         {
             foreach (var character in line)
             {
@@ -149,6 +165,7 @@ public class Construct
                 //Game.Taskmaster.AddTask(new Build(blueprint.Data, coorinate), string.Empty);
                 x++;
             }
+            x = 0;
             y++;
         }
         return true;

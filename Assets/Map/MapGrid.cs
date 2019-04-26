@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public enum CellType
@@ -17,6 +18,9 @@ public class MapGrid : MonoBehaviour
     public Dictionary<string, List<CellData>> PendingUnbinding = new Dictionary<string, List<CellData>>();
 
     internal Tilemap Tilemap;
+    internal Canvas WorldCanvas;
+
+    public Text CellLabel;
 
     private Dictionary<(int x, int y), CellData> _cellLookup;
     private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
@@ -52,6 +56,8 @@ public class MapGrid : MonoBehaviour
     public void Awake()
     {
         Tilemap = GetComponentInChildren<Tilemap>();
+        WorldCanvas = GetComponentInChildren<Canvas>();
+
         CreateMap();
     }
 
@@ -121,6 +127,14 @@ public class MapGrid : MonoBehaviour
 
         Cells.Add(cell);
         RefreshCell(cell);
+
+        if (WorldCanvas != null)
+        {
+            var label = Instantiate(CellLabel, WorldCanvas.transform);
+            label.name = $"CL_{cell.Coordinates}";
+            label.transform.position = cell.Coordinates.ToTopOfMapVector();
+            label.text = cell.Coordinates.ToStringOnSeparateLines();
+        }
 
         return cell;
     }

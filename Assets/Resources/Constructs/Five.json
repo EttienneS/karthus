@@ -5,10 +5,10 @@
     "W": "StoneWall"
   },
   "Plan": [
-    "WWWWW",
-    "WWWWW",
-    "WWWWW",
-    "WWWWW",
+    "W WWW",
+    "W WWW",
+    "W WWW",
+    "W    ",
     "WWWWW"
   ]
 }
