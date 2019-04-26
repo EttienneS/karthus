@@ -1,0 +1,13 @@
+{
+  "Name": "Cross 5x5",
+  "Key": {
+    "W": "Stone Wall"
+  },
+  "Plan": [
+    "..W..",
+    "..W..",
+    "WWWWW",
+    "..W..",
+    "..W.."
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "Name": "Box 5x5",
+  "Key": {
+    "W": "Stone Wall"
+  },
+  "Plan": [
+    "WW.WW",
+    "W...W",
+    "W...W",
+    "W...W",
+    "WWWWW"
+  ]
+}

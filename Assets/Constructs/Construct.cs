@@ -109,7 +109,18 @@ public class Construct
                 var startX = x * MapConstants.PixelsPerCell;
                 var startY = y * MapConstants.PixelsPerCell;
 
-                var sourceTexture = Game.SpriteStore.GetSpriteByName(GetStructure(character)).texture;
+                Texture2D sourceTexture;
+                if (character == '.')
+                {
+                    sourceTexture = new Texture2D(1, 1);
+                    sourceTexture.SetPixel(0, 0, new Color(0, 0, 0, 0));
+                    sourceTexture.Apply();
+                }
+                else
+                {
+                    var structure = Game.StructureController.StructureDataReference.Values.First(s => s.Name == GetStructure(character));
+                    sourceTexture = Game.SpriteStore.GetSpriteByName(structure.SpriteName).texture;
+                }
                 var constructTexture = sourceTexture.Clone();
                 constructTexture.ScaleToGridSize(1, 1);
 
@@ -152,6 +163,11 @@ public class Construct
         {
             foreach (var character in line)
             {
+                if (character == '.')
+                {
+                    x++;
+                    continue;
+                }
                 var coorinate = new Coordinates(cellData.Coordinates.X + x, cellData.Coordinates.Y + y);
                 var cell = Game.MapGrid.GetCellAtCoordinate(coorinate);
 
@@ -183,6 +199,12 @@ public class Construct
         {
             foreach (var character in line)
             {
+                if (character == '.')
+                {
+                    x++;
+                    continue;
+                }
+
                 var cell = Game.MapGrid.GetCellAtCoordinate(new Coordinates(cellData.Coordinates.X + x, cellData.Coordinates.Y + y));
 
                 if (cell.Pathable && cell.Structure == null)
