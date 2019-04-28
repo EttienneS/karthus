@@ -2,9 +2,9 @@
   "Name": "BindRune",
   "Behaviour": {
     "$type": "Bind, Assembly-CSharp",
-    "Power": "20.0",
+    "Power": "50.0",
     "PowerRate": "0.5",
-    "Size": "6"
+    "Size": "10"
   },
   "Buildable": true,
   "RequireStrings": [ "5:Rock" ],

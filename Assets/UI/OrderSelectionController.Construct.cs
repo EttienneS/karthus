@@ -51,9 +51,10 @@ public partial class OrderSelectionController //.Construct
 
             foreach (var construct in ConstructController.Constructs)
             {
-                var button = CreateOrderButton(construct.Name, () => ConstructClicked(construct), construct.Sprite);
-                button.name = construct.Name;
-                button.Text = button.name;
+                var title = $"{construct.Name} ({construct.Height}x{construct.Width})";
+                var button = CreateOrderButton(title, () => ConstructClicked(construct), construct.Sprite);
+                button.name = title;
+                button.Text = title;
             }
         }
     }

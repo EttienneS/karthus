@@ -20,15 +20,40 @@ public class Construct
         {
             if (_currentPlan == null)
             {
-                _currentPlan = Plan.ToList();
+                _currentPlan = ValidatePlan(Plan);
             }
 
             return _currentPlan;
         }
         set
         {
-            _currentPlan = value;
+            _currentPlan = ValidatePlan(value);
         }
+    }
+
+    private List<string> ValidatePlan(List<string> plan)
+    {
+        var newPlan = plan.ToList();
+
+        var longest = 0;
+        for (var i = 0; i < newPlan.Count; i++)
+        {
+            if (newPlan[i].Length > longest)
+            {
+                longest = newPlan[i].Length;
+            }
+
+            newPlan[i] = newPlan[i].PadRight(newPlan.Count, '.');
+        }
+
+        var lineCount = newPlan.Count;
+        for (var i = 0; i < (longest - lineCount); i++)
+        {
+            var line = string.Empty.PadRight(longest, '.'); 
+            newPlan.Add(line);
+        }
+
+        return newPlan;
     }
 
     [JsonIgnore]
@@ -51,7 +76,7 @@ public class Construct
     {
         get
         {
-            return Plan.Count;
+            return CurrentPlan.Count;
         }
     }
 
@@ -77,7 +102,17 @@ public class Construct
     {
         get
         {
-            return Plan[0].Length;
+            var longest = 0;
+
+            foreach (var line in CurrentPlan)
+            {
+                if (line.Length > longest)
+                {
+                    longest = line.Length;
+                }
+            }
+
+            return longest;
         }
     }
 
