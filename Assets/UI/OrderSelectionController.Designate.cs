@@ -33,7 +33,7 @@
         {
             foreach (var cell in cells)
             {
-                if (cell.Structure != null && cell.Structure.StructureType == type)
+                if (cell.Bound && cell.Structure != null && cell.Structure.StructureType == type)
                 {
                     cell.Structure.LinkedGameObject.StatusSprite.sprite = Game.SpriteStore.GetSpriteByName(icon);
                     Game.Taskmaster.AddTask(new Harvest(cell.Structure), string.Empty);

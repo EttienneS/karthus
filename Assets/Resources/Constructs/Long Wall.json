@@ -1,0 +1,13 @@
+{
+  "Name": "Long Wall",
+  "Key": {
+    "W": "Stone Wall"
+  },
+  "Plan": [
+    "W",
+    "W",
+    "W",
+    "W",
+    "W"
+  ]
+}

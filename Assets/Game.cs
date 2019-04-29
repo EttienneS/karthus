@@ -69,7 +69,9 @@ public partial class Game : MonoBehaviour
         ClearLine();
         foreach (var structure in SelectedStructures)
         {
-            structure.LinkedGameObject.SpriteRenderer.color = ColorConstants.BaseColor;
+            var cell = MapGrid.GetCellAtCoordinate(structure.Coordinates);
+            structure.LinkedGameObject.SpriteRenderer.color = cell.Bound ? ColorConstants.BaseColor : 
+                                                                           ColorConstants.UnboundStructureColor;
         }
         SelectedStructures.Clear();
     }
@@ -84,6 +86,16 @@ public partial class Game : MonoBehaviour
         if (Input.GetKeyDown("n"))
         {
             OrderSelectionController.DesignateTypeClicked();
+        }
+
+        if (Input.GetKeyDown("e"))
+        {
+            RotateMouseRight?.Invoke();
+        }
+
+        if (Input.GetKeyDown("q"))
+        {
+            RotateMouseLeft?.Invoke();
         }
     }
 
@@ -181,8 +193,6 @@ public partial class Game : MonoBehaviour
         foreach (var structure in SelectedStructures)
         {
             var id = structure.GetGameId();
-            structure.LinkedGameObject.SpriteRenderer.color = ColorConstants.InvalidColor;
-
             if (MapGrid.CellBinding.ContainsKey(id))
             {
                 foreach (var boundCell in MapGrid.CellBinding[id])

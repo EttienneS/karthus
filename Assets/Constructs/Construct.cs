@@ -11,21 +11,60 @@ public class Construct
     public List<string> Plan;
 
     [JsonIgnore]
-    private List<string> _flippedPlan;
+    private List<string> _currentPlan;
+
+    [JsonIgnore]
+    public List<string> CurrentPlan
+    {
+        get
+        {
+            if (_currentPlan == null)
+            {
+                _currentPlan = ValidatePlan(Plan);
+            }
+
+            return _currentPlan;
+        }
+        set
+        {
+            _currentPlan = ValidatePlan(value);
+        }
+    }
+
+    private List<string> ValidatePlan(List<string> plan)
+    {
+        var newPlan = plan.ToList();
+
+        var longest = 0;
+        for (var i = 0; i < newPlan.Count; i++)
+        {
+            if (newPlan[i].Length > longest)
+            {
+                longest = newPlan[i].Length;
+            }
+
+            newPlan[i] = newPlan[i].PadRight(newPlan.Count, '.');
+        }
+
+        var lineCount = newPlan.Count;
+        for (var i = 0; i < (longest - lineCount); i++)
+        {
+            var line = string.Empty.PadRight(longest, '.'); 
+            newPlan.Add(line);
+        }
+
+        return newPlan;
+    }
 
     [JsonIgnore]
     public List<string> FlippedPlan
     {
         get
         {
-            if (_flippedPlan == null)
-            {
-                // easier to just flip the plan order than to invert the drawing
-                _flippedPlan = Plan.ToList();
-                _flippedPlan.Reverse();
-            }
+            var flipped = CurrentPlan.ToList();
+            flipped.Reverse();
 
-            return _flippedPlan;
+            return flipped;
         }
     }
 
@@ -37,7 +76,7 @@ public class Construct
     {
         get
         {
-            return Plan.Count;
+            return CurrentPlan.Count;
         }
     }
 
@@ -63,7 +102,17 @@ public class Construct
     {
         get
         {
-            return Plan[0].Length;
+            var longest = 0;
+
+            foreach (var line in CurrentPlan)
+            {
+                if (line.Length > longest)
+                {
+                    longest = line.Length;
+                }
+            }
+
+            return longest;
         }
     }
 
@@ -74,42 +123,60 @@ public class Construct
         {
             if (_texture == null)
             {
-                _texture = new Texture2D(Width * MapConstants.PixelsPerCell, Height * MapConstants.PixelsPerCell);
-
-                var y = 0;
-                var x = 0;
-
-                foreach (var line in FlippedPlan)
-                {
-                    foreach (var character in line)
-                    {
-                        var startX = x * MapConstants.PixelsPerCell;
-                        var startY = y * MapConstants.PixelsPerCell;
-
-                        var sourceTexture = Game.SpriteStore.GetSpriteByName(GetStructure(character)).texture;
-                        var constructTexture = sourceTexture.Clone();
-                        constructTexture.ScaleToGridSize(1, 1);
-
-                        for (var subTexX = 0; subTexX < MapConstants.PixelsPerCell; subTexX++)
-                        {
-                            for (var subTexY = 0; subTexY < MapConstants.PixelsPerCell; subTexY++)
-                            {
-                                var pixel = constructTexture.GetPixel(subTexX, subTexY);
-                                _texture.SetPixel(startX + subTexX,
-                                                 startY + subTexY,
-                                                 pixel);
-                            }
-                        }
-
-                        x++;
-                    }
-                    y++;
-                }
-                _texture.Apply();
+                _texture = GetTexture();
             }
 
             return _texture;
         }
+    }
+
+    internal Texture2D GetTexture()
+    {
+        var texture = new Texture2D(Width * MapConstants.PixelsPerCell, Height * MapConstants.PixelsPerCell);
+
+        var y = 0;
+        var x = 0;
+
+        foreach (var line in FlippedPlan)
+        {
+            foreach (var character in line)
+            {
+                var startX = x * MapConstants.PixelsPerCell;
+                var startY = y * MapConstants.PixelsPerCell;
+
+                Texture2D sourceTexture;
+                if (character == '.')
+                {
+                    sourceTexture = new Texture2D(1, 1);
+                    sourceTexture.SetPixel(0, 0, new Color(0, 0, 0, 0));
+                    sourceTexture.Apply();
+                }
+                else
+                {
+                    var structure = Game.StructureController.StructureDataReference.Values.First(s => s.Name == GetStructure(character));
+                    sourceTexture = Game.SpriteStore.GetSpriteByName(structure.SpriteName).texture;
+                }
+                var constructTexture = sourceTexture.Clone();
+                constructTexture.ScaleToGridSize(1, 1);
+
+                for (var subTexX = 0; subTexX < MapConstants.PixelsPerCell; subTexX++)
+                {
+                    for (var subTexY = 0; subTexY < MapConstants.PixelsPerCell; subTexY++)
+                    {
+                        var pixel = constructTexture.GetPixel(subTexX, subTexY);
+                        texture.SetPixel(startX + subTexX,
+                                         startY + subTexY,
+                                         pixel);
+                    }
+                }
+
+                x++;
+            }
+            y++;
+        }
+        texture.Apply();
+
+        return texture;
     }
 
     public string GetStructure(char character)
@@ -131,11 +198,23 @@ public class Construct
         {
             foreach (var character in line)
             {
-                var coorinate = new Coordinates(cellData.Coordinates.X + x, cellData.Coordinates.Y + y);
-
-                if (!Game.MapGrid.GetCellAtCoordinate(coorinate).Buildable)
+                if (character == '.')
                 {
-                    Debug.Log($"not buildable {coorinate}");
+                    x++;
+                    continue;
+                }
+                var coorinate = new Coordinates(cellData.Coordinates.X + x, cellData.Coordinates.Y + y);
+                var cell = Game.MapGrid.GetCellAtCoordinate(coorinate);
+
+                if (cell.Pathable)
+                {
+                    if (cell.Structure != null && !cell.Structure.Name.Equals(GetStructure(character)))
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
                     return false;
                 }
 
@@ -155,19 +234,72 @@ public class Construct
         {
             foreach (var character in line)
             {
-                var coorinate = new Coordinates(cellData.Coordinates.X + x, cellData.Coordinates.Y + y);
-                var blueprint = Game.StructureController.GetStructureBluePrint(GetStructure(character));
+                if (character == '.')
+                {
+                    x++;
+                    continue;
+                }
 
-                Game.MapGrid
-                    .GetCellAtCoordinate(coorinate)
-                    .AddContent(blueprint.gameObject);
+                var cell = Game.MapGrid.GetCellAtCoordinate(new Coordinates(cellData.Coordinates.X + x, cellData.Coordinates.Y + y));
 
-                //Game.Taskmaster.AddTask(new Build(blueprint.Data, coorinate), string.Empty);
+                if (cell.Pathable && cell.Structure == null)
+                {
+                    var blueprint = Game.StructureController.GetStructureBluePrint(GetStructure(character));
+                    cell.AddContent(blueprint.gameObject);
+                }
+
                 x++;
             }
             x = 0;
             y++;
         }
         return true;
+    }
+
+    public void RotateLeft()
+    {
+        RotateRight();
+        RotateRight();
+        RotateRight();
+    }
+
+    public void RotateRight()
+    {
+        var current = new char[Width, Height];
+        var x = 0;
+        var y = 0;
+
+        foreach (var line in CurrentPlan)
+        {
+            foreach (var character in line)
+            {
+                current[x++, y] = character;
+            }
+            x = 0;
+            y++;
+        }
+
+        var newArray = new char[Width, Height];
+
+        for (int width = Width - 1; width >= 0; width--)
+        {
+            for (int height = 0; height < Height; height++)
+            {
+                newArray[height, Width - width - 1] = current[width, height];
+            }
+        }
+
+        var newPlan = new List<string>();
+        for (y = 0; y < Height; y++)
+        {
+            var line = string.Empty;
+            for (x = 0; x < Width; x++)
+            {
+                line += newArray[x, y];
+            }
+            newPlan.Add(line);
+        }
+
+        CurrentPlan = newPlan;
     }
 }
