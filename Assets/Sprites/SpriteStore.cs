@@ -6,85 +6,126 @@ using Random = UnityEngine.Random;
 
 public class SpriteStore : MonoBehaviour
 {
-    internal List<Sprite> BackSprites = new List<Sprite>();
-    internal List<Sprite> FrontSprites = new List<Sprite>();
-    internal List<Sprite> ItemSprites = new List<Sprite>();
-    internal List<Sprite> MapSprites = new List<Sprite>();
-    internal List<Sprite> SideSprites = new List<Sprite>();
-    private Dictionary<string, Sprite> _allSprites;
+    internal Dictionary<string, Sprite> ItemSprites
+    {
+        get
+        {
+            if (_itemSprites == null)
+            {
+                _itemSprites = new Dictionary<string, Sprite>();
 
-    private Dictionary<int, List<Sprite>> _creatureSprite;
+                var sprites = Resources.LoadAll<Sprite>("Sprites/Item").ToList();
+                sprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Gui"));
+
+                foreach (var sprite in sprites)
+                {
+                    _itemSprites.Add(sprite.name, sprite);
+                }
+            }
+
+            return _itemSprites;
+        }
+    }
 
     private Dictionary<string, List<Sprite>> _mapSprites;
-    
-
-    public void LoadResources()
-    {
-        ItemSprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Item"));
-        ItemSprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Gui"));
-        MapSprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Map"));
-
-        BackSprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Character/all_back"));
-        FrontSprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Character/all_front"));
-        SideSprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Character/all_side"));
-    }
+    private Dictionary<string, Sprite> _itemSprites;
 
     internal Sprite GetPlaceholder()
     {
         return GetSpriteByName("Placeholder");
     }
 
-    public Dictionary<string, Sprite> AllSprites
+    public List<Sprite> HairSprites = new List<Sprite>();
+    public List<Sprite> HeadSprites = new List<Sprite>();
+    public List<Sprite> FaceSprites = new List<Sprite>();
+    public List<Sprite> NeckSprites = new List<Sprite>();
+    public List<Sprite> ArmSprites = new List<Sprite>();
+    public List<Sprite> PantSprites = new List<Sprite>();
+    public List<Sprite> SleeveSprites = new List<Sprite>();
+    public List<Sprite> TorsoSprites = new List<Sprite>();
+    public List<Sprite> HandSprites = new List<Sprite>();
+    public List<Sprite> PelvisSprites = new List<Sprite>();
+    public List<Sprite> LegSprites = new List<Sprite>();
+    public List<Sprite> FootSprites = new List<Sprite>();
+
+    public void LoadCreatureSprites()
     {
-        get
+        foreach (var sprite in Resources.LoadAll<Sprite>("Sprites/Creature/Face"))
         {
-            if (_allSprites == null)
+            if (sprite.name.StartsWith("face", StringComparison.OrdinalIgnoreCase))
             {
-                _allSprites = new Dictionary<string, Sprite>();
-
-                ItemSprites.ForEach(AddSpriteToAll);
+                FaceSprites.Add(sprite);
             }
-
-            return _allSprites;
         }
-    }
 
-    public Dictionary<int, List<Sprite>> CreatureSprite
-    {
-        get
+        foreach (var sprite in Resources.LoadAll<Sprite>("Sprites/Creature/Feet"))
         {
-            if (_creatureSprite == null)
+            FootSprites.Add(sprite);
+        }
+
+        foreach (var sprite in Resources.LoadAll<Sprite>("Sprites/Creature/Hair"))
+        {
+            if (sprite.name.IndexOf("woman", StringComparison.OrdinalIgnoreCase) >= 0)
+                continue;
+            HairSprites.Add(sprite);
+        }
+
+        foreach (var sprite in Resources.LoadAll<Sprite>("Sprites/Creature/Skin"))
+        {
+            if (sprite.name.IndexOf("head", StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                Debug.Log("load creature sprites");
-                _creatureSprite = new Dictionary<int, List<Sprite>>();
-                var creature = -1;
-                var side = new List<Sprite>();
-                var back = new List<Sprite>();
-                var front = new List<Sprite>();
-                for (int i = 0; i < SideSprites.Count; i++)
-                {
-                    side.Add(SideSprites[i]);
-                    back.Add(BackSprites[i]);
-                    front.Add(FrontSprites[i]);
-
-                    if (i != 0 && (i + 1) % 4 == 0)
-                    {
-                        creature++;
-                        side.AddRange(back);
-                        side.AddRange(front);
-                        CreatureSprite.Add(creature, side.ToList());
-
-                        side.Clear();
-                        back.Clear();
-                        front.Clear();
-                    }
-                }
-
-                SideSprites.ForEach(AddSpriteToAll);
-                FrontSprites.ForEach(AddSpriteToAll);
-                BackSprites.ForEach(AddSpriteToAll);
+                HeadSprites.Add(sprite);
             }
-            return _creatureSprite;
+
+            if (sprite.name.IndexOf("arm", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                ArmSprites.Add(sprite);
+            }
+
+            if (sprite.name.IndexOf("hand", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                HandSprites.Add(sprite);
+            }
+
+            if (sprite.name.IndexOf("leg", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                LegSprites.Add(sprite);
+            }
+
+            if (sprite.name.IndexOf("neck", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                NeckSprites.Add(sprite);
+            }
+        }
+
+        foreach (var sprite in Resources.LoadAll<Sprite>("Sprites/Creature/Tops"))
+        {
+            if (sprite.name.IndexOf("arm", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                if (sprite.name.IndexOf("short", StringComparison.OrdinalIgnoreCase) >= 0 || sprite.name.IndexOf("short", StringComparison.OrdinalIgnoreCase) >= 0)
+                    continue;
+
+                SleeveSprites.Add(sprite);
+            }
+            else
+            {
+                TorsoSprites.Add(sprite);
+            }
+        }
+
+        foreach (var sprite in Resources.LoadAll<Sprite>("Sprites/Creature/Bottoms"))
+        {
+            if (sprite.name.Contains("_"))
+            {
+                if (sprite.name.IndexOf("short", StringComparison.OrdinalIgnoreCase) >= 0 || sprite.name.IndexOf("short", StringComparison.OrdinalIgnoreCase) >= 0)
+                    continue;
+
+                PantSprites.Add(sprite);
+            }
+            else
+            {
+                PelvisSprites.Add(sprite);
+            }
         }
     }
 
@@ -94,11 +135,12 @@ public class SpriteStore : MonoBehaviour
         {
             if (_mapSprites == null)
             {
+                LoadCreatureSprites();
                 Debug.Log("load map sprites");
 
                 _mapSprites = new Dictionary<string, List<Sprite>>();
 
-                foreach (var sprite in MapSprites)
+                foreach (var sprite in Resources.LoadAll<Sprite>("Sprites/Map"))
                 {
                     var typeName = sprite.name.Split('_')[0];
 
@@ -114,26 +156,18 @@ public class SpriteStore : MonoBehaviour
         }
     }
 
-    public void AddSpriteToAll(Sprite sprite)
-    {
-        if (!AllSprites.ContainsKey(sprite.name))
-        {
-            AllSprites.Add(sprite.name, sprite);
-        }
-    }
-
     internal Sprite GetSpriteByName(string spriteName)
     {
         try
         {
-            if (!AllSprites.ContainsKey(spriteName))
+            if (!ItemSprites.ContainsKey(spriteName))
             {
                 spriteName = spriteName.Replace(" ", "");
             }
 
-            if (AllSprites.ContainsKey(spriteName))
+            if (ItemSprites.ContainsKey(spriteName))
             {
-                return AllSprites[spriteName];
+                return ItemSprites[spriteName];
             }
             return GetPlaceholder();
         }

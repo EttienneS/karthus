@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -58,8 +59,15 @@ public static class Helpers
         return input.Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
     }
 }
+public static class ListHelpers
+{
+    public static T GetRandomItem<T>(this List<T> list)
+    {
+        return list[Random.Range(0, list.Count - 1)];
+    }
+}
 
-public static class TextureHelpers
+    public static class TextureHelpers
 {
     public static Texture2D Clone(this Texture2D sourceTexture)
     {

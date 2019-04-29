@@ -22,8 +22,8 @@ public static class IdService
     {
         switch (GetObjectTypeForId(gameObjectId))
         {
-            case ObjectType.Creature:
-                return GetCreatureFromId(gameObjectId).LinkedGameObject.SpriteRenderer;
+            //case ObjectType.Creature:
+            //    return GetCreatureFromId(gameObjectId).LinkedGameObject.SpriteRenderer;
 
             case ObjectType.Item:
                 return GetItemFromId(gameObjectId).LinkedGameObject.SpriteRenderer;

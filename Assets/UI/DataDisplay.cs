@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class DataDisplay : MonoBehaviour
@@ -8,6 +9,7 @@ public class DataDisplay : MonoBehaviour
     public Text Title;
 
     public delegate void Click();
+
     public event Click Clicked;
 
     public void OnClick()
@@ -40,8 +42,8 @@ public class DataDisplay : MonoBehaviour
     internal void SetData(TaskBase task)
     {
         SetData(task.GetType().Name, task.Message, task.AssignedCreatureId > 0 ?
-                                                        task.Creature.LinkedGameObject.FrontSprites[0] :
-                                                        Game.SpriteStore.GetPlaceholder());
+                                                   task.Creature.LinkedGameObject.Head.sprite :
+                                                   Game.SpriteStore.GetPlaceholder());
 
         if (task.Failed)
         {

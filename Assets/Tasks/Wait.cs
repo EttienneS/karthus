@@ -33,15 +33,15 @@ public class Wait : TaskBase
     {
         ElapsedTime += Time.deltaTime;
 
-        if (ChangeFacing)
-        {
-            LastFacingChange += Time.deltaTime;
+        //if (ChangeFacing)
+        //{
+        //    LastFacingChange += Time.deltaTime;
 
-            if (LastFacingChange > 0.2f && Random.value > 0.95f)
-            {
-                Creature.LinkedGameObject.FaceRandomDirection();
-                LastFacingChange = 0;
-            }
-        }
+        //    if (LastFacingChange > 0.2f && Random.value > 0.95f)
+        //    {
+        //        Creature.LinkedGameObject.FaceRandomDirection();
+        //        LastFacingChange = 0;
+        //    }
+        //}
     }
 }

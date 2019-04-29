@@ -11,7 +11,6 @@ public class CreatureController : MonoBehaviour
 
     internal Dictionary<int, CreatureData> CreatureIdLookup = new Dictionary<int, CreatureData>();
     internal Dictionary<CreatureData, Creature> CreatureLookup = new Dictionary<CreatureData, Creature>();
-    
 
     public Creature GetCreatureAtPoint(Vector2 point)
     {
@@ -41,7 +40,7 @@ public class CreatureController : MonoBehaviour
         creature.Data.Thirst = Random.Range(35, 50);
         creature.Data.Energy = Random.Range(80, 100);
 
-        creature.Data.SpriteId = Random.Range(0, Game.SpriteStore.CreatureSprite.Keys.Count - 1);
+        creature.Data.SpriteId = "Commoner";
 
         creature.GetSprite();
 
@@ -59,11 +58,12 @@ public class CreatureController : MonoBehaviour
 
         SummonCells(midCell);
 
-        var firstCreature = SpawnCreature(midCell.GetNeighbor(Direction.E));
+        //for (int i = 0; i < 10; i++)
+        SpawnCreature(midCell.GetNeighbor(Direction.E));
 
         midCell.AddContent(Game.StructureController.GetStructure("Table").gameObject);
 
-        Game.CameraController.MoveToCell(firstCreature.Data.CurrentCell);
+        Game.CameraController.MoveToCell(midCell.GetNeighbor(Direction.E));
 
         var spawns = midCell.Neighbors.ToList();
 
@@ -87,11 +87,6 @@ public class CreatureController : MonoBehaviour
         {
             rockCell.AddContent(Game.ItemController.GetItem("Wood").gameObject);
         }
-
-        //for (var i = 0; i < 2; i++)
-        //{
-        //    SpawnCreature(spawns[Random.Range(0, spawns.Count)]).Data.Speed = Random.Range(10, 15);
-        //}
     }
 
     private static void SummonCells(CellData center)
@@ -144,7 +139,6 @@ public class CreatureController : MonoBehaviour
 
     private void IndexCreature(Creature creature)
     {
-        creature.SpriteRenderer.sortingOrder = creature.Data.Id;
         Creatures.Add(creature);
         CreatureLookup.Add(creature.Data, creature);
         CreatureIdLookup.Add(creature.Data.Id, creature.Data);

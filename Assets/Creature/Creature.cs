@@ -1,27 +1,38 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-
 public class Creature : MonoBehaviour
 {
-    internal Sprite[] BackSprites;
+    public SpriteRenderer Face;
+    public SpriteRenderer Hair;
+    public SpriteRenderer Head;
+    public SpriteRenderer Neck;
+    public SpriteRenderer Torso;
+    public SpriteRenderer LeftArm;
+    public SpriteRenderer RightArm;
+    public SpriteRenderer LeftSleeve;
+    public SpriteRenderer RightSleeve;
+    public SpriteRenderer LeftHand;
+    public SpriteRenderer RightHand;
+    public SpriteRenderer Pelvis;
+    public SpriteRenderer LeftLeg;
+    public SpriteRenderer RightLeg;
+    public SpriteRenderer LeftPant;
+    public SpriteRenderer RightPant;
+    public SpriteRenderer LeftFoot;
+    public SpriteRenderer RightFoot;
+
     internal CreatureData Data = new CreatureData();
-    internal Sprite[] FrontSprites;
     internal SpriteRenderer Highlight;
     internal float RemainingTextDuration;
-    internal Sprite[] SideSprites;
-    internal SpriteRenderer SpriteRenderer;
     internal TextMeshPro Text;
 
     private float deltaTime = 0;
-
-    private int frame;
-
+    
     private float frameSeconds = 0.3f;
 
     public void Awake()
@@ -30,12 +41,6 @@ public class Creature : MonoBehaviour
         Highlight = transform.Find("Highlight").GetComponent<SpriteRenderer>();
 
         Highlight.gameObject.SetActive(false);
-    }
-
-    public void FaceRandomDirection()
-    {
-        var values = Enum.GetValues(typeof(Direction));
-        Data.MoveDirection = (Direction)values.GetValue(Random.Range(0, values.Length));
     }
 
     public void ShowText(string text, float duration)
@@ -68,12 +73,43 @@ public class Creature : MonoBehaviour
 
     internal void GetSprite()
     {
-        SpriteRenderer = GetComponent<SpriteRenderer>();
+        Head.sprite = Game.SpriteStore.HeadSprites.GetRandomItem();
+        Face.sprite = Game.SpriteStore.FaceSprites.GetRandomItem();
+        Hair.sprite = Game.SpriteStore.HairSprites.GetRandomItem();
+        Neck.sprite = Game.SpriteStore.NeckSprites.GetRandomItem();
 
-        var sprites = Game.SpriteStore.CreatureSprite[Data.SpriteId];
-        BackSprites = sprites.Where(s => s.name.StartsWith("all_back", StringComparison.InvariantCultureIgnoreCase)).ToArray();
-        FrontSprites = sprites.Where(s => s.name.StartsWith("all_front", StringComparison.InvariantCultureIgnoreCase)).ToArray();
-        SideSprites = sprites.Where(s => s.name.StartsWith("all_side", StringComparison.InvariantCultureIgnoreCase)).ToArray();
+        LeftArm.sprite = Game.SpriteStore.ArmSprites.GetRandomItem();
+        RightArm.sprite = Game.SpriteStore.ArmSprites.GetRandomItem();
+        LeftHand.sprite = Game.SpriteStore.HandSprites.GetRandomItem();
+        RightHand.sprite = Game.SpriteStore.HandSprites.GetRandomItem();
+        LeftLeg.sprite = Game.SpriteStore.LegSprites.GetRandomItem();
+        RightLeg.sprite = Game.SpriteStore.LegSprites.GetRandomItem();
+
+        Torso.sprite = Game.SpriteStore.TorsoSprites.GetRandomItem();
+        LeftSleeve.sprite = Game.SpriteStore.SleeveSprites.GetRandomItem();
+        RightSleeve.sprite = Game.SpriteStore.SleeveSprites.GetRandomItem();
+
+        Pelvis.sprite = Game.SpriteStore.PelvisSprites.GetRandomItem();
+        LeftPant.sprite = Game.SpriteStore.PantSprites.GetRandomItem();
+        RightPant.sprite = Game.SpriteStore.PantSprites.GetRandomItem();
+
+        LeftFoot.sprite = Game.SpriteStore.FootSprites.GetRandomItem();
+        RightFoot.sprite = Game.SpriteStore.FootSprites.GetRandomItem();
+
+        //var tint = Color.blue;
+        //Torso.color = tint;
+        //LeftSleeve.color = tint;
+        //RightSleeve.color = tint;
+
+        //var tint2 = Color.red;
+        //Pelvis.color = tint2;
+        //LeftPant.color = tint2;
+        //RightPant.color = tint2;
+
+        //var tint3 = Color.green;
+        //LeftFoot.color = tint3;
+        //RightFoot.color = tint3;
+
 
         Animate(true);
     }
@@ -85,43 +121,11 @@ public class Creature : MonoBehaviour
             return;
         }
 
-        Sprite[] sprites;
-        switch (Data.MoveDirection)
-        {
-            case Direction.N:
-                sprites = BackSprites;
-                break;
-
-            case Direction.SE:
-            case Direction.NE:
-            case Direction.E:
-                sprites = SideSprites;
-                SpriteRenderer.flipX = true;
-                break;
-
-            case Direction.S:
-                sprites = FrontSprites;
-                break;
-            //case Direction.NW:
-            //case Direction.SW:
-            //case Direction.W:
-            default:
-                sprites = SideSprites;
-                SpriteRenderer.flipX = false;
-                break;
-        }
-
         deltaTime += Time.deltaTime;
 
         if (deltaTime > frameSeconds || force)
         {
             deltaTime = 0;
-            frame++;
-            if (frame >= sprites.Length)
-            {
-                frame = 0;
-            }
-            SpriteRenderer.sprite = sprites[frame];
         }
     }
 
@@ -169,7 +173,7 @@ public class Creature : MonoBehaviour
 
             Data.Hunger += Random.value;
             Data.Thirst += Random.value;
-            Data.Energy -= Random.Range(0.1f,0.25f);
+            Data.Energy -= Random.Range(0.1f, 0.25f);
         }
 
         if (thoughts.Count > 0 && Random.value > 0.9)
@@ -179,7 +183,6 @@ public class Creature : MonoBehaviour
 
         CarryItem();
         UpdateFloatingText();
-
         Animate();
     }
 
@@ -241,7 +244,7 @@ public class CreatureData
 
     public float Speed = 10f;
 
-    public int SpriteId;
+    public string SpriteId;
 
     public float Thirst;
 
@@ -293,6 +296,7 @@ public class CreatureData
             return Mind[SelfKey];
         }
     }
+
     [JsonIgnore]
     public TaskBase Task { get; set; }
 
@@ -366,11 +370,11 @@ public class CreatureData
 
     internal void UpdateMemory(string context, MemoryType memoryType, string info)
     {
-        Debug.Log($"Remember: {context}, {memoryType}: '{info}'");
+        // Debug.Log($"Remember: {context}, {memoryType}: '{info}'");
         Mind[context].AddInfo(memoryType, info);
     }
 
-    internal void UpdateSelfMemory( MemoryType memoryType, string info)
+    internal void UpdateSelfMemory(MemoryType memoryType, string info)
     {
         UpdateMemory(SelfKey, memoryType, info);
     }

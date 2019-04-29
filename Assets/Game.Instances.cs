@@ -180,7 +180,6 @@ public partial class Game //.Instances
             if (_spriteStore == null)
             {
                 _spriteStore = GameObject.Find(ControllerConstants.SpriteController).GetComponent<SpriteStore>();
-                _spriteStore.LoadResources();
             }
 
             return _spriteStore;
