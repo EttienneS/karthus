@@ -42,7 +42,7 @@ public class DataDisplay : MonoBehaviour
     internal void SetData(TaskBase task)
     {
         SetData(task.GetType().Name, task.Message, task.AssignedCreatureId > 0 ?
-                                                   task.Creature.LinkedGameObject.Head.sprite :
+                                                   task.Creature.LinkedGameObject.CreatureSprite.GetIcon() :
                                                    Game.SpriteStore.GetPlaceholder());
 
         if (task.Failed)

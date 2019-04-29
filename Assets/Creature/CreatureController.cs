@@ -40,10 +40,6 @@ public class CreatureController : MonoBehaviour
         creature.Data.Thirst = Random.Range(35, 50);
         creature.Data.Energy = Random.Range(80, 100);
 
-        creature.Data.SpriteId = "Commoner";
-
-        creature.GetSprite();
-
         creature.ShowText("Awee!!!", Random.Range(1f, 3f));
 
         IndexCreature(creature);
@@ -132,7 +128,6 @@ public class CreatureController : MonoBehaviour
         creature.Data = savedCreature;
 
         creature.transform.position = savedCreature.Coordinates.ToMapVector();
-        creature.GetSprite();
         IndexCreature(creature);
         return creature;
     }
