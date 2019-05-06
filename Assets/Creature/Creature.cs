@@ -26,8 +26,6 @@ public class Creature : MonoBehaviour
 
         Highlight.gameObject.SetActive(false);
         Body = transform.Find("Body").gameObject;
-
-        
     }
 
     public void ShowText(string text, float duration)
@@ -240,6 +238,8 @@ public class CreatureData
 
     public string Sprite { get; set; }
 
+    public string Faction { get; set; }
+
     internal ItemData DropItem(Coordinates coordinates = null)
     {
         if (CarriedItemId > 0)
@@ -329,5 +329,4 @@ public class CreatureData
 
         return data;
     }
-
 }

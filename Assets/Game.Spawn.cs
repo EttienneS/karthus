@@ -18,8 +18,7 @@ public partial class Game // .Spawn
 
         SummonCells(midCell);
 
-        //for (int i = 0; i < 10; i++)
-        CreatureController.SpawnCreature(midCell.GetNeighbor(Direction.E));
+        CreatureController.SpawnPlayerAtLocation(midCell.GetNeighbor(Direction.E));
 
         midCell.AddContent(StructureController.GetStructure("Table").gameObject);
 
@@ -48,14 +47,14 @@ public partial class Game // .Spawn
             rockCell.AddContent(ItemController.GetItem("Wood").gameObject);
         }
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 3; i++)
         {
             var c = CreatureController.Beastiary.First().Value.CloneJson();
             c.Coordinates = MapGrid.GetRandomCell().Coordinates;
+            c.Faction = FactionConstants.MonsterFaction;
 
-            CreatureController.LoadCreature(c);
+            CreatureController.SpawnCreature(c);
         }
-        
     }
 
     private static void SummonCells(CellData center)

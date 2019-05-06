@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -7,10 +6,10 @@ public class CreatureController : MonoBehaviour
 {
     public Creature CreaturePrefab;
 
-    internal List<Creature> Creatures = new List<Creature>();
+    internal Dictionary<string, CreatureData> Beastiary = new Dictionary<string, CreatureData>();
     internal Dictionary<int, CreatureData> CreatureIdLookup = new Dictionary<int, CreatureData>();
     internal Dictionary<CreatureData, Creature> CreatureLookup = new Dictionary<CreatureData, Creature>();
-    internal Dictionary<string, CreatureData> Beastiary = new Dictionary<string, CreatureData>();
+    internal List<Creature> Creatures = new List<Creature>();
 
     public Creature GetCreatureAtPoint(Vector2 point)
     {
@@ -26,27 +25,31 @@ public class CreatureController : MonoBehaviour
         return null;
     }
 
-    public Creature SpawnCreature(CellData spawnLocation)
+    public Creature SpawnPlayerAtLocation(CellData spawnLocation)
     {
-        var creature = Instantiate(CreaturePrefab, transform, true);
-        creature.Data.Name = CreatureHelper.GetRandomName();
+        var Data = new CreatureData
+        {
+            Name = CreatureHelper.GetRandomName(),
+            Coordinates = spawnLocation.Coordinates,
+            Id = Creatures.Count + 1,
+            Hunger = Random.Range(0, 15),
+            Thirst = Random.Range(35, 50),
+            Energy = Random.Range(80, 100),
+            Faction = FactionConstants.PlayerFaction
+        };
 
-        creature.transform.position = spawnLocation.Coordinates.ToMapVector();
-        creature.Data.Coordinates = spawnLocation.Coordinates;
-
-        creature.Data.Id = Creatures.Count + 1;
-
-        creature.Data.Hunger = Random.Range(0, 15);
-        creature.Data.Thirst = Random.Range(35, 50);
-        creature.Data.Energy = Random.Range(80, 100);
-
+        var creature = SpawnCreature(Data);
         creature.ShowText("Awee!!!", Random.Range(1f, 3f));
-
-        IndexCreature(creature);
-
-        SetSprite(creature);
-
         return creature;
+    }
+
+    public void Start()
+    {
+        foreach (var creatureFile in Game.FileController.CreatureFiles)
+        {
+            var creature = CreatureData.Load(creatureFile.text);
+            Beastiary.Add(creature.Name, creature);
+        }
     }
 
     internal void DestroyCreature(Creature creature)
@@ -61,7 +64,7 @@ public class CreatureController : MonoBehaviour
         return CreatureLookup[creatureData];
     }
 
-    internal Creature LoadCreature(CreatureData creatureData)
+    internal Creature SpawnCreature(CreatureData creatureData)
     {
         var creature = Instantiate(CreaturePrefab, transform, true);
         creature.Data = creatureData;
@@ -69,7 +72,6 @@ public class CreatureController : MonoBehaviour
         creature.Data.Id = Creatures.Count + 1;
 
         SetSprite(creature);
-
         IndexCreature(creature);
 
         return creature;
@@ -94,14 +96,5 @@ public class CreatureController : MonoBehaviour
         CreatureIdLookup.Add(creature.Data.Id, creature.Data);
 
         creature.name = $"{creature.Data.Name} ({creature.Data.Id})";
-    }
-
-    public void Start()
-    {
-        foreach (var creatureFile in Game.FileController.CreatureFiles)
-        {
-            var creature = CreatureData.Load(creatureFile.text);
-            Beastiary.Add(creature.Name, creature);
-        }
     }
 }

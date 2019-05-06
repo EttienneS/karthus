@@ -77,7 +77,7 @@ public class SaveManager : MonoBehaviour
 
         foreach (var SavedCreature in save.Creatures)
         {
-            Game.CreatureController.LoadCreature(SavedCreature);
+            Game.CreatureController.SpawnCreature(SavedCreature);
         }
 
         foreach (var task in save.Tasks)

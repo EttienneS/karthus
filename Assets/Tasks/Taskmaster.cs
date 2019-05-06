@@ -6,8 +6,6 @@ public class Taskmaster : MonoBehaviour
 {
     internal List<TaskBase> Tasks = new List<TaskBase>();
 
-   
-
     public int LastRecyle;
 
     public const int RecyleTime = 3;
