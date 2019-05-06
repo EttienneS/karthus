@@ -18,7 +18,6 @@ public partial class Game //.Instances
     private static StockpileController _stockpileController;
     private static StructureController _structureController;
     private static SunController _sunController;
-    private static Taskmaster _taskmaster;
     private static TimeManager _timeManager;
 
     public static CameraController CameraController
@@ -222,19 +221,6 @@ public partial class Game //.Instances
             }
 
             return _sunController;
-        }
-    }
-
-    public static Taskmaster Taskmaster
-    {
-        get
-        {
-            if (_taskmaster == null)
-            {
-                _taskmaster = GameObject.Find("Taskmaster").GetComponent<Taskmaster>();
-            }
-
-            return _taskmaster;
         }
     }
 

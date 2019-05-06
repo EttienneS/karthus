@@ -13,6 +13,8 @@ public partial class Game : MonoBehaviour
     public SelectionPreference SelectionPreference = SelectionPreference.CreatureOrStructure;
     public RectTransform selectSquareImage;
 
+    public Taskmaster TaskmasterPrefab;
+
     internal LineRenderer LineRenderer;
     internal List<CellData> SelectedCells = new List<CellData>();
     internal List<Creature> SelectedCreatures = new List<Creature>();
@@ -70,7 +72,7 @@ public partial class Game : MonoBehaviour
         foreach (var structure in SelectedStructures)
         {
             var cell = MapGrid.GetCellAtCoordinate(structure.Coordinates);
-            structure.LinkedGameObject.SpriteRenderer.color = cell.Bound ? ColorConstants.BaseColor : 
+            structure.LinkedGameObject.SpriteRenderer.color = cell.Bound ? ColorConstants.BaseColor :
                                                                            ColorConstants.UnboundStructureColor;
         }
         SelectedStructures.Clear();
@@ -220,7 +222,25 @@ public partial class Game : MonoBehaviour
         selectSquareImage.gameObject.SetActive(false);
         MouseSpriteRenderer.gameObject.SetActive(false);
 
+        InitFactions();
         InitialSpawn();
+    }
+
+    private void InitFactions()
+    {
+        foreach (var faction in new []
+        {
+            FactionConstants.Player,
+            FactionConstants.Monster,
+            FactionConstants.World
+        })
+        {
+            var taskMaster = Instantiate(TaskmasterPrefab, transform);
+            taskMaster.name = faction;
+            taskMaster.FactionName = faction;
+
+            Factions.Taskmasters.Add(faction, taskMaster);
+        }
     }
 
     private void Update()

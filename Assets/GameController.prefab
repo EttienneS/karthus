@@ -48,7 +48,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 87f4ca2c45eb02047bdb55cc24284c3d, type: 2}
+  - {fileID: 2100000, guid: 779386f1026081545885b6da147544c6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -66,8 +66,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1765142349
+  m_SortingLayer: 9
   m_SortingOrder: 0
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
@@ -126,9 +126,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c9319c38c3fa594db9dd4391edf4906, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MouseSpriteRenderer: {fileID: 4395502561622324067}
   SelectionPreference: 0
   selectSquareImage: {fileID: 0}
+  TaskmasterPrefab: {fileID: 5367420200759325332, guid: bb2855416729c9e4fa7d826cb4623417,
+    type: 3}
+  MouseSpriteRenderer: {fileID: 4395502561622324067}
 --- !u!120 &1817309255
 LineRenderer:
   m_ObjectHideFlags: 0

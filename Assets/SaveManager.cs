@@ -80,15 +80,15 @@ public class SaveManager : MonoBehaviour
             Game.CreatureController.SpawnCreature(SavedCreature);
         }
 
-        foreach (var task in save.Tasks)
-        {
-            Game.Taskmaster.AddTask(task, task.Originator);
+        //foreach (var task in save.Tasks)
+        //{
+        //    Factions.Taskmasters[Data.Faction].AddTask(task, task.Originator);
 
-            if (task.AssignedCreatureId > 0)
-            {
-                Taskmaster.AssignTask(Game.CreatureController.CreatureIdLookup[task.AssignedCreatureId], task, task.Context);
-            }
-        }
+        //    if (task.AssignedCreatureId > 0)
+        //    {
+        //        Taskmaster.AssignTask(Game.CreatureController.CreatureIdLookup[task.AssignedCreatureId], task, task.Context);
+        //    }
+        //}
 
         save.CameraData.Load(Game.CameraController.Camera);
     }
@@ -118,7 +118,7 @@ public class SaveManager : MonoBehaviour
 
         Game.StructureController.StructureLookup.Clear();
 
-        Game.Taskmaster.Tasks.Clear();
+        //Factions.Taskmasters[Data.Faction].Tasks.Clear();
     }
 }
 
@@ -138,7 +138,7 @@ public class Save
     {
         Cells = Game.MapGrid.Cells.ToArray();
         Creatures = Game.CreatureController.Creatures.Select(c => c.Data).ToArray();
-        Tasks = Game.Taskmaster.Tasks.ToArray();
+        //Tasks = Factions.Taskmasters[Data.Faction].Tasks.ToArray();
         Time = Game.TimeManager.Data;
         CameraData = new CameraData(Game.CameraController.Camera);
     }

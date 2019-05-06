@@ -76,9 +76,9 @@ public class Structure : MonoBehaviour
             }
         }
 
-        if (Data.IsBluePrint && !Game.Taskmaster.Tasks.OfType<Build>().Any(t => t.Structure == Data))
+        if (Data.IsBluePrint && !Factions.Taskmasters[Data.Faction].Tasks.OfType<Build>().Any(t => t.Structure == Data))
         {
-            Game.Taskmaster.AddTask(new Build(Data, Data.Coordinates), Data.GetGameId());
+            Factions.Taskmasters[Data.Faction].AddTask(new Build(Data, Data.Coordinates), Data.GetGameId());
         }
     }
 }
@@ -104,6 +104,8 @@ public class StructureData
     public Dictionary<string, string> Properties = new Dictionary<string, string>();
 
     public List<string> RequireStrings;
+
+    public string Faction = FactionConstants.World;
 
     public string ShiftX;
 

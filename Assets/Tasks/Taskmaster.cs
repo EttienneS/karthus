@@ -11,6 +11,8 @@ public class Taskmaster : MonoBehaviour
     public const int RecyleTime = 3;
     public const int RecyleCount = 5;
 
+    internal string FactionName;
+
     public void Update()
     {
         if (Game.TimeManager.Data.Hour - LastRecyle > RecyleTime)
@@ -164,7 +166,7 @@ public class Taskmaster : MonoBehaviour
         Tasks.Add(task);
     }
 
-    public static void AssignTask(CreatureData creature, TaskBase task, string originator = "")
+    public void AssignTask(CreatureData creature, TaskBase task, string originator = "")
     {
         task.AssignedCreatureId = creature.Id;
 

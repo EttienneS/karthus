@@ -35,7 +35,7 @@ public class CreatureController : MonoBehaviour
             Hunger = Random.Range(0, 15),
             Thirst = Random.Range(35, 50),
             Energy = Random.Range(80, 100),
-            Faction = FactionConstants.PlayerFaction
+            Faction = FactionConstants.Player
         };
 
         var creature = SpawnCreature(Data);

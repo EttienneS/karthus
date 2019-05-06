@@ -51,7 +51,7 @@ public partial class Game // .Spawn
         {
             var c = CreatureController.Beastiary.First().Value.CloneJson();
             c.Coordinates = MapGrid.GetRandomCell().Coordinates;
-            c.Faction = FactionConstants.MonsterFaction;
+            c.Faction = FactionConstants.Monster;
 
             CreatureController.SpawnCreature(c);
         }

@@ -36,6 +36,7 @@
             }
 
             Structure.SetBlueprintState(false);
+            Structure.Faction = Creature.Faction;
             Creature.UpdateMemory(Context, MemoryType.Structure, Structure.GetGameId());
             return true;
         }
