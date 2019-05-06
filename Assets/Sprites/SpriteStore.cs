@@ -48,8 +48,15 @@ public class SpriteStore : MonoBehaviour
     public List<Sprite> LegSprites = new List<Sprite>();
     public List<Sprite> FootSprites = new List<Sprite>();
 
+    public Dictionary<string, Sprite> FixedSprites = new Dictionary<string, Sprite>();
+
     public void LoadCreatureSprites()
     {
+        foreach (var sprite in Resources.LoadAll<Sprite>("Sprites/Creature/Fixed"))
+        {
+            FixedSprites.Add(sprite.name, sprite);
+        }
+
         foreach (var sprite in Resources.LoadAll<Sprite>("Sprites/Creature/Face"))
         {
             if (sprite.name.StartsWith("face", StringComparison.OrdinalIgnoreCase))
@@ -154,6 +161,16 @@ public class SpriteStore : MonoBehaviour
             }
             return _mapSprites;
         }
+    }
+
+    internal Sprite GetFixedCreatureSprite(string spriteName)
+    {
+        if (FixedSprites.ContainsKey(spriteName))
+        {
+            return FixedSprites[spriteName];
+        }
+
+        return GetPlaceholder();
     }
 
     internal Sprite GetSpriteByName(string spriteName)

@@ -157,7 +157,7 @@ public class MapGrid : MonoBehaviour
 
         ResetSearchPriorities();
 
-        Game.CreatureController.SpawnCreatures();
+        
     }
 
     public CellData GetCellAtCoordinate(Coordinates coordintes)

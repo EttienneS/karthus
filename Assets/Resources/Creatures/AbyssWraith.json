@@ -1,0 +1,8 @@
+﻿{
+  "Name": "Abyss Wraith",
+  "Energy": 100.0,
+  "Hunger": 100.0,
+  "Thirst": 100.0,
+  "Speed": 10.0,
+  "Sprite": "AbyssWraith"
+}

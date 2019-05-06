@@ -219,6 +219,8 @@ public partial class Game : MonoBehaviour
 
         selectSquareImage.gameObject.SetActive(false);
         MouseSpriteRenderer.gameObject.SetActive(false);
+
+        InitialSpawn();
     }
 
     private void Update()
