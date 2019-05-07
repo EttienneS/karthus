@@ -24,7 +24,8 @@
             var food = Creature.CarriedItem;
             Creature.DropItem();
 
-            Creature.Thirst -= int.Parse(food.Properties["Quench"]);
+            Creature.ValueProperties[Prop.Thirst] -= int.Parse(food.Properties["Quench"]);
+
             Game.ItemController.DestoyItem(food);
 
             return true;

@@ -32,11 +32,12 @@ public class CreatureController : MonoBehaviour
             Name = CreatureHelper.GetRandomName(),
             Coordinates = spawnLocation.Coordinates,
             Id = Creatures.Count + 1,
-            Hunger = Random.Range(0, 15),
-            Thirst = Random.Range(35, 50),
-            Energy = Random.Range(80, 100),
             Faction = FactionConstants.Player
         };
+
+        Data.ValueProperties[Prop.Hunger] = Random.Range(0, 15);
+        Data.ValueProperties[Prop.Thirst] = Random.Range(35, 50);
+        Data.ValueProperties[Prop.Energy] = Random.Range(80, 100);
 
         var creature = SpawnCreature(Data);
         creature.ShowText("Awee!!!", Random.Range(1f, 3f));

@@ -95,48 +95,15 @@ public class Taskmaster : MonoBehaviour
 
     public TaskBase GetTask(Creature creature)
     {
-        TaskBase task;
+        TaskBase task = creature.Data.GetBehaviourTask();
 
-        if (creature.Data.Hunger > 50)
+        if (task == null)
         {
-            task = AddTask(new Eat("Food"), creature.Data.GetGameId());
+            task = GetNextAvailableTask(creature) ?? new Idle(creature.Data);
         }
-        else if (creature.Data.Thirst > 50)
-        {
-            task = AddTask(new Drink("Drink"), creature.Data.GetGameId());
-        }
-        else if (creature.Data.Energy < 15)
-        {
-            var bed = creature.Data.Self.Structures.FirstOrDefault(s => s.Properties.ContainsKey("RecoveryRate"));
 
-            if (bed == null)
-            {
-                bed = Game.StructureController.StructureLookup.Keys
-                                         .FirstOrDefault(s =>
-                                                !s.InUseByAnyone
-                                                && s.Properties.ContainsKey("RecoveryRate"));
-            }
-
-            if (bed == null)
-            {
-                task = AddTask(new Sleep(creature.Data.Coordinates, 0.25f), creature.Data.GetGameId());
-            }
-            else
-            {
-                task = AddTask(new Sleep(bed), creature.Data.GetGameId());
-            }
-        }
-        else
-        {
-            task = GetNextAvailableTask(creature);
-            if (task == null)
-            {
-                task = AddTask(new Idle(creature.Data), creature.Data.GetGameId());
-            }
-        }
         task.AssignedCreatureId = creature.Data.Id;
-
-        return task;
+        return AddTask(task, creature.Data.GetGameId());
     }
 
     internal void TaskComplete(TaskBase task)

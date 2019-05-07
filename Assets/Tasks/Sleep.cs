@@ -31,12 +31,12 @@ public class Sleep : TaskBase
     {
         if (Taskmaster.QueueComplete(SubTasks))
         {
-            if (Creature.Energy < Random.Range(80, 100))
+            if (Creature.ValueProperties[Prop.Energy] < Random.Range(80, 100))
             {
                 var wait = new Wait(0.5f, "Sleeping") { AssignedCreatureId = AssignedCreatureId };
                 AddSubTask(wait);
 
-                Creature.Energy += RecoveryRate;
+                Creature.ValueProperties[Prop.Energy] += RecoveryRate;
                 return false;
             }
 
@@ -45,7 +45,6 @@ public class Sleep : TaskBase
                 Creature.LinkedGameObject.ShowText("*stretch* Ow my back!", 1f);
             }
 
-            Creature.Animate = true;
             return true;
         }
 
@@ -57,7 +56,6 @@ public class Sleep : TaskBase
         if (_bed != null)
         {
             _bed.Reserve(Creature.GetGameId());
-            Creature.Animate = false;
         }
         Taskmaster.ProcessQueue(SubTasks);
     }

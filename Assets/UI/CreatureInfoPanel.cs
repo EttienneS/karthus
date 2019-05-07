@@ -4,12 +4,8 @@ using UnityEngine.UI;
 
 public class CreatureInfoPanel : MonoBehaviour
 {
-    
-
     public Text CreatureName;
-    public Text Hunger;
-    public Text Thirst;
-    public Text Energy;
+    public Text Properties;
     public Text Task;
 
     private bool _firstRun = true;
@@ -20,9 +16,7 @@ public class CreatureInfoPanel : MonoBehaviour
         {
             var children = GetComponentsInChildren<Text>().ToList();
             CreatureName = children.First(t => t.name == "CreatureName");
-            Hunger = children.First(t => t.name == "Hunger");
-            Thirst = children.First(t => t.name == "Thirst");
-            Energy = children.First(t => t.name == "Energy");
+            Properties = children.First(t => t.name == "Properties");
             Task = children.First(t => t.name == "Task");
 
             _firstRun = true;
@@ -36,9 +30,16 @@ public class CreatureInfoPanel : MonoBehaviour
         if (CurrentCreature != null)
         {
             CreatureName.text = CurrentCreature.Data.Name;
-            Hunger.text = CurrentCreature.Data.Hunger.ToString("0");
-            Thirst.text = CurrentCreature.Data.Thirst.ToString("0");
-            Energy.text = CurrentCreature.Data.Energy.ToString("0");
+            Properties.text = string.Empty;
+            foreach (var property in CurrentCreature.Data.ValueProperties)
+            {
+                Properties.text += $"{property.Key}:\t{property.Value.ToString("1")}\n";
+            }
+
+            foreach (var property in CurrentCreature.Data.StringProperties)
+            {
+                Properties.text += $"{property.Key}:\t{property.Value}\n";
+            }
 
             if (CurrentCreature.Data.Task != null)
             {
