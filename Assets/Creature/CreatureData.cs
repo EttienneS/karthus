@@ -7,16 +7,19 @@ public class CreatureData
     public const string SelfKey = "Self";
     public int CarriedItemId;
     public Coordinates Coordinates;
+
+    [JsonIgnore]
+    public Behaviours.GetBehaviourTaskDelegate GetBehaviourTask;
+
     public int Id;
     public Dictionary<string, Memory> Mind = new Dictionary<string, Memory>();
     public Direction MoveDirection = Direction.S;
     public string Name;
 
     public float Speed = 10f;
-    internal float InternalTick;
-
-    public Dictionary<string, float> ValueProperties = new Dictionary<string, float>();
     public Dictionary<string, string> StringProperties = new Dictionary<string, string>();
+    public Dictionary<string, float> ValueProperties = new Dictionary<string, float>();
+    internal float InternalTick;
 
     [JsonIgnore]
     public ItemData CarriedItem
@@ -39,6 +42,8 @@ public class CreatureData
             return Game.MapGrid.GetCellAtCoordinate(Coordinates);
         }
     }
+
+    public string Faction { get; set; }
 
     [JsonIgnore]
     public Creature LinkedGameObject
@@ -63,12 +68,20 @@ public class CreatureData
         }
     }
 
+    public string Sprite { get; set; }
+
     [JsonIgnore]
     public TaskBase Task { get; set; }
 
-    public string Sprite { get; set; }
-
-    public string Faction { get; set; }
+    public static CreatureData Load(string creatureData)
+    {
+        var data = JsonConvert.DeserializeObject<CreatureData>(creatureData, new JsonSerializerSettings
+        {
+            TypeNameHandling = TypeNameHandling.Auto,
+            NullValueHandling = NullValueHandling.Ignore,
+        });
+        return data;
+    }
 
     internal ItemData DropItem(Coordinates coordinates = null)
     {
@@ -147,53 +160,5 @@ public class CreatureData
     internal void UpdateSelfMemory(MemoryType memoryType, string info)
     {
         UpdateMemory(SelfKey, memoryType, info);
-    }
-
-    public static CreatureData Load(string creatureData)
-    {
-        var data = JsonConvert.DeserializeObject<CreatureData>(creatureData, new JsonSerializerSettings
-        {
-            TypeNameHandling = TypeNameHandling.Auto,
-            NullValueHandling = NullValueHandling.Ignore,
-        });
-
-        return data;
-    }
-
-    public TaskBase GetBehaviourTask()
-    {
-        TaskBase task = null;
-
-        if (ValueProperties[Prop.Hunger] > 50)
-        {
-            task = new Eat("Food");
-        }
-        else if (ValueProperties[Prop.Thirst] > 50)
-        {
-            task = new Drink("Drink");
-        }
-        else if (ValueProperties[Prop.Energy] < 15)
-        {
-            var bed = Self.Structures.FirstOrDefault(s => s.Properties.ContainsKey("RecoveryRate"));
-
-            if (bed == null)
-            {
-                bed = Game.StructureController.StructureLookup.Keys
-                                         .FirstOrDefault(s =>
-                                                !s.InUseByAnyone
-                                                && s.Properties.ContainsKey("RecoveryRate"));
-            }
-
-            if (bed == null)
-            {
-                task = new Sleep(Coordinates, 0.25f);
-            }
-            else
-            {
-                task = new Sleep(bed);
-            }
-        }
-
-        return task;
     }
 }

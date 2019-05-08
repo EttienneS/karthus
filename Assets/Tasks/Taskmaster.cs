@@ -95,8 +95,7 @@ public class Taskmaster : MonoBehaviour
 
     public TaskBase GetTask(Creature creature)
     {
-        TaskBase task = creature.Data.GetBehaviourTask();
-
+        var task = creature.Data.GetBehaviourTask?.Invoke(creature.Data);
         if (task == null)
         {
             task = GetNextAvailableTask(creature) ?? new Idle(creature.Data);

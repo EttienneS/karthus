@@ -32,7 +32,8 @@ public class CreatureController : MonoBehaviour
             Name = CreatureHelper.GetRandomName(),
             Coordinates = spawnLocation.Coordinates,
             Id = Creatures.Count + 1,
-            Faction = FactionConstants.Player
+            Faction = FactionConstants.Player,
+            GetBehaviourTask = Behaviours.PersonBehaviour
         };
 
         Data.ValueProperties[Prop.Hunger] = Random.Range(0, 15);
@@ -56,7 +57,6 @@ public class CreatureController : MonoBehaviour
     internal void DestroyCreature(Creature creature)
     {
         CreatureLookup.Remove(creature.Data);
-
         Destroy(creature.gameObject);
     }
 
@@ -71,6 +71,11 @@ public class CreatureController : MonoBehaviour
         creature.Data = creatureData;
         creature.transform.position = creature.Data.Coordinates.ToMapVector();
         creature.Data.Id = Creatures.Count + 1;
+
+        if (creature.Data.GetBehaviourTask == null)
+        {
+            creature.Data.GetBehaviourTask = Behaviours.MonsterBehaviour;
+        }
 
         SetSprite(creature);
         IndexCreature(creature);
