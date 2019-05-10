@@ -5,7 +5,6 @@ using UnityEngine.UI;
 public class CraftingScreen : MonoBehaviour
 {
     public DataDisplay DataPrefab;
-
     
     private StructureData _craftSource;
     public GameObject SourcePanel;

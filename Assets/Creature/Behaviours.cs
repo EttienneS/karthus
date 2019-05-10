@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using UnityEngine;
 
 public static class Behaviours
 {
@@ -6,7 +7,24 @@ public static class Behaviours
 
     public static TaskBase MonsterBehaviour(CreatureData creature)
     {
-        return new Sleep(creature.Coordinates, 2f);
+        TaskBase task = null;
+        if (Random.value > 0.5f)
+        {
+            var cell = Game.MapGrid.GetRandomCell();
+
+            while (cell.Bound)
+            {
+                cell = Game.MapGrid.GetRandomCell();
+            }
+
+            task = new Move(cell.Coordinates);
+        }
+        else
+        {
+            task = new Sleep(creature.Coordinates, 10f);
+        }
+
+        return task;
     }
 
     public static TaskBase PersonBehaviour(CreatureData creature)
