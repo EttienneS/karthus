@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ManaDisplay : MonoBehaviour
 {
-    public Text TextPrefab;
-
     public Dictionary<Mana, Tuple<Text, Text>> LabelDictionary = new Dictionary<Mana, Tuple<Text, Text>>();
+    public Text TextPrefab;
 
     public void EnsureDisplay(Mana mana)
     {
         if (!LabelDictionary.ContainsKey(mana))
         {
-            var title = Instantiate(TextPrefab);
-            var value = Instantiate(TextPrefab);
-            LabelDictionary.Add(mana, Tuple.Create(title, value));
+            LabelDictionary.Add(mana,
+                                Tuple.Create(
+                                    Instantiate(TextPrefab, transform),
+                                    Instantiate(TextPrefab, transform)));
         }
     }
 
