@@ -5,19 +5,30 @@ public static class Behaviours
 {
     public delegate TaskBase GetBehaviourTaskDelegate(CreatureData creature);
 
-    public static TaskBase MonsterBehaviour(CreatureData creature)
+    public static TaskBase ManaWraithBehaviour(CreatureData creature)
     {
         TaskBase task = null;
         if (Random.value > 0.5f)
         {
             var cell = Game.MapGrid.GetRandomCell();
 
+            var breaker = 0;
             while (cell.Bound)
             {
                 cell = Game.MapGrid.GetRandomCell();
+                breaker++;
+
+                if (breaker > 20)
+                {
+                    task = new Sleep(creature.Coordinates, 10f);
+                    break;
+                }
             }
 
-            task = new Move(cell.Coordinates);
+            if (!cell.Bound)
+            {
+                task = new Move(cell.Coordinates);
+            }
         }
         else
         {

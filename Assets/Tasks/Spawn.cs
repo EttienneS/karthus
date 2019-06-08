@@ -12,7 +12,7 @@
 
     public override bool Done()
     {
-        if (Taskmaster.QueueComplete(SubTasks))
+        if (Faction.QueueComplete(SubTasks))
         {
             FireRune(() => Game.CreatureController.SpawnPlayerAtLocation(Game.MapGrid.GetCellAtCoordinate(IdService.GetLocation(Originator))));
         }

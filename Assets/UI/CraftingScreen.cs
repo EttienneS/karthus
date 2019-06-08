@@ -38,7 +38,7 @@ public class CraftingScreen : MonoBehaviour
             AddDisplay(OptionsPanel.transform, craftingTask).Clicked += () => SetRecipe(craftingTask);
         }
 
-        foreach (Craft task in Factions.Taskmasters[FactionConstants.Player].GetTaskByOriginator(_craftSource.GetGameId()))
+        foreach (Craft task in FactionManager.Factions[FactionConstants.Player].GetTaskByOriginator(_craftSource.GetGameId()))
         {
             AddDisplay(QueuePanel.transform, task);
         }
@@ -75,7 +75,7 @@ public class CraftingScreen : MonoBehaviour
                 DoneEmote = SelectedRecipe.DoneEmote
             };
 
-            Factions.Taskmasters[FactionConstants.Player].AddTask(task, _craftSource.GetGameId());
+            FactionManager.Factions[FactionConstants.Player].AddTask(task, _craftSource.GetGameId());
             AddDisplay(QueuePanel.transform, SelectedRecipe);
         }
 
@@ -85,7 +85,7 @@ public class CraftingScreen : MonoBehaviour
     private void Scale()
     {
         OptionsPanel.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _craftSource.Tasks.Count * 70f);
-        QueuePanel.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Factions.Taskmasters[FactionConstants.Player].GetTaskByOriginator(_craftSource.GetGameId()).Count() * 70f);
+        QueuePanel.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, FactionManager.Factions[FactionConstants.Player].GetTaskByOriginator(_craftSource.GetGameId()).Count() * 70f);
 
         //OptionsPanel.transform.position = new Vector2(0, 0);
         //QueuePanel.transform.position = new Vector2(0, 0);

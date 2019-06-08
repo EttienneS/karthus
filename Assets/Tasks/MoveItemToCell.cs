@@ -19,7 +19,7 @@
 
     public override bool Done()
     {
-        if (Taskmaster.QueueComplete(SubTasks))
+        if (Faction.QueueComplete(SubTasks))
         {
             var item = Creature.DropItem(Coordinates);
             if (item != null && Reserve)

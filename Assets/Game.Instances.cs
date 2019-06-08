@@ -19,6 +19,20 @@ public partial class Game //.Instances
     private static StructureController _structureController;
     private static SunController _sunController;
     private static TimeManager _timeManager;
+    private static ManaDisplay _manaDisplay;
+
+    public static ManaDisplay ManaDisplay
+    {
+        get
+        {
+            if (_manaDisplay == null)
+            {
+                _manaDisplay = GameObject.Find(ControllerConstants.ManaDisplay).GetComponent<ManaDisplay>();
+            }
+
+            return _manaDisplay;
+        }
+    }
 
     public static CameraController CameraController
     {

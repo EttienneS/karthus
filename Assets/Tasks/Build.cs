@@ -28,7 +28,7 @@
 
     public override bool Done()
     {
-        if (Taskmaster.QueueComplete(SubTasks))
+        if (Faction.QueueComplete(SubTasks))
         {
             foreach (var item in Creature.Mind[Context][MemoryType.Item])
             {
@@ -50,6 +50,6 @@
             throw new TaskFailedException();
         }
 
-        Taskmaster.ProcessQueue(SubTasks);
+        Faction.ProcessQueue(SubTasks);
     }
 }

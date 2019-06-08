@@ -27,6 +27,6 @@ public class Idle : TaskBase
 
     public override bool Done()
     {
-        return Taskmaster.QueueComplete(SubTasks);
+        return Faction.QueueComplete(SubTasks);
     }
 }

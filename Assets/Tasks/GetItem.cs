@@ -28,7 +28,7 @@ public class GetItem : TaskBase
 
     public override bool Done()
     {
-        if (Item != null && Taskmaster.QueueComplete(SubTasks))
+        if (Item != null && Faction.QueueComplete(SubTasks))
         {
             if (Item.StockpileId != 0)
             {
@@ -91,7 +91,7 @@ public class GetItem : TaskBase
             UpdateTargetItem();
         }
 
-        Taskmaster.ProcessQueue(SubTasks);
+        Faction.ProcessQueue(SubTasks);
     }
 
     private void UpdateTargetItem()

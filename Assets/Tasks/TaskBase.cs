@@ -42,7 +42,7 @@ public class TaskBase
 
     public virtual void Update()
     {
-        Taskmaster.ProcessQueue(SubTasks);
+        Faction.ProcessQueue(SubTasks);
     }
 
     public void ShowBusyEmote()

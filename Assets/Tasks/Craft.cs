@@ -33,7 +33,7 @@
 
     public override bool Done()
     {
-        if (Taskmaster.QueueComplete(SubTasks))
+        if (Faction.QueueComplete(SubTasks))
         {
             if (RequiredItemNames.Length > 0)
             {

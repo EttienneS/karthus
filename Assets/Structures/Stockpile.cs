@@ -55,9 +55,9 @@ public class Stockpile : MonoBehaviour
     {
         if (Game.TimeManager.Paused) return;
 
-        if (Factions.Taskmasters[Data.Faction].Tasks.OfType<StockpileItem>().Count(t => t.StockpileId == Data.Id) < Data.MaxConcurrentTasks)
+        if (FactionManager.Factions[Data.Faction].Tasks.OfType<StockpileItem>().Count(t => t.StockpileId == Data.Id) < Data.MaxConcurrentTasks)
         {
-            Factions.Taskmasters[Data.Faction].AddTask(new StockpileItem(Data.ItemCategory, Data.Id), Data.GetGameId());
+            FactionManager.Factions[Data.Faction].AddTask(new StockpileItem(Data.ItemCategory, Data.Id), Data.GetGameId());
         }
     }
 }

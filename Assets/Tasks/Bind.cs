@@ -62,7 +62,7 @@ public class Bind : BaseRune
             _affectAbleCells = Game.MapGrid.GetCircle(Epicentre, Size).OrderBy(c => c.Coordinates.DistanceTo(Epicentre)).ToList();
         }
 
-        if (Taskmaster.QueueComplete(SubTasks))
+        if (Faction.QueueComplete(SubTasks))
         {
             CellData cell;
             if (EpicentreCell.Binding != Originator)

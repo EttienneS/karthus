@@ -26,7 +26,7 @@ public partial class OrderSelectionController //.Structure
                 {
                     var blueprint = Game.StructureController.GetStructureBluePrint(structureName);
                     cell.AddContent(blueprint.gameObject);
-                    Factions.Taskmasters[FactionConstants.Player].AddTask(new Build(blueprint.Data, cell.Coordinates), string.Empty);
+                    FactionManager.Factions[FactionConstants.Player].AddTask(new Build(blueprint.Data, cell.Coordinates), string.Empty);
                 }
             }
         };
@@ -77,12 +77,12 @@ public partial class OrderSelectionController //.Structure
                     }
                     else
                     {
-                        if (Factions.Taskmasters[FactionConstants.Player].Tasks.OfType<RemoveStructure>().Any(t => t.Structure == structure))
+                        if (FactionManager.Factions[FactionConstants.Player].Tasks.OfType<RemoveStructure>().Any(t => t.Structure == structure))
                         {
                             Debug.Log("Structure already flagged to remove");
                             continue;
                         }
-                        Factions.Taskmasters[FactionConstants.Player].AddTask(new RemoveStructure(structure, cell.Coordinates), string.Empty);
+                        FactionManager.Factions[FactionConstants.Player].AddTask(new RemoveStructure(structure, cell.Coordinates), string.Empty);
                         structure.LinkedGameObject.SpriteRenderer.color = ColorConstants.InvalidColor;
                     }
                 }

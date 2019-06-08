@@ -29,7 +29,7 @@ public class Sleep : TaskBase
 
     public override bool Done()
     {
-        if (Taskmaster.QueueComplete(SubTasks))
+        if (Faction.QueueComplete(SubTasks))
         {
             if (Creature.ValueProperties[Prop.Energy] < Random.Range(80, 100))
             {
@@ -57,6 +57,6 @@ public class Sleep : TaskBase
         {
             _bed.Reserve(Creature.GetGameId());
         }
-        Taskmaster.ProcessQueue(SubTasks);
+        Faction.ProcessQueue(SubTasks);
     }
 }

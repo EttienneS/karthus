@@ -14,7 +14,7 @@
 
     public override bool Done()
     {
-        if (Taskmaster.QueueComplete(SubTasks))
+        if (Faction.QueueComplete(SubTasks))
         {
             if (Creature.CarriedItem == null)
             {

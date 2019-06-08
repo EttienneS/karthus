@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5367420200759325333}
-  - component: {fileID: 5367420200759325332}
+  - component: {fileID: 4935293526009582328}
   m_Layer: 0
   m_Name: Taskmaster
   m_TagString: Untagged
@@ -31,7 +31,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5367420200759325332
+--- !u!114 &4935293526009582328
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -40,7 +40,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5367420200759325323}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_GeneratorAsset: {fileID: 0}
-  m_Script: {fileID: 11500000, guid: d93dd21a55abdfd43aa5fb629b33d8da, type: 3}
+  m_Script: {fileID: 11500000, guid: bef80bd3af34b5b4790fa036a9a6f54c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  LastRecyle: 0

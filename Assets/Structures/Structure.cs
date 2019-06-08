@@ -76,9 +76,9 @@ public class Structure : MonoBehaviour
             }
         }
 
-        if (Data.IsBluePrint && !Factions.Taskmasters[Data.Faction].Tasks.OfType<Build>().Any(t => t.Structure == Data))
+        if (Data.IsBluePrint && !FactionManager.Factions[Data.Faction].Tasks.OfType<Build>().Any(t => t.Structure == Data))
         {
-            Factions.Taskmasters[Data.Faction].AddTask(new Build(Data, Data.Coordinates), Data.GetGameId());
+            FactionManager.Factions[Data.Faction].AddTask(new Build(Data, Data.Coordinates), Data.GetGameId());
         }
     }
 }

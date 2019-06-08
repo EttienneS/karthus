@@ -20,7 +20,7 @@
 
     public override bool Done()
     {
-        if (Taskmaster.QueueComplete(SubTasks))
+        if (Faction.QueueComplete(SubTasks))
         {
             foreach (var itemName in Game.StructureController.StructureDataReference[Structure.Name].Require)
             {

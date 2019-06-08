@@ -74,7 +74,7 @@ public class CreatureController : MonoBehaviour
 
         if (creature.Data.GetBehaviourTask == null)
         {
-            creature.Data.GetBehaviourTask = Behaviours.MonsterBehaviour;
+            creature.Data.GetBehaviourTask = Behaviours.ManaWraithBehaviour;
         }
 
         SetSprite(creature);

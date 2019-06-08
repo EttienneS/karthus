@@ -13,7 +13,7 @@ public partial class Game : MonoBehaviour
     public SelectionPreference SelectionPreference = SelectionPreference.CreatureOrStructure;
     public RectTransform selectSquareImage;
 
-    public Taskmaster TaskmasterPrefab;
+    public Faction FactionPrefab;
 
     internal LineRenderer LineRenderer;
     internal List<CellData> SelectedCells = new List<CellData>();
@@ -228,18 +228,28 @@ public partial class Game : MonoBehaviour
 
     private void InitFactions()
     {
-        foreach (var faction in new []
+        foreach (var factionName in new[]
         {
             FactionConstants.Player,
             FactionConstants.Monster,
             FactionConstants.World
         })
         {
-            var taskMaster = Instantiate(TaskmasterPrefab, transform);
-            taskMaster.name = faction;
-            taskMaster.FactionName = faction;
+            var faction = Instantiate(FactionPrefab, transform);
+            faction.name = factionName;
+            faction.FactionName = factionName;
 
-            Factions.Taskmasters.Add(faction, taskMaster);
+            faction.Mana.Add(ManaColor.Green, GreenMana.GetBase(10));
+
+            if (factionName == FactionConstants.Player)
+            {
+                foreach (var mana in faction.Mana)
+                {
+                    ManaDisplay.EnsureDisplay(mana.Value);
+                }
+            }
+
+            FactionManager.Factions.Add(factionName, faction);
         }
     }
 
