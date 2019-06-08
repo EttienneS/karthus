@@ -1,32 +1,5 @@
 ﻿using System;
-
-public class GreenMana
-{
-    public static Mana GetBase(float startingTotal = 0)
-    {
-        return new Mana(ManaColor.Green, CastGreen, GainGreen, BurnGreen)
-        {
-            Total = startingTotal,
-        };
-    }
-
-    public static void CastGreen(float amount)
-    {
-    }
-
-    public static void BurnGreen(float amount)
-    {
-    }
-
-    public static void GainGreen(float amount)
-    {
-    }
-}
-
-public enum ManaColor
-{
-    Red, Green, Blue, White, Black
-}
+using UnityEngine;
 
 public class Mana
 {
@@ -38,10 +11,9 @@ public class Mana
         Color = color;
     }
 
-    public ManaColor Color { get; set; }
-
     public Action<float> BurnAction { get; set; }
     public Action<float> CastAction { get; set; }
+    public ManaColor Color { get; set; }
     public Action<float> GainAction { get; set; }
 
     public float Total { get; set; }
@@ -62,5 +34,29 @@ public class Mana
     {
         Total += amount;
         GainAction?.Invoke(amount);
+    }
+
+    internal Color GetActualColor()
+    {
+        switch (Color)
+        {
+            case ManaColor.Green:
+                return new Color(0, 0.6f, 0);
+
+            case ManaColor.Blue:
+                return UnityEngine.Color.blue;
+
+            case ManaColor.Black:
+                return UnityEngine.Color.black;
+
+            case ManaColor.White:
+                return UnityEngine.Color.white;
+
+            case ManaColor.Red:
+                return UnityEngine.Color.red;
+
+            default:
+                throw new NotImplementedException();
+        }
     }
 }
