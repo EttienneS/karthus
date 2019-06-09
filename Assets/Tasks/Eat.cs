@@ -6,17 +6,16 @@
 
     public Eat(string itemCategory)
     {
-        //AddSubTask(new GetItem(itemCategory, true, GetItem.SearchBy.Category));
         AddSubTask(new Wait(2f, "Eating"));
-
-        Message = $"Eating {itemCategory}";
+        Message = $"Eating Green";
     }
 
     public override bool Done()
     {
         if (Faction.QueueComplete(SubTasks))
         {
-           
+            FactionManager.Factions[Creature.Faction].Mana[ManaColor.Green].Burn(1);
+            Creature.ValueProperties[Prop.Hunger] -= 50;
             return true;
         }
 

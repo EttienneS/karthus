@@ -100,7 +100,6 @@ public class Creature : MonoBehaviour
             }
 
             Data.ValueProperties[Prop.Hunger] += Random.value;
-            Data.ValueProperties[Prop.Thirst] += Random.value;
             Data.ValueProperties[Prop.Energy] -= Random.Range(0.1f, 0.25f);
         }
 

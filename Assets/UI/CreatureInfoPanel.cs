@@ -33,7 +33,7 @@ public class CreatureInfoPanel : MonoBehaviour
             Properties.text = string.Empty;
             foreach (var property in CurrentCreature.Data.ValueProperties)
             {
-                Properties.text += $"{property.Key}:\t{property.Value.ToString("1")}\n";
+                Properties.text += $"{property.Key}:\t{property.Value.ToString()}\n";
             }
 
             foreach (var property in CurrentCreature.Data.StringProperties)
