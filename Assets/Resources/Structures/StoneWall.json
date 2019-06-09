@@ -2,7 +2,6 @@
   "Name": "Stone Wall",
   "SpriteName": "StoneWall",
   "Tiled": "False",
-  "RequireStrings": [ "4:Rock" ],
   "TravelCost": "-1",
   "StructureType": "Wall",
   "Scatter": "False",

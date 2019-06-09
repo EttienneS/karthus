@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -10,14 +9,12 @@ public class CellData
 
     public CellType CellType;
 
-    public List<ItemData> ContainedItems = new List<ItemData>();
 
     public Coordinates Coordinates;
 
     [JsonIgnore]
     public CellData[] Neighbors = new CellData[8];
 
-    public StockpileData Stockpile;
 
     public StructureData Structure;
 
@@ -87,35 +84,14 @@ public class CellData
 
     public void AddContent(GameObject gameObject, bool force = false)
     {
-        var item = gameObject.GetComponent<Item>();
         var structure = gameObject.GetComponent<Structure>();
-        var stockpile = gameObject.GetComponent<Stockpile>();
 
         var scatterIntensity = 0.3f;
         var scatter = false;
 
         gameObject.transform.position = Coordinates.ToMapVector();
 
-        if (item != null)
-        {
-            if (item.Cell != null)
-            {
-                item.Cell.ContainedItems.Remove(item.Data);
-            }
-
-            if (Stockpile != null && Stockpile.ItemCategory == item.Data.Category)
-            {
-                Stockpile.AddItem(item.Data);
-            }
-
-            scatter = true;
-
-            ContainedItems.Add(item.Data);
-            item.Cell = this;
-
-            item.SpriteRenderer.sortingOrder = item.Data.Id;
-        }
-        else if (structure != null)
+        if (structure != null)
         {
             if (force)
             {
@@ -135,11 +111,6 @@ public class CellData
             structure.SpriteRenderer.sortingOrder = MapConstants.MapSize - Coordinates.Y;
 
             ColorStructure();
-        }
-        else if (stockpile != null)
-        {
-            stockpile.Data.Coordinates = Coordinates;
-            Stockpile = stockpile.Data;
         }
 
         if (scatter)

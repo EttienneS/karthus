@@ -15,10 +15,10 @@
 
         // AddSubTask(new ClearCell(Coordinates));
 
-        foreach (var requiredItem in structure.Require)
-        {
-            AddSubTask(new MoveItemToCell(requiredItem, Coordinates, true, true, GetItem.SearchBy.Name));
-        }
+        //foreach (var requiredItem in structure.Require)
+        //{
+        //    AddSubTask(new MoveItemToCell(requiredItem, Coordinates, true, true, GetItem.SearchBy.Name));
+        //}
 
         AddSubTask(new Wait(3f, "Building"));
         AddSubTask(new Move(Game.MapGrid.GetPathableNeighbour(Coordinates)));
@@ -30,10 +30,10 @@
     {
         if (Faction.QueueComplete(SubTasks))
         {
-            foreach (var item in Creature.Mind[Context][MemoryType.Item])
-            {
-                Game.ItemController.DestroyItem(IdService.GetItemFromId(item));
-            }
+        //    foreach (var item in Creature.Mind[Context][MemoryType.Item])
+        //    {
+        //        Game.ItemController.DestroyItem(IdService.GetItemFromId(item));
+        //    }
 
             Structure.SetBlueprintState(false);
             Structure.Faction = Creature.Faction;

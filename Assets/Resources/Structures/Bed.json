@@ -2,7 +2,6 @@
   "Name": "Bed",
   "SpriteName": "Bed",
   "Tiled": "False",
-  "RequireStrings": [ "5:Wood" ],
   "TravelCost": "4",
   "StructureType": "Bed",
   "Scatter": "False",

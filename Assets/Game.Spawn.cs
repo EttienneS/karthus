@@ -29,24 +29,6 @@ public partial class Game // .Spawn
         var waterCell = midCell.GetNeighbor(Direction.N);
         waterCell.CellType = CellType.Water;
 
-        var foodCell = midCell.GetNeighbor(Direction.SE);
-        for (var i = 0; i < 30; i++)
-        {
-            foodCell.AddContent(ItemController.GetItem("Apple").gameObject);
-        }
-
-        var woodCell = midCell.GetNeighbor(Direction.SW);
-        for (var i = 0; i < 15; i++)
-        {
-            woodCell.AddContent(ItemController.GetItem("Rock").gameObject);
-        }
-
-        var rockCell = midCell.GetNeighbor(Direction.S);
-        for (var i = 0; i < 15; i++)
-        {
-            rockCell.AddContent(ItemController.GetItem("Wood").gameObject);
-        }
-
         for (int i = 0; i < 3; i++)
         {
             var c = CreatureController.Beastiary.First().Value.CloneJson();

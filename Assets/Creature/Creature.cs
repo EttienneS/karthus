@@ -68,17 +68,6 @@ public class Creature : MonoBehaviour
         }
     }
 
-    private void CarryItem()
-    {
-        if (Data.CarriedItemId > 0)
-        {
-            var item = Game.ItemController.ItemDataLookup[Data.CarriedItem];
-
-            item.transform.position = transform.position;
-            item.SpriteRenderer.sortingLayerName = LayerConstants.CarriedItem;
-        }
-    }
-
     private void UpdateFloatingText()
     {
         if (RemainingTextDuration > 0)
@@ -120,7 +109,6 @@ public class Creature : MonoBehaviour
             ShowText(thoughts[Random.Range(0, thoughts.Count - 1)], 2f);
         }
 
-        CarryItem();
         UpdateFloatingText();
         UpdateSprite();
     }

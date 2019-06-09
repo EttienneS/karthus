@@ -29,10 +29,7 @@ public class DataDisplay : MonoBehaviour
         SetData(structure.Name, structure.Name, Game.SpriteStore.GetSpriteByName(structure.SpriteName));
     }
 
-    internal void SetData(ItemData item)
-    {
-        SetData(item.Name, item.Name, Game.SpriteStore.GetSpriteByName(item.SpriteName));
-    }
+  
 
     internal void SetData(CellData cell)
     {

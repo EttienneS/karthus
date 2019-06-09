@@ -11,7 +11,6 @@ public class CraftingScreen : MonoBehaviour
     public GameObject OptionsPanel;
     public GameObject QueuePanel;
 
-    public Craft SelectedRecipe;
 
     public Text RequirementsText;
     public Image RecipeImage;
@@ -26,22 +25,22 @@ public class CraftingScreen : MonoBehaviour
         var dataDisplay = Instantiate(DataPrefab, SourcePanel.transform);
         dataDisplay.SetData(craftSource);
 
-        var first = true;
-        foreach (var craftingTask in craftSource.Tasks.OfType<Craft>())
-        {
-            if (first)
-            {
-                SetRecipe(craftingTask);
-                first = false;
-            }
+        //var first = true;
+        //foreach (var craftingTask in craftSource.Tasks.OfType<Craft>())
+        //{
+        //    if (first)
+        //    {
+        //        SetRecipe(craftingTask);
+        //        first = false;
+        //    }
 
-            AddDisplay(OptionsPanel.transform, craftingTask).Clicked += () => SetRecipe(craftingTask);
-        }
+        //    AddDisplay(OptionsPanel.transform, craftingTask).Clicked += () => SetRecipe(craftingTask);
+        //}
 
-        foreach (Craft task in FactionManager.Factions[FactionConstants.Player].GetTaskByOriginator(_craftSource.GetGameId()))
-        {
-            AddDisplay(QueuePanel.transform, task);
-        }
+        //foreach (Craft task in FactionManager.Factions[FactionConstants.Player].GetTaskByOriginator(_craftSource.GetGameId()))
+        //{
+        //    AddDisplay(QueuePanel.transform, task);
+        //}
 
         Scale();
     }
@@ -66,17 +65,17 @@ public class CraftingScreen : MonoBehaviour
     {
         for (var i = 0; i < amount; i++)
         {
-            var task = new Craft(SelectedRecipe.OutputItemName,
-                                 SelectedRecipe.RequiredItemNames,
-                                 _craftSource.Coordinates,
-                                 SelectedRecipe.CraftTime)
-            {
-                BusyEmote = SelectedRecipe.BusyEmote,
-                DoneEmote = SelectedRecipe.DoneEmote
-            };
+            //var task = new Craft(SelectedRecipe.OutputItemName,
+            //                     SelectedRecipe.RequiredItemNames,
+            //                     _craftSource.Coordinates,
+            //                     SelectedRecipe.CraftTime)
+            //{
+            //    BusyEmote = SelectedRecipe.BusyEmote,
+            //    DoneEmote = SelectedRecipe.DoneEmote
+            //};
 
-            FactionManager.Factions[FactionConstants.Player].AddTask(task, _craftSource.GetGameId());
-            AddDisplay(QueuePanel.transform, SelectedRecipe);
+            //FactionManager.Factions[FactionConstants.Player].AddTask(task, _craftSource.GetGameId());
+            //AddDisplay(QueuePanel.transform, SelectedRecipe);
         }
 
         Scale();
@@ -91,26 +90,26 @@ public class CraftingScreen : MonoBehaviour
         //QueuePanel.transform.position = new Vector2(0, 0);
     }
 
-    private DataDisplay AddDisplay(Transform parent, Craft recipe)
-    {
-        var display = Instantiate(DataPrefab, parent);
-        display.SetData(recipe.OutputItemName, recipe.OutputItemName, Game.SpriteStore.GetSpriteByName(recipe.OutputItemName));
+    //private DataDisplay AddDisplay(Transform parent, Craft recipe)
+    //{
+    //    var display = Instantiate(DataPrefab, parent);
+    //    display.SetData(recipe.OutputItemName, recipe.OutputItemName, Game.SpriteStore.GetSpriteByName(recipe.OutputItemName));
 
-        return display;
-    }
+    //    return display;
+    //}
 
-    public void SetRecipe(Craft task)
-    {
-        SelectedRecipe = task;
-        RequirementsText.text = string.Empty;
+    //public void SetRecipe(Craft task)
+    //{
+    //    SelectedRecipe = task;
+    //    RequirementsText.text = string.Empty;
 
-        foreach (var item in task.RequiredItemNames)
-        {
-            RequirementsText.text += $"- {item}\n";
-        }
+    //    foreach (var item in task.RequiredItemNames)
+    //    {
+    //        RequirementsText.text += $"- {item}\n";
+    //    }
 
-        RecipeImage.sprite = Game.SpriteStore.GetSpriteByName(task.OutputItemName);
-    }
+    //    RecipeImage.sprite = Game.SpriteStore.GetSpriteByName(task.OutputItemName);
+    //}
 
     public void Hide()
     {

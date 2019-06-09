@@ -282,20 +282,12 @@ public class MapGrid : MonoBehaviour
 
     internal void DestroyCell(CellData cell)
     {
-        foreach (var item in cell.ContainedItems.ToArray())
-        {
-            Game.ItemController.DestroyItem(item);
-        }
 
         if (cell.Structure != null)
         {
             Game.StructureController.DestroyStructure(cell.Structure);
         }
 
-        if (cell.Stockpile != null)
-        {
-            Game.StockpileController.DestroyStockpile(cell.Stockpile);
-        }
     }
 
     internal Direction GetDirection(CellData fromCell, CellData toCell)

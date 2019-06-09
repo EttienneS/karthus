@@ -7,7 +7,6 @@
     "Size": "10"
   },
   "Buildable": true,
-  "RequireStrings": [ "5:Rock" ],
   "SpriteName": "runeBlue_slab_001",
   "Tasks": [],
   "Tiled": false,
