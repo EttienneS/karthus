@@ -1,5 +1,4 @@
-﻿using System.IO;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
@@ -18,8 +17,6 @@ public class CameraController : MonoBehaviour
 
     private float _startTime;
 
-   
-
     public void MoveToViewPoint(Vector3 panDesitnation)
     {
         _startTime = Time.time;
@@ -29,7 +26,6 @@ public class CameraController : MonoBehaviour
 
         _panning = true;
     }
-
 
     public void Start()
     {

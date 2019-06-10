@@ -9,17 +9,28 @@ public partial class Game //.Instances
     private static CreatureInfoPanel _creatureInfoPanel;
     private static FileController _fileController;
     private static Game _gameInstance;
-    private static ItemController _itemController;
     private static MapGrid _mapGrid;
     private static OrderSelectionController _orderSelectionController;
     private static OrderTrayController _orderTrayController;
     private static SaveManager _saveManager;
     private static SpriteStore _spriteStore;
-    private static StockpileController _stockpileController;
     private static StructureController _structureController;
     private static SunController _sunController;
-    private static Taskmaster _taskmaster;
     private static TimeManager _timeManager;
+    private static ManaDisplay _manaDisplay;
+
+    public static ManaDisplay ManaDisplay
+    {
+        get
+        {
+            if (_manaDisplay == null)
+            {
+                _manaDisplay = GameObject.Find(ControllerConstants.ManaDisplay).GetComponent<ManaDisplay>();
+            }
+
+            return _manaDisplay;
+        }
+    }
 
     public static CameraController CameraController
     {
@@ -108,19 +119,6 @@ public partial class Game //.Instances
         }
     }
 
-    public static ItemController ItemController
-    {
-        get
-        {
-            if (_itemController == null)
-            {
-                _itemController = GameObject.Find(ControllerConstants.ItemController).GetComponent<ItemController>();
-            }
-
-            return _itemController;
-        }
-    }
-
     public static MapGrid MapGrid
     {
         get
@@ -180,23 +178,9 @@ public partial class Game //.Instances
             if (_spriteStore == null)
             {
                 _spriteStore = GameObject.Find(ControllerConstants.SpriteController).GetComponent<SpriteStore>();
-                _spriteStore.LoadResources();
             }
 
             return _spriteStore;
-        }
-    }
-
-    public static StockpileController StockpileController
-    {
-        get
-        {
-            if (_stockpileController == null)
-            {
-                _stockpileController = GameObject.Find(ControllerConstants.StockpileController).GetComponent<StockpileController>();
-            }
-
-            return _stockpileController;
         }
     }
 
@@ -223,19 +207,6 @@ public partial class Game //.Instances
             }
 
             return _sunController;
-        }
-    }
-
-    public static Taskmaster Taskmaster
-    {
-        get
-        {
-            if (_taskmaster == null)
-            {
-                _taskmaster = GameObject.Find("Taskmaster").GetComponent<Taskmaster>();
-            }
-
-            return _taskmaster;
         }
     }
 

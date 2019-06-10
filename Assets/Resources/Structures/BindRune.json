@@ -6,8 +6,10 @@
     "PowerRate": "0.5",
     "Size": "10"
   },
+  "ManaCost": {
+    "Blue": "5"
+  },
   "Buildable": true,
-  "RequireStrings": [ "5:Rock" ],
   "SpriteName": "runeBlue_slab_001",
   "Tasks": [],
   "Tiled": false,

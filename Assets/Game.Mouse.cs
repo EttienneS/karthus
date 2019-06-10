@@ -9,6 +9,7 @@ public partial class Game // .Mouse
     public Rotate RotateMouseLeft;
 
     public delegate void Rotate();
+
     public delegate bool ValidateMouseSpriteDelegate(CellData currentCell);
 
     public void DisableMouseSprite()

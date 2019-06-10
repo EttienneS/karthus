@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 public class CellInfoPanel : MonoBehaviour
 {
-    
     public Text CellName;
     public Text CellContent;
 
@@ -28,11 +27,6 @@ public class CellInfoPanel : MonoBehaviour
         {
             CellName.text = _cell.Coordinates.ToString();
             CellContent.text = string.Empty;
-
-            foreach (var item in _cell.ContainedItems.GroupBy(g => g.Name))
-            {
-                CellContent.text += $"{item.Key}:\t{item.Count()}\n";
-            }
 
             CellContent.text += "\n";
 

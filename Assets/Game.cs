@@ -13,6 +13,8 @@ public partial class Game : MonoBehaviour
     public SelectionPreference SelectionPreference = SelectionPreference.CreatureOrStructure;
     public RectTransform selectSquareImage;
 
+    public Faction FactionPrefab;
+
     internal LineRenderer LineRenderer;
     internal List<CellData> SelectedCells = new List<CellData>();
     internal List<Creature> SelectedCreatures = new List<Creature>();
@@ -70,7 +72,7 @@ public partial class Game : MonoBehaviour
         foreach (var structure in SelectedStructures)
         {
             var cell = MapGrid.GetCellAtCoordinate(structure.Coordinates);
-            structure.LinkedGameObject.SpriteRenderer.color = cell.Bound ? ColorConstants.BaseColor : 
+            structure.LinkedGameObject.SpriteRenderer.color = cell.Bound ? ColorConstants.BaseColor :
                                                                            ColorConstants.UnboundStructureColor;
         }
         SelectedStructures.Clear();
@@ -219,6 +221,40 @@ public partial class Game : MonoBehaviour
 
         selectSquareImage.gameObject.SetActive(false);
         MouseSpriteRenderer.gameObject.SetActive(false);
+
+        InitFactions();
+        InitialSpawn();
+    }
+
+    private void InitFactions()
+    {
+        foreach (var factionName in new[]
+        {
+            FactionConstants.Player,
+            FactionConstants.Monster,
+            FactionConstants.World
+        })
+        {
+            var faction = Instantiate(FactionPrefab, transform);
+            faction.name = factionName;
+            faction.FactionName = factionName;
+
+            faction.ManaPool.Add(ManaColor.Red, RedMana.GetBase(10));
+            faction.ManaPool.Add(ManaColor.Green, GreenMana.GetBase(10));
+            faction.ManaPool.Add(ManaColor.Blue, BlueMana.GetBase(10));
+            faction.ManaPool.Add(ManaColor.Black, BlackMana.GetBase(10));
+            faction.ManaPool.Add(ManaColor.White, WhiteMana.GetBase(10));
+
+            if (factionName == FactionConstants.Player)
+            {
+                foreach (var mana in faction.ManaPool)
+                {
+                    ManaDisplay.EnsureDisplay(mana.Value);
+                }
+            }
+
+            FactionManager.Factions.Add(factionName, faction);
+        }
     }
 
     private void Update()

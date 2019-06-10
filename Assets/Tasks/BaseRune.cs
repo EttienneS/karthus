@@ -24,7 +24,7 @@ public class BaseRune : TaskBase
 
     public override bool Done()
     {
-        if (Taskmaster.QueueComplete(SubTasks))
+        if (Faction.QueueComplete(SubTasks))
         {
             FireRune(null);
         }

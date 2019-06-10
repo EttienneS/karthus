@@ -4,29 +4,22 @@
     {
     }
 
-    public Eat(string itemCategory)
-    {
-        AddSubTask(new GetItem(itemCategory, true, GetItem.SearchBy.Category));
-        AddSubTask(new Wait(2f, "Eating"));
+    public ManaColor FoodColor;
 
-        Message = $"Eating {itemCategory}";
+    public Eat(ManaColor foodColor)
+    {
+        FoodColor = foodColor;
+        AddSubTask(new Wait(2f, $"Eating {foodColor}"));
     }
 
     public override bool Done()
     {
-        if (Taskmaster.QueueComplete(SubTasks))
+        if (Faction.QueueComplete(SubTasks))
         {
-            if (Creature.CarriedItem == null)
-            {
-                throw new TaskFailedException("No food to eat");
-            }
-
-            var food = Creature.CarriedItem;
-            Creature.DropItem();
-
-            Creature.Hunger -= int.Parse(food.Properties["Nutrition"]);
-            Game.ItemController.DestoyItem(food);
-
+            FactionManager.Factions[Creature.Faction].ManaPool[FoodColor].Burn(1);
+            Creature.GainMana(FoodColor);
+            Creature.BurnMana(FoodColor);
+            Creature.ValueProperties[Prop.Hunger] -= 50;
             return true;
         }
 

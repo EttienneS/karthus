@@ -49,7 +49,7 @@ public class Construct
         var lineCount = newPlan.Count;
         for (var i = 0; i < (longest - lineCount); i++)
         {
-            var line = string.Empty.PadRight(longest, '.'); 
+            var line = string.Empty.PadRight(longest, '.');
             newPlan.Add(line);
         }
 

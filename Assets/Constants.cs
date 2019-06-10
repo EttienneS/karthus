@@ -2,8 +2,8 @@
 
 public static class ColorConstants
 {
-    public static Color BluePrintColor = new Color(0.3f, 1f, 1f, 0.4f);
     public static Color BaseColor = new Color(0.8f, 0.8f, 0.8f);
+    public static Color BluePrintColor = new Color(0.3f, 1f, 1f, 0.4f);
     public static Color InvalidColor = Color.red;
     public static Color UnboundStructureColor = new Color(0.66f, 0.18f, 0.6f, 0.6f);
 }
@@ -12,14 +12,15 @@ public static class ControllerConstants
 {
     public const string CameraController = "Main Camera";
     public const string CreatureController = "CreatureController";
+    public const string GameController = "GameController";
     public const string ItemController = "ItemController";
     public const string MapController = "Map";
+    public const string OrderSelectionController = "OrderPanel";
     public const string SpriteController = "SpriteStore";
     public const string StockpileController = "StockpileController";
     public const string StructureController = "StructureController";
     public const string TimeController = "TimeManager";
-    public const string GameController = "GameController";
-    public const string OrderSelectionController = "OrderPanel";
+    public const string ManaDisplay = "ManaDisplay";
 }
 
 public static class LayerConstants

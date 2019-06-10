@@ -51,7 +51,6 @@ public partial class OrderSelectionController : MonoBehaviour
         Game.CraftingScreen.gameObject.SetActive(false);
 
         BuildButton = CreateOrderButton(DefaultBuildText, BuildTypeClicked, "hammer", false);
-        StockpileButton = CreateOrderButton(DefaultStockpileText, StockpileTypeClicked, "box", false);
         TaskButton = CreateOrderButton(DefaultDesignateText, DesignateTypeClicked, "designate", false);
         ConstructButton = CreateOrderButton(DefaultConstructText, ConstructTypeClicked, "construct", false);
     }

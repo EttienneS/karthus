@@ -18,9 +18,9 @@
 
     public override bool Done()
     {
-        if (Taskmaster.QueueComplete(SubTasks))
+        if (Faction.QueueComplete(SubTasks))
         {
-            Target.SpawnYield(Game.MapGrid.GetCellAtCoordinate(Target.Coordinates));
+            //Target.SpawnYield(Game.MapGrid.GetCellAtCoordinate(Target.Coordinates));
             Game.StructureController.DestroyStructure(Target);
             return true;
         }

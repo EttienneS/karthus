@@ -2,8 +2,11 @@
   "Name": "Bed",
   "SpriteName": "Bed",
   "Tiled": "False",
-  "RequireStrings": [ "5:Wood" ],
   "TravelCost": "4",
+  "ManaCost": {
+    "Green": "1",
+    "Red": "1"
+  },
   "StructureType": "Bed",
   "Scatter": "False",
   "Buildable": "True",

@@ -8,6 +8,7 @@ public class DataDisplay : MonoBehaviour
     public Text Title;
 
     public delegate void Click();
+
     public event Click Clicked;
 
     public void OnClick()
@@ -27,11 +28,6 @@ public class DataDisplay : MonoBehaviour
         SetData(structure.Name, structure.Name, Game.SpriteStore.GetSpriteByName(structure.SpriteName));
     }
 
-    internal void SetData(ItemData item)
-    {
-        SetData(item.Name, item.Name, Game.SpriteStore.GetSpriteByName(item.SpriteName));
-    }
-
     internal void SetData(CellData cell)
     {
         SetData(cell.Coordinates.ToString(), cell.Coordinates.ToString(), Game.SpriteStore.MapSpriteTypeDictionary[cell.CellType.ToString()][0]);
@@ -40,8 +36,8 @@ public class DataDisplay : MonoBehaviour
     internal void SetData(TaskBase task)
     {
         SetData(task.GetType().Name, task.Message, task.AssignedCreatureId > 0 ?
-                                                        task.Creature.LinkedGameObject.FrontSprites[0] :
-                                                        Game.SpriteStore.GetPlaceholder());
+                                                   task.Creature.LinkedGameObject.CreatureSprite.GetIcon() :
+                                                   Game.SpriteStore.GetPlaceholder());
 
         if (task.Failed)
         {

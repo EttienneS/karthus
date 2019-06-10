@@ -156,8 +156,6 @@ public class MapGrid : MonoBehaviour
         Populatecells();
 
         ResetSearchPriorities();
-
-        Game.CreatureController.SpawnCreatures();
     }
 
     public CellData GetCellAtCoordinate(Coordinates coordintes)
@@ -282,19 +280,9 @@ public class MapGrid : MonoBehaviour
 
     internal void DestroyCell(CellData cell)
     {
-        foreach (var item in cell.ContainedItems.ToArray())
-        {
-            Game.ItemController.DestroyItem(item);
-        }
-
         if (cell.Structure != null)
         {
             Game.StructureController.DestroyStructure(cell.Structure);
-        }
-
-        if (cell.Stockpile != null)
-        {
-            Game.StockpileController.DestroyStockpile(cell.Stockpile);
         }
     }
 
@@ -622,9 +610,26 @@ public class MapGrid : MonoBehaviour
 
             if (draws < maxDraws && Random.value > 0.9f)
             {
+                var breaker = 0;
                 for (int i = 0; i < maxDraws - draws; i++)
                 {
-                    RefreshCell(GetRandomCell());
+                    var cell = GetRandomCell();
+
+                    if (!cell.Bound || cell.CellType == CellType.Water)
+                    {
+                        RefreshCell(cell);
+                    }
+                    else
+                    {
+                        i--;
+                        breaker++;
+                    }
+
+                    if (breaker > 100)
+                    {
+                        // after a 100 misses stop trying
+                        break;
+                    }
                 }
             }
 

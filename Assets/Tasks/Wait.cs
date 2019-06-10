@@ -1,47 +1,42 @@
 ﻿using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class Wait : TaskBase
 {
     public float Duration;
     public float ElapsedTime;
     public float LastFacingChange;
-    public bool ChangeFacing;
     public string Reason;
+    public bool Emote;
 
     public Wait()
     {
     }
 
-    public Wait(float duration, string reason, bool changeFacing = false)
+    public Wait(float duration, string reason, bool emote = false)
     {
         Duration = duration;
         Reason = reason;
         ElapsedTime = 0;
         LastFacingChange = 0;
-        ChangeFacing = changeFacing;
-
+        Emote = emote;
         Message = $"{Reason} {Duration}";
     }
 
     public override bool Done()
     {
+        if (Emote)
+        {
+            ShowDoneEmote();
+        }
         return ElapsedTime >= Duration;
     }
 
     public override void Update()
     {
-        ElapsedTime += Time.deltaTime;
-
-        if (ChangeFacing)
+        if (Emote)
         {
-            LastFacingChange += Time.deltaTime;
-
-            if (LastFacingChange > 0.2f && Random.value > 0.95f)
-            {
-                Creature.LinkedGameObject.FaceRandomDirection();
-                LastFacingChange = 0;
-            }
+            ShowBusyEmote();
         }
+        ElapsedTime += Time.deltaTime;
     }
 }

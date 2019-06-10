@@ -13,29 +13,23 @@
         Structure = structure;
         Coordinates = coordinates;
 
-        // AddSubTask(new ClearCell(Coordinates));
-
-        foreach (var requiredItem in structure.Require)
+        foreach (var manaCost in structure.ManaCost)
         {
-            AddSubTask(new MoveItemToCell(requiredItem, Coordinates, true, true, GetItem.SearchBy.Name));
+            AddSubTask(new Channel(manaCost.Key, manaCost.Value));
         }
 
-        AddSubTask(new Wait(3f, "Building"));
         AddSubTask(new Move(Game.MapGrid.GetPathableNeighbour(Coordinates)));
+        AddSubTask(new Burn(structure.ManaCost));
 
         Message = $"Building {structure.Name} at {coordinates}";
     }
 
     public override bool Done()
     {
-        if (Taskmaster.QueueComplete(SubTasks))
+        if (Faction.QueueComplete(SubTasks))
         {
-            foreach (var item in Creature.Mind[Context][MemoryType.Item])
-            {
-                Game.ItemController.DestroyItem(IdService.GetItemFromId(item));
-            }
-
             Structure.SetBlueprintState(false);
+            Structure.Faction = Creature.Faction;
             Creature.UpdateMemory(Context, MemoryType.Structure, Structure.GetGameId());
             return true;
         }
@@ -49,6 +43,6 @@
             throw new TaskFailedException();
         }
 
-        Taskmaster.ProcessQueue(SubTasks);
+        Faction.ProcessQueue(SubTasks);
     }
 }

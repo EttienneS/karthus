@@ -2,18 +2,21 @@
   "Name": "Table",
   "SpriteName": "Table",
   "Tiled": "False",
-  "RequireStrings": [ "2:Wood" ],
   "TravelCost": "4",
   "StructureType": "Table",
   "Scatter": "False",
-  "Buildable": "True",
-  "Tasks": [
-    {
-      "$type": "Craft, Assembly-CSharp",
-      "OutputItemName": "Apple Pie",
-      "RequiredItemNames": [ "4:Apple", "1:Wood" ],
-      "CraftTime": "5",
-      "DoneEmote": "Yum!"
-    }
-  ]
+  "ManaCost": {
+    "Red": "1",
+    "Green": "1"
+  },
+  "Buildable": "True"
+  //"Tasks": [
+  //  {
+  //    "$type": "Craft, Assembly-CSharp",
+  //    "OutputItemName": "Apple Pie",
+  //    "RequiredItemNames": [ "4:Apple", "1:Wood" ],
+  //    "CraftTime": "5",
+  //    "DoneEmote": "Yum!"
+  //  }
+  //]
 }

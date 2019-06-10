@@ -6,8 +6,6 @@ using UnityEngine;
 
 public class SaveManager : MonoBehaviour
 {
-    
-
     public void Save()
     {
         try
@@ -55,20 +53,6 @@ public class SaveManager : MonoBehaviour
             {
                 newCell.AddContent(Game.StructureController.LoadStructure(saveCell.Structure).gameObject);
             }
-
-            if (saveCell.Stockpile != null)
-            {
-                newCell.AddContent(Game.StockpileController.LoadStockpile(saveCell.Stockpile).gameObject);
-            }
-
-            // ensure we do not add duplicates
-            var savedItems = saveCell.ContainedItems.ToArray();
-            newCell.ContainedItems.Clear();
-
-            foreach (var savedItem in savedItems)
-            {
-                newCell.AddContent(Game.ItemController.LoadItem(savedItem).gameObject);
-            }
         }
 
         Game.MapGrid.ClearCache();
@@ -77,18 +61,18 @@ public class SaveManager : MonoBehaviour
 
         foreach (var SavedCreature in save.Creatures)
         {
-            Game.CreatureController.LoadCreature(SavedCreature);
+            Game.CreatureController.SpawnCreature(SavedCreature);
         }
 
-        foreach (var task in save.Tasks)
-        {
-            Game.Taskmaster.AddTask(task, task.Originator);
+        //foreach (var task in save.Tasks)
+        //{
+        //    Factions.Taskmasters[Data.Faction].AddTask(task, task.Originator);
 
-            if (task.AssignedCreatureId > 0)
-            {
-                Taskmaster.AssignTask(Game.CreatureController.CreatureIdLookup[task.AssignedCreatureId], task, task.Context);
-            }
-        }
+        //    if (task.AssignedCreatureId > 0)
+        //    {
+        //        Taskmaster.AssignTask(Game.CreatureController.CreatureIdLookup[task.AssignedCreatureId], task, task.Context);
+        //    }
+        //}
 
         save.CameraData.Load(Game.CameraController.Camera);
     }
@@ -112,13 +96,9 @@ public class SaveManager : MonoBehaviour
         Game.CreatureController.CreatureLookup.Clear();
         Game.CreatureController.CreatureIdLookup.Clear();
 
-        Game.ItemController.ItemCategoryIndex.Clear();
-        Game.ItemController.ItemDataLookup.Clear();
-        Game.ItemController.ItemIdLookup.Clear();
-
         Game.StructureController.StructureLookup.Clear();
 
-        Game.Taskmaster.Tasks.Clear();
+        //Factions.Taskmasters[Data.Faction].Tasks.Clear();
     }
 }
 
@@ -138,7 +118,7 @@ public class Save
     {
         Cells = Game.MapGrid.Cells.ToArray();
         Creatures = Game.CreatureController.Creatures.Select(c => c.Data).ToArray();
-        Tasks = Game.Taskmaster.Tasks.ToArray();
+        //Tasks = Factions.Taskmasters[Data.Faction].Tasks.ToArray();
         Time = Game.TimeManager.Data;
         CameraData = new CameraData(Game.CameraController.Camera);
     }

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -7,11 +6,10 @@ public class CreatureController : MonoBehaviour
 {
     public Creature CreaturePrefab;
 
-    internal List<Creature> Creatures = new List<Creature>();
-
+    internal Dictionary<string, CreatureData> Beastiary = new Dictionary<string, CreatureData>();
     internal Dictionary<int, CreatureData> CreatureIdLookup = new Dictionary<int, CreatureData>();
     internal Dictionary<CreatureData, Creature> CreatureLookup = new Dictionary<CreatureData, Creature>();
-    
+    internal List<Creature> Creatures = new List<Creature>();
 
     public Creature GetCreatureAtPoint(Vector2 point)
     {
@@ -27,102 +25,37 @@ public class CreatureController : MonoBehaviour
         return null;
     }
 
-    public Creature SpawnCreature(CellData spawnLocation)
+    public Creature SpawnPlayerAtLocation(CellData spawnLocation)
     {
-        var creature = Instantiate(CreaturePrefab, transform, true);
-        creature.Data.Name = CreatureHelper.GetRandomName();
+        var Data = new CreatureData
+        {
+            Name = CreatureHelper.GetRandomName(),
+            Coordinates = spawnLocation.Coordinates,
+            Id = Creatures.Count + 1,
+            Faction = FactionConstants.Player,
+            GetBehaviourTask = Behaviours.PersonBehaviour
+        };
 
-        creature.transform.position = spawnLocation.Coordinates.ToMapVector();
-        creature.Data.Coordinates = spawnLocation.Coordinates;
+        Data.ValueProperties[Prop.Hunger] = Random.Range(0, 15);
+        Data.ValueProperties[Prop.Energy] = Random.Range(80, 100);
 
-        creature.Data.Id = Creatures.Count + 1;
-
-        creature.Data.Hunger = Random.Range(0, 15);
-        creature.Data.Thirst = Random.Range(35, 50);
-        creature.Data.Energy = Random.Range(80, 100);
-
-        creature.Data.SpriteId = Random.Range(0, Game.SpriteStore.CreatureSprite.Keys.Count - 1);
-
-        creature.GetSprite();
-
+        var creature = SpawnCreature(Data);
         creature.ShowText("Awee!!!", Random.Range(1f, 3f));
-
-        IndexCreature(creature);
         return creature;
     }
 
-    public void SpawnCreatures()
+    public void Start()
     {
-        var midCell = Game.MapGrid
-            .GetCircle(new Coordinates(MapConstants.MapSize / 2, MapConstants.MapSize / 2), 10)
-            .First(c => c.CellType != CellType.Water || c.CellType != CellType.Mountain);
-
-        SummonCells(midCell);
-
-        var firstCreature = SpawnCreature(midCell.GetNeighbor(Direction.E));
-
-        midCell.AddContent(Game.StructureController.GetStructure("Table").gameObject);
-
-        Game.CameraController.MoveToCell(firstCreature.Data.CurrentCell);
-
-        var spawns = midCell.Neighbors.ToList();
-
-        var waterCell = midCell.GetNeighbor(Direction.N);
-        waterCell.CellType = CellType.Water;
-
-        var foodCell = midCell.GetNeighbor(Direction.SE);
-        for (var i = 0; i < 30; i++)
+        foreach (var creatureFile in Game.FileController.CreatureFiles)
         {
-            foodCell.AddContent(Game.ItemController.GetItem("Apple").gameObject);
+            var creature = CreatureData.Load(creatureFile.text);
+            Beastiary.Add(creature.Name, creature);
         }
-
-        var woodCell = midCell.GetNeighbor(Direction.SW);
-        for (var i = 0; i < 15; i++)
-        {
-            woodCell.AddContent(Game.ItemController.GetItem("Rock").gameObject);
-        }
-
-        var rockCell = midCell.GetNeighbor(Direction.S);
-        for (var i = 0; i < 15; i++)
-        {
-            rockCell.AddContent(Game.ItemController.GetItem("Wood").gameObject);
-        }
-
-        //for (var i = 0; i < 2; i++)
-        //{
-        //    SpawnCreature(spawns[Random.Range(0, spawns.Count)]).Data.Speed = Random.Range(10, 15);
-        //}
-    }
-
-    private static void SummonCells(CellData center)
-    {
-        center.CellType = CellType.Stone;
-        Game.MapGrid.BindCell(center, "X");
-
-        foreach (var cell in center.Neighbors)
-        {
-            cell.CellType = CellType.Stone;
-            Game.MapGrid.BindCell(cell, "X");
-        }
-
-        GetRune(center.GetNeighbor(Direction.N).GetNeighbor(Direction.N));
-        GetRune(center.GetNeighbor(Direction.E).GetNeighbor(Direction.E));
-        GetRune(center.GetNeighbor(Direction.S).GetNeighbor(Direction.S));
-        GetRune(center.GetNeighbor(Direction.W).GetNeighbor(Direction.W));
-    }
-
-    public static void GetRune(CellData location)
-    {
-        var rune = Game.StructureController.GetStructure("BindRune");
-        location.CellType = CellType.Stone;
-        Game.MapGrid.BindCell(location, rune.Data.GetGameId());
-        location.AddContent(rune.gameObject);
     }
 
     internal void DestroyCreature(Creature creature)
     {
         CreatureLookup.Remove(creature.Data);
-
         Destroy(creature.gameObject);
     }
 
@@ -131,20 +64,38 @@ public class CreatureController : MonoBehaviour
         return CreatureLookup[creatureData];
     }
 
-    internal Creature LoadCreature(CreatureData savedCreature)
+    internal Creature SpawnCreature(CreatureData creatureData)
     {
         var creature = Instantiate(CreaturePrefab, transform, true);
-        creature.Data = savedCreature;
+        creature.Data = creatureData;
+        creature.transform.position = creature.Data.Coordinates.ToMapVector();
+        creature.Data.Id = Creatures.Count + 1;
 
-        creature.transform.position = savedCreature.Coordinates.ToMapVector();
-        creature.GetSprite();
+        if (creature.Data.GetBehaviourTask == null)
+        {
+            creature.Data.GetBehaviourTask = Behaviours.ManaWraithBehaviour;
+        }
+
+        SetSprite(creature);
         IndexCreature(creature);
+
         return creature;
+    }
+
+    private static void SetSprite(Creature creature)
+    {
+        if (string.IsNullOrEmpty(creature.Data.Sprite))
+        {
+            creature.CreatureSprite = new ModularSprite(creature);
+        }
+        else
+        {
+            creature.CreatureSprite = new FixedCreatureSprite(creature.Data.Sprite, creature);
+        }
     }
 
     private void IndexCreature(Creature creature)
     {
-        creature.SpriteRenderer.sortingOrder = creature.Data.Id;
         Creatures.Add(creature);
         CreatureLookup.Add(creature.Data, creature);
         CreatureIdLookup.Add(creature.Data.Id, creature.Data);
