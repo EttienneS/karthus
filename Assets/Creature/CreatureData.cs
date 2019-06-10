@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,6 +20,31 @@ public class CreatureData
     public Dictionary<string, float> ValueProperties = new Dictionary<string, float>();
 
     public Dictionary<ManaColor, Mana> ManaPool = new Dictionary<ManaColor, Mana>();
+
+    public void BurnMana(ManaColor manaColor)
+    {
+        var actualColor = manaColor.GetActualColor();
+        LinkedGameObject.PulseColor(manaColor.GetActualColor(), 0.5f);
+        ManaPool.BurnMana(manaColor, 1);
+
+        // change color based on usage
+        // var baseC = BaseColor.ToColor();
+        // if (Random.value > 0.008f)
+        // {
+        //     baseC.r += actualColor.r / 100f;
+        //     baseC.g += actualColor.g / 100f;
+        //     baseC.b += actualColor.b / 100f;
+           
+        //     BaseColor = baseC.ToFloatArray();
+        // }
+    }
+
+    public void GainMana(ManaColor manaColor)
+    {
+        var actualColor = manaColor.GetActualColor();
+        LinkedGameObject.PulseColor(actualColor, 0.5f);
+        ManaPool.GainMana(manaColor, 1);
+    }
 
     internal float InternalTick;
 
@@ -64,7 +88,6 @@ public class CreatureData
 
     [JsonIgnore]
     public TaskBase Task { get; set; }
-
 
     public static CreatureData Load(string creatureData)
     {

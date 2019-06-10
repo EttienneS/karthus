@@ -17,19 +17,18 @@
     {
         if (Faction.QueueComplete(SubTasks))
         {
-            FactionManager.Factions[Creature.Faction].ManaPool[ManaColor].Burn(1);
-            Creature.ManaPool.GainMana(ManaColor, 1);
-            AmountToChannel--;
-
             if (AmountToChannel <= 0)
             {
                 return true;
             }
             else
             {
+                FactionManager.Factions[Creature.Faction].ManaPool[ManaColor].Burn(1);
+                AmountToChannel--;
+                Creature.GainMana(ManaColor);
+
                 var msg = $"{ManaColor}!!";
                 AddSubTask(new Wait(1f, msg, true) { DoneEmote = msg });
-                Creature.LinkedGameObject.PulseColor(ManaColor.GetActualColor(), 0.5f);
             }
         }
 
