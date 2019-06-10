@@ -27,17 +27,16 @@ public class Burn : TaskBase
                     {
                         DoneEmote = msg
                     });
-                    Creature.ManaPool.BurnMana(kvp.Key, kvp.Value);
-                    Creature.LinkedGameObject.PulseColor(kvp.Key.GetActualColor(), 1f);
-                    
+                    Creature.LinkedGameObject.PulseColor(kvp.Key.GetActualColor(), 0.5f);
+                    ManaToBurn[kvp.Key]--;
+
+                    Creature.ManaPool.BurnMana(kvp.Key, 1);
                     return false;
                 }
             }
             return true;
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 }

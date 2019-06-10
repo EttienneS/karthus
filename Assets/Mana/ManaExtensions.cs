@@ -69,13 +69,13 @@ public static class ManaExtensions
     {
         if (!manaPool.ContainsKey(color))
         {
-            throw new System.Exception("Unable to burn mana you do not have!");
+            throw new Exception("Unable to burn mana you do not have!");
         }
         else
         {
             if (manaPool[color].Total < amount)
             {
-                throw new System.Exception("Not enough mana!");
+                throw new Exception("Not enough mana!");
             }
             manaPool[color].Burn(amount);
         }

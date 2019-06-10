@@ -24,7 +24,7 @@ public class CreatureData
 
     internal float InternalTick;
 
-    public Color BaseColor = ColorConstants.BaseColor;
+    public float[] BaseColor = ColorConstants.BaseColor.ToFloatArray();
 
     [JsonIgnore]
     public CellData CurrentCell

@@ -24,11 +24,6 @@ public class Creature : MonoBehaviour
 
         Highlight.gameObject.SetActive(false);
         Body = transform.Find("Body").gameObject;
-
-        CreatureSprite.CurrentColor = ColorConstants.BaseColor;
-        Data.BaseColor = ColorConstants.BaseColor;
-
-        CreatureSprite.Update(ColorConstants.BaseColor);
     }
 
     public void ShowText(string text, float duration)
@@ -62,7 +57,7 @@ public class Creature : MonoBehaviour
     internal void PulseColor(Color color, float duration)
     {
         CreatureSprite.CurrentColor = color;
-        ColorPulseTotalDuration = duration;
+        ColorPulseTotalDuration = duration*2;
         ColorPulseDuration = 0;
     }
 
@@ -113,14 +108,19 @@ public class Creature : MonoBehaviour
 
     private void PulseColor()
     {
-        if (ColorPulseDuration >= 0)
+        if (CreatureSprite.CurrentColor == null || Data.BaseColor == null)
+        {
+            return;
+        }
+
+        if (ColorPulseDuration < ColorPulseTotalDuration)
         {
             ColorPulseDuration += Time.deltaTime;
-            CreatureSprite.Update(Color.Lerp(CreatureSprite.CurrentColor, Data.BaseColor, Mathf.PingPong(ColorPulseDuration, ColorPulseTotalDuration)));
+            CreatureSprite.Update(Color.Lerp(CreatureSprite.CurrentColor, Data.BaseColor.ToColor(), Mathf.PingPong(ColorPulseDuration, ColorPulseTotalDuration)));
         }
         else
         {
-            CreatureSprite.CurrentColor = Data.BaseColor;
+            CreatureSprite.CurrentColor = Data.BaseColor.ToColor();
         }
     }
 

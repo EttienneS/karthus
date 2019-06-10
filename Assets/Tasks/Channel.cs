@@ -11,9 +11,6 @@
     {
         ManaColor = color;
         AmountToChannel = amount;
-
-        var msg = $"{color}!!";
-        AddSubTask(new Wait(1f, msg, true) { DoneEmote = msg });
     }
 
     public override bool Done()
@@ -32,7 +29,7 @@
             {
                 var msg = $"{ManaColor}!!";
                 AddSubTask(new Wait(1f, msg, true) { DoneEmote = msg });
-                Creature.LinkedGameObject.PulseColor(ManaColor.GetActualColor(), 1f);
+                Creature.LinkedGameObject.PulseColor(ManaColor.GetActualColor(), 0.5f);
             }
         }
 
