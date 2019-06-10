@@ -37,7 +37,6 @@ public class CreatureController : MonoBehaviour
         };
 
         Data.ValueProperties[Prop.Hunger] = Random.Range(0, 15);
-        Data.ValueProperties[Prop.Thirst] = Random.Range(35, 50);
         Data.ValueProperties[Prop.Energy] = Random.Range(80, 100);
 
         var creature = SpawnCreature(Data);

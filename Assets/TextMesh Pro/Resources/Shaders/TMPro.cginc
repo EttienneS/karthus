@@ -60,7 +60,7 @@ float3 GetSurfaceNormal(float2 uv, float bias, float3 delta)
 float3 GetSpecular(float3 n, float3 l)
 {
 	float spec = pow(max(0.0, dot(n, l)), _Reflectivity);
-	return _SpecularColor.rgb* spec* _SpecularPower;
+	return _SpecularColor.rgb * spec * _SpecularPower;
 }
 
 float4 GetGlowColor(float d, float scale)

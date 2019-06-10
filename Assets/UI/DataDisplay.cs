@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class DataDisplay : MonoBehaviour
@@ -27,11 +26,6 @@ public class DataDisplay : MonoBehaviour
     internal void SetData(StructureData structure)
     {
         SetData(structure.Name, structure.Name, Game.SpriteStore.GetSpriteByName(structure.SpriteName));
-    }
-
-    internal void SetData(ItemData item)
-    {
-        SetData(item.Name, item.Name, Game.SpriteStore.GetSpriteByName(item.SpriteName));
     }
 
     internal void SetData(CellData cell)

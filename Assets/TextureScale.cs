@@ -5,14 +5,13 @@
 /// Scale is performed on the GPU using RTT, so it's blazing fast.
 /// Setting up and Getting back the texture data is the bottleneck.
 /// But Scaling itself costs only 1 draw call and 1 RTT State setup!
-/// WARNING: This script override the RTT Setup! (It sets a RTT!)        
+/// WARNING: This script override the RTT Setup! (It sets a RTT!)
 ///
 /// Note: This scaler does NOT support aspect ratio based scaling. You will have to do it yourself!
 /// It supports Alpha, but you will have to divide by alpha in your shaders,
 /// because of premultiplied alpha effect. Or you should use blend modes.
 public class TextureScale
 {
-
     /// <summary>
     ///     Returns a scaled copy of given texture.
     /// </summary>
@@ -51,7 +50,7 @@ public class TextureScale
     }
 
     // Internal unility that renders the source texture into the RTT - the scaling method itself.
-    static void _gpu_scale(Texture2D src, int width, int height, FilterMode fmode)
+    private static void _gpu_scale(Texture2D src, int width, int height, FilterMode fmode)
     {
         //We need the source texture in VRAM because we render with it
         src.filterMode = fmode;

@@ -239,15 +239,15 @@ public partial class Game : MonoBehaviour
             faction.name = factionName;
             faction.FactionName = factionName;
 
-            faction.Mana.Add(ManaColor.Red, RedMana.GetBase(10));
-            faction.Mana.Add(ManaColor.Green, GreenMana.GetBase(10));
-            faction.Mana.Add(ManaColor.Blue, BlueMana.GetBase(10));
-            faction.Mana.Add(ManaColor.Black, BlackMana.GetBase(10));
-            faction.Mana.Add(ManaColor.White, WhiteMana.GetBase(10));
+            faction.ManaPool.Add(ManaColor.Red, RedMana.GetBase(10));
+            faction.ManaPool.Add(ManaColor.Green, GreenMana.GetBase(10));
+            faction.ManaPool.Add(ManaColor.Blue, BlueMana.GetBase(10));
+            faction.ManaPool.Add(ManaColor.Black, BlackMana.GetBase(10));
+            faction.ManaPool.Add(ManaColor.White, WhiteMana.GetBase(10));
 
             if (factionName == FactionConstants.Player)
             {
-                foreach (var mana in faction.Mana)
+                foreach (var mana in faction.ManaPool)
                 {
                     ManaDisplay.EnsureDisplay(mana.Value);
                 }

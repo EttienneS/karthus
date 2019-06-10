@@ -1,8 +1,0 @@
-{
-  "Name": "Apple",
-  "SpriteName": "Apple",
-  "Category": "Food",
-  "Properties": {
-    "Nutrition": "40"
-  }
-}

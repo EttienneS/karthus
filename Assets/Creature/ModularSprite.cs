@@ -100,9 +100,25 @@ public class ModularSprite : ICreatureSprite
         return sr;
     }
 
-    public void Update()
+    public Color CurrentColor { get; set; }
+
+    public void Update(Color color)
     {
-        //throw new System.NotImplementedException();
+        if (color != CurrentColor)
+        {
+            CurrentColor = color;
+
+            Face.color = CurrentColor;
+            Hair.color = CurrentColor;
+            Head.color = CurrentColor;
+            Neck.color = CurrentColor;
+            LeftArm.color = CurrentColor;
+            RightArm.color = CurrentColor;
+            LeftHand.color = CurrentColor;
+            RightHand.color = CurrentColor;
+            LeftLeg.color = CurrentColor;
+            RightLeg.color = CurrentColor;
+        }
     }
 
     internal Sprite IconSprite;

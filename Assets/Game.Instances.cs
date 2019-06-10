@@ -9,13 +9,11 @@ public partial class Game //.Instances
     private static CreatureInfoPanel _creatureInfoPanel;
     private static FileController _fileController;
     private static Game _gameInstance;
-    private static ItemController _itemController;
     private static MapGrid _mapGrid;
     private static OrderSelectionController _orderSelectionController;
     private static OrderTrayController _orderTrayController;
     private static SaveManager _saveManager;
     private static SpriteStore _spriteStore;
-    private static StockpileController _stockpileController;
     private static StructureController _structureController;
     private static SunController _sunController;
     private static TimeManager _timeManager;
@@ -121,19 +119,6 @@ public partial class Game //.Instances
         }
     }
 
-    public static ItemController ItemController
-    {
-        get
-        {
-            if (_itemController == null)
-            {
-                _itemController = GameObject.Find(ControllerConstants.ItemController).GetComponent<ItemController>();
-            }
-
-            return _itemController;
-        }
-    }
-
     public static MapGrid MapGrid
     {
         get
@@ -196,19 +181,6 @@ public partial class Game //.Instances
             }
 
             return _spriteStore;
-        }
-    }
-
-    public static StockpileController StockpileController
-    {
-        get
-        {
-            if (_stockpileController == null)
-            {
-                _stockpileController = GameObject.Find(ControllerConstants.StockpileController).GetComponent<StockpileController>();
-            }
-
-            return _stockpileController;
         }
     }
 

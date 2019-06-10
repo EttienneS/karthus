@@ -57,7 +57,7 @@ public class TaskBase
     {
         if (!string.IsNullOrEmpty(DoneEmote))
         {
-            Creature.LinkedGameObject.ShowText(DoneEmote, 1f);
+            Creature.LinkedGameObject.ShowText(DoneEmote, 0.8f);
         }
     }
 }

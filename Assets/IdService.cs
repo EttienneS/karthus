@@ -25,14 +25,8 @@ public static class IdService
             //case ObjectType.Creature:
             //    return GetCreatureFromId(gameObjectId).LinkedGameObject.SpriteRenderer;
 
-            case ObjectType.Item:
-                return GetItemFromId(gameObjectId).LinkedGameObject.SpriteRenderer;
-
             case ObjectType.Structure:
                 return GetStructureFromId(gameObjectId).LinkedGameObject.SpriteRenderer;
-
-            case ObjectType.Stockpile:
-                return GetStockpileFromId(gameObjectId).LinkedGameObject.SpriteRenderer;
 
             default:
                 throw new NotImplementedException();
@@ -71,24 +65,9 @@ public static class IdService
         return $"{StructurePrefix}{structure.Id}";
     }
 
-    public static string GetGameId(this StockpileData stockpile)
-    {
-        return $"{StockpilePrefix}{stockpile.Id}";
-    }
-
-    public static string GetGameId(this ItemData item)
-    {
-        return $"{ItemPrefix}{item.Id}";
-    }
-
     public static int GetId(string id)
     {
         return int.Parse(id.Split('-')[1]);
-    }
-
-    public static ItemData GetItemFromId(string id)
-    {
-        return Game.ItemController.ItemIdLookup[GetId(id)].Data;
     }
 
     public static Coordinates GetLocation(string id)
@@ -102,22 +81,7 @@ public static class IdService
             return GetStructureFromId(id).Coordinates;
         }
 
-        if (IsItem(id))
-        {
-            return GetItemFromId(id).LinkedGameObject.Cell.Coordinates;
-        }
-
-        if (IsStockpile(id))
-        {
-            return GetStockpileFromId(id).Coordinates;
-        }
-
         return null;
-    }
-
-    public static StockpileData GetStockpileFromId(string id)
-    {
-        return Game.StockpileController.StockpileLookup[GetId(id)].Data;
     }
 
     public static StructureData GetStructureFromId(string id)

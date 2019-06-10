@@ -46,10 +46,6 @@ public static class Behaviours
         {
             task = new Eat("Food");
         }
-        else if (creature.ValueProperties[Prop.Thirst] > 50)
-        {
-            task = new Drink("Drink");
-        }
         else if (creature.ValueProperties[Prop.Energy] < 15)
         {
             var bed = creature.Self.Structures.FirstOrDefault(s => s.Properties.ContainsKey("RecoveryRate"));

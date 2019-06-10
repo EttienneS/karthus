@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -8,9 +7,10 @@ public class Faction : MonoBehaviour
     public const int RecyleCount = 5;
     public const int RecyleTime = 3;
     public int LastRecyle;
-    public Dictionary<ManaColor, Mana> Mana = new Dictionary<ManaColor, Mana>();
+    public Dictionary<ManaColor, Mana> ManaPool = new Dictionary<ManaColor, Mana>();
     internal string FactionName;
     internal List<TaskBase> Tasks = new List<TaskBase>();
+
     public static void ProcessQueue(Queue<TaskBase> queue)
     {
         if (queue == null || queue.Count == 0)
@@ -66,23 +66,23 @@ public class Faction : MonoBehaviour
         TaskBase task = null;
         foreach (var availableTask in Tasks.Where(t => t.AssignedCreatureId <= 0 && !t.Failed))
         {
-            var craftTask = availableTask as Craft;
-            if (craftTask != null)
-            {
-                if (IdService.IsStructure(craftTask.Originator))
-                {
-                    var structure = IdService.GetStructureFromId(craftTask.Originator);
+            //var craftTask = availableTask as Craft;
+            //if (craftTask != null)
+            //{
+            //    if (IdService.IsStructure(craftTask.Originator))
+            //    {
+            //        var structure = IdService.GetStructureFromId(craftTask.Originator);
 
-                    if (structure.InUseByAnyone)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        structure.Reserve(creature.Data.GetGameId());
-                    }
-                }
-            }
+            //        if (structure.InUseByAnyone)
+            //        {
+            //            continue;
+            //        }
+            //        else
+            //        {
+            //            structure.Reserve(creature.Data.GetGameId());
+            //        }
+            //    }
+            //}
 
             task = availableTask;
             break;
@@ -130,16 +130,6 @@ public class Faction : MonoBehaviour
     internal void TaskFailed(TaskBase task, string reason)
     {
         task.Failed = true;
-
-        if (task.AssignedCreatureId > 0)
-        {
-            task.Creature.Task = null;
-            if (task.Creature.CarriedItemId > 0)
-            {
-                task.Creature.CarriedItem.Reserved = false;
-                task.Creature.CarriedItemId = 0;
-            }
-        }
 
         task.Message += $"\n{reason}";
         task.AssignedCreatureId = -1;

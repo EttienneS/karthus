@@ -103,8 +103,6 @@ public class StructureData
 
     public Dictionary<string, string> Properties = new Dictionary<string, string>();
 
-    public List<string> RequireStrings;
-
     public string Faction = FactionConstants.World;
 
     public string ShiftX;
@@ -123,9 +121,7 @@ public class StructureData
 
     public float TravelCost;
 
-    public List<string> Yield;
-
-    private List<string> _require;
+    public Dictionary<ManaColor, int> ManaCost;
 
     [JsonIgnore]
     private int _width, _height = -1;
@@ -169,23 +165,6 @@ public class StructureData
     }
 
     [JsonIgnore]
-    public List<string> Require
-    {
-        get
-        {
-            if (_require == null)
-            {
-                _require = new List<string>();
-                foreach (var reqString in RequireStrings)
-                {
-                    _require.AddRange(Helpers.ParseItemString(reqString));
-                }
-            }
-            return _require;
-        }
-    }
-
-    [JsonIgnore]
     public int Width
     {
         get
@@ -202,14 +181,6 @@ public class StructureData
             TypeNameHandling = TypeNameHandling.Auto,
             NullValueHandling = NullValueHandling.Ignore,
         });
-    }
-
-    public void AddItem(ItemData item)
-    {
-        if (Require.Contains(item.Name))
-        {
-            Require.Remove(item.Name);
-        }
     }
 
     public List<CellData> GetCellsForStructure(Coordinates origin)
@@ -237,17 +208,6 @@ public class StructureData
         {
             LinkedGameObject.SpriteRenderer.color = ColorConstants.BaseColor;
             IsBluePrint = false;
-        }
-    }
-
-    public void SpawnYield(CellData cell)
-    {
-        foreach (var yieldString in Yield)
-        {
-            foreach (var item in Helpers.ParseItemString(yieldString))
-            {
-                cell.AddContent(Game.ItemController.GetItem(item).gameObject);
-            }
         }
     }
 

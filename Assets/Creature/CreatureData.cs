@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.Linq;
+using UnityEngine;
 
 public class CreatureData
 {
     public const string SelfKey = "Self";
-    public int CarriedItemId;
     public Coordinates Coordinates;
 
     [JsonIgnore]
@@ -19,20 +19,12 @@ public class CreatureData
     public float Speed = 10f;
     public Dictionary<string, string> StringProperties = new Dictionary<string, string>();
     public Dictionary<string, float> ValueProperties = new Dictionary<string, float>();
+
+    public Dictionary<ManaColor, Mana> ManaPool = new Dictionary<ManaColor, Mana>();
+
     internal float InternalTick;
 
-    [JsonIgnore]
-    public ItemData CarriedItem
-    {
-        get
-        {
-            if (Game.ItemController.ItemIdLookup.ContainsKey(CarriedItemId))
-            {
-                return Game.ItemController.ItemIdLookup[CarriedItemId].Data;
-            }
-            return null;
-        }
-    }
+    public Color BaseColor = ColorConstants.BaseColor;
 
     [JsonIgnore]
     public CellData CurrentCell
@@ -73,6 +65,7 @@ public class CreatureData
     [JsonIgnore]
     public TaskBase Task { get; set; }
 
+
     public static CreatureData Load(string creatureData)
     {
         var data = JsonConvert.DeserializeObject<CreatureData>(creatureData, new JsonSerializerSettings
@@ -81,38 +74,6 @@ public class CreatureData
             NullValueHandling = NullValueHandling.Ignore,
         });
         return data;
-    }
-
-    internal ItemData DropItem(Coordinates coordinates = null)
-    {
-        if (CarriedItemId > 0)
-        {
-            var item = CarriedItem;
-            item.Reserved = false;
-            item.LinkedGameObject.SpriteRenderer.sortingLayerName = LayerConstants.Item;
-
-            if (coordinates != null)
-            {
-                var cell = Game.MapGrid.GetCellAtCoordinate(coordinates);
-                if (CurrentCell.Neighbors.Contains(cell))
-                {
-                    cell.AddContent(item.LinkedGameObject.gameObject);
-                }
-                else
-                {
-                    CurrentCell.AddContent(item.LinkedGameObject.gameObject);
-                }
-            }
-            else
-            {
-                CurrentCell.AddContent(item.LinkedGameObject.gameObject);
-            }
-
-            CarriedItemId = 0;
-            return item;
-        }
-
-        return null;
     }
 
     internal void Forget(string context)

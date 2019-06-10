@@ -22,11 +22,6 @@
     {
         if (Faction.QueueComplete(SubTasks))
         {
-            foreach (var itemName in Game.StructureController.StructureDataReference[Structure.Name].Require)
-            {
-                Game.MapGrid.GetCellAtCoordinate(Coordinates).AddContent(Game.ItemController.GetItem(itemName).gameObject);
-            }
-
             Game.StructureController.DestroyStructure(Structure);
 
             return true;

@@ -1,13 +1,6 @@
-﻿using System;
-using UnityEngine;
-
-public class RedMana
+﻿public class RedMana
 {
     public static void BurnRed(float amount)
-    {
-    }
-
-    public static void CastRed(float amount)
     {
     }
 
@@ -17,7 +10,7 @@ public class RedMana
 
     public static Mana GetBase(float startingTotal = 0)
     {
-        return new Mana(ManaColor.Red, CastRed, GainRed, BurnRed)
+        return new Mana(ManaColor.Red, GainRed, BurnRed)
         {
             Total = startingTotal,
         };

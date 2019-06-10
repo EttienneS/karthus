@@ -6,8 +6,6 @@ using UnityEngine;
 
 public class SaveManager : MonoBehaviour
 {
-    
-
     public void Save()
     {
         try
@@ -55,20 +53,6 @@ public class SaveManager : MonoBehaviour
             {
                 newCell.AddContent(Game.StructureController.LoadStructure(saveCell.Structure).gameObject);
             }
-
-            if (saveCell.Stockpile != null)
-            {
-                newCell.AddContent(Game.StockpileController.LoadStockpile(saveCell.Stockpile).gameObject);
-            }
-
-            // ensure we do not add duplicates
-            var savedItems = saveCell.ContainedItems.ToArray();
-            newCell.ContainedItems.Clear();
-
-            foreach (var savedItem in savedItems)
-            {
-                newCell.AddContent(Game.ItemController.LoadItem(savedItem).gameObject);
-            }
         }
 
         Game.MapGrid.ClearCache();
@@ -111,10 +95,6 @@ public class SaveManager : MonoBehaviour
         Game.CreatureController.Creatures.Clear();
         Game.CreatureController.CreatureLookup.Clear();
         Game.CreatureController.CreatureIdLookup.Clear();
-
-        Game.ItemController.ItemCategoryIndex.Clear();
-        Game.ItemController.ItemDataLookup.Clear();
-        Game.ItemController.ItemIdLookup.Clear();
 
         Game.StructureController.StructureLookup.Clear();
 
