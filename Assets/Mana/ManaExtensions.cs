@@ -5,6 +5,21 @@ using UnityEngine;
 
 public static class ManaExtensions
 {
+    public static List<ManaColor> ToFlatArray(this Dictionary<ManaColor, int> manaPool)
+    {
+        var flat = new List<ManaColor>();
+
+        foreach (var kvp in manaPool)
+        {
+            for (var i = 0; i < kvp.Value;i++)
+            {
+                flat.Add(kvp.Key);
+            }
+        }
+
+        return flat;
+    }
+
     public static Color GetActualColor(this ManaColor manaColor)
     {
         switch (manaColor)

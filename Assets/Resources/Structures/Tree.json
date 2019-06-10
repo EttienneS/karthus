@@ -7,5 +7,9 @@
   "Buildable": "False",
   "Layer": "Tree",
   "ShiftY": "0.7~1",
-  "ShiftX": "-0.2~0.2"
+  "ShiftX": "-0.2~0.2",
+  "ManaValue": {
+    "Green": "3",
+    "Black": "2"
+  }
 }

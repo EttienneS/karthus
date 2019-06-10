@@ -121,7 +121,7 @@ public class StructureData
 
     public float TravelCost;
 
-    public Dictionary<ManaColor, int> ManaCost;
+    public Dictionary<ManaColor, int> ManaValue;
 
     [JsonIgnore]
     private int _width, _height = -1;

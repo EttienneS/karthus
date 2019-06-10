@@ -13,13 +13,9 @@
         Structure = structure;
         Coordinates = coordinates;
 
-        foreach (var manaCost in structure.ManaCost)
-        {
-            AddSubTask(new Channel(manaCost.Key, manaCost.Value));
-        }
-
+        AddSubTask(new Acrue(structure.ManaValue));
         AddSubTask(new Move(Game.MapGrid.GetPathableNeighbour(Coordinates)));
-        AddSubTask(new Burn(structure.ManaCost));
+        AddSubTask(new Burn(structure.ManaValue));
 
         Message = $"Building {structure.Name} at {coordinates}";
     }

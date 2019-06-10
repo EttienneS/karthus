@@ -23,7 +23,6 @@ public class CreatureData
 
     public void BurnMana(ManaColor manaColor)
     {
-        var actualColor = manaColor.GetActualColor();
         LinkedGameObject.PulseColor(manaColor.GetActualColor(), 0.5f);
         ManaPool.BurnMana(manaColor, 1);
 
@@ -34,15 +33,14 @@ public class CreatureData
         //     baseC.r += actualColor.r / 100f;
         //     baseC.g += actualColor.g / 100f;
         //     baseC.b += actualColor.b / 100f;
-           
+
         //     BaseColor = baseC.ToFloatArray();
         // }
     }
 
     public void GainMana(ManaColor manaColor)
     {
-        var actualColor = manaColor.GetActualColor();
-        LinkedGameObject.PulseColor(actualColor, 0.5f);
+        LinkedGameObject.PulseColor(manaColor.GetActualColor(), 0.5f);
         ManaPool.GainMana(manaColor, 1);
     }
 
