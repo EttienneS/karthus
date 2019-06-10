@@ -1,0 +1,14 @@
+{
+  "Name": "Pylon",
+  "ManaValue": {
+    "Red": "2",
+    "Green": "2",
+    "Blue": "2",
+    "Black": "2",
+    "White": "2"
+  },
+  "Buildable": true,
+  "SpriteName": "runeBlue_slab_004",
+  "Tiled": false,
+  "TravelCost": "10"
+}
