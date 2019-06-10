@@ -6,6 +6,9 @@
   "StructureType": "Mine",
   "Scatter": "False",
   "Size": "2x2",
+  "ManaCost": {
+    "Red": "5"
+  },
   "Buildable": "True",
   //"Tasks": [
   //  {

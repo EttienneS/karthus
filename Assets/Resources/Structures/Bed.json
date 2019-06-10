@@ -3,6 +3,10 @@
   "SpriteName": "Bed",
   "Tiled": "False",
   "TravelCost": "4",
+  "ManaCost": {
+    "Green": "1",
+    "Red": "1"
+  },
   "StructureType": "Bed",
   "Scatter": "False",
   "Buildable": "True",

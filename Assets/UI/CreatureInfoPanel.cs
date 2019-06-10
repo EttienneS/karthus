@@ -41,6 +41,16 @@ public class CreatureInfoPanel : MonoBehaviour
                 Properties.text += $"{property.Key}:\t{property.Value}\n";
             }
 
+            Properties.text += "\nMana:\n\n";
+
+            foreach (var property in CurrentCreature.Data.ManaPool)
+            {
+                if (property.Value.Total != 0)
+                {
+                    Properties.text += $"- {property.Key}:\t{property.Value.Total}\n";
+                }
+            }
+
             if (CurrentCreature.Data.Task != null)
             {
                 Task.text = CurrentCreature.Data.Task.ToString();

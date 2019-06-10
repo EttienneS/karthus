@@ -65,12 +65,10 @@ public static class IdService
         return $"{StructurePrefix}{structure.Id}";
     }
 
-
     public static int GetId(string id)
     {
         return int.Parse(id.Split('-')[1]);
     }
-
 
     public static Coordinates GetLocation(string id)
     {
@@ -85,7 +83,6 @@ public static class IdService
 
         return null;
     }
-
 
     public static StructureData GetStructureFromId(string id)
     {

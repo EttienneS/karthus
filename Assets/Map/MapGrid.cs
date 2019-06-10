@@ -156,8 +156,6 @@ public class MapGrid : MonoBehaviour
         Populatecells();
 
         ResetSearchPriorities();
-
-        
     }
 
     public CellData GetCellAtCoordinate(Coordinates coordintes)
@@ -282,12 +280,10 @@ public class MapGrid : MonoBehaviour
 
     internal void DestroyCell(CellData cell)
     {
-
         if (cell.Structure != null)
         {
             Game.StructureController.DestroyStructure(cell.Structure);
         }
-
     }
 
     internal Direction GetDirection(CellData fromCell, CellData toCell)

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.Linq;
+using UnityEngine;
 
 public class CreatureData
 {
@@ -18,9 +19,13 @@ public class CreatureData
     public float Speed = 10f;
     public Dictionary<string, string> StringProperties = new Dictionary<string, string>();
     public Dictionary<string, float> ValueProperties = new Dictionary<string, float>();
+
+    public Dictionary<ManaColor, Mana> ManaPool = new Dictionary<ManaColor, Mana>();
+
     internal float InternalTick;
 
-    
+    public Color BaseColor = ColorConstants.BaseColor;
+
     [JsonIgnore]
     public CellData CurrentCell
     {
@@ -59,6 +64,7 @@ public class CreatureData
 
     [JsonIgnore]
     public TaskBase Task { get; set; }
+
 
     public static CreatureData Load(string creatureData)
     {

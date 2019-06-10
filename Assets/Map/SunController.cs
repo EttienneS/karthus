@@ -18,7 +18,6 @@ public class SunController : MonoBehaviour
     {
         SunRise, Morning, Noon, AfterNoon, Night
     }
-    
 
     internal float JumpDistance
     {

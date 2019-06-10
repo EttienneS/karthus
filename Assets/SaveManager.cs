@@ -6,8 +6,6 @@ using UnityEngine;
 
 public class SaveManager : MonoBehaviour
 {
-    
-
     public void Save()
     {
         try
@@ -55,7 +53,6 @@ public class SaveManager : MonoBehaviour
             {
                 newCell.AddContent(Game.StructureController.LoadStructure(saveCell.Structure).gameObject);
             }
-
         }
 
         Game.MapGrid.ClearCache();

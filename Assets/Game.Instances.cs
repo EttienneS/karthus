@@ -118,7 +118,7 @@ public partial class Game //.Instances
             return _fileController;
         }
     }
-    
+
     public static MapGrid MapGrid
     {
         get

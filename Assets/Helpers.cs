@@ -64,8 +64,8 @@ public static class Helpers
 public static class CloneHelper
 {
     // from: https://stackoverflow.com/questions/78536/deep-cloning-objects
-    
-        /// <summary>
+
+    /// <summary>
     /// Perform a deep Copy of the object, using Json as a serialisation method. NOTE: Private members are not cloned using this method.
     /// </summary>
     /// <typeparam name="T">The type of object being copied.</typeparam>
@@ -159,7 +159,7 @@ public static class TextureHelpers
         return target;
     }
 
-    static int counter = 0;
+    private static int counter = 0;
 
     public static Texture2D Clone(this Texture2D sourceTexture)
     {

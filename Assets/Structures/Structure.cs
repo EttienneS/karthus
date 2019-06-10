@@ -121,7 +121,7 @@ public class StructureData
 
     public float TravelCost;
 
-    //private List<string> _require;
+    public Dictionary<ManaColor, int> ManaCost;
 
     [JsonIgnore]
     private int _width, _height = -1;
@@ -161,23 +161,6 @@ public class StructureData
         get
         {
             return Game.StructureController.GetStructureForData(this);
-        }
-    }
-
-    [JsonIgnore]
-    public List<string> Require
-    {
-        get
-        {
-            //if (_require == null)
-            //{
-            //    _require = new List<string>();
-            //    foreach (var reqString in RequireStrings)
-            //    {
-            //        _require.AddRange(Helpers.ParseItemString(reqString));
-            //    }
-            //}
-            return new List<string>();
         }
     }
 

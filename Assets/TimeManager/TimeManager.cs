@@ -38,7 +38,7 @@ public class TimeManager : MonoBehaviour
             return $"{Data.Hour}:{Data.Minute}:{_timeTicks}";
         }
     }
-    
+
     public TimeStep TimeStep
     {
         get

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -8,9 +7,10 @@ public class Faction : MonoBehaviour
     public const int RecyleCount = 5;
     public const int RecyleTime = 3;
     public int LastRecyle;
-    public Dictionary<ManaColor, Mana> Mana = new Dictionary<ManaColor, Mana>();
+    public Dictionary<ManaColor, Mana> ManaPool = new Dictionary<ManaColor, Mana>();
     internal string FactionName;
     internal List<TaskBase> Tasks = new List<TaskBase>();
+
     public static void ProcessQueue(Queue<TaskBase> queue)
     {
         if (queue == null || queue.Count == 0)

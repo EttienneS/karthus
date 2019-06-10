@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 public class Bind : BaseRune
 {
@@ -86,5 +85,4 @@ public class Bind : BaseRune
 
         return false;
     }
-
 }

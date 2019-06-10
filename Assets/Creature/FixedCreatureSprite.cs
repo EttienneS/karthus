@@ -17,13 +17,18 @@ public class FixedCreatureSprite : ICreatureSprite
         Sprite.name = spriteName;
     }
 
+    public Color CurrentColor { get; set; }
+
     public Sprite GetIcon()
     {
         return Sprite.sprite;
     }
-
-    public void Update()
+    public void Update(Color color)
     {
-
+        if (color != CurrentColor)
+        {
+            CurrentColor = color;
+            Sprite.color = CurrentColor;
+        }
     }
 }

@@ -5,6 +5,9 @@
     "Power": "0.0",
     "PowerRate": "0.005"
   },
+  "ManaCost": {
+    "Black": "5"
+  },
   "Buildable": true,
   "RequireStrings": [ "5:Rock" ],
   "SpriteName": "runeBlue_slab_031",

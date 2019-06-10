@@ -1,11 +1,9 @@
-﻿using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CellInfoPanel : MonoBehaviour
 {
-    
     public Text CellName;
     public Text CellContent;
 

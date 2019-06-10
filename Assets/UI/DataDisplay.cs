@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class DataDisplay : MonoBehaviour
@@ -28,8 +27,6 @@ public class DataDisplay : MonoBehaviour
     {
         SetData(structure.Name, structure.Name, Game.SpriteStore.GetSpriteByName(structure.SpriteName));
     }
-
-  
 
     internal void SetData(CellData cell)
     {

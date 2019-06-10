@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -16,8 +14,8 @@ public class Creature : MonoBehaviour
     internal float RemainingTextDuration;
     internal TextMeshPro Text;
 
-    private float deltaTime = 0;
-    private float frameSeconds = 0.3f;
+    internal float ColorPulseTotalDuration;
+    internal float ColorPulseDuration;
 
     public void Awake()
     {
@@ -26,6 +24,11 @@ public class Creature : MonoBehaviour
 
         Highlight.gameObject.SetActive(false);
         Body = transform.Find("Body").gameObject;
+
+        CreatureSprite.CurrentColor = ColorConstants.BaseColor;
+        Data.BaseColor = ColorConstants.BaseColor;
+
+        CreatureSprite.Update(ColorConstants.BaseColor);
     }
 
     public void ShowText(string text, float duration)
@@ -56,16 +59,11 @@ public class Creature : MonoBehaviour
         Highlight.gameObject.SetActive(true);
     }
 
-    private void UpdateSprite(bool force = false)
+    internal void PulseColor(Color color, float duration)
     {
-        CreatureSprite.Update();
-
-        deltaTime += Time.deltaTime;
-
-        if (deltaTime > frameSeconds || force)
-        {
-            deltaTime = 0;
-        }
+        CreatureSprite.CurrentColor = color;
+        ColorPulseTotalDuration = duration;
+        ColorPulseDuration = 0;
     }
 
     private void UpdateFloatingText()
@@ -109,7 +107,21 @@ public class Creature : MonoBehaviour
         }
 
         UpdateFloatingText();
-        UpdateSprite();
+
+        PulseColor();
+    }
+
+    private void PulseColor()
+    {
+        if (ColorPulseDuration >= 0)
+        {
+            ColorPulseDuration += Time.deltaTime;
+            CreatureSprite.Update(Color.Lerp(CreatureSprite.CurrentColor, Data.BaseColor, Mathf.PingPong(ColorPulseDuration, ColorPulseTotalDuration)));
+        }
+        else
+        {
+            CreatureSprite.CurrentColor = Data.BaseColor;
+        }
     }
 
     private void Work()

@@ -5,5 +5,8 @@
   "TravelCost": "0.5",
   "StructureType": "Floor",
   "Scatter": "False",
+  "ManaCost": {
+    "Red": "1"
+  },
   "Buildable": "True"
 }

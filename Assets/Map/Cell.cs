@@ -9,12 +9,10 @@ public class CellData
 
     public CellType CellType;
 
-
     public Coordinates Coordinates;
 
     [JsonIgnore]
     public CellData[] Neighbors = new CellData[8];
-
 
     public StructureData Structure;
 

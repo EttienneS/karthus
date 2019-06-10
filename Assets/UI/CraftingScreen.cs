@@ -5,12 +5,11 @@ using UnityEngine.UI;
 public class CraftingScreen : MonoBehaviour
 {
     public DataDisplay DataPrefab;
-    
+
     private StructureData _craftSource;
     public GameObject SourcePanel;
     public GameObject OptionsPanel;
     public GameObject QueuePanel;
-
 
     public Text RequirementsText;
     public Image RecipeImage;
@@ -115,6 +114,4 @@ public class CraftingScreen : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
-
-    
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 
 public static class TypeConverter
@@ -14,6 +13,7 @@ public static class TypeConverter
         System.ComponentModel.TypeConverter tc = TypeDescriptor.GetConverter(t);
         return tc.ConvertFrom(value);
     }
+
     public static void RegisterTypeConverter<T, TC>() where TC : System.ComponentModel.TypeConverter
     {
         TypeDescriptor.AddAttributes(typeof(T), new TypeConverterAttribute(typeof(TC)));

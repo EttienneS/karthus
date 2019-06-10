@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,7 +13,7 @@ public class ManaDisplay : MonoBehaviour
         {
             var value = Instantiate(TextPrefab, transform);
             value.name = $"{mana.Color} value";
-            value.color = mana.GetActualColor();
+            value.color = mana.Color.GetActualColor();
             LabelDictionary.Add(mana, value);
         }
     }

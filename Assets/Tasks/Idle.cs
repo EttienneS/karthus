@@ -19,7 +19,7 @@ public class Idle : TaskBase
         }
         else
         {
-            AddSubTask(new Wait(Random.Range(2f, 4f), "Chilling", true));
+            AddSubTask(new Wait(Random.Range(2f, 4f), "Chilling"));
         }
 
         Message = "Waiting for something to do.";

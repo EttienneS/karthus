@@ -5,7 +5,11 @@
   "TravelCost": "4",
   "StructureType": "Table",
   "Scatter": "False",
-  "Buildable": "True",
+  "ManaCost": {
+    "Red": "1",
+    "Green": "1"
+  },
+  "Buildable": "True"
   //"Tasks": [
   //  {
   //    "$type": "Craft, Assembly-CSharp",
