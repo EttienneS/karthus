@@ -44,7 +44,7 @@ public static class Behaviours
 
         if (creature.ValueProperties[Prop.Hunger] > 50)
         {
-            task = new Eat("Food");
+            task = new Eat(ManaColor.Green);
         }
         else if (creature.ValueProperties[Prop.Energy] < 15)
         {

@@ -4,17 +4,19 @@
     {
     }
 
-    public Eat(string itemCategory)
+    public ManaColor FoodColor;
+
+    public Eat(ManaColor foodColor)
     {
-        AddSubTask(new Wait(2f, "Eating"));
-        Message = $"Eating Green";
+        FoodColor = foodColor;
+        AddSubTask(new Wait(2f, $"Eating {foodColor}"));
     }
 
     public override bool Done()
     {
         if (Faction.QueueComplete(SubTasks))
         {
-            FactionManager.Factions[Creature.Faction].ManaPool[ManaColor.Green].Burn(1);
+            FactionManager.Factions[Creature.Faction].ManaPool[FoodColor].Burn(1);
             Creature.ValueProperties[Prop.Hunger] -= 50;
             return true;
         }
