@@ -76,9 +76,9 @@ public class Structure : MonoBehaviour
             }
         }
 
-        if (Data.IsBluePrint && !FactionManager.Factions[Data.Faction].Tasks.OfType<Build>().Any(t => t.Structure == Data))
+        if (Data.IsBluePrint && !FactionController.Factions[Data.Faction].Tasks.OfType<Build>().Any(t => t.Structure == Data))
         {
-            FactionManager.Factions[Data.Faction].AddTask(new Build(Data, Data.Coordinates), Data.GetGameId());
+            FactionController.Factions[Data.Faction].AddTask(new Build(Data, Data.Coordinates), Data.GetGameId());
         }
     }
 }
@@ -122,6 +122,8 @@ public class StructureData
     public float TravelCost;
 
     public Dictionary<ManaColor, int> ManaValue;
+
+    public Dictionary<ManaColor, Mana> ManaPool = new Dictionary<ManaColor, Mana>();
 
     [JsonIgnore]
     private int _width, _height = -1;

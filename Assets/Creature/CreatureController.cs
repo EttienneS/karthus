@@ -36,7 +36,7 @@ public class CreatureController : MonoBehaviour
             GetBehaviourTask = Behaviours.PersonBehaviour
         };
 
-        FactionManager.Factions[FactionConstants.Player].Creatures.Add(data);
+        FactionController.Factions[FactionConstants.Player].Creatures.Add(data);
 
         data.ValueProperties[Prop.Hunger] = Random.Range(0, 15);
         data.ValueProperties[Prop.Energy] = Random.Range(80, 100);
@@ -81,7 +81,7 @@ public class CreatureController : MonoBehaviour
         SetSprite(creature);
         IndexCreature(creature);
 
-        FactionManager.Factions[FactionConstants.Monster].Creatures.Add(creatureData);
+        FactionController.Factions[FactionConstants.Monster].Creatures.Add(creatureData);
         return creature;
     }
 

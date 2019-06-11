@@ -26,7 +26,7 @@ public class ManaDisplay : MonoBehaviour
             var label = kvp.Value;
             var floatingMana = 0;
 
-            foreach (var creature in FactionManager.Factions[FactionConstants.Player].Creatures)
+            foreach (var creature in FactionController.Factions[FactionConstants.Player].Creatures)
             {
                 if (creature.ManaPool.ContainsKey(mana.Color))
                 {
