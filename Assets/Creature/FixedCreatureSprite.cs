@@ -23,6 +23,12 @@ public class FixedCreatureSprite : ICreatureSprite
     {
         return Sprite.sprite;
     }
+
+    public void SetBodyMaterial(Material material)
+    {
+        Sprite.material = material;
+    }
+
     public void Update(Color color)
     {
         if (color != CurrentColor)

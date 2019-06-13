@@ -56,6 +56,7 @@ public class Creature : MonoBehaviour
 
     internal void PulseColor(Color color, float duration)
     {
+        CreatureSprite.SetBodyMaterial(Game.MaterialController.ChannelingMaterial);
         CreatureSprite.CurrentColor = color;
         ColorPulseTotalDuration = duration*2;
         ColorPulseDuration = 0;
@@ -115,12 +116,13 @@ public class Creature : MonoBehaviour
 
         if (ColorPulseDuration < ColorPulseTotalDuration)
         {
-            ColorPulseDuration += Time.deltaTime;
-            CreatureSprite.Update(Color.Lerp(CreatureSprite.CurrentColor, Data.BaseColor.ToColor(), Mathf.PingPong(ColorPulseDuration, ColorPulseTotalDuration)));
+            //ColorPulseDuration += Time.deltaTime;
+            //CreatureSprite.Update(Color.Lerp(CreatureSprite.CurrentColor, Data.BaseColor.ToColor(), Mathf.PingPong(ColorPulseDuration, ColorPulseTotalDuration)));
         }
         else
         {
-            CreatureSprite.CurrentColor = Data.BaseColor.ToColor();
+            CreatureSprite.SetBodyMaterial(Game.MaterialController.DefaultMaterial);
+            //CreatureSprite.CurrentColor = Data.BaseColor.ToColor();
         }
     }
 

@@ -140,4 +140,18 @@ public class ModularSprite : ICreatureSprite
 
         return IconSprite;
     }
+
+    public void SetBodyMaterial(Material material)
+    {
+        //Face.material = material;
+        //Hair.material = material;
+        Head.material = material;
+        Neck.material = material;
+        LeftArm.material = material;
+        RightArm.material = material;
+        LeftHand.material = material;
+        RightHand.material = material;
+        LeftLeg.material = material;
+        RightLeg.material = material;
+    }
 }
