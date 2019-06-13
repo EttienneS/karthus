@@ -21,6 +21,7 @@ public static class ControllerConstants
     public const string StructureController = "StructureController";
     public const string TimeController = "TimeManager";
     public const string ManaDisplay = "ManaDisplay";
+    public const string MaterialController = "MaterialController";
 }
 
 public static class LayerConstants
@@ -38,7 +39,7 @@ public static class LayerConstants
 
 public static class MapConstants
 {
-    internal const int CellsPerTerrainBlock = 16;
+    internal const int CellsPerTerrainBlock = 32;
 
     internal const float JitterProbability = 0.25f;
 

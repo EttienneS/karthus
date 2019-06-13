@@ -36,7 +36,7 @@
                 if (cell.Bound && cell.Structure != null && cell.Structure.StructureType == type)
                 {
                     cell.Structure.LinkedGameObject.StatusSprite.sprite = Game.SpriteStore.GetSpriteByName(icon);
-                    FactionManager.Factions[FactionConstants.Player].AddTask(new Harvest(cell.Structure), string.Empty);
+                    FactionController.Factions[FactionConstants.Player].AddTask(new Harvest(cell.Structure), string.Empty);
                 }
             }
             Game.Controller.DeselectCell();

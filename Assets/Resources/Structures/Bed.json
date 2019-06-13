@@ -3,7 +3,7 @@
   "SpriteName": "Bed",
   "Tiled": "False",
   "TravelCost": "4",
-  "ManaCost": {
+  "ManaValue": {
     "Green": "1",
     "Red": "1"
   },

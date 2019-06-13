@@ -18,6 +18,20 @@ public partial class Game //.Instances
     private static SunController _sunController;
     private static TimeManager _timeManager;
     private static ManaDisplay _manaDisplay;
+    private static MaterialController _materialController;
+
+    public static MaterialController MaterialController
+    {
+        get
+        {
+            if (_materialController == null)
+            {
+                _materialController = GameObject.Find(ControllerConstants.MaterialController).GetComponent<MaterialController>();
+            }
+
+            return _materialController;
+        }
+    }
 
     public static ManaDisplay ManaDisplay
     {

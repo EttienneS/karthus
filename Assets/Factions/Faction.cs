@@ -11,6 +11,8 @@ public class Faction : MonoBehaviour
     internal string FactionName;
     internal List<TaskBase> Tasks = new List<TaskBase>();
 
+    internal List<CreatureData> Creatures = new List<CreatureData>();
+
     public static void ProcessQueue(Queue<TaskBase> queue)
     {
         if (queue == null || queue.Count == 0)

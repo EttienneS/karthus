@@ -23,7 +23,7 @@
             }
             else
             {
-                FactionManager.Factions[Creature.Faction].ManaPool[ManaColor].Burn(1);
+                FactionController.Factions[Creature.Faction].ManaPool[ManaColor].Burn(1);
                 AmountToChannel--;
                 Creature.GainMana(ManaColor);
 

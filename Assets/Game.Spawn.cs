@@ -2,9 +2,12 @@
 
 public partial class Game // .Spawn
 {
-    public static void GetRune(CellData location)
+    public static void SpawnRune(CellData location, string name)
     {
-        var rune = StructureController.GetStructure("BindRune");
+        if (location.Structure != null)
+            StructureController.DestroyStructure(location.Structure);
+
+        var rune = StructureController.GetStructure(name);
         location.CellType = CellType.Stone;
         MapGrid.BindCell(location, rune.Data.GetGameId());
         location.AddContent(rune.gameObject);
@@ -18,16 +21,10 @@ public partial class Game // .Spawn
 
         SummonCells(midCell);
 
-        CreatureController.SpawnPlayerAtLocation(midCell.GetNeighbor(Direction.E));
-
-        midCell.AddContent(StructureController.GetStructure("Table").gameObject);
-
+        CreatureController.SpawnPlayerAtLocation(midCell);
         CameraController.MoveToCell(midCell.GetNeighbor(Direction.E));
 
         var spawns = midCell.Neighbors.ToList();
-
-        var waterCell = midCell.GetNeighbor(Direction.N);
-        waterCell.CellType = CellType.Water;
 
         for (int i = 0; i < 3; i++)
         {
@@ -50,9 +47,14 @@ public partial class Game // .Spawn
             MapGrid.BindCell(cell, "X");
         }
 
-        GetRune(center.GetNeighbor(Direction.N).GetNeighbor(Direction.N));
-        GetRune(center.GetNeighbor(Direction.E).GetNeighbor(Direction.E));
-        GetRune(center.GetNeighbor(Direction.S).GetNeighbor(Direction.S));
-        GetRune(center.GetNeighbor(Direction.W).GetNeighbor(Direction.W));
+        SpawnRune(center.GetNeighbor(Direction.N).GetNeighbor(Direction.E), "Pylon");
+        SpawnRune(center.GetNeighbor(Direction.N).GetNeighbor(Direction.W), "Pylon");
+        SpawnRune(center.GetNeighbor(Direction.S).GetNeighbor(Direction.E), "Pylon");
+        SpawnRune(center.GetNeighbor(Direction.S).GetNeighbor(Direction.W), "Pylon");
+
+        SpawnRune(center.GetNeighbor(Direction.N).GetNeighbor(Direction.N), "BindRune");
+        SpawnRune(center.GetNeighbor(Direction.E).GetNeighbor(Direction.E), "BindRune");
+        SpawnRune(center.GetNeighbor(Direction.S).GetNeighbor(Direction.S), "BindRune");
+        SpawnRune(center.GetNeighbor(Direction.W).GetNeighbor(Direction.W), "BindRune");
     }
 }

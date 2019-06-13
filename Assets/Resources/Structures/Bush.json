@@ -7,5 +7,9 @@
   "Scatter": "True",
   "Buildable": "False",
   "ShiftY": "-0.2~0.2",
-  "ShiftX": "-0.2~0.2"
+  "ShiftX": "-0.2~0.2",
+  "ManaValue": {
+    "Green": "2",
+    "Black": "1"
+  }
 }

@@ -5,7 +5,7 @@
   "TravelCost": "4",
   "StructureType": "Table",
   "Scatter": "False",
-  "ManaCost": {
+  "ManaValue": {
     "Red": "1",
     "Green": "1"
   },

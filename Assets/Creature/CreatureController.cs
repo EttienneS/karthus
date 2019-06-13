@@ -27,7 +27,7 @@ public class CreatureController : MonoBehaviour
 
     public Creature SpawnPlayerAtLocation(CellData spawnLocation)
     {
-        var Data = new CreatureData
+        var data = new CreatureData
         {
             Name = CreatureHelper.GetRandomName(),
             Coordinates = spawnLocation.Coordinates,
@@ -36,10 +36,12 @@ public class CreatureController : MonoBehaviour
             GetBehaviourTask = Behaviours.PersonBehaviour
         };
 
-        Data.ValueProperties[Prop.Hunger] = Random.Range(0, 15);
-        Data.ValueProperties[Prop.Energy] = Random.Range(80, 100);
+        FactionController.Factions[FactionConstants.Player].Creatures.Add(data);
 
-        var creature = SpawnCreature(Data);
+        data.ValueProperties[Prop.Hunger] = Random.Range(0, 15);
+        data.ValueProperties[Prop.Energy] = Random.Range(80, 100);
+
+        var creature = SpawnCreature(data);
         creature.ShowText("Awee!!!", Random.Range(1f, 3f));
         return creature;
     }
@@ -79,6 +81,7 @@ public class CreatureController : MonoBehaviour
         SetSprite(creature);
         IndexCreature(creature);
 
+        FactionController.Factions[FactionConstants.Monster].Creatures.Add(creatureData);
         return creature;
     }
 

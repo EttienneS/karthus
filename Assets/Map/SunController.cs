@@ -6,7 +6,7 @@ public class SunController : MonoBehaviour
     internal const float BaseIntensity = 0.6f;
     internal const float DayLightHours = Sunset - Sunrise;
     internal const float MaxIntensity = 1.7f;
-    internal const int SunHeight = -100;
+    internal const int SunHeight = -50;
     internal const int Sunrise = 4;
     internal const int Sunset = 17;
     internal float IntensityPerHour = MaxIntensity / (DayLightHours / 2);
@@ -42,15 +42,15 @@ public class SunController : MonoBehaviour
 
             if (hour < MidDay)
             {
-                Light.intensity = GetCurrentIntensity(hour - Sunrise, minutePercentage) + BaseIntensity;
-                Light.intensity = Mathf.Clamp(Light.intensity, BaseIntensity, MaxIntensity);
+                //Light.intensity = GetCurrentIntensity(hour - Sunrise, minutePercentage) + BaseIntensity;
+                //Light.intensity = Mathf.Clamp(Light.intensity, BaseIntensity, MaxIntensity);
 
                 State = hour <= Sunrise + 1 ? DayState.SunRise : DayState.Morning;
             }
             else
             {
-                Light.intensity = Math.Max(MaxIntensity - GetCurrentIntensity(hour - MidDay, minutePercentage) + BaseIntensity, BaseIntensity * 1.5f);
-                Light.intensity = Mathf.Clamp(Light.intensity, BaseIntensity * 2f, MaxIntensity);
+                // Light.intensity = Math.Max(MaxIntensity - GetCurrentIntensity(hour - MidDay, minutePercentage) + BaseIntensity, BaseIntensity * 1.5f);
+                //  Light.intensity = Mathf.Clamp(Light.intensity, BaseIntensity * 2f, MaxIntensity);
 
                 State = hour <= MidDay + 1 ? DayState.Noon : DayState.AfterNoon;
             }
@@ -59,8 +59,9 @@ public class SunController : MonoBehaviour
         {
             State = DayState.Night;
             transform.position = new Vector3((DayLightHours / 2) * JumpDistance, (DayLightHours / 2) * JumpDistance, SunHeight);
-            Light.intensity = Math.Max(Light.intensity - (IntensityPerHour * minutePercentage), BaseIntensity);
+            // Light.intensity = Math.Max(Light.intensity - (IntensityPerHour * minutePercentage), BaseIntensity);
         }
+
     }
 
     // Update is called once per frame

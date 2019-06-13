@@ -6,12 +6,12 @@
     "PowerRate": "0.5",
     "Size": "10"
   },
-  "ManaCost": {
-    "Blue": "5"
+  "ManaValue": {
+    "Blue": "5",
+    "White": "5"
   },
   "Buildable": true,
   "SpriteName": "runeBlue_slab_001",
-  "Tasks": [],
   "Tiled": false,
   "TravelCost": "10"
 }

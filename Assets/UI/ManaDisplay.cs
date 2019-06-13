@@ -23,9 +23,18 @@ public class ManaDisplay : MonoBehaviour
         foreach (var kvp in LabelDictionary)
         {
             var mana = kvp.Key;
-            var labels = kvp.Value;
+            var label = kvp.Value;
+            var floatingMana = 0;
 
-            labels.text = mana.Total.ToString();
+            foreach (var creature in FactionController.Factions[FactionConstants.Player].Creatures)
+            {
+                if (creature.ManaPool.ContainsKey(mana.Color))
+                {
+                    floatingMana += creature.ManaPool[mana.Color].Total;
+                }
+            }
+
+            label.text = $"{mana.Total} ({floatingMana})";
         }
     }
 }

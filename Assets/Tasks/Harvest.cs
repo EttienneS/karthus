@@ -20,7 +20,11 @@
     {
         if (Faction.QueueComplete(SubTasks))
         {
-            //Target.SpawnYield(Game.MapGrid.GetCellAtCoordinate(Target.Coordinates));
+            foreach (var mana in Target.ManaValue.ToFlatArray())
+            {
+                Creature.GainMana(mana);
+            }
+
             Game.StructureController.DestroyStructure(Target);
             return true;
         }

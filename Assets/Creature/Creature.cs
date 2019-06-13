@@ -56,6 +56,7 @@ public class Creature : MonoBehaviour
 
     internal void PulseColor(Color color, float duration)
     {
+        CreatureSprite.SetBodyMaterial(Game.MaterialController.ChannelingMaterial);
         CreatureSprite.CurrentColor = color;
         ColorPulseTotalDuration = duration*2;
         ColorPulseDuration = 0;
@@ -115,12 +116,13 @@ public class Creature : MonoBehaviour
 
         if (ColorPulseDuration < ColorPulseTotalDuration)
         {
-            ColorPulseDuration += Time.deltaTime;
-            CreatureSprite.Update(Color.Lerp(CreatureSprite.CurrentColor, Data.BaseColor.ToColor(), Mathf.PingPong(ColorPulseDuration, ColorPulseTotalDuration)));
+            //ColorPulseDuration += Time.deltaTime;
+            //CreatureSprite.Update(Color.Lerp(CreatureSprite.CurrentColor, Data.BaseColor.ToColor(), Mathf.PingPong(ColorPulseDuration, ColorPulseTotalDuration)));
         }
         else
         {
-            CreatureSprite.CurrentColor = Data.BaseColor.ToColor();
+            CreatureSprite.SetBodyMaterial(Game.MaterialController.DefaultMaterial);
+            //CreatureSprite.CurrentColor = Data.BaseColor.ToColor();
         }
     }
 
@@ -128,20 +130,20 @@ public class Creature : MonoBehaviour
     {
         if (Data.Task == null)
         {
-            var task = FactionManager.Factions[Data.Faction].GetTask(this);
+            var task = FactionController.Factions[Data.Faction].GetTask(this);
             var context = $"{Data.GetGameId()} - {task} - {Game.TimeManager.Now}";
 
             Data.Know(context);
             task.Context = context;
 
-            FactionManager.Factions[Data.Faction].AssignTask(Data, task);
+            FactionController.Factions[Data.Faction].AssignTask(Data, task);
             Data.Task = task;
         }
         else
         {
             try
             {
-                FactionManager.Factions[Data.Faction].AssignTask(Data, Data.Task);
+                FactionController.Factions[Data.Faction].AssignTask(Data, Data.Task);
 
                 if (!Data.Task.Done())
                 {
@@ -153,14 +155,14 @@ public class Creature : MonoBehaviour
                     Data.FreeResources(Data.Task.Context);
                     Data.Forget(Data.Task.Context);
 
-                    FactionManager.Factions[Data.Faction].TaskComplete(Data.Task);
+                    FactionController.Factions[Data.Faction].TaskComplete(Data.Task);
                     Data.Task = null;
                 }
             }
             catch (TaskFailedException ex)
             {
                 Debug.LogWarning($"Task failed: {ex}");
-                FactionManager.Factions[Data.Faction].TaskFailed(Data.Task, ex.Message);
+                FactionController.Factions[Data.Faction].TaskFailed(Data.Task, ex.Message);
             }
         }
     }

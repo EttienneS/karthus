@@ -253,7 +253,7 @@ public partial class Game : MonoBehaviour
                 }
             }
 
-            FactionManager.Factions.Add(factionName, faction);
+            FactionController.Factions.Add(factionName, faction);
         }
     }
 
