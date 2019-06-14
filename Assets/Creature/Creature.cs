@@ -14,8 +14,8 @@ public class Creature : MonoBehaviour
     internal float RemainingTextDuration;
     internal TextMeshPro Text;
 
-    internal float ColorPulseTotalDuration;
-    internal float ColorPulseDuration;
+    internal float TempMaterialDuration;
+    internal float TempMaterialDelta;
 
     public void Awake()
     {
@@ -54,12 +54,11 @@ public class Creature : MonoBehaviour
         Highlight.gameObject.SetActive(true);
     }
 
-    internal void PulseColor(Color color, float duration)
+    internal void SetTempMaterial(Material material, float duration)
     {
-        CreatureSprite.SetBodyMaterial(Game.MaterialController.ChannelingMaterial);
-        CreatureSprite.CurrentColor = color;
-        ColorPulseTotalDuration = duration*2;
-        ColorPulseDuration = 0;
+        CreatureSprite.SetBodyMaterial(material);
+        TempMaterialDuration = duration * 2;
+        TempMaterialDelta = 0;
     }
 
     private void UpdateFloatingText()
@@ -109,20 +108,9 @@ public class Creature : MonoBehaviour
 
     private void PulseColor()
     {
-        if (CreatureSprite.CurrentColor == null || Data.BaseColor == null)
-        {
-            return;
-        }
-
-        if (ColorPulseDuration < ColorPulseTotalDuration)
-        {
-            //ColorPulseDuration += Time.deltaTime;
-            //CreatureSprite.Update(Color.Lerp(CreatureSprite.CurrentColor, Data.BaseColor.ToColor(), Mathf.PingPong(ColorPulseDuration, ColorPulseTotalDuration)));
-        }
-        else
+        if (TempMaterialDelta >= TempMaterialDuration)
         {
             CreatureSprite.SetBodyMaterial(Game.MaterialController.DefaultMaterial);
-            //CreatureSprite.CurrentColor = Data.BaseColor.ToColor();
         }
     }
 
