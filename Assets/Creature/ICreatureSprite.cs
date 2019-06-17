@@ -6,7 +6,5 @@ public interface ICreatureSprite
 
     Sprite GetIcon();
 
-    Color CurrentColor { get; set; }
-
     void SetBodyMaterial(Material material);
 }

@@ -39,7 +39,7 @@ public static class LayerConstants
 
 public static class MapConstants
 {
-    internal const int CellsPerTerrainBlock = 32;
+    internal const int CellsPerTerrainBlock = 12;
 
     internal const float JitterProbability = 0.25f;
 

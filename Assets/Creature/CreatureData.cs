@@ -23,30 +23,17 @@ public class CreatureData
 
     public void BurnMana(ManaColor manaColor)
     {
-        LinkedGameObject.PulseColor(manaColor.GetActualColor(), 0.5f);
+        LinkedGameObject.SetTempMaterial(Game.MaterialController.GetChannelingMaterial(manaColor.GetActualColor()), 0.5f);
         ManaPool.BurnMana(manaColor, 1);
-
-        // change color based on usage
-        // var baseC = BaseColor.ToColor();
-        // if (Random.value > 0.008f)
-        // {
-        //     baseC.r += actualColor.r / 100f;
-        //     baseC.g += actualColor.g / 100f;
-        //     baseC.b += actualColor.b / 100f;
-
-        //     BaseColor = baseC.ToFloatArray();
-        // }
     }
 
     public void GainMana(ManaColor manaColor)
     {
-        LinkedGameObject.PulseColor(manaColor.GetActualColor(), 0.5f);
+        LinkedGameObject.SetTempMaterial(Game.MaterialController.GetChannelingMaterial(manaColor.GetActualColor()), 0.5f);
         ManaPool.GainMana(manaColor, 1);
     }
 
     internal float InternalTick;
-
-    public float[] BaseColor = ColorConstants.BaseColor.ToFloatArray();
 
     [JsonIgnore]
     public CellData CurrentCell

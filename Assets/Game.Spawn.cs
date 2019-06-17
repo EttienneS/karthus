@@ -19,9 +19,16 @@ public partial class Game // .Spawn
             .GetCircle(new Coordinates(MapConstants.MapSize / 2, MapConstants.MapSize / 2), 10)
             .First(c => c.CellType != CellType.Water || c.CellType != CellType.Mountain);
 
-        SummonCells(midCell);
+        FactionController.Factions[FactionConstants.Player].transform.position = midCell.Coordinates.ToMapVector();
 
-        CreatureController.SpawnPlayerAtLocation(midCell);
+        if (midCell.Structure != null)
+        {
+            Game.StructureController.DestroyStructure(midCell.Structure);
+        }
+        SummonCells(midCell);
+        midCell.CellType = CellType.Mountain;
+
+        CreatureController.SpawnPlayerAtLocation(midCell.GetNeighbor(Direction.E));
         CameraController.MoveToCell(midCell.GetNeighbor(Direction.E));
 
         var spawns = midCell.Neighbors.ToList();

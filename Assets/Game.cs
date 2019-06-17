@@ -252,6 +252,7 @@ public partial class Game : MonoBehaviour
                     ManaDisplay.EnsureDisplay(mana.Value);
                 }
             }
+            faction.transform.position = new Vector2(-100, -100);
 
             FactionController.Factions.Add(factionName, faction);
         }
