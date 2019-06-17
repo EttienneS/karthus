@@ -123,8 +123,6 @@ public class StructureData
 
     public Dictionary<ManaColor, int> ManaValue;
 
-    public Dictionary<ManaColor, Mana> ManaPool = new Dictionary<ManaColor, Mana>();
-
     [JsonIgnore]
     private int _width, _height = -1;
 
