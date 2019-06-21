@@ -13,8 +13,6 @@ public partial class Game : MonoBehaviour
     public SelectionPreference SelectionPreference = SelectionPreference.CreatureOrStructure;
     public RectTransform selectSquareImage;
 
-    public Faction FactionPrefab;
-
     internal LineRenderer LineRenderer;
     internal List<CellData> SelectedCells = new List<CellData>();
     internal List<Creature> SelectedCreatures = new List<Creature>();
@@ -223,6 +221,9 @@ public partial class Game : MonoBehaviour
         MouseSpriteRenderer.gameObject.SetActive(false);
 
         InitFactions();
+
+        MapGrid.CreateMap();
+
         InitialSpawn();
     }
 
@@ -235,25 +236,22 @@ public partial class Game : MonoBehaviour
             FactionConstants.World
         })
         {
-            var faction = Instantiate(FactionPrefab, transform);
-            faction.name = factionName;
-            faction.FactionName = factionName;
+            var factionBody = StructureController.GetStructure(FactionConstants.StructureName, null);
+            factionBody.name = factionName;
 
-            faction.ManaPool.Add(ManaColor.Red, RedMana.GetBase(10));
-            faction.ManaPool.Add(ManaColor.Green, GreenMana.GetBase(10));
-            faction.ManaPool.Add(ManaColor.Blue, BlueMana.GetBase(10));
-            faction.ManaPool.Add(ManaColor.Black, BlackMana.GetBase(10));
-            faction.ManaPool.Add(ManaColor.White, WhiteMana.GetBase(10));
+            var faction = factionBody.gameObject.AddComponent<Faction>();
+            faction.FactionName = factionName;
+            faction.Structure = factionBody.Data;
+            faction.Structures.Add(factionBody.Data);
+
+            faction.ManaPool = factionBody.Data.ManaValue.ToManaPool();
 
             if (factionName == FactionConstants.Player)
             {
-                foreach (var mana in faction.ManaPool)
-                {
-                    ManaDisplay.EnsureDisplay(mana.Value);
-                }
+                ManaDisplay.EnsureDisplay(faction.ManaPool);
             }
-            faction.transform.position = new Vector2(-100, -100);
 
+            faction.transform.position = new Vector2(-100, -100);
             FactionController.Factions.Add(factionName, faction);
         }
     }

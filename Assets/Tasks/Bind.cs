@@ -6,16 +6,10 @@ public class Bind : BaseRune
 {
     public const float BindTime = 1f;
 
-    [JsonIgnore]
-    public CellData _epicentreCell;
-
     public int Size;
 
     [JsonIgnore]
     private List<CellData> _affectAbleCells;
-
-    [JsonIgnore]
-    private Coordinates _epicenter;
 
     public Bind()
     {
@@ -28,31 +22,6 @@ public class Bind : BaseRune
         Power = initialPower;
     }
 
-    [JsonIgnore]
-    public Coordinates Epicentre
-    {
-        get
-        {
-            if (_epicenter == null)
-            {
-                _epicenter = IdService.GetLocation(Originator);
-            }
-            return _epicenter;
-        }
-    }
-
-    [JsonIgnore]
-    public CellData EpicentreCell
-    {
-        get
-        {
-            if (_epicentreCell == null)
-            {
-                _epicentreCell = Game.MapGrid.GetCellAtCoordinate(Epicentre);
-            }
-            return _epicentreCell;
-        }
-    }
 
     public override bool Done()
     {

@@ -32,11 +32,10 @@ public class CreatureController : MonoBehaviour
             Name = CreatureHelper.GetRandomName(),
             Coordinates = spawnLocation.Coordinates,
             Id = Creatures.Count + 1,
-            Faction = FactionConstants.Player,
             GetBehaviourTask = Behaviours.PersonBehaviour
-        };
+        };              
 
-        FactionController.Factions[FactionConstants.Player].Creatures.Add(data);
+        FactionController.PlayerFaction.AddCreature(data);
 
         data.ValueProperties[Prop.Hunger] = Random.Range(0, 15);
         data.ValueProperties[Prop.Energy] = Random.Range(80, 100);

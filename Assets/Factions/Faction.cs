@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -11,7 +12,11 @@ public class Faction : MonoBehaviour
     internal string FactionName;
     internal List<TaskBase> Tasks = new List<TaskBase>();
 
+    internal StructureData Structure;
+
     internal List<CreatureData> Creatures = new List<CreatureData>();
+
+    internal List<StructureData> Structures = new List<StructureData>();
 
     public static void ProcessQueue(Queue<TaskBase> queue)
     {
@@ -30,6 +35,12 @@ public class Faction : MonoBehaviour
         {
             current.Update();
         }
+    }
+
+    internal void AddStructure(StructureData structure)
+    {
+        Structures.Add(structure);
+        Structure.FactionName = FactionName;
     }
 
     public static bool QueueComplete(Queue<TaskBase> queue)
@@ -61,6 +72,12 @@ public class Faction : MonoBehaviour
                 AssignTask(creature, subTask, task.Originator);
             }
         }
+    }
+
+    internal void AddCreature(CreatureData data)
+    {
+        Creatures.Add(data);
+        data.FactionName = FactionName;
     }
 
     public TaskBase GetNextAvailableTask(Creature creature)

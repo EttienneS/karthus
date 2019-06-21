@@ -44,7 +44,16 @@ public class CreatureData
         }
     }
 
-    public string Faction { get; set; }
+    public string FactionName { get; set; }
+
+    [JsonIgnore]
+    public Faction Faction
+    {
+        get
+        {
+            return FactionController.Factions[FactionName];
+        }
+    }
 
     [JsonIgnore]
     public Creature LinkedGameObject

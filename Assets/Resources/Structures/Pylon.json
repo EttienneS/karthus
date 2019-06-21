@@ -1,11 +1,17 @@
 {
   "Name": "Pylon",
+  "Material": "rune",
   "ManaValue": {
     "Red": "2",
     "Green": "2",
     "Blue": "2",
     "Black": "2",
     "White": "2"
+  },
+  "Behaviour": {
+    "$type": "Store, Assembly-CSharp",
+    "Power": "0.0",
+    "PowerRate": "0.005"
   },
   "Buildable": true,
   "SpriteName": "runeBlue_slab_004",

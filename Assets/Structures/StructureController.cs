@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class StructureController : MonoBehaviour
@@ -45,7 +46,7 @@ public class StructureController : MonoBehaviour
         return structure;
     }
 
-    public Structure GetStructure(string name)
+    public Structure GetStructure(string name, Faction faction)
     {
         var structure = Instantiate(structurePrefab, transform);
 
@@ -54,10 +55,18 @@ public class StructureController : MonoBehaviour
         structure.Load(structureData);
         structure.Data.Id = StructureLookup.Keys.Count + 1;
 
+        if (!string.IsNullOrEmpty(structure.Data.Material))
+        {
+            structure.SpriteRenderer.material = Game.MaterialController.GetMaterial(structure.Data.Material);
+            structure.SpriteRenderer.color = new Color(0.2f, 0.2f, 0.2f);
+        }
+
         IndexStructure(structure);
 
         structure.Data.SetBlueprintState(false);
 
+        if (faction != null)
+            faction.AddStructure(structure.Data);
         return structure;
     }
 
@@ -74,9 +83,9 @@ public class StructureController : MonoBehaviour
         Destroy(structure.gameObject);
     }
 
-    internal Structure GetStructureBluePrint(string name)
+    internal Structure GetStructureBluePrint(string name, Faction faction)
     {
-        var structure = GetStructure(name);
+        var structure = GetStructure(name, faction);
         structure.Data.SetBlueprintState(true);
         return structure;
     }
@@ -104,5 +113,10 @@ public class StructureController : MonoBehaviour
         StructureIdLookup.Add(structure.Data.Id, structure.Data);
 
         structure.name = $"{structure.Data.Name} ({structure.Data.Id})";
+    }
+
+    internal object GetStructure(object structureName)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -3,4 +3,6 @@
     public const string Player = "Player";
     public const string Monster = "Monster";
     public const string World = "World";
+
+    public const string StructureName = "Faction";
 }

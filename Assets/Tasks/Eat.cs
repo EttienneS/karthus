@@ -16,7 +16,7 @@
     {
         if (Faction.QueueComplete(SubTasks))
         {
-            FactionController.Factions[Creature.Faction].ManaPool[FoodColor].Burn(1);
+            Creature.Faction.ManaPool[FoodColor].Burn(1);
             Creature.GainMana(FoodColor);
             Creature.BurnMana(FoodColor);
             Creature.ValueProperties[Prop.Hunger] -= 50;

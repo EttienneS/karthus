@@ -1,5 +1,6 @@
 {
   "Name": "SpawnRune",
+  "Material": "rune",
   "Behaviour": {
     "$type": "Spawn, Assembly-CSharp",
     "Power": "0.0",

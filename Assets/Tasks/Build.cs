@@ -25,7 +25,8 @@
         if (Faction.QueueComplete(SubTasks))
         {
             Structure.SetBlueprintState(false);
-            Structure.Faction = Creature.Faction;
+            
+            Creature.Faction.AddStructure(Structure);
             Creature.UpdateMemory(Context, MemoryType.Structure, Structure.GetGameId());
             return true;
         }

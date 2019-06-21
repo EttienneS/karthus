@@ -57,8 +57,6 @@ public class MapGrid : MonoBehaviour
     {
         Tilemap = GetComponentInChildren<Tilemap>();
         WorldCanvas = GetComponentInChildren<Canvas>();
-
-        CreateMap();
     }
 
     public void BindCell(CellData cell, string binderId)
@@ -402,33 +400,26 @@ public class MapGrid : MonoBehaviour
     private static void PopulateCell(CellData cell)
     {
         var value = Random.value;
-
+        var world = FactionController.Factions[FactionConstants.World];
         switch (cell.CellType)
         {
             case CellType.Grass:
                 if (value > 0.65)
                 {
-                    cell.AddContent(Game.StructureController.GetStructure("Bush").gameObject);
+                    cell.AddContent(Game.StructureController.GetStructure("Bush", world).gameObject);
                 }
                 break;
 
             case CellType.Forest:
                 if (value > 0.95)
                 {
-                    cell.AddContent(Game.StructureController.GetStructure("Tree").gameObject);
+                    cell.AddContent(Game.StructureController.GetStructure("Tree", world).gameObject);
                 }
                 else if (value > 0.65)
                 {
-                    cell.AddContent(Game.StructureController.GetStructure("Bush").gameObject);
+                    cell.AddContent(Game.StructureController.GetStructure("Bush", world).gameObject);
                 }
                 break;
-
-                //case CellType.Stone:
-                //    for (int i = 0; i < Random.Range(1, 2); i++)
-                //    {
-                //        cell.AddContent(Game.ItemController.GetItem("Rock").gameObject);
-                //    }
-                //    break;
         }
     }
 

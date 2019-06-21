@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,7 +27,7 @@ public class ManaDisplay : MonoBehaviour
             var label = kvp.Value;
             var floatingMana = 0;
 
-            foreach (var creature in FactionController.Factions[FactionConstants.Player].Creatures)
+            foreach (var creature in FactionController.PlayerFaction.Creatures)
             {
                 if (creature.ManaPool.ContainsKey(mana.Color))
                 {
@@ -35,6 +36,14 @@ public class ManaDisplay : MonoBehaviour
             }
 
             label.text = $"{mana.Total} ({floatingMana})";
+        }
+    }
+
+    internal void EnsureDisplay(Dictionary<ManaColor, Mana> manaPool)
+    {
+        foreach (var mana in manaPool)
+        {
+            EnsureDisplay(mana.Value);
         }
     }
 }

@@ -118,20 +118,20 @@ public class Creature : MonoBehaviour
     {
         if (Data.Task == null)
         {
-            var task = FactionController.Factions[Data.Faction].GetTask(this);
+            var task = Data.Faction.GetTask(this);
             var context = $"{Data.GetGameId()} - {task} - {Game.TimeManager.Now}";
 
             Data.Know(context);
             task.Context = context;
 
-            FactionController.Factions[Data.Faction].AssignTask(Data, task);
+            Data.Faction.AssignTask(Data, task);
             Data.Task = task;
         }
         else
         {
             try
             {
-                FactionController.Factions[Data.Faction].AssignTask(Data, Data.Task);
+                Data.Faction.AssignTask(Data, Data.Task);
 
                 if (!Data.Task.Done())
                 {
@@ -143,14 +143,14 @@ public class Creature : MonoBehaviour
                     Data.FreeResources(Data.Task.Context);
                     Data.Forget(Data.Task.Context);
 
-                    FactionController.Factions[Data.Faction].TaskComplete(Data.Task);
+                    Data.Faction.TaskComplete(Data.Task);
                     Data.Task = null;
                 }
             }
             catch (TaskFailedException ex)
             {
                 Debug.LogWarning($"Task failed: {ex}");
-                FactionController.Factions[Data.Faction].TaskFailed(Data.Task, ex.Message);
+                Data.Faction.TaskFailed(Data.Task, ex.Message);
             }
         }
     }

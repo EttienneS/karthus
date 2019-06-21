@@ -5,6 +5,18 @@ using UnityEngine;
 
 public static class ManaExtensions
 {
+    public static Dictionary<ManaColor, Mana> ToManaPool(this Dictionary<ManaColor, int> manaCost)
+    {
+        var pool = new Dictionary<ManaColor, Mana>();
+
+        foreach (var kvp in manaCost)
+        {
+            pool.GainMana(kvp.Key, kvp.Value);            
+        }
+
+        return pool;
+    }
+
     public static List<ManaColor> ToFlatArray(this Dictionary<ManaColor, int> manaPool)
     {
         var flat = new List<ManaColor>();

@@ -226,7 +226,7 @@ public class Construct
         return true;
     }
 
-    internal bool Place(CellData cellData)
+    internal bool Place(CellData cellData, Faction faction)
     {
         var x = 0;
         var y = 0;
@@ -244,7 +244,7 @@ public class Construct
 
                 if (cell.Pathable && cell.Structure == null)
                 {
-                    var blueprint = Game.StructureController.GetStructureBluePrint(GetStructure(character));
+                    var blueprint = Game.StructureController.GetStructureBluePrint(GetStructure(character), faction);
                     cell.AddContent(blueprint.gameObject);
                 }
 

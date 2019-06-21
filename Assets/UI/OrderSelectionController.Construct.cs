@@ -30,9 +30,9 @@ public partial class OrderSelectionController //.Construct
 
         CellClickOrder = cells =>
         {
-            if (constuct.ValidateStartPos(cells[0]))
+            if (constuct.ValidateStartPos(cells[0])) 
             {
-                constuct.Place(cells[0]);
+                constuct.Place(cells[0], FactionController.PlayerFaction);
             }
         };
     }
