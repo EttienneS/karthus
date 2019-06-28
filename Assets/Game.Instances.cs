@@ -4,7 +4,7 @@ public partial class Game //.Instances
 {
     private static CameraController _cameraController;
     private static CellInfoPanel _cellInfoPanel;
-    private static CraftingScreen _craftinScreen;
+    //private static CraftingScreen _craftinScreen;
     private static CreatureController _creatureController;
     private static CreatureInfoPanel _creatureInfoPanel;
     private static FileController _fileController;
@@ -85,13 +85,13 @@ public partial class Game //.Instances
         }
     }
 
-    public static CraftingScreen CraftingScreen
-    {
-        get
-        {
-            return _craftinScreen ?? (_craftinScreen = GameObject.Find("CraftingPanel").GetComponent<CraftingScreen>());
-        }
-    }
+    //public static CraftingScreen CraftingScreen
+    //{
+    //    get
+    //    {
+    //        return _craftinScreen ?? (_craftinScreen = GameObject.Find("CraftingPanel").GetComponent<CraftingScreen>());
+    //    }
+    //}
 
     public static CreatureController CreatureController
     {

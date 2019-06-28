@@ -2,9 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public static class ManaExtensions
 {
+    public static int ManaCount(this Dictionary<ManaColor, Mana> manaPool)
+    {
+        var count = 0;
+        foreach (var kvp in manaPool)
+        {
+            count+= kvp.Value.Total;
+        }
+
+        return count;
+    }
+
+    public static ManaColor GetRandomManaColorFromPool(this Dictionary<ManaColor, Mana> manaPool)
+    {
+        var tmp = manaPool.Where(k => k.Value.Total > 0).Select(k => k.Key).Distinct().ToList();
+        return tmp[Mathf.FloorToInt(Random.value * tmp.Count)];
+    }
+
     public static Dictionary<ManaColor, Mana> ToManaPool(this Dictionary<ManaColor, int> manaCost)
     {
         var pool = new Dictionary<ManaColor, Mana>();

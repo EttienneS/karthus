@@ -11,6 +11,7 @@ public static class FactionController
             return Factions[FactionConstants.Player];
         }
     }
+
     public static Faction WorldFaction
     {
         get

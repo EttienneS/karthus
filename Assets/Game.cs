@@ -202,15 +202,15 @@ public partial class Game : MonoBehaviour
             }
         }
 
-        if (SelectedStructures.Count == 1)
-        {
-            var structure = SelectedStructures[0];
+        //if (SelectedStructures.Count == 1)
+        //{
+        //    var structure = SelectedStructures[0];
 
-            if (!structure.IsBluePrint && structure.Tasks.Count > 0)
-            {
-                CraftingScreen.Show(structure);
-            }
-        }
+        //    if (!structure.IsBluePrint && structure.Tasks.Count > 0)
+        //    {
+        //        CraftingScreen.Show(structure);
+        //    }
+        //}
     }
 
     private void Start()
@@ -271,7 +271,7 @@ public partial class Game : MonoBehaviour
             DeselectCell();
             DeselectStructure(true);
 
-            CraftingScreen.Hide();
+            //CraftingScreen.Hide();
             CreatureInfoPanel.Hide();
             CellInfoPanel.Hide();
 
