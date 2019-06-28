@@ -1,15 +1,25 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class DataDisplay : MonoBehaviour
 {
-    public Text Description;
-    public Image Image;
-    public Text Title;
+    internal Text Description;
+    internal Image Image;
+    internal Text Title;
 
     public delegate void Click();
 
     public event Click Clicked;
+
+    public void Awake()
+    {
+        var textItems = GetComponentsInChildren<Text>();
+
+        Title = textItems.First(t => t.name == "Title");
+        Image = GetComponentsInChildren<Image>().First(t => t.name == "Image"); ;
+        Description = textItems.First(t => t.name == "Description");
+    }
 
     public void OnClick()
     {

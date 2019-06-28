@@ -45,3 +45,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ChannelingMaterial: {fileID: 2100000, guid: d18ad302dfa30fe4c9b8df47e793a774, type: 2}
   DefaultMaterial: {fileID: 2100000, guid: 5c0aef44052b8d24d902de7b45295f05, type: 2}
+  RuneMaterial: {fileID: 2100000, guid: 006e3cd98ab608649ac2a2bf1c6fc227, type: 2}

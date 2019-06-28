@@ -13,7 +13,7 @@ public class Creature : MonoBehaviour
     internal SpriteRenderer Highlight;
     internal float RemainingTextDuration;
     internal TextMeshPro Text;
-
+     
     internal float TempMaterialDuration;
     internal float TempMaterialDelta;
 
@@ -102,12 +102,12 @@ public class Creature : MonoBehaviour
         }
 
         UpdateFloatingText();
-
-        PulseColor();
+        UpdateMaterial();
     }
 
-    private void PulseColor()
+    private void UpdateMaterial()
     {
+        TempMaterialDelta += Time.deltaTime;
         if (TempMaterialDelta >= TempMaterialDuration)
         {
             CreatureSprite.SetBodyMaterial(Game.MaterialController.DefaultMaterial);

@@ -79,7 +79,6 @@ public class CreatureController : MonoBehaviour
 
         SetSprite(creature);
         IndexCreature(creature);
-
         FactionController.Factions[FactionConstants.Monster].Creatures.Add(creatureData);
         return creature;
     }
@@ -98,6 +97,8 @@ public class CreatureController : MonoBehaviour
 
     private void IndexCreature(Creature creature)
     {
+        creature.CreatureSprite.SetBodyMaterial(Game.MaterialController.DefaultMaterial);
+
         Creatures.Add(creature);
         CreatureLookup.Add(creature.Data, creature);
         CreatureIdLookup.Add(creature.Data.Id, creature.Data);
