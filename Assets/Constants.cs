@@ -19,7 +19,7 @@ public static class ControllerConstants
     public const string SpriteController = "SpriteStore";
     public const string StockpileController = "StockpileController";
     public const string StructureController = "StructureController";
-    public const string TimeController = "TimeManager";
+    public const string TimeController = "TimePanel";
     public const string ManaDisplay = "ManaDisplay";
     public const string MaterialController = "MaterialController";
 }
