@@ -61,7 +61,7 @@ public static class ManaExtensions
                 return Color.blue;
 
             case ManaColor.Black:
-                return Color.black;
+                return new Color(0.3f, 0.3f, 0.3f);
 
             case ManaColor.White:
                 return Color.white;

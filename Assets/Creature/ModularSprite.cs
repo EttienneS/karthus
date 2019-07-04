@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class ModularSprite : ICreatureSprite
 {
@@ -20,6 +21,9 @@ public class ModularSprite : ICreatureSprite
     public SpriteRenderer RightPant;
     public SpriteRenderer LeftFoot;
     public SpriteRenderer RightFoot;
+
+    public List<SpriteRenderer> BodyParts;
+    public List<SpriteRenderer> Clothes;
 
     public enum SortOrder
     {
@@ -87,6 +91,32 @@ public class ModularSprite : ICreatureSprite
         RightSleeve.color = LeftSleeve.color = Torso.color = ColorExtensions.GetRandomColor();
         RightPant.color = LeftPant.color = Pelvis.color = ColorExtensions.GetRandomColor();
         RightFoot.color = LeftFoot.color = ColorExtensions.GetRandomColor();
+
+        BodyParts = new List<SpriteRenderer>
+        {
+            Face,
+            Hair,
+            Head,
+            Neck,
+            LeftHand,
+            RightHand,
+            LeftFoot,
+            RightFoot
+        };
+
+        Clothes = new List<SpriteRenderer>
+        {
+            Torso,
+            LeftArm,
+            RightArm,
+            LeftSleeve,
+            RightSleeve,
+            Pelvis,
+            LeftLeg,
+            RightLeg,
+            LeftPant,
+            RightPant
+        };
     }
 
     private SpriteRenderer CreateBodypart(string name, Creature creature, float x, float y, SortOrder sortorder = SortOrder.Botton)
@@ -141,17 +171,17 @@ public class ModularSprite : ICreatureSprite
         return IconSprite;
     }
 
+
+
     public void SetBodyMaterial(Material material)
     {
-        //Face.material = material;
-        //Hair.material = material;
-        Head.material = material;
-        Neck.material = material;
-        LeftArm.material = material;
-        RightArm.material = material;
-        LeftHand.material = material;
-        RightHand.material = material;
-        LeftLeg.material = material;
-        RightLeg.material = material;
+        foreach (var sr in BodyParts)
+        {
+            sr.material = material;
+        }
+        foreach (var sr in Clothes)
+        {
+            sr.material = material;
+        }
     }
 }

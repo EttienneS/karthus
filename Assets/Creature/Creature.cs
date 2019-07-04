@@ -13,7 +13,9 @@ public class Creature : MonoBehaviour
     internal SpriteRenderer Highlight;
     internal float RemainingTextDuration;
     internal TextMeshPro Text;
-     
+
+    internal Light Light;
+
     internal float TempMaterialDuration;
     internal float TempMaterialDelta;
 
@@ -21,7 +23,7 @@ public class Creature : MonoBehaviour
     {
         Text = transform.Find("Text").GetComponent<TextMeshPro>();
         Highlight = transform.Find("Highlight").GetComponent<SpriteRenderer>();
-
+        Light = GetComponentInChildren<Light>();
         Highlight.gameObject.SetActive(false);
         Body = transform.Find("Body").gameObject;
     }
@@ -59,6 +61,7 @@ public class Creature : MonoBehaviour
         CreatureSprite.SetBodyMaterial(material);
         TempMaterialDuration = duration * 2;
         TempMaterialDelta = 0;
+
     }
 
     private void UpdateFloatingText()
@@ -111,6 +114,8 @@ public class Creature : MonoBehaviour
         if (TempMaterialDelta >= TempMaterialDuration)
         {
             CreatureSprite.SetBodyMaterial(Game.MaterialController.DefaultMaterial);
+            Light.color = Color.white;
+            Light.intensity = 0.1f;
         }
     }
 

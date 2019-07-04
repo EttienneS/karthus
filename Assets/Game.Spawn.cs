@@ -4,6 +4,9 @@ public partial class Game // .Spawn
 {
     public static void SpawnRune(CellData location, string name, Faction faction)
     {
+        location.CellType = CellType.Stone;
+        MapGrid.BindCell(location, "X");
+
         if (location.Structure != null)
             StructureController.DestroyStructure(location.Structure);
 
@@ -27,6 +30,11 @@ public partial class Game // .Spawn
         }
 
         SummonCells(midCell, FactionController.PlayerFaction);
+        for (int i = 0; i < MapConstants.MapSize / 2; i++)
+        {
+            SpawnRune(MapGrid.GetRandomCell(), "BindRune", FactionController.WorldFaction);
+        }
+
         midCell.CellType = CellType.Mountain;
 
         CreatureController.SpawnPlayerAtLocation(midCell.GetNeighbor(Direction.E));
@@ -34,7 +42,7 @@ public partial class Game // .Spawn
 
         var spawns = midCell.Neighbors.ToList();
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < MapConstants.MapSize / 10; i++)
         {
             var c = CreatureController.Beastiary.First().Value.CloneJson();
             c.Coordinates = MapGrid.GetRandomCell().Coordinates;
@@ -55,14 +63,10 @@ public partial class Game // .Spawn
             MapGrid.BindCell(cell, "X");
         }
 
-        SpawnRune(center.GetNeighbor(Direction.N).GetNeighbor(Direction.E), "Pylon", faction);
-        SpawnRune(center.GetNeighbor(Direction.N).GetNeighbor(Direction.W), "Pylon", faction);
-        SpawnRune(center.GetNeighbor(Direction.S).GetNeighbor(Direction.E), "Pylon", faction);
-        SpawnRune(center.GetNeighbor(Direction.S).GetNeighbor(Direction.W), "Pylon", faction);
-
-        SpawnRune(center.GetNeighbor(Direction.N).GetNeighbor(Direction.N), "BindRune", faction);
-        SpawnRune(center.GetNeighbor(Direction.E).GetNeighbor(Direction.E), "BindRune", faction);
-        SpawnRune(center.GetNeighbor(Direction.S).GetNeighbor(Direction.S), "BindRune", faction);
-        SpawnRune(center.GetNeighbor(Direction.W).GetNeighbor(Direction.W), "BindRune", faction);
+        SpawnRune(center.GetNeighbor(Direction.N), "BindRune", faction);
+        SpawnRune(center.GetNeighbor(Direction.E), "BindRune", faction);
+        SpawnRune(center.GetNeighbor(Direction.S), "BindRune", faction);
+        SpawnRune(center.GetNeighbor(Direction.W), "BindRune", faction);
     }
+
 }

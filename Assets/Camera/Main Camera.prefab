@@ -45,9 +45,10 @@ Camera:
   m_ClearFlags: 2
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
-  m_GateFitMode: 2
   m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
@@ -59,7 +60,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 8
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -92,12 +93,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 5246461426590746728}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_GeneratorAsset: {fileID: 0}
   m_Script: {fileID: 11500000, guid: d8f11b996f1fcc24cae4378c6bee835e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Camera: {fileID: 5246461426590746731}
-  Speed: 1.5
-  ZoomMax: 100
-  ZoomMin: 2
-  ZoomStep: 5
+  Speed: 0.8
+  ZoomMax: 25
+  ZoomMin: 3
+  ZoomStep: 10

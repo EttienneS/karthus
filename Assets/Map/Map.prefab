@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &616382009
 RectTransform:
   m_ObjectHideFlags: 0
@@ -56,7 +56,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: -481077025
+  m_SortingLayerID: 1735232521
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!114 &616382011
@@ -68,7 +68,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 616382008}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1980459831, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_UiScaleMode: 0
@@ -90,7 +90,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 616382008}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1301386320, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_IgnoreReversedGraphics: 1
@@ -156,8 +156,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a2e50b14c390774ea0feb5aaa8185b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CellLabel: {fileID: 3729527837350300880, guid: 3d11016811423b94798b4fdf5833202a,
-    type: 3}
+  CellLabel: {fileID: 0}
 --- !u!1 &5952559973161452216
 GameObject:
   m_ObjectHideFlags: 0
@@ -241,10 +240,11 @@ TilemapRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 779386f1026081545885b6da147544c6, type: 2}
+  - {fileID: 2100000, guid: 5c0aef44052b8d24d902de7b45295f05, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -28,7 +28,7 @@
                 Creature.GainMana(ManaColor);
 
                 var msg = $"{ManaColor}!!";
-                AddSubTask(new Wait(1f, msg, true) { DoneEmote = msg });
+                AddSubTask(new Wait(1f, msg, true));
             }
         }
 

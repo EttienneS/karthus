@@ -40,17 +40,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 680293437352031431}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_GeneratorAsset: {fileID: 0}
   m_Script: {fileID: 11500000, guid: 90002f2bd5f48c14fad5f46841d0e9fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StructureJson:
-  - {fileID: 4900000, guid: 70a0e57208e4b55479dd163968b14957, type: 3}
-  - {fileID: 4900000, guid: d63b91e7c9b2bbb43ba7b9794ad2390c, type: 3}
-  - {fileID: 4900000, guid: aaf5defa54f79fb428b6c91cdc750766, type: 3}
-  - {fileID: 4900000, guid: fa939b0c583d14549b0f48362a3de3e7, type: 3}
-  - {fileID: 4900000, guid: 9f0bfa11fb1fe3941b527f6836321244, type: 3}
-  ItemJson:
-  - {fileID: 4900000, guid: ba6f6cc8abf1f4d4d9c0acdd461eae98, type: 3}
-  - {fileID: 4900000, guid: 60f2a64e4e440bc48a5de8c8f405a80f, type: 3}
-  - {fileID: 4900000, guid: 44c5ff02710a906429ba6a070b351ab9, type: 3}
+  StructureFolder: Structures
+  ConstructFolder: Constructs
+  CreatureFolder: Creatures

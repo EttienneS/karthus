@@ -23,10 +23,7 @@ public class Burn : TaskBase
                 if (kvp.Value > 0)
                 {
                     var msg = $"{kvp.Key}!!";
-                    AddSubTask(new Wait(1, msg, true)
-                    {
-                        DoneEmote = msg
-                    });
+                    AddSubTask(new Wait(1, msg, true));
                     ManaToBurn[kvp.Key]--;
 
                     Creature.BurnMana(kvp.Key);

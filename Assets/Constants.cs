@@ -46,7 +46,7 @@ public static class MapConstants
     internal const int MapSize = MapSizeBlocks * CellsPerTerrainBlock;
 
     // this is only one axis of the map so a size 5 map would be 5xCellPerBlock(25)  125 blocks tall and 125 cells wide (15625 cells total)
-    internal const int MapSizeBlocks = 5;
+    internal const int MapSizeBlocks = 10;
 
     internal const int PixelsPerBlock = CellsPerTerrainBlock * PixelsPerCell;
     internal const int PixelsPerCell = 32;
