@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 public partial class Game // .Spawn
 {
@@ -30,10 +32,7 @@ public partial class Game // .Spawn
         }
 
         SummonCells(midCell, FactionController.PlayerFaction);
-        for (int i = 0; i < MapConstants.MapSize / 2; i++)
-        {
-            SpawnRune(MapGrid.GetRandomCell(), "BindRune", FactionController.WorldFaction);
-        }
+        CreateLeyLines();
 
         midCell.CellType = CellType.Mountain;
 
@@ -49,6 +48,40 @@ public partial class Game // .Spawn
             CreatureController.SpawnCreature(c);
 
             FactionController.Factions[FactionConstants.Monster].AddCreature(c);
+        }
+    }
+
+    private static void CreateLeyLines()
+    {
+        for (int i = 0; i < MapConstants.MapSize / 2; i++)
+        {
+            SpawnRune(MapGrid.GetRandomCell(), "BindRune", FactionController.WorldFaction);
+        }
+
+        var nexusPoints = new List<CellData>();
+        for (int i = 0; i < MapConstants.CellsPerTerrainBlock * 2; i++)
+        {
+            var point = MapGrid.GetRandomCell();
+            nexusPoints.Add(point);
+            SpawnRune(point, "Pylon", FactionController.WorldFaction);
+        }
+
+        foreach (var cell in nexusPoints)
+        {
+            var target = nexusPoints[(int)(Random.value * (nexusPoints.Count - 1))];
+            foreach (var path in Pathfinder.FindPath(cell, target, true))
+            {
+                if (path == target || path == cell)
+                {
+                    continue;
+                }
+
+                if (path.Structure != null)
+                {
+                    StructureController.DestroyStructure(path.Structure);
+                }
+                path.AddContent(StructureController.GetStructure("LeyLine", FactionController.WorldFaction).gameObject);
+            }
         }
     }
 

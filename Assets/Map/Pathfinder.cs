@@ -25,11 +25,11 @@ public static class Pathfinder
         }
     }
 
-    public static List<CellData> FindPath(CellData fromCell, CellData toCell)
+    public static List<CellData> FindPath(CellData fromCell, CellData toCell, bool fly = false)
     {
         if (fromCell != null && toCell != null)
         {
-            if (Search(fromCell, toCell))
+            if (Search(fromCell, toCell, fly))
             {
                 var path = new List<CellData>
                 {
@@ -94,7 +94,7 @@ public static class Pathfinder
         return GetPathCost(path);
     }
 
-    private static bool Search(CellData fromCell, CellData toCell)
+    private static bool Search(CellData fromCell, CellData toCell, bool fly = false)
     {
         _searchFrontierPhase += 2;
 
@@ -130,7 +130,7 @@ public static class Pathfinder
                     continue;
                 }
 
-                if (neighbor.TravelCost < 0)
+                if (!fly && neighbor.TravelCost < 0)
                 {
                     continue;
                 }

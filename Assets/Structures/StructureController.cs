@@ -65,8 +65,12 @@ public class StructureController : MonoBehaviour
 
         structure.Data.SetBlueprintState(false);
 
+        if (!string.IsNullOrEmpty(structure.Data.Layer))
+            structure.SpriteRenderer.sortingLayerName = structure.Data.Layer;
+
         if (faction != null)
             faction.AddStructure(structure.Data);
+
         return structure;
     }
 
@@ -115,8 +119,5 @@ public class StructureController : MonoBehaviour
         structure.name = $"{structure.Data.Name} ({structure.Data.Id})";
     }
 
-    internal object GetStructure(object structureName)
-    {
-        throw new NotImplementedException();
-    }
+
 }
