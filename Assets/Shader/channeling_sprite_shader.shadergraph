@@ -11,18 +11,6 @@
                 "fullName": "UnityEditor.ShaderGraph.ColorShaderProperty"
             },
             "JSONnodeData": "{\n    \"m_Name\": \"_EffectColor\",\n    \"m_GeneratePropertyBlock\": true,\n    \"m_Guid\": {\n        \"m_GuidSerialized\": \"9704f75f-b4e5-4027-a4d2-35d70ed0e277\"\n    },\n    \"m_DefaultReferenceName\": \"Color_C5FFB18F\",\n    \"m_OverrideReferenceName\": \"_EffectColor\",\n    \"m_Value\": {\n        \"r\": 0.0,\n        \"g\": 0.0572504997253418,\n        \"b\": 1.0,\n        \"a\": 1.0\n    },\n    \"m_ColorMode\": 0,\n    \"m_Hidden\": false\n}"
-        },
-        {
-            "typeInfo": {
-                "fullName": "UnityEditor.ShaderGraph.Vector1ShaderProperty"
-            },
-            "JSONnodeData": "{\n    \"m_Name\": \"_Balance\",\n    \"m_GeneratePropertyBlock\": true,\n    \"m_Guid\": {\n        \"m_GuidSerialized\": \"35b5a8dd-f859-4f01-87d7-5ab5affe495d\"\n    },\n    \"m_DefaultReferenceName\": \"Vector1_BB675786\",\n    \"m_OverrideReferenceName\": \"_Balance\",\n    \"m_Value\": 0.0,\n    \"m_FloatType\": 0,\n    \"m_RangeValues\": {\n        \"x\": 0.0,\n        \"y\": 1.0\n    },\n    \"m_Hidden\": false\n}"
-        },
-        {
-            "typeInfo": {
-                "fullName": "UnityEditor.ShaderGraph.TextureShaderProperty"
-            },
-            "JSONnodeData": "{\n    \"m_Name\": \"GradientSprite\",\n    \"m_GeneratePropertyBlock\": true,\n    \"m_Guid\": {\n        \"m_GuidSerialized\": \"5edf9e40-aff2-4dc8-ae0c-86897a1c8c8f\"\n    },\n    \"m_DefaultReferenceName\": \"Texture2D_88075C7E\",\n    \"m_OverrideReferenceName\": \"\",\n    \"m_Value\": {\n        \"m_SerializedTexture\": \"{\\\"texture\\\":{\\\"fileID\\\":2800000,\\\"guid\\\":\\\"308b8675f5577c34189b5f540f7069dd\\\",\\\"type\\\":3}}\",\n        \"m_Guid\": \"\"\n    },\n    \"m_Modifiable\": true,\n    \"m_DefaultType\": 0\n}"
         }
     ],
     "m_SerializableNodes": [

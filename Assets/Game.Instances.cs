@@ -19,6 +19,20 @@ public partial class Game //.Instances
     private static TimeManager _timeManager;
     private static ManaDisplay _manaDisplay;
     private static MaterialController _materialController;
+    private static LeyLineController _leyLineController;
+
+    public static LeyLineController LeyLineController
+    {
+        get
+        {
+            if (_leyLineController == null)
+            {
+                _leyLineController = GameObject.Find(ControllerConstants.LeyLineController).GetComponent<LeyLineController>();
+            }
+
+            return _leyLineController;
+        }
+    }
 
     public static MaterialController MaterialController
     {

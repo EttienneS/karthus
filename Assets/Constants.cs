@@ -22,6 +22,7 @@ public static class ControllerConstants
     public const string TimeController = "TimePanel";
     public const string ManaDisplay = "ManaDisplay";
     public const string MaterialController = "MaterialController";
+    public const string LeyLineController = "LeyLineController";
 }
 
 public static class LayerConstants

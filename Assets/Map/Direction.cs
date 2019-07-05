@@ -16,4 +16,6 @@ public static class DirectionExtensions
     {
         return (int)direction < 4 ? direction + 4 : direction - 4;
     }
+
+    
 }

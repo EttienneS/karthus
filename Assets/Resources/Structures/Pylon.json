@@ -17,5 +17,6 @@
   "Buildable": true,
   "SpriteName": "runeBlue_slab_004",
   "Tiled": false,
-  "TravelCost": "10"
+  "TravelCost": "10",
+  "StructureType": "Anchor"
 }

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
@@ -72,6 +73,12 @@ public static class Helpers
     public static string GlobalizeFloatString(string input)
     {
         return input.Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
+    }
+
+    public static T RandomEnumValue<T>()
+    {
+        var v = Enum.GetValues(typeof(T));
+        return (T) v.GetValue(Random.Range(0, v.Length - 1));
     }
 }
 public static class ListHelpers

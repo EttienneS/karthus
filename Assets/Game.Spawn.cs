@@ -69,19 +69,7 @@ public partial class Game // .Spawn
         foreach (var cell in nexusPoints)
         {
             var target = nexusPoints[(int)(Random.value * (nexusPoints.Count - 1))];
-            foreach (var path in Pathfinder.FindPath(cell, target, true))
-            {
-                if (path == target || path == cell)
-                {
-                    continue;
-                }
-
-                if (path.Structure != null)
-                {
-                    StructureController.DestroyStructure(path.Structure);
-                }
-                path.AddContent(StructureController.GetStructure("LeyLine", FactionController.WorldFaction).gameObject);
-            }
+            LeyLineController.MakeLine(Pathfinder.FindPath(cell, target, true), Helpers.RandomEnumValue<ManaColor>());
         }
     }
 
