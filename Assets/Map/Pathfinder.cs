@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public static class Pathfinder
 {
@@ -136,14 +137,6 @@ public static class Pathfinder
                 }
 
                 var neighborTravelCost = neighbor.TravelCost;
-
-                // todo: Revist later, the concept of diagonal movement costing more _can_ be cool but maybe not
-                // worth the extra complexity to understand
-                //if (neighbor.Coordinates.X != current.Coordinates.X && neighbor.Coordinates.Y != current.Coordinates.Y)
-                //{
-                //    // if both are not true then we are moving diagonally (add 50% cost)
-                //    neighborTravelCost = Mathf.FloorToInt(neighborTravelCost * 1.5f);
-                //}
 
                 var distance = current.Distance + neighborTravelCost;
                 if (neighbor.SearchPhase < _searchFrontierPhase)

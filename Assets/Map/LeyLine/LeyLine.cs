@@ -12,38 +12,85 @@ public class LeyLine : MonoBehaviour
     internal float DeltaTime;
     internal bool FirstDraw = true;
     internal float Jitter;
+    internal int MaxChanges = 3;
     internal Dictionary<int, KeyValuePair<Vector3, Vector3>> LineMoves = new Dictionary<int, KeyValuePair<Vector3, Vector3>>();
     internal float NextUpdate;
 
     public void JitterLine()
     {
-        for (int i = 0; i < Cells.Count; i++)
+        if (FirstDraw)
         {
-            var newCell = Cells[i];
+            JitterDiagonals();
+        }
 
-            if ((i == 0) || (i == Cells.Count - 1))
-            {
-                // start or end of line so skip
+        for (int i = 0; i < MaxChanges; i++)
+        {
+            if (Random.value < Jitter)
                 continue;
-            }
+
+            var newCell = Cells[Random.Range(0, Cells.Count - 1)];
 
             if (newCell.Structure?.StructureType == "Anchor")
             {
                 continue;
             }
 
-            if (Random.value < Jitter)
+            var index = Cells.IndexOf(newCell);
+            if (LineMoves.ContainsKey(index))
             {
-                var neighbors = newCell.Neighbors.Where(n => n != null
-                && n.Neighbors.Contains(Cells[i + 1])
-                && n.Neighbors.Contains(Cells[i - 1])).ToList();
+                // line is currently moving, skip
+                continue;
+            }
 
-                if (neighbors.Any())
+            var previous = Cells[index - 1];
+            var next = Cells[index + 1];
+
+            var neighbors = newCell.Neighbors.Where(n => n != null
+                                && !Cells.Contains(n)
+                                && n.Neighbors.Contains(previous)
+                                && n.Neighbors.Contains(next)).ToList();
+
+            if (neighbors.Count > 0)
+            {
+                newCell = neighbors[(int)Random.value * neighbors.Count];
+                LineMoves.Add(index, new KeyValuePair<Vector3, Vector3>(newCell.Coordinates.ToTopOfMapVector(),
+                                                            newCell.Coordinates.ToTopOfMapVector()));
+                Cells[index] = newCell;
+            }
+        }
+    }
+
+    public void JitterDiagonals()
+    {
+        for (int i = 0; i < Cells.Count; i++)
+        {
+            var cell = Cells[i];
+            if (i == 0 || i == Cells.Count - 1 || cell.Structure?.StructureType == "Anchor")
+            {
+                continue;
+            }
+
+            var previous = Cells[i - 1];
+            var next = Cells[i + 1];
+
+            if (cell.Coordinates.X != next.Coordinates.X
+                && cell.Coordinates.X != previous.Coordinates.X
+                && cell.Coordinates.Y != next.Coordinates.Y
+                && cell.Coordinates.Y != previous.Coordinates.Y)
+            {
+                if (Random.value < 0.5f)
                 {
-                    newCell = neighbors[(int)Random.value * neighbors.Count];
-                    LineMoves.Add(i, new KeyValuePair<Vector3, Vector3>(Cells[i].Coordinates.ToTopOfMapVector(),
-                                                                newCell.Coordinates.ToTopOfMapVector()));
-                    Cells[i] = newCell;
+                    var neighbors = cell.Neighbors.Where(n => n != null
+                                        && n != next 
+                                        && n != previous).ToList();
+
+                    if (neighbors.Count > 0)
+                    {
+                        var insert = neighbors[(int)Random.value * neighbors.Count];
+                        Cells.Insert(i, insert);
+                        i++;
+                    }
+
                 }
             }
         }
@@ -62,7 +109,7 @@ public class LeyLine : MonoBehaviour
         {
             DeltaTime += Time.deltaTime;
 
-            if (LineMoves.Any())
+            if (LineMoves.Count > 0)
             {
                 foreach (var kvp in LineMoves)
                 {
@@ -91,7 +138,7 @@ public class LeyLine : MonoBehaviour
         }
     }
 
-    private void Awake()
+    internal void Awake()
     {
         Line = GetComponent<LineRenderer>();
         NextUpdate = Random.value * 5;

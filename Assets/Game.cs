@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -21,6 +22,16 @@ public partial class Game : MonoBehaviour
     private TimeStep _oldTimeStep = TimeStep.Normal;
     private Vector3 _selectionEnd;
     private Vector3 _selectionStart;
+
+    private List<GameObject> _destroyCache = new List<GameObject>();
+
+    public void AddItemToDestroy(GameObject gameObject)
+    {
+        lock (_destroyCache)
+        {
+            _destroyCache.Add(gameObject);
+        }
+    }
 
     public void AddLine(Coordinates start, Coordinates end)
     {
@@ -69,6 +80,9 @@ public partial class Game : MonoBehaviour
         ClearLine();
         foreach (var structure in SelectedStructures)
         {
+            if (structure?.LinkedGameObject == null)
+                continue;
+
             var cell = MapGrid.GetCellAtCoordinate(structure.Coordinates);
             structure.LinkedGameObject.SpriteRenderer.color = cell.Bound ? ColorConstants.BaseColor :
                                                                            ColorConstants.UnboundStructureColor;
@@ -244,11 +258,15 @@ public partial class Game : MonoBehaviour
             faction.Structure = factionBody.Data;
             faction.Structures.Add(factionBody.Data);
 
-            faction.ManaPool = factionBody.Data.ManaValue.ToManaPool();
+            factionBody.Data.ManaPool = factionBody.Data.ManaValue.ToManaPool();
 
             if (factionName == FactionConstants.Player)
             {
-                ManaDisplay.EnsureDisplay(faction.ManaPool);
+                ManaDisplay.EnsureDisplay(factionBody.Data.ManaPool);
+            }
+            else
+            {
+                factionBody.Data.Behaviour = null;
             }
 
             faction.transform.position = new Vector2(-100, -100);
@@ -399,6 +417,30 @@ public partial class Game : MonoBehaviour
 
                 selectSquareImage.sizeDelta = new Vector2(sizeX, sizeY);
             }
+        }
+        DestroyItemsInCache();
+    }
+
+    private void DestroyItemsInCache()
+    {
+        try
+        {
+            lock (_destroyCache)
+            {
+                while (_destroyCache.Any())
+                {
+                    var item = _destroyCache[0];
+                    _destroyCache.RemoveAt(0);
+                    if (item != null)
+                    {
+                        Destroy(item);
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.Log($"Destroy failed: {ex}");
         }
     }
 }

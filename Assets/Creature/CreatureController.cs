@@ -31,7 +31,7 @@ public class CreatureController : MonoBehaviour
         {
             Name = CreatureHelper.GetRandomName(),
             Coordinates = spawnLocation.Coordinates,
-            Id = Creatures.Count + 1,
+            Id = IdService.UniqueId(),
             GetBehaviourTask = Behaviours.PersonBehaviour
         };              
 
@@ -56,8 +56,11 @@ public class CreatureController : MonoBehaviour
 
     internal void DestroyCreature(Creature creature)
     {
-        CreatureLookup.Remove(creature.Data);
-        Destroy(creature.gameObject);
+        if (creature != null)
+        {
+            CreatureLookup.Remove(creature.Data);
+            Game.Controller.AddItemToDestroy(creature.gameObject);
+        }
     }
 
     internal Creature GetCreatureForCreatureData(CreatureData creatureData)
@@ -70,7 +73,7 @@ public class CreatureController : MonoBehaviour
         var creature = Instantiate(CreaturePrefab, transform, true);
         creature.Data = creatureData;
         creature.transform.position = creature.Data.Coordinates.ToMapVector();
-        creature.Data.Id = Creatures.Count + 1;
+        creature.Data.Id = IdService.UniqueId();
 
         if (creature.Data.GetBehaviourTask == null)
         {

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public static class Behaviours
@@ -18,7 +19,7 @@ public static class Behaviours
                 cell = Game.MapGrid.GetRandomCell();
                 breaker++;
 
-                if (breaker > 20)
+                if (breaker > 5)
                 {
                     task = new Sleep(creature.Coordinates, 10f);
                     break;
@@ -42,7 +43,22 @@ public static class Behaviours
     {
         TaskBase task = null;
 
-        if (creature.ValueProperties[Prop.Hunger] > 50)
+        const int threshold = 5;
+        if (creature.ManaPool.Any(m => m.Value.Total > threshold))
+        {
+            var burn = new Dictionary<ManaColor, int>();
+
+            foreach (var mana in creature.ManaPool)
+            {
+                if (mana.Value.Total > threshold)
+                {
+                    burn.Add(mana.Key, mana.Value.Total);
+                }
+            }
+
+            task = new Burn(burn, creature.Faction.Structure.GetGameId());
+        }
+        else if (creature.ValueProperties[Prop.Hunger] > 50)
         {
             task = new Eat(ManaColor.Green);
         }

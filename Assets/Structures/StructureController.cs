@@ -34,18 +34,6 @@ public class StructureController : MonoBehaviour
         return Game.SpriteStore.GetSpriteByName(StructureDataReference[structureName].SpriteName);
     }
 
-    public Structure GetStructure(StructureData data)
-    {
-        var structure = Instantiate(structurePrefab, transform);
-        structure.Data = data;
-        structure.Data.Id = StructureLookup.Keys.Count + 1;
-
-        structure.LoadSprite();
-        IndexStructure(structure);
-
-        return structure;
-    }
-
     public Structure GetStructure(string name, Faction faction)
     {
         var structure = Instantiate(structurePrefab, transform);
@@ -53,7 +41,7 @@ public class StructureController : MonoBehaviour
         string structureData = StructureTypeFileMap[name];
 
         structure.Load(structureData);
-        structure.Data.Id = StructureLookup.Keys.Count + 1;
+        structure.Data.Id = IdService.UniqueId();
 
         if (!string.IsNullOrEmpty(structure.Data.Material))
         {
@@ -80,11 +68,17 @@ public class StructureController : MonoBehaviour
         DestroyStructure(structure.LinkedGameObject);
     }
 
+
     internal void DestroyStructure(Structure structure)
     {
-        Game.MapGrid.GetCellAtCoordinate(structure.Data.Coordinates).Structure = null;
+        if (structure != null)
+        {
+            StructureLookup.Remove(structure.Data);
+            StructureIdLookup.Remove(structure.Data.Id);
 
-        Destroy(structure.gameObject);
+            Game.MapGrid.GetCellAtCoordinate(structure.Data.Coordinates).Structure = null;
+            Game.Controller.AddItemToDestroy(structure.gameObject);
+        }
     }
 
     internal Structure GetStructureBluePrint(string name, Faction faction)

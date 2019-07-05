@@ -6,11 +6,15 @@
 
     public ManaColor ManaColor;
     public int AmountToChannel;
+    public string Source;
 
-    public Channel(ManaColor color, int amount)
+    public Channel(ManaColor color, int amount, string sourceId)
     {
         ManaColor = color;
         AmountToChannel = amount;
+        Source = sourceId;
+
+        AddSubTask(new Move(Game.MapGrid.GetPathableNeighbour(IdService.GetLocation(sourceId))));
     }
 
     public override bool Done()
@@ -23,7 +27,16 @@
             }
             else
             {
-                Creature.Faction.ManaPool[ManaColor].Burn(1);
+                switch (IdService.GetObjectTypeForId(Source))
+                {
+                    case IdService.ObjectType.Creature:
+                        IdService.GetCreatureFromId(Source).ManaPool[ManaColor].Burn(1);
+                        break;
+                    case IdService.ObjectType.Structure:
+                        IdService.GetStructureFromId(Source).ManaPool[ManaColor].Burn(1);
+                        break;
+                }
+
                 AmountToChannel--;
                 Creature.GainMana(ManaColor);
 

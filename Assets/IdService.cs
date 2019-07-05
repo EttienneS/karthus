@@ -35,7 +35,7 @@ public static class IdService
 
     public enum ObjectType
     {
-        Creature, Item, Structure, Stockpile
+        Creature, Structure
     }
 
     internal static ObjectType GetObjectTypeForId(string gameObjectId)
@@ -47,14 +47,6 @@ public static class IdService
         if (IsCreature(gameObjectId))
         {
             return ObjectType.Creature;
-        }
-        if (IsItem(gameObjectId))
-        {
-            return ObjectType.Item;
-        }
-        if (IsStockpile(gameObjectId))
-        {
-            return ObjectType.Stockpile;
         }
 
         throw new NotImplementedException();
@@ -68,6 +60,15 @@ public static class IdService
     public static int GetId(string id)
     {
         return int.Parse(id.Split('-')[1]);
+    }
+
+    private static int _idCounter = 0;
+
+    public static int UniqueId()
+    {
+        var id = _idCounter;
+        _idCounter++;
+        return id;
     }
 
     public static Coordinates GetLocation(string id)

@@ -14,8 +14,7 @@
         Coordinates = coordinates;
 
         AddSubTask(new Acrue(structure.ManaValue));
-        AddSubTask(new Move(Game.MapGrid.GetPathableNeighbour(Coordinates)));
-        AddSubTask(new Burn(structure.ManaValue));
+        AddSubTask(new Burn(structure.ManaValue, structure.GetGameId()));
 
         Message = $"Building {structure.Name} at {coordinates}";
     }

@@ -23,9 +23,7 @@ public partial class Game // .Spawn
         var midCell = MapGrid
             .GetCircle(new Coordinates(MapConstants.MapSize / 2, MapConstants.MapSize / 2), 10)
             .First(c => c.CellType != CellType.Water || c.CellType != CellType.Mountain);
-
-        FactionController.PlayerFaction.transform.position = midCell.Coordinates.ToMapVector();
-
+        
         if (midCell.Structure != null)
         {
             StructureController.DestroyStructure(midCell.Structure);
@@ -34,14 +32,14 @@ public partial class Game // .Spawn
         SummonCells(midCell, FactionController.PlayerFaction);
         CreateLeyLines();
 
-        midCell.CellType = CellType.Mountain;
+        midCell.AddContent(FactionController.PlayerFaction.gameObject);
 
         CreatureController.SpawnPlayerAtLocation(midCell.GetNeighbor(Direction.E));
         CameraController.MoveToCell(midCell.GetNeighbor(Direction.E));
 
         var spawns = midCell.Neighbors.ToList();
 
-        for (int i = 0; i < MapConstants.MapSize / 10; i++)
+        for (int i = 0; i < MapConstants.MapSize / 100; i++)
         {
             var c = CreatureController.Beastiary.First().Value.CloneJson();
             c.Coordinates = MapGrid.GetRandomCell().Coordinates;
@@ -84,10 +82,10 @@ public partial class Game // .Spawn
             MapGrid.BindCell(cell, "X");
         }
 
-        SpawnRune(center.GetNeighbor(Direction.N), "BindRune", faction);
-        SpawnRune(center.GetNeighbor(Direction.E), "BindRune", faction);
-        SpawnRune(center.GetNeighbor(Direction.S), "BindRune", faction);
-        SpawnRune(center.GetNeighbor(Direction.W), "BindRune", faction);
+        SpawnRune(center.GetNeighbor(Direction.N).GetNeighbor(Direction.N), "BindRune", faction);
+        SpawnRune(center.GetNeighbor(Direction.E).GetNeighbor(Direction.E), "BindRune", faction);
+        SpawnRune(center.GetNeighbor(Direction.S).GetNeighbor(Direction.S), "BindRune", faction);
+        SpawnRune(center.GetNeighbor(Direction.W).GetNeighbor(Direction.W), "BindRune", faction);
     }
 
 }

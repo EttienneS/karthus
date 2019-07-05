@@ -8,7 +8,6 @@ public class Faction : MonoBehaviour
     public const int RecyleCount = 5;
     public const int RecyleTime = 3;
     public int LastRecyle;
-    public Dictionary<ManaColor, Mana> ManaPool = new Dictionary<ManaColor, Mana>();
     internal string FactionName;
     internal List<TaskBase> Tasks = new List<TaskBase>();
 
