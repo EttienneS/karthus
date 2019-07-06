@@ -2,7 +2,7 @@
 
 public static class FactionController
 {
-    public static Dictionary<string, Faction> Factions = new Dictionary<string, Faction>();
+    internal static Dictionary<string, Faction> Factions = new Dictionary<string, Faction>();
 
     public static Faction PlayerFaction
     {
@@ -19,5 +19,4 @@ public static class FactionController
             return Factions[FactionConstants.World];
         }
     }
-
 }

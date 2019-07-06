@@ -1,8 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
-using UnityEngine;
 
-public class CreatureData
+public class CreatureData : IMagicAttuned
 {
     public const string SelfKey = "Self";
     public Coordinates Coordinates;
@@ -19,7 +18,7 @@ public class CreatureData
     public Dictionary<string, string> StringProperties = new Dictionary<string, string>();
     public Dictionary<string, float> ValueProperties = new Dictionary<string, float>();
 
-    public Dictionary<ManaColor, Mana> ManaPool = new Dictionary<ManaColor, Mana>();
+    public ManaPool ManaPool { get; set; } = new ManaPool();
 
     public void BurnMana(ManaColor manaColor)
     {

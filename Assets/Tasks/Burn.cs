@@ -31,17 +31,7 @@ public class Burn : TaskBase
                     ManaToBurn[kvp.Key]--;
 
                     Creature.BurnMana(kvp.Key);
-
-                    switch (IdService.GetObjectTypeForId(TargetId))
-                    {
-                        case IdService.ObjectType.Creature:
-                            IdService.GetCreatureFromId(TargetId).ManaPool[kvp.Key].Gain(1);
-                            break;
-
-                        case IdService.ObjectType.Structure:
-                            IdService.GetStructureFromId(TargetId).ManaPool[kvp.Key].Gain(1);
-                            break;
-                    }
+                    IdService.GetMagicAttuned(TargetId)?.ManaPool.GainMana(kvp.Key, 1);
 
                     return false;
                 }

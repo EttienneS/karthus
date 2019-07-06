@@ -39,7 +39,7 @@ public class ManaDisplay : MonoBehaviour
         }
     }
 
-    internal void EnsureDisplay(Dictionary<ManaColor, Mana> manaPool)
+    internal void EnsureDisplay(ManaPool manaPool)
     {
         foreach (var mana in manaPool)
         {

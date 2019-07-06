@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-public class StructureData
+public class StructureData : IMagicAttuned
 {
     public TaskBase Behaviour;
 
@@ -9,6 +9,7 @@ public class StructureData
 
     public Coordinates Coordinates;
 
+    public string FactionName;
     public int Id;
 
     public string InUseBy;
@@ -17,44 +18,23 @@ public class StructureData
 
     public string Layer;
 
+    public Dictionary<ManaColor, int> ManaValue;
+    public string Material;
     public string Name;
 
     public Dictionary<string, string> Properties = new Dictionary<string, string>();
 
-    public string FactionName { get; set; }
-
-    [JsonIgnore]
-    public Faction Faction
-    {
-        get
-        {
-            return FactionController.Factions[FactionName];
-        }
-    }
-
     public string ShiftX;
-
     public string ShiftY;
-
     public string Size;
-
     public string SpriteName;
-
     public string StructureType;
-
     public List<TaskBase> Tasks = new List<TaskBase>();
-
-    public string  Material;
     public bool Tiled;
-
     public float TravelCost;
-
-    public Dictionary<ManaColor, int> ManaValue;
 
     [JsonIgnore]
     private int _width, _height = -1;
-
-    public Dictionary<ManaColor, Mana> ManaPool = new Dictionary<ManaColor, Mana>();
 
     public StructureData()
     {
@@ -64,6 +44,15 @@ public class StructureData
     {
         Name = name;
         SpriteName = sprite;
+    }
+
+    [JsonIgnore]
+    public Faction Faction
+    {
+        get
+        {
+            return FactionController.Factions[FactionName];
+        }
     }
 
     [JsonIgnore]
@@ -93,6 +82,8 @@ public class StructureData
             return Game.StructureController.GetStructureForData(this);
         }
     }
+
+    public ManaPool ManaPool { get; set; } = new ManaPool();
 
     [JsonIgnore]
     public int Width

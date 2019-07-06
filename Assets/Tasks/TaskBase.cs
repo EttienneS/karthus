@@ -20,7 +20,11 @@ public class TaskBase
     {
         get
         {
-            return Game.CreatureController.CreatureIdLookup[AssignedCreatureId];
+            if (Game.CreatureController.CreatureIdLookup.ContainsKey(AssignedCreatureId))
+            {
+                return Game.CreatureController.CreatureIdLookup[AssignedCreatureId];
+            }
+            return null;
         }
     }
 

@@ -28,13 +28,25 @@ public class Move : TaskBase
 
     public override bool Done()
     {
+        if (Creature == null || Creature.Coordinates == null)
+        {
+            return false;
+        }
+
         return Creature.Coordinates == TargetCoordinates;
     }
 
     public override void Update()
     {
-        if (Creature.Coordinates == TargetCoordinates)
+        if (Creature == null || Creature.Coordinates == null)
+        {
             return;
+        }
+
+        if (Creature.Coordinates == TargetCoordinates)
+        {
+            return;
+        }
 
         if (_nextCell == null)
         {

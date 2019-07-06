@@ -39,7 +39,7 @@ public class Faction : MonoBehaviour
     internal void AddStructure(StructureData structure)
     {
         Structures.Add(structure);
-        Structure.FactionName = FactionName;
+        structure.FactionName = FactionName;
     }
 
     public static bool QueueComplete(Queue<TaskBase> queue)
