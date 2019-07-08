@@ -5,7 +5,7 @@ using UnityEngine;
 public class SunController : MonoBehaviour
 {
     internal const float BaseIntensity = 0.5f;
-    internal const float MaxIntensity = 1.2f;
+    internal const float MaxIntensity = 1f;
 
     internal const int Sunrise = 4;
     internal const int Sunset = 17;
