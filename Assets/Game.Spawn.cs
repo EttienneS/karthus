@@ -23,7 +23,7 @@ public partial class Game // .Spawn
         var midCell = MapGrid
             .GetCircle(new Coordinates(MapConstants.MapSize / 2, MapConstants.MapSize / 2), 10)
             .First(c => c.CellType != CellType.Water || c.CellType != CellType.Mountain);
-        
+
         if (midCell.Structure != null)
         {
             StructureController.DestroyStructure(midCell.Structure);
@@ -34,18 +34,19 @@ public partial class Game // .Spawn
 
         midCell.AddContent(FactionController.PlayerFaction.gameObject);
 
-        CreatureController.SpawnPlayerAtLocation(midCell.GetNeighbor(Direction.E));
+        CreatureController.SpawnCreature(CreatureController.GetCreatureOfType("Person"),
+                                         midCell.GetNeighbor(Direction.E).Coordinates,
+                                         FactionController.PlayerFaction);
+
         CameraController.MoveToCell(midCell.GetNeighbor(Direction.E));
 
         var spawns = midCell.Neighbors.ToList();
 
         for (int i = 0; i < MapConstants.MapSize / 100; i++)
         {
-            var c = CreatureController.Beastiary.First().Value.CloneJson();
-            c.Coordinates = MapGrid.GetRandomCell().Coordinates;
-            CreatureController.SpawnCreature(c);
-
-            FactionController.Factions[FactionConstants.Monster].AddCreature(c);
+            CreatureController.SpawnCreature(CreatureController.GetCreatureOfType("AbyssWraith"),
+                                             MapGrid.GetRandomCell().Coordinates,
+                                             FactionController.MonsterFaction);
         }
     }
 
@@ -87,5 +88,4 @@ public partial class Game // .Spawn
         SpawnRune(center.GetNeighbor(Direction.S).GetNeighbor(Direction.S), "BindRune", faction);
         SpawnRune(center.GetNeighbor(Direction.W).GetNeighbor(Direction.W), "BindRune", faction);
     }
-
 }

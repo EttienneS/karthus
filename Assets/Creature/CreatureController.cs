@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -25,25 +26,6 @@ public class CreatureController : MonoBehaviour
         return null;
     }
 
-    public Creature SpawnPlayerAtLocation(CellData spawnLocation)
-    {
-        var data = new CreatureData
-        {
-            Name = CreatureHelper.GetRandomName(),
-            Coordinates = spawnLocation.Coordinates,
-            Id = IdService.UniqueId(),
-            GetBehaviourTask = Behaviours.PersonBehaviour
-        };              
-
-        FactionController.PlayerFaction.AddCreature(data);
-
-        data.ValueProperties[Prop.Hunger] = Random.Range(0, 15);
-        data.ValueProperties[Prop.Energy] = Random.Range(80, 100);
-
-        var creature = SpawnCreature(data);
-        creature.ShowText("Awee!!!", Random.Range(1f, 3f));
-        return creature;
-    }
 
     public void Start()
     {
@@ -63,44 +45,37 @@ public class CreatureController : MonoBehaviour
         }
     }
 
+    internal CreatureData GetCreatureOfType(string v)
+    {
+        return Beastiary[v].CloneJson();
+    }
+
     internal Creature GetCreatureForCreatureData(CreatureData creatureData)
     {
         return CreatureLookup[creatureData];
     }
 
-    internal Creature SpawnCreature(CreatureData creatureData)
+    internal Creature SpawnCreature(CreatureData creatureData, Coordinates coordinates, Faction faction)
     {
         var creature = Instantiate(CreaturePrefab, transform, true);
         creature.Data = creatureData;
-        creature.transform.position = creature.Data.Coordinates.ToMapVector();
+        creature.Data.Coordinates = coordinates;
+        creature.transform.position = coordinates.ToMapVector();
         creature.Data.Id = IdService.UniqueId();
 
-        if (creature.Data.GetBehaviourTask == null)
-        {
-            creature.Data.GetBehaviourTask = Behaviours.ManaWraithBehaviour;
-        }
+        creature.Data.GetBehaviourTask = Behaviours.GetBehaviourFor(creature.Data.BehaviourName);
 
-        SetSprite(creature);
+        creature.Sprite.material = Game.MaterialController.DefaultMaterial;
+        creature.Sprite.sprite = Game.SpriteStore.GetCreatureSprite(creature.Data.Sprite);
+
         IndexCreature(creature);
-        FactionController.Factions[FactionConstants.Monster].Creatures.Add(creatureData);
+        faction.AddCreature(creatureData);
         return creature;
     }
 
-    private static void SetSprite(Creature creature)
-    {
-        if (string.IsNullOrEmpty(creature.Data.Sprite))
-        {
-            creature.CreatureSprite = new ModularSprite(creature);
-        }
-        else
-        {
-            creature.CreatureSprite = new FixedCreatureSprite(creature.Data.Sprite, creature);
-        }
-    }
 
     private void IndexCreature(Creature creature)
     {
-        creature.CreatureSprite.SetBodyMaterial(Game.MaterialController.DefaultMaterial);
 
         Creatures.Add(creature);
         CreatureLookup.Add(creature.Data, creature);

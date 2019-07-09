@@ -1,0 +1,10 @@
+﻿{
+  "Name": "Person",
+  "ValueProperties": {
+    "Energy": "100",
+    "Hunger": "0"
+  },
+  "Speed": 10.0,
+  "Sprite": "base",
+  "BehaviourName": "Person"
+}

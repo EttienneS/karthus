@@ -1,10 +1,10 @@
 ﻿{
-  "Name": "Abyss Wraith",
+  "Name": "AbyssWraith",
   "ValueProperties": {
     "Energy": "200",
-    "Hunger": "200",
-    "Thirst": "200"
+    "Hunger": "200"
   },
   "Speed": 10.0,
-  "Sprite": "AbyssWraith"
+  "Sprite": "AbyssWraith",
+  "BehaviourName": "AbyssWraith"
 }

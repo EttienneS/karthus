@@ -5,10 +5,7 @@ using Random = UnityEngine.Random;
 
 public class Creature : MonoBehaviour
 {
-    public SpriteRenderer BodyPartPrefab;
-
-    internal GameObject Body;
-    internal ICreatureSprite CreatureSprite;
+    internal SpriteRenderer Sprite;
     internal CreatureData Data = new CreatureData();
     internal SpriteRenderer Highlight;
     internal float RemainingTextDuration;
@@ -25,7 +22,7 @@ public class Creature : MonoBehaviour
         Highlight = transform.Find("Highlight").GetComponent<SpriteRenderer>();
         Light = GetComponentInChildren<Light>();
         Highlight.gameObject.SetActive(false);
-        Body = transform.Find("Body").gameObject;
+        Sprite = transform.Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
     }
 
     public void ShowText(string text, float duration)
@@ -58,7 +55,7 @@ public class Creature : MonoBehaviour
 
     internal void SetTempMaterial(Material material, float duration)
     {
-        CreatureSprite.SetBodyMaterial(material);
+        Sprite.material = material;
         TempMaterialDuration = duration * 2;
         TempMaterialDelta = 0;
 
@@ -113,7 +110,7 @@ public class Creature : MonoBehaviour
         TempMaterialDelta += Time.deltaTime;
         if (TempMaterialDelta >= TempMaterialDuration)
         {
-            CreatureSprite.SetBodyMaterial(Game.MaterialController.DefaultMaterial);
+            Sprite.material = Game.MaterialController.DefaultMaterial;
             Light.color = Color.white;
             Light.intensity = 0.1f;
         }
@@ -159,4 +156,16 @@ public class Creature : MonoBehaviour
             }
         }
     }
+
+
+    public string SpriteName;
+
+    
+    public Color CurrentColor { get; set; }
+
+    public Sprite GetIcon()
+    {
+        return Sprite.sprite;
+    }
+
 }

@@ -35,104 +35,14 @@ public class SpriteStore : MonoBehaviour
         return GetSpriteByName("Placeholder");
     }
 
-    public List<Sprite> HairSprites = new List<Sprite>();
-    public List<Sprite> HeadSprites = new List<Sprite>();
-    public List<Sprite> FaceSprites = new List<Sprite>();
-    public List<Sprite> NeckSprites = new List<Sprite>();
-    public List<Sprite> ArmSprites = new List<Sprite>();
-    public List<Sprite> PantSprites = new List<Sprite>();
-    public List<Sprite> SleeveSprites = new List<Sprite>();
-    public List<Sprite> TorsoSprites = new List<Sprite>();
-    public List<Sprite> HandSprites = new List<Sprite>();
-    public List<Sprite> PelvisSprites = new List<Sprite>();
-    public List<Sprite> LegSprites = new List<Sprite>();
-    public List<Sprite> FootSprites = new List<Sprite>();
 
-    public Dictionary<string, Sprite> FixedSprites = new Dictionary<string, Sprite>();
+    public Dictionary<string, Sprite> CreatureSprites = new Dictionary<string, Sprite>();
 
     public void LoadCreatureSprites()
     {
-        foreach (var sprite in Resources.LoadAll<Sprite>("Sprites/Creature/Fixed"))
+        foreach (var sprite in Resources.LoadAll<Sprite>("Sprites/Creature"))
         {
-            FixedSprites.Add(sprite.name, sprite);
-        }
-
-        foreach (var sprite in Resources.LoadAll<Sprite>("Sprites/Creature/Face"))
-        {
-            if (sprite.name.StartsWith("face", StringComparison.OrdinalIgnoreCase))
-            {
-                FaceSprites.Add(sprite);
-            }
-        }
-
-        foreach (var sprite in Resources.LoadAll<Sprite>("Sprites/Creature/Feet"))
-        {
-            FootSprites.Add(sprite);
-        }
-
-        foreach (var sprite in Resources.LoadAll<Sprite>("Sprites/Creature/Hair"))
-        {
-            if (sprite.name.IndexOf("woman", StringComparison.OrdinalIgnoreCase) >= 0)
-                continue;
-            HairSprites.Add(sprite);
-        }
-
-        foreach (var sprite in Resources.LoadAll<Sprite>("Sprites/Creature/Skin"))
-        {
-            if (sprite.name.IndexOf("head", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                HeadSprites.Add(sprite);
-            }
-
-            if (sprite.name.IndexOf("arm", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                ArmSprites.Add(sprite);
-            }
-
-            if (sprite.name.IndexOf("hand", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                HandSprites.Add(sprite);
-            }
-
-            if (sprite.name.IndexOf("leg", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                LegSprites.Add(sprite);
-            }
-
-            if (sprite.name.IndexOf("neck", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                NeckSprites.Add(sprite);
-            }
-        }
-
-        foreach (var sprite in Resources.LoadAll<Sprite>("Sprites/Creature/Tops"))
-        {
-            if (sprite.name.IndexOf("arm", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                if (sprite.name.IndexOf("short", StringComparison.OrdinalIgnoreCase) >= 0 || sprite.name.IndexOf("short", StringComparison.OrdinalIgnoreCase) >= 0)
-                    continue;
-
-                SleeveSprites.Add(sprite);
-            }
-            else
-            {
-                TorsoSprites.Add(sprite);
-            }
-        }
-
-        foreach (var sprite in Resources.LoadAll<Sprite>("Sprites/Creature/Bottoms"))
-        {
-            if (sprite.name.Contains("_"))
-            {
-                if (sprite.name.IndexOf("short", StringComparison.OrdinalIgnoreCase) >= 0 || sprite.name.IndexOf("short", StringComparison.OrdinalIgnoreCase) >= 0)
-                    continue;
-
-                PantSprites.Add(sprite);
-            }
-            else
-            {
-                PelvisSprites.Add(sprite);
-            }
+            CreatureSprites.Add(sprite.name, sprite);
         }
     }
 
@@ -163,11 +73,11 @@ public class SpriteStore : MonoBehaviour
         }
     }
 
-    internal Sprite GetFixedCreatureSprite(string spriteName)
+    internal Sprite GetCreatureSprite(string spriteName)
     {
-        if (FixedSprites.ContainsKey(spriteName))
+        if (CreatureSprites.ContainsKey(spriteName))
         {
-            return FixedSprites[spriteName];
+            return CreatureSprites[spriteName];
         }
 
         return GetPlaceholder();

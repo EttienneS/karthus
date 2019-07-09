@@ -14,7 +14,9 @@
     {
         if (Faction.QueueComplete(SubTasks))
         {
-            FireRune(() => Game.CreatureController.SpawnPlayerAtLocation(Game.MapGrid.GetCellAtCoordinate(IdService.GetLocation(Originator))));
+            FireRune(() => Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("Person"),
+                                                                 IdService.GetLocation(Originator),
+                                                                 IdService.GetFactionForId(Originator)));
         }
 
         return false;

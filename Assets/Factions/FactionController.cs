@@ -12,6 +12,14 @@ public static class FactionController
         }
     }
 
+    public static Faction MonsterFaction
+    {
+        get
+        {
+            return Factions[FactionConstants.Monster];
+        }
+    }
+
     public static Faction WorldFaction
     {
         get

@@ -1,12 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public static class Behaviours
 {
+    public static Dictionary<string, GetBehaviourTaskDelegate> BehaviourTypes = new Dictionary<string, GetBehaviourTaskDelegate>
+    {
+        { "AbyssWraith", AbyssWraith },
+        { "Person", Person }
+    };
+
+    public static GetBehaviourTaskDelegate GetBehaviourFor(string type)
+    {
+        return BehaviourTypes[type];
+    }
+
     public delegate TaskBase GetBehaviourTaskDelegate(CreatureData creature);
 
-    public static TaskBase ManaWraithBehaviour(CreatureData creature)
+    public static TaskBase AbyssWraith(CreatureData creature)
     {
         TaskBase task = null;
         if (Random.value > 0.5f)
@@ -39,7 +52,7 @@ public static class Behaviours
         return task;
     }
 
-    public static TaskBase PersonBehaviour(CreatureData creature)
+    public static TaskBase Person(CreatureData creature)
     {
         TaskBase task = null;
 
@@ -86,4 +99,5 @@ public static class Behaviours
 
         return task;
     }
+
 }

@@ -20,6 +20,20 @@ public static class IdService
         return Game.CreatureController.CreatureIdLookup[GetId(id)];
     }
 
+    internal static Faction GetFactionForId(string id)
+    {
+        if (IsCreature(id))
+        {
+            return GetCreatureFromId(id).Faction;
+        }
+        if (IsStructure(id))
+        {
+            return GetStructureFromId(id).Faction;
+        }
+
+        return null;
+    }
+
     public static string GetGameId(this CreatureData creature)
     {
         return $"{CreaturePrefix}{creature.Id}";

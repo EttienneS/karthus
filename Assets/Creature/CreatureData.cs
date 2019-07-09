@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public class CreatureData : IMagicAttuned
 {
     public const string SelfKey = "Self";
+    public string BehaviourName;
     public Coordinates Coordinates;
 
     [JsonIgnore]
@@ -18,26 +19,6 @@ public class CreatureData : IMagicAttuned
     public Dictionary<string, string> StringProperties = new Dictionary<string, string>();
     public Dictionary<string, float> ValueProperties = new Dictionary<string, float>();
 
-    public ManaPool ManaPool { get; set; } = new ManaPool();
-
-    public void BurnMana(ManaColor manaColor)
-    {
-        LinkedGameObject.SetTempMaterial(Game.MaterialController.GetChannelingMaterial(manaColor.GetActualColor()), 0.5f);
-        ManaPool.BurnMana(manaColor, 1);
-
-        LinkedGameObject.Light.color = manaColor.GetActualColor();
-        LinkedGameObject.Light.intensity = 0.4f;
-    }
-
-    public void GainMana(ManaColor manaColor)
-    {
-        LinkedGameObject.SetTempMaterial(Game.MaterialController.GetChannelingMaterial(manaColor.GetActualColor()), 0.5f);
-        ManaPool.GainMana(manaColor, 1);
-
-        LinkedGameObject.Light.color = manaColor.GetActualColor();
-        LinkedGameObject.Light.intensity = 0.4f;
-    }
-
     internal float InternalTick;
 
     [JsonIgnore]
@@ -49,8 +30,6 @@ public class CreatureData : IMagicAttuned
         }
     }
 
-    public string FactionName { get; set; }
-
     [JsonIgnore]
     public Faction Faction
     {
@@ -60,6 +39,8 @@ public class CreatureData : IMagicAttuned
         }
     }
 
+    public string FactionName { get; set; }
+
     [JsonIgnore]
     public Creature LinkedGameObject
     {
@@ -68,6 +49,8 @@ public class CreatureData : IMagicAttuned
             return Game.CreatureController.GetCreatureForCreatureData(this);
         }
     }
+
+    public ManaPool ManaPool { get; set; } = new ManaPool();
 
     [JsonIgnore]
     public Memory Self
@@ -96,6 +79,24 @@ public class CreatureData : IMagicAttuned
             NullValueHandling = NullValueHandling.Ignore,
         });
         return data;
+    }
+
+    public void BurnMana(ManaColor manaColor)
+    {
+        LinkedGameObject.SetTempMaterial(Game.MaterialController.GetChannelingMaterial(manaColor.GetActualColor()), 0.5f);
+        ManaPool.BurnMana(manaColor, 1);
+
+        LinkedGameObject.Light.color = manaColor.GetActualColor();
+        LinkedGameObject.Light.intensity = 0.4f;
+    }
+
+    public void GainMana(ManaColor manaColor)
+    {
+        LinkedGameObject.SetTempMaterial(Game.MaterialController.GetChannelingMaterial(manaColor.GetActualColor()), 0.5f);
+        ManaPool.GainMana(manaColor, 1);
+
+        LinkedGameObject.Light.color = manaColor.GetActualColor();
+        LinkedGameObject.Light.intensity = 0.4f;
     }
 
     internal void Forget(string context)
