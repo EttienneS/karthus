@@ -14,14 +14,13 @@ public enum CellType
 public class MapGrid : MonoBehaviour
 {
     public Dictionary<string, List<CellData>> CellBinding = new Dictionary<string, List<CellData>>();
+    public Text CellLabel;
     public Dictionary<string, List<CellData>> PendingBinding = new Dictionary<string, List<CellData>>();
     public Dictionary<string, List<CellData>> PendingUnbinding = new Dictionary<string, List<CellData>>();
 
+    internal SpriteRenderer Background;
     internal Tilemap Tilemap;
     internal Canvas WorldCanvas;
-
-    public Text CellLabel;
-
     private Dictionary<(int x, int y), CellData> _cellLookup;
     private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
     private int _searchFrontierPhase;
@@ -57,6 +56,11 @@ public class MapGrid : MonoBehaviour
     {
         Tilemap = GetComponentInChildren<Tilemap>();
         WorldCanvas = GetComponentInChildren<Canvas>();
+        Background = GetComponentInChildren<SpriteRenderer>();
+
+        Background.transform.position = new Vector3(MapConstants.MapSize / 2, MapConstants.MapSize / 2, 0);
+        Background.transform.localScale = new Vector3(MapConstants.MapSize, MapConstants.MapSize, 1);
+        Background.material.SetColor("_EffectColor", Color.magenta);
     }
 
     public void BindCell(CellData cell, string binderId)
@@ -124,7 +128,6 @@ public class MapGrid : MonoBehaviour
         };
 
         Cells.Add(cell);
-        RefreshCell(cell);
 
         if (WorldCanvas != null)
         {
@@ -525,6 +528,11 @@ public class MapGrid : MonoBehaviour
                 cell.CellType = CellType.Forest;
             }
         }
+
+        foreach (var cell in Cells)
+        {
+            RefreshCell(cell);
+        }
     }
 
     private void Populatecells()
@@ -533,6 +541,17 @@ public class MapGrid : MonoBehaviour
         {
             PopulateCell(cell);
         }
+    }
+
+    private void RefreshCell(CellData cell)
+    {
+        var tile = ScriptableObject.CreateInstance<Tile>();
+        tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(cell.CellType);
+        tile.color = cell.Bound ? ColorConstants.BaseColor : ColorConstants.UnboundStructureColor;
+
+        Tilemap.SetTile(new Vector3Int(cell.Coordinates.X, cell.Coordinates.Y, 0), tile);
+
+        cell.ColorStructure();
     }
 
     private IEnumerator UpdateCells()
@@ -599,42 +618,32 @@ public class MapGrid : MonoBehaviour
                 kvp.Value.Remove(cell);
             }
 
-            if (draws < maxDraws && Random.value > 0.9f)
-            {
-                var breaker = 0;
-                for (int i = 0; i < maxDraws - draws; i++)
-                {
-                    var cell = GetRandomCell();
+            //if (draws < maxDraws && Random.value > 0.9f)
+            //{
+            //    var breaker = 0;
+            //    for (int i = 0; i < maxDraws - draws; i++)
+            //    {
+            //        var cell = GetRandomCell();
 
-                    if (!cell.Bound || cell.CellType == CellType.Water)
-                    {
-                        RefreshCell(cell);
-                    }
-                    else
-                    {
-                        i--;
-                        breaker++;
-                    }
+            //        if (!cell.Bound || cell.CellType == CellType.Water)
+            //        {
+            //            RefreshCell(cell);
+            //        }
+            //        else
+            //        {
+            //            i--;
+            //            breaker++;
+            //        }
 
-                    if (breaker > 100)
-                    {
-                        // after a 100 misses stop trying
-                        break;
-                    }
-                }
-            }
+            //        if (breaker > 100)
+            //        {
+            //            // after a 100 misses stop trying
+            //            break;
+            //        }
+            //    }
+            //}
 
             yield return null;
         }
-    }
-
-    private void RefreshCell(CellData cell)
-    {
-        var tile = ScriptableObject.CreateInstance<Tile>();
-        tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(cell.Bound ? cell.CellType : CellType.Abyss);
-
-        Tilemap.SetTile(new Vector3Int(cell.Coordinates.X, cell.Coordinates.Y, 0), tile);
-
-        cell.ColorStructure();
     }
 }
