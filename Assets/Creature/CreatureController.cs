@@ -27,7 +27,7 @@ public class CreatureController : MonoBehaviour
     }
 
 
-    public void Start()
+    public void Awake()
     {
         foreach (var creatureFile in Game.FileController.CreatureFiles)
         {
@@ -47,6 +47,12 @@ public class CreatureController : MonoBehaviour
 
     internal CreatureData GetCreatureOfType(string v)
     {
+        if (!Beastiary.ContainsKey(v))
+        {
+            Debug.Log($"Creature not found: {v}");
+            throw new KeyNotFoundException();
+        }
+
         return Beastiary[v].CloneJson();
     }
 
