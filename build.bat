@@ -4,7 +4,8 @@ echo ======= Cleanup =======
 del stdout.log /f
 rd Builds /s /q
 rd Temp /s /q
-set unity="C:\Program Files\Unity\Hub\Editor\2019.1.0a9\Editor\Unity.exe"
+
+set unity="C:\Program Files\Unity\Hub\Editor\2019.3.0a7\Editor\Unity.exe"
 set mypath=%cd%
 
 

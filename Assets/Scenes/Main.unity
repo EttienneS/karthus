@@ -445,6 +445,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4750285613904468600, guid: 8f51cf6bc1a1ff04eba5df3f534e803f,
+        type: 3}
+      propertyPath: AbyssMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: eb76778c1bf0c3f44ba5ed1d764100ab, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8f51cf6bc1a1ff04eba5df3f534e803f, type: 3}
 --- !u!1001 &3119631331702769258

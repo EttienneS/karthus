@@ -37,6 +37,11 @@ public class Creature : MonoBehaviour
     {
         if (Game.TimeManager.Paused) return;
 
+        if (Sprite.material != Game.MaterialController.ChannelingMaterial)
+        {
+            Sprite.SetBoundMaterial(Data.CurrentCell.Bound);
+        }
+
         Work();
 
         UpdateSelf();
@@ -160,7 +165,7 @@ public class Creature : MonoBehaviour
 
     public string SpriteName;
 
-    
+
     public Color CurrentColor { get; set; }
 
     public Sprite GetIcon()

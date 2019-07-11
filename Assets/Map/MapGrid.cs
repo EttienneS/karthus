@@ -551,7 +551,10 @@ public class MapGrid : MonoBehaviour
 
         Tilemap.SetTile(new Vector3Int(cell.Coordinates.X, cell.Coordinates.Y, 0), tile);
 
-        cell.ColorStructure();
+        if (cell.Structure != null)
+        {
+            cell.Structure.LinkedGameObject.SpriteRenderer.SetBoundMaterial(cell.Bound);
+        }
     }
 
     private IEnumerator UpdateCells()
@@ -617,31 +620,6 @@ public class MapGrid : MonoBehaviour
 
                 kvp.Value.Remove(cell);
             }
-
-            //if (draws < maxDraws && Random.value > 0.9f)
-            //{
-            //    var breaker = 0;
-            //    for (int i = 0; i < maxDraws - draws; i++)
-            //    {
-            //        var cell = GetRandomCell();
-
-            //        if (!cell.Bound || cell.CellType == CellType.Water)
-            //        {
-            //            RefreshCell(cell);
-            //        }
-            //        else
-            //        {
-            //            i--;
-            //            breaker++;
-            //        }
-
-            //        if (breaker > 100)
-            //        {
-            //            // after a 100 misses stop trying
-            //            break;
-            //        }
-            //    }
-            //}
 
             yield return null;
         }

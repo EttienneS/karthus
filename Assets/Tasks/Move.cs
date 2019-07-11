@@ -32,7 +32,7 @@ public class Move : TaskBase
         {
             return false;
         }
-
+        
         return Creature.Coordinates == TargetCoordinates;
     }
 

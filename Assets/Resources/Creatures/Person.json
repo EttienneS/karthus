@@ -5,6 +5,6 @@
     "Hunger": "0"
   },
   "Speed": 10.0,
-  "Sprite": "base",
+  "Sprite": "robe",
   "BehaviourName": "Person"
 }

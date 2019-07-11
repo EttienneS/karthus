@@ -108,7 +108,7 @@ public class CellData
             structure.Shift();
             structure.SpriteRenderer.sortingOrder = MapConstants.MapSize - Coordinates.Y;
 
-            ColorStructure();
+            Structure.LinkedGameObject.SpriteRenderer.SetBoundMaterial(Bound);
         }
 
         if (scatter)
@@ -138,20 +138,6 @@ public class CellData
         return Neighbors.Count(n => n != null && n.CellType == cellType.Value);
     }
 
-    internal void ColorStructure()
-    {
-        if (Structure != null)
-        {
-            var renderer = Structure.LinkedGameObject.SpriteRenderer;
 
-            if (Bound)
-            {
-                renderer.color = Structure.IsBluePrint ? ColorConstants.BluePrintColor : ColorConstants.BaseColor;
-            }
-            else
-            {
-                renderer.color = ColorConstants.UnboundStructureColor;
-            }
-        }
-    }
+    
 }

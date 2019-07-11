@@ -8,13 +8,7 @@
     "Black": "2",
     "White": "2"
   },
-  "Behaviour": {
-    "$type": "Store, Assembly-CSharp",
-    "Power": "0.0",
-    "PowerRate": "0.005",
-    "Capacity": "20"
-  },
-  "Buildable": true,
+  "Buildable": false,
   "SpriteName": "runeBlue_slab_004",
   "Tiled": false,
   "TravelCost": "10",

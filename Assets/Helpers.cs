@@ -81,6 +81,24 @@ public static class Helpers
         return (T) v.GetValue(Random.Range(0, v.Length - 1));
     }
 }
+
+public static class RenderHelpers
+{
+    public static void SetBoundMaterial(this SpriteRenderer renderer, bool bound)
+    {
+        if (bound)
+        {
+            renderer.material = Game.MaterialController.DefaultMaterial;
+            renderer.color = ColorConstants.BaseColor;
+        }
+        else
+        {
+            renderer.material = Game.MaterialController.AbyssMaterial;
+            renderer.color = ColorConstants.UnboundStructureColor;
+        }
+    }
+}
+
 public static class ListHelpers
 {
     public static T GetRandomItem<T>(this List<T> list)

@@ -6,11 +6,14 @@ public class MaterialController : MonoBehaviour
     public Material ChannelingMaterial;
     public Material DefaultMaterial;
     public Material RuneMaterial;
+    public Material AbyssMaterial;
 
     public Material GetMaterial(string name)
     {
         switch (name)
         {
+            case "abyss":
+                return AbyssMaterial;
             case "rune":
                 return RuneMaterial;
             case "channel":
@@ -19,6 +22,7 @@ public class MaterialController : MonoBehaviour
                 return DefaultMaterial;
         }
     }
+
 
     public Material GetChannelingMaterial(Color color)
     {
