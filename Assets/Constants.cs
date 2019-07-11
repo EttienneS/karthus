@@ -2,12 +2,11 @@
 
 public static class ColorConstants
 {
-    //public static Color BaseColor = new Color(0.8f, 0.8f, 0.8f);
     public static Color AbyssColor = Color.magenta;
     public static Color BaseColor = Color.white;
     public static Color BluePrintColor = new Color(0.3f, 1f, 1f, 0.4f);
     public static Color InvalidColor = Color.red;
-    public static Color UnboundStructureColor = new Color(0.66f, 0.18f, 0.6f, 0.7f);
+    public static Color UnboundStructureColor = new Color(0.66f, 0.18f, 0.6f, 0.9f);
 }
 
 public static class ControllerConstants
