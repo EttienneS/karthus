@@ -3,10 +3,14 @@
 public class CameraController : MonoBehaviour
 {
     public Camera Camera;
-    [Range(0.1f, 5)] public float Speed = 2;
-    [Range(5, 25)] public int ZoomMax = 15;
-    [Range(1, 50)] public int ZoomMin = 2;
-    [Range(1, 20)] public int ZoomStep = 5;
+    public float Speed = 1;
+
+    public float SpeedMin = 0.1f;
+    public float SpeedMax = 2f;
+
+    public int ZoomMax = 15;
+    public int ZoomMin = 2;
+    public float ZoomStep = 5;
 
     private float _journeyLength;
     private Vector3 _panDesitnation;
@@ -106,6 +110,9 @@ public class CameraController : MonoBehaviour
 
             Camera.orthographicSize = Mathf.Clamp(Camera.orthographicSize - Input.GetAxis("Mouse ScrollWheel") * ZoomStep,
                 ZoomMin, ZoomMax);
+
+            Speed = Helpers.ScaleValueInRange(SpeedMin, SpeedMax, ZoomMin, ZoomMax, Camera.orthographicSize);
+            ZoomStep = Mathf.Max(2f, Camera.orthographicSize / 2f);
 #endif
         }
     }

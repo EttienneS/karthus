@@ -662,6 +662,11 @@ PrefabInstance:
       propertyPath: ZoomMin
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5246461426590746730, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
+        type: 3}
+      propertyPath: SpeedMax
+      value: 2.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f, type: 3}
 --- !u!1001 &5952559971981639345
