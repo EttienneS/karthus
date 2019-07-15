@@ -108,7 +108,7 @@ public class CameraController : MonoBehaviour
             var y = Mathf.Clamp(transform.position.y + (vertical * Speed), 0, MapConstants.MapSize);
             transform.position = new Vector3(x, y, transform.position.z);
 
-            Camera.orthographicSize = Mathf.Clamp(Camera.orthographicSize - Input.GetAxis("Mouse ScrollWheel") * ZoomStep,
+            Camera.orthographicSize = Mathf.Clamp(Camera.orthographicSize - (Input.GetAxis("Mouse ScrollWheel") * ZoomStep),
                 ZoomMin, ZoomMax);
 
             Speed = Helpers.ScaleValueInRange(SpeedMin, SpeedMax, ZoomMin, ZoomMax, Camera.orthographicSize);

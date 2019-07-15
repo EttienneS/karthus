@@ -6,5 +6,6 @@
   },
   "Speed": 10.0,
   "Sprite": "robe",
-  "BehaviourName": "Person"
+  "BehaviourName": "Person",
+  "Mobility": "Walk"
 }

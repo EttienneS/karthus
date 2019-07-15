@@ -63,6 +63,7 @@ public class TimeManager : MonoBehaviour
     };
 
     internal float TickInterval = 1f;
+    internal float WorkInterval = 0.3f;
     private TimeStep _timeStep = TimeStep.Paused;
 
     private float _timeTicks;

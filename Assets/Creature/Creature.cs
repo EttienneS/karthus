@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -35,16 +34,35 @@ public class Creature : MonoBehaviour
 
     public void Update()
     {
-        if (Game.TimeManager.Paused) return;
+        if (Game.TimeManager.Paused)
+            return;
 
-        if (Sprite.material != Game.MaterialController.ChannelingMaterial)
+        Data.WorkTick += Time.deltaTime;
+
+        if (Data.WorkTick >= Game.TimeManager.WorkInterval)
         {
-            Sprite.SetBoundMaterial(Data.CurrentCell.Bound);
+            Data.WorkTick = 0;
+            Work();
         }
 
-        Work();
+        Data.InternalTick += Time.deltaTime;
 
-        UpdateSelf();
+        if (Data.InternalTick >= Game.TimeManager.TickInterval)
+        {
+            Data.InternalTick = 0;
+
+            if (Random.value > 0.65)
+            {
+                Data.Task?.ShowBusyEmote();
+            }
+
+            UpdateFloatingText();
+
+            Data.ValueProperties[Prop.Hunger] += Random.value;
+            Data.ValueProperties[Prop.Energy] -= Random.Range(0.1f, 0.25f);
+
+            UpdateMaterial();
+        }
     }
 
     internal void DisableHightlight()
@@ -63,7 +81,6 @@ public class Creature : MonoBehaviour
         Sprite.material = material;
         TempMaterialDuration = duration * 2;
         TempMaterialDelta = 0;
-
     }
 
     private void UpdateFloatingText()
@@ -83,35 +100,13 @@ public class Creature : MonoBehaviour
         }
     }
 
-    private void UpdateSelf()
-    {
-        Data.InternalTick += Time.deltaTime;
-
-        var thoughts = new List<string>();
-        if (Data.InternalTick >= Game.TimeManager.TickInterval)
-        {
-            Data.InternalTick = 0;
-
-            if (Random.value > 0.65)
-            {
-                Data.Task?.ShowBusyEmote();
-            }
-
-            Data.ValueProperties[Prop.Hunger] += Random.value;
-            Data.ValueProperties[Prop.Energy] -= Random.Range(0.1f, 0.25f);
-        }
-
-        if (thoughts.Count > 0 && Random.value > 0.9)
-        {
-            ShowText(thoughts[Random.Range(0, thoughts.Count - 1)], 2f);
-        }
-
-        UpdateFloatingText();
-        UpdateMaterial();
-    }
-
     private void UpdateMaterial()
     {
+        if (Sprite.material != Game.MaterialController.ChannelingMaterial)
+        {
+            Sprite.SetBoundMaterial(Data.CurrentCell.Bound);
+        }
+
         TempMaterialDelta += Time.deltaTime;
         if (TempMaterialDelta >= TempMaterialDuration)
         {
@@ -140,11 +135,7 @@ public class Creature : MonoBehaviour
             {
                 Data.Faction.AssignTask(Data, Data.Task);
 
-                if (!Data.Task.Done())
-                {
-                    Data.Task.Update();
-                }
-                else
+                if (Data.Task.Done())
                 {
                     Data.Task.ShowDoneEmote();
                     Data.FreeResources(Data.Task.Context);
@@ -162,9 +153,7 @@ public class Creature : MonoBehaviour
         }
     }
 
-
     public string SpriteName;
-
 
     public Color CurrentColor { get; set; }
 
@@ -172,5 +161,4 @@ public class Creature : MonoBehaviour
     {
         return Sprite.sprite;
     }
-
 }

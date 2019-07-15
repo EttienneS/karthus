@@ -68,10 +68,7 @@ public class Structure : MonoBehaviour
         if (!Data.IsBluePrint && Data.Behaviour != null)
         {
             Data.Behaviour.Originator = Data.GetGameId();
-            if (!Data.Behaviour.Done())
-            {
-                Data.Behaviour.Update();
-            }
+            Data.Behaviour.Done();
         }
 
         if (Data.IsBluePrint && !Data.Faction.Tasks.OfType<Build>().Any(t => t.Structure == Data))

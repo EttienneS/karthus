@@ -30,10 +30,6 @@ public class Faction : MonoBehaviour
         {
             queue.Dequeue();
         }
-        else
-        {
-            current.Update();
-        }
     }
 
     internal void AddStructure(StructureData structure)
@@ -44,7 +40,12 @@ public class Faction : MonoBehaviour
 
     public static bool QueueComplete(Queue<TaskBase> queue)
     {
-        return queue == null || queue.Count == 0;
+        if (queue == null || queue.Count == 0)
+        {
+            return true;
+        }
+        ProcessQueue(queue);
+        return false;
     }
 
     public TaskBase AddTask(TaskBase task, string originatorId)

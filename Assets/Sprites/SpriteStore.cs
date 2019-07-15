@@ -27,7 +27,7 @@ public class SpriteStore : MonoBehaviour
         }
     }
 
-    private Dictionary<string, List<Sprite>> _mapSprites;
+    private Dictionary<string, Sprite> _mapSprites;
     private Dictionary<string, Sprite> _itemSprites;
 
     internal Sprite GetPlaceholder()
@@ -46,7 +46,7 @@ public class SpriteStore : MonoBehaviour
         }
     }
 
-    internal Dictionary<string, List<Sprite>> MapSpriteTypeDictionary
+    internal Dictionary<string, Sprite> MapSpriteTypeDictionary
     {
         get
         {
@@ -55,7 +55,7 @@ public class SpriteStore : MonoBehaviour
                 LoadCreatureSprites();
                 Debug.Log("load map sprites");
 
-                _mapSprites = new Dictionary<string, List<Sprite>>();
+                _mapSprites = new Dictionary<string, Sprite>();
 
                 foreach (var sprite in Resources.LoadAll<Sprite>("Sprites/Map"))
                 {
@@ -63,10 +63,9 @@ public class SpriteStore : MonoBehaviour
 
                     if (!_mapSprites.ContainsKey(typeName))
                     {
-                        MapSpriteTypeDictionary.Add(typeName, new List<Sprite>());
+                        MapSpriteTypeDictionary.Add(typeName, sprite);
                     }
 
-                    _mapSprites[typeName].Add(sprite);
                 }
             }
             return _mapSprites;
@@ -106,7 +105,6 @@ public class SpriteStore : MonoBehaviour
 
     internal Sprite GetSpriteForTerrainType(CellType cellType)
     {
-        var typeList = MapSpriteTypeDictionary[cellType.ToString()];
-        return typeList[Random.Range(0, typeList.Count - 1)];
+        return MapSpriteTypeDictionary[cellType.ToString()];
     }
 }

@@ -68,7 +68,7 @@ public class CreatureController : MonoBehaviour
         creature.Data.Coordinates = coordinates;
         creature.transform.position = coordinates.ToMapVector();
         creature.Data.Id = IdService.UniqueId();
-
+        creature.Data.WorkTick = Random.Range(0, Game.TimeManager.WorkInterval);
         creature.Data.GetBehaviourTask = Behaviours.GetBehaviourFor(creature.Data.BehaviourName);
 
         creature.Sprite.material = Game.MaterialController.DefaultMaterial;

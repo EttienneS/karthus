@@ -42,12 +42,7 @@ public class TaskBase
     public virtual bool Done()
     {
         return false;
-    }
-
-    public virtual void Update()
-    {
-        Faction.ProcessQueue(SubTasks);
-    }
+    }       
 
     public void ShowBusyEmote()
     {

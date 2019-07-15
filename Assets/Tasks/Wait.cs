@@ -26,17 +26,15 @@ public class Wait : TaskBase
     {
         if (Emote)
         {
-            ShowDoneEmote();
-        }
-        return ElapsedTime >= Duration;
-    }
-
-    public override void Update()
-    {
-        if (Emote)
-        {
             ShowBusyEmote();
         }
         ElapsedTime += Time.deltaTime;
+
+        if (ElapsedTime >= Duration)
+        {
+            ShowDoneEmote();
+            return true;
+        }
+        return false;
     }
 }

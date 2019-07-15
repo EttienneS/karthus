@@ -42,7 +42,7 @@ public partial class Game // .Spawn
 
         var spawns = midCell.Neighbors.ToList();
 
-        for (int i = 0; i < MapConstants.MapSize / 100; i++)
+        for (int i = 0; i < MapConstants.MapSize; i++)
         {
             CreatureController.SpawnCreature(CreatureController.GetCreatureOfType("AbyssWraith"),
                                              MapGrid.GetRandomCell().Coordinates,
@@ -58,7 +58,7 @@ public partial class Game // .Spawn
         }
 
         var nexusPoints = new List<CellData>();
-        for (int i = 0; i < MapConstants.CellsPerTerrainBlock * 2; i++)
+        for (int i = 0; i < MapConstants.MapSize / 10; i++)
         {
             var point = MapGrid.GetRandomCell();
             nexusPoints.Add(point);
@@ -68,7 +68,7 @@ public partial class Game // .Spawn
         foreach (var cell in nexusPoints)
         {
             var target = nexusPoints[(int)(Random.value * (nexusPoints.Count - 1))];
-            LeyLineController.MakeLine(Pathfinder.FindPath(cell, target, true), Helpers.RandomEnumValue<ManaColor>());
+            LeyLineController.MakeLine(Pathfinder.FindPath(cell, target, Mobility.Fly), Helpers.RandomEnumValue<ManaColor>());
         }
     }
 

@@ -21,6 +21,11 @@
 
     public override bool Done()
     {
+        if (Structure == null)
+        {
+            throw new TaskFailedException();
+        }
+
         if (Faction.QueueComplete(SubTasks))
         {
             Structure.SetBlueprintState(false);
@@ -30,15 +35,5 @@
             return true;
         }
         return false;
-    }
-
-    public override void Update()
-    {
-        if (Structure == null)
-        {
-            throw new TaskFailedException();
-        }
-
-        Faction.ProcessQueue(SubTasks);
     }
 }

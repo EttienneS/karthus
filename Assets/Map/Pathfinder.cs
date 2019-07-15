@@ -7,13 +7,13 @@ public static class Pathfinder
     private static CellPriorityQueue _searchFrontier;
     private static int _searchFrontierPhase;
 
-    internal static float Distance(CellData fromCell, CellData toCell)
+    internal static float Distance(CellData fromCell, CellData toCell, Mobility mobility)
     {
         var distance = 0f;
 
         try
         {
-            foreach (var cell in FindPath(fromCell, toCell))
+            foreach (var cell in FindPath(fromCell, toCell, mobility))
             {
                 distance += cell.TravelCost;
             }
@@ -26,11 +26,11 @@ public static class Pathfinder
         }
     }
 
-    public static List<CellData> FindPath(CellData fromCell, CellData toCell, bool fly = false)
+    public static List<CellData> FindPath(CellData fromCell, CellData toCell, Mobility mobility)
     {
         if (fromCell != null && toCell != null)
         {
-            if (Search(fromCell, toCell, fly))
+            if (Search(fromCell, toCell, mobility))
             {
                 var path = new List<CellData>
                 {
@@ -51,9 +51,9 @@ public static class Pathfinder
         return null;
     }
 
-    public static CellData GetClosestOpenCell(CellData[] map, CellData origin)
+    public static CellData GetClosestOpenCell(CellData[] map, CellData origin, Mobility mobility)
     {
-        return GetReachableCells(map, origin, 3).FirstOrDefault();
+        return GetReachableCells(map, origin, 3, mobility).FirstOrDefault();
     }
 
     public static float GetPathCost(IEnumerable<CellData> path)
@@ -61,7 +61,7 @@ public static class Pathfinder
         return path.Where(cell => cell != null).Sum(cell => cell.TravelCost);
     }
 
-    public static IEnumerable<CellData> GetReachableCells(CellData[] map, CellData startPoint, int speed)
+    public static IEnumerable<CellData> GetReachableCells(CellData[] map, CellData startPoint, int speed, Mobility mobility)
     {
         if (startPoint == null)
         {
@@ -71,7 +71,7 @@ public static class Pathfinder
         var reachableCells = (from cell in
                     map.Where(c =>
                         c != null && c.Coordinates.DistanceTo(startPoint.Coordinates) <= speed)
-                              let path = FindPath(startPoint, cell)
+                              let path = FindPath(startPoint, cell, mobility)
                               let pathCost = GetPathCost(path) - startPoint.TravelCost
                               where path.Count > 0 && pathCost <= speed
                               select cell)
@@ -83,9 +83,9 @@ public static class Pathfinder
         return reachableCells;
     }
 
-    internal static float GetPathCost(CellData fromCell, CellData toCell)
+    internal static float GetPathCost(CellData fromCell, CellData toCell, Mobility mobility)
     {
-        var path = FindPath(fromCell, toCell);
+        var path = FindPath(fromCell, toCell, mobility);
 
         if (path == null)
         {
@@ -95,7 +95,7 @@ public static class Pathfinder
         return GetPathCost(path);
     }
 
-    private static bool Search(CellData fromCell, CellData toCell, bool fly = false)
+    private static bool Search(CellData fromCell, CellData toCell, Mobility mobility)
     {
         _searchFrontierPhase += 2;
 
@@ -131,7 +131,7 @@ public static class Pathfinder
                     continue;
                 }
 
-                if (!fly && neighbor.TravelCost < 0)
+                if ((mobility != Mobility.Fly) && neighbor.TravelCost < 0)
                 {
                     continue;
                 }

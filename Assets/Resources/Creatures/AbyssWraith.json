@@ -6,5 +6,6 @@
   },
   "Speed": 10.0,
   "Sprite": "AbyssWraith",
-  "BehaviourName": "AbyssWraith"
+  "BehaviourName": "AbyssWraith",
+  "Mobility": "Fly"
 }

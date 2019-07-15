@@ -27,16 +27,6 @@ public class Pulse : TaskBase
 
     public override bool Done()
     {
-        if (TimeLeft <= 0)
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    public override void Update()
-    {
         if (_attachedRenderer == null)
         {
             _attachedRenderer = IdService.GetSpriteRendererForId(GameObjectId);
@@ -48,5 +38,13 @@ public class Pulse : TaskBase
         }
 
         _attachedRenderer.color = Color.Lerp(ColorArray1.ToColor(), ColorArray2.ToColor(), Mathf.PingPong(Time.time, Frequency));
+
+        if (TimeLeft <= 0)
+        {
+            return true;
+        }
+
+        return false;
     }
+
 }

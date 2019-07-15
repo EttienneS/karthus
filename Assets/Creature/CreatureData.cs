@@ -1,6 +1,11 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
+public enum Mobility
+{
+    Walk, Fly
+}
+
 public class CreatureData : IMagicAttuned
 {
     public const string SelfKey = "Self";
@@ -20,6 +25,9 @@ public class CreatureData : IMagicAttuned
     public Dictionary<string, float> ValueProperties = new Dictionary<string, float>();
 
     internal float InternalTick;
+    internal float WorkTick;
+
+    public Mobility Mobility;
 
     [JsonIgnore]
     public CellData CurrentCell

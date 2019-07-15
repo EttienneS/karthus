@@ -40,7 +40,7 @@ public class DataDisplay : MonoBehaviour
 
     internal void SetData(CellData cell)
     {
-        SetData(cell.Coordinates.ToString(), cell.Coordinates.ToString(), Game.SpriteStore.MapSpriteTypeDictionary[cell.CellType.ToString()][0]);
+        SetData(cell.Coordinates.ToString(), cell.Coordinates.ToString(), Game.SpriteStore.MapSpriteTypeDictionary[cell.CellType.ToString()]);
     }
 
     internal void SetData(TaskBase task)

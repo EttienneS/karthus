@@ -32,20 +32,15 @@ public class Move : TaskBase
         {
             return false;
         }
-        
-        return Creature.Coordinates == TargetCoordinates;
-    }
 
-    public override void Update()
-    {
         if (Creature == null || Creature.Coordinates == null)
         {
-            return;
+            return false;
         }
 
         if (Creature.Coordinates == TargetCoordinates)
         {
-            return;
+            return true;
         }
 
         if (_nextCell == null)
@@ -54,7 +49,9 @@ public class Move : TaskBase
 
             if (_path == null || _path.Count == 0)
             {
-                _path = Pathfinder.FindPath(currentCreatureCell, Game.MapGrid.GetCellAtCoordinate(TargetCoordinates));
+                _path = Pathfinder.FindPath(currentCreatureCell,
+                    Game.MapGrid.GetCellAtCoordinate(TargetCoordinates),
+                    Creature.Mobility);
             }
 
             if (_path == null)
@@ -98,5 +95,8 @@ public class Move : TaskBase
             _nextCell = null;
             _path = null;
         }
+
+        return Creature.Coordinates == TargetCoordinates;
     }
+
 }

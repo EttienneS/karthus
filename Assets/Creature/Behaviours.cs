@@ -19,34 +19,19 @@ public static class Behaviours
 
     public delegate TaskBase GetBehaviourTaskDelegate(CreatureData creature);
 
+    public const int WraithRange = 10;
     public static TaskBase AbyssWraith(CreatureData creature)
     {
         TaskBase task = null;
-        if (Random.value > 0.5f)
+        if (Random.value > 0.8f)
         {
-            var cell = Game.MapGrid.GetRandomCell();
-
-            var breaker = 0;
-            while (cell.Bound)
-            {
-                cell = Game.MapGrid.GetRandomCell();
-                breaker++;
-
-                if (breaker > 5)
-                {
-                    task = new Sleep(creature.Coordinates, 10f);
-                    break;
-                }
-            }
-
-            if (!cell.Bound)
-            {
-                task = new Move(cell.Coordinates);
-            }
+            
+            task = new Move(Game.MapGrid.GetRectangle(creature.Coordinates.X - (WraithRange/2),
+                creature.Coordinates.Y - (WraithRange / 2), WraithRange, WraithRange).GetRandomItem().Coordinates);
         }
         else
         {
-            task = new Sleep(creature.Coordinates, 10f);
+            task = new Wait(Random.value * 5f, "Lingering...");
         }
 
         return task;
