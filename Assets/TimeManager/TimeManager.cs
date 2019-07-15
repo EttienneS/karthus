@@ -1,7 +1,7 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
+using UnityEngine.UI;
 
 public enum TimeStep
 {
@@ -20,51 +20,23 @@ public class TimeData
 
 public class TimeManager : MonoBehaviour
 {
-    internal Text TimeDisplay;
-    internal Button PauseButton;
-    internal Button SlowButton;
-    internal Button NormalButton;
-    internal Button FastButton;
-    internal Button FasterButton;
-
-    internal Dictionary<TimeStep, Button> AllButtons;
-
-    public void Awake()
-    {
-        TimeDisplay = GetComponentsInChildren<Text>().First(t => t.name == "TimeDisplay");
-        var buttons = GetComponentsInChildren<Button>();
-
-        PauseButton = buttons.First(b => b.name == "PauseButton");
-        SlowButton = buttons.First(b => b.name == "SlowButton");
-        NormalButton = buttons.First(b => b.name == "NormalButton");
-        FastButton = buttons.First(b => b.name == "FastButton");
-        FasterButton = buttons.First(b => b.name == "FasterButton");
-
-        PauseButton.onClick.AddListener(() => { TimeStep = TimeStep.Paused; });
-        SlowButton.onClick.AddListener(() => { TimeStep = TimeStep.Slow; });
-        NormalButton.onClick.AddListener(() => { TimeStep = TimeStep.Normal; });
-        FastButton.onClick.AddListener(() => { TimeStep = TimeStep.Fast; });
-        FasterButton.onClick.AddListener(() => { TimeStep = TimeStep.Hyper; });
-
-        AllButtons = new Dictionary<TimeStep, Button>
-        {
-            { TimeStep.Paused,PauseButton},
-            { TimeStep.Slow, SlowButton },
-            { TimeStep.Normal, NormalButton},
-            { TimeStep.Fast, FastButton },
-            { TimeStep.Hyper, FasterButton }
-        };
-    }
-
     public TimeData Data = new TimeData()
     {
         Hour = 6,
         Minute = 0
     };
 
+    internal Dictionary<TimeStep, Button> AllButtons;
+    internal Button FastButton;
+    internal Button FasterButton;
+    internal Button NormalButton;
+    internal Button PauseButton;
+    internal Button SlowButton;
     internal float TickInterval = 1f;
-    internal float WorkInterval = 0.3f;
-    private TimeStep _timeStep = TimeStep.Paused;
+    internal Text TimeDisplay;
+    internal float WorkInterval = 0.1f;
+
+    private TimeStep _timeStep;
 
     private float _timeTicks;
 
@@ -112,9 +84,31 @@ public class TimeManager : MonoBehaviour
         }
     }
 
-    internal void Pause()
+    public void Awake()
     {
-        TimeStep = TimeStep.Paused;
+        TimeDisplay = GetComponentsInChildren<Text>().First(t => t.name == "TimeDisplay");
+        var buttons = GetComponentsInChildren<Button>();
+
+        PauseButton = buttons.First(b => b.name == "PauseButton");
+        SlowButton = buttons.First(b => b.name == "SlowButton");
+        NormalButton = buttons.First(b => b.name == "NormalButton");
+        FastButton = buttons.First(b => b.name == "FastButton");
+        FasterButton = buttons.First(b => b.name == "FasterButton");
+
+        PauseButton.onClick.AddListener(() => { TimeStep = TimeStep.Paused; });
+        SlowButton.onClick.AddListener(() => { TimeStep = TimeStep.Slow; });
+        NormalButton.onClick.AddListener(() => { TimeStep = TimeStep.Normal; });
+        FastButton.onClick.AddListener(() => { TimeStep = TimeStep.Fast; });
+        FasterButton.onClick.AddListener(() => { TimeStep = TimeStep.Hyper; });
+
+        AllButtons = new Dictionary<TimeStep, Button>
+        {
+            { TimeStep.Paused,PauseButton},
+            { TimeStep.Slow, SlowButton },
+            { TimeStep.Normal, NormalButton},
+            { TimeStep.Fast, FastButton },
+            { TimeStep.Hyper, FasterButton }
+        };
     }
 
     public void Start()
@@ -148,5 +142,10 @@ public class TimeManager : MonoBehaviour
         }
 
         TimeDisplay.text = $"{Data.Hour.ToString().PadLeft(2, '0')}:{Data.Minute.ToString().PadLeft(2, '0')} {Game.SunController.State}";
+    }
+
+    internal void Pause()
+    {
+        TimeStep = TimeStep.Paused;
     }
 }

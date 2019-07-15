@@ -256,7 +256,8 @@ public partial class Game : MonoBehaviour
             var faction = factionBody.gameObject.AddComponent<Faction>();
             faction.FactionName = factionName;
             faction.Structure = factionBody.Data;
-            faction.Structures.Add(factionBody.Data);
+
+            faction.AddStructure(factionBody.Data);
 
             factionBody.Data.ManaPool = factionBody.Data.ManaValue.ToManaPool();
 

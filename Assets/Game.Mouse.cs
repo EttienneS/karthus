@@ -26,8 +26,8 @@ public partial class Game // .Mouse
 
         MouseSpriteRenderer.gameObject.SetActive(true);
         MouseSpriteRenderer.sprite = Sprite.Create(mouseTex,
-                                                   new Rect(0, 0, width * Game.MapGrid.PixelsPerCell, height * Game.MapGrid.PixelsPerCell),
-                                                   new Vector2(0, 0), Game.MapGrid.PixelsPerCell);
+                                                   new Rect(0, 0, width * MapGrid.PixelsPerCell, height * MapGrid.PixelsPerCell),
+                                                   new Vector2(0, 0), MapGrid.PixelsPerCell);
         ValidateMouse = validation;
     }
 

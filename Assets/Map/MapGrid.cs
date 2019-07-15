@@ -19,8 +19,8 @@ public class MapGrid : MonoBehaviour
     [Range(5, 500)] public int MapSize = 100;
     public Dictionary<string, List<CellData>> PendingBinding = new Dictionary<string, List<CellData>>();
     public Dictionary<string, List<CellData>> PendingUnbinding = new Dictionary<string, List<CellData>>();
-    public int PixelsPerCell = 64;
 
+    public const int PixelsPerCell = 64;
     internal SpriteRenderer Background;
     internal Tilemap Tilemap;
     internal Canvas WorldCanvas;
