@@ -741,6 +741,16 @@ PrefabInstance:
       propertyPath: CellLabel
       value: 
       objectReference: {fileID: 1672161343}
+    - target: {fileID: 5952559972800760938, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
+        type: 3}
+      propertyPath: MapSize
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 5952559972800760938, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
+        type: 3}
+      propertyPath: JitterProbability
+      value: 0.8
+      objectReference: {fileID: 0}
     - target: {fileID: 1242551530, guid: fd9fe2ef5313abb4aa06105b1ebd9a97, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 

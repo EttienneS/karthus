@@ -125,18 +125,23 @@ public static class Pathfinder
             for (var d = Direction.N; d <= Direction.NW; d++)
             {
                 var neighbor = current.GetNeighbor(d);
+                var neighborTravelCost = 1f;
+
+                if (mobility != Mobility.Fly)
+                {
+                    neighborTravelCost = neighbor.TravelCost;
+                }
+
                 if (neighbor == null
                     || neighbor.SearchPhase > _searchFrontierPhase)
                 {
                     continue;
                 }
 
-                if ((mobility != Mobility.Fly) && neighbor.TravelCost < 0)
+                if (neighborTravelCost < 0)
                 {
                     continue;
                 }
-
-                var neighborTravelCost = neighbor.TravelCost;
 
                 var distance = current.Distance + neighborTravelCost;
                 if (neighbor.SearchPhase < _searchFrontierPhase)

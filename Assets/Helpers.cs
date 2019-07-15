@@ -195,6 +195,6 @@ public static class TextureHelpers
     }
     public static void ScaleToGridSize(this Texture2D texture, int width, int height)
     {
-        TextureScale.scale(texture, width * MapConstants.PixelsPerCell, height * MapConstants.PixelsPerCell);
+        TextureScale.scale(texture, width * Game.MapGrid.PixelsPerCell, height * Game.MapGrid.PixelsPerCell);
     }
 }

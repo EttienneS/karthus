@@ -21,7 +21,7 @@ public partial class Game // .Spawn
     public static void InitialSpawn()
     {
         var midCell = MapGrid
-            .GetCircle(new Coordinates(MapConstants.MapSize / 2, MapConstants.MapSize / 2), 10)
+            .GetCircle(new Coordinates(Game.MapGrid.MapSize / 2, Game.MapGrid.MapSize / 2), 10)
             .First(c => c.CellType != CellType.Water || c.CellType != CellType.Mountain);
 
         if (midCell.Structure != null)
@@ -42,7 +42,7 @@ public partial class Game // .Spawn
 
         var spawns = midCell.Neighbors.ToList();
 
-        for (int i = 0; i < MapConstants.MapSize; i++)
+        for (int i = 0; i < Game.MapGrid.MapSize; i++)
         {
             CreatureController.SpawnCreature(CreatureController.GetCreatureOfType("AbyssWraith"),
                                              MapGrid.GetRandomCell().Coordinates,
@@ -52,13 +52,13 @@ public partial class Game // .Spawn
 
     private static void CreateLeyLines()
     {
-        for (int i = 0; i < MapConstants.MapSize / 2; i++)
+        for (int i = 0; i < Game.MapGrid.MapSize / 2; i++)
         {
             SpawnRune(MapGrid.GetRandomCell(), "BindRune", FactionController.WorldFaction);
         }
 
         var nexusPoints = new List<CellData>();
-        for (int i = 0; i < MapConstants.MapSize / 10; i++)
+        for (int i = 0; i < Game.MapGrid.MapSize / 10; i++)
         {
             var point = MapGrid.GetRandomCell();
             nexusPoints.Add(point);

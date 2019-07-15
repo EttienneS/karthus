@@ -106,7 +106,7 @@ public class CellData
             }
 
             structure.Shift();
-            structure.SpriteRenderer.sortingOrder = MapConstants.MapSize - Coordinates.Y;
+            structure.SpriteRenderer.sortingOrder = Game.MapGrid.MapSize - Coordinates.Y;
 
             Structure.LinkedGameObject.SpriteRenderer.SetBoundMaterial(Bound);
         }

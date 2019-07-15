@@ -38,11 +38,3 @@ public static class LayerConstants
     public const string Structure = "Structure";
     public const string Tree = "Tree";
 }
-
-public static class MapConstants
-{
-    internal const float JitterProbability = 0.5f;
-
-    internal const int MapSize = 120;
-    internal const int PixelsPerCell = 64;
-}

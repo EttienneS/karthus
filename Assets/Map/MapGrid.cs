@@ -15,8 +15,11 @@ public class MapGrid : MonoBehaviour
 {
     public Dictionary<string, List<CellData>> CellBinding = new Dictionary<string, List<CellData>>();
     public Text CellLabel;
+    [Range(0f, 1f)] public float JitterProbability = 0.8f;
+    [Range(5, 500)] public int MapSize = 100;
     public Dictionary<string, List<CellData>> PendingBinding = new Dictionary<string, List<CellData>>();
     public Dictionary<string, List<CellData>> PendingUnbinding = new Dictionary<string, List<CellData>>();
+    public int PixelsPerCell = 64;
 
     internal SpriteRenderer Background;
     internal Tilemap Tilemap;
@@ -46,7 +49,7 @@ public class MapGrid : MonoBehaviour
 
     public void AddCellIfValid(int x, int y, List<CellData> cells)
     {
-        if (x >= 0 && x < MapConstants.MapSize && y >= 0 && y < MapConstants.MapSize)
+        if (x >= 0 && x < Game.MapGrid.MapSize && y >= 0 && y < Game.MapGrid.MapSize)
         {
             cells.Add(CellLookup[(x, y)]);
         }
@@ -58,8 +61,8 @@ public class MapGrid : MonoBehaviour
         WorldCanvas = GetComponentInChildren<Canvas>();
         Background = GetComponentInChildren<SpriteRenderer>();
 
-        Background.transform.position = new Vector3(MapConstants.MapSize / 2, MapConstants.MapSize / 2, 0);
-        Background.transform.localScale = new Vector3(MapConstants.MapSize, MapConstants.MapSize, 1);
+        Background.transform.position = new Vector3(Game.MapGrid.MapSize / 2, Game.MapGrid.MapSize / 2, 0);
+        Background.transform.localScale = new Vector3(Game.MapGrid.MapSize, Game.MapGrid.MapSize, 1);
         Background.material.SetColor("_EffectColor", Color.magenta);
     }
 
@@ -144,9 +147,9 @@ public class MapGrid : MonoBehaviour
     {
         Cells = new List<CellData>();
 
-        for (var y = 0; y < MapConstants.MapSize; y++)
+        for (var y = 0; y < Game.MapGrid.MapSize; y++)
         {
-            for (var x = 0; x < MapConstants.MapSize; x++)
+            for (var x = 0; x < Game.MapGrid.MapSize; x++)
             {
                 CreateCell(x, y, CellType.Water);
             }
@@ -169,7 +172,7 @@ public class MapGrid : MonoBehaviour
         // subtract half a unit to compensate for cell offset
         var coordinates = Coordinates.FromPosition(position - new Vector3(0.5f, 0.5f));
 
-        if (coordinates.X < 0 || coordinates.Y < 0 || coordinates.X >= MapConstants.MapSize || coordinates.Y >= MapConstants.MapSize)
+        if (coordinates.X < 0 || coordinates.Y < 0 || coordinates.X >= Game.MapGrid.MapSize || coordinates.Y >= Game.MapGrid.MapSize)
         {
             return null;
         }
@@ -202,7 +205,7 @@ public class MapGrid : MonoBehaviour
 
     public CellData GetRandomCell()
     {
-        return CellLookup[((int)(Random.value * (MapConstants.MapSize - 1)), (int)(Random.value * (MapConstants.MapSize - 1)))];
+        return CellLookup[((int)(Random.value * (Game.MapGrid.MapSize - 1)), (int)(Random.value * (Game.MapGrid.MapSize - 1)))];
     }
 
     public List<CellData> GetRandomChunk(int chunkSize)
@@ -231,7 +234,7 @@ public class MapGrid : MonoBehaviour
                 {
                     neighbor.SearchPhase = _searchFrontierPhase;
                     neighbor.Distance = neighbor.Coordinates.DistanceTo(center);
-                    neighbor.SearchHeuristic = Random.value < MapConstants.JitterProbability ? 1 : 0;
+                    neighbor.SearchHeuristic = Random.value < Game.MapGrid.JitterProbability ? 1 : 0;
                     _searchFrontier.Enqueue(neighbor);
                 }
             }
@@ -347,9 +350,9 @@ public class MapGrid : MonoBehaviour
 
     internal void LinkNeighbours()
     {
-        for (var y = 0; y < MapConstants.MapSize; y++)
+        for (var y = 0; y < Game.MapGrid.MapSize; y++)
         {
-            for (var x = 0; x < MapConstants.MapSize; x++)
+            for (var x = 0; x < Game.MapGrid.MapSize; x++)
             {
                 var cell = CellLookup[(x, y)];
 
@@ -361,7 +364,7 @@ public class MapGrid : MonoBehaviour
                     {
                         cell.SetNeighbor(Direction.SW, CellLookup[(x - 1, y - 1)]);
 
-                        if (x < MapConstants.MapSize - 1)
+                        if (x < Game.MapGrid.MapSize - 1)
                         {
                             cell.SetNeighbor(Direction.SE, CellLookup[(x + 1, y - 1)]);
                         }
@@ -379,9 +382,9 @@ public class MapGrid : MonoBehaviour
     internal void ResetSearchPriorities()
     {
         // ensure that all cells have their phases reset
-        for (var y = 0; y < MapConstants.MapSize; y++)
+        for (var y = 0; y < Game.MapGrid.MapSize; y++)
         {
-            for (var x = 0; x < MapConstants.MapSize; x++)
+            for (var x = 0; x < Game.MapGrid.MapSize; x++)
             {
                 CellLookup[(x, y)].SearchPhase = 0;
             }
@@ -429,9 +432,9 @@ public class MapGrid : MonoBehaviour
     private void GenerateMapCells()
     {
         // generate bedrock
-        for (int i = 0; i < MapConstants.MapSize / 2; i++)
+        for (int i = 0; i < Game.MapGrid.MapSize / 2; i++)
         {
-            foreach (var cell in GetRandomChunk(Random.Range(1 + (MapConstants.MapSize / 6), 1 + (MapConstants.MapSize / 3))))
+            foreach (var cell in GetRandomChunk(Random.Range(1 + (Game.MapGrid.MapSize / 6), 1 + (Game.MapGrid.MapSize / 3))))
             {
                 cell.CellType = CellType.Stone;
             }
@@ -454,9 +457,9 @@ public class MapGrid : MonoBehaviour
         }
 
         // generate landmasses
-        for (int i = 0; i < MapConstants.MapSize; i++)
+        for (int i = 0; i < Game.MapGrid.MapSize; i++)
         {
-            foreach (var cell in GetRandomChunk(Random.Range(MapConstants.MapSize, MapConstants.MapSize * 2)))
+            foreach (var cell in GetRandomChunk(Random.Range(Game.MapGrid.MapSize, Game.MapGrid.MapSize * 2)))
             {
                 if (cell.CellType == CellType.Water)
                 {

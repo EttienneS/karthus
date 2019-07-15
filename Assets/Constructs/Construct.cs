@@ -91,7 +91,7 @@ public class Construct
             {
                 _sprite = Sprite.Create(Texture,
                                         new Rect(0, 0, Texture.width, Texture.height),
-                                        new Vector2(0.5f, 0.5f), MapConstants.PixelsPerCell);
+                                        new Vector2(0.5f, 0.5f), Game.MapGrid.PixelsPerCell);
             }
             return _sprite;
         }
@@ -132,7 +132,7 @@ public class Construct
 
     internal Texture2D GetTexture()
     {
-        var texture = new Texture2D(Width * MapConstants.PixelsPerCell, Height * MapConstants.PixelsPerCell);
+        var texture = new Texture2D(Width * Game.MapGrid.PixelsPerCell, Height * Game.MapGrid.PixelsPerCell);
 
         var y = 0;
         var x = 0;
@@ -141,8 +141,8 @@ public class Construct
         {
             foreach (var character in line)
             {
-                var startX = x * MapConstants.PixelsPerCell;
-                var startY = y * MapConstants.PixelsPerCell;
+                var startX = x * Game.MapGrid.PixelsPerCell;
+                var startY = y * Game.MapGrid.PixelsPerCell;
 
                 Texture2D sourceTexture;
                 if (character == '.')
@@ -159,9 +159,9 @@ public class Construct
                 var constructTexture = sourceTexture.Clone();
                 constructTexture.ScaleToGridSize(1, 1);
 
-                for (var subTexX = 0; subTexX < MapConstants.PixelsPerCell; subTexX++)
+                for (var subTexX = 0; subTexX < Game.MapGrid.PixelsPerCell; subTexX++)
                 {
-                    for (var subTexY = 0; subTexY < MapConstants.PixelsPerCell; subTexY++)
+                    for (var subTexY = 0; subTexY < Game.MapGrid.PixelsPerCell; subTexY++)
                     {
                         var pixel = constructTexture.GetPixel(subTexX, subTexY);
                         texture.SetPixel(startX + subTexX,
