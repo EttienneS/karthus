@@ -85,7 +85,7 @@ public partial class Game : MonoBehaviour
 
             var cell = MapGrid.GetCellAtCoordinate(structure.Coordinates);
             structure.LinkedGameObject.SpriteRenderer.color = cell.Bound ? ColorConstants.BaseColor :
-                                                                           ColorConstants.UnboundStructureColor;
+                                                                           ColorConstants.UnboundColor;
         }
         SelectedStructures.Clear();
     }
@@ -235,9 +235,7 @@ public partial class Game : MonoBehaviour
         MouseSpriteRenderer.gameObject.SetActive(false);
 
         InitFactions();
-
         MapGrid.CreateMap();
-
         InitialSpawn();
     }
 

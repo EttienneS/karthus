@@ -43,3 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c49aa6811ff843843a5a3e3fb90e2422, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Jitter: 0.1
+  LeyLinePrefab: {fileID: 6706550934071826846, guid: 4c4e9a42fdee74946b86d2507390f4f9,
+    type: 3}
+  Lines: []

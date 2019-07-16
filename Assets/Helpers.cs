@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
 using UnityEngine.UI;
+using VoronoiLib.Structures;
 using Random = UnityEngine.Random;
 
 public static class CloneHelper
@@ -52,6 +53,41 @@ public static class ColorExtensions
     }
 }
 
+public static class VHelpers
+{
+    public static Vector2 ToVector2(this VPoint point)
+    {
+        return new Vector2((float)point.X, (float)point.Y);
+    }
+
+    public static Coordinates ToCoordinate(this VPoint point)
+    {
+        return new Coordinates((int)point.X, (int)point.Y);
+    }
+
+    public static VPoint ToVpoint(this Coordinates coordinates)
+    {
+        return new VPoint(coordinates.X, coordinates.Y);
+    }
+}
+
+public static class Geometry
+{
+    // Explanation of PointInTriangle method:
+    // youtu.be/HYAgJN3x4GA?list=PLFt_AvWsXl0cD2LPxcjxVjWTQLxJqKpgZ
+    public static bool PointInTriangle(Vector2 A, Vector2 B, Vector2 C, Vector2 P)
+    {
+        double s1 = C.y - A.y;
+        double s2 = C.x - A.x;
+        double s3 = B.y - A.y;
+        double s4 = P.y - A.y;
+
+        double w1 = (A.x * s1 + s4 * s2 - P.x * s1) / (s3 * s2 - (B.x - A.x) * s1);
+        double w2 = (s4 - w1 * s3) / s1;
+        return w1 >= 0 && w2 >= 0 && (w1 + w2) <= 1;
+    }
+}
+
 public static class Helpers
 {
     public static float GetValueFromFloatRange(string input)
@@ -78,12 +114,12 @@ public static class Helpers
     public static T RandomEnumValue<T>()
     {
         var v = Enum.GetValues(typeof(T));
-        return (T) v.GetValue(Random.Range(0, v.Length - 1));
+        return (T)v.GetValue(new System.Random().Next(0, v.Length - 1));
     }
 
     public static float ScaleValueInRange(float min1, float max1, float min2, float max2, float input)
     {
-      return  Mathf.Lerp(min1, max1, Mathf.InverseLerp(min2, max2, input));
+        return Mathf.Lerp(min1, max1, Mathf.InverseLerp(min2, max2, input));
     }
 }
 
@@ -99,7 +135,7 @@ public static class RenderHelpers
         else
         {
             renderer.material = Game.MaterialController.AbyssMaterial;
-            renderer.color = ColorConstants.UnboundStructureColor;
+            renderer.color = ColorConstants.UnboundColor;
         }
     }
 }
@@ -193,6 +229,7 @@ public static class TextureHelpers
 
         return tex;
     }
+
     public static void ScaleToGridSize(this Texture2D texture, int width, int height)
     {
         TextureScale.scale(texture, width * MapGrid.PixelsPerCell, height * MapGrid.PixelsPerCell);

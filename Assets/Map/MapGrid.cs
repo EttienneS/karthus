@@ -1,14 +1,19 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
+using VoronoiLib;
+using VoronoiLib.Structures;
+using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
 
 public enum CellType
 {
-    Abyss, Dirt, Forest, Grass, Mountain, Stone, Water
+    Dirt, Forest, Grass, Mountain, Stone, Water
 }
 
 public class MapGrid : MonoBehaviour
@@ -145,6 +150,9 @@ public class MapGrid : MonoBehaviour
 
     public void CreateMap()
     {
+        var sw = new System.Diagnostics.Stopwatch();
+
+        sw.Start();
         Cells = new List<CellData>();
 
         for (var y = 0; y < Game.MapGrid.MapSize; y++)
@@ -154,12 +162,19 @@ public class MapGrid : MonoBehaviour
                 CreateCell(x, y, CellType.Water);
             }
         }
+        Debug.Log($"Created cells in {sw.Elapsed.TotalSeconds}s");
+        sw.Restart();
 
         LinkNeighbours();
+        Debug.Log($"Linked cells in {sw.Elapsed.TotalSeconds}s");
+        sw.Restart();
+
         GenerateMapCells();
-        Populatecells();
+        Debug.Log($"Generated map in {sw.Elapsed.TotalSeconds}s");
+        sw.Restart();
 
         ResetSearchPriorities();
+        Debug.Log($"Reset search on cells in {sw.Elapsed.TotalSeconds}s");
     }
 
     public CellData GetCellAtCoordinate(Coordinates coordintes)
@@ -534,15 +549,8 @@ public class MapGrid : MonoBehaviour
 
         foreach (var cell in Cells)
         {
-            RefreshCell(cell);
-        }
-    }
-
-    private void Populatecells()
-    {
-        foreach (var cell in Cells)
-        {
             PopulateCell(cell);
+            RefreshCell(cell);
         }
     }
 
@@ -550,7 +558,7 @@ public class MapGrid : MonoBehaviour
     {
         var tile = ScriptableObject.CreateInstance<Tile>();
         tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(cell.CellType);
-        tile.color = cell.Bound ? ColorConstants.BaseColor : ColorConstants.UnboundStructureColor;
+        tile.color = cell.Bound ? ColorConstants.BaseColor : ColorConstants.UnboundColor;
 
         Tilemap.SetTile(new Vector3Int(cell.Coordinates.X, cell.Coordinates.Y, 0), tile);
 

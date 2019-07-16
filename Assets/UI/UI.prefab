@@ -474,7 +474,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: caf342a99d4cc7f4a9ee280699c45017, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TextPrefab: {fileID: 990388310669057158}
+  TextPrefab: {fileID: 0}
 --- !u!1 &1651845518
 GameObject:
   m_ObjectHideFlags: 0
@@ -2801,10 +2801,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a4becc15e020b54597c2b0fc92192aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DisplayPrefab: {fileID: 7837324159004134644, guid: acf68635393b3bc4ba57eaa692680cc6,
-    type: 3}
-  Content: {fileID: 6081997708369637960}
-  ScrollRect: {fileID: 8568446013903549690}
+  DisplayPrefab: {fileID: 0}
+  Content: {fileID: 0}
+  ScrollRect: {fileID: 0}
 --- !u!1 &3784211747485937653
 GameObject:
   m_ObjectHideFlags: 0
