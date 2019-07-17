@@ -241,6 +241,8 @@ public partial class Game : MonoBehaviour
 
     private void InitFactions()
     {
+        var sw = new System.Diagnostics.Stopwatch();
+        sw.Start();
         foreach (var factionName in new[]
         {
             FactionConstants.Player,
@@ -259,11 +261,7 @@ public partial class Game : MonoBehaviour
 
             factionBody.Data.ManaPool = factionBody.Data.ManaValue.ToManaPool();
 
-            if (factionName == FactionConstants.Player)
-            {
-                ManaDisplay.EnsureDisplay(factionBody.Data.ManaPool);
-            }
-            else
+            if (factionName != FactionConstants.Player)
             {
                 factionBody.Data.Behaviour = null;
             }
@@ -271,6 +269,9 @@ public partial class Game : MonoBehaviour
             faction.transform.position = new Vector2(-100, -100);
             FactionController.Factions.Add(factionName, faction);
         }
+
+        Debug.Log($"Created factions in {sw.Elapsed}s");
+        sw.Stop();
     }
 
     private void Update()

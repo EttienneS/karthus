@@ -20,6 +20,9 @@ public partial class Game // .Spawn
 
     public static void InitialSpawn()
     {
+        var sw = new System.Diagnostics.Stopwatch();
+        sw.Start();
+
         var midCell = MapGrid
             .GetCircle(new Coordinates(Game.MapGrid.MapSize / 2, Game.MapGrid.MapSize / 2), 10)
             .First(c => c.CellType != CellType.Water || c.CellType != CellType.Mountain);
@@ -42,12 +45,15 @@ public partial class Game // .Spawn
 
         var spawns = midCell.Neighbors.ToList();
 
-        for (int i = 0; i < Game.MapGrid.MapSize; i++)
+        for (int i = 0; i < MapGrid.MapSize; i++)
         {
             CreatureController.SpawnCreature(CreatureController.GetCreatureOfType("AbyssWraith"),
                                              MapGrid.GetRandomCell().Coordinates,
                                              FactionController.MonsterFaction);
         }
+
+        Debug.Log($"Did initial spawn in {sw.Elapsed}s");
+        sw.Stop();
     }
 
     private static void CreateLeyLines()

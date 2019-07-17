@@ -7,6 +7,7 @@ public class ManaDisplay : MonoBehaviour
 {
     public Dictionary<Mana, Text> LabelDictionary = new Dictionary<Mana, Text>();
     public Text TextPrefab;
+    public bool _runOnce;
 
     public void EnsureDisplay(Mana mana)
     {
@@ -21,6 +22,14 @@ public class ManaDisplay : MonoBehaviour
 
     private void Update()
     {
+        if (!_runOnce)
+        {
+            foreach (var mana in FactionController.PlayerFaction.Structure.ManaPool)
+            {
+                EnsureDisplay(mana.Value);
+            }
+        }
+
         foreach (var kvp in LabelDictionary)
         {
             var mana = kvp.Key;
@@ -36,14 +45,6 @@ public class ManaDisplay : MonoBehaviour
             }
 
             label.text = $"{mana.Total} ({floatingMana})";
-        }
-    }
-
-    internal void EnsureDisplay(ManaPool manaPool)
-    {
-        foreach (var mana in manaPool)
-        {
-            EnsureDisplay(mana.Value);
         }
     }
 }
