@@ -1,14 +1,17 @@
-﻿using TMPro;
+﻿using System.Collections.Generic;
+using System.Linq;
+using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class Creature : MonoBehaviour
 {
-    internal SpriteRenderer Sprite;
+    internal SpriteRenderer SpriteRenderer;
     internal CreatureData Data = new CreatureData();
     internal SpriteRenderer Highlight;
     internal float RemainingTextDuration;
     internal TextMeshPro Text;
+    internal LineRenderer LineRenderer;
 
     internal Light Light;
 
@@ -21,7 +24,8 @@ public class Creature : MonoBehaviour
         Highlight = transform.Find("Highlight").GetComponent<SpriteRenderer>();
         Light = GetComponentInChildren<Light>();
         Highlight.gameObject.SetActive(false);
-        Sprite = transform.Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
+        SpriteRenderer = transform.Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
+        LineRenderer = GetComponent<LineRenderer>();
     }
 
     public void ShowText(string text, float duration)
@@ -30,6 +34,22 @@ public class Creature : MonoBehaviour
         Text.color = Color.white;
 
         RemainingTextDuration = duration + 1f;
+    }
+
+    public void ShowLine(Color color, params Vector3[] points)
+    {
+        LineRenderer.startColor = color;
+        LineRenderer.endColor = color;
+
+        LineRenderer.SetPositions(points);
+        LineRenderer.positionCount = points.Length;
+
+        Debug.Log("rendered line");
+    }
+
+    public void HideLine()
+    {
+        LineRenderer.positionCount = 0;
     }
 
     public void Update()
@@ -57,11 +77,19 @@ public class Creature : MonoBehaviour
             }
 
             UpdateFloatingText();
-
-            Data.ValueProperties[Prop.Hunger] += Random.value;
-            Data.ValueProperties[Prop.Energy] -= Random.Range(0.1f, 0.25f);
-
             UpdateMaterial();
+
+            if (Highlight.gameObject.activeInHierarchy)
+            {
+                DrawAwareness();
+            }
+            else
+            {
+                HideLine();
+            }
+
+            Data.Perceive();
+            Data.Live();
         }
     }
 
@@ -76,9 +104,19 @@ public class Creature : MonoBehaviour
         Highlight.gameObject.SetActive(true);
     }
 
+    public void DrawAwareness()
+    {
+        var awareness = new List<Vector3> { Data.Coordinates.ToTopOfMapVector() };
+        awareness.AddRange(Data.Awareness.Where(c => c.Neighbors.Any(n => !Data.Awareness.Contains(n)))
+                                         .Select(c => c.Coordinates.ToTopOfMapVector()));
+        awareness.Add(Data.Coordinates.ToTopOfMapVector());
+
+        ShowLine(ColorConstants.BaseColor,awareness.ToArray());
+    }
+
     internal void SetTempMaterial(Material material, float duration)
     {
-        Sprite.material = material;
+        SpriteRenderer.material = material;
         TempMaterialDuration = duration * 2;
         TempMaterialDelta = 0;
     }
@@ -102,15 +140,15 @@ public class Creature : MonoBehaviour
 
     private void UpdateMaterial()
     {
-        if (Sprite.material != Game.MaterialController.ChannelingMaterial)
+        if (SpriteRenderer.material != Game.MaterialController.ChannelingMaterial)
         {
-            Sprite.SetBoundMaterial(Data.CurrentCell.Bound);
+            SpriteRenderer.SetBoundMaterial(Data.CurrentCell.Bound);
         }
 
         TempMaterialDelta += Time.deltaTime;
         if (TempMaterialDelta >= TempMaterialDuration)
         {
-            Sprite.material = Game.MaterialController.DefaultMaterial;
+            SpriteRenderer.material = Game.MaterialController.DefaultMaterial;
             Light.color = Color.white;
             Light.intensity = 0.1f;
         }
@@ -153,12 +191,10 @@ public class Creature : MonoBehaviour
         }
     }
 
-    public string SpriteName;
-
     public Color CurrentColor { get; set; }
 
     public Sprite GetIcon()
     {
-        return Sprite.sprite;
+        return SpriteRenderer.sprite;
     }
 }

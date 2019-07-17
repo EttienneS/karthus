@@ -71,8 +71,8 @@ public class CreatureController : MonoBehaviour
         creature.Data.WorkTick = Random.Range(0, Game.TimeManager.WorkInterval);
         creature.Data.GetBehaviourTask = Behaviours.GetBehaviourFor(creature.Data.BehaviourName);
 
-        creature.Sprite.material = Game.MaterialController.DefaultMaterial;
-        creature.Sprite.sprite = Game.SpriteStore.GetCreatureSprite(creature.Data.Sprite);
+        creature.SpriteRenderer.material = Game.MaterialController.DefaultMaterial;
+        creature.SpriteRenderer.sprite = Game.SpriteStore.GetCreatureSprite(creature.Data.Sprite);
 
         IndexCreature(creature);
         faction.AddCreature(creatureData);

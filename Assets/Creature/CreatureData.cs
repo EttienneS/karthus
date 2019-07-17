@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using Random = UnityEngine.Random;
 
 public enum Mobility
 {
@@ -17,6 +18,7 @@ public class CreatureData : IMagicAttuned
 
     public int Id;
     public Dictionary<string, Memory> Mind = new Dictionary<string, Memory>();
+    public Mobility Mobility;
     public Direction MoveDirection = Direction.S;
     public string Name;
 
@@ -27,7 +29,21 @@ public class CreatureData : IMagicAttuned
     internal float InternalTick;
     internal float WorkTick;
 
-    public Mobility Mobility;
+    [JsonIgnore]
+    private List<CellData> _awareness;
+
+    public List<CellData> Awareness
+    {
+        get
+        {
+            if (_awareness == null && Coordinates != null)
+            {
+                _awareness = Game.MapGrid.GetCircle(Coordinates, Perception);
+            }
+
+            return _awareness;
+        }
+    }
 
     [JsonIgnore]
     public CellData CurrentCell
@@ -60,6 +76,10 @@ public class CreatureData : IMagicAttuned
 
     public ManaPool ManaPool { get; set; } = new ManaPool();
 
+    public int Perception { get; set; }
+    [JsonIgnore]
+    internal Coordinates LastPercievedCoordinate;
+
     [JsonIgnore]
     public Memory Self
     {
@@ -81,12 +101,11 @@ public class CreatureData : IMagicAttuned
 
     public static CreatureData Load(string creatureData)
     {
-        var data = JsonConvert.DeserializeObject<CreatureData>(creatureData, new JsonSerializerSettings
+        return JsonConvert.DeserializeObject<CreatureData>(creatureData, new JsonSerializerSettings
         {
             TypeNameHandling = TypeNameHandling.Auto,
             NullValueHandling = NullValueHandling.Ignore,
         });
-        return data;
     }
 
     public void BurnMana(ManaColor manaColor)
@@ -141,6 +160,21 @@ public class CreatureData : IMagicAttuned
     {
         // Debug.Log($"Add context: {context}");
         Mind.Add(context, new Memory());
+    }
+
+    internal void Live()
+    {
+        ValueProperties[Prop.Hunger] += Random.value;
+        ValueProperties[Prop.Energy] -= Random.Range(0.1f, 0.25f);
+    }
+
+    internal void Perceive()
+    {
+        if (LastPercievedCoordinate != Coordinates)
+        {
+            _awareness = null;
+            LastPercievedCoordinate = Coordinates;
+        }
     }
 
     internal void UpdateMemory(string context, MemoryType memoryType, string info)
