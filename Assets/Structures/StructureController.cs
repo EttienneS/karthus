@@ -52,6 +52,7 @@ public class StructureController : MonoBehaviour
         IndexStructure(structure);
 
         structure.Data.SetBlueprintState(false);
+        structure.Data.ManaPool = structure.Data.ManaValue.ToManaPool();
 
         if (!string.IsNullOrEmpty(structure.Data.Layer))
             structure.SpriteRenderer.sortingLayerName = structure.Data.Layer;

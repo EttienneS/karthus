@@ -9,6 +9,11 @@ public static class ColorConstants
     public static Color UnboundColor = new Color(0.66f, 0.18f, 0.6f, 0.9f);
 }
 
+public static class GameConstants
+{
+    public static float ChannelDuration = 2f;
+}
+
 public static class ControllerConstants
 {
     public const string CameraController = "Main Camera";

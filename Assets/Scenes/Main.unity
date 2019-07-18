@@ -1127,26 +1127,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 0}
-      propertyPath: m_SortingLayerID
-      value: 1735232521
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_SortingLayer
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_SortingOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: d18ad302dfa30fe4c9b8df47e793a774, type: 2}
-    - target: {fileID: 0}
-      propertyPath: m_CastShadows
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8759692018346940595, guid: fd9571b902996d94e904a9811f3426c6,
         type: 3}
       propertyPath: m_Name
@@ -1155,17 +1135,17 @@ PrefabInstance:
     - target: {fileID: 8759692018346940592, guid: fd9571b902996d94e904a9811f3426c6,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 226.06158
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8759692018346940592, guid: fd9571b902996d94e904a9811f3426c6,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 90.88825
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8759692018346940592, guid: fd9571b902996d94e904a9811f3426c6,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -25.890148
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8759692018346940592, guid: fd9571b902996d94e904a9811f3426c6,
         type: 3}
@@ -1206,17 +1186,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8759692018346940593, guid: fd9571b902996d94e904a9811f3426c6,
-        type: 3}
-      propertyPath: LeyLinePrefab
-      value: 
-      objectReference: {fileID: 6706550934071826846, guid: 4c4e9a42fdee74946b86d2507390f4f9,
-        type: 3}
-    - target: {fileID: 8759692018346940593, guid: fd9571b902996d94e904a9811f3426c6,
-        type: 3}
-      propertyPath: Jitter
-      value: 0.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fd9571b902996d94e904a9811f3426c6, type: 3}

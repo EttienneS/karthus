@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -44,7 +45,6 @@ public class Creature : MonoBehaviour
         LineRenderer.SetPositions(points);
         LineRenderer.positionCount = points.Length;
 
-        Debug.Log("rendered line");
     }
 
     public void HideLine()
@@ -77,7 +77,6 @@ public class Creature : MonoBehaviour
             }
 
             UpdateFloatingText();
-            UpdateMaterial();
 
             if (Highlight.gameObject.activeInHierarchy)
             {
@@ -91,6 +90,9 @@ public class Creature : MonoBehaviour
             Data.Perceive();
             Data.Live();
         }
+
+        UpdateMaterial();
+
     }
 
     internal void DisableHightlight()
@@ -111,14 +113,18 @@ public class Creature : MonoBehaviour
                                          .Select(c => c.Coordinates.ToTopOfMapVector()));
         awareness.Add(Data.Coordinates.ToTopOfMapVector());
 
-        ShowLine(ColorConstants.BaseColor,awareness.ToArray());
+        ShowLine(ColorConstants.BaseColor, awareness.ToArray());
     }
 
-    internal void SetTempMaterial(Material material, float duration)
+    internal void DoChannel(ManaColor color, float duration)
     {
-        SpriteRenderer.material = material;
+        var col = color.GetActualColor();
+        SpriteRenderer.material = Game.MaterialController.GetChannelingMaterial(col);
         TempMaterialDuration = duration * 2;
         TempMaterialDelta = 0;
+
+        Light.color = col;
+        Light.intensity = 0.4f;
     }
 
     private void UpdateFloatingText()
@@ -140,17 +146,18 @@ public class Creature : MonoBehaviour
 
     private void UpdateMaterial()
     {
-        if (SpriteRenderer.material != Game.MaterialController.ChannelingMaterial)
-        {
-            SpriteRenderer.SetBoundMaterial(Data.CurrentCell.Bound);
-        }
+        //if (SpriteRenderer.material.name != Game.MaterialController.ChannelingMaterial.name)
+        //{
+        //    SpriteRenderer.SetBoundMaterial(Data.CurrentCell.Bound);
+        //}
 
         TempMaterialDelta += Time.deltaTime;
         if (TempMaterialDelta >= TempMaterialDuration)
         {
-            SpriteRenderer.material = Game.MaterialController.DefaultMaterial;
             Light.color = Color.white;
             Light.intensity = 0.1f;
+
+            SpriteRenderer.SetBoundMaterial(Data.CurrentCell.Bound);
         }
     }
 

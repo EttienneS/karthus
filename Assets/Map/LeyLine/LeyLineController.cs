@@ -6,6 +6,7 @@ public class LeyLineController : MonoBehaviour
 {
     public float Jitter = 0.1f;
     public LeyLine LeyLinePrefab;
+    public ChannelLine ChannelLinePrefab;
 
     public List<LeyLine> Lines = new List<LeyLine>();
 
@@ -20,8 +21,17 @@ public class LeyLineController : MonoBehaviour
         Lines.Add(line);
 
         line.Cells.AddRange(cells);
-        
+
         line.JitterLine();
+        return line;
+    }
+
+    public ChannelLine MakeChannellingLine(Vector3 source, Vector3 target, int intensity, float duration, ManaColor manaColor)
+    {
+        var line = Instantiate(ChannelLinePrefab, transform);
+        line.name = $"Channel: {manaColor}";
+        line.SetProperties(source, target, intensity, duration, manaColor);
+
         return line;
     }
 }

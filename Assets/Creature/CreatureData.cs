@@ -108,24 +108,6 @@ public class CreatureData : IMagicAttuned
         });
     }
 
-    public void BurnMana(ManaColor manaColor)
-    {
-        LinkedGameObject.SetTempMaterial(Game.MaterialController.GetChannelingMaterial(manaColor.GetActualColor()), 0.5f);
-        ManaPool.BurnMana(manaColor, 1);
-
-        LinkedGameObject.Light.color = manaColor.GetActualColor();
-        LinkedGameObject.Light.intensity = 0.4f;
-    }
-
-    public void GainMana(ManaColor manaColor)
-    {
-        LinkedGameObject.SetTempMaterial(Game.MaterialController.GetChannelingMaterial(manaColor.GetActualColor()), 0.5f);
-        ManaPool.GainMana(manaColor, 1);
-
-        LinkedGameObject.Light.color = manaColor.GetActualColor();
-        LinkedGameObject.Light.intensity = 0.4f;
-    }
-
     internal void Forget(string context)
     {
         // Debug.Log($"Forget context: {context}");

@@ -1,4 +1,6 @@
-﻿public class Eat : TaskBase
+﻿using System.Collections.Generic;
+
+public class Eat : TaskBase
 {
     public Eat()
     {
@@ -9,16 +11,15 @@
     public Eat(ManaColor foodColor)
     {
         FoodColor = foodColor;
-        AddSubTask(new Wait(2f, $"Eating {foodColor}"));
+        var food = new Dictionary<ManaColor, int> { { FoodColor, 1 } };
+        AddSubTask(new Acrue(food));
     }
 
     public override bool Done()
     {
         if (Faction.QueueComplete(SubTasks))
         {
-            Creature.Faction.Structure.ManaPool[FoodColor].Burn(1);
-            Creature.GainMana(FoodColor);
-            Creature.BurnMana(FoodColor);
+            Creature.ManaPool[FoodColor].Burn(1);
             Creature.ValueProperties[Prop.Hunger] -= 50;
             return true;
         }

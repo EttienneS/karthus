@@ -46,8 +46,6 @@ public partial class Game : MonoBehaviour
 
         LineRenderer.startWidth = 0.1f;
         LineRenderer.endWidth = 0.1f;
-
-        Debug.Log("rendered line");
     }
 
     public void ClearLine()
@@ -258,8 +256,6 @@ public partial class Game : MonoBehaviour
             faction.Structure = factionBody.Data;
 
             faction.AddStructure(factionBody.Data);
-
-            factionBody.Data.ManaPool = factionBody.Data.ManaValue.ToManaPool();
 
             if (factionName != FactionConstants.Player)
             {

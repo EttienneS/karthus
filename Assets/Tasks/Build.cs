@@ -14,7 +14,10 @@
         Coordinates = coordinates;
 
         AddSubTask(new Acrue(structure.ManaValue));
-        AddSubTask(new Burn(structure.ManaValue, structure.GetGameId()));
+        foreach (var mana in structure.ManaValue)
+        {
+            AddSubTask(Channel.GetChannelTo(mana.Key, mana.Value, structure.GetGameId()));
+        }
 
         Message = $"Building {structure.Name} at {coordinates}";
     }

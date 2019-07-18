@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using Random = UnityEngine.Random;
 
 public static class Behaviours
@@ -20,13 +18,13 @@ public static class Behaviours
     public delegate TaskBase GetBehaviourTaskDelegate(CreatureData creature);
 
     public const int WraithRange = 10;
+
     public static TaskBase AbyssWraith(CreatureData creature)
     {
         TaskBase task = null;
         if (Random.value > 0.8f)
         {
-            
-            task = new Move(Game.MapGrid.GetRectangle(creature.Coordinates.X - (WraithRange/2),
+            task = new Move(Game.MapGrid.GetRectangle(creature.Coordinates.X - (WraithRange / 2),
                 creature.Coordinates.Y - (WraithRange / 2), WraithRange, WraithRange).GetRandomItem().Coordinates);
         }
         else
@@ -44,17 +42,14 @@ public static class Behaviours
         const int threshold = 5;
         if (creature.ManaPool.Any(m => m.Value.Total > threshold))
         {
-            var burn = new Dictionary<ManaColor, int>();
-
             foreach (var mana in creature.ManaPool)
             {
                 if (mana.Value.Total > threshold)
                 {
-                    burn.Add(mana.Key, mana.Value.Total);
+                    task = Channel.GetChannelTo(mana.Key, mana.Value.Total, creature.Faction.Structure.GetGameId());
+                    break;
                 }
             }
-
-            task = new Burn(burn, creature.Faction.Structure.GetGameId());
         }
         else if (creature.ValueProperties[Prop.Hunger] > 50)
         {
@@ -84,5 +79,4 @@ public static class Behaviours
 
         return task;
     }
-
 }

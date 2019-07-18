@@ -13,6 +13,11 @@
         AddSubTask(new Move(Game.MapGrid.GetPathableNeighbour(Target.Coordinates)));
         AddSubTask(new Wait(2f, "Harvesting"));
 
+        foreach (var mana in Target.ManaValue)
+        {
+            AddSubTask(Channel.GetChannelFrom(mana.Key, mana.Value, Target.GetGameId()));
+        }
+
         Message = $"Harvesting {structure.Name} at {structure.Coordinates}";
     }
 
@@ -20,11 +25,6 @@
     {
         if (Faction.QueueComplete(SubTasks))
         {
-            foreach (var mana in Target.ManaValue.ToFlatArray())
-            {
-                Creature.GainMana(mana);
-            }
-
             Game.StructureController.DestroyStructure(Target);
             return true;
         }
