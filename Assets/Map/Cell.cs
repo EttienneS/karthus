@@ -14,7 +14,7 @@ public class CellData
     [JsonIgnore]
     public CellData[] Neighbors = new CellData[8];
 
-    public StructureData Structure;
+    public Structure Structure;
 
     [JsonIgnore]
     public bool Bound
@@ -80,41 +80,25 @@ public class CellData
         }
     }
 
-    public void AddContent(GameObject gameObject, bool force = false)
+    public void SetStructure(Structure structure)
     {
-        var structure = gameObject.GetComponent<Structure>();
-
-        var scatterIntensity = 0.3f;
-        var scatter = false;
-
-        gameObject.transform.position = Coordinates.ToMapVector();
-
-        if (structure != null)
+        if (Structure != null)
         {
-            if (force)
-            {
-                if (Structure != null)
-                {
-                    Game.StructureController.DestroyStructure(Structure);
-                }
-            }
-
-            structure.Data.Coordinates = Coordinates;
-            foreach (var cell in structure.Data.GetCellsForStructure(Coordinates))
-            {
-                cell.Structure = structure.Data;
-            }
-
-            structure.Shift();
-            structure.SpriteRenderer.sortingOrder = Game.MapGrid.MapSize - Coordinates.Y;
-
-            Structure.LinkedGameObject.SpriteRenderer.SetBoundMaterial(Bound);
+            Game.StructureController.DestroyStructure(Structure);
         }
 
-        if (scatter)
+        structure.Coordinates = Coordinates;
+        foreach (var cell in structure.GetCellsForStructure(Coordinates))
         {
-            gameObject.transform.position += new Vector3(Random.Range(-scatterIntensity, scatterIntensity), Random.Range(-scatterIntensity, scatterIntensity), 0);
+            cell.Structure = structure;
         }
+
+        Game.StructureController.RefreshStructure(structure);
+    }
+
+    public void AddCreature(CreatureData creature)
+    {
+        creature.LinkedGameObject.gameObject.transform.position = Coordinates.ToMapVector();
     }
 
     public CellData GetNeighbor(Direction direction)

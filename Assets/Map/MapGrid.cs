@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
-using VoronoiLib;
-using VoronoiLib.Structures;
 using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
 
@@ -427,18 +423,18 @@ public class MapGrid : MonoBehaviour
             case CellType.Grass:
                 if (value > 0.65)
                 {
-                    cell.AddContent(Game.StructureController.GetStructure("Bush", world).gameObject);
+                    cell.SetStructure(Game.StructureController.GetStructure("Bush", world));
                 }
                 break;
 
             case CellType.Forest:
                 if (value > 0.95)
                 {
-                    cell.AddContent(Game.StructureController.GetStructure("Tree", world).gameObject);
+                    cell.SetStructure(Game.StructureController.GetStructure("Tree", world));
                 }
                 else if (value > 0.65)
                 {
-                    cell.AddContent(Game.StructureController.GetStructure("Bush", world).gameObject);
+                    cell.SetStructure(Game.StructureController.GetStructure("Bush", world));
                 }
                 break;
         }
@@ -561,10 +557,9 @@ public class MapGrid : MonoBehaviour
         tile.color = cell.Bound ? ColorConstants.BaseColor : ColorConstants.UnboundColor;
 
         Tilemap.SetTile(new Vector3Int(cell.Coordinates.X, cell.Coordinates.Y, 0), tile);
-
         if (cell.Structure != null)
         {
-            cell.Structure.LinkedGameObject.SpriteRenderer.SetBoundMaterial(cell.Bound);
+            Game.StructureController.RefreshStructure(cell.Structure);
         }
     }
 

@@ -13,10 +13,5 @@
     "Blue": "10",
     "Black": "10",
     "White": "10"
-  },
-  "Behaviour": {
-    "$type": "Spawn, Assembly-CSharp",
-    "Power": "0.0",
-    "PowerRate": "0.005"
-  }
+  }  
 }

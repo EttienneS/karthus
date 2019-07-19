@@ -51,7 +51,7 @@ public class SaveManager : MonoBehaviour
 
             if (saveCell.Structure != null)
             {
-                newCell.AddContent(Game.StructureController.LoadStructure(saveCell.Structure).gameObject);
+                throw new Exception("Load structure here!");
             }
         }
 
@@ -95,8 +95,6 @@ public class SaveManager : MonoBehaviour
         Game.CreatureController.Creatures.Clear();
         Game.CreatureController.CreatureLookup.Clear();
         Game.CreatureController.CreatureIdLookup.Clear();
-
-        Game.StructureController.StructureLookup.Clear();
 
         //Factions.Taskmasters[Data.Faction].Tasks.Clear();
     }

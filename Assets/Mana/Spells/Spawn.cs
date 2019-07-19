@@ -1,4 +1,4 @@
-﻿public class Spawn : BaseRune
+﻿public class Spawn : SpellBase
 {
     public Spawn()
     {

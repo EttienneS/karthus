@@ -6,7 +6,7 @@ public class CraftingScreen : MonoBehaviour
 {
     public DataDisplay DataPrefab;
 
-    private StructureData _craftSource;
+    private Structure _craftSource;
     public GameObject SourcePanel;
     public GameObject OptionsPanel;
     public GameObject QueuePanel;
@@ -14,7 +14,7 @@ public class CraftingScreen : MonoBehaviour
     public Text RequirementsText;
     public Image RecipeImage;
 
-    public void Show(StructureData craftSource)
+    public void Show(Structure craftSource)
     {
         _craftSource = craftSource;
         gameObject.SetActive(true);

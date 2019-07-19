@@ -1,12 +1,12 @@
 ﻿public class Harvest : TaskBase
 {
-    public StructureData Target;
+    public Structure Target;
 
     public Harvest()
     {
     }
 
-    public Harvest(StructureData structure)
+    public Harvest(Structure structure)
     {
         Target = structure;
 

@@ -7,13 +7,13 @@ public class Sleep : TaskBase
     public Coordinates Location;
 
     [JsonIgnore]
-    private StructureData _bed;
+    private Structure _bed;
 
     public Sleep()
     {
     }
 
-    public Sleep(StructureData bed) : this(bed.Coordinates, float.Parse(bed.Properties["RecoveryRate"]))
+    public Sleep(Structure bed) : this(bed.Coordinates, float.Parse(bed.Properties["RecoveryRate"]))
     {
         _bed = bed;
     }

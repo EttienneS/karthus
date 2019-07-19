@@ -1,17 +1,14 @@
 ﻿public class Build : TaskBase
 {
-    public Coordinates Coordinates;
-
-    public StructureData Structure;
+    public Structure Structure;
 
     public Build()
     {
     }
 
-    public Build(StructureData structure, Coordinates coordinates)
+    public Build(Structure structure)
     {
         Structure = structure;
-        Coordinates = coordinates;
 
         AddSubTask(new Acrue(structure.ManaValue));
         foreach (var mana in structure.ManaValue)
@@ -19,7 +16,7 @@
             AddSubTask(Channel.GetChannelTo(mana.Key, mana.Value, structure.GetGameId()));
         }
 
-        Message = $"Building {structure.Name} at {coordinates}";
+        Message = $"Building {structure.Name} at {structure.Coordinates}";
     }
 
     public override bool Done()
@@ -31,7 +28,7 @@
 
         if (Faction.QueueComplete(SubTasks))
         {
-            Structure.SetBlueprintState(false);
+            Structure.SetBluePrintState(false);
             
             Creature.Faction.AddStructure(Structure);
             Creature.UpdateMemory(Context, MemoryType.Structure, Structure.GetGameId());

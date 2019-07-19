@@ -22,7 +22,7 @@ public class Memory : Dictionary<MemoryType, List<string>>
     }
 
     [JsonIgnore]
-    public IEnumerable<StructureData> Structures
+    public IEnumerable<Structure> Structures
     {
         get
         {
@@ -30,7 +30,7 @@ public class Memory : Dictionary<MemoryType, List<string>>
             {
                 return this[MemoryType.Structure].Select(IdService.GetStructureFromId);
             }
-            return new List<StructureData>();
+            return new List<Structure>();
         }
     }
 }

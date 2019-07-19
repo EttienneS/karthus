@@ -25,8 +25,8 @@ public partial class OrderSelectionController //.Structure
                 if (structure.ValidateCellLocationForStructure(cell))
                 {
                     var blueprint = Game.StructureController.GetStructureBluePrint(structureName, FactionController.PlayerFaction);
-                    cell.AddContent(blueprint.gameObject);
-                    FactionController.PlayerFaction.AddTask(new Build(blueprint.Data, cell.Coordinates), string.Empty);
+                    cell.SetStructure(blueprint);
+                    FactionController.PlayerFaction.AddTask(new Build(blueprint), string.Empty);
                 }
             }
         };
@@ -83,7 +83,7 @@ public partial class OrderSelectionController //.Structure
                             continue;
                         }
                         FactionController.PlayerFaction.AddTask(new RemoveStructure(structure, cell.Coordinates), string.Empty);
-                        structure.LinkedGameObject.SpriteRenderer.color = ColorConstants.InvalidColor;
+                        structure.SetStatusSprite(Game.SpriteStore.GetSpriteByName("Remove"));
                     }
                 }
             }

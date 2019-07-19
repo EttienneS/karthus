@@ -1,13 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class StructureController : MonoBehaviour
 {
-    public Dictionary<int, StructureData> StructureIdLookup = new Dictionary<int, StructureData>();
-    public Dictionary<StructureData, Structure> StructureLookup = new Dictionary<StructureData, Structure>();
-    public Structure structurePrefab;
-    internal Dictionary<string, StructureData> StructureDataReference = new Dictionary<string, StructureData>();
+    public Dictionary<int, Structure> StructureIdLookup = new Dictionary<int, Structure>();
+    internal Dictionary<string, Structure> StructureDataReference = new Dictionary<string, Structure>();
+    private Tilemap _tilemap;
+
+    internal Tilemap Tilemap
+    {
+        get
+        {
+            if (_tilemap == null)
+            {
+                _tilemap = GetComponentInChildren<Tilemap>();
+            }
+
+            return _tilemap;
+        }
+    }
 
     private Dictionary<string, string> _structureTypeFileMap;
 
@@ -20,7 +32,7 @@ public class StructureController : MonoBehaviour
                 _structureTypeFileMap = new Dictionary<string, string>();
                 foreach (var structureFile in Game.FileController.StructureJson)
                 {
-                    var data = StructureData.GetFromJson(structureFile.text);
+                    var data = Structure.GetFromJson(structureFile.text);
                     StructureTypeFileMap.Add(data.Name, structureFile.text);
                     StructureDataReference.Add(data.Name, data);
                 }
@@ -29,90 +41,89 @@ public class StructureController : MonoBehaviour
         }
     }
 
-    public Sprite GetSpriteForStructure(string structureName)
+    public void RefreshStructure(Structure structure)
     {
-        return Game.SpriteStore.GetSpriteByName(StructureDataReference[structureName].SpriteName);
+        if (structure.Coordinates == null)
+        {
+            return;
+        }
+
+        var tile = ScriptableObject.CreateInstance<Tile>();
+        tile.sprite = Game.SpriteStore.GetSpriteByName(structure.SpriteName);
+
+        if (structure.IsBluePrint)
+        {
+            tile.color = ColorConstants.BluePrintColor;
+        }
+        else
+        {
+            if (Game.MapGrid.Cells != null)
+            {
+                tile.color = Game.MapGrid.GetCellAtCoordinate(structure.Coordinates).Bound ?
+                    ColorConstants.BaseColor :
+                    ColorConstants.UnboundColor;
+            }
+        }
+
+        Tilemap.SetTile(new Vector3Int(structure.Coordinates.X, structure.Coordinates.Y, 0), tile);
+    }
+
+    public void ClearStructure(Coordinates coordinates)
+    {
+        var tile = ScriptableObject.CreateInstance<Tile>();
+        Tilemap.SetTile(new Vector3Int(coordinates.X, coordinates.Y, 0), tile);
     }
 
     public Structure GetStructure(string name, Faction faction)
     {
-        var structure = Instantiate(structurePrefab, transform);
-
         string structureData = StructureTypeFileMap[name];
 
-        structure.Load(structureData);
-        structure.Data.Id = IdService.UniqueId();
-
-        if (!string.IsNullOrEmpty(structure.Data.Material))
-        {
-            structure.SpriteRenderer.material = Game.MaterialController.GetMaterial(structure.Data.Material);
-            structure.SpriteRenderer.color = new Color(0.2f, 0.2f, 0.2f);
-        }
+        Structure structure = Structure.GetFromJson(structureData);
+        structure.Id = IdService.UniqueId();
 
         IndexStructure(structure);
 
-        structure.Data.SetBlueprintState(false);
-        structure.Data.ManaPool = structure.Data.ManaValue.ToManaPool();
-
-        if (!string.IsNullOrEmpty(structure.Data.Layer))
-            structure.SpriteRenderer.sortingLayerName = structure.Data.Layer;
+        structure.SetBluePrintState(false);
+        structure.ManaPool = structure.ManaValue.ToManaPool();
 
         if (faction != null)
-            faction.AddStructure(structure.Data);
+        {
+            faction.AddStructure(structure);
+        }
 
         return structure;
     }
-
-    internal void DestroyStructure(StructureData structure)
-    {
-        Game.MapGrid.Unbind(structure.GetGameId());
-        DestroyStructure(structure.LinkedGameObject);
-    }
-
 
     internal void DestroyStructure(Structure structure)
     {
         if (structure != null)
         {
-            StructureLookup.Remove(structure.Data);
-            StructureIdLookup.Remove(structure.Data.Id);
+            Game.MapGrid.GetCellAtCoordinate(structure.Coordinates).Structure = null;
+            Game.MapGrid.Unbind(structure.GetGameId());
+            ClearStructure(structure.Coordinates);
 
-            Game.MapGrid.GetCellAtCoordinate(structure.Data.Coordinates).Structure = null;
-            Game.Controller.AddItemToDestroy(structure.gameObject);
+            if (structure.Spell != null)
+            {
+                Game.MagicController.FreeRune(structure);
+            }
+
+            StructureIdLookup.Remove(structure.Id);
         }
     }
 
     internal Structure GetStructureBluePrint(string name, Faction faction)
     {
         var structure = GetStructure(name, faction);
-        structure.Data.SetBlueprintState(true);
-        return structure;
-    }
-
-    internal Structure GetStructureForData(StructureData structureData)
-    {
-        return StructureLookup[structureData];
-    }
-
-    internal Structure LoadStructure(StructureData savedStructure)
-    {
-        var structure = Instantiate(structurePrefab, transform);
-        structure.Data = savedStructure;
-        IndexStructure(structure);
-
-        structure.LoadSprite();
-        structure.Data.SetBlueprintState(structure.Data.IsBluePrint);
-
+        structure.SetBluePrintState(true);
         return structure;
     }
 
     private void IndexStructure(Structure structure)
     {
-        StructureLookup.Add(structure.Data, structure);
-        StructureIdLookup.Add(structure.Data.Id, structure.Data);
-
-        structure.name = $"{structure.Data.Name} ({structure.Data.Id})";
+        StructureIdLookup.Add(structure.Id, structure);
+        if (structure.Spell != null)
+        {
+            Game.MagicController.AddRune(structure);
+        }
     }
-
-
 }

@@ -76,6 +76,8 @@ public class TimeManager : MonoBehaviour
         }
     }
 
+    public float MagicInterval = 0.01f;
+
     internal bool Paused
     {
         get

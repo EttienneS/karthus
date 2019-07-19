@@ -39,7 +39,7 @@ public static class IdService
         return $"{CreaturePrefix}{creature.Id}";
     }
 
-    public static string GetGameId(this StructureData structure)
+    public static string GetGameId(this Structure structure)
     {
         return $"{StructurePrefix}{structure.Id}";
     }
@@ -63,7 +63,7 @@ public static class IdService
         return null;
     }
 
-    public static StructureData GetStructureFromId(string id)
+    public static Structure GetStructureFromId(string id)
     {
         return Game.StructureController.StructureIdLookup[GetId(id)];
     }
@@ -123,20 +123,5 @@ public static class IdService
         }
 
         throw new NotImplementedException();
-    }
-
-    internal static SpriteRenderer GetSpriteRendererForId(string gameObjectId)
-    {
-        switch (GetObjectTypeForId(gameObjectId))
-        {
-            //case ObjectType.Creature:
-            //    return GetCreatureFromId(gameObjectId).LinkedGameObject.SpriteRenderer;
-
-            case ObjectType.Structure:
-                return GetStructureFromId(gameObjectId).LinkedGameObject.SpriteRenderer;
-
-            default:
-                throw new NotImplementedException();
-        }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public class Bind : BaseRune
+public class Bind : SpellBase
 {
     public const float BindTime = 1f;
 

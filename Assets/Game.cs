@@ -17,7 +17,7 @@ public partial class Game : MonoBehaviour
     internal LineRenderer LineRenderer;
     internal List<CellData> SelectedCells = new List<CellData>();
     internal List<Creature> SelectedCreatures = new List<Creature>();
-    internal List<StructureData> SelectedStructures = new List<StructureData>();
+    internal List<Structure> SelectedStructures = new List<Structure>();
 
     private TimeStep _oldTimeStep = TimeStep.Normal;
     private Vector3 _selectionEnd;
@@ -78,12 +78,9 @@ public partial class Game : MonoBehaviour
         ClearLine();
         foreach (var structure in SelectedStructures)
         {
-            if (structure?.LinkedGameObject == null)
-                continue;
-
             var cell = MapGrid.GetCellAtCoordinate(structure.Coordinates);
-            structure.LinkedGameObject.SpriteRenderer.color = cell.Bound ? ColorConstants.BaseColor :
-                                                                           ColorConstants.UnboundColor;
+            //structure.LinkedGameObject.SpriteRenderer.color = cell.Bound ? ColorConstants.BaseColor :
+            //                                                               ColorConstants.UnboundColor;
         }
         SelectedStructures.Clear();
     }
@@ -249,17 +246,17 @@ public partial class Game : MonoBehaviour
         })
         {
             var factionBody = StructureController.GetStructure(FactionConstants.StructureName, null);
-            factionBody.name = factionName;
+            var faction = new GameObject(factionName, typeof(Faction)).GetComponent<Faction>();
+            faction.transform.SetParent(transform);
 
-            var faction = factionBody.gameObject.AddComponent<Faction>();
             faction.FactionName = factionName;
-            faction.Structure = factionBody.Data;
+            faction.Core = factionBody;
 
-            faction.AddStructure(factionBody.Data);
+            faction.AddStructure(factionBody);
 
             if (factionName != FactionConstants.Player)
             {
-                factionBody.Data.Behaviour = null;
+                factionBody.Spell = null;
             }
 
             faction.transform.position = new Vector2(-100, -100);

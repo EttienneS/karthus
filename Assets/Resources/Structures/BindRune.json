@@ -1,7 +1,7 @@
 {
   "Name": "BindRune",
   "Material": "rune",
-  "Behaviour": {
+  "Spell": {
     "$type": "Bind, Assembly-CSharp",
     "Power": "50.0",
     "PowerRate": "0.5",

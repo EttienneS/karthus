@@ -1,79 +1,164 @@
-﻿using System.Linq;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class Structure : MonoBehaviour
+public class Structure : IMagicAttuned
 {
-    internal StructureData Data = new StructureData();
-    internal SpriteRenderer SpriteRenderer;
-    internal SpriteRenderer StatusSprite;
+    public SpellBase Spell;
 
-    public void LoadSprite()
+    public bool Buildable;
+
+    public Coordinates Coordinates;
+
+    public string FactionName;
+    public int Id;
+
+    public string InUseBy;
+
+    public bool IsBluePrint { get; private set; }
+
+    public void SetBluePrintState(bool state)
     {
-        SpriteRenderer.sprite = Game.SpriteStore.GetSpriteByName(Data.SpriteName);
-        SetTiledMode(SpriteRenderer, Data.Tiled);
+        IsBluePrint = state;
+        Game.StructureController.RefreshStructure(this);
     }
 
-    public void SetTiledMode(SpriteRenderer spriteRenderer, bool tiled)
-    {
-        if (!tiled)
-        {
-            spriteRenderer.drawMode = SpriteDrawMode.Simple;
-        }
-        else
-        {
-            spriteRenderer.drawMode = SpriteDrawMode.Tiled;
-            spriteRenderer.size = Vector2.one;
-        }
+    public string Layer;
 
-        spriteRenderer.transform.localScale = new Vector3(Data.Width, Data.Height, 1);
+    public Dictionary<ManaColor, int> ManaValue;
+    public string Material;
+    public string Name;
+
+    public Dictionary<string, string> Properties = new Dictionary<string, string>();
+
+    public string ShiftX;
+    public string ShiftY;
+    public string Size;
+    public string SpriteName;
+    public string StructureType;
+    public List<TaskBase> Tasks = new List<TaskBase>();
+    public bool Tiled;
+    public float TravelCost;
+
+    [JsonIgnore]
+    private int _width, _height = -1;
+
+    public Structure()
+    {
     }
 
-    internal void Load(string structureData)
+    public Structure(string name, string sprite)
     {
-        Data = StructureData.GetFromJson(structureData);
-        LoadSprite();
+        Name = name;
+        SpriteName = sprite;
     }
 
-    internal void Shift()
+    [JsonIgnore]
+    public Faction Faction
     {
-        if (!string.IsNullOrEmpty(Data.ShiftX))
+        get
         {
-            float shiftX = Helpers.GetValueFromFloatRange(Data.ShiftX);
-            transform.position += new Vector3(shiftX, 0, 0);
-        }
-
-        if (!string.IsNullOrEmpty(Data.ShiftY))
-        {
-            float shiftY = Helpers.GetValueFromFloatRange(Data.ShiftY);
-            transform.position += new Vector3(0, shiftY, 0);
-        }
-
-        if (Data.Width > 1 || Data.Height > 1)
-        {
-            transform.position += new Vector3((Data.Width / 2) - 0.5f, (Data.Height / 2) - 0.5f, 0);
+            return FactionController.Factions[FactionName];
         }
     }
 
-    private void Awake()
+    [JsonIgnore]
+    public int Height
     {
-        SpriteRenderer = GetComponent<SpriteRenderer>();
-
-        StatusSprite = transform.Find("Status").GetComponent<SpriteRenderer>();
+        get
+        {
+            ParseHeight();
+            return _width;
+        }
     }
 
-    private void Update()
+    internal void SetStatusSprite(Sprite sprite)
     {
-        if (Game.TimeManager.Paused) return;
+        //throw new NotImplementedException();
+    }
 
-        if (!Data.IsBluePrint && Data.Behaviour != null)
+    [JsonIgnore]
+    public bool InUseByAnyone
+    {
+        get
         {
-            Data.Behaviour.Originator = Data.GetGameId();
-            Data.Behaviour.Done();
+            return !string.IsNullOrEmpty(InUseBy);
+        }
+    }
+
+    public ManaPool ManaPool { get; set; } = new ManaPool();
+
+    [JsonIgnore]
+    public int Width
+    {
+        get
+        {
+            ParseHeight();
+            return _width;
+        }
+    }
+
+    public static Structure GetFromJson(string json)
+    {
+        return JsonConvert.DeserializeObject<Structure>(json, new JsonSerializerSettings
+        {
+            TypeNameHandling = TypeNameHandling.Auto,
+            NullValueHandling = NullValueHandling.Ignore,
+        });
+    }
+
+    public List<CellData> GetCellsForStructure(Coordinates origin)
+    {
+        List<CellData> cells = new List<CellData>();
+        for (int x = 0; x < Width; x++)
+        {
+            for (int y = 0; y < Height; y++)
+            {
+                cells.Add(Game.MapGrid.GetCellAtCoordinate(new Coordinates(origin.X + x, origin.Y + y)));
+            }
         }
 
-        if (Data.IsBluePrint && !Data.Faction.Tasks.OfType<Build>().Any(t => t.Structure == Data))
+        return cells;
+    }
+
+    public bool ValidateCellLocationForStructure(CellData CellData)
+    {
+        foreach (var cell in GetCellsForStructure(CellData.Coordinates))
         {
-            Data.Faction.AddTask(new Build(Data, Data.Coordinates), Data.GetGameId());
+            if (!cell.Buildable)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    internal void Free()
+    {
+        InUseBy = string.Empty;
+    }
+
+    internal void Reserve(string reservedBy)
+    {
+        InUseBy = reservedBy;
+    }
+
+    private void ParseHeight()
+    {
+        if (_width == -1 || _height == -1)
+        {
+            if (!string.IsNullOrEmpty(Size))
+            {
+                var parts = Size.Split('x');
+                _height = int.Parse(parts[0]);
+                _width = int.Parse(parts[1]);
+            }
+            else
+            {
+                _width = 1;
+                _height = 1;
+            }
         }
     }
 }

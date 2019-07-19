@@ -24,7 +24,7 @@ public class ManaDisplay : MonoBehaviour
     {
         if (!_runOnce)
         {
-            foreach (var mana in FactionController.PlayerFaction.Structure.ManaPool)
+            foreach (var mana in FactionController.PlayerFaction.Core.ManaPool)
             {
                 EnsureDisplay(mana.Value);
             }

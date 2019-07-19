@@ -244,8 +244,8 @@ public class Construct
 
                 if (cell.Pathable && cell.Structure == null)
                 {
-                    var blueprint = Game.StructureController.GetStructureBluePrint(GetStructure(character), faction);
-                    cell.AddContent(blueprint.gameObject);
+                    cell.SetStructure(Game.StructureController.GetStructureBluePrint(GetStructure(character), faction));
+                    faction.AddTask(new Build(cell.Structure), string.Empty);
                 }
 
                 x++;

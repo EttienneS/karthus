@@ -22,7 +22,7 @@ public class Acrue : TaskBase
             {
                 if (!Creature.ManaPool.ContainsKey(targetLevel.Key))
                 {
-                    AddSubTask(Channel.GetChannelFrom(targetLevel.Key, targetLevel.Value, Creature.Faction.Structure.GetGameId()));
+                    AddSubTask(Channel.GetChannelFrom(targetLevel.Key, targetLevel.Value, Creature.Faction.Core.GetGameId()));
                     return false;
                 }
                 else
@@ -30,7 +30,7 @@ public class Acrue : TaskBase
                     var currentLevel = Creature.ManaPool[targetLevel.Key].Total;
                     if (currentLevel < targetLevel.Value)
                     {
-                        AddSubTask(Channel.GetChannelFrom(targetLevel.Key, targetLevel.Value - currentLevel, Creature.Faction.Structure.GetGameId()));
+                        AddSubTask(Channel.GetChannelFrom(targetLevel.Key, targetLevel.Value - currentLevel, Creature.Faction.Core.GetGameId()));
                         return false;
                     }
                 }

@@ -11,11 +11,11 @@ public class Faction : MonoBehaviour
     internal string FactionName;
     internal List<TaskBase> Tasks = new List<TaskBase>();
 
-    internal StructureData Structure;
+    internal Structure Core;
 
     internal List<CreatureData> Creatures = new List<CreatureData>();
 
-    internal List<StructureData> Structures = new List<StructureData>();
+    internal List<Structure> Structures = new List<Structure>();
 
     public static void ProcessQueue(Queue<TaskBase> queue)
     {
@@ -32,7 +32,7 @@ public class Faction : MonoBehaviour
         }
     }
 
-    internal void AddStructure(StructureData structure)
+    internal void AddStructure(Structure structure)
     {
         Structures.Add(structure);
         structure.FactionName = FactionName;

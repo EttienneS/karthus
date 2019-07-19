@@ -14,8 +14,8 @@ public partial class Game // .Spawn
 
         var rune = StructureController.GetStructure(name, faction);
         location.CellType = CellType.Stone;
-        MapGrid.BindCell(location, rune.Data.GetGameId());
-        location.AddContent(rune.gameObject);
+        MapGrid.BindCell(location, rune.GetGameId());
+        location.SetStructure(rune);
     }
 
     public static void InitialSpawn()
@@ -35,7 +35,7 @@ public partial class Game // .Spawn
         SummonCells(midCell, FactionController.PlayerFaction);
         CreateLeyLines();
 
-        midCell.AddContent(FactionController.PlayerFaction.gameObject);
+        midCell.SetStructure(FactionController.PlayerFaction.Core);
 
         CreatureController.SpawnCreature(CreatureController.GetCreatureOfType("Person"),
                                          midCell.GetNeighbor(Direction.E).Coordinates,

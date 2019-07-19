@@ -33,7 +33,7 @@ public class DataDisplay : MonoBehaviour
         Image.sprite = sprite;
     }
 
-    internal void SetData(StructureData structure)
+    internal void SetData(Structure structure)
     {
         SetData(structure.Name, structure.Name, Game.SpriteStore.GetSpriteByName(structure.SpriteName));
     }

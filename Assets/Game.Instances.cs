@@ -20,6 +20,21 @@ public partial class Game //.Instances
     private static ManaDisplay _manaDisplay;
     private static MaterialController _materialController;
     private static LeyLineController _leyLineController;
+    private static MagicController _magicController;
+
+    public static MagicController MagicController
+    {
+        get
+        {
+            if (_magicController == null)
+            {
+                _magicController = GameObject.Find(ControllerConstants.MagicController).GetComponent<MagicController>();
+            }
+
+            return _magicController;
+        }
+    }
+
 
     public static LeyLineController LeyLineController
     {

@@ -29,7 +29,7 @@ public static class Behaviours
         }
         else
         {
-            task = new Wait(Random.value * 5f, "Lingering...");
+            task = new Wait(Random.value * 2f, "Lingering...");
         }
 
         return task;
@@ -46,7 +46,7 @@ public static class Behaviours
             {
                 if (mana.Value.Total > threshold)
                 {
-                    task = Channel.GetChannelTo(mana.Key, mana.Value.Total, creature.Faction.Structure.GetGameId());
+                    task = Channel.GetChannelTo(mana.Key, mana.Value.Total, creature.Faction.Core.GetGameId());
                     break;
                 }
             }
@@ -61,7 +61,7 @@ public static class Behaviours
 
             if (bed == null)
             {
-                bed = Game.StructureController.StructureLookup.Keys
+                bed = Game.StructureController.StructureIdLookup.Values
                                          .FirstOrDefault(s =>
                                                 !s.InUseByAnyone
                                                 && s.Properties.ContainsKey("RecoveryRate"));

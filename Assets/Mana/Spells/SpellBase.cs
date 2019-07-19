@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using UnityEngine;
 
-public class BaseRune : TaskBase
+public class SpellBase : TaskBase
 {
     public const float EffectTime = 1f;
 
@@ -14,16 +14,16 @@ public class BaseRune : TaskBase
     public static Color FiringColor = ColorConstants.InvalidColor;
 
     [JsonIgnore]
-    public StructureData _runeStructure;
+    public Structure _runeStructure;
 
     [JsonIgnore]
-    public StructureData RuneStructure
+    public Structure RuneStructure
     {
         get
         {
             if (_runeStructure == null)
             {
-                _runeStructure = EpicentreCell.Structure;                
+                _runeStructure = EpicentreCell.Structure;
             }
 
             return _runeStructure;
@@ -63,11 +63,11 @@ public class BaseRune : TaskBase
     [JsonIgnore]
     private Coordinates _epicenter;
 
-    public BaseRune()
+    public SpellBase()
     {
     }
 
-    public BaseRune(float initialPower, float powerRate)
+    public SpellBase(float initialPower, float powerRate)
     {
         PowerRate = powerRate;
         Power = initialPower;
@@ -93,24 +93,24 @@ public class BaseRune : TaskBase
             {
                 action();
                 Power--;
-                AddSubTask(new Pulse(Originator, NeutralColor, FiringColor, Random.Range(0.1f, 0.5f), Random.Range(0.1f, 0.3f)));
+                AddSubTask(new Wait(1f, ""));
             }
             else
             {
                 if (Power < 10)
                 {
-                    AddSubTask(new Pulse(Originator, NeutralColor, ChargeColor, EffectTime / PowerRate, 0.3f));
+                    AddSubTask(new Wait(EffectTime / PowerRate, ""));
                     Power += EffectTime;
                 }
                 else
                 {
-                    AddSubTask(new Pulse(Originator, NeutralColor, FullColor, 1f, 1f));
+                    AddSubTask(new Wait(1f, ""));
                 }
             }
         }
         else
         {
-            AddSubTask(new Pulse(Originator, NeutralColor, ChargeColor, EffectTime / PowerRate, 0.3f));
+            AddSubTask(new Wait(EffectTime / PowerRate, ""));
             Power += EffectTime;
         }
     }
