@@ -31,7 +31,13 @@ public class MagicController : MonoBehaviour
 
         if (WorkTick >= Game.TimeManager.MagicInterval)
         {
+            if (Work.Peek() == null)
+            {
+                return;
+            }
+
             var spells = new List<SpellBase>();
+
             for (int i = 0; i < MagicRate; i++)
             {
                 var spell = Work.Dequeue();

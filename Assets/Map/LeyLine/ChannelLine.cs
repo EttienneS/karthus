@@ -56,7 +56,7 @@ public class ChannelLine : MonoBehaviour
 
     internal void SetProperties(Vector3 source, Vector3 target, int intensity, float duration, ManaColor manaColor)
     {
-        Source = source;
+        Source = source + new Vector3(0, 0.4f);
         Target = target;
         Intensity = intensity;
         Duration = duration;

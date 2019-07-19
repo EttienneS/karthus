@@ -21,12 +21,15 @@ public class Creature : MonoBehaviour
 
     public void Awake()
     {
-        Text = transform.Find("Text").GetComponent<TextMeshPro>();
         Highlight = transform.Find("Highlight").GetComponent<SpriteRenderer>();
-        Light = GetComponentInChildren<Light>();
-        Highlight.gameObject.SetActive(false);
-        SpriteRenderer = transform.Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
+        SpriteRenderer = transform.Find("Sprite").GetComponent<SpriteRenderer>();
+        Text = GetComponentInChildren<TextMeshPro>();
+
         LineRenderer = GetComponent<LineRenderer>();
+        Light = GetComponent<Light>();
+
+        Highlight.gameObject.SetActive(false);
+
     }
 
     public void ShowText(string text, float duration)
