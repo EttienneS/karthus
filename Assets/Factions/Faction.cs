@@ -83,7 +83,7 @@ public class Faction : MonoBehaviour
     public TaskBase GetNextAvailableTask()
     {
         TaskBase task = null;
-        foreach (var availableTask in Tasks.Where(t => t.AssignedCreatureId <= 0 && !t.Failed))
+        foreach (var availableTask in Tasks.Where(t => string.IsNullOrEmpty(t.AssignedCreatureId) && !t.Failed))
         {
             //var craftTask = availableTask as Craft;
             //if (craftTask != null)
@@ -98,7 +98,7 @@ public class Faction : MonoBehaviour
             //        }
             //        else
             //        {
-            //            structure.Reserve(creature.Data.GetGameId());
+            //            structure.Reserve(creature.Data.Id);
             //        }
             //    }
             //}
@@ -118,7 +118,7 @@ public class Faction : MonoBehaviour
         }
 
         task.AssignedCreatureId = creature.Id;
-        return AddTask(task, creature.GetGameId());
+        return AddTask(task, creature.Id);
     }
 
     public IEnumerable<TaskBase> GetTaskByOriginator(string originatorId)
@@ -151,7 +151,7 @@ public class Faction : MonoBehaviour
         task.Failed = true;
 
         task.Message += $"\n{reason}";
-        task.AssignedCreatureId = -1;
+        task.AssignedCreatureId = "";
 
         // move task to bottom of the list
         Tasks.Remove(task);

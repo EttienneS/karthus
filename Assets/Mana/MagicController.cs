@@ -8,7 +8,7 @@ public class MagicController : MonoBehaviour
 
     public void AddRune(Structure source)
     {
-        source.Spell.Originator = source.GetGameId();
+        source.Spell.Originator = source.Id;
 
         Runes.Add(source);
         Work.Enqueue(source.Spell);

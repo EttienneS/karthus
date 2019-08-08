@@ -201,7 +201,7 @@ public partial class Game : MonoBehaviour
 
         foreach (var structure in SelectedStructures)
         {
-            var id = structure.GetGameId();
+            var id = structure.Id;
             if (MapGrid.CellBinding.ContainsKey(id))
             {
                 foreach (var boundCell in MapGrid.CellBinding[id])

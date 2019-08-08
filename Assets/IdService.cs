@@ -1,12 +1,38 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public static class IdService
 {
-    public const string CreaturePrefix = "C-";
-    public const string ItemPrefix = "I-";
-    public const string StockpilePrefix = "P-";
-    public const string StructurePrefix = "S-";
+    public static Dictionary<IEntity, CreatureData> CreatureLookup = new Dictionary<IEntity, CreatureData>();
+    public static Dictionary<IEntity, Structure> StructureLookup = new Dictionary<IEntity, Structure>();
+
+    public static Dictionary<string, CreatureData> CreatureIdLookup = new Dictionary<string, CreatureData>();
+    public static Dictionary<string, Structure> StructureIdLookup = new Dictionary<string, Structure>();
+
+    public static void EnrollEntity(IEntity entity)
+    {
+        if (string.IsNullOrEmpty(entity.Id))
+        {
+            entity.Id = _idCounter.ToString();
+            _idCounter++;
+        }
+
+        if (entity is Structure structure)
+        {
+            StructureLookup.Add(entity, structure);
+            StructureIdLookup.Add(entity.Id, structure);
+        }
+        else if (entity is CreatureData creature)
+        {
+            CreatureLookup.Add(entity, creature);
+            CreatureIdLookup.Add(entity.Id, creature);
+        }
+        else
+        {
+            throw new NotImplementedException("Unknown entity type!");
+        }
+    }
 
     private static int _idCounter = 0;
 
@@ -17,7 +43,7 @@ public static class IdService
 
     public static CreatureData GetCreatureFromId(string id)
     {
-        return Game.CreatureController.CreatureIdLookup[GetId(id)];
+        return IdService.CreatureIdLookup[id];
     }
 
     internal static Faction GetFactionForId(string id)
@@ -32,21 +58,6 @@ public static class IdService
         }
 
         return null;
-    }
-
-    public static string GetGameId(this CreatureData creature)
-    {
-        return $"{CreaturePrefix}{creature.Id}";
-    }
-
-    public static string GetGameId(this Structure structure)
-    {
-        return $"{StructurePrefix}{structure.Id}";
-    }
-
-    public static int GetId(string id)
-    {
-        return int.Parse(id.Split('-')[1]);
     }
 
     public static Coordinates GetLocation(string id)
@@ -65,34 +76,17 @@ public static class IdService
 
     public static Structure GetStructureFromId(string id)
     {
-        return Game.StructureController.StructureIdLookup[GetId(id)];
+        return StructureIdLookup[id];
     }
 
     public static bool IsCreature(string id)
     {
-        return id.StartsWith(CreaturePrefix);
-    }
-
-    public static bool IsItem(string id)
-    {
-        return id.StartsWith(ItemPrefix);
-    }
-
-    public static bool IsStockpile(string id)
-    {
-        return id.StartsWith(StockpilePrefix);
+        return CreatureIdLookup.ContainsKey(id);
     }
 
     public static bool IsStructure(string id)
     {
-        return id.StartsWith(StructurePrefix);
-    }
-
-    public static int UniqueId()
-    {
-        var id = _idCounter;
-        _idCounter++;
-        return id;
+        return StructureIdLookup.ContainsKey(id);
     }
 
     internal static IMagicAttuned GetMagicAttuned(string gameObjectId)
@@ -111,6 +105,14 @@ public static class IdService
         }
     }
 
+    internal static void Clear()
+    {
+        StructureLookup.Clear();
+        StructureIdLookup.Clear();
+        CreatureLookup.Clear();
+        CreatureIdLookup.Clear();
+    }
+
     internal static ObjectType GetObjectTypeForId(string gameObjectId)
     {
         if (IsStructure(gameObjectId))
@@ -123,5 +125,20 @@ public static class IdService
         }
 
         throw new NotImplementedException();
+    }
+
+    internal static void RemoveEntity(IEntity entity)
+    {
+        if (StructureLookup.ContainsKey(entity))
+        {
+            StructureLookup.Remove(entity);
+            StructureIdLookup.Remove(entity.Id);
+        }
+
+        if (CreatureLookup.ContainsKey(entity))
+        {
+            CreatureLookup.Remove(entity);
+            CreatureIdLookup.Remove(entity.Id);
+        }
     }
 }

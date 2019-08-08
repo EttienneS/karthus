@@ -70,7 +70,7 @@ public class SaveManager : MonoBehaviour
 
         //    if (task.AssignedCreatureId > 0)
         //    {
-        //        Taskmaster.AssignTask(Game.CreatureController.CreatureIdLookup[task.AssignedCreatureId], task, task.Context);
+        //        Taskmaster.AssignTask(IdService.CreatureIdLookup[task.AssignedCreatureId], task, task.Context);
         //    }
         //}
 
@@ -94,8 +94,7 @@ public class SaveManager : MonoBehaviour
 
         Game.CreatureController.Creatures.Clear();
         Game.CreatureController.CreatureLookup.Clear();
-        Game.CreatureController.CreatureIdLookup.Clear();
-
+        IdService.Clear();
         //Factions.Taskmasters[Data.Faction].Tasks.Clear();
     }
 }

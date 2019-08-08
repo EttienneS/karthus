@@ -8,16 +8,18 @@ public enum Mobility
     Walk, Fly
 }
 
-public class CreatureData : IMagicAttuned
+public class CreatureData : IEntity, IMagicAttuned
 {
     public const string SelfKey = "Self";
     public string BehaviourName;
-    public Coordinates Coordinates;
+
+    public Coordinates Coordinates { get; set; }
+
+    public string Id { get; set; }
 
     [JsonIgnore]
     public Behaviours.GetBehaviourTaskDelegate GetBehaviourTask;
 
-    public int Id;
     public Dictionary<string, Memory> Mind = new Dictionary<string, Memory>();
     public Mobility Mobility;
     public Direction MoveDirection = Direction.S;
@@ -133,7 +135,7 @@ public class CreatureData : IMagicAttuned
             foreach (var structureId in Mind[context][MemoryType.Structure])
             {
                 var structure = IdService.GetStructureFromId(structureId);
-                if (structure.InUseBy == this.GetGameId())
+                if (structure.InUseBy == Id)
                 {
                     structure.Free();
                 }
@@ -204,7 +206,7 @@ public class CreatureData : IMagicAttuned
         if (Task == null)
         {
             var task = Faction.GetTask(this);
-            var context = $"{this.GetGameId()} - {task} - {Game.TimeManager.Now}";
+            var context = $"{Id} - {task} - {Game.TimeManager.Now}";
 
             Know(context);
             task.Context = context;

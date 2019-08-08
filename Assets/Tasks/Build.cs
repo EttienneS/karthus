@@ -13,7 +13,7 @@
         AddSubTask(new Acrue(structure.ManaValue));
         foreach (var mana in structure.ManaValue)
         {
-            AddSubTask(Channel.GetChannelTo(mana.Key, mana.Value, structure.GetGameId()));
+            AddSubTask(Channel.GetChannelTo(mana.Key, mana.Value, structure.Id));
         }
 
         Message = $"Building {structure.Name} at {structure.Coordinates}";
@@ -31,7 +31,7 @@
             Structure.SetBluePrintState(false);
             
             Creature.Faction.AddStructure(Structure);
-            Creature.UpdateMemory(Context, MemoryType.Structure, Structure.GetGameId());
+            Creature.UpdateMemory(Context, MemoryType.Structure, Structure.Id);
             return true;
         }
         return false;

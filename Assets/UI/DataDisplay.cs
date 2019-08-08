@@ -45,7 +45,7 @@ public class DataDisplay : MonoBehaviour
 
     internal void SetData(TaskBase task)
     {
-        SetData(task.GetType().Name, task.Message, task.AssignedCreatureId > 0 ?
+        SetData(task.GetType().Name, task.Message, !string.IsNullOrEmpty(task.AssignedCreatureId) ?
                                                    task.Creature.CreatureRenderer.GetIcon() :
                                                    Game.SpriteStore.GetPlaceholder());
 

@@ -31,7 +31,7 @@ public class Sleep : TaskBase
     {
         if (_bed != null)
         {
-            _bed.Reserve(Creature.GetGameId());
+            _bed.Reserve(Creature.Id);
         }
 
         if (Faction.QueueComplete(SubTasks))

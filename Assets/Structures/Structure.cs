@@ -3,44 +3,25 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Structure : IMagicAttuned
+public class Structure : IEntity, IMagicAttuned
 {
-    public SpellBase Spell;
-
     public bool Buildable;
-
-    public Coordinates Coordinates;
-
     public string FactionName;
-    public int Id;
-
     public string InUseBy;
-
-    public bool IsBluePrint { get; private set; }
-
-    public void SetBluePrintState(bool state)
-    {
-        IsBluePrint = state;
-        Game.StructureController.RefreshStructure(this);
-    }
-
     public string Layer;
-
     public Dictionary<ManaColor, int> ManaValue;
     public string Material;
     public string Name;
-
     public Dictionary<string, string> Properties = new Dictionary<string, string>();
-
     public string ShiftX;
     public string ShiftY;
     public string Size;
+    public SpellBase Spell;
     public string SpriteName;
     public string StructureType;
     public List<TaskBase> Tasks = new List<TaskBase>();
     public bool Tiled;
     public float TravelCost;
-
     [JsonIgnore]
     private int _width, _height = -1;
 
@@ -54,6 +35,7 @@ public class Structure : IMagicAttuned
         SpriteName = sprite;
     }
 
+    public Coordinates Coordinates { get; set; }
     [JsonIgnore]
     public Faction Faction
     {
@@ -73,11 +55,7 @@ public class Structure : IMagicAttuned
         }
     }
 
-    internal void SetStatusSprite(Sprite sprite)
-    {
-        //throw new NotImplementedException();
-    }
-
+    public string Id { get; set; }
     [JsonIgnore]
     public bool InUseByAnyone
     {
@@ -86,6 +64,8 @@ public class Structure : IMagicAttuned
             return !string.IsNullOrEmpty(InUseBy);
         }
     }
+
+    public bool IsBluePrint { get; private set; }
 
     public ManaPool ManaPool { get; set; } = new ManaPool();
 
@@ -122,6 +102,11 @@ public class Structure : IMagicAttuned
         return cells;
     }
 
+    public void SetBluePrintState(bool state)
+    {
+        IsBluePrint = state;
+        Game.StructureController.RefreshStructure(this);
+    }
     public bool ValidateCellLocationForStructure(CellData CellData)
     {
         foreach (var cell in GetCellsForStructure(CellData.Coordinates))
@@ -144,6 +129,10 @@ public class Structure : IMagicAttuned
         InUseBy = reservedBy;
     }
 
+    internal void SetStatusSprite(Sprite sprite)
+    {
+        //throw new NotImplementedException();
+    }
     private void ParseHeight()
     {
         if (_width == -1 || _height == -1)

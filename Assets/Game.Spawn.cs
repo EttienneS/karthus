@@ -14,7 +14,7 @@ public partial class Game // .Spawn
 
         var rune = StructureController.GetStructure(name, faction);
         location.CellType = CellType.Stone;
-        MapGrid.BindCell(location, rune.GetGameId());
+        MapGrid.BindCell(location, rune.Id);
         location.SetStructure(rune);
     }
 

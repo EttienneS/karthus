@@ -46,7 +46,7 @@ public static class Behaviours
             {
                 if (mana.Value.Total > threshold)
                 {
-                    task = Channel.GetChannelTo(mana.Key, mana.Value.Total, creature.Faction.Core.GetGameId());
+                    task = Channel.GetChannelTo(mana.Key, mana.Value.Total, creature.Faction.Core.Id);
                     break;
                 }
             }
@@ -61,7 +61,7 @@ public static class Behaviours
 
             if (bed == null)
             {
-                bed = Game.StructureController.StructureIdLookup.Values
+                bed = IdService.StructureIdLookup.Values
                                          .FirstOrDefault(s =>
                                                 !s.InUseByAnyone
                                                 && s.Properties.ContainsKey("RecoveryRate"));

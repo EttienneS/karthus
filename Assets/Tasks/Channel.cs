@@ -41,11 +41,11 @@
     {
         if (Source == null)
         {
-            Source = Creature.GetGameId();
+            Source = Creature.Id;
         }
         else if (Target == null)
         {
-            Target = Creature.GetGameId();
+            Target = Creature.Id;
         }
 
         if (Faction.QueueComplete(SubTasks))

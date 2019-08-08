@@ -8,7 +8,6 @@ public class CreatureController : MonoBehaviour
     public CreatureRenderer CreaturePrefab;
 
     internal Dictionary<string, CreatureData> Beastiary = new Dictionary<string, CreatureData>();
-    internal Dictionary<int, CreatureData> CreatureIdLookup = new Dictionary<int, CreatureData>();
     internal Dictionary<CreatureData, CreatureRenderer> CreatureLookup = new Dictionary<CreatureData, CreatureRenderer>();
     internal List<CreatureRenderer> Creatures = new List<CreatureRenderer>();
 
@@ -67,7 +66,6 @@ public class CreatureController : MonoBehaviour
         creature.Data = creatureData;
         creature.Data.Coordinates = coordinates;
         creature.transform.position = coordinates.ToMapVector();
-        creature.Data.Id = IdService.UniqueId();
         creature.Data.WorkTick = Random.Range(0, Game.TimeManager.WorkInterval);
         creature.Data.GetBehaviourTask = Behaviours.GetBehaviourFor(creature.Data.BehaviourName);
 
@@ -85,7 +83,7 @@ public class CreatureController : MonoBehaviour
 
         Creatures.Add(creature);
         CreatureLookup.Add(creature.Data, creature);
-        CreatureIdLookup.Add(creature.Data.Id, creature.Data);
+        IdService.EnrollEntity(creature.Data);
 
         creature.name = $"{creature.Data.Name} ({creature.Data.Id})";
     }

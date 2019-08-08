@@ -4,7 +4,6 @@ using UnityEngine.Tilemaps;
 
 public class StructureController : MonoBehaviour
 {
-    public Dictionary<int, Structure> StructureIdLookup = new Dictionary<int, Structure>();
     internal Dictionary<string, Structure> StructureDataReference = new Dictionary<string, Structure>();
     private Tilemap _tilemap;
 
@@ -79,8 +78,6 @@ public class StructureController : MonoBehaviour
         string structureData = StructureTypeFileMap[name];
 
         Structure structure = Structure.GetFromJson(structureData);
-        structure.Id = IdService.UniqueId();
-
         IndexStructure(structure);
 
         structure.SetBluePrintState(false);
@@ -99,15 +96,15 @@ public class StructureController : MonoBehaviour
         if (structure != null)
         {
             Game.MapGrid.GetCellAtCoordinate(structure.Coordinates).Structure = null;
-            Game.MapGrid.Unbind(structure.GetGameId());
+            Game.MapGrid.Unbind(structure.Id);
             ClearStructure(structure.Coordinates);
 
             if (structure.Spell != null)
             {
                 Game.MagicController.FreeRune(structure);
             }
+            IdService.RemoveEntity(structure);
 
-            StructureIdLookup.Remove(structure.Id);
         }
     }
 
@@ -120,7 +117,7 @@ public class StructureController : MonoBehaviour
 
     private void IndexStructure(Structure structure)
     {
-        StructureIdLookup.Add(structure.Id, structure);
+        IdService.EnrollEntity(structure);
         if (structure.Spell != null)
         {
             Game.MagicController.AddRune(structure);
