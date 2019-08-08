@@ -46,7 +46,7 @@ public static class Behaviours
             {
                 if (mana.Value.Total > threshold)
                 {
-                    task = Channel.GetChannelTo(mana.Key, mana.Value.Total, creature.Faction.Core.Id);
+                    task = Channel.GetChannelTo(mana.Key, mana.Value.Total, creature.Faction.Core);
                     break;
                 }
             }

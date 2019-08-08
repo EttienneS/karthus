@@ -8,7 +8,7 @@ public enum Mobility
     Walk, Fly
 }
 
-public class CreatureData : IEntity, IMagicAttuned
+public class CreatureData : IEntity
 {
     public const string SelfKey = "Self";
     public string BehaviourName;

@@ -13,7 +13,7 @@
         AddSubTask(new Acrue(structure.ManaValue));
         foreach (var mana in structure.ManaValue)
         {
-            AddSubTask(Channel.GetChannelTo(mana.Key, mana.Value, structure.Id));
+            AddSubTask(Channel.GetChannelTo(mana.Key, mana.Value, structure));
         }
 
         Message = $"Building {structure.Name} at {structure.Coordinates}";

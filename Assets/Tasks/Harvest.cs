@@ -15,7 +15,7 @@
 
         foreach (var mana in Target.ManaValue)
         {
-            AddSubTask(Channel.GetChannelFrom(mana.Key, mana.Value, Target.Id));
+            AddSubTask(Channel.GetChannelFrom(mana.Key, mana.Value, Target));
         }
 
         Message = $"Harvesting {structure.Name} at {structure.Coordinates}";

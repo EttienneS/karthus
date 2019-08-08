@@ -6,10 +6,10 @@
 
     public ManaColor ManaColor;
     public int AmountToChannel;
-    public string Source;
-    public string Target;
+    public IEntity Source;
+    public IEntity Target;
 
-    public static Channel GetChannelTo(ManaColor color, int amount, string target)
+    public static Channel GetChannelTo(ManaColor color, int amount, IEntity target)
     {
         var task = new Channel
         {
@@ -18,12 +18,12 @@
             Target = target
         };
 
-        task.AddSubTask(new Move(Game.MapGrid.GetPathableNeighbour(IdService.GetLocation(target))));
+        task.AddSubTask(new Move(Game.MapGrid.GetPathableNeighbour(target.Coordinates)));
 
         return task;
     }
 
-    public static Channel GetChannelFrom(ManaColor color, int amount, string source)
+    public static Channel GetChannelFrom(ManaColor color, int amount, IEntity source)
     {
         var task = new Channel
         {
@@ -32,7 +32,7 @@
             Source = source
         };
 
-        task.AddSubTask(new Move(Game.MapGrid.GetPathableNeighbour(IdService.GetLocation(source))));
+        task.AddSubTask(new Move(Game.MapGrid.GetPathableNeighbour(source.Coordinates)));
 
         return task;
     }
@@ -41,11 +41,11 @@
     {
         if (Source == null)
         {
-            Source = Creature.Id;
+            Source = Creature;
         }
         else if (Target == null)
         {
-            Target = Creature.Id;
+            Target = Creature;
         }
 
         if (Faction.QueueComplete(SubTasks))
@@ -56,11 +56,11 @@
             }
             else
             {
-                IdService.GetMagicAttuned(Source)?.ManaPool.BurnMana(ManaColor, 1);
-                IdService.GetMagicAttuned(Target)?.ManaPool.GainMana(ManaColor, 1);
+                Source.ManaPool.BurnMana(ManaColor, 1);
+                Target.ManaPool.GainMana(ManaColor, 1);
 
-                Game.LeyLineController.MakeChannellingLine(IdService.GetLocation(Source).ToTopOfMapVector(),
-                    IdService.GetLocation(Target).ToTopOfMapVector(), 5, GameConstants.ChannelDuration, ManaColor);
+                Game.LeyLineController.MakeChannellingLine(Source.Coordinates.ToTopOfMapVector(),
+                    Target.Coordinates.ToTopOfMapVector(), 5, GameConstants.ChannelDuration, ManaColor);
                 Creature.CreatureRenderer.DisplayChannel(ManaColor, GameConstants.ChannelDuration);
                 AmountToChannel--;
                 AddSubTask(new Wait(2f, $"{ManaColor}!!", true));

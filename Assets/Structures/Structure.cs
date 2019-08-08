@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Structure : IEntity, IMagicAttuned
+public class Structure : IEntity
 {
     public bool Buildable;
     public string FactionName;

@@ -89,22 +89,6 @@ public static class IdService
         return StructureIdLookup.ContainsKey(id);
     }
 
-    internal static IMagicAttuned GetMagicAttuned(string gameObjectId)
-    {
-        switch (GetObjectTypeForId(gameObjectId))
-        {
-            case ObjectType.Creature:
-                return GetCreatureFromId(gameObjectId);
-
-            case ObjectType.Structure:
-                return GetStructureFromId(gameObjectId);
-
-            default:
-                Debug.Log($"{gameObjectId} is not magic attuned");
-                return null;
-        }
-    }
-
     internal static void Clear()
     {
         StructureLookup.Clear();
