@@ -5,14 +5,14 @@ using Random = UnityEngine.Random;
 
 public class CreatureController : MonoBehaviour
 {
-    public Creature CreaturePrefab;
+    public CreatureRenderer CreaturePrefab;
 
     internal Dictionary<string, CreatureData> Beastiary = new Dictionary<string, CreatureData>();
     internal Dictionary<int, CreatureData> CreatureIdLookup = new Dictionary<int, CreatureData>();
-    internal Dictionary<CreatureData, Creature> CreatureLookup = new Dictionary<CreatureData, Creature>();
-    internal List<Creature> Creatures = new List<Creature>();
+    internal Dictionary<CreatureData, CreatureRenderer> CreatureLookup = new Dictionary<CreatureData, CreatureRenderer>();
+    internal List<CreatureRenderer> Creatures = new List<CreatureRenderer>();
 
-    public Creature GetCreatureAtPoint(Vector2 point)
+    public CreatureRenderer GetCreatureAtPoint(Vector2 point)
     {
         foreach (var creature in Creatures)
         {
@@ -36,7 +36,7 @@ public class CreatureController : MonoBehaviour
         }
     }
 
-    internal void DestroyCreature(Creature creature)
+    internal void DestroyCreature(CreatureRenderer creature)
     {
         if (creature != null)
         {
@@ -56,12 +56,12 @@ public class CreatureController : MonoBehaviour
         return Beastiary[v].CloneJson();
     }
 
-    internal Creature GetCreatureForCreatureData(CreatureData creatureData)
+    internal CreatureRenderer GetCreatureForCreatureData(CreatureData creatureData)
     {
         return CreatureLookup[creatureData];
     }
 
-    internal Creature SpawnCreature(CreatureData creatureData, Coordinates coordinates, Faction faction)
+    internal CreatureRenderer SpawnCreature(CreatureData creatureData, Coordinates coordinates, Faction faction)
     {
         var creature = Instantiate(CreaturePrefab, transform, true);
         creature.Data = creatureData;
@@ -80,7 +80,7 @@ public class CreatureController : MonoBehaviour
     }
 
 
-    private void IndexCreature(Creature creature)
+    private void IndexCreature(CreatureRenderer creature)
     {
 
         Creatures.Add(creature);

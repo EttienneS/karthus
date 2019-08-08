@@ -47,7 +47,7 @@ public class Sleep : TaskBase
 
             if (RecoveryRate < 1f)
             {
-                Creature.LinkedGameObject.ShowText("*stretch* Ow my back!", 1f);
+                Creature.CreatureRenderer.ShowText("*stretch* Ow my back!", 1f);
             }
 
             return true;

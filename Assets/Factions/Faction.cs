@@ -80,7 +80,7 @@ public class Faction : MonoBehaviour
         data.FactionName = FactionName;
     }
 
-    public TaskBase GetNextAvailableTask(Creature creature)
+    public TaskBase GetNextAvailableTask()
     {
         TaskBase task = null;
         foreach (var availableTask in Tasks.Where(t => t.AssignedCreatureId <= 0 && !t.Failed))
@@ -109,16 +109,16 @@ public class Faction : MonoBehaviour
         return task;
     }
 
-    public TaskBase GetTask(Creature creature)
+    public TaskBase GetTask(CreatureData creature)
     {
-        var task = creature.Data.GetBehaviourTask?.Invoke(creature.Data);
+        var task = creature.GetBehaviourTask?.Invoke(creature);
         if (task == null)
         {
-            task = GetNextAvailableTask(creature) ?? new Idle(creature.Data);
+            task = GetNextAvailableTask() ?? new Idle(creature);
         }
 
-        task.AssignedCreatureId = creature.Data.Id;
-        return AddTask(task, creature.Data.GetGameId());
+        task.AssignedCreatureId = creature.Id;
+        return AddTask(task, creature.GetGameId());
     }
 
     public IEnumerable<TaskBase> GetTaskByOriginator(string originatorId)

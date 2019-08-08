@@ -4,7 +4,7 @@
     "Energy": "100",
     "Hunger": "0"
   },
-  "Speed": 10.0,
+  "Speed": 25.0,
   "Sprite": "robe",
   "Perception": 5,
   "BehaviourName": "Person",

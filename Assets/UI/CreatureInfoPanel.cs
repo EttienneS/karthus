@@ -23,7 +23,7 @@ public class CreatureInfoPanel : MonoBehaviour
         }
     }
 
-    public Creature CurrentCreature;
+    public CreatureRenderer CurrentCreature;
 
     public void Update()
     {
@@ -62,7 +62,7 @@ public class CreatureInfoPanel : MonoBehaviour
         }
     }
 
-    public void Show(Creature creature)
+    public void Show(CreatureRenderer creature)
     {
         Game.CellInfoPanel.Hide();
         gameObject.SetActive(true);

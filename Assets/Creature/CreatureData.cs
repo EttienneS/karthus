@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 public enum Mobility
@@ -27,6 +28,10 @@ public class CreatureData : IMagicAttuned
     public Dictionary<string, float> ValueProperties = new Dictionary<string, float>();
 
     internal float InternalTick;
+
+    [JsonIgnore]
+    internal Coordinates LastPercievedCoordinate;
+
     internal float WorkTick;
 
     [JsonIgnore]
@@ -66,7 +71,7 @@ public class CreatureData : IMagicAttuned
     public string FactionName { get; set; }
 
     [JsonIgnore]
-    public Creature LinkedGameObject
+    public CreatureRenderer CreatureRenderer
     {
         get
         {
@@ -77,8 +82,6 @@ public class CreatureData : IMagicAttuned
     public ManaPool ManaPool { get; set; } = new ManaPool();
 
     public int Perception { get; set; }
-    [JsonIgnore]
-    internal Coordinates LastPercievedCoordinate;
 
     [JsonIgnore]
     public Memory Self
@@ -159,6 +162,32 @@ public class CreatureData : IMagicAttuned
         }
     }
 
+    internal bool Update(float timeDelta)
+    {
+        if (Game.TimeManager.Paused)
+            return false;
+
+        InternalTick += timeDelta;
+        WorkTick += timeDelta;
+
+        if (WorkTick >= Game.TimeManager.WorkInterval)
+        {
+            WorkTick = 0;
+            ProcessTask();
+        }
+
+        if (InternalTick >= Game.TimeManager.TickInterval)
+        {
+            InternalTick = 0;
+            Perceive();
+            Live();
+
+            return true;
+        }
+
+        return false;
+    }
+
     internal void UpdateMemory(string context, MemoryType memoryType, string info)
     {
         // Debug.Log($"Remember: {context}, {memoryType}: '{info}'");
@@ -168,5 +197,42 @@ public class CreatureData : IMagicAttuned
     internal void UpdateSelfMemory(MemoryType memoryType, string info)
     {
         UpdateMemory(SelfKey, memoryType, info);
+    }
+
+    private void ProcessTask()
+    {
+        if (Task == null)
+        {
+            var task = Faction.GetTask(this);
+            var context = $"{this.GetGameId()} - {task} - {Game.TimeManager.Now}";
+
+            Know(context);
+            task.Context = context;
+
+            Faction.AssignTask(this, task);
+            Task = task;
+        }
+        else
+        {
+            try
+            {
+                Faction.AssignTask(this, Task);
+
+                if (Task.Done())
+                {
+                    Task.ShowDoneEmote();
+                    FreeResources(Task.Context);
+                    Forget(Task.Context);
+
+                    Faction.TaskComplete(Task);
+                    Task = null;
+                }
+            }
+            catch (TaskFailedException ex)
+            {
+                Debug.LogWarning($"Task failed: {ex}");
+                Faction.TaskFailed(Task, ex.Message);
+            }
+        }
     }
 }

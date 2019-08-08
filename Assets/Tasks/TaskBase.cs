@@ -48,7 +48,7 @@ public class TaskBase
     {
         if (!string.IsNullOrEmpty(BusyEmote))
         {
-            Creature.LinkedGameObject.ShowText(BusyEmote, 1f);
+            Creature.CreatureRenderer.ShowText(BusyEmote, 1f);
         }
     }
 
@@ -56,7 +56,7 @@ public class TaskBase
     {
         if (!string.IsNullOrEmpty(DoneEmote))
         {
-            Creature.LinkedGameObject.ShowText(DoneEmote, 0.8f);
+            Creature.CreatureRenderer.ShowText(DoneEmote, 0.8f);
         }
     }
 }

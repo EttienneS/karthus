@@ -79,12 +79,12 @@ public class Move : TaskBase
             }
         }
 
-        if (_nextCell != null && Creature.LinkedGameObject.transform.position != _targetPos)
+        if (_nextCell != null && Creature.CreatureRenderer.transform.position != _targetPos)
         {
             // move between two cells
             var distCovered = (Time.time - _startTime) * Mathf.Min(Creature.Speed, MaxSpeed);
             var fracJourney = distCovered / _journeyLength;
-            Creature.LinkedGameObject.transform.position = Vector3.Lerp(Creature.CurrentCell.Coordinates.ToMapVector(),
+            Creature.CreatureRenderer.transform.position = Vector3.Lerp(Creature.CurrentCell.Coordinates.ToMapVector(),
                                       _targetPos,
                                       fracJourney);
         }

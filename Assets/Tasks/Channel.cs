@@ -61,7 +61,7 @@
 
                 Game.LeyLineController.MakeChannellingLine(IdService.GetLocation(Source).ToTopOfMapVector(),
                     IdService.GetLocation(Target).ToTopOfMapVector(), 5, GameConstants.ChannelDuration, ManaColor);
-                Creature.LinkedGameObject.DoChannel(ManaColor, GameConstants.ChannelDuration);
+                Creature.CreatureRenderer.DisplayChannel(ManaColor, GameConstants.ChannelDuration);
                 AmountToChannel--;
                 AddSubTask(new Wait(2f, $"{ManaColor}!!", true));
             }

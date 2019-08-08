@@ -16,7 +16,7 @@ public partial class Game : MonoBehaviour
 
     internal LineRenderer LineRenderer;
     internal List<CellData> SelectedCells = new List<CellData>();
-    internal List<Creature> SelectedCreatures = new List<Creature>();
+    internal List<CreatureRenderer> SelectedCreatures = new List<CreatureRenderer>();
     internal List<Structure> SelectedStructures = new List<Structure>();
 
     private TimeStep _oldTimeStep = TimeStep.Normal;

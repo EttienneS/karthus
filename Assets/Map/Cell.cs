@@ -98,7 +98,7 @@ public class CellData
 
     public void AddCreature(CreatureData creature)
     {
-        creature.LinkedGameObject.gameObject.transform.position = Coordinates.ToMapVector();
+        creature.CreatureRenderer.gameObject.transform.position = Coordinates.ToMapVector();
     }
 
     public CellData GetNeighbor(Direction direction)
