@@ -46,20 +46,6 @@ public static class IdService
         return IdService.CreatureIdLookup[id];
     }
 
-    internal static Faction GetFactionForId(string id)
-    {
-        if (IsCreature(id))
-        {
-            return GetCreatureFromId(id).Faction;
-        }
-        if (IsStructure(id))
-        {
-            return GetStructureFromId(id).Faction;
-        }
-
-        return null;
-    }
-
     public static Coordinates GetLocation(string id)
     {
         if (IsCreature(id))
@@ -124,5 +110,19 @@ public static class IdService
             CreatureLookup.Remove(entity);
             CreatureIdLookup.Remove(entity.Id);
         }
+    }
+
+    internal static IEntity GetEntityFromId(string id)
+    {
+        if (IsCreature(id))
+        {
+            return GetCreatureFromId(id);
+        }
+        if (IsStructure(id))
+        {
+            return GetStructureFromId(id);
+        }
+
+        throw new NotImplementedException("Unknown entity type!");
     }
 }

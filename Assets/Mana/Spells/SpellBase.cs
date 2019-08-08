@@ -41,7 +41,7 @@ public class SpellBase : TaskBase
         {
             if (_epicenter == null)
             {
-                _epicenter = IdService.GetLocation(Originator);
+                _epicenter = Originator.Coordinates;
             }
             return _epicenter;
         }

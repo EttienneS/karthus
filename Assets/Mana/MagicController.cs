@@ -8,7 +8,7 @@ public class MagicController : MonoBehaviour
 
     public void AddRune(Structure source)
     {
-        source.Spell.Originator = source.Id;
+        source.Spell.Originator = source;
 
         Runes.Add(source);
         Work.Enqueue(source.Spell);
@@ -47,7 +47,7 @@ public class MagicController : MonoBehaviour
 
             foreach (var spell in spells)
             {
-                if (IdService.GetStructureFromId(spell.Originator) != null)
+                if (IdService.GetStructureFromId(spell.Originator.Id) != null)
                 {
                     Work.Enqueue(spell);
                 }

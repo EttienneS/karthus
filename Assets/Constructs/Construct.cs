@@ -245,7 +245,7 @@ public class Construct
                 if (cell.Pathable && cell.Structure == null)
                 {
                     cell.SetStructure(Game.StructureController.GetStructureBluePrint(GetStructure(character), faction));
-                    faction.AddTask(new Build(cell.Structure), string.Empty);
+                    faction.AddTask(new Build(cell.Structure), null);
                 }
 
                 x++;

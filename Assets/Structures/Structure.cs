@@ -1,12 +1,11 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Structure : IEntity
 {
     public bool Buildable;
-    public string FactionName;
+    public string FactionName { get; set; }
     public string InUseBy;
     public string Layer;
     public Dictionary<ManaColor, int> ManaValue;
@@ -22,6 +21,7 @@ public class Structure : IEntity
     public List<TaskBase> Tasks = new List<TaskBase>();
     public bool Tiled;
     public float TravelCost;
+
     [JsonIgnore]
     private int _width, _height = -1;
 
@@ -36,14 +36,6 @@ public class Structure : IEntity
     }
 
     public Coordinates Coordinates { get; set; }
-    [JsonIgnore]
-    public Faction Faction
-    {
-        get
-        {
-            return FactionController.Factions[FactionName];
-        }
-    }
 
     [JsonIgnore]
     public int Height
@@ -56,6 +48,7 @@ public class Structure : IEntity
     }
 
     public string Id { get; set; }
+
     [JsonIgnore]
     public bool InUseByAnyone
     {
@@ -78,6 +71,9 @@ public class Structure : IEntity
             return _width;
         }
     }
+
+    [JsonIgnore]
+    public TaskBase Task { get; set; }
 
     public static Structure GetFromJson(string json)
     {
@@ -107,6 +103,7 @@ public class Structure : IEntity
         IsBluePrint = state;
         Game.StructureController.RefreshStructure(this);
     }
+
     public bool ValidateCellLocationForStructure(CellData CellData)
     {
         foreach (var cell in GetCellsForStructure(CellData.Coordinates))
@@ -133,6 +130,7 @@ public class Structure : IEntity
     {
         //throw new NotImplementedException();
     }
+
     private void ParseHeight()
     {
         if (_width == -1 || _height == -1)

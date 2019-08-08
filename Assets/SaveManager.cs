@@ -61,7 +61,7 @@ public class SaveManager : MonoBehaviour
 
         foreach (var SavedCreature in save.Creatures)
         {
-            Game.CreatureController.SpawnCreature(SavedCreature, SavedCreature.Coordinates, SavedCreature.Faction);
+            Game.CreatureController.SpawnCreature(SavedCreature, SavedCreature.Coordinates, SavedCreature.GetFaction());
         }
 
         //foreach (var task in save.Tasks)

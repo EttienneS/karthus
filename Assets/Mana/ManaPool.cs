@@ -22,6 +22,16 @@ public class ManaPool : Dictionary<ManaColor, Mana>
         }
     }
 
+    internal bool HasMana(ManaColor color, int amount)
+    {
+        if (!ContainsKey(color))
+        {
+            return false;
+        }
+
+        return this[color].Total >= amount;
+    }
+
     public void GainMana(ManaColor color, int amount)
     {
         if (!ContainsKey(color))

@@ -48,18 +48,18 @@ public class Faction : MonoBehaviour
         return false;
     }
 
-    public TaskBase AddTask(TaskBase task, string originatorId)
+    public TaskBase AddTask(TaskBase task, IEntity originatorId)
     {
         task.Originator = originatorId;
         Tasks.Add(task);
         return task;
     }
 
-    public void AssignTask(CreatureData creature, TaskBase task, string originator = "")
+    public void AssignTask(CreatureData creature, TaskBase task, IEntity originator = null)
     {
-        task.AssignedCreatureId = creature.Id;
+        task.AssignedCreature = creature;
 
-        if (!string.IsNullOrEmpty(originator))
+        if (originator != null)
         {
             task.Originator = originator;
         }
@@ -83,7 +83,7 @@ public class Faction : MonoBehaviour
     public TaskBase GetNextAvailableTask()
     {
         TaskBase task = null;
-        foreach (var availableTask in Tasks.Where(t => string.IsNullOrEmpty(t.AssignedCreatureId) && !t.Failed))
+        foreach (var availableTask in Tasks.Where(t => t.AssignedCreature == null && !t.Failed))
         {
             //var craftTask = availableTask as Craft;
             //if (craftTask != null)
@@ -117,13 +117,13 @@ public class Faction : MonoBehaviour
             task = GetNextAvailableTask() ?? new Idle(creature);
         }
 
-        task.AssignedCreatureId = creature.Id;
-        return AddTask(task, creature.Id);
+        task.AssignedCreature = creature;
+        return AddTask(task, creature);
     }
 
-    public IEnumerable<TaskBase> GetTaskByOriginator(string originatorId)
+    public IEnumerable<TaskBase> GetTaskByOriginator(IEntity originator)
     {
-        return Tasks.Where(t => t.Originator == originatorId);
+        return Tasks.Where(t => t.Originator == originator);
     }
 
     public void Update()
@@ -151,7 +151,7 @@ public class Faction : MonoBehaviour
         task.Failed = true;
 
         task.Message += $"\n{reason}";
-        task.AssignedCreatureId = "";
+        task.AssignedCreature = null;
 
         // move task to bottom of the list
         Tasks.Remove(task);

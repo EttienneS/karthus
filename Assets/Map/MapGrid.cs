@@ -67,31 +67,31 @@ public class MapGrid : MonoBehaviour
         Background.material.SetColor("_EffectColor", Color.magenta);
     }
 
-    public void BindCell(CellData cell, string binderId)
+    public void BindCell(CellData cell, IEntity originator)
     {
         if (cell.Bound)
         {
-            if (!CellBinding.ContainsKey(binderId))
+            if (!CellBinding.ContainsKey(originator.Id))
             {
-                CellBinding.Add(binderId, new List<CellData>());
+                CellBinding.Add(originator.Id, new List<CellData>());
             }
 
-            if (CellBinding.ContainsKey(cell.Binding))
+            if (CellBinding.ContainsKey(cell.Binding.Id))
             {
-                CellBinding[cell.Binding].Remove(cell);
+                CellBinding[cell.Binding.Id].Remove(cell);
             }
 
-            CellBinding[binderId].Add(cell);
-            cell.Binding = binderId;
+            CellBinding[originator.Id].Add(cell);
+            cell.Binding = originator;
         }
         else
         {
-            if (!PendingBinding.ContainsKey(binderId))
+            if (!PendingBinding.ContainsKey(originator.Id))
             {
-                PendingBinding.Add(binderId, new List<CellData>());
+                PendingBinding.Add(originator.Id, new List<CellData>());
             }
 
-            PendingBinding[binderId].Add(cell);
+            PendingBinding[originator.Id].Add(cell);
         }
     }
 
@@ -576,7 +576,7 @@ public class MapGrid : MonoBehaviour
                 {
                     if (!cell.Bound)
                     {
-                        cell.Binding = kvp.Key;
+                        cell.Binding = IdService.GetEntityFromId(kvp.Key);
 
                         if (!CellBinding.ContainsKey(kvp.Key))
                         {

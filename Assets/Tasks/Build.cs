@@ -30,7 +30,7 @@
         {
             Structure.SetBluePrintState(false);
             
-            Creature.Faction.AddStructure(Structure);
+            Creature.GetFaction().AddStructure(Structure);
             Creature.UpdateMemory(Context, MemoryType.Structure, Structure.Id);
             return true;
         }

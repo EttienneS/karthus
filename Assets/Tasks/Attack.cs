@@ -16,6 +16,11 @@ public class ExecuteAttack : TaskBase
 
     public override bool Done()
     {
-        return Attack.Resolve(Target);
+        if (Faction.QueueComplete(SubTasks) && Attack.Ready())
+        {
+            return Attack.Resolve(Target);
+        }
+
+        return false;
     }
 }

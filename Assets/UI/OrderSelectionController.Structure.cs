@@ -26,7 +26,7 @@ public partial class OrderSelectionController //.Structure
                 {
                     var blueprint = Game.StructureController.GetStructureBluePrint(structureName, FactionController.PlayerFaction);
                     cell.SetStructure(blueprint);
-                    FactionController.PlayerFaction.AddTask(new Build(blueprint), string.Empty);
+                    FactionController.PlayerFaction.AddTask(new Build(blueprint), null);
                 }
             }
         };
@@ -82,7 +82,7 @@ public partial class OrderSelectionController //.Structure
                             Debug.Log("Structure already flagged to remove");
                             continue;
                         }
-                        FactionController.PlayerFaction.AddTask(new RemoveStructure(structure, cell.Coordinates), string.Empty);
+                        FactionController.PlayerFaction.AddTask(new RemoveStructure(structure, cell.Coordinates), null);
                         structure.SetStatusSprite(Game.SpriteStore.GetSpriteByName("Remove"));
                     }
                 }

@@ -5,7 +5,7 @@ using Random = UnityEngine.Random;
 
 public class CellData
 {
-    public string Binding;
+    public IEntity Binding;
 
     public CellType CellType;
 
@@ -21,7 +21,7 @@ public class CellData
     {
         get
         {
-            return !string.IsNullOrEmpty(Binding);
+            return Binding != null;
         }
     }
 

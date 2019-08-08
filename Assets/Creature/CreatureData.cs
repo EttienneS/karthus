@@ -61,16 +61,10 @@ public class CreatureData : IEntity
         }
     }
 
-    [JsonIgnore]
-    public Faction Faction
-    {
-        get
-        {
-            return FactionController.Factions[FactionName];
-        }
-    }
+    
 
     public string FactionName { get; set; }
+
 
     [JsonIgnore]
     public CreatureRenderer CreatureRenderer
@@ -203,22 +197,23 @@ public class CreatureData : IEntity
 
     private void ProcessTask()
     {
+        var faction = this.GetFaction();
         if (Task == null)
         {
-            var task = Faction.GetTask(this);
+            var task = faction.GetTask(this);
             var context = $"{Id} - {task} - {Game.TimeManager.Now}";
 
             Know(context);
             task.Context = context;
 
-            Faction.AssignTask(this, task);
+            faction.AssignTask(this, task);
             Task = task;
         }
         else
         {
             try
             {
-                Faction.AssignTask(this, Task);
+                faction.AssignTask(this, Task);
 
                 if (Task.Done())
                 {
@@ -226,14 +221,14 @@ public class CreatureData : IEntity
                     FreeResources(Task.Context);
                     Forget(Task.Context);
 
-                    Faction.TaskComplete(Task);
+                    faction.TaskComplete(Task);
                     Task = null;
                 }
             }
             catch (TaskFailedException ex)
             {
                 Debug.LogWarning($"Task failed: {ex}");
-                Faction.TaskFailed(Task, ex.Message);
+                faction.TaskFailed(Task, ex.Message);
             }
         }
     }
