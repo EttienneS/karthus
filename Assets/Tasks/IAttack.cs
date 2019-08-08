@@ -26,7 +26,10 @@ public class FireBlast : IAttack
     public bool Resolve(IEntity target)
     {
         var cell = Game.MapGrid.GetCellAtCoordinate(target.Coordinates);
+        cell.CellType = CellType.Mountain;
 
+        Game.MapGrid.RefreshCell(cell);
+        //Game.CreatureController.DestroyCreature(IdService.CreatureLookup[target].CreatureRenderer);
         return true;
     }
 }

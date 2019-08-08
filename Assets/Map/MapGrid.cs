@@ -550,7 +550,7 @@ public class MapGrid : MonoBehaviour
         }
     }
 
-    private void RefreshCell(CellData cell)
+    public void RefreshCell(CellData cell)
     {
         var tile = ScriptableObject.CreateInstance<Tile>();
         tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(cell.CellType);

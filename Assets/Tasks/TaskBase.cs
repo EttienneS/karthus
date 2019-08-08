@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class TaskBase
 {
-    public IEntity AssignedCreature;
+    public IEntity AssignedEntity;
     public IEntity Originator;
     public string Context;
     public string Message;
@@ -20,9 +20,9 @@ public class TaskBase
     {
         get
         {
-            if (IdService.CreatureLookup.ContainsKey(AssignedCreature))
+            if (IdService.CreatureLookup.ContainsKey(AssignedEntity))
             {
-                return IdService.CreatureLookup[AssignedCreature];
+                return IdService.CreatureLookup[AssignedEntity];
             }
             return null;
         }
@@ -32,7 +32,7 @@ public class TaskBase
     {
         subTask.Context = Context;
         subTask.Originator = Originator;
-        subTask.AssignedCreature = AssignedCreature;
+        subTask.AssignedEntity = AssignedEntity;
 
         SubTasks.Enqueue(subTask);
 

@@ -38,7 +38,7 @@ public class Sleep : TaskBase
         {
             if (Creature.ValueProperties[Prop.Energy] < Random.Range(80, 100))
             {
-                var wait = new Wait(0.5f, "Sleeping") { AssignedCreature = AssignedCreature };
+                var wait = new Wait(0.5f, "Sleeping") { AssignedEntity = AssignedEntity };
                 AddSubTask(wait);
 
                 Creature.ValueProperties[Prop.Energy] += RecoveryRate;

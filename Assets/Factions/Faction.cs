@@ -57,7 +57,7 @@ public class Faction : MonoBehaviour
 
     public void AssignTask(CreatureData creature, TaskBase task, IEntity originator = null)
     {
-        task.AssignedCreature = creature;
+        task.AssignedEntity = creature;
 
         if (originator != null)
         {
@@ -83,7 +83,7 @@ public class Faction : MonoBehaviour
     public TaskBase GetNextAvailableTask()
     {
         TaskBase task = null;
-        foreach (var availableTask in Tasks.Where(t => t.AssignedCreature == null && !t.Failed))
+        foreach (var availableTask in Tasks.Where(t => t.AssignedEntity == null && !t.Failed))
         {
             //var craftTask = availableTask as Craft;
             //if (craftTask != null)
@@ -117,7 +117,7 @@ public class Faction : MonoBehaviour
             task = GetNextAvailableTask() ?? new Idle(creature);
         }
 
-        task.AssignedCreature = creature;
+        task.AssignedEntity = creature;
         return AddTask(task, creature);
     }
 
@@ -151,7 +151,7 @@ public class Faction : MonoBehaviour
         task.Failed = true;
 
         task.Message += $"\n{reason}";
-        task.AssignedCreature = null;
+        task.AssignedEntity = null;
 
         // move task to bottom of the list
         Tasks.Remove(task);
