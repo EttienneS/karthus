@@ -29,6 +29,7 @@ public class FireBlast : IAttack
         cell.CellType = CellType.Mountain;
 
         Game.MapGrid.RefreshCell(cell);
+        Game.EffectController.SpawnEffect(target.Coordinates, 2f);
         //Game.CreatureController.DestroyCreature(IdService.CreatureLookup[target].CreatureRenderer);
         return true;
     }

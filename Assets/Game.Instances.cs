@@ -4,12 +4,19 @@ public partial class Game //.Instances
 {
     private static CameraController _cameraController;
     private static CellInfoPanel _cellInfoPanel;
+
     //private static CraftingScreen _craftinScreen;
     private static CreatureController _creatureController;
+
     private static CreatureInfoPanel _creatureInfoPanel;
+    private static EffectController _effectController;
     private static FileController _fileController;
     private static Game _gameInstance;
+    private static LeyLineController _leyLineController;
+    private static MagicController _magicController;
+    private static ManaDisplay _manaDisplay;
     private static MapGrid _mapGrid;
+    private static MaterialController _materialController;
     private static OrderSelectionController _orderSelectionController;
     private static OrderTrayController _orderTrayController;
     private static SaveManager _saveManager;
@@ -17,63 +24,6 @@ public partial class Game //.Instances
     private static StructureController _structureController;
     private static SunController _sunController;
     private static TimeManager _timeManager;
-    private static ManaDisplay _manaDisplay;
-    private static MaterialController _materialController;
-    private static LeyLineController _leyLineController;
-    private static MagicController _magicController;
-
-    public static MagicController MagicController
-    {
-        get
-        {
-            if (_magicController == null)
-            {
-                _magicController = GameObject.Find(ControllerConstants.MagicController).GetComponent<MagicController>();
-            }
-
-            return _magicController;
-        }
-    }
-
-
-    public static LeyLineController LeyLineController
-    {
-        get
-        {
-            if (_leyLineController == null)
-            {
-                _leyLineController = GameObject.Find(ControllerConstants.LeyLineController).GetComponent<LeyLineController>();
-            }
-
-            return _leyLineController;
-        }
-    }
-
-    public static MaterialController MaterialController
-    {
-        get
-        {
-            if (_materialController == null)
-            {
-                _materialController = GameObject.Find(ControllerConstants.MaterialController).GetComponent<MaterialController>();
-            }
-
-            return _materialController;
-        }
-    }
-
-    public static ManaDisplay ManaDisplay
-    {
-        get
-        {
-            if (_manaDisplay == null)
-            {
-                _manaDisplay = GameObject.Find(ControllerConstants.ManaDisplay).GetComponent<ManaDisplay>();
-            }
-
-            return _manaDisplay;
-        }
-    }
 
     public static CameraController CameraController
     {
@@ -114,14 +64,6 @@ public partial class Game //.Instances
         }
     }
 
-    //public static CraftingScreen CraftingScreen
-    //{
-    //    get
-    //    {
-    //        return _craftinScreen ?? (_craftinScreen = GameObject.Find("CraftingPanel").GetComponent<CraftingScreen>());
-    //    }
-    //}
-
     public static CreatureController CreatureController
     {
         get
@@ -135,6 +77,13 @@ public partial class Game //.Instances
         }
     }
 
+    //public static CraftingScreen CraftingScreen
+    //{
+    //    get
+    //    {
+    //        return _craftinScreen ?? (_craftinScreen = GameObject.Find("CraftingPanel").GetComponent<CraftingScreen>());
+    //    }
+    //}
     public static CreatureInfoPanel CreatureInfoPanel
     {
         get
@@ -145,6 +94,19 @@ public partial class Game //.Instances
             }
 
             return _creatureInfoPanel;
+        }
+    }
+
+    public static EffectController EffectController
+    {
+        get
+        {
+            if (_effectController == null)
+            {
+                _effectController = GameObject.Find(ControllerConstants.EffectController).GetComponent<EffectController>();
+            }
+
+            return _effectController;
         }
     }
 
@@ -162,6 +124,45 @@ public partial class Game //.Instances
         }
     }
 
+    public static LeyLineController LeyLineController
+    {
+        get
+        {
+            if (_leyLineController == null)
+            {
+                _leyLineController = GameObject.Find(ControllerConstants.LeyLineController).GetComponent<LeyLineController>();
+            }
+
+            return _leyLineController;
+        }
+    }
+
+    public static MagicController MagicController
+    {
+        get
+        {
+            if (_magicController == null)
+            {
+                _magicController = GameObject.Find(ControllerConstants.MagicController).GetComponent<MagicController>();
+            }
+
+            return _magicController;
+        }
+    }
+
+    public static ManaDisplay ManaDisplay
+    {
+        get
+        {
+            if (_manaDisplay == null)
+            {
+                _manaDisplay = GameObject.Find(ControllerConstants.ManaDisplay).GetComponent<ManaDisplay>();
+            }
+
+            return _manaDisplay;
+        }
+    }
+
     public static MapGrid MapGrid
     {
         get
@@ -172,6 +173,19 @@ public partial class Game //.Instances
             }
 
             return _mapGrid;
+        }
+    }
+
+    public static MaterialController MaterialController
+    {
+        get
+        {
+            if (_materialController == null)
+            {
+                _materialController = GameObject.Find(ControllerConstants.MaterialController).GetComponent<MaterialController>();
+            }
+
+            return _materialController;
         }
     }
 
