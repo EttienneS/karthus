@@ -1,17 +1,22 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 public interface IAttack
 {
+    int Range { get; set; }
     IEntity Attacker { get; set; }
+    IEntity Target { get; set; }
 
     bool Ready();
 
-    bool Resolve(IEntity target);
+    void Resolve();
 }
 
 public class FireBlast : IAttack
 {
+    public int Range { get; set; } = 3;
     public IEntity Attacker { get; set; }
+    public IEntity Target { get; set; }
 
     public bool Ready()
     {
@@ -20,17 +25,22 @@ public class FireBlast : IAttack
             Attacker.Task.AddSubTask(new Acrue(new Dictionary<ManaColor, int> { { ManaColor.Red, 1 } }));
             return false;
         }
+
+        if (Pathfinder.Distance(Game.MapGrid.GetCellAtCoordinate(Attacker.Coordinates),
+            Game.MapGrid.GetCellAtCoordinate(Target.Coordinates), Mobility.Walk) <= Range)
+        {
+            Attacker.Task.AddSubTask(new Move(Game.MapGrid.GetCircle(Target.Coordinates, Range -1).First().Coordinates));
+            return false;
+        }
         return true;
     }
 
-    public bool Resolve(IEntity target)
+    public void Resolve()
     {
-        var cell = Game.MapGrid.GetCellAtCoordinate(target.Coordinates);
-        cell.CellType = CellType.Mountain;
+        Attacker.ManaPool.BurnMana(ManaColor.Red, 1);
 
-        Game.MapGrid.RefreshCell(cell);
-        Game.EffectController.SpawnEffect(target.Coordinates, 2f);
-        //Game.CreatureController.DestroyCreature(IdService.CreatureLookup[target].CreatureRenderer);
-        return true;
+        Game.EffectController.SpawnEffect(Target.Coordinates, 3);
+
+        Target.Damage(1, ManaColor.Red);
     }
 }

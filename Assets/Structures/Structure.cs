@@ -148,4 +148,14 @@ public class Structure : IEntity
             }
         }
     }
+
+    public void Damage(int amount, ManaColor type)
+    {
+        if (!ManaPool.Empty())
+        {
+            var mana = ManaPool.GetRandomManaColorFromPool();
+            ManaPool.BurnMana(mana, amount);
+        }
+        Game.StructureController.DestroyStructure(this);
+    }
 }

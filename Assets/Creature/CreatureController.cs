@@ -9,11 +9,10 @@ public class CreatureController : MonoBehaviour
 
     internal Dictionary<string, CreatureData> Beastiary = new Dictionary<string, CreatureData>();
     internal Dictionary<CreatureData, CreatureRenderer> CreatureLookup = new Dictionary<CreatureData, CreatureRenderer>();
-    internal List<CreatureRenderer> Creatures = new List<CreatureRenderer>();
 
     public CreatureRenderer GetCreatureAtPoint(Vector2 point)
     {
-        foreach (var creature in Creatures)
+        foreach (var creature in CreatureLookup.Values)
         {
             var rect = new Rect(creature.transform.position.x - 0.5f, creature.transform.position.y - 0.5f, 1f, 1f);
             if (rect.Contains(point))
@@ -39,7 +38,11 @@ public class CreatureController : MonoBehaviour
     {
         if (creature != null)
         {
+            if (creature.Data.Task != null)
+                creature.Data.Task.CancelTask();
+
             CreatureLookup.Remove(creature.Data);
+            IdService.RemoveEntity(creature.Data);
             Game.Controller.AddItemToDestroy(creature.gameObject);
         }
     }
@@ -72,6 +75,8 @@ public class CreatureController : MonoBehaviour
         creature.SpriteRenderer.material = Game.MaterialController.DefaultMaterial;
         creature.SpriteRenderer.sprite = Game.SpriteStore.GetCreatureSprite(creature.Data.Sprite);
 
+        creature.Data.ManaPool.GainMana(ManaColor.White, 10);
+
         IndexCreature(creature);
         faction.AddCreature(creatureData);
         return creature;
@@ -80,8 +85,6 @@ public class CreatureController : MonoBehaviour
 
     private void IndexCreature(CreatureRenderer creature)
     {
-
-        Creatures.Add(creature);
         CreatureLookup.Add(creature.Data, creature);
         IdService.EnrollEntity(creature.Data);
 

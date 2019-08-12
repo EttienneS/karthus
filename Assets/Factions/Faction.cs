@@ -146,6 +146,13 @@ public class Faction : MonoBehaviour
         Tasks.Remove(task);
     }
 
+    internal void CancelTask(TaskBase task)
+    {
+        task.AssignedEntity = null;
+        Tasks.Remove(task);
+    }
+
+
     internal void TaskFailed(TaskBase task, string reason)
     {
         task.Failed = true;

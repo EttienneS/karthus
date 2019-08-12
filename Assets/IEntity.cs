@@ -12,6 +12,8 @@ public interface IEntity
 
     [JsonIgnore]
     TaskBase Task { get; set; }
+
+    void Damage(int amount, ManaColor type);
 }
 
 public static class EntityHelpers

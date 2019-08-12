@@ -46,7 +46,7 @@ public static class Behaviours
         {
             task = new ExecuteAttack(enemy, new FireBlast());
         }
-        else if (creature.ManaPool.Any(m => m.Value.Total > threshold))
+        else if (creature.ManaPool.Any(m => m.Key != ManaColor.White && m.Value.Total > threshold))
         {
             foreach (var mana in creature.ManaPool)
             {
@@ -88,7 +88,7 @@ public static class Behaviours
 
     private static CreatureData FindEnemy(CreatureData creature)
     {
-        return Game.CreatureController.Creatures.FirstOrDefault(c => c.Data != creature &&
-        creature.Awareness.Contains(Game.MapGrid.GetCellAtCoordinate(c.Data.Coordinates)))?.Data;
+        return Game.CreatureController.CreatureLookup.Keys.FirstOrDefault(c => c != creature
+        && creature.Awareness.Contains(Game.MapGrid.GetCellAtCoordinate(c.Coordinates)));
     }
 }

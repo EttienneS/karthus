@@ -84,4 +84,9 @@ public class ManaPool : Dictionary<ManaColor, Mana>
 
         return count;
     }
+
+    internal bool Empty()
+    {
+        return Values.All(v => v.Total <= 0);
+    }
 }
