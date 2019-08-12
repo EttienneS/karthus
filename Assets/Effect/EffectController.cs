@@ -5,23 +5,12 @@ using UnityEngine;
 
 public class EffectController : MonoBehaviour
 {
-    public ParticleSystem EffectPrefab;
-
-    public Dictionary<ParticleSystem, float> ActiveEffects = new Dictionary<ParticleSystem, float>();
-
-    // Update is called once per frame
-    public void Update()
-    {
-        //foreach (var effect in ActiveEffects)
-        //{
-        //    effect.Value -= Time.deltaTime;
-        //}
-    }
+    public Effect EffectPrefab;
 
     public void SpawnEffect(Coordinates coordinates, float lifeSpan)
     {
-        var effect = Instantiate(EffectPrefab,transform);
-        ActiveEffects.Add(effect, lifeSpan);
+        var effect = Instantiate(EffectPrefab, transform);
+        effect.LifeSpan = lifeSpan;
         effect.transform.position = coordinates.ToTopOfMapVector();
     }
 }

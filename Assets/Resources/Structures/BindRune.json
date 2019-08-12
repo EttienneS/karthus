@@ -9,7 +9,8 @@
   },
   "ManaValue": {
     "Blue": "5",
-    "White": "5"
+    "Red": "5",
+    "Green": "5"
   },
   "Buildable": true,
   "SpriteName": "runeBlue_slab_001",

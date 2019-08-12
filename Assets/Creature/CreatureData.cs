@@ -166,6 +166,16 @@ public class CreatureData : IEntity
         InternalTick += timeDelta;
         WorkTick += timeDelta;
 
+        if (ManaPool.Empty())
+        {
+            Game.EffectController.SpawnEffect(Coordinates, 3f);
+            Game.EffectController.SpawnEffect(Coordinates, 3f);
+            Game.EffectController.SpawnEffect(Coordinates, 3f);
+
+            Game.CreatureController.DestroyCreature(CreatureRenderer);
+            return false;
+        }
+
         if (WorkTick >= Game.TimeManager.WorkInterval)
         {
             WorkTick = 0;
@@ -230,6 +240,19 @@ public class CreatureData : IEntity
                 Debug.LogWarning($"Task failed: {ex}");
                 faction.TaskFailed(Task, ex.Message);
             }
+        }
+    }
+
+    public void Damage(int amount, ManaColor type)
+    {
+        if (!ManaPool.Empty())
+        {
+            var mana = ManaPool.GetRandomManaColorFromPool();
+            ManaPool.BurnMana(mana, amount);
+        }
+        else
+        {
+            Game.EffectController.SpawnEffect(Coordinates, 1);
         }
     }
 }

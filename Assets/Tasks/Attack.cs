@@ -17,10 +17,12 @@ public class ExecuteAttack : TaskBase
     public override bool Done()
     {
         Attack.Attacker = AssignedEntity;
+        Attack.Target = Target;
 
         if (Faction.QueueComplete(SubTasks) && Attack.Ready())
         {
-            return Attack.Resolve(Target);
+            Attack.Resolve();
+            return true;
         }
 
         return false;

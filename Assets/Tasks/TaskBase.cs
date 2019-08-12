@@ -13,6 +13,14 @@ public class TaskBase
 
     public bool Failed;
 
+    public void CancelTask()
+    {
+        if (AssignedEntity != null)
+        {
+            AssignedEntity.GetFaction().CancelTask(this);
+        }
+    }
+
     public Queue<TaskBase> SubTasks = new Queue<TaskBase>();
 
     [JsonIgnore]
