@@ -31,7 +31,7 @@ public class MagicController : MonoBehaviour
 
         if (WorkTick >= Game.TimeManager.MagicInterval)
         {
-            if (Work.Peek() == null)
+            if (Work.Count == 0 || Work.Peek() == null)
             {
                 return;
             }
