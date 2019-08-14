@@ -103,7 +103,6 @@ public class CellData
         return Game.CreatureController.CreatureLookup.Where(c => c.Key.Coordinates == Coordinates).Select(c => c.Key);
     }
 
-
     public CellData GetNeighbor(Direction direction)
     {
         return Neighbors[(int)direction];

@@ -31,8 +31,8 @@ public partial class OrderSelectionController //.Designate
 
             CreateOrderButton(CutText, () => HarvestClicked("Tree", CutIcon), CutIcon);
             CreateOrderButton(HarvestText, () => HarvestClicked("Bush", HarvestIcon), HarvestIcon);
-            CreateOrderButton(MoveText, () => MoveClicked(), MoveIcon);
-            CreateOrderButton(AttackText, () => AttackClicked(), AttackIcon);
+            CreateOrderButton(MoveText, MoveClicked, MoveIcon);
+            CreateOrderButton(AttackText, AttackClicked, AttackIcon);
         }
     }
 
@@ -41,7 +41,8 @@ public partial class OrderSelectionController //.Designate
         Game.Controller.SelectionPreference = SelectionPreference.Cell;
         CellClickOrder = cells =>
         {
-            FactionController.PlayerFaction.AddTask(new Move(cells.First().Coordinates), null);
+            var cell = cells.First().Coordinates;
+            FactionController.PlayerFaction.AddTaskWithCellBadge(new Move(cell), null, cell, MoveIcon);
         };
     }
 
@@ -54,10 +55,9 @@ public partial class OrderSelectionController //.Designate
             {
                 foreach (var creature in cell.GetCreatures())
                 {
-                    FactionController.PlayerFaction.AddTask(new ExecuteAttack(creature, new FireBlast()), null);
+                    FactionController.PlayerFaction.AddTaskWithEntityBadge(new ExecuteAttack(creature, new FireBlast()), null, creature, AttackIcon);
                 }
             }
-
         };
     }
 
@@ -71,7 +71,8 @@ public partial class OrderSelectionController //.Designate
                 if (cell.Bound && cell.Structure != null && cell.Structure.StructureType == type)
                 {
                     cell.Structure.SetStatusSprite(Game.SpriteStore.GetSpriteByName(icon));
-                    FactionController.PlayerFaction.AddTask(new Harvest(cell.Structure), null);
+
+                    FactionController.PlayerFaction.AddTaskWithCellBadge(new Harvest(cell.Structure), null, cell.Coordinates, icon);
                 }
             }
             Game.Controller.DeselectCell();

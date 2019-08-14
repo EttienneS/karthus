@@ -1,6 +1,10 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
+
+public delegate void TaskComplete();
+
+
 public class TaskBase
 {
     public IEntity AssignedEntity;
@@ -36,6 +40,9 @@ public class TaskBase
         }
     }
 
+    [JsonIgnore]
+    public TaskComplete CompleteEvent { get; set; }
+
     public TaskBase AddSubTask(TaskBase subTask)
     {
         subTask.Context = Context;
@@ -50,7 +57,7 @@ public class TaskBase
     public virtual bool Done()
     {
         return false;
-    }       
+    }
 
     public void ShowBusyEmote()
     {
