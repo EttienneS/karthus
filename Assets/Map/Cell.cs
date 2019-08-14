@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -96,10 +98,11 @@ public class CellData
         Game.StructureController.RefreshStructure(structure);
     }
 
-    public void AddCreature(CreatureData creature)
+    internal IEnumerable<CreatureData> GetCreatures()
     {
-        creature.CreatureRenderer.gameObject.transform.position = Coordinates.ToMapVector();
+        return Game.CreatureController.CreatureLookup.Where(c => c.Key.Coordinates == Coordinates).Select(c => c.Key);
     }
+
 
     public CellData GetNeighbor(Direction direction)
     {
