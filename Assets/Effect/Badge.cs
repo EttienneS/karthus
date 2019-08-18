@@ -32,5 +32,6 @@ public class Badge : MonoBehaviour
     internal void Follow(IEntity entity)
     {
         Entity = entity;
+        SpriteRenderer.transform.localScale = new Vector3(0.5f, 0.5f);
     }
 }
