@@ -134,7 +134,7 @@ public class Faction : MonoBehaviour
         }
 
         task.AssignedEntity = creature;
-        return AddTask(task, creature);
+        return task;
     }
 
     public IEnumerable<TaskBase> GetTaskByOriginator(IEntity originator)
