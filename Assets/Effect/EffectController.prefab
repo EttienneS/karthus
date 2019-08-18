@@ -45,3 +45,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EffectPrefab: {fileID: 5193605086689755032, guid: 7a5db016b433fa240b8cea7a85565d27,
     type: 3}
+  BadgePrefab: {fileID: 1139112596583442113, guid: 7a7de7f5deeaf6d4ea62e51f5d945911,
+    type: 3}

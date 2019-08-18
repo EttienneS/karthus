@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+
 public class Faction : MonoBehaviour
 {
     public const int RecyleCount = 5;
@@ -48,10 +49,25 @@ public class Faction : MonoBehaviour
         return false;
     }
 
-    public TaskBase AddTask(TaskBase task, IEntity originatorId)
+    public TaskBase AddTask(TaskBase task, IEntity originatorId, TaskComplete taskComplete = null)
     {
         task.Originator = originatorId;
+        task.CompleteEvent = taskComplete;
         Tasks.Add(task);
+        return task;
+    }
+
+    public TaskBase AddTaskWithEntityBadge(TaskBase task, IEntity originatorId, IEntity badgedEntity, string badgeIcon)
+    {
+        var badge = Game.EffectController.AddBadge(badgedEntity, badgeIcon);
+        AddTask(task, originatorId, badge.Destroy);
+        return task;
+    }
+
+    public TaskBase AddTaskWithCellBadge(TaskBase task, IEntity originatorId, Coordinates coordinates, string badgeIcon)
+    {
+        var badge = Game.EffectController.AddBadge(coordinates, badgeIcon);
+        AddTask(task, originatorId, badge.Destroy);
         return task;
     }
 
@@ -143,11 +159,13 @@ public class Faction : MonoBehaviour
 
     internal void TaskComplete(TaskBase task)
     {
+        task.CompleteEvent?.Invoke();
         Tasks.Remove(task);
     }
 
     internal void CancelTask(TaskBase task)
     {
+        task.CompleteEvent?.Invoke();
         task.AssignedEntity = null;
         Tasks.Remove(task);
     }
