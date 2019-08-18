@@ -22,7 +22,8 @@ public class EffectController : MonoBehaviour
     internal Badge AddBadge(IEntity entity, string iconName)
     {
         var badge = Spawn();
-
+        badge.SetSprite(iconName);
+        badge.Follow(entity);
         return badge;
     }
 

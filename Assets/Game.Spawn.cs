@@ -43,14 +43,14 @@ public partial class Game // .Spawn
 
         CameraController.MoveToCell(midCell.GetNeighbor(Direction.E));
 
-        //var spawns = midCell.Neighbors.ToList();
+        var spawns = midCell.Neighbors.ToList();
 
-        //for (int i = 0; i < MapGrid.MapSize; i++)
-        //{
-        //    CreatureController.SpawnCreature(CreatureController.GetCreatureOfType("AbyssWraith"),
-        //                                     MapGrid.GetRandomCell().Coordinates,
-        //                                     FactionController.MonsterFaction);
-        //}
+        for (int i = 0; i < MapGrid.MapSize; i++)
+        {
+            CreatureController.SpawnCreature(CreatureController.GetCreatureOfType("AbyssWraith"),
+                                             MapGrid.GetRandomCell().Coordinates,
+                                             FactionController.MonsterFaction);
+        }
 
         Debug.Log($"Did initial spawn in {sw.Elapsed}s");
         sw.Stop();
