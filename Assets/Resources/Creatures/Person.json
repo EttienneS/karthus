@@ -5,7 +5,7 @@
     "Hunger": "0"
   },
   "Speed": 25.0,
-  "Sprite": "robe",
+  "Sprite": "base",
   "Perception": 5,
   "BehaviourName": "Person",
   "Mobility": "Walk"
