@@ -84,9 +84,8 @@ public class CreatureRenderer : MonoBehaviour
             {
                 HideLine();
             }
-
-            UpdateMaterial();
         }
+        UpdateMaterial();
     }
 
     internal void DisableHightlight()
@@ -98,7 +97,7 @@ public class CreatureRenderer : MonoBehaviour
     {
         var col = color.GetActualColor();
         SpriteRenderer.material = Game.MaterialController.GetChannelingMaterial(col);
-        TempMaterialDuration = duration * 2;
+        TempMaterialDuration = duration;
         TempMaterialDelta = 0;
 
         Light.color = col;
@@ -130,14 +129,13 @@ public class CreatureRenderer : MonoBehaviour
 
     private void UpdateMaterial()
     {
-        //if (SpriteRenderer.material.name != Game.MaterialController.ChannelingMaterial.name)
-        //{
-        //    SpriteRenderer.SetBoundMaterial(Data.CurrentCell.Bound);
-        //}
+        if (TempMaterialDuration <= 0)
+            return;
 
         TempMaterialDelta += Time.deltaTime;
         if (TempMaterialDelta >= TempMaterialDuration)
         {
+            TempMaterialDuration = 0;
             Light.color = Color.white;
             Light.intensity = 0.1f;
 

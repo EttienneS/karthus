@@ -421,7 +421,7 @@ public class MapGrid : MonoBehaviour
         switch (cell.CellType)
         {
             case CellType.Grass:
-                if (value > 0.65)
+                if (value > 0.8)
                 {
                     cell.SetStructure(Game.StructureController.GetStructure("Bush", world));
                 }
@@ -432,7 +432,7 @@ public class MapGrid : MonoBehaviour
                 {
                     cell.SetStructure(Game.StructureController.GetStructure("Tree", world));
                 }
-                else if (value > 0.65)
+                else if (value > 0.8)
                 {
                     cell.SetStructure(Game.StructureController.GetStructure("Bush", world));
                 }
@@ -445,7 +445,7 @@ public class MapGrid : MonoBehaviour
         // generate bedrock
         for (int i = 0; i < Game.MapGrid.MapSize / 2; i++)
         {
-            foreach (var cell in GetRandomChunk(Random.Range(1 + (Game.MapGrid.MapSize / 6), 1 + (Game.MapGrid.MapSize / 3))))
+            foreach (var cell in GetRandomChunk(Random.Range(1 + (Game.MapGrid.MapSize / 4), 1 + (Game.MapGrid.MapSize / 2))))
             {
                 cell.CellType = CellType.Stone;
             }
@@ -461,7 +461,7 @@ public class MapGrid : MonoBehaviour
 
             if (cell.CountNeighborsOfType(null) +
                 cell.CountNeighborsOfType(CellType.Mountain) +
-                cell.CountNeighborsOfType(CellType.Stone) > 6)
+                cell.CountNeighborsOfType(CellType.Stone) > 5)
             {
                 cell.CellType = CellType.Mountain;
             }
@@ -519,7 +519,7 @@ public class MapGrid : MonoBehaviour
                 continue;
             }
 
-            if (cell.CountNeighborsOfType(CellType.Dirt) > 2 && Random.value > 0.5)
+            if (cell.CountNeighborsOfType(CellType.Dirt) > 2 && Random.value > 0.3)
             {
                 cell.CellType = CellType.Dirt;
             }
@@ -537,7 +537,7 @@ public class MapGrid : MonoBehaviour
             if (cell.CountNeighborsOfType(null) +
                 cell.CountNeighborsOfType(CellType.Grass) +
                 cell.CountNeighborsOfType(CellType.Forest) > 6
-                && Random.value > 0.2)
+                && Random.value > 0.3)
             {
                 cell.CellType = CellType.Forest;
             }

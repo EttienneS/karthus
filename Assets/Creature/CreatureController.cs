@@ -72,12 +72,18 @@ public class CreatureController : MonoBehaviour
 
         creature.SpriteRenderer.material = Game.MaterialController.DefaultMaterial;
 
-        creature.Data.ManaPool.GainMana(ManaColor.White, 10);
+        creature.Data.ManaPool.InitColor(ManaColor.White, 10, 10, 10);
+        creature.Data.ManaPool.InitColor(ManaColor.Red, 3, 10, 5);
+        creature.Data.ManaPool.InitColor(ManaColor.Green, 3, 10, 5);
+        creature.Data.ManaPool.InitColor(ManaColor.Blue, 0, 10, 0);
+        creature.Data.ManaPool.InitColor(ManaColor.Black, 0, 10, 0);
 
         IndexCreature(creature);
         faction.AddCreature(creatureData);
         return creature;
     }
+
+    
 
     private void IndexCreature(CreatureRenderer creature)
     {

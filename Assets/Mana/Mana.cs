@@ -15,6 +15,9 @@ public class Mana
 
     public int Total { get; set; }
 
+    public int Max { get; set; }
+    public int Desired { get; set; }
+
     public void Burn(int amount)
     {
         Total -= amount;

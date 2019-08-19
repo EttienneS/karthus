@@ -39,20 +39,19 @@ public static class Behaviours
     {
         TaskBase task = null;
 
-        const int threshold = 5;
         var enemy = FindEnemy(creature);
 
         if (enemy != null)
         {
             task = new ExecuteAttack(enemy, new FireBlast());
         }
-        else if (creature.ManaPool.Any(m => m.Key != ManaColor.White && m.Value.Total > threshold))
+        else if (creature.ManaPool.Any(m => m.Value.Total > m.Value.Max && m.Value.Total > m.Value.Max))
         {
             foreach (var mana in creature.ManaPool)
             {
-                if (mana.Value.Total > threshold)
+                if (mana.Value.Total - mana.Value.Desired > mana.Value.Max)
                 {
-                    task = Channel.GetChannelTo(mana.Key, mana.Value.Total, creature.GetFaction().Core);
+                    task = Channel.GetChannelTo(mana.Key, mana.Value.Total - mana.Value.Desired, creature.GetFaction().Core);
                     break;
                 }
             }

@@ -45,13 +45,10 @@ public class CreatureInfoPanel : MonoBehaviour
 
             foreach (var property in CurrentCreature.Data.ManaPool)
             {
-                if (property.Value.Total != 0)
-                {
-                    Properties.text += $"- {property.Key}:\t{property.Value.Total}\n";
-                }
+                Properties.text += $"- {property.Key}:\t{property.Value.Total}/{property.Value.Max} ({property.Value.Desired})\n";
             }
 
-            Properties.text += $"\nMoving:\t{CurrentCreature.Data.Facing}";
+            //Properties.text += $"\nMoving:\t{CurrentCreature.Data.Facing}";
 
             if (CurrentCreature.Data.Task != null)
             {

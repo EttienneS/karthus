@@ -89,4 +89,11 @@ public class ManaPool : Dictionary<ManaColor, Mana>
     {
         return Values.All(v => v.Total <= 0);
     }
+
+    internal void InitColor(ManaColor color, int start, int max, int desired)
+    {
+        GainMana(color, start);
+        this[color].Max = max;
+        this[color].Desired = desired;
+    }
 }
