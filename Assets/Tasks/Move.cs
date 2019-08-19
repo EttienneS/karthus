@@ -92,6 +92,7 @@ public class Move : TaskBase
         {
             // reached next cell
             Creature.Coordinates = _nextCell.Coordinates;
+            Creature.CreatureRenderer.SpriteRenderer.SetBoundMaterial(_nextCell.Bound);
             _nextCell = null;
             _path = null;
         }

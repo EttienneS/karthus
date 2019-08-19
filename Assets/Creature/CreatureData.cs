@@ -104,8 +104,11 @@ public class CreatureData : IEntity
     {
         if (!ManaPool.Empty())
         {
-            var mana = ManaPool.GetRandomManaColorFromPool();
-            ManaPool.BurnMana(mana, amount);
+            for (var i = 0; i < amount; i--)
+            {
+                var mana = ManaPool.GetRandomManaColorFromPool();
+                ManaPool.BurnMana(mana, i);
+            }
         }
         else
         {

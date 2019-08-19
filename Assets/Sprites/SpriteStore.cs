@@ -78,7 +78,7 @@ public class SpriteStore : MonoBehaviour
                 case Direction.NW:
                 case Direction.NE:
                 case Direction.N:
-                    spriteName += "front";
+                    spriteName += "back";
                     break;
 
                 case Direction.E:
@@ -89,7 +89,7 @@ public class SpriteStore : MonoBehaviour
                 case Direction.SW:
                 case Direction.SE:
                 case Direction.S:
-                    spriteName += "back";
+                    spriteName += "front";
                     break;
             }
         }
