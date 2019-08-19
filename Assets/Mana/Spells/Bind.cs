@@ -22,7 +22,6 @@ public class Bind : SpellBase
         Power = initialPower;
     }
 
-
     public override bool Done()
     {
         if (_affectAbleCells == null)

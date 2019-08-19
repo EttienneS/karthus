@@ -81,7 +81,7 @@ public class LeyLine : MonoBehaviour
                 if (Random.value < 0.5f)
                 {
                     var neighbors = cell.Neighbors.Where(n => n != null
-                                        && n != next 
+                                        && n != next
                                         && n != previous).ToList();
 
                     if (neighbors.Count > 0)
@@ -90,7 +90,6 @@ public class LeyLine : MonoBehaviour
                         Cells.Insert(i, insert);
                         i++;
                     }
-
                 }
             }
         }

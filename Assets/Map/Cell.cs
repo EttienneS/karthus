@@ -1,9 +1,6 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class CellData
 {
@@ -123,7 +120,4 @@ public class CellData
 
         return Neighbors.Count(n => n != null && n.CellType == cellType.Value);
     }
-
-
-    
 }

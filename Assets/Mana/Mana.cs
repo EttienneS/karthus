@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEngine;
 
 public class Mana
 {
@@ -27,5 +26,4 @@ public class Mana
         Total += amount;
         GainAction?.Invoke(amount);
     }
-
 }

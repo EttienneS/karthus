@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public class GreenMana
+﻿public class GreenMana
 {
     public static void BurnGreen(int amount)
     {

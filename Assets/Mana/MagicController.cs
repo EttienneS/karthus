@@ -61,6 +61,5 @@ public class MagicController : MonoBehaviour
         {
             Debug.Log($"Magic glitch: {ex.Message}");
         }
-
     }
 }

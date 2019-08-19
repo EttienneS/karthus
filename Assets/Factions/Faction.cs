@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
 
 public class Faction : MonoBehaviour
 {
@@ -169,7 +167,6 @@ public class Faction : MonoBehaviour
         task.AssignedEntity = null;
         Tasks.Remove(task);
     }
-
 
     internal void TaskFailed(TaskBase task, string reason)
     {

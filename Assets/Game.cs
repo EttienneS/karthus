@@ -19,11 +19,10 @@ public partial class Game : MonoBehaviour
     internal List<CreatureRenderer> SelectedCreatures = new List<CreatureRenderer>();
     internal List<Structure> SelectedStructures = new List<Structure>();
 
+    private List<GameObject> _destroyCache = new List<GameObject>();
     private TimeStep _oldTimeStep = TimeStep.Normal;
     private Vector3 _selectionEnd;
     private Vector3 _selectionStart;
-
-    private List<GameObject> _destroyCache = new List<GameObject>();
 
     public void AddItemToDestroy(GameObject gameObject)
     {
@@ -83,6 +82,29 @@ public partial class Game : MonoBehaviour
             //                                                               ColorConstants.UnboundColor;
         }
         SelectedStructures.Clear();
+    }
+
+    private void DestroyItemsInCache()
+    {
+        try
+        {
+            lock (_destroyCache)
+            {
+                while (_destroyCache.Any())
+                {
+                    var item = _destroyCache[0];
+                    _destroyCache.RemoveAt(0);
+                    if (item != null)
+                    {
+                        Destroy(item);
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.Log($"Destroy failed: {ex}");
+        }
     }
 
     private void HandleHotkeys()
@@ -149,6 +171,39 @@ public partial class Game : MonoBehaviour
         {
             TimeManager.TimeStep = TimeStep.Hyper;
         }
+    }
+
+    private void InitFactions()
+    {
+        var sw = new System.Diagnostics.Stopwatch();
+        sw.Start();
+        foreach (var factionName in new[]
+        {
+            FactionConstants.Player,
+            FactionConstants.Monster,
+            FactionConstants.World
+        })
+        {
+            var factionBody = StructureController.GetStructure(FactionConstants.StructureName, null);
+            var faction = new GameObject(factionName, typeof(Faction)).GetComponent<Faction>();
+            faction.transform.SetParent(transform);
+
+            faction.FactionName = factionName;
+            faction.Core = factionBody;
+
+            faction.AddStructure(factionBody);
+
+            if (factionName != FactionConstants.Player)
+            {
+                factionBody.Spell = null;
+            }
+
+            faction.transform.position = new Vector2(-100, -100);
+            FactionController.Factions.Add(factionName, faction);
+        }
+
+        Debug.Log($"Created factions in {sw.Elapsed}s");
+        sw.Stop();
     }
 
     private bool MouseOverUi()
@@ -234,39 +289,6 @@ public partial class Game : MonoBehaviour
         InitialSpawn();
     }
 
-    private void InitFactions()
-    {
-        var sw = new System.Diagnostics.Stopwatch();
-        sw.Start();
-        foreach (var factionName in new[]
-        {
-            FactionConstants.Player,
-            FactionConstants.Monster,
-            FactionConstants.World
-        })
-        {
-            var factionBody = StructureController.GetStructure(FactionConstants.StructureName, null);
-            var faction = new GameObject(factionName, typeof(Faction)).GetComponent<Faction>();
-            faction.transform.SetParent(transform);
-
-            faction.FactionName = factionName;
-            faction.Core = factionBody;
-
-            faction.AddStructure(factionBody);
-
-            if (factionName != FactionConstants.Player)
-            {
-                factionBody.Spell = null;
-            }
-
-            faction.transform.position = new Vector2(-100, -100);
-            FactionController.Factions.Add(factionName, faction);
-        }
-
-        Debug.Log($"Created factions in {sw.Elapsed}s");
-        sw.Stop();
-    }
-
     private void Update()
     {
         var mousePosition = Input.mousePosition;
@@ -314,10 +336,10 @@ public partial class Game : MonoBehaviour
 
                 var endPoint = Camera.main.ScreenToWorldPoint(_selectionEnd);
 
-                var startX = Mathf.Clamp(Mathf.Min(_selectionStart.x, endPoint.x), 0, Game.MapGrid.MapSize);
-                var startY = Mathf.Clamp(Mathf.Min(_selectionStart.y, endPoint.y), 0, Game.MapGrid.MapSize);
-                var endX = Mathf.Clamp(Mathf.Max(_selectionStart.x, endPoint.x), 0, Game.MapGrid.MapSize);
-                var endY = Mathf.Clamp(Mathf.Max(_selectionStart.y, endPoint.y), 0, Game.MapGrid.MapSize);
+                var startX = Mathf.Clamp(Mathf.Min(_selectionStart.x, endPoint.x), 0, MapGrid.MapSize);
+                var startY = Mathf.Clamp(Mathf.Min(_selectionStart.y, endPoint.y), 0, MapGrid.MapSize);
+                var endX = Mathf.Clamp(Mathf.Max(_selectionStart.x, endPoint.x), 0, MapGrid.MapSize);
+                var endY = Mathf.Clamp(Mathf.Max(_selectionStart.y, endPoint.y), 0, MapGrid.MapSize);
 
                 if (startX == endX && startY == endY)
                 {
@@ -412,28 +434,5 @@ public partial class Game : MonoBehaviour
             }
         }
         DestroyItemsInCache();
-    }
-
-    private void DestroyItemsInCache()
-    {
-        try
-        {
-            lock (_destroyCache)
-            {
-                while (_destroyCache.Any())
-                {
-                    var item = _destroyCache[0];
-                    _destroyCache.RemoveAt(0);
-                    if (item != null)
-                    {
-                        Destroy(item);
-                    }
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Debug.Log($"Destroy failed: {ex}");
-        }
     }
 }

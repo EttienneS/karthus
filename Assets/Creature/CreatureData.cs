@@ -136,7 +136,6 @@ public class CreatureData : IEntity
             // default
             Facing = Direction.N;
         }
-
     }
 
     internal void Forget(string context)

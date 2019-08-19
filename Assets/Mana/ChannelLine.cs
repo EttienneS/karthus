@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -19,7 +17,7 @@ public class ChannelLine : MonoBehaviour
         LineRenderer = GetComponent<LineRenderer>();
     }
 
-    void Update()
+    private void Update()
     {
         Delta += Time.deltaTime;
 
@@ -37,7 +35,7 @@ public class ChannelLine : MonoBehaviour
             for (int i = 0; i < TargetPoints.Count; i++)
             {
                 drawPoints.Add(srcPoint + new Vector3(Random.Range(-0.05f, 0.05f), Random.Range(-0.05f, 0.05f), 0));
-                var trg = Vector3.Lerp(trgPoint, trgPoint+ TargetPoints[i], frac);
+                var trg = Vector3.Lerp(trgPoint, trgPoint + TargetPoints[i], frac);
                 drawPoints.Add(trg);
                 drawPoints.Add(trg + new Vector3(Random.Range(-0.05f, 0.05f), Random.Range(-0.05f, 0.05f), 0));
                 drawPoints.Add(trg);
@@ -56,7 +54,6 @@ public class ChannelLine : MonoBehaviour
         }
     }
 
-
     internal void SetProperties(IEntity source, IEntity target, int intensity, float duration, ManaColor manaColor)
     {
         Source = source;
@@ -74,6 +71,5 @@ public class ChannelLine : MonoBehaviour
         LineRenderer.startColor = manaColor.GetActualColor();
         LineRenderer.endColor = LineRenderer.startColor;
         LineRenderer.material.SetColor("_EffectColor", manaColor.GetActualColor());
-
     }
 }

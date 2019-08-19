@@ -30,7 +30,6 @@ public class SpellBase : TaskBase
         }
     }
 
-
     [JsonIgnore]
     public CellData _epicentreCell;
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SunController : MonoBehaviour
@@ -51,7 +50,6 @@ public class SunController : MonoBehaviour
             State = DayState.Night;
             Sun.intensity = Math.Max(Sun.intensity - (IntensityPerHour * minutePercentage), BaseIntensity);
         }
-
     }
 
     private void Start()

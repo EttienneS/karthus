@@ -1,9 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-
 public delegate void TaskComplete();
-
 
 public class TaskBase
 {

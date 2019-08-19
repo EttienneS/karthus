@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -23,7 +22,6 @@ public class CreatureController : MonoBehaviour
 
         return null;
     }
-
 
     public void Awake()
     {
@@ -80,7 +78,6 @@ public class CreatureController : MonoBehaviour
         faction.AddCreature(creatureData);
         return creature;
     }
-
 
     private void IndexCreature(CreatureRenderer creature)
     {

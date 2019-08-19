@@ -75,7 +75,6 @@ public class SpriteStore : MonoBehaviour
         {
             switch (facing)
             {
-
                 case Direction.NW:
                 case Direction.NE:
                 case Direction.N:
@@ -86,6 +85,7 @@ public class SpriteStore : MonoBehaviour
                 case Direction.W:
                     spriteName += "side";
                     break;
+
                 case Direction.SW:
                 case Direction.SE:
                 case Direction.S:

@@ -104,7 +104,6 @@ public class StructureController : MonoBehaviour
                 Game.MagicController.FreeRune(structure);
             }
             IdService.RemoveEntity(structure);
-
         }
     }
 

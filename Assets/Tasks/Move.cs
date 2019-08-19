@@ -98,5 +98,4 @@ public class Move : TaskBase
 
         return Creature.Coordinates == TargetCoordinates;
     }
-
 }

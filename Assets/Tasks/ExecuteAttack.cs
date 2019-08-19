@@ -1,5 +1,4 @@
-﻿
-public class ExecuteAttack : TaskBase
+﻿public class ExecuteAttack : TaskBase
 {
     public ExecuteAttack()
     {
