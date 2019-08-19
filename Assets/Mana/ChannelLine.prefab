@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &5154102883097145683
+--- !u!1 &4064296998964270726
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,37 +8,37 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6596339775947575268}
-  - component: {fileID: 8444942662426583535}
-  - component: {fileID: 6706550934071826846}
+  - component: {fileID: 5112658192662907145}
+  - component: {fileID: 5010266208119288579}
+  - component: {fileID: 745926433271330849}
   m_Layer: 0
-  m_Name: LeyLine
+  m_Name: ChannelLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6596339775947575268
+--- !u!4 &5112658192662907145
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5154102883097145683}
+  m_GameObject: {fileID: 4064296998964270726}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 226.06158, y: 90.88825, z: -25.890148}
+  m_LocalPosition: {x: 750.7211, y: 287.11325, z: -27.430933}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!120 &8444942662426583535
+--- !u!120 &5010266208119288579
 LineRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5154102883097145683}
+  m_GameObject: {fileID: 4064296998964270726}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 1
@@ -46,11 +46,10 @@ LineRenderer:
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
-  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f05fc6d848b0b6c4c8b613023b0a1166, type: 2}
+  - {fileID: 2100000, guid: d18ad302dfa30fe4c9b8df47e793a774, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -68,9 +67,9 @@ LineRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1735232521
-  m_SortingLayer: 1
-  m_SortingOrder: 1
+  m_SortingLayerID: -396414279
+  m_SortingLayer: 5
+  m_SortingOrder: 2
   m_Positions: []
   m_Parameters:
     serializedVersion: 3
@@ -79,8 +78,8 @@ LineRenderer:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0.7818754
-        value: 0.10080284
+        time: 0.7751615
+        value: 0.05429405
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -127,17 +126,15 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
---- !u!114 &6706550934071826846
+--- !u!114 &745926433271330849
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5154102883097145683}
+  m_GameObject: {fileID: 4064296998964270726}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2f3336d022d8a84488856cf19a00f72, type: 3}
+  m_Script: {fileID: 11500000, guid: 28f75841c01d7654ab8c62e8bc20bd56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Line: {fileID: 0}
-  ManaColor: 0

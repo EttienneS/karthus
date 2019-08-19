@@ -73,7 +73,6 @@ public class CreatureController : MonoBehaviour
         creature.Data.GetBehaviourTask = Behaviours.GetBehaviourFor(creature.Data.BehaviourName);
 
         creature.SpriteRenderer.material = Game.MaterialController.DefaultMaterial;
-        creature.SpriteRenderer.sprite = Game.SpriteStore.GetCreatureSprite(creature.Data.Sprite);
 
         creature.Data.ManaPool.GainMana(ManaColor.White, 10);
 

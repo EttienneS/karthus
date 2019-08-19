@@ -19,6 +19,8 @@ public class ExecuteAttack : TaskBase
         Attack.Attacker = AssignedEntity;
         Attack.Target = Target;
 
+        (Attack.Attacker as CreatureData)?.Face(Target.Coordinates);
+
         if (Faction.QueueComplete(SubTasks) && Attack.Ready())
         {
             Attack.Resolve();

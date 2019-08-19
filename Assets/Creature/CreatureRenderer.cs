@@ -41,6 +41,7 @@ public class CreatureRenderer : MonoBehaviour
     public Sprite GetIcon()
     {
         return SpriteRenderer.sprite;
+
     }
 
     public void HideLine()

@@ -48,6 +48,8 @@
             Target = Creature;
         }
 
+        (Source as CreatureData)?.Face(Target.Coordinates);
+
         if (Faction.QueueComplete(SubTasks))
         {
             if (AmountToChannel <= 0)
@@ -59,8 +61,7 @@
                 Source.ManaPool.BurnMana(ManaColor, 1);
                 Target.ManaPool.GainMana(ManaColor, 1);
 
-                Game.LeyLineController.MakeChannellingLine(Source.Coordinates.ToTopOfMapVector(),
-                    Target.Coordinates.ToTopOfMapVector(), 5, GameConstants.ChannelDuration, ManaColor);
+                Game.LeyLineController.MakeChannellingLine(Source, Target, 5, GameConstants.ChannelDuration, ManaColor);
                 Creature.CreatureRenderer.DisplayChannel(ManaColor, GameConstants.ChannelDuration);
                 AmountToChannel--;
                 AddSubTask(new Wait(2f, $"{ManaColor}!!", true));

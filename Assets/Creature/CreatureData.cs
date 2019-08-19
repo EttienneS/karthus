@@ -13,22 +13,16 @@ public class CreatureData : IEntity
     public const string SelfKey = "Self";
     public string BehaviourName;
 
-    public Coordinates Coordinates { get; set; }
-
-    public string Id { get; set; }
-
     [JsonIgnore]
     public Behaviours.GetBehaviourTaskDelegate GetBehaviourTask;
 
     public Dictionary<string, Memory> Mind = new Dictionary<string, Memory>();
     public Mobility Mobility;
-    public Direction MoveDirection = Direction.S;
+    public Direction Facing = Direction.S;
     public string Name;
-
     public float Speed = 10f;
     public Dictionary<string, string> StringProperties = new Dictionary<string, string>();
     public Dictionary<string, float> ValueProperties = new Dictionary<string, float>();
-
     internal float InternalTick;
 
     [JsonIgnore]
@@ -52,19 +46,7 @@ public class CreatureData : IEntity
         }
     }
 
-    [JsonIgnore]
-    public CellData CurrentCell
-    {
-        get
-        {
-            return Game.MapGrid.GetCellAtCoordinate(Coordinates);
-        }
-    }
-
-    
-
-    public string FactionName { get; set; }
-
+    public Coordinates Coordinates { get; set; }
 
     [JsonIgnore]
     public CreatureRenderer CreatureRenderer
@@ -75,6 +57,17 @@ public class CreatureData : IEntity
         }
     }
 
+    [JsonIgnore]
+    public CellData CurrentCell
+    {
+        get
+        {
+            return Game.MapGrid.GetCellAtCoordinate(Coordinates);
+        }
+    }
+
+    public string FactionName { get; set; }
+    public string Id { get; set; }
     public ManaPool ManaPool { get; set; } = new ManaPool();
 
     public int Perception { get; set; }
@@ -105,6 +98,45 @@ public class CreatureData : IEntity
             TypeNameHandling = TypeNameHandling.Auto,
             NullValueHandling = NullValueHandling.Ignore,
         });
+    }
+
+    public void Damage(int amount, ManaColor type)
+    {
+        if (!ManaPool.Empty())
+        {
+            var mana = ManaPool.GetRandomManaColorFromPool();
+            ManaPool.BurnMana(mana, amount);
+        }
+        else
+        {
+            Game.EffectController.SpawnEffect(Coordinates, 1);
+        }
+    }
+
+    public void Face(Coordinates coordinates)
+    {
+        if (coordinates.Y < Coordinates.Y)
+        {
+            Facing = Direction.N;
+        }
+        else if (coordinates.Y > Coordinates.Y)
+        {
+            Facing = Direction.S;
+        }
+        else if (coordinates.X < Coordinates.X)
+        {
+            Facing = Direction.W;
+        }
+        else if (coordinates.X > Coordinates.X)
+        {
+            Facing = Direction.E;
+        }
+        else
+        {
+            // default
+            Facing = Direction.N;
+        }
+
     }
 
     internal void Forget(string context)
@@ -191,6 +223,8 @@ public class CreatureData : IEntity
             return true;
         }
 
+        UpdateSprite();
+
         return false;
     }
 
@@ -243,16 +277,9 @@ public class CreatureData : IEntity
         }
     }
 
-    public void Damage(int amount, ManaColor type)
+    private void UpdateSprite()
     {
-        if (!ManaPool.Empty())
-        {
-            var mana = ManaPool.GetRandomManaColorFromPool();
-            ManaPool.BurnMana(mana, amount);
-        }
-        else
-        {
-            Game.EffectController.SpawnEffect(Coordinates, 1);
-        }
+        CreatureRenderer.SpriteRenderer.flipX = Facing == Direction.E;
+        CreatureRenderer.SpriteRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite, Facing);
     }
 }

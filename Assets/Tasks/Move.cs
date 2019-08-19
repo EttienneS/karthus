@@ -74,7 +74,7 @@ public class Move : TaskBase
                 // difficults cells take longer
                 _journeyLength = Vector3.Distance(currentCreatureCell.Coordinates.ToMapVector(), _targetPos) + _nextCell.TravelCost;
 
-                Creature.MoveDirection = Game.MapGrid.GetDirection(currentCreatureCell, _nextCell);
+                Creature.Facing = Game.MapGrid.GetDirection(currentCreatureCell, _nextCell);
                 _startTime = Time.time;
             }
         }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class SpriteStore : MonoBehaviour
 {
@@ -35,7 +34,6 @@ public class SpriteStore : MonoBehaviour
         return GetSpriteByName("Placeholder");
     }
 
-
     public Dictionary<string, Sprite> CreatureSprites = new Dictionary<string, Sprite>();
 
     public void LoadCreatureSprites()
@@ -65,15 +63,37 @@ public class SpriteStore : MonoBehaviour
                     {
                         MapSpriteTypeDictionary.Add(typeName, sprite);
                     }
-
                 }
             }
             return _mapSprites;
         }
     }
 
-    internal Sprite GetCreatureSprite(string spriteName)
+    internal Sprite GetCreatureSprite(string spriteName, Direction facing)
     {
+        if (spriteName.Contains("_"))
+        {
+            switch (facing)
+            {
+
+                case Direction.NW:
+                case Direction.NE:
+                case Direction.N:
+                    spriteName += "front";
+                    break;
+
+                case Direction.E:
+                case Direction.W:
+                    spriteName += "side";
+                    break;
+                case Direction.SW:
+                case Direction.SE:
+                case Direction.S:
+                    spriteName += "back";
+                    break;
+            }
+        }
+
         if (CreatureSprites.ContainsKey(spriteName))
         {
             return CreatureSprites[spriteName];

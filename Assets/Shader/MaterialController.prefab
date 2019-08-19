@@ -47,3 +47,4 @@ MonoBehaviour:
   DefaultMaterial: {fileID: 2100000, guid: 5c0aef44052b8d24d902de7b45295f05, type: 2}
   RuneMaterial: {fileID: 2100000, guid: 006e3cd98ab608649ac2a2bf1c6fc227, type: 2}
   AbyssMaterial: {fileID: 2100000, guid: eb76778c1bf0c3f44ba5ed1d764100ab, type: 2}
+  LeyLineMaterial: {fileID: 2100000, guid: f05fc6d848b0b6c4c8b613023b0a1166, type: 2}

@@ -51,6 +51,9 @@ public class CreatureInfoPanel : MonoBehaviour
                 }
             }
 
+            Properties.text += $"\nMoving:\t{CurrentCreature.Data.Facing}";
+
+
             if (CurrentCreature.Data.Task != null)
             {
                 Task.text = CurrentCreature.Data.Task.ToString();

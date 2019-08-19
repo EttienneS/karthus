@@ -15,7 +15,7 @@ public class LeyLineController : MonoBehaviour
         var line = Instantiate(LeyLinePrefab, transform);
 
         line.Jitter = Jitter;
-        line.Line.material.SetColor("_EffectColor", manaColor.GetActualColor());
+        line.Line.material = Game.MaterialController.GetLeyLineMaterial(manaColor.GetActualColor());
         line.ManaColor = manaColor;
         line.name = $"{cells.First().Coordinates}-{cells.Last().Coordinates}";
         Lines.Add(line);
@@ -26,7 +26,7 @@ public class LeyLineController : MonoBehaviour
         return line;
     }
 
-    public ChannelLine MakeChannellingLine(Vector3 source, Vector3 target, int intensity, float duration, ManaColor manaColor)
+    public ChannelLine MakeChannellingLine(IEntity source, IEntity target, int intensity, float duration, ManaColor manaColor)
     {
         var line = Instantiate(ChannelLinePrefab, transform);
         line.name = $"Channel: {manaColor}";

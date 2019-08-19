@@ -40,12 +40,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 8759692018346940595}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c49aa6811ff843843a5a3e3fb90e2422, type: 3}
+  m_Script: {fileID: 11500000, guid: f1b777799897f2f4ca7cd400e8aa737e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Jitter: 0.1
   LeyLinePrefab: {fileID: 6706550934071826846, guid: 4c4e9a42fdee74946b86d2507390f4f9,
     type: 3}
-  ChannelLinePrefab: {fileID: 2261295539792585583, guid: f4fad3fa4b7404b40a8dc17eae6af77a,
+  ChannelLinePrefab: {fileID: 745926433271330849, guid: f4fad3fa4b7404b40a8dc17eae6af77a,
     type: 3}
   Lines: []

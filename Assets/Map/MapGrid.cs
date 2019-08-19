@@ -565,69 +565,74 @@ public class MapGrid : MonoBehaviour
 
     private IEnumerator UpdateCells()
     {
-        const int maxDraws = 25;
+        const int maxDraws = 100;
         while (true)
         {
-            var draws = 0;
-            foreach (var kvp in PendingBinding)
+            ProcessBindings(maxDraws);
+
+            yield return null;
+        }
+    }
+
+    internal void ProcessBindings(int maxDraws)
+    {
+        var draws = 0;
+        foreach (var kvp in PendingBinding)
+        {
+            List<CellData> done = new List<CellData>();
+            foreach (var cell in kvp.Value)
             {
-                List<CellData> done = new List<CellData>();
-                foreach (var cell in kvp.Value)
+                if (!cell.Bound)
                 {
-                    if (!cell.Bound)
+                    cell.Binding = IdService.GetEntityFromId(kvp.Key);
+
+                    if (!CellBinding.ContainsKey(kvp.Key))
                     {
-                        cell.Binding = IdService.GetEntityFromId(kvp.Key);
-
-                        if (!CellBinding.ContainsKey(kvp.Key))
-                        {
-                            CellBinding.Add(kvp.Key, new List<CellData>());
-                        }
-
-                        CellBinding[kvp.Key].Add(cell);
-                        RefreshCell(cell);
-                        if (draws++ > maxDraws)
-                        {
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        done.Add(cell);
-                    }
-                }
-
-                done.ForEach(c => kvp.Value.Remove(c));
-            }
-
-            foreach (var kvp in PendingUnbinding)
-            {
-                var cell = kvp.Value.FirstOrDefault();
-                if (cell != null)
-                {
-                    cell.Binding = null;
-
-                    if (cell.Structure != null)
-                    {
-                        Game.StructureController.DestroyStructure(cell.Structure);
+                        CellBinding.Add(kvp.Key, new List<CellData>());
                     }
 
-                    if (CellBinding.ContainsKey(kvp.Key))
-                    {
-                        CellBinding[kvp.Key].Remove(cell);
-                    }
-
+                    CellBinding[kvp.Key].Add(cell);
                     RefreshCell(cell);
-
                     if (draws++ > maxDraws)
                     {
                         break;
                     }
                 }
-
-                kvp.Value.Remove(cell);
+                else
+                {
+                    done.Add(cell);
+                }
             }
 
-            yield return null;
+            done.ForEach(c => kvp.Value.Remove(c));
+        }
+
+        foreach (var kvp in PendingUnbinding)
+        {
+            var cell = kvp.Value.FirstOrDefault();
+            if (cell != null)
+            {
+                cell.Binding = null;
+
+                if (cell.Structure != null)
+                {
+                    Game.StructureController.DestroyStructure(cell.Structure);
+                }
+
+                if (CellBinding.ContainsKey(kvp.Key))
+                {
+                    CellBinding[kvp.Key].Remove(cell);
+                }
+
+                RefreshCell(cell);
+
+                if (draws++ > maxDraws)
+                {
+                    break;
+                }
+            }
+
+            kvp.Value.Remove(cell);
         }
     }
 }

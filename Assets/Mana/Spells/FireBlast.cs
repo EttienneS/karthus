@@ -29,8 +29,8 @@ public class FireBlast : IAttack
         Attacker.ManaPool.BurnMana(ManaColor.Red, 1);
 
         Game.EffectController.SpawnEffect(Target.Coordinates, 3);
-        Game.LeyLineController.MakeChannellingLine(Attacker.Coordinates.ToTopOfMapVector(),
-                                                   Target.Coordinates.ToTopOfMapVector(), 5, 3,
+        Game.LeyLineController.MakeChannellingLine(Attacker,
+                                                   Target, 5, 3,
                                                    ManaColor.Red);
         Target.Damage(5, ManaColor.Red);
     }

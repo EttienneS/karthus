@@ -7,8 +7,8 @@ using Random = UnityEngine.Random;
 public class ChannelLine : MonoBehaviour
 {
     internal LineRenderer LineRenderer;
-    internal Vector3 Source;
-    internal Vector3 Target;
+    internal IEntity Source;
+    internal IEntity Target;
     internal int Intensity;
     internal float Duration;
     internal float Delta;
@@ -27,14 +27,17 @@ public class ChannelLine : MonoBehaviour
         {
             var frac = Delta / Duration;
 
+            var srcPoint = Source.Coordinates.ToTopOfMapVector() + new Vector3(0, 0.4f);
+            var trgPoint = Target.Coordinates.ToTopOfMapVector();
+
             var drawPoints = new List<Vector3>();
-            drawPoints.Add(Target);
-            drawPoints.Add(Source);
+            drawPoints.Add(trgPoint);
+            drawPoints.Add(srcPoint);
 
             for (int i = 0; i < TargetPoints.Count; i++)
             {
-                drawPoints.Add(Source + new Vector3(Random.Range(-0.05f, 0.05f), Random.Range(-0.05f, 0.05f), 0));
-                var trg = Vector3.Lerp(Target, TargetPoints[i], frac);
+                drawPoints.Add(srcPoint + new Vector3(Random.Range(-0.05f, 0.05f), Random.Range(-0.05f, 0.05f), 0));
+                var trg = Vector3.Lerp(trgPoint, trgPoint+ TargetPoints[i], frac);
                 drawPoints.Add(trg);
                 drawPoints.Add(trg + new Vector3(Random.Range(-0.05f, 0.05f), Random.Range(-0.05f, 0.05f), 0));
                 drawPoints.Add(trg);
@@ -42,7 +45,7 @@ public class ChannelLine : MonoBehaviour
                 drawPoints.Add(trg);
             }
 
-            drawPoints.Add(Source);
+            drawPoints.Add(srcPoint);
 
             LineRenderer.positionCount = drawPoints.Count;
             LineRenderer.SetPositions(drawPoints.ToArray());
@@ -54,9 +57,9 @@ public class ChannelLine : MonoBehaviour
     }
 
 
-    internal void SetProperties(Vector3 source, Vector3 target, int intensity, float duration, ManaColor manaColor)
+    internal void SetProperties(IEntity source, IEntity target, int intensity, float duration, ManaColor manaColor)
     {
-        Source = source + new Vector3(0, 0.4f);
+        Source = source;
         Target = target;
         Intensity = intensity;
         Duration = duration;
@@ -65,7 +68,7 @@ public class ChannelLine : MonoBehaviour
 
         for (int i = 0; i < intensity; i++)
         {
-            TargetPoints.Add(target + new Vector3(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f), 0));
+            TargetPoints.Add(new Vector3(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f), 0));
         }
 
         LineRenderer.startColor = manaColor.GetActualColor();

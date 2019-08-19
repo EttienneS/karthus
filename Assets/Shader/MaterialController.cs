@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MaterialController : MonoBehaviour
 {
@@ -7,6 +6,7 @@ public class MaterialController : MonoBehaviour
     public Material DefaultMaterial;
     public Material RuneMaterial;
     public Material AbyssMaterial;
+    public Material LeyLineMaterial;
 
     public Material GetMaterial(string name)
     {
@@ -14,26 +14,35 @@ public class MaterialController : MonoBehaviour
         {
             case "abyss":
                 return AbyssMaterial;
+
+            case "leyline":
+                return LeyLineMaterial;
+
             case "rune":
                 return RuneMaterial;
+
             case "channel":
                 return ChannelingMaterial;
+
             default:
                 return DefaultMaterial;
         }
     }
 
+    public Material GetLeyLineMaterial(Color color)
+    {
+        return GetLineMaterial(color, LeyLineMaterial);
+    }
 
     public Material GetChannelingMaterial(Color color)
     {
-        var material = new Material(ChannelingMaterial);
+        return GetLineMaterial(color, ChannelingMaterial);
+    }
+
+    public Material GetLineMaterial(Color color, Material baseMat)
+    {
+        var material = new Material(baseMat);
         material.SetColor("_EffectColor", color);
-
-        if (color == Color.black)
-        {
-            material.SetFloat("_Balance", 0.5f);
-        }
-
         return material;
     }
 }

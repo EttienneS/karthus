@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class MagicController : MonoBehaviour
@@ -29,29 +30,37 @@ public class MagicController : MonoBehaviour
 
         WorkTick += Time.deltaTime;
 
-        if (WorkTick >= Game.TimeManager.MagicInterval)
+        try
         {
-            if (Work.Count == 0 || Work.Peek() == null)
+            if (WorkTick >= Game.TimeManager.MagicInterval)
             {
-                return;
-            }
-
-            var spells = new List<SpellBase>();
-
-            for (int i = 0; i < MagicRate; i++)
-            {
-                var spell = Work.Dequeue();
-                spell.Done();
-                spells.Add(spell);
-            }
-
-            foreach (var spell in spells)
-            {
-                if (IdService.GetStructureFromId(spell.Originator.Id) != null)
+                if (Work.Count == 0 || Work.Peek() == null)
                 {
-                    Work.Enqueue(spell);
+                    return;
+                }
+
+                var spells = new List<SpellBase>();
+
+                for (int i = 0; i < MagicRate; i++)
+                {
+                    var spell = Work.Dequeue();
+                    spell.Done();
+                    spells.Add(spell);
+                }
+
+                foreach (var spell in spells)
+                {
+                    if (IdService.GetStructureFromId(spell.Originator.Id) != null)
+                    {
+                        Work.Enqueue(spell);
+                    }
                 }
             }
         }
+        catch (Exception ex)
+        {
+            Debug.Log($"Magic glitch: {ex.Message}");
+        }
+
     }
 }

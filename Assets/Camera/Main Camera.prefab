@@ -101,5 +101,5 @@ MonoBehaviour:
   SpeedMin: 0.1
   SpeedMax: 2
   ZoomMax: 25
-  ZoomMin: 3
+  ZoomMin: 1
   ZoomStep: 10

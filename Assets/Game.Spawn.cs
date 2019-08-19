@@ -4,7 +4,7 @@ using UnityEngine;
 
 public partial class Game // .Spawn
 {
-    public static void SpawnRune(CellData location, string name, Faction faction)
+    public static Structure SpawnRune(CellData location, string name, Faction faction)
     {
         location.CellType = CellType.Stone;
         MapGrid.BindCell(location, faction.Core);
@@ -16,6 +16,16 @@ public partial class Game // .Spawn
         location.CellType = CellType.Stone;
         MapGrid.BindCell(location, rune);
         location.SetStructure(rune);
+
+        if (name == "BindRune")
+        {
+            foreach (var c in MapGrid.BleedGroup(MapGrid.GetCircle(location.Coordinates, Random.Range(2, 5))))
+            {
+                MapGrid.BindCell(c, rune);
+            }
+        }
+
+        return rune;
     }
 
     public static void InitialSpawn()
@@ -52,15 +62,19 @@ public partial class Game // .Spawn
                                              FactionController.MonsterFaction);
         }
 
-        Debug.Log($"Did initial spawn in {sw.Elapsed}s");
         sw.Stop();
+
+        MapGrid.ProcessBindings(MapGrid.PendingBinding.Count * 100);
+
+        Debug.Log($"Did initial spawn in {sw.Elapsed}s");
     }
 
     private static void CreateLeyLines()
     {
-        for (int i = 0; i < Game.MapGrid.MapSize / 2; i++)
+        for (int i = 0; i < MapGrid.MapSize / 2; i++)
         {
-            SpawnRune(MapGrid.GetRandomCell(), "BindRune", FactionController.WorldFaction);
+            var cell = MapGrid.GetRandomCell();
+            SpawnRune(cell, "BindRune", FactionController.WorldFaction);
         }
 
         var nexusPoints = new List<CellData>();
@@ -89,9 +103,9 @@ public partial class Game // .Spawn
             MapGrid.BindCell(cell, faction.Core);
         }
 
-        SpawnRune(center.GetNeighbor(Direction.N).GetNeighbor(Direction.N), "BindRune", faction);
-        SpawnRune(center.GetNeighbor(Direction.E).GetNeighbor(Direction.E), "BindRune", faction);
-        SpawnRune(center.GetNeighbor(Direction.S).GetNeighbor(Direction.S), "BindRune", faction);
-        SpawnRune(center.GetNeighbor(Direction.W).GetNeighbor(Direction.W), "BindRune", faction);
+        SpawnRune(center.GetNeighbor(Direction.N).GetNeighbor(Direction.N).GetNeighbor(Direction.N), "BindRune", faction);
+        SpawnRune(center.GetNeighbor(Direction.E).GetNeighbor(Direction.E).GetNeighbor(Direction.E), "BindRune", faction);
+        SpawnRune(center.GetNeighbor(Direction.S).GetNeighbor(Direction.S).GetNeighbor(Direction.S), "BindRune", faction);
+        SpawnRune(center.GetNeighbor(Direction.W).GetNeighbor(Direction.W).GetNeighbor(Direction.W), "BindRune", faction);
     }
 }
