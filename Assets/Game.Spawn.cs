@@ -19,7 +19,7 @@ public partial class Game // .Spawn
 
         if (name == "BindRune")
         {
-            foreach (var c in MapGrid.BleedGroup(MapGrid.GetCircle(location.Coordinates, Random.Range(2, 5))))
+            foreach (var c in MapGrid.BleedGroup(MapGrid.GetCircle(location.Coordinates, Random.Range(4, 7))))
             {
                 MapGrid.BindCell(c, rune);
             }
