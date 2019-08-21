@@ -69,25 +69,31 @@ public class SpriteStore : MonoBehaviour
         }
     }
 
-    internal Sprite GetCreatureSprite(string spriteName, Direction facing)
+    internal bool FacingUp(Direction facing)
+    {
+        switch (facing)
+        {
+            case Direction.NW:
+            case Direction.NE:
+            case Direction.N:
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+    internal Sprite GetCreatureSprite(string spriteName, Direction facing, int animationIndex)
     {
         if (spriteName.Contains("_"))
         {
-            switch (facing)
+            if (FacingUp(facing))
             {
-                case Direction.NW:
-                case Direction.NE:
-                case Direction.N:
-                    spriteName += "back";
-                    break;
-
-                case Direction.E:
-                case Direction.W:
-                case Direction.SW:
-                case Direction.SE:
-                case Direction.S:
-                    spriteName += "front1";
-                    break;
+                spriteName += "back";
+            }
+            else
+            {
+                spriteName += "front" + animationIndex;
             }
         }
 

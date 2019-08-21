@@ -214,6 +214,7 @@ public class CreatureData : IEntity
         {
             WorkTick = 0;
             ProcessTask();
+            UpdateSprite();
         }
 
         if (InternalTick >= Game.TimeManager.TickInterval)
@@ -224,8 +225,6 @@ public class CreatureData : IEntity
 
             return true;
         }
-
-        UpdateSprite();
 
         return false;
     }
@@ -279,9 +278,30 @@ public class CreatureData : IEntity
         }
     }
 
+    private int _animationIndex = 1;
+    private Direction _previousFacing = Direction.S;
+
     private void UpdateSprite()
     {
+        if (Game.SpriteStore.FacingUp(_previousFacing) && !Game.SpriteStore.FacingUp(Facing))
+        {
+            _animationIndex = 1;
+        }
+        else
+        {
+            if (_animationIndex < 9)
+            {
+                _animationIndex++;
+            }
+            else
+            {
+                _animationIndex = 1;
+            }
+        }
+
+        _previousFacing = Facing;
+
         CreatureRenderer.SpriteRenderer.flipX = Facing == Direction.W || Facing == Direction.NW || Facing == Direction.SW;
-        CreatureRenderer.SpriteRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite, Facing);
+        CreatureRenderer.SpriteRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite, Facing, _animationIndex);
     }
 }
