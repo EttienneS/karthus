@@ -86,7 +86,7 @@ public class SpriteStore : MonoBehaviour
                 case Direction.SW:
                 case Direction.SE:
                 case Direction.S:
-                    spriteName += "front";
+                    spriteName += "front1";
                     break;
             }
         }
