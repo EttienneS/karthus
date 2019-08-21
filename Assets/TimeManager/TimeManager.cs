@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public enum TimeStep
 {
     Paused = 0,
-    Slow = 1,
     Normal = 2,
     Fast = 8,
     Hyper = 16
@@ -92,13 +91,12 @@ public class TimeManager : MonoBehaviour
         var buttons = GetComponentsInChildren<Button>();
 
         PauseButton = buttons.First(b => b.name == "PauseButton");
-        SlowButton = buttons.First(b => b.name == "SlowButton");
+        //SlowButton = buttons.First(b => b.name == "SlowButton");
         NormalButton = buttons.First(b => b.name == "NormalButton");
         FastButton = buttons.First(b => b.name == "FastButton");
         FasterButton = buttons.First(b => b.name == "FasterButton");
 
         PauseButton.onClick.AddListener(() => { TimeStep = TimeStep.Paused; });
-        SlowButton.onClick.AddListener(() => { TimeStep = TimeStep.Slow; });
         NormalButton.onClick.AddListener(() => { TimeStep = TimeStep.Normal; });
         FastButton.onClick.AddListener(() => { TimeStep = TimeStep.Fast; });
         FasterButton.onClick.AddListener(() => { TimeStep = TimeStep.Hyper; });
@@ -106,7 +104,7 @@ public class TimeManager : MonoBehaviour
         AllButtons = new Dictionary<TimeStep, Button>
         {
             { TimeStep.Paused,PauseButton},
-            { TimeStep.Slow, SlowButton },
+            //{ TimeStep.Slow, SlowButton },
             { TimeStep.Normal, NormalButton},
             { TimeStep.Fast, FastButton },
             { TimeStep.Hyper, FasterButton }

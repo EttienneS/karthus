@@ -83,9 +83,6 @@ public class SpriteStore : MonoBehaviour
 
                 case Direction.E:
                 case Direction.W:
-                    spriteName += "side";
-                    break;
-
                 case Direction.SW:
                 case Direction.SE:
                 case Direction.S:

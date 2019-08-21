@@ -281,7 +281,7 @@ public class CreatureData : IEntity
 
     private void UpdateSprite()
     {
-        CreatureRenderer.SpriteRenderer.flipX = Facing == Direction.E;
+        CreatureRenderer.SpriteRenderer.flipX = Facing == Direction.W || Facing == Direction.NW || Facing == Direction.SW;
         CreatureRenderer.SpriteRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite, Facing);
     }
 }
