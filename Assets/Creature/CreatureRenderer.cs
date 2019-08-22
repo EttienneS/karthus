@@ -11,7 +11,12 @@ public class CreatureRenderer : MonoBehaviour
     internal Light Light;
     internal LineRenderer LineRenderer;
     internal float RemainingTextDuration;
-    internal SpriteRenderer SpriteRenderer;
+    internal SpriteRenderer MainRenderer;
+    internal SpriteRenderer HairRenderer;
+    internal SpriteRenderer FaceRenderer;
+    internal SpriteRenderer TopRenderer;
+    internal SpriteRenderer BottomRenderer;
+    internal SpriteRenderer BodyRenderer;
     internal float TempMaterialDelta;
     internal float TempMaterialDuration;
     internal TextMeshPro Text;
@@ -19,11 +24,19 @@ public class CreatureRenderer : MonoBehaviour
     public void Awake()
     {
         Highlight = transform.Find("Highlight").GetComponent<SpriteRenderer>();
-        SpriteRenderer = transform.Find("Sprite").GetComponent<SpriteRenderer>();
+        var mainSprite = transform.Find("Sprite");
+        MainRenderer = mainSprite.GetComponent<SpriteRenderer>();
+
+        FaceRenderer = mainSprite.Find("Face").GetComponent<SpriteRenderer>();
+        HairRenderer = mainSprite.Find("Hair").GetComponent<SpriteRenderer>();
+        TopRenderer = mainSprite.Find("Top").GetComponent<SpriteRenderer>();
+        BottomRenderer = mainSprite.Find("Bottom").GetComponent<SpriteRenderer>();
+        BodyRenderer = mainSprite.Find("Body").GetComponent<SpriteRenderer>();
+
         Text = GetComponentInChildren<TextMeshPro>();
 
         LineRenderer = GetComponent<LineRenderer>();
-        Light = GetComponent<Light>();
+        Light = transform.Find("Light").GetComponent<Light>();
 
         Highlight.gameObject.SetActive(false);
     }
@@ -40,7 +53,7 @@ public class CreatureRenderer : MonoBehaviour
 
     public Sprite GetIcon()
     {
-        return SpriteRenderer.sprite;
+        return MainRenderer.sprite;
     }
 
     public void HideLine()
@@ -63,6 +76,23 @@ public class CreatureRenderer : MonoBehaviour
         Text.color = Color.white;
 
         RemainingTextDuration = duration + 1f;
+    }
+
+    public void Start()
+    {
+        // disable other sprites
+        if (!Data.Sprite.Contains("_"))
+        {
+            FaceRenderer.sprite = null;
+            BodyRenderer.sprite = null;
+            TopRenderer.sprite = null;
+            BottomRenderer.sprite = null;
+            HairRenderer.sprite = null;
+        }
+        else
+        {
+            MainRenderer.sprite = null;
+        }
     }
 
     public void Update()
@@ -96,7 +126,7 @@ public class CreatureRenderer : MonoBehaviour
     internal void DisplayChannel(ManaColor color, float duration)
     {
         var col = color.GetActualColor();
-        SpriteRenderer.material = Game.MaterialController.GetChannelingMaterial(col);
+        MainRenderer.material = Game.MaterialController.GetChannelingMaterial(col);
         TempMaterialDuration = duration;
         TempMaterialDelta = 0;
 
@@ -139,7 +169,7 @@ public class CreatureRenderer : MonoBehaviour
             Light.color = Color.white;
             Light.intensity = 0.1f;
 
-            SpriteRenderer.SetBoundMaterial(Data.CurrentCell.Bound);
+            MainRenderer.SetBoundMaterial(Data.CurrentCell.Bound);
         }
     }
 }

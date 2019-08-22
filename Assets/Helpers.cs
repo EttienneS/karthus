@@ -51,6 +51,23 @@ public static class ColorExtensions
     {
         return new[] { color.r, color.g, color.b, color.a };
     }
+
+    internal static Color GetColorFromHex(string hexString)
+    {
+        Color col;
+
+        if (ColorUtility.TryParseHtmlString(hexString, out col))
+        {
+            return col;
+        }
+
+        throw new Exception("Unable to parse color");
+    }
+
+    internal static Color GetRandomSkinColor()
+    {
+        return ColorConstants.SkinArray[Random.Range(0, ColorConstants.SkinArray.Length - 1)];
+    }
 }
 
 public static class VHelpers

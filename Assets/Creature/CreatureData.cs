@@ -14,14 +14,27 @@ public class CreatureData : IEntity
     public string BehaviourName;
 
     [JsonIgnore]
+    public Color BottomColor;
+
+    public Direction Facing = Direction.S;
+
+    [JsonIgnore]
     public Behaviours.GetBehaviourTaskDelegate GetBehaviourTask;
+
+    [JsonIgnore]
+    public Color HairColor;
 
     public Dictionary<string, Memory> Mind = new Dictionary<string, Memory>();
     public Mobility Mobility;
-    public Direction Facing = Direction.S;
     public string Name;
+    [JsonIgnore]
+    public Color SkinColor;
+
     public float Speed = 10f;
     public Dictionary<string, string> StringProperties = new Dictionary<string, string>();
+    [JsonIgnore]
+    public Color TopColor;
+
     public Dictionary<string, float> ValueProperties = new Dictionary<string, float>();
     internal float InternalTick;
 
@@ -32,6 +45,9 @@ public class CreatureData : IEntity
 
     [JsonIgnore]
     private List<CellData> _awareness;
+
+    [JsonIgnore]
+    private bool _firstRun = true;
 
     public List<CellData> Awareness
     {
@@ -120,11 +136,11 @@ public class CreatureData : IEntity
     {
         if (coordinates.Y < Coordinates.Y)
         {
-            Facing = Direction.N;
+            Facing = Direction.S;
         }
         else if (coordinates.Y > Coordinates.Y)
         {
-            Facing = Direction.S;
+            Facing = Direction.N;
         }
         else if (coordinates.X < Coordinates.X)
         {
@@ -137,8 +153,25 @@ public class CreatureData : IEntity
         else
         {
             // default
-            Facing = Direction.N;
+            Facing = Direction.S;
         }
+    }
+
+    public void SetColors()
+    {
+        if (_firstRun)
+        {
+            SkinColor = ColorExtensions.GetRandomSkinColor();
+            HairColor = ColorExtensions.GetRandomSkinColor();
+            TopColor = ColorExtensions.GetRandomColor();
+            BottomColor = ColorExtensions.GetRandomColor();
+            _firstRun = false;
+        }
+
+        CreatureRenderer.BodyRenderer.color = SkinColor;
+        CreatureRenderer.TopRenderer.color = TopColor;
+        CreatureRenderer.BottomRenderer.color = BottomColor;
+        CreatureRenderer.HairRenderer.color = HairColor;
     }
 
     internal void Forget(string context)
@@ -277,31 +310,38 @@ public class CreatureData : IEntity
             }
         }
     }
-
-    private int _animationIndex = 1;
-    private Direction _previousFacing = Direction.S;
-
     private void UpdateSprite()
     {
-        if (Game.SpriteStore.FacingUp(_previousFacing) && !Game.SpriteStore.FacingUp(Facing))
+        bool flip = Facing == Direction.W || Facing == Direction.NW || Facing == Direction.SW;
+        if (!Sprite.Contains("_"))
         {
-            _animationIndex = 1;
+            CreatureRenderer.MainRenderer.flipX = flip;
+            CreatureRenderer.MainRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite);
         }
         else
         {
-            if (_animationIndex < 9)
+            var facingKey = Game.SpriteStore.FacingUp(Facing) ? "b_" : "f_";
+
+            CreatureRenderer.FaceRenderer.flipX = flip;
+            CreatureRenderer.BodyRenderer.flipX = flip;
+            CreatureRenderer.TopRenderer.flipX = flip;
+            CreatureRenderer.BottomRenderer.flipX = flip;
+            CreatureRenderer.HairRenderer.flipX = flip;
+
+            if (facingKey == "f_")
             {
-                _animationIndex++;
+                CreatureRenderer.FaceRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite + "face");
             }
             else
             {
-                _animationIndex = 1;
+                CreatureRenderer.FaceRenderer.sprite = null;
             }
+            CreatureRenderer.BodyRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite + facingKey + "body");
+            CreatureRenderer.TopRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite + facingKey + "top");
+            CreatureRenderer.BottomRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite + facingKey + "bottom");
+            CreatureRenderer.HairRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite + facingKey + "hair");
+
+            SetColors();
         }
-
-        _previousFacing = Facing;
-
-        CreatureRenderer.SpriteRenderer.flipX = Facing == Direction.W || Facing == Direction.NW || Facing == Direction.SW;
-        CreatureRenderer.SpriteRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite, Facing, _animationIndex);
     }
 }

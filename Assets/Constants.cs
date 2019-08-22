@@ -7,6 +7,17 @@ public static class ColorConstants
     public static Color BluePrintColor = new Color(0.3f, 1f, 1f, 0.4f);
     public static Color InvalidColor = Color.red;
     public static Color UnboundColor = new Color(0.66f, 0.18f, 0.6f, 0.9f);
+
+    public static Color[] SkinArray = new[]
+    {
+        //https://www.schemecolor.com/skin-shades-color-scheme.php
+        ColorExtensions.GetColorFromHex("#553827"),
+        ColorExtensions.GetColorFromHex("#935934"),
+        ColorExtensions.GetColorFromHex("#bd804a"),
+        ColorExtensions.GetColorFromHex("#fee4d7"),
+        ColorExtensions.GetColorFromHex("#e6a17d"),
+        ColorExtensions.GetColorFromHex("#be7f5e"),
+    };
 }
 
 public static class GameConstants

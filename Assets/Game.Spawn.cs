@@ -47,9 +47,12 @@ public partial class Game // .Spawn
 
         midCell.SetStructure(FactionController.PlayerFaction.Core);
 
-        CreatureController.SpawnCreature(CreatureController.GetCreatureOfType("Person"),
+        for (int i = 0; i < 2; i++)
+        {
+            CreatureController.SpawnCreature(CreatureController.GetCreatureOfType("Person"),
                                          midCell.GetNeighbor(Direction.E).Coordinates,
                                          FactionController.PlayerFaction);
+        }
 
         CameraController.MoveToCell(midCell.GetNeighbor(Direction.E));
 

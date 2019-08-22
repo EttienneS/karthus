@@ -83,20 +83,8 @@ public class SpriteStore : MonoBehaviour
         }
     }
 
-    internal Sprite GetCreatureSprite(string spriteName, Direction facing, int animationIndex)
+    internal Sprite GetCreatureSprite(string spriteName)
     {
-        if (spriteName.Contains("_"))
-        {
-            if (FacingUp(facing))
-            {
-                spriteName += "back";
-            }
-            else
-            {
-                spriteName += "front" + animationIndex;
-            }
-        }
-
         if (CreatureSprites.ContainsKey(spriteName))
         {
             return CreatureSprites[spriteName];
