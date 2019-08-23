@@ -10,13 +10,24 @@ public static class ColorConstants
 
     public static Color[] SkinArray = new[]
     {
-        //https://www.schemecolor.com/skin-shades-color-scheme.php
+        // https://www.schemecolor.com/skin-shades-color-scheme.php
         ColorExtensions.GetColorFromHex("#553827"),
         ColorExtensions.GetColorFromHex("#935934"),
         ColorExtensions.GetColorFromHex("#bd804a"),
         ColorExtensions.GetColorFromHex("#fee4d7"),
         ColorExtensions.GetColorFromHex("#e6a17d"),
         ColorExtensions.GetColorFromHex("#be7f5e"),
+    };
+
+    public static Color[] HairArray = new[]
+    {
+        // https://www.schemecolor.com/chairing-the-meeting.php
+        ColorExtensions.GetColorFromHex("#b8aca7"),
+        ColorExtensions.GetColorFromHex("#e6ddd7"),
+        ColorExtensions.GetColorFromHex("#fbf5e6"),
+        ColorExtensions.GetColorFromHex("#9a765f"),
+        ColorExtensions.GetColorFromHex("#5d3721"),
+        ColorExtensions.GetColorFromHex("#492a18"),
     };
 }
 

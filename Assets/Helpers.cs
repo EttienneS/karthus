@@ -68,6 +68,11 @@ public static class ColorExtensions
     {
         return ColorConstants.SkinArray[Random.Range(0, ColorConstants.SkinArray.Length - 1)];
     }
+
+    internal static Color GetRandomHairColor()
+    {
+        return ColorConstants.HairArray[Random.Range(0, ColorConstants.HairArray.Length - 1)];
+    }
 }
 
 public static class VHelpers

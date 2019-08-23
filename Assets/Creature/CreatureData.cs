@@ -24,6 +24,7 @@ public class CreatureData : IEntity
     [JsonIgnore]
     public Color HairColor;
 
+    public int HairStyle;
     public Dictionary<string, Memory> Mind = new Dictionary<string, Memory>();
     public Mobility Mobility;
     public string Name;
@@ -162,9 +163,10 @@ public class CreatureData : IEntity
         if (_firstRun)
         {
             SkinColor = ColorExtensions.GetRandomSkinColor();
-            HairColor = ColorExtensions.GetRandomSkinColor();
+            HairColor = ColorExtensions.GetRandomHairColor();
             TopColor = ColorExtensions.GetRandomColor();
             BottomColor = ColorExtensions.GetRandomColor();
+            HairStyle = Random.Range(1, 3);
             _firstRun = false;
         }
 
@@ -328,6 +330,8 @@ public class CreatureData : IEntity
             CreatureRenderer.BottomRenderer.flipX = flip;
             CreatureRenderer.HairRenderer.flipX = flip;
 
+            SetColors();
+
             if (facingKey == "f_")
             {
                 CreatureRenderer.FaceRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite + "face");
@@ -339,9 +343,8 @@ public class CreatureData : IEntity
             CreatureRenderer.BodyRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite + facingKey + "body");
             CreatureRenderer.TopRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite + facingKey + "top");
             CreatureRenderer.BottomRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite + facingKey + "bottom");
-            CreatureRenderer.HairRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite + facingKey + "hair");
+            CreatureRenderer.HairRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite + facingKey + "hair_" + HairStyle);
 
-            SetColors();
         }
     }
 }
