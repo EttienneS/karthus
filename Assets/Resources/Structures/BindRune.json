@@ -13,7 +13,8 @@
     "Green": "5"
   },
   "Buildable": true,
-  "SpriteName": "runeBlue_slab_001",
+  "SpriteName": "pylon",
+  "Layer": "Tree",
   "Tiled": false,
   "TravelCost": "10"
 }

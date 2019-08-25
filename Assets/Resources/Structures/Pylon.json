@@ -8,7 +8,7 @@
     "Black": "2"
   },
   "Buildable": false,
-  "SpriteName": "runeBlue_slab_004",
+  "SpriteName": "pylon",
   "Tiled": false,
   "TravelCost": "10",
   "StructureType": "Anchor"
