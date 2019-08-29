@@ -14,14 +14,13 @@ public enum CellType
 
 public class MapGrid : MonoBehaviour
 {
+    public const int PixelsPerCell = 64;
     public Dictionary<string, List<CellData>> CellBinding = new Dictionary<string, List<CellData>>();
     public Text CellLabel;
     [Range(0f, 1f)] public float JitterProbability = 0.8f;
     [Range(5, 500)] public int MapSize = 100;
     public Dictionary<string, List<CellData>> PendingBinding = new Dictionary<string, List<CellData>>();
     public Dictionary<string, List<CellData>> PendingUnbinding = new Dictionary<string, List<CellData>>();
-
-    public const int PixelsPerCell = 64;
     internal SpriteRenderer Background;
     internal Tilemap Tilemap;
     internal Canvas WorldCanvas;
@@ -158,6 +157,7 @@ public class MapGrid : MonoBehaviour
                 CreateCell(x, y, CellType.Water);
             }
         }
+
         Debug.Log($"Created cells in {sw.Elapsed.TotalSeconds}s");
         sw.Restart();
 
@@ -165,7 +165,13 @@ public class MapGrid : MonoBehaviour
         Debug.Log($"Linked cells in {sw.Elapsed.TotalSeconds}s");
         sw.Restart();
 
-        GenerateMapCells();
+        GenerateMapCells(new MapPreset(Random.Range(0.05f, 0.2f),
+                                (0.4f, CellType.Mountain),
+                                (0.3f, CellType.Stone),
+                                (0.0f, CellType.Forest),
+                                (-0.3f, CellType.Grass),
+                                (-0.45f, CellType.Dirt),
+                                (-0.5f, CellType.Water)));
         Debug.Log($"Generated map in {sw.Elapsed.TotalSeconds}s");
         sw.Restart();
 
@@ -283,6 +289,19 @@ public class MapGrid : MonoBehaviour
         return cells;
     }
 
+    public void RefreshCell(CellData cell)
+    {
+        var tile = ScriptableObject.CreateInstance<Tile>();
+        tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(cell.CellType);
+        tile.color = cell.Bound ? ColorConstants.BaseColor : ColorConstants.UnboundColor;
+
+        Tilemap.SetTile(new Vector3Int(cell.Coordinates.X, cell.Coordinates.Y, 0), tile);
+        if (cell.Structure != null)
+        {
+            Game.StructureController.RefreshStructure(cell.Structure);
+        }
+    }
+
     public void Start()
     {
         StartCoroutine(UpdateCells());
@@ -390,6 +409,68 @@ public class MapGrid : MonoBehaviour
         }
     }
 
+    internal void ProcessBindings(int maxDraws)
+    {
+        var draws = 0;
+        foreach (var kvp in PendingBinding)
+        {
+            List<CellData> done = new List<CellData>();
+            foreach (var cell in kvp.Value)
+            {
+                if (!cell.Bound)
+                {
+                    cell.Binding = IdService.GetEntityFromId(kvp.Key);
+
+                    if (!CellBinding.ContainsKey(kvp.Key))
+                    {
+                        CellBinding.Add(kvp.Key, new List<CellData>());
+                    }
+
+                    CellBinding[kvp.Key].Add(cell);
+                    RefreshCell(cell);
+                    if (draws++ > maxDraws)
+                    {
+                        break;
+                    }
+                }
+                else
+                {
+                    done.Add(cell);
+                }
+            }
+
+            done.ForEach(c => kvp.Value.Remove(c));
+        }
+
+        foreach (var kvp in PendingUnbinding)
+        {
+            var cell = kvp.Value.FirstOrDefault();
+            if (cell != null)
+            {
+                cell.Binding = null;
+
+                if (cell.Structure != null)
+                {
+                    Game.StructureController.DestroyStructure(cell.Structure);
+                }
+
+                if (CellBinding.ContainsKey(kvp.Key))
+                {
+                    CellBinding[kvp.Key].Remove(cell);
+                }
+
+                RefreshCell(cell);
+
+                if (draws++ > maxDraws)
+                {
+                    break;
+                }
+            }
+
+            kvp.Value.Remove(cell);
+        }
+    }
+
     internal void ResetSearchPriorities()
     {
         // ensure that all cells have their phases reset
@@ -439,8 +520,27 @@ public class MapGrid : MonoBehaviour
                 break;
         }
     }
+    
+    private void GenerateMapCells(MapPreset map)
+    {
+        for (int x = 0; x < Game.MapGrid.MapSize; x++)
+        {
+            for (int y = 0; y < Game.MapGrid.MapSize; y++)
+            {
+                Game.MapGrid
+                    .GetCellAtCoordinate(new Coordinates(x, y))
+                    .CellType = map.GetCellType(x, y);
+            }
+        }
 
-    private void GenerateMapCells()
+        foreach (var cell in Cells)
+        {
+            PopulateCell(cell);
+            RefreshCell(cell);
+        }
+    }
+
+    private void GenerateMapCellsOld()
     {
         // generate bedrock
         for (int i = 0; i < Game.MapGrid.MapSize / 2; i++)
@@ -550,19 +650,6 @@ public class MapGrid : MonoBehaviour
         }
     }
 
-    public void RefreshCell(CellData cell)
-    {
-        var tile = ScriptableObject.CreateInstance<Tile>();
-        tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(cell.CellType);
-        tile.color = cell.Bound ? ColorConstants.BaseColor : ColorConstants.UnboundColor;
-
-        Tilemap.SetTile(new Vector3Int(cell.Coordinates.X, cell.Coordinates.Y, 0), tile);
-        if (cell.Structure != null)
-        {
-            Game.StructureController.RefreshStructure(cell.Structure);
-        }
-    }
-
     private IEnumerator UpdateCells()
     {
         const int maxDraws = 100;
@@ -571,68 +658,6 @@ public class MapGrid : MonoBehaviour
             ProcessBindings(maxDraws);
 
             yield return null;
-        }
-    }
-
-    internal void ProcessBindings(int maxDraws)
-    {
-        var draws = 0;
-        foreach (var kvp in PendingBinding)
-        {
-            List<CellData> done = new List<CellData>();
-            foreach (var cell in kvp.Value)
-            {
-                if (!cell.Bound)
-                {
-                    cell.Binding = IdService.GetEntityFromId(kvp.Key);
-
-                    if (!CellBinding.ContainsKey(kvp.Key))
-                    {
-                        CellBinding.Add(kvp.Key, new List<CellData>());
-                    }
-
-                    CellBinding[kvp.Key].Add(cell);
-                    RefreshCell(cell);
-                    if (draws++ > maxDraws)
-                    {
-                        break;
-                    }
-                }
-                else
-                {
-                    done.Add(cell);
-                }
-            }
-
-            done.ForEach(c => kvp.Value.Remove(c));
-        }
-
-        foreach (var kvp in PendingUnbinding)
-        {
-            var cell = kvp.Value.FirstOrDefault();
-            if (cell != null)
-            {
-                cell.Binding = null;
-
-                if (cell.Structure != null)
-                {
-                    Game.StructureController.DestroyStructure(cell.Structure);
-                }
-
-                if (CellBinding.ContainsKey(kvp.Key))
-                {
-                    CellBinding[kvp.Key].Remove(cell);
-                }
-
-                RefreshCell(cell);
-
-                if (draws++ > maxDraws)
-                {
-                    break;
-                }
-            }
-
-            kvp.Value.Remove(cell);
         }
     }
 }
