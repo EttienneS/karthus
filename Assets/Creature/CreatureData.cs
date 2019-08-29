@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -198,7 +199,7 @@ public class CreatureData : IEntity
             foreach (var structureId in Mind[context][MemoryType.Structure])
             {
                 var structure = IdService.GetStructureFromId(structureId);
-                if (structure.InUseBy == Id)
+                if (structure != null && structure.InUseBy == Id)
                 {
                     structure.Free();
                 }
@@ -305,7 +306,7 @@ public class CreatureData : IEntity
                     Task = null;
                 }
             }
-            catch (TaskFailedException ex)
+            catch (Exception ex)
             {
                 Debug.LogWarning($"Task failed: {ex}");
                 faction.TaskFailed(Task, ex.Message);

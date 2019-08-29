@@ -74,7 +74,7 @@ public static class Behaviours
 
             if (bed == null)
             {
-                task = new Sleep(creature.Coordinates, 0.25f);
+                task = new Sleep(creature.Coordinates, 0.75f);
             }
             else
             {

@@ -68,6 +68,11 @@ public class CreatureInfoPanel : MonoBehaviour
         CurrentCreature = creature;
     }
 
+    public void Cancel()
+    {
+        CurrentCreature.Data.Task.CancelTask();
+    }
+
     public void Hide()
     {
         gameObject.SetActive(false);

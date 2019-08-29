@@ -5,20 +5,12 @@ using UnityEngine.Tilemaps;
 public class StructureController : MonoBehaviour
 {
     internal Dictionary<string, Structure> StructureDataReference = new Dictionary<string, Structure>();
-    private Tilemap _tilemap;
 
-    internal Tilemap Tilemap
-    {
-        get
-        {
-            if (_tilemap == null)
-            {
-                _tilemap = GetComponentInChildren<Tilemap>();
-            }
 
-            return _tilemap;
-        }
-    }
+    public Tilemap DefaultStructureMap;
+
+    public Tilemap RuneMap;
+
 
     private Dictionary<string, string> _structureTypeFileMap;
 
@@ -63,14 +55,21 @@ public class StructureController : MonoBehaviour
                     ColorConstants.UnboundColor;
             }
         }
-
-        Tilemap.SetTile(new Vector3Int(structure.Coordinates.X, structure.Coordinates.Y, 0), tile);
+        if (structure.Material != "rune")
+        {
+            DefaultStructureMap.SetTile(new Vector3Int(structure.Coordinates.X, structure.Coordinates.Y, 0), tile);
+        }
+        else
+        {
+            RuneMap.SetTile(new Vector3Int(structure.Coordinates.X, structure.Coordinates.Y, 0), tile);
+        }
     }
 
     public void ClearStructure(Coordinates coordinates)
     {
         var tile = ScriptableObject.CreateInstance<Tile>();
-        Tilemap.SetTile(new Vector3Int(coordinates.X, coordinates.Y, 0), tile);
+        DefaultStructureMap.SetTile(new Vector3Int(coordinates.X, coordinates.Y, 0), tile);
+        RuneMap.SetTile(new Vector3Int(coordinates.X, coordinates.Y, 0), tile);
     }
 
     public Structure GetStructure(string name, Faction faction)
