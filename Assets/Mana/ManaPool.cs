@@ -10,13 +10,14 @@ public class ManaPool : Dictionary<ManaColor, Mana>
     {
         if (!ContainsKey(color))
         {
-            throw new Exception("Unable to burn mana you do not have!");
+            Debug.LogWarning("Unable to burn mana you do not have!");
         }
         else
         {
             if (this[color].Total < amount)
             {
-                throw new Exception("Not enough mana!");
+                Debug.LogWarning("Not enough mana!");
+                return;
             }
             this[color].Burn(amount);
         }
