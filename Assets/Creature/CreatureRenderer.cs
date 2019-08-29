@@ -106,14 +106,14 @@ public class CreatureRenderer : MonoBehaviour
 
             UpdateFloatingText();
 
-            if (Highlight.gameObject.activeInHierarchy)
-            {
-                DrawAwareness();
-            }
-            else
-            {
-                HideLine();
-            }
+            //if (Highlight.gameObject.activeInHierarchy)
+            //{
+            //    DrawAwareness();
+            //}
+            //else
+            //{
+            //    HideLine();
+            //}
         }
         UpdateMaterial();
     }

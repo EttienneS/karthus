@@ -42,26 +42,20 @@ public static class IdService
 
     public static CreatureData GetCreatureFromId(string id)
     {
-        return IdService.CreatureIdLookup[id];
-    }
-
-    public static Coordinates GetLocation(string id)
-    {
-        if (IsCreature(id))
+        if (!CreatureIdLookup.TryGetValue(id, out var creature))
         {
-            return GetCreatureFromId(id).Coordinates;
+            return null;
         }
-        if (IsStructure(id))
-        {
-            return GetStructureFromId(id).Coordinates;
-        }
-
-        return null;
+        return creature;
     }
 
     public static Structure GetStructureFromId(string id)
     {
-        return StructureIdLookup[id];
+        if (StructureIdLookup.TryGetValue(id, out var structure))
+        {
+            return structure;
+        }
+        return null;
     }
 
     public static bool IsCreature(string id)

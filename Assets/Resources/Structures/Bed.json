@@ -11,6 +11,6 @@
   "Scatter": "False",
   "Buildable": "True",
   "Properties": {
-    "RecoveryRate": "1"
+    "RecoveryRate": "2"
   }
 }
