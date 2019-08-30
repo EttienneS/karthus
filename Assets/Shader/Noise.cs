@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public delegate float NoiseMethod(Vector3 point, float frequency);
 
@@ -10,6 +11,95 @@ public enum NoiseMethodType
 
 public static class Noise
 {
+    public static float[,] GenerateNoiseMap(int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lancunarity, Vector2 offset)
+    {
+        var noiseMap = new float[mapWidth, mapHeight];
+
+        System.Random prng = new System.Random(seed);
+
+        Vector2[] octaveOffsets = new Vector2[octaves];
+        for (int i = 0; i < octaves; i++)
+        {
+            var offsetX = prng.Next(-100000, 100000) + offset.x;
+            var offsety = prng.Next(-100000, 100000) + offset.y;
+
+            octaveOffsets[i] = new Vector2(offsetX, offsety);
+        }
+
+        if (scale <= 0)
+        {
+            scale = 0.0001f;
+        }
+
+        var maxNoise = float.MinValue;
+        var minNoise = float.MaxValue;
+
+        var halfWidth = mapWidth / 2f;
+        var halfHeight = mapHeight / 2f;
+
+        for (int y = 0; y < mapHeight; y++)
+        {
+            for (int x = 0; x < mapWidth; x++)
+            {
+                float amplitude = 1;
+                float frequency = 1;
+                float noiseHeight = 0;
+
+                for (int i = 0; i < octaves; i++)
+                {
+                    var sampleX = (x - halfWidth) / scale * frequency + octaveOffsets[i].x;
+                    var sampleY = (y - halfHeight) / scale * frequency + octaveOffsets[i].y;
+
+                    var perlinValue = (Mathf.PerlinNoise(sampleX, sampleY) * 2) - 1;
+                    noiseHeight += perlinValue * amplitude;
+
+                    amplitude *= persistance;
+                    frequency *= lancunarity;
+                }
+
+                if (noiseHeight > maxNoise)
+                {
+                    maxNoise = noiseHeight;
+                }
+
+                if (noiseHeight < minNoise)
+                {
+                    minNoise = noiseHeight;
+                }
+                noiseMap[x, y] = noiseHeight;
+            }
+        }
+
+        // normalize map using min and max as extremes
+        for (int y = 0; y < mapHeight; y++)
+        {
+            for (int x = 0; x < mapWidth; x++)
+            {
+                noiseMap[x, y] = Mathf.InverseLerp(minNoise, maxNoise, noiseMap[x, y]);
+            }
+        }
+
+        return noiseMap;
+    }
+
+    internal static float[,] GenerateNoiseMap(int mapSize1, int mapSize2, object scale, int octaves, object persistance, float lancunarity)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal static float[,] GenerateNoiseMap(int mapSize1, int mapSize2, object scale, int octaves, object persistance, object lancunarity)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal static float[,] GenerateNoiseMap(int mapSize1, int mapSize2, object scale, object octaves, object persistance, object lancunarity)
+    {
+        throw new NotImplementedException();
+    }
+
+    #region old
+
+    // old VVV
     private const int hashMask = 255;
 
     private const int gradientsMask1D = 1;
@@ -333,4 +423,6 @@ public static class Noise
 
         return sum / range;
     }
+
+    #endregion old
 }

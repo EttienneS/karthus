@@ -18,9 +18,15 @@ public class MapGrid : MonoBehaviour
     public Dictionary<string, List<CellData>> CellBinding = new Dictionary<string, List<CellData>>();
     public Text CellLabel;
     [Range(0f, 1f)] public float JitterProbability = 0.8f;
-    [Range(5, 500)] public int MapSize = 100;
+    public float Lancunarity = 2;
+    [Range(5, 1000)] public int MapSize = 100;
+    public int Octaves = 4;
+    public int Seed;
+    public Vector2 Offset;
     public Dictionary<string, List<CellData>> PendingBinding = new Dictionary<string, List<CellData>>();
     public Dictionary<string, List<CellData>> PendingUnbinding = new Dictionary<string, List<CellData>>();
+    [Range(0f, 1f)] public float Persistance = 0.5f;
+    [Range(0.5f, 100f)] public float Scale = 10;
     internal SpriteRenderer Background;
     internal Tilemap Tilemap;
     internal Canvas WorldCanvas;
@@ -43,6 +49,25 @@ public class MapGrid : MonoBehaviour
             }
             return _cellLookup;
         }
+    }
+
+    private void OnValidate()
+    {
+        if (MapSize < 1)
+        {
+            MapSize = 1;
+        }
+
+        if (Lancunarity < 1)
+        {
+            Lancunarity = 1;
+        }
+
+        if (Octaves < 1)
+        {
+            Octaves = 1;
+        }
+
     }
 
     internal List<CellData> Cells { get; set; }
@@ -165,13 +190,12 @@ public class MapGrid : MonoBehaviour
         Debug.Log($"Linked cells in {sw.Elapsed.TotalSeconds}s");
         sw.Restart();
 
-        GenerateMapCells(new MapPreset(Random.Range(0.05f, 0.2f),
-                                (0.4f, CellType.Mountain),
-                                (0.3f, CellType.Stone),
-                                (0.0f, CellType.Forest),
-                                (-0.3f, CellType.Grass),
-                                (-0.45f, CellType.Dirt),
-                                (-0.5f, CellType.Water)));
+        GenerateMapCells(new MapPreset((0.85f, CellType.Mountain),
+                                       (0.7f, CellType.Stone),
+                                       (0.5f, CellType.Forest),
+                                       (0.30f, CellType.Grass),
+                                       (0.25f, CellType.Dirt),
+                                       (0.0f, CellType.Water)));
         Debug.Log($"Generated map in {sw.Elapsed.TotalSeconds}s");
         sw.Restart();
 
@@ -520,7 +544,7 @@ public class MapGrid : MonoBehaviour
                 break;
         }
     }
-    
+
     private void GenerateMapCells(MapPreset map)
     {
         for (int x = 0; x < Game.MapGrid.MapSize; x++)

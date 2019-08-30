@@ -1,22 +1,27 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 public class MapPreset
 {
     private SortedDictionary<float, CellType> _mapKey = new SortedDictionary<float, CellType>();
 
-    public MapPreset(float freq, params (float min, CellType type)[] param)
+    private float[,] _noiseMap;
+
+    public MapPreset(params (float min, CellType type)[] param)
     {
-        Frequency = freq;
+        _noiseMap = Noise.GenerateNoiseMap(Game.MapGrid.MapSize, Game.MapGrid.MapSize,
+            Game.MapGrid.Seed,
+            Game.MapGrid.Scale,
+            Game.MapGrid.Octaves,
+            Game.MapGrid.Persistance,
+            Game.MapGrid.Lancunarity,
+            Game.MapGrid.Offset);
 
         foreach (var p in param)
         {
             Add(p.min, p.type);
         }
     }
-
-    public float Frequency { get; set; }
 
     public void Add(float min, CellType cell)
     {
@@ -25,9 +30,10 @@ public class MapPreset
 
     public CellType GetCellType(int x, int y)
     {
-        var value = Noise.Perlin3D(new Vector2(x, y), Frequency);
+        var value = _noiseMap[x, y];
 
-        foreach (var kvp in _mapKey.Reverse())
+        var reversedMap = _mapKey.Reverse();
+        foreach (var kvp in reversedMap)
         {
             if (value > kvp.Key)
             {
@@ -35,6 +41,6 @@ public class MapPreset
             }
         }
 
-        return _mapKey.Last().Value;
+        return reversedMap.Last().Value;
     }
 }
