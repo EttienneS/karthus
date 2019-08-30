@@ -96,71 +96,79 @@ public static class Pathfinder
 
     private static bool Search(CellData fromCell, CellData toCell, Mobility mobility)
     {
-        _searchFrontierPhase += 2;
-
-        if (_searchFrontier == null)
+        try
         {
-            _searchFrontier = new CellPriorityQueue();
-        }
-        else
-        {
-            _searchFrontier.Clear();
-        }
+            _searchFrontierPhase += 2;
 
-        fromCell.SearchPhase = _searchFrontierPhase;
-        fromCell.Distance = 0;
-        _searchFrontier.Enqueue(fromCell);
-
-        while (_searchFrontier.Count > 0)
-        {
-            var current = _searchFrontier.Dequeue();
-            current.SearchPhase++;
-
-            if (current == toCell)
+            if (_searchFrontier == null)
             {
-                return true;
+                _searchFrontier = new CellPriorityQueue();
+            }
+            else
+            {
+                _searchFrontier.Clear();
             }
 
-            for (var d = Direction.N; d <= Direction.NW; d++)
+            fromCell.SearchPhase = _searchFrontierPhase;
+            fromCell.Distance = 0;
+            _searchFrontier.Enqueue(fromCell);
+
+            while (_searchFrontier.Count > 0)
             {
-                var neighbor = current.GetNeighbor(d);
-                var neighborTravelCost = 1f;
+                var current = _searchFrontier.Dequeue();
+                current.SearchPhase++;
 
-                if (mobility != Mobility.Fly)
+                if (current == toCell)
                 {
-                    neighborTravelCost = neighbor.TravelCost;
+                    return true;
                 }
 
-                if (neighbor == null
-                    || neighbor.SearchPhase > _searchFrontierPhase)
+                for (var d = Direction.N; d <= Direction.NW; d++)
                 {
-                    continue;
-                }
+                    var neighbor = current.GetNeighbor(d);
+                    var neighborTravelCost = 1f;
 
-                if (neighborTravelCost < 0)
-                {
-                    continue;
-                }
+                    if (mobility != Mobility.Fly)
+                    {
+                        neighborTravelCost = neighbor.TravelCost;
+                    }
 
-                var distance = current.Distance + neighborTravelCost;
-                if (neighbor.SearchPhase < _searchFrontierPhase)
-                {
-                    neighbor.SearchPhase = _searchFrontierPhase;
-                    neighbor.Distance = distance;
-                    neighbor.PathFrom = current;
-                    neighbor.SearchHeuristic = neighbor.Coordinates.DistanceTo(toCell.Coordinates);
-                    _searchFrontier.Enqueue(neighbor);
-                }
-                else if (distance < neighbor.Distance)
-                {
-                    var oldPriority = neighbor.SearchPriority;
-                    neighbor.Distance = distance;
-                    neighbor.PathFrom = current;
-                    _searchFrontier.Change(neighbor, oldPriority);
+                    if (neighbor == null
+                        || neighbor.SearchPhase > _searchFrontierPhase)
+                    {
+                        continue;
+                    }
+
+                    if (neighborTravelCost < 0)
+                    {
+                        continue;
+                    }
+
+                    var distance = current.Distance + neighborTravelCost;
+                    if (neighbor.SearchPhase < _searchFrontierPhase)
+                    {
+                        neighbor.SearchPhase = _searchFrontierPhase;
+                        neighbor.Distance = distance;
+                        neighbor.PathFrom = current;
+                        neighbor.SearchHeuristic = neighbor.Coordinates.DistanceTo(toCell.Coordinates);
+                        _searchFrontier.Enqueue(neighbor);
+                    }
+                    else if (distance < neighbor.Distance)
+                    {
+                        var oldPriority = neighbor.SearchPriority;
+                        neighbor.Distance = distance;
+                        neighbor.PathFrom = current;
+                        _searchFrontier.Change(neighbor, oldPriority);
+                    }
                 }
             }
-        }
 
-        return false;
+            return false;
+        }
+        catch (System.Exception)
+        {
+            throw;
+        }
+        
     }
 }

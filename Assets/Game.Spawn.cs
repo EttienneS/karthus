@@ -48,8 +48,9 @@ public partial class Game // .Spawn
         for (int i = 0; i < 3; i++)
         {
             CreatureController.SpawnCreature(CreatureController.GetCreatureOfType("Person"),
-                                         midCell.GetNeighbor(Direction.E).Coordinates,
+                                         midCell.GetNeighbor(Helpers.RandomEnumValue<Direction>()).Coordinates,
                                          FactionController.PlayerFaction);
+
         }
 
         CameraController.MoveToCell(midCell.GetNeighbor(Direction.E));
