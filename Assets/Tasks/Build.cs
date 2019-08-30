@@ -32,6 +32,12 @@
 
             Creature.GetFaction().AddStructure(Structure);
             Creature.UpdateMemory(Context, MemoryType.Structure, Structure.Id);
+
+            if (Structure.Spell != null)
+            {
+                Game.MagicController.AddRune(Structure);
+            }
+
             return true;
         }
         return false;

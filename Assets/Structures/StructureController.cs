@@ -6,11 +6,9 @@ public class StructureController : MonoBehaviour
 {
     internal Dictionary<string, Structure> StructureDataReference = new Dictionary<string, Structure>();
 
-
     public Tilemap DefaultStructureMap;
 
     public Tilemap RuneMap;
-
 
     private Dictionary<string, string> _structureTypeFileMap;
 
@@ -111,9 +109,5 @@ public class StructureController : MonoBehaviour
     private void IndexStructure(Structure structure)
     {
         IdService.EnrollEntity(structure);
-        if (structure.Spell != null)
-        {
-            Game.MagicController.AddRune(structure);
-        }
     }
 }

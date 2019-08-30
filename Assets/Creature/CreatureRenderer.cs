@@ -118,7 +118,10 @@ public class CreatureRenderer : MonoBehaviour
 
     internal void DisableHightlight()
     {
-        Highlight.gameObject.SetActive(false);
+        if (Highlight != null && Highlight.gameObject != null)
+        {
+            Highlight.gameObject.SetActive(false);
+        }
     }
 
     internal void DisplayChannel(ManaColor color, float duration)
@@ -131,8 +134,11 @@ public class CreatureRenderer : MonoBehaviour
 
     internal void EnableHighlight(Color color)
     {
-        Highlight.color = color;
-        Highlight.gameObject.SetActive(true);
+        if (Highlight != null)
+        {
+            Highlight.color = color;
+            Highlight.gameObject.SetActive(true);
+        }
     }
 
     private void UpdateFloatingText()

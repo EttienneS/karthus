@@ -43,6 +43,10 @@ public class MagicController : MonoBehaviour
 
                 for (int i = 0; i < MagicRate; i++)
                 {
+                    if (Work.Count == 0 || Work.Peek() == null)
+                    {
+                        break;
+                    }
                     var spell = Work.Dequeue();
                     spell.Done();
                     spells.Add(spell);
@@ -59,7 +63,7 @@ public class MagicController : MonoBehaviour
         }
         catch (Exception ex)
         {
-            Debug.Log($"Magic glitch: {ex.Message}");
+            Debug.LogWarning($"Magic glitch: {ex.Message}");
         }
     }
 }

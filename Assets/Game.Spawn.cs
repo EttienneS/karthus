@@ -25,6 +25,11 @@ public partial class Game // .Spawn
             }
         }
 
+        if (rune.Spell != null)
+        {
+            Game.MagicController.AddRune(rune);
+        }
+
 
         return rune;
     }
