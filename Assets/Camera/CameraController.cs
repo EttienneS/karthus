@@ -103,9 +103,9 @@ public class CameraController : MonoBehaviour
 #else
             float horizontal = Input.GetAxis("Horizontal") / Time.timeScale;
             float vertical = Input.GetAxis("Vertical") / Time.timeScale;
-
-            var x = Mathf.Clamp(transform.position.x + (horizontal * Speed), 0, Game.MapGrid.MapSize);
-            var y = Mathf.Clamp(transform.position.y + (vertical * Speed), 0, Game.MapGrid.MapSize);
+            var step = (((int)Game.TimeManager.TimeStep) + 1) / 2;
+            var x = Mathf.Clamp(transform.position.x + (horizontal * Speed * step), 0, Game.MapGrid.MapSize);
+            var y = Mathf.Clamp(transform.position.y + (vertical * Speed * step), 0, Game.MapGrid.MapSize);
             transform.position = new Vector3(x, y, transform.position.z);
 
             Camera.orthographicSize = Mathf.Clamp(Camera.orthographicSize - (Input.GetAxis("Mouse ScrollWheel") * ZoomStep),

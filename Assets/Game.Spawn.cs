@@ -50,7 +50,6 @@ public partial class Game // .Spawn
             CreatureController.SpawnCreature(CreatureController.GetCreatureOfType("Person"),
                                          midCell.GetNeighbor(Helpers.RandomEnumValue<Direction>()).Coordinates,
                                          FactionController.PlayerFaction);
-
         }
 
         CameraController.MoveToCell(midCell.GetNeighbor(Direction.E));
@@ -66,7 +65,7 @@ public partial class Game // .Spawn
 
         sw.Stop();
 
-        MapGrid.ProcessBindings(MapGrid.PendingBinding.Count * 100);
+        MapGrid.ProcessBindings(MapGrid.PendingBinding.Count * 200);
 
         Debug.Log($"Did initial spawn in {sw.Elapsed}s");
     }
