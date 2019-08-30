@@ -48,7 +48,7 @@ public class CreatureRenderer : MonoBehaviour
                                          .Select(c => c.Coordinates.ToTopOfMapVector()));
         awareness.Add(Data.Coordinates.ToTopOfMapVector());
 
-        ShowLine(ColorConstants.BaseColor, awareness.ToArray());
+        ShowLine(Color.white, awareness.ToArray());
     }
 
     public Sprite GetIcon()
@@ -169,7 +169,7 @@ public class CreatureRenderer : MonoBehaviour
             Light.color = Color.white;
             Light.intensity = 0.1f;
 
-            MainRenderer.SetBoundMaterial(Data.CurrentCell.Bound);
+            MainRenderer.SetBoundMaterial(Data.CurrentCell);
         }
     }
 }

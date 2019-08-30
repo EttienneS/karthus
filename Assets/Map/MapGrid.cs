@@ -170,12 +170,16 @@ public class MapGrid : MonoBehaviour
         Debug.Log($"Linked cells in {sw.Elapsed.TotalSeconds}s");
         sw.Restart();
 
-        MapPreset = new MapPreset((0.85f, CellType.Mountain),
-                                       (0.7f, CellType.Stone),
-                                       (0.5f, CellType.Forest),
-                                       (0.30f, CellType.Grass),
-                                       (0.25f, CellType.Dirt),
-                                       (0.0f, CellType.Water));
+        if (Seed == 0)
+        {
+            Seed = Random.Range(1, 10000);
+        }
+        MapPreset = new MapPreset((0.80f, CellType.Mountain),
+                                  (0.7f, CellType.Stone),
+                                  (0.5f, CellType.Forest),
+                                  (0.3f, CellType.Grass),
+                                  (0.2f, CellType.Dirt),
+                                  (0.0f, CellType.Water));
 
         GenerateMapCells();
         Debug.Log($"Generated map in {sw.Elapsed.TotalSeconds}s");
@@ -299,8 +303,7 @@ public class MapGrid : MonoBehaviour
     {
         var tile = ScriptableObject.CreateInstance<Tile>();
         tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(cell.CellType);
-        tile.color = cell.Bound ? cell.GetColor()
-                                : ColorConstants.UnboundColor;
+        tile.color = cell.Color;
 
         Tilemap.SetTile(new Vector3Int(cell.Coordinates.X, cell.Coordinates.Y, 0), tile);
         if (cell.Structure != null)

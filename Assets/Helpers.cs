@@ -42,10 +42,7 @@ public static class ColorExtensions
         return new Color(Random.value, Random.value, Random.value, alpha);
     }
 
-    public static Color ShadeBy(this Color color, float value)
-    {
-        return new Color(color.r - value, color.g - value, color.b - value, color.a);
-    }
+    
 
     public static Color ToColor(this float[] arr)
     {
@@ -150,18 +147,18 @@ public static class ListHelpers
 
 public static class RenderHelpers
 {
-    public static void SetBoundMaterial(this SpriteRenderer renderer, bool bound)
+    public static void SetBoundMaterial(this SpriteRenderer renderer, CellData cell)
     {
-        if (bound)
+        if (cell.Bound)
         {
             renderer.material = Game.MaterialController.DefaultMaterial;
-            renderer.color = ColorConstants.BaseColor;
         }
         else
         {
             renderer.material = Game.MaterialController.AbyssMaterial;
-            renderer.color = ColorConstants.UnboundColor;
         }
+
+        renderer.color = cell.Color;
     }
 }
 

@@ -6,14 +6,12 @@ public partial class Game // .Spawn
 {
     public static Structure SpawnRune(CellData location, string name, Faction faction)
     {
-        location.CellType = CellType.Stone;
         MapGrid.BindCell(location, faction.Core);
 
         if (location.Structure != null)
             StructureController.DestroyStructure(location.Structure);
 
         var rune = StructureController.GetStructure(name, faction);
-        location.CellType = CellType.Stone;
         MapGrid.BindCell(location, rune);
         location.SetStructure(rune);
 
@@ -97,12 +95,10 @@ public partial class Game // .Spawn
 
     private static void SummonCells(CellData center, Faction faction)
     {
-        center.CellType = CellType.Stone;
         MapGrid.BindCell(center, faction.Core);
 
         foreach (var cell in center.Neighbors)
         {
-            cell.CellType = CellType.Stone;
             MapGrid.BindCell(cell, faction.Core);
         }
 

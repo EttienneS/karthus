@@ -5,19 +5,29 @@ using UnityEngine;
 
 public class CellData
 {
-    public IEntity Binding;
-
     public CellType CellType;
-
     public Coordinates Coordinates;
-
     [JsonIgnore]
     public CellData[] Neighbors = new CellData[8];
 
     public Structure Structure;
+    internal Color Color;
+    private IEntity _binding;
 
     private float _height;
 
+    public IEntity Binding
+    {
+        get
+        {
+            return _binding;
+        }
+        set
+        {
+            _binding = value;
+            RefreshColor();
+        }
+    }
     [JsonIgnore]
     public bool Bound
     {
@@ -48,6 +58,7 @@ public class CellData
         {
             _height = value;
             CellType = Game.MapGrid.MapPreset.GetCellType(_height);
+            RefreshColor();
         }
     }
 
@@ -100,6 +111,18 @@ public class CellData
         return Neighbors[(int)direction];
     }
 
+    public void RefreshColor()
+    {
+        const float totalShade = 1f;
+        const float maxShade = 0.4f;
+        var baseColor = new Color(totalShade, Bound ? totalShade : 0.6f, totalShade, Bound ? 1f : 0.6f);
+
+        var range = Game.MapGrid.MapPreset.GetCellTypeRange(CellType);
+        var scaled = Helpers.Scale(range.Item1, range.Item2, 0f, maxShade, Height);
+
+        Color = new Color(baseColor.r - scaled, baseColor.g - scaled, baseColor.b - scaled, baseColor.a);
+    }
+
     public void SetNeighbor(Direction direction, CellData cell)
     {
         Neighbors[(int)direction] = cell;
@@ -130,13 +153,6 @@ public class CellData
         }
 
         return Neighbors.Count(n => n != null && n.CellType == cellType.Value);
-    }
-
-    internal Color GetColor()
-    {
-        var range = Game.MapGrid.MapPreset.GetCellTypeRange(CellType);
-        var scaled = Helpers.Scale(range.Item1, range.Item2, 0f, 0.5f, Height);
-        return ColorConstants.BaseColor.ShadeBy(scaled);
     }
 
     internal IEnumerable<CreatureData> GetCreatures()

@@ -48,12 +48,7 @@ public class StructureController : MonoBehaviour
         }
         else
         {
-            if (Game.MapGrid.Cells != null)
-            {
-                tile.color = Game.MapGrid.GetCellAtCoordinate(structure.Coordinates).Bound ?
-                    ColorConstants.BaseColor :
-                    ColorConstants.UnboundColor;
-            }
+            tile.color = Game.MapGrid.GetCellAtCoordinate(structure.Coordinates).Color;
         }
         if (structure.Material != "rune")
         {
