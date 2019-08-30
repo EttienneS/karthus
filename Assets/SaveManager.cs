@@ -4,32 +4,57 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 
-public class SaveManager : MonoBehaviour
+public class CameraData
 {
-    public void Save()
+    public float X;
+    public float Y;
+    public float Z;
+
+    public float Zoom;
+
+    public CameraData()
     {
-        try
-        {
-            Game.TimeManager.Pause();
-
-            var serializer = new JsonSerializer();
-            serializer.Converters.Add(new Newtonsoft.Json.Converters.JavaScriptDateTimeConverter());
-            serializer.NullValueHandling = NullValueHandling.Ignore;
-            serializer.TypeNameHandling = TypeNameHandling.Auto;
-            serializer.Formatting = Formatting.Indented;
-
-            using (var sw = new StreamWriter("save.json"))
-            using (var writer = new JsonTextWriter(sw))
-            {
-                serializer.Serialize(writer, new Save(), typeof(Save));
-            }
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Unable to save: {ex}");
-        }
     }
 
+    public CameraData(Camera c)
+    {
+        X = c.transform.position.x;
+        Y = c.transform.position.y;
+        Z = c.transform.position.z;
+
+        Zoom = c.orthographicSize;
+    }
+
+    public void Load(Camera c)
+    {
+        c.transform.position = new Vector3(X, Y, Z);
+        c.orthographicSize = Zoom;
+    }
+}
+
+public class Save
+{
+    public CameraData CameraData;
+    public CellData[] Cells;
+
+    public CreatureData[] Creatures;
+
+    public TaskBase[] Tasks;
+
+    public TimeData Time;
+
+    public Save()
+    {
+        Cells = Game.MapGrid.Cells.ToArray();
+        Creatures = Game.CreatureController.CreatureLookup.Keys.ToArray();
+        //Tasks = Factions.Taskmasters[Data.Faction].Tasks.ToArray();
+        Time = Game.TimeManager.Data;
+        CameraData = new CameraData(Game.CameraController.Camera);
+    }
+}
+
+public class SaveManager : MonoBehaviour
+{
     public void Load()
     {
         Game.TimeManager.Pause();
@@ -46,7 +71,7 @@ public class SaveManager : MonoBehaviour
 
         foreach (var saveCell in save.Cells)
         {
-            var newCell = Game.MapGrid.CreateCell(saveCell.Coordinates.X, saveCell.Coordinates.Y, saveCell.CellType);
+            var newCell = Game.MapGrid.CreateCell(saveCell.Coordinates.X, saveCell.Coordinates.Y);
             newCell = saveCell;
 
             if (saveCell.Structure != null)
@@ -77,6 +102,30 @@ public class SaveManager : MonoBehaviour
         save.CameraData.Load(Game.CameraController.Camera);
     }
 
+    public void Save()
+    {
+        try
+        {
+            Game.TimeManager.Pause();
+
+            var serializer = new JsonSerializer();
+            serializer.Converters.Add(new Newtonsoft.Json.Converters.JavaScriptDateTimeConverter());
+            serializer.NullValueHandling = NullValueHandling.Ignore;
+            serializer.TypeNameHandling = TypeNameHandling.Auto;
+            serializer.Formatting = Formatting.Indented;
+
+            using (var sw = new StreamWriter("save.json"))
+            using (var writer = new JsonTextWriter(sw))
+            {
+                serializer.Serialize(writer, new Save(), typeof(Save));
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Unable to save: {ex}");
+        }
+    }
+
     private static void DestroyScene()
     {
         foreach (var cell in Game.MapGrid.Cells)
@@ -95,55 +144,5 @@ public class SaveManager : MonoBehaviour
         Game.CreatureController.CreatureLookup.Clear();
         IdService.Clear();
         //Factions.Taskmasters[Data.Faction].Tasks.Clear();
-    }
-}
-
-public class Save
-{
-    public CellData[] Cells;
-
-    public CreatureData[] Creatures;
-
-    public TaskBase[] Tasks;
-
-    public TimeData Time;
-
-    public CameraData CameraData;
-
-    public Save()
-    {
-        Cells = Game.MapGrid.Cells.ToArray();
-        Creatures = Game.CreatureController.CreatureLookup.Keys.ToArray();
-        //Tasks = Factions.Taskmasters[Data.Faction].Tasks.ToArray();
-        Time = Game.TimeManager.Data;
-        CameraData = new CameraData(Game.CameraController.Camera);
-    }
-}
-
-public class CameraData
-{
-    public float X;
-    public float Y;
-    public float Z;
-
-    public float Zoom;
-
-    public CameraData()
-    {
-    }
-
-    public CameraData(Camera c)
-    {
-        X = c.transform.position.x;
-        Y = c.transform.position.y;
-        Z = c.transform.position.z;
-
-        Zoom = c.orthographicSize;
-    }
-
-    public void Load(Camera c)
-    {
-        c.transform.position = new Vector3(X, Y, Z);
-        c.orthographicSize = Zoom;
     }
 }

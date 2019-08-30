@@ -42,6 +42,11 @@ public static class ColorExtensions
         return new Color(Random.value, Random.value, Random.value, alpha);
     }
 
+    public static Color ShadeBy(this Color color, float value)
+    {
+        return new Color(color.r - value, color.g - value, color.b - value, color.a);
+    }
+
     public static Color ToColor(this float[] arr)
     {
         return new Color(arr[0], arr[1], arr[2], arr[3]);
@@ -64,32 +69,14 @@ public static class ColorExtensions
         throw new Exception("Unable to parse color");
     }
 
-    internal static Color GetRandomSkinColor()
-    {
-        return ColorConstants.SkinArray[Random.Range(0, ColorConstants.SkinArray.Length - 1)];
-    }
-
     internal static Color GetRandomHairColor()
     {
         return ColorConstants.HairArray[Random.Range(0, ColorConstants.HairArray.Length - 1)];
     }
-}
 
-public static class VHelpers
-{
-    public static Vector2 ToVector2(this VPoint point)
+    internal static Color GetRandomSkinColor()
     {
-        return new Vector2((float)point.X, (float)point.Y);
-    }
-
-    public static Coordinates ToCoordinate(this VPoint point)
-    {
-        return new Coordinates((int)point.X, (int)point.Y);
-    }
-
-    public static VPoint ToVpoint(this Coordinates coordinates)
-    {
-        return new VPoint(coordinates.X, coordinates.Y);
+        return ColorConstants.SkinArray[Random.Range(0, ColorConstants.SkinArray.Length - 1)];
     }
 }
 
@@ -139,9 +126,25 @@ public static class Helpers
         return (T)v.GetValue(new System.Random().Next(0, v.Length - 1));
     }
 
+    public static float Scale(float oldMin, float oldMax, float newMin, float newMax, float oldValue)
+    {
+        var oldRange = oldMax - oldMin;
+        var newRange = newMax - newMin;
+
+        return (((oldValue - oldMin) * newRange) / oldRange) + newMin;
+    }
+
     public static float ScaleValueInRange(float min1, float max1, float min2, float max2, float input)
     {
         return Mathf.Lerp(min1, max1, Mathf.InverseLerp(min2, max2, input));
+    }
+}
+
+public static class ListHelpers
+{
+    public static T GetRandomItem<T>(this List<T> list)
+    {
+        return list[Random.Range(0, list.Count - 1)];
     }
 }
 
@@ -159,14 +162,6 @@ public static class RenderHelpers
             renderer.material = Game.MaterialController.AbyssMaterial;
             renderer.color = ColorConstants.UnboundColor;
         }
-    }
-}
-
-public static class ListHelpers
-{
-    public static T GetRandomItem<T>(this List<T> list)
-    {
-        return list[Random.Range(0, list.Count - 1)];
     }
 }
 
@@ -255,5 +250,23 @@ public static class TextureHelpers
     public static void ScaleToGridSize(this Texture2D texture, int width, int height)
     {
         TextureScale.scale(texture, width * MapGrid.PixelsPerCell, height * MapGrid.PixelsPerCell);
+    }
+}
+
+public static class VHelpers
+{
+    public static Coordinates ToCoordinate(this VPoint point)
+    {
+        return new Coordinates((int)point.X, (int)point.Y);
+    }
+
+    public static Vector2 ToVector2(this VPoint point)
+    {
+        return new Vector2((float)point.X, (float)point.Y);
+    }
+
+    public static VPoint ToVpoint(this Coordinates coordinates)
+    {
+        return new VPoint(coordinates.X, coordinates.Y);
     }
 }

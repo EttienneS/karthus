@@ -28,10 +28,13 @@ public class MapPreset
         _mapKey.Add(min, cell);
     }
 
-    public CellType GetCellType(int x, int y)
+    public float GetCellHeight(int x, int y)
     {
-        var value = _noiseMap[x, y];
+        return _noiseMap[x, y];
+    }
 
+    public CellType GetCellType(float value)
+    {
         var reversedMap = _mapKey.Reverse();
         foreach (var kvp in reversedMap)
         {
@@ -42,5 +45,22 @@ public class MapPreset
         }
 
         return reversedMap.Last().Value;
+    }
+
+    internal (float, float) GetCellTypeRange(CellType cellType)
+    {
+        var reversedMap = _mapKey.Reverse();
+        var last = 0f;
+
+        foreach (var kvp in reversedMap)
+        {
+            if (cellType == kvp.Value)
+            {
+                return (kvp.Key, last);
+            }
+            last = kvp.Key;
+        }
+
+        return (0f, 0f);
     }
 }

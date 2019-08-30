@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class CellData
 {
@@ -15,6 +16,8 @@ public class CellData
 
     public Structure Structure;
 
+    private float _height;
+
     [JsonIgnore]
     public bool Bound
     {
@@ -24,11 +27,40 @@ public class CellData
         }
     }
 
+    public bool Buildable
+    {
+        get
+        {
+            return Bound && TravelCost > 0 && Structure == null;
+        }
+    }
+
     [JsonIgnore]
     public float Distance { get; set; }
 
+    public float Height
+    {
+        get
+        {
+            return _height;
+        }
+        set
+        {
+            _height = value;
+            CellType = Game.MapGrid.MapPreset.GetCellType(_height);
+        }
+    }
+
     [JsonIgnore]
     public CellData NextWithSamePriority { get; set; }
+
+    public bool Pathable
+    {
+        get
+        {
+            return Bound && TravelCost > 0;
+        }
+    }
 
     [JsonIgnore]
     public CellData PathFrom { get; set; }
@@ -63,20 +95,15 @@ public class CellData
         }
     }
 
-    public bool Buildable
+    public CellData GetNeighbor(Direction direction)
     {
-        get
-        {
-            return Bound && TravelCost > 0 && Structure == null;
-        }
+        return Neighbors[(int)direction];
     }
 
-    public bool Pathable
+    public void SetNeighbor(Direction direction, CellData cell)
     {
-        get
-        {
-            return Bound && TravelCost > 0;
-        }
+        Neighbors[(int)direction] = cell;
+        cell.Neighbors[(int)direction.Opposite()] = this;
     }
 
     public void SetStructure(Structure structure)
@@ -95,22 +122,6 @@ public class CellData
         Game.StructureController.RefreshStructure(structure);
     }
 
-    internal IEnumerable<CreatureData> GetCreatures()
-    {
-        return Game.CreatureController.CreatureLookup.Where(c => c.Key.Coordinates == Coordinates).Select(c => c.Key);
-    }
-
-    public CellData GetNeighbor(Direction direction)
-    {
-        return Neighbors[(int)direction];
-    }
-
-    public void SetNeighbor(Direction direction, CellData cell)
-    {
-        Neighbors[(int)direction] = cell;
-        cell.Neighbors[(int)direction.Opposite()] = this;
-    }
-
     internal int CountNeighborsOfType(CellType? cellType)
     {
         if (!cellType.HasValue)
@@ -119,5 +130,17 @@ public class CellData
         }
 
         return Neighbors.Count(n => n != null && n.CellType == cellType.Value);
+    }
+
+    internal Color GetColor()
+    {
+        var range = Game.MapGrid.MapPreset.GetCellTypeRange(CellType);
+        var scaled = Helpers.Scale(range.Item1, range.Item2, 0f, 0.5f, Height);
+        return ColorConstants.BaseColor.ShadeBy(scaled);
+    }
+
+    internal IEnumerable<CreatureData> GetCreatures()
+    {
+        return Game.CreatureController.CreatureLookup.Where(c => c.Key.Coordinates == Coordinates).Select(c => c.Key);
     }
 }

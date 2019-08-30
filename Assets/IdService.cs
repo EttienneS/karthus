@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public static class IdService
 {
-    public static Dictionary<IEntity, CreatureData> CreatureLookup = new Dictionary<IEntity, CreatureData>();
-    public static Dictionary<IEntity, Structure> StructureLookup = new Dictionary<IEntity, Structure>();
-
     public static Dictionary<string, CreatureData> CreatureIdLookup = new Dictionary<string, CreatureData>();
+    public static Dictionary<IEntity, CreatureData> CreatureLookup = new Dictionary<IEntity, CreatureData>();
     public static Dictionary<string, Structure> StructureIdLookup = new Dictionary<string, Structure>();
+    public static Dictionary<IEntity, Structure> StructureLookup = new Dictionary<IEntity, Structure>();
+    private static int _idCounter = 0;
+
+    public enum ObjectType
+    {
+        Creature, Structure
+    }
 
     public static void EnrollEntity(IEntity entity)
     {
@@ -31,13 +37,6 @@ public static class IdService
         {
             throw new NotImplementedException("Unknown entity type!");
         }
-    }
-
-    private static int _idCounter = 0;
-
-    public enum ObjectType
-    {
-        Creature, Structure
     }
 
     public static CreatureData GetCreatureFromId(string id)
@@ -76,6 +75,21 @@ public static class IdService
         CreatureIdLookup.Clear();
     }
 
+    internal static IEntity GetEntityFromId(string id)
+    {
+        if (IsCreature(id))
+        {
+            return GetCreatureFromId(id);
+        }
+        if (IsStructure(id))
+        {
+            return GetStructureFromId(id);
+        }
+
+        Debug.LogWarning("Unknown entity type!");
+        return null;
+    }
+
     internal static ObjectType GetObjectTypeForId(string gameObjectId)
     {
         if (IsStructure(gameObjectId))
@@ -103,19 +117,5 @@ public static class IdService
             CreatureLookup.Remove(entity);
             CreatureIdLookup.Remove(entity.Id);
         }
-    }
-
-    internal static IEntity GetEntityFromId(string id)
-    {
-        if (IsCreature(id))
-        {
-            return GetCreatureFromId(id);
-        }
-        if (IsStructure(id))
-        {
-            return GetStructureFromId(id);
-        }
-
-        throw new NotImplementedException("Unknown entity type!");
     }
 }

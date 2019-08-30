@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -19,14 +18,15 @@ public class MapGrid : MonoBehaviour
     public Text CellLabel;
     [Range(0f, 1f)] public float JitterProbability = 0.8f;
     public float Lancunarity = 2;
+    public MapPreset MapPreset;
     [Range(5, 1000)] public int MapSize = 100;
     public int Octaves = 4;
-    public int Seed;
     public Vector2 Offset;
     public Dictionary<string, List<CellData>> PendingBinding = new Dictionary<string, List<CellData>>();
     public Dictionary<string, List<CellData>> PendingUnbinding = new Dictionary<string, List<CellData>>();
     [Range(0f, 1f)] public float Persistance = 0.5f;
     [Range(0.5f, 100f)] public float Scale = 10;
+    public int Seed;
     internal SpriteRenderer Background;
     internal Tilemap Tilemap;
     internal Canvas WorldCanvas;
@@ -49,25 +49,6 @@ public class MapGrid : MonoBehaviour
             }
             return _cellLookup;
         }
-    }
-
-    private void OnValidate()
-    {
-        if (MapSize < 1)
-        {
-            MapSize = 1;
-        }
-
-        if (Lancunarity < 1)
-        {
-            Lancunarity = 1;
-        }
-
-        if (Octaves < 1)
-        {
-            Octaves = 1;
-        }
-
     }
 
     internal List<CellData> Cells { get; set; }
@@ -147,11 +128,10 @@ public class MapGrid : MonoBehaviour
         return newGroup.Distinct().ToList();
     }
 
-    public CellData CreateCell(int x, int y, CellType type)
+    public CellData CreateCell(int x, int y)
     {
         var cell = new CellData
         {
-            CellType = type,
             Coordinates = new Coordinates(x, y)
         };
 
@@ -179,7 +159,7 @@ public class MapGrid : MonoBehaviour
         {
             for (var x = 0; x < Game.MapGrid.MapSize; x++)
             {
-                CreateCell(x, y, CellType.Water);
+                CreateCell(x, y);
             }
         }
 
@@ -190,12 +170,14 @@ public class MapGrid : MonoBehaviour
         Debug.Log($"Linked cells in {sw.Elapsed.TotalSeconds}s");
         sw.Restart();
 
-        GenerateMapCells(new MapPreset((0.85f, CellType.Mountain),
+        MapPreset = new MapPreset((0.85f, CellType.Mountain),
                                        (0.7f, CellType.Stone),
                                        (0.5f, CellType.Forest),
                                        (0.30f, CellType.Grass),
                                        (0.25f, CellType.Dirt),
-                                       (0.0f, CellType.Water)));
+                                       (0.0f, CellType.Water));
+
+        GenerateMapCells();
         Debug.Log($"Generated map in {sw.Elapsed.TotalSeconds}s");
         sw.Restart();
 
@@ -317,7 +299,8 @@ public class MapGrid : MonoBehaviour
     {
         var tile = ScriptableObject.CreateInstance<Tile>();
         tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(cell.CellType);
-        tile.color = cell.Bound ? ColorConstants.BaseColor : ColorConstants.UnboundColor;
+        tile.color = cell.Bound ? cell.GetColor()
+                                : ColorConstants.UnboundColor;
 
         Tilemap.SetTile(new Vector3Int(cell.Coordinates.X, cell.Coordinates.Y, 0), tile);
         if (cell.Structure != null)
@@ -326,9 +309,9 @@ public class MapGrid : MonoBehaviour
         }
     }
 
-    public void Start()
+    public void Update()
     {
-        StartCoroutine(UpdateCells());
+        ProcessBindings(100);
     }
 
     internal void ClearCache()
@@ -445,6 +428,11 @@ public class MapGrid : MonoBehaviour
                 {
                     cell.Binding = IdService.GetEntityFromId(kvp.Key);
 
+                    if (cell.Binding == null)
+                    {
+                        continue;
+                    }
+
                     if (!CellBinding.ContainsKey(kvp.Key))
                     {
                         CellBinding.Add(kvp.Key, new List<CellData>());
@@ -545,15 +533,16 @@ public class MapGrid : MonoBehaviour
         }
     }
 
-    private void GenerateMapCells(MapPreset map)
+    private void GenerateMapCells()
     {
         for (int x = 0; x < Game.MapGrid.MapSize; x++)
         {
             for (int y = 0; y < Game.MapGrid.MapSize; y++)
             {
-                Game.MapGrid
-                    .GetCellAtCoordinate(new Coordinates(x, y))
-                    .CellType = map.GetCellType(x, y);
+                var cell = Game.MapGrid
+                    .GetCellAtCoordinate(new Coordinates(x, y));
+
+                cell.Height = MapPreset.GetCellHeight(cell.Coordinates.X, cell.Coordinates.Y);
             }
         }
 
@@ -564,124 +553,21 @@ public class MapGrid : MonoBehaviour
         }
     }
 
-    private void GenerateMapCellsOld()
+    private void OnValidate()
     {
-        // generate bedrock
-        for (int i = 0; i < Game.MapGrid.MapSize / 2; i++)
+        if (MapSize < 1)
         {
-            foreach (var cell in GetRandomChunk(Random.Range(1 + (Game.MapGrid.MapSize / 4), 1 + (Game.MapGrid.MapSize / 2))))
-            {
-                cell.CellType = CellType.Stone;
-            }
+            MapSize = 1;
         }
 
-        // grow mountains
-        foreach (var cell in Cells)
+        if (Lancunarity < 1)
         {
-            if (cell.CellType != CellType.Stone)
-            {
-                continue;
-            }
-
-            if (cell.CountNeighborsOfType(null) +
-                cell.CountNeighborsOfType(CellType.Mountain) +
-                cell.CountNeighborsOfType(CellType.Stone) > 5)
-            {
-                cell.CellType = CellType.Mountain;
-            }
+            Lancunarity = 1;
         }
 
-        // generate landmasses
-        for (int i = 0; i < Game.MapGrid.MapSize; i++)
+        if (Octaves < 1)
         {
-            foreach (var cell in GetRandomChunk(Random.Range(Game.MapGrid.MapSize, Game.MapGrid.MapSize * 2)))
-            {
-                if (cell.CellType == CellType.Water)
-                {
-                    cell.CellType = CellType.Grass;
-                }
-            }
-        }
-
-        // bleed water, this enlarges bodies of water
-        // creates more natural looking coastlines/rivers
-        foreach (var cell in Cells)
-        {
-            if (cell.CellType == CellType.Water)
-            {
-                continue;
-            }
-
-            var waterN = cell.CountNeighborsOfType(CellType.Water);
-            if (waterN > 2 && Random.value > 1.0f - (waterN / 10f))
-            {
-                cell.CellType = CellType.Water;
-            }
-        }
-
-        // create coast
-        foreach (var cell in Cells)
-        {
-            if (cell.CellType != CellType.Grass)
-            {
-                // already water skip
-                continue;
-            }
-
-            if (cell.CountNeighborsOfType(CellType.Water) > 0)
-            {
-                cell.CellType = CellType.Dirt;
-            }
-        }
-
-        // bleed desert
-        foreach (var cell in Cells)
-        {
-            if (cell.CellType == CellType.Water)
-            {
-                // already water skip
-                continue;
-            }
-
-            if (cell.CountNeighborsOfType(CellType.Dirt) > 2 && Random.value > 0.3)
-            {
-                cell.CellType = CellType.Dirt;
-            }
-        }
-
-        // create forest
-        foreach (var cell in Cells)
-        {
-            if (cell.CellType == CellType.Water)
-            {
-                // water skip
-                continue;
-            }
-
-            if (cell.CountNeighborsOfType(null) +
-                cell.CountNeighborsOfType(CellType.Grass) +
-                cell.CountNeighborsOfType(CellType.Forest) > 6
-                && Random.value > 0.3)
-            {
-                cell.CellType = CellType.Forest;
-            }
-        }
-
-        foreach (var cell in Cells)
-        {
-            PopulateCell(cell);
-            RefreshCell(cell);
-        }
-    }
-
-    private IEnumerator UpdateCells()
-    {
-        const int maxDraws = 100;
-        while (true)
-        {
-            ProcessBindings(maxDraws);
-
-            yield return null;
+            Octaves = 1;
         }
     }
 }
