@@ -8,7 +8,6 @@ public class CreatureRenderer : MonoBehaviour
 {
     internal CreatureData Data = new CreatureData();
     internal SpriteRenderer Highlight;
-    internal Light Light;
     internal LineRenderer LineRenderer;
     internal float RemainingTextDuration;
     internal SpriteRenderer MainRenderer;
@@ -36,7 +35,6 @@ public class CreatureRenderer : MonoBehaviour
         Text = GetComponentInChildren<TextMeshPro>();
 
         LineRenderer = GetComponent<LineRenderer>();
-        Light = transform.Find("Light").GetComponent<Light>();
 
         Highlight.gameObject.SetActive(false);
     }
@@ -129,9 +127,6 @@ public class CreatureRenderer : MonoBehaviour
         MainRenderer.material = Game.MaterialController.GetChannelingMaterial(col);
         TempMaterialDuration = duration;
         TempMaterialDelta = 0;
-
-        Light.color = col;
-        Light.intensity = 0.4f;
     }
 
     internal void EnableHighlight(Color color)
@@ -166,9 +161,6 @@ public class CreatureRenderer : MonoBehaviour
         if (TempMaterialDelta >= TempMaterialDuration)
         {
             TempMaterialDuration = 0;
-            Light.color = Color.white;
-            Light.intensity = 0.1f;
-
             MainRenderer.SetBoundMaterial(Data.CurrentCell);
         }
     }

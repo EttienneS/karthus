@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public partial class Game // .Spawn
 {
@@ -22,6 +24,7 @@ public partial class Game // .Spawn
                 MapGrid.BindCell(c, rune);
             }
         }
+
 
         return rune;
     }
@@ -86,10 +89,19 @@ public partial class Game // .Spawn
             SpawnRune(point, "Pylon", FactionController.WorldFaction);
         }
 
+        var v = Enum.GetValues(typeof(ManaColor));
+        var counter = 0;
         foreach (var cell in nexusPoints)
         {
             var target = nexusPoints[(int)(Random.value * (nexusPoints.Count - 1))];
-            LeyLineController.MakeLine(Pathfinder.FindPath(cell, target, Mobility.Fly), Helpers.RandomEnumValue<ManaColor>());
+            LeyLineController.MakeLine(Pathfinder.FindPath(cell, target, Mobility.Fly), (ManaColor)v.GetValue(counter));
+
+            counter++;
+
+            if (counter >= v.Length)
+            {
+                counter = 0;
+            }
         }
     }
 
