@@ -91,7 +91,7 @@ public partial class Game // .Spawn
         {
             var point = MapGrid.GetRandomCell();
             nexusPoints.Add(point);
-            SpawnRune(point, "Pylon", FactionController.WorldFaction);
+            SpawnRune(point, "LeySpring", FactionController.WorldFaction);
         }
 
         var v = Enum.GetValues(typeof(ManaColor));
