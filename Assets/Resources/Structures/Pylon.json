@@ -8,7 +8,7 @@
     "Black": "2"
   },
   "Buildable": false,
-  "SpriteName": "pylon",
+  "SpriteName": "LeySpring",
   "Tiled": false,
   "TravelCost": "10",
   "StructureType": "Anchor"
