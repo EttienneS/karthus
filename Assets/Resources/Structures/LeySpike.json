@@ -1,0 +1,13 @@
+{
+  "Name": "LeySpike",
+  "Material": "runeBlue_slab_014",
+  "ManaValue": {
+    "Green": "5",
+    "Black": "5"
+  },
+  "Buildable": true,
+  "SpriteName": "LeySpike",
+  "Tiled": false,
+  "TravelCost": "10",
+  "StructureType": "LeySpike"
+}

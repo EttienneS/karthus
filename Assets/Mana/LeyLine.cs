@@ -9,21 +9,13 @@ public class LeyLine : MonoBehaviour
     public LineRenderer Line;
 
     public ManaColor ManaColor;
-    internal float DeltaTime;
-    internal bool FirstDraw = true;
     internal float Jitter;
-    internal int MaxChanges = 3;
     internal Dictionary<int, KeyValuePair<Vector3, Vector3>> LineMoves = new Dictionary<int, KeyValuePair<Vector3, Vector3>>();
     internal float NextUpdate;
 
     public void JitterLine()
     {
-        if (FirstDraw)
-        {
-            JitterDiagonals();
-        }
-
-        for (int i = 0; i < MaxChanges; i++)
+        for (int i = 0; i < Cells.Count / 10; i++)
         {
             if (Random.value < Jitter)
                 continue;
@@ -60,87 +52,16 @@ public class LeyLine : MonoBehaviour
         }
     }
 
-    public void JitterDiagonals()
+    public void Start()
     {
-        for (int i = 0; i < Cells.Count; i++)
-        {
-            var cell = Cells[i];
-            if (i == 0 || i == Cells.Count - 1 || cell.Structure?.StructureType == "Anchor")
-            {
-                continue;
-            }
-
-            var previous = Cells[i - 1];
-            var next = Cells[i + 1];
-
-            if (cell.Coordinates.X != next.Coordinates.X
-                && cell.Coordinates.X != previous.Coordinates.X
-                && cell.Coordinates.Y != next.Coordinates.Y
-                && cell.Coordinates.Y != previous.Coordinates.Y)
-            {
-                if (Random.value < 0.5f)
-                {
-                    var neighbors = cell.Neighbors.Where(n => n != null
-                                        && n != next
-                                        && n != previous).ToList();
-
-                    if (neighbors.Count > 0)
-                    {
-                        var insert = neighbors[(int)Random.value * neighbors.Count];
-                        Cells.Insert(i, insert);
-                        i++;
-                    }
-                }
-            }
-        }
+        Line.positionCount = Cells.Count;
+        Line.SetPositions(Cells.Select(c => c.Coordinates.ToTopOfMapVector()).ToArray());
     }
 
-    public void Update()
-    {
-        if (FirstDraw)
-        {
-            Line.positionCount = Cells.Count;
-            Line.SetPositions(Cells.Select(c => c.Coordinates.ToTopOfMapVector()).ToArray());
-
-            FirstDraw = false;
-        }
-        else
-        {
-            DeltaTime += Time.deltaTime;
-
-            if (LineMoves.Count > 0)
-            {
-                foreach (var kvp in LineMoves)
-                {
-                    var index = kvp.Key;
-                    var from = kvp.Value.Key;
-                    var to = kvp.Value.Value;
-
-                    Line.SetPosition(index, Vector3.Lerp(from, to, DeltaTime));
-                }
-
-                if (DeltaTime >= 1)
-                {
-                    LineMoves.Clear();
-                    DeltaTime = 0;
-                }
-            }
-            else
-            {
-                if (DeltaTime > NextUpdate)
-                {
-                    NextUpdate = (Random.value * 5) + 5;
-                    DeltaTime = 0;
-                    JitterLine();
-                }
-            }
-        }
-    }
 
     internal void Awake()
     {
         Line = GetComponent<LineRenderer>();
         NextUpdate = Random.value * 5;
-        DeltaTime = 0;
     }
 }

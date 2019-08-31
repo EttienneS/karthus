@@ -22,6 +22,7 @@ public class LeyLineController : MonoBehaviour
 
         line.Cells.AddRange(cells);
 
+        
         line.JitterLine();
         return line;
     }
