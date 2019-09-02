@@ -89,21 +89,7 @@ public static class IdService
         Debug.LogWarning("Unknown entity type!");
         return null;
     }
-
-    internal static ObjectType GetObjectTypeForId(string gameObjectId)
-    {
-        if (IsStructure(gameObjectId))
-        {
-            return ObjectType.Structure;
-        }
-        if (IsCreature(gameObjectId))
-        {
-            return ObjectType.Creature;
-        }
-
-        throw new NotImplementedException();
-    }
-
+   
     internal static void RemoveEntity(IEntity entity)
     {
         if (StructureLookup.ContainsKey(entity))

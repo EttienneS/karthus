@@ -9,7 +9,6 @@
   },
   "Buildable": false,
   "SpriteName": "LeySpring",
-  "Tiled": false,
   "TravelCost": "10",
   "StructureType": "Anchor"
 }

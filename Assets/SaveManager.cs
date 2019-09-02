@@ -69,20 +69,20 @@ public class SaveManager : MonoBehaviour
 
         Game.TimeManager.Data = save.Time;
 
-        foreach (var saveCell in save.Cells)
-        {
-            var newCell = Game.MapGrid.CreateCell(saveCell.Coordinates.X, saveCell.Coordinates.Y);
-            newCell = saveCell;
+        //foreach (var saveCell in save.Cells)
+        //{
+        //    var newCell = Game.MapGrid.CreateCell(saveCell.Coordinates.X, saveCell.Coordinates.Y);
+        //    newCell = saveCell;
 
-            if (saveCell.Structure != null)
-            {
-                throw new Exception("Load structure here!");
-            }
-        }
+        //    if (saveCell.Structure != null)
+        //    {
+        //        throw new Exception("Load structure here!");
+        //    }
+        //}
 
-        Game.MapGrid.ClearCache();
-        Game.MapGrid.LinkNeighbours();
-        Game.MapGrid.ResetSearchPriorities();
+        //Game.MapGrid.ClearCache();
+        //Game.MapGrid.LinkNeighbours();
+        //Game.MapGrid.ResetSearchPriorities();
 
         foreach (var SavedCreature in save.Creatures)
         {

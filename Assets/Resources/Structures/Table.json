@@ -1,7 +1,6 @@
 {
   "Name": "Table",
   "SpriteName": "Table",
-  "Tiled": "False",
   "TravelCost": "4",
   "StructureType": "Table",
   "Scatter": "False",

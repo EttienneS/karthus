@@ -30,7 +30,6 @@ public class TimeManager : MonoBehaviour
     internal Button FasterButton;
     internal Button NormalButton;
     internal Button PauseButton;
-    internal Button SlowButton;
     internal float TickInterval = 0.5f;
     internal Text TimeDisplay;
     internal float WorkInterval = 0.01f;

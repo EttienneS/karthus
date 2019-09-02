@@ -1,7 +1,6 @@
 {
   "Name": "Stone Wall",
   "SpriteName": "StoneWall",
-  "Tiled": "False",
   "TravelCost": "-1",
   "StructureType": "Wall",
   "Scatter": "False",

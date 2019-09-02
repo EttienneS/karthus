@@ -93,4 +93,6 @@ public class Coordinates : IEquatable<Coordinates>
     {
         return $"X: {X}\nY: {Y}";
     }
+
+    
 }

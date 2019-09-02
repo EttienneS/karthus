@@ -15,6 +15,5 @@
   "Buildable": true,
   "SpriteName": "pylon",
   "Layer": "Tree",
-  "Tiled": false,
   "TravelCost": "10"
 }

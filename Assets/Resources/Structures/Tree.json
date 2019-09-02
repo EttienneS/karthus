@@ -1,7 +1,6 @@
 {
   "Name": "Tree",
   "SpriteName": "Tree",
-  "Tiled": "False",
   "TravelCost": "-1",
   "StructureType": "Tree",
   "Buildable": "False",

@@ -49,10 +49,6 @@ public partial class OrderSelectionController //.Structure
                 if (!structureData.Buildable) continue;
 
                 var button = CreateOrderButton(structureData.Name, () => BuildClicked(structureData.Name), structureData.SpriteName);
-                if (structureData.Tiled)
-                {
-                    button.Button.image.type = Image.Type.Tiled;
-                }
             }
 
             CreateOrderButton(DefaultRemoveText, RemoveStructureClicked, "cancel");

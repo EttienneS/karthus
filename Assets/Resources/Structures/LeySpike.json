@@ -7,7 +7,6 @@
   },
   "Buildable": true,
   "SpriteName": "LeySpike",
-  "Tiled": false,
   "TravelCost": "10",
   "StructureType": "LeySpike"
 }

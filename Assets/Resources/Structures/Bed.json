@@ -1,7 +1,6 @@
 {
   "Name": "Bed",
   "SpriteName": "Bed",
-  "Tiled": "False",
   "TravelCost": "4",
   "ManaValue": {
     "Green": "1",

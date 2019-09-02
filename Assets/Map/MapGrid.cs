@@ -18,7 +18,6 @@ public class MapGrid : MonoBehaviour
     public Text CellLabel;
     [Range(0f, 1f)] public float JitterProbability = 0.8f;
     public float Lancunarity = 2;
-    public MapPreset MapPreset;
     [Range(5, 1000)] public int MapSize = 100;
     public int Octaves = 4;
     public Vector2 Offset;
@@ -110,6 +109,17 @@ public class MapGrid : MonoBehaviour
         return group;
     }
 
+    internal void AddCellLabel(CellData cell)
+    {
+        if (Game.MapGrid.WorldCanvas != null)
+        {
+            var label = Instantiate(CellLabel, WorldCanvas.transform);
+            label.name = $"CL_{cell.Coordinates}";
+            label.transform.position = cell.Coordinates.ToTopOfMapVector();
+            label.text = cell.Coordinates.ToStringOnSeparateLines();
+        }
+    }
+
     public List<CellData> BleedGroup(List<CellData> group, float percentage = 0.7f)
     {
         var newGroup = group.ToList();
@@ -126,67 +136,6 @@ public class MapGrid : MonoBehaviour
         }
 
         return newGroup.Distinct().ToList();
-    }
-
-    public CellData CreateCell(int x, int y)
-    {
-        var cell = new CellData
-        {
-            Coordinates = new Coordinates(x, y)
-        };
-
-        Cells.Add(cell);
-
-        if (WorldCanvas != null)
-        {
-            var label = Instantiate(CellLabel, WorldCanvas.transform);
-            label.name = $"CL_{cell.Coordinates}";
-            label.transform.position = cell.Coordinates.ToTopOfMapVector();
-            label.text = cell.Coordinates.ToStringOnSeparateLines();
-        }
-
-        return cell;
-    }
-
-    public void CreateMap()
-    {
-        var sw = new System.Diagnostics.Stopwatch();
-
-        sw.Start();
-        Cells = new List<CellData>();
-
-        for (var y = 0; y < Game.MapGrid.MapSize; y++)
-        {
-            for (var x = 0; x < Game.MapGrid.MapSize; x++)
-            {
-                CreateCell(x, y);
-            }
-        }
-
-        Debug.Log($"Created cells in {sw.Elapsed.TotalSeconds}s");
-        sw.Restart();
-
-        LinkNeighbours();
-        Debug.Log($"Linked cells in {sw.Elapsed.TotalSeconds}s");
-        sw.Restart();
-
-        if (Seed == 0)
-        {
-            Seed = Random.Range(1, 10000);
-        }
-        MapPreset = new MapPreset((0.80f, CellType.Mountain),
-                                  (0.7f, CellType.Stone),
-                                  (0.5f, CellType.Forest),
-                                  (0.3f, CellType.Grass),
-                                  (0.2f, CellType.Dirt),
-                                  (0.0f, CellType.Water));
-
-        GenerateMapCells();
-        Debug.Log($"Generated map in {sw.Elapsed.TotalSeconds}s");
-        sw.Restart();
-
-        ResetSearchPriorities();
-        Debug.Log($"Reset search on cells in {sw.Elapsed.TotalSeconds}s");
     }
 
     public CellData GetCellAtCoordinate(Coordinates coordintes)
@@ -314,7 +263,10 @@ public class MapGrid : MonoBehaviour
 
     public void Update()
     {
-        ProcessBindings(100);
+        if (!Game.TimeManager.Paused)
+        {
+            ProcessBindings(100);
+        }
     }
 
     internal void ClearCache()
@@ -388,40 +340,13 @@ public class MapGrid : MonoBehaviour
                                        .First().Coordinates;
     }
 
-    internal void LinkNeighbours()
-    {
-        for (var y = 0; y < Game.MapGrid.MapSize; y++)
-        {
-            for (var x = 0; x < Game.MapGrid.MapSize; x++)
-            {
-                var cell = CellLookup[(x, y)];
-
-                if (x > 0)
-                {
-                    cell.SetNeighbor(Direction.W, CellLookup[(x - 1, y)]);
-
-                    if (y > 0)
-                    {
-                        cell.SetNeighbor(Direction.SW, CellLookup[(x - 1, y - 1)]);
-
-                        if (x < Game.MapGrid.MapSize - 1)
-                        {
-                            cell.SetNeighbor(Direction.SE, CellLookup[(x + 1, y - 1)]);
-                        }
-                    }
-                }
-
-                if (y > 0)
-                {
-                    cell.SetNeighbor(Direction.S, CellLookup[(x, y - 1)]);
-                }
-            }
-        }
-    }
-
     internal void ProcessBindings(int maxDraws)
     {
         var draws = 0;
+
+        var doneBind = new List<string>();
+        var doneUnbind = new List<string>();
+
         foreach (var kvp in PendingBinding)
         {
             List<CellData> done = new List<CellData>();
@@ -433,6 +358,9 @@ public class MapGrid : MonoBehaviour
 
                     if (cell.Binding == null)
                     {
+                        doneBind.Add(kvp.Key);
+                        kvp.Value.Clear();
+                        Debug.LogWarning("Unbindable entity found, clearing.");
                         continue;
                     }
 
@@ -455,6 +383,11 @@ public class MapGrid : MonoBehaviour
             }
 
             done.ForEach(c => kvp.Value.Remove(c));
+
+            if (kvp.Value.Count == 0)
+            {
+                doneBind.Add(kvp.Key);
+            }
         }
 
         foreach (var kvp in PendingUnbinding)
@@ -483,19 +416,15 @@ public class MapGrid : MonoBehaviour
             }
 
             kvp.Value.Remove(cell);
-        }
-    }
 
-    internal void ResetSearchPriorities()
-    {
-        // ensure that all cells have their phases reset
-        for (var y = 0; y < Game.MapGrid.MapSize; y++)
-        {
-            for (var x = 0; x < Game.MapGrid.MapSize; x++)
+            if (kvp.Value.Count == 0)
             {
-                CellLookup[(x, y)].SearchPhase = 0;
+                doneUnbind.Add(kvp.Key);
             }
         }
+
+        doneBind.ForEach(r => PendingBinding.Remove(r));
+        doneUnbind.ForEach(r => PendingUnbinding.Remove(r));
     }
 
     internal void Unbind(string id)
@@ -507,52 +436,6 @@ public class MapGrid : MonoBehaviour
                 PendingUnbinding.Add(id, new List<CellData>());
             }
             PendingUnbinding[id].AddRange(CellBinding[id]);
-        }
-    }
-
-    private static void PopulateCell(CellData cell)
-    {
-        var value = Random.value;
-        var world = FactionController.Factions[FactionConstants.World];
-        switch (cell.CellType)
-        {
-            case CellType.Grass:
-                if (value > 0.8)
-                {
-                    cell.SetStructure(Game.StructureController.GetStructure("Bush", world));
-                }
-                break;
-
-            case CellType.Forest:
-                if (value > 0.95)
-                {
-                    cell.SetStructure(Game.StructureController.GetStructure("Tree", world));
-                }
-                else if (value > 0.8)
-                {
-                    cell.SetStructure(Game.StructureController.GetStructure("Bush", world));
-                }
-                break;
-        }
-    }
-
-    private void GenerateMapCells()
-    {
-        for (int x = 0; x < Game.MapGrid.MapSize; x++)
-        {
-            for (int y = 0; y < Game.MapGrid.MapSize; y++)
-            {
-                var cell = Game.MapGrid
-                    .GetCellAtCoordinate(new Coordinates(x, y));
-
-                cell.Height = MapPreset.GetCellHeight(cell.Coordinates.X, cell.Coordinates.Y);
-            }
-        }
-
-        foreach (var cell in Cells)
-        {
-            PopulateCell(cell);
-            RefreshCell(cell);
         }
     }
 

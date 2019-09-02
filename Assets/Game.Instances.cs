@@ -24,6 +24,8 @@ public partial class Game //.Instances
     private static StructureController _structureController;
     private static SunController _sunController;
     private static TimeManager _timeManager;
+    internal static MapGenerator MapGenerator;
+
 
     public static CameraController CameraController
     {

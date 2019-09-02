@@ -261,16 +261,6 @@ public partial class Game : MonoBehaviour
                 }
             }
         }
-
-        //if (SelectedStructures.Count == 1)
-        //{
-        //    var structure = SelectedStructures[0];
-
-        //    if (!structure.IsBluePrint && structure.Tasks.Count > 0)
-        //    {
-        //        CraftingScreen.Show(structure);
-        //    }
-        //}
     }
 
     private void Start()
@@ -281,8 +271,9 @@ public partial class Game : MonoBehaviour
         MouseSpriteRenderer.gameObject.SetActive(false);
 
         InitFactions();
-        MapGrid.CreateMap();
-        InitialSpawn();
+
+        MapGenerator = new MapGenerator();
+        MapGenerator.Make();
     }
 
     private void Update()

@@ -1,6 +1,6 @@
 {
-  "Name": "Stone Tile",
-  "SpriteName": "StoneTile",
+  "Name": "Road",
+  "SpriteName": "Road",
   "TravelCost": "0.5",
   "StructureType": "Floor",
   "Scatter": "False",

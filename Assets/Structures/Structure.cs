@@ -19,7 +19,6 @@ public class Structure : IEntity
     public string SpriteName;
     public string StructureType;
     public List<TaskBase> Tasks = new List<TaskBase>();
-    public bool Tiled;
     public float TravelCost;
 
     [JsonIgnore]

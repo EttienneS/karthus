@@ -1,7 +1,6 @@
 {
   "Name": "Wood Tile",
   "SpriteName": "WoodTile",
-  "Tiled": "True",
   "TravelCost": "0.5",
   "StructureType": "Floor",
   "Scatter": "False",

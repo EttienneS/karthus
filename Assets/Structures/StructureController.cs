@@ -48,6 +48,7 @@ public class StructureController : MonoBehaviour
         {
             tile.color = Game.MapGrid.GetCellAtCoordinate(structure.Coordinates).Color;
         }
+
         if (structure.Material != "rune")
         {
             DefaultStructureMap.SetTile(new Vector3Int(structure.Coordinates.X, structure.Coordinates.Y, 0), tile);

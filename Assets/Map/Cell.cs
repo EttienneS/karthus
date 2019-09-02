@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class CellData
 {
     public CellType CellType;
     public Coordinates Coordinates;
+
     [JsonIgnore]
     public CellData[] Neighbors = new CellData[8];
 
@@ -28,6 +30,7 @@ public class CellData
             RefreshColor();
         }
     }
+
     [JsonIgnore]
     public bool Bound
     {
@@ -57,7 +60,7 @@ public class CellData
         set
         {
             _height = value;
-            CellType = Game.MapGrid.MapPreset.GetCellType(_height);
+            CellType = Game.MapGenerator.MapPreset.GetCellType(_height);
             RefreshColor();
         }
     }
@@ -90,11 +93,6 @@ public class CellData
     {
         get
         {
-            if (!Bound)
-            {
-                return 25;
-            }
-
             switch (CellType)
             {
                 case CellType.Water:
@@ -117,7 +115,7 @@ public class CellData
         const float maxShade = 0.4f;
         var baseColor = new Color(totalShade, Bound ? totalShade : 0.6f, totalShade, Bound ? 1f : 0.6f);
 
-        var range = Game.MapGrid.MapPreset.GetCellTypeRange(CellType);
+        var range = Game.MapGenerator.MapPreset.GetCellTypeRange(CellType);
         var scaled = Helpers.Scale(range.Item1, range.Item2, 0f, maxShade, Height);
 
         Color = new Color(baseColor.r - scaled, baseColor.g - scaled, baseColor.b - scaled, baseColor.a);
@@ -127,6 +125,12 @@ public class CellData
     {
         Neighbors[(int)direction] = cell;
         cell.Neighbors[(int)direction.Opposite()] = this;
+    }
+
+    internal CellData GetRandomNeighbor()
+    {
+        var neighbors = Neighbors.Where(n => n != null).ToList();
+        return neighbors[Random.Range(0, neighbors.Count - 1)];
     }
 
     public void SetStructure(Structure structure)

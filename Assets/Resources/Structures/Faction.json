@@ -1,7 +1,6 @@
 {
   "Name": "Faction",
   "SpriteName": "runeBlue_slab_024",
-  "Tiled": "False",
   "TravelCost": "-1",
   "StructureType": "Faction",
   "Buildable": "False",

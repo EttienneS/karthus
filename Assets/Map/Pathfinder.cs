@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public static class Pathfinder
 {
@@ -126,7 +127,18 @@ public static class Pathfinder
                 for (var d = Direction.N; d <= Direction.NW; d++)
                 {
                     var neighbor = current.GetNeighbor(d);
+
+                    if (neighbor == null)
+                    {
+                        continue;
+                    }
+
                     var neighborTravelCost = 1f;
+
+                    if (!neighbor.Bound && mobility != Mobility.AbyssWalk)
+                    {
+                        neighborTravelCost *= 25;
+                    }
 
                     if (mobility != Mobility.Fly)
                     {
@@ -165,10 +177,11 @@ public static class Pathfinder
 
             return false;
         }
-        catch (System.Exception)
+        catch (System.Exception ex)
         {
+            Debug.LogWarning("Pathing error: " + ex.ToString());
             throw;
         }
-        
+
     }
 }

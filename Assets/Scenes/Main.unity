@@ -947,6 +947,10 @@ PrefabInstance:
       propertyPath: Lancunarity
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 616382008, guid: fd9fe2ef5313abb4aa06105b1ebd9a97, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fd9fe2ef5313abb4aa06105b1ebd9a97, type: 3}
 --- !u!1001 &6124193722956726870
