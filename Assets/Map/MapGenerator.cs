@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
 
@@ -39,14 +41,25 @@ public class MapGenerator
 
         var towns = new List<Town>();
 
-        var maxSize = 20;
-
-        var groups = Game.MapGrid.MapSize / maxSize;
-
-        for (int i = 0; i < Game.MapGrid.MapSize / 50; i++)
+        var townSize = 50;
+        var squares = Game.MapGrid.MapSize / townSize;
+        var optionsX = new List<int>();
+        var optionsY = new List<int>();
+        for (int i = 0; i < squares; i++)
         {
-            var cell = Game.MapGrid.GetRandomPathableCell();
-            var radius = Random.Range(8, maxSize);
+            optionsX.Add(i);
+            optionsY.Add(i);
+        }
+
+        for (int i = 0; i < Mathf.Max(1, (Game.MapGrid.MapSize / townSize) - 2); i++)
+        {
+            var x = optionsX[Random.Range(0, optionsX.Count - 1)];
+            var y = optionsY[Random.Range(0, optionsY.Count - 1)];
+            optionsX.Remove(x);
+            optionsY.Remove(y);
+
+            var cell = Game.MapGrid.GetCellAtCoordinate(new Coordinates(x * townSize, y * townSize));
+            var radius = Random.Range(Town.MinStructureSize, Town.MaxStructureSize);
             var cores = Random.Range(4, 8);
 
             var town = new Town(cell, cores, radius);
@@ -59,8 +72,6 @@ public class MapGenerator
 
             towns.Add(town);
         }
-
-        towns.Add(new Town(Game.MapGrid.Center, 5, 5));
 
         foreach (var town in towns)
         {
@@ -118,18 +129,32 @@ public class MapGenerator
 
             foreach (var dir in dirs)
             {
-                var neighbour = cell.GetNeighbor(dir);
-                if (neighbour == null || neighbour.TravelCost < 0 || neighbour.Structure != null)
+                try
                 {
-                    neighbour = dir == Direction.N ? neighbour.GetNeighbor(Direction.S) : neighbour.GetNeighbor(Direction.E);
+                    var neighbour = cell.GetNeighbor(dir);
+                    if (neighbour == null || neighbour.TravelCost < 0 || neighbour.Structure != null)
+                    {
+                        var tempDir = Direction.E;
+                        if (dir == Direction.N)
+                        {
+                            tempDir = Direction.S;
+                        }
+
+                        neighbour = cell.GetNeighbor(tempDir);
+                    }
+
+                    if (neighbour == null || neighbour.TravelCost < 0 || neighbour.Structure != null)
+                    {
+                        continue;
+                    }
+
+                    neighbour.SetStructure(Game.StructureController.GetStructure("Road", FactionController.WorldFaction));
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"Road fail: {ex}");
                 }
 
-                if (neighbour == null || neighbour.TravelCost < 0 || neighbour.Structure != null)
-                {
-                    continue;
-                }
-
-                neighbour.SetStructure(Game.StructureController.GetStructure("Road", FactionController.WorldFaction));
             }
         }
     }
@@ -163,9 +188,6 @@ public class MapGenerator
 
     public void SpawnCreatures()
     {
-        var sw = new System.Diagnostics.Stopwatch();
-        sw.Start();
-
         SummonCells(Game.MapGrid.Center, FactionController.PlayerFaction);
         Game.MapGrid.Center.SetStructure(FactionController.PlayerFaction.Core);
 
@@ -177,12 +199,6 @@ public class MapGenerator
         }
 
         Game.CameraController.MoveToCell(Game.MapGrid.Center.GetNeighbor(Direction.E));
-
-        sw.Stop();
-
-        Game.MapGrid.ProcessBindings(Game.MapGrid.PendingBinding.Count * 200);
-
-        Debug.Log($"Did initial spawn in {sw.Elapsed}s");
     }
 
     internal void FillCells()
@@ -190,15 +206,11 @@ public class MapGenerator
         foreach (var cell in Game.MapGrid.Cells)
         {
             PopulateCell(cell);
-            Game.MapGrid.RefreshCell(cell);
         }
     }
 
     internal void GenerateMapFromPreset()
     {
-        var sw = new System.Diagnostics.Stopwatch();
-
-        sw.Start();
         Game.MapGrid.Cells = new List<CellData>();
 
         for (var y = 0; y < Game.MapGrid.MapSize; y++)
@@ -209,12 +221,9 @@ public class MapGenerator
             }
         }
 
-        Debug.Log($"Created cells in {sw.Elapsed.TotalSeconds}s");
-        sw.Restart();
+        Game.MapGrid.ResetRefreshCache();
 
         LinkNeighbours();
-        Debug.Log($"Linked cells in {sw.Elapsed.TotalSeconds}s");
-        sw.Restart();
 
         if (Game.MapGrid.Seed == 0)
         {
@@ -222,11 +231,8 @@ public class MapGenerator
         }
 
         GenerateMapCells();
-        Debug.Log($"Generated map in {sw.Elapsed.TotalSeconds}s");
-        sw.Restart();
 
         ResetSearchPriorities();
-        Debug.Log($"Reset search on cells in {sw.Elapsed.TotalSeconds}s");
     }
 
     internal void LinkNeighbours()
@@ -262,6 +268,10 @@ public class MapGenerator
 
     internal void Make()
     {
+        var sw = new Stopwatch();
+
+        sw.Start();
+
         MapPreset = new MapPreset((0.80f, CellType.Mountain),
                                   (0.7f, CellType.Stone),
                                   (0.5f, CellType.Forest),
@@ -270,18 +280,40 @@ public class MapGenerator
                                   (0.0f, CellType.Water));
 
         GenerateMapFromPreset();
+        Debug.Log($"Generated map in {sw.Elapsed}");
+        sw.Restart();
 
         GenerateTowns();
+        Debug.Log($"Generated towns in {sw.Elapsed}");
+        sw.Restart();
 
         FillCells();
+        Debug.Log($"Filled cells in {sw.Elapsed}");
+        sw.Restart();
 
         CreateBindRunes();
+        Debug.Log($"Spawned bindings in {sw.Elapsed}");
+        sw.Restart();
 
         CreateLeyLines();
+        Debug.Log($"Created ley lines in {sw.Elapsed}");
+        sw.Restart();
 
         SpawnCreatures();
+        Debug.Log($"Spawned creatures in {sw.Elapsed}");
+        sw.Restart();
 
         SpawnMonsters();
+        Debug.Log($"Spawned monsters in {sw.Elapsed}");
+        sw.Restart();
+
+        foreach (var cell in Game.MapGrid.GetRectangle(Game.MapGrid.Center.Coordinates.X - 50, Game.MapGrid.Center.Coordinates.Y - 50, 100, 100))
+        {
+            Game.MapGrid.RefreshCell(cell);
+        }
+        Game.MapGrid.ProcessBindings(Game.MapGrid.PendingBinding.Count * 30);
+
+        Debug.Log($"Refreshed cells in {sw.Elapsed}");
     }
 
     internal void ResetSearchPriorities()

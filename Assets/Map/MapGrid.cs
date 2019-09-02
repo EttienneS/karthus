@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -101,6 +102,11 @@ public class MapGrid : MonoBehaviour
         Background.material.SetColor("_EffectColor", Color.magenta);
     }
 
+    public void Start()
+    {
+        StartCoroutine("BackgroundRefresh");
+    }
+
     public void BindCell(CellData cell, IEntity originator)
     {
         if (cell.Bound)
@@ -157,9 +163,17 @@ public class MapGrid : MonoBehaviour
         return newGroup.Distinct().ToList();
     }
 
-    public CellData GetCellAtCoordinate(Coordinates coordintes)
+    public CellData GetCellAtCoordinate(Coordinates coordinates)
     {
-        return CellLookup[(coordintes.X, coordintes.Y)];
+        if (coordinates.X < 0
+            || coordinates.Y < 0
+            || coordinates.X >= Game.MapGrid.MapSize
+            || coordinates.Y >= Game.MapGrid.MapSize)
+        {
+            return null;
+        }
+
+        return CellLookup[(coordinates.X, coordinates.Y)];
     }
 
     public CellData GetCellAtPoint(Vector3 position)
@@ -177,6 +191,7 @@ public class MapGrid : MonoBehaviour
     public List<CellData> GetCircle(Coordinates center, int radius)
     {
         var cells = new List<CellData>();
+
         var centerX = center.X;
         var centerY = center.Y;
 
@@ -240,6 +255,11 @@ public class MapGrid : MonoBehaviour
         return chunk;
     }
 
+    internal void ResetRefreshCache()
+    {
+        PendingRefresh = Cells.ToList();
+    }
+
     public CellData GetRandomPathableCell()
     {
         var cell = GetRandomCell();
@@ -267,8 +287,15 @@ public class MapGrid : MonoBehaviour
         return cells;
     }
 
+    public List<CellData> PendingRefresh;
+
     public void RefreshCell(CellData cell)
     {
+        if (PendingRefresh.Contains(cell))
+        {
+            PendingRefresh.Remove(cell);
+        }
+
         var tile = ScriptableObject.CreateInstance<Tile>();
         tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(cell.CellType);
         tile.color = cell.Color;
@@ -286,6 +313,25 @@ public class MapGrid : MonoBehaviour
         {
             ProcessBindings(100);
         }
+
+    }
+
+    public IEnumerator BackgroundRefresh()
+    {
+        while (true)
+        {
+            for (int i = 0; i < Mathf.Min(50, PendingRefresh.Count); i++)
+            {
+                RefreshCell(PendingRefresh[0]);
+            }
+
+            if (PendingRefresh.Count == 0)
+            {
+                break;
+            }
+            yield return null;
+        }
+        yield return null;
     }
 
     internal void AddCellLabel(CellData cell)

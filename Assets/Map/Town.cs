@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class Town
@@ -24,18 +23,30 @@ public class Town
         return cells.Count(c => c.TravelCost >= 0) / cells.Count >= 0.75;
     }
 
+    public const int MinStructureSize = 8;
+    public const int MaxStructureSize = 11;
+    public const int MinDistance = 10;
+    public const int MaxDistance = 15;
+
     public void Generate()
     {
         for (int i = 0; i < CoreCount; i++)
         {
-            var offset = Random.Range(5, 8);
-            var core = new Core(Game.MapGrid.GetRandomRadian(Center.Coordinates, Radius + offset), offset);
+            var offset = Random.Range(MinDistance, MaxDistance);
+            var radianCell = Game.MapGrid.GetRandomRadian(Center.Coordinates, Radius + offset);
+
+            if (radianCell == null)
+            {
+                continue;
+            }
+
+            var core = new Core(radianCell, offset);
             if (!core.Valid(this))
             {
                 continue;
             }
 
-            core.Propagte(0.9f, 10, 0.9f, this);
+            core.Propagte(0.9f, 5, 0.7f, this);
 
             Cores.Add(core);
         }

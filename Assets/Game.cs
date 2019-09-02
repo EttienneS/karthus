@@ -171,8 +171,6 @@ public partial class Game : MonoBehaviour
 
     private void InitFactions()
     {
-        var sw = new System.Diagnostics.Stopwatch();
-        sw.Start();
         foreach (var factionName in new[]
         {
             FactionConstants.Player,
@@ -198,8 +196,6 @@ public partial class Game : MonoBehaviour
             FactionController.Factions.Add(factionName, faction);
         }
 
-        Debug.Log($"Created factions in {sw.Elapsed}s");
-        sw.Stop();
     }
 
     private bool MouseOverUi()
@@ -265,6 +261,7 @@ public partial class Game : MonoBehaviour
 
     private void Start()
     {
+        Debug.Log("Bind");
         LineRenderer = GetComponent<LineRenderer>();
 
         selectSquareImage.gameObject.SetActive(false);
@@ -272,6 +269,7 @@ public partial class Game : MonoBehaviour
 
         InitFactions();
 
+        Debug.Log("Start map gen");
         MapGenerator = new MapGenerator();
         MapGenerator.Make();
     }

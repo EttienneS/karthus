@@ -5,12 +5,20 @@ using UnityEngine;
 
 public class SpriteStore : MonoBehaviour
 {
+    public Dictionary<string, Sprite> CreatureSprites = new Dictionary<string, Sprite>();
+
+    private Dictionary<string, Sprite> _itemSprites;
+
+    private Dictionary<string, Sprite> _mapSprites;
+
     internal Dictionary<string, Sprite> ItemSprites
     {
         get
         {
             if (_itemSprites == null)
             {
+                Debug.Log("load item sprites");
+
                 _itemSprites = new Dictionary<string, Sprite>();
 
                 var sprites = Resources.LoadAll<Sprite>("Sprites/Item").ToList();
@@ -20,38 +28,20 @@ public class SpriteStore : MonoBehaviour
                 {
                     _itemSprites.Add(sprite.name, sprite);
                 }
+                Debug.Log("load item sprites");
             }
 
             return _itemSprites;
         }
     }
-
-    private Dictionary<string, Sprite> _mapSprites;
-    private Dictionary<string, Sprite> _itemSprites;
-
-    internal Sprite GetPlaceholder()
-    {
-        return GetSpriteByName("Placeholder");
-    }
-
-    public Dictionary<string, Sprite> CreatureSprites = new Dictionary<string, Sprite>();
-
-    public void LoadCreatureSprites()
-    {
-        foreach (var sprite in Resources.LoadAll<Sprite>("Sprites/Creature"))
-        {
-            CreatureSprites.Add(sprite.name, sprite);
-        }
-    }
-
     internal Dictionary<string, Sprite> MapSpriteTypeDictionary
     {
         get
         {
             if (_mapSprites == null)
             {
-                LoadCreatureSprites();
                 Debug.Log("load map sprites");
+                LoadCreatureSprites();
 
                 _mapSprites = new Dictionary<string, Sprite>();
 
@@ -64,9 +54,23 @@ public class SpriteStore : MonoBehaviour
                         MapSpriteTypeDictionary.Add(typeName, sprite);
                     }
                 }
+                Debug.Log("load map sprites");
             }
+
             return _mapSprites;
         }
+    }
+
+    public void LoadCreatureSprites()
+    {
+        Debug.Log("load creature sprites");
+
+        foreach (var sprite in Resources.LoadAll<Sprite>("Sprites/Creature"))
+        {
+            CreatureSprites.Add(sprite.name, sprite);
+        }
+
+        Debug.Log("load creature sprites");
     }
 
     internal bool FacingUp(Direction facing)
@@ -93,6 +97,10 @@ public class SpriteStore : MonoBehaviour
         return GetPlaceholder();
     }
 
+    internal Sprite GetPlaceholder()
+    {
+        return GetSpriteByName("Placeholder");
+    }
     internal Sprite GetSpriteByName(string spriteName)
     {
         try

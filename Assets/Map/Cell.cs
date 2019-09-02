@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
 public class CellData
@@ -104,6 +105,7 @@ public class CellData
         }
     }
 
+   
     public CellData GetNeighbor(Direction direction)
     {
         return Neighbors[(int)direction];
