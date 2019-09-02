@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -22,16 +23,37 @@ public class MapGrid : MonoBehaviour
     public int Octaves = 4;
     public Vector2 Offset;
     public Dictionary<string, List<CellData>> PendingBinding = new Dictionary<string, List<CellData>>();
+
     public Dictionary<string, List<CellData>> PendingUnbinding = new Dictionary<string, List<CellData>>();
+
     [Range(0f, 1f)] public float Persistance = 0.5f;
+
     [Range(0.5f, 100f)] public float Scale = 10;
+
     public int Seed;
+
     internal SpriteRenderer Background;
+
     internal Tilemap Tilemap;
+
     internal Canvas WorldCanvas;
+
     private Dictionary<(int x, int y), CellData> _cellLookup;
+
     private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
+
     private int _searchFrontierPhase;
+
+    internal float GetAngle(Coordinates c1, Coordinates c2)
+    {
+        return Mathf.Atan2(c2.X - c1.X, c2.Y - c1.Y) * 180.0f / Mathf.PI;
+    }
+
+    internal Coordinates GetPointAtDistanceOnAngle(Coordinates point, int distance, float angle)
+    {
+        var pos = new Coordinates(Mathf.FloorToInt(distance * Mathf.Cos(angle)), Mathf.FloorToInt(distance * Mathf.Cos(angle)));
+        return new Coordinates(point.X + pos.X, point.Y + pos.Y);
+    }
 
     public Dictionary<(int x, int y), CellData> CellLookup
     {
@@ -47,6 +69,14 @@ public class MapGrid : MonoBehaviour
                 }
             }
             return _cellLookup;
+        }
+    }
+
+    public CellData Center
+    {
+        get
+        {
+            return CellLookup[(Game.MapGrid.MapSize / 2, Game.MapGrid.MapSize / 2)];
         }
     }
 
@@ -107,17 +137,6 @@ public class MapGrid : MonoBehaviour
         }
 
         return group;
-    }
-
-    internal void AddCellLabel(CellData cell)
-    {
-        if (Game.MapGrid.WorldCanvas != null)
-        {
-            var label = Instantiate(CellLabel, WorldCanvas.transform);
-            label.name = $"CL_{cell.Coordinates}";
-            label.transform.position = cell.Coordinates.ToTopOfMapVector();
-            label.text = cell.Coordinates.ToStringOnSeparateLines();
-        }
     }
 
     public List<CellData> BleedGroup(List<CellData> group, float percentage = 0.7f)
@@ -269,6 +288,17 @@ public class MapGrid : MonoBehaviour
         }
     }
 
+    internal void AddCellLabel(CellData cell)
+    {
+        if (Game.MapGrid.WorldCanvas != null)
+        {
+            var label = Instantiate(CellLabel, WorldCanvas.transform);
+            label.name = $"CL_{cell.Coordinates}";
+            label.transform.position = cell.Coordinates.ToTopOfMapVector();
+            label.text = cell.Coordinates.ToStringOnSeparateLines();
+        }
+    }
+
     internal void ClearCache()
     {
         _cellLookup = null;
@@ -338,6 +368,15 @@ public class MapGrid : MonoBehaviour
                                        .Where(c => c.Bound && c.TravelCost > 0)
                                        .OrderBy(c => c.TravelCost)
                                        .First().Coordinates;
+    }
+
+    internal CellData GetRandomRadian(Coordinates center, int radius)
+    {
+        var angle = Random.Range(0, 360);
+        var mineX = Mathf.Clamp(Mathf.FloorToInt(center.X + (radius * Mathf.Cos(angle))), 0, Game.MapGrid.MapSize);
+        var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Y + (radius * Mathf.Sin(angle))), 0, Game.MapGrid.MapSize);
+
+        return GetCellAtCoordinate(new Coordinates(mineX, mineY));
     }
 
     internal void ProcessBindings(int maxDraws)

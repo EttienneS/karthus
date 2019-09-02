@@ -1,7 +1,7 @@
 {
   "Name": "Road",
   "SpriteName": "Road",
-  "TravelCost": "0.5",
+  "TravelCost": "0.1",
   "StructureType": "Floor",
   "Scatter": "False",
   "ManaValue": {

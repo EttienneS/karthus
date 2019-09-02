@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
 
 public class MapGenerator
 {
     public MapPreset MapPreset;
+
+    public enum RoadSize
+    {
+        Single, Double, Triple
+    }
 
     public CellData CreateCell(int x, int y)
     {
@@ -35,46 +39,97 @@ public class MapGenerator
 
         var towns = new List<Town>();
 
-        for (int i = 0; i < Game.MapGrid.MapSize / 40; i++)
+        var maxSize = 20;
+
+        var groups = Game.MapGrid.MapSize / maxSize;
+
+        for (int i = 0; i < Game.MapGrid.MapSize / 50; i++)
         {
             var cell = Game.MapGrid.GetRandomPathableCell();
-            var radius = Random.Range(8, 15);
-            var surrounds = Game.MapGrid.GetCircle(cell.Coordinates, radius);
+            var radius = Random.Range(8, maxSize);
+            var cores = Random.Range(4, 8);
 
-            if (surrounds.Count(c => c.TravelCost > 0) / surrounds.Count < 0.75)
+            var town = new Town(cell, cores, radius);
+
+            if (town.ValidatePosition())
             {
                 i--;
                 continue;
             }
 
-            towns.Add(new Town(cell, surrounds, radius));
+            towns.Add(town);
+        }
+
+        towns.Add(new Town(Game.MapGrid.Center, 5, 5));
+
+        foreach (var town in towns)
+        {
+            town.Generate();
         }
 
         foreach (var town in towns)
         {
-            var height = town.Height;
-            foreach (var cell in town.Cells)
-            {
-                if (cell.TravelCost < 0)
-                    continue;
+            LinkTowns(towns, town);
+        }
+    }
 
-                cell.Height = height;
-                cell.SetStructure(Game.StructureController.GetStructure("Road", FactionController.WorldFaction));
+    public void MakeRoad(CellData point1, CellData point2, bool includeEnds = true, RoadSize roadSize = RoadSize.Double)
+    {
+        var path = Pathfinder.FindPath(point1.GetRandomNeighbor(),
+                                                 point2.GetRandomNeighbor(),
+                                                 Mobility.AbyssWalk);
+
+        if (path == null || path.Count == 0)
+        {
+            return;
+        }
+
+        if (!includeEnds)
+        {
+            if (path.Contains(point1))
+                path.Remove(point1);
+
+            if (path.Contains(point2))
+                path.Remove(point2);
+        }
+
+        foreach (var cell in path)
+        {
+            cell.SetStructure(Game.StructureController.GetStructure("Road", FactionController.WorldFaction));
+
+            Direction[] dirs;
+            switch (roadSize)
+            {
+                case RoadSize.Single:
+                    dirs = new Direction[] { };
+                    break;
+
+                case RoadSize.Double:
+                    dirs = new Direction[] { Direction.N, Direction.W };
+                    break;
+
+                case RoadSize.Triple:
+                    dirs = new Direction[] { Direction.N, Direction.W, Direction.E, Direction.S };
+                    break;
+
+                default:
+                    throw new Exception("Unknown road type");
             }
 
-            MakeRune(town.Center, "BindRune", FactionController.WorldFaction);
-
-            foreach (var otherTown in towns)
+            foreach (var dir in dirs)
             {
-                if (town == otherTown)
-                    continue;
-
-                foreach (var cell in Pathfinder.FindPath(otherTown.Center.GetRandomNeighbor(),
-                                                         town.Center.GetRandomNeighbor(),
-                                                         Mobility.AbyssWalk))
+                var neighbour = cell.GetNeighbor(dir);
+                if (neighbour == null || neighbour.TravelCost < 0 || neighbour.Structure != null)
                 {
-                    cell.SetStructure(Game.StructureController.GetStructure("Road", FactionController.WorldFaction));
+                    neighbour = dir == Direction.N ? neighbour.GetNeighbor(Direction.S) : neighbour.GetNeighbor(Direction.E);
                 }
+
+                if (neighbour == null || neighbour.TravelCost < 0 || neighbour.Structure != null)
+                {
+                    continue;
+                }
+
+                neighbour.SetStructure(Game.StructureController.GetStructure("Road", FactionController.WorldFaction));
             }
         }
     }
@@ -111,36 +166,17 @@ public class MapGenerator
         var sw = new System.Diagnostics.Stopwatch();
         sw.Start();
 
-        var midCell = Game.MapGrid
-            .GetCircle(new Coordinates(Game.MapGrid.MapSize / 2, Game.MapGrid.MapSize / 2), 10)
-            .First(c => c.CellType != CellType.Water || c.CellType != CellType.Mountain);
-
-        if (midCell.Structure != null)
-        {
-            Game.StructureController.DestroyStructure(midCell.Structure);
-        }
-
-        SummonCells(midCell, FactionController.PlayerFaction);
-
-        midCell.SetStructure(FactionController.PlayerFaction.Core);
+        SummonCells(Game.MapGrid.Center, FactionController.PlayerFaction);
+        Game.MapGrid.Center.SetStructure(FactionController.PlayerFaction.Core);
 
         for (int i = 0; i < 3; i++)
         {
             Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("Person"),
-                                         midCell.GetNeighbor(Helpers.RandomEnumValue<Direction>()).Coordinates,
+                                         Game.MapGrid.Center.GetNeighbor(Helpers.RandomEnumValue<Direction>()).Coordinates,
                                          FactionController.PlayerFaction);
         }
 
-        Game.CameraController.MoveToCell(midCell.GetNeighbor(Direction.E));
-
-        var spawns = midCell.Neighbors.ToList();
-
-        for (int i = 0; i < Game.MapGrid.MapSize; i++)
-        {
-            Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("AbyssWraith"),
-                                             Game.MapGrid.GetRandomCell().Coordinates,
-                                             FactionController.MonsterFaction);
-        }
+        Game.CameraController.MoveToCell(Game.MapGrid.Center.GetNeighbor(Direction.E));
 
         sw.Stop();
 
@@ -236,12 +272,16 @@ public class MapGenerator
         GenerateMapFromPreset();
 
         GenerateTowns();
+
         FillCells();
 
         CreateBindRunes();
+
         CreateLeyLines();
 
         SpawnCreatures();
+
+        SpawnMonsters();
     }
 
     internal void ResetSearchPriorities()
@@ -256,13 +296,32 @@ public class MapGenerator
         }
     }
 
+    private static void SpawnMonsters()
+    {
+        for (int i = 0; i < Game.MapGrid.MapSize; i++)
+        {
+            Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("AbyssWraith"),
+                                             Game.MapGrid.GetRandomCell().Coordinates,
+                                             FactionController.MonsterFaction);
+        }
+    }
+
     private void CreateBindRunes()
     {
         for (int i = 0; i < Game.MapGrid.MapSize / 2; i++)
         {
             var cell = Game.MapGrid.GetRandomCell();
+            while (cell.Structure != null)
+            {
+                cell = Game.MapGrid.GetRandomCell();
+            }
             MakeRune(cell, "BindRune", FactionController.WorldFaction);
         }
+
+        Game.MapGenerator.MakeRune(Game.MapGrid.Center.GetNeighbor(Direction.NE).GetNeighbor(Direction.NE), "BindRune", FactionController.WorldFaction);
+        Game.MapGenerator.MakeRune(Game.MapGrid.Center.GetNeighbor(Direction.SE).GetNeighbor(Direction.SE), "BindRune", FactionController.WorldFaction);
+        Game.MapGenerator.MakeRune(Game.MapGrid.Center.GetNeighbor(Direction.NW).GetNeighbor(Direction.NW), "BindRune", FactionController.WorldFaction);
+        Game.MapGenerator.MakeRune(Game.MapGrid.Center.GetNeighbor(Direction.SW).GetNeighbor(Direction.SW), "BindRune", FactionController.WorldFaction);
     }
 
     private void CreateLeyLines()
@@ -305,6 +364,17 @@ public class MapGenerator
         }
     }
 
+    private void LinkTowns(List<Town> towns, Town town)
+    {
+        foreach (var otherTown in towns)
+        {
+            if (town == otherTown)
+                continue;
+
+            MakeRoad(town.Center, otherTown.Center);
+        }
+    }
+
     private void PopulateCell(CellData cell)
     {
         if (cell.Structure != null)
@@ -344,9 +414,9 @@ public class MapGenerator
             Game.MapGrid.BindCell(cell, faction.Core);
         }
 
-        MakeRune(center.GetNeighbor(Direction.N).GetNeighbor(Direction.N).GetNeighbor(Direction.N), "BindRune", faction);
-        MakeRune(center.GetNeighbor(Direction.E).GetNeighbor(Direction.E).GetNeighbor(Direction.E), "BindRune", faction);
-        MakeRune(center.GetNeighbor(Direction.S).GetNeighbor(Direction.S).GetNeighbor(Direction.S), "BindRune", faction);
-        MakeRune(center.GetNeighbor(Direction.W).GetNeighbor(Direction.W).GetNeighbor(Direction.W), "BindRune", faction);
+        //MakeRune(center.GetNeighbor(Direction.N).GetNeighbor(Direction.N).GetNeighbor(Direction.N), "BindRune", faction);
+        //MakeRune(center.GetNeighbor(Direction.E).GetNeighbor(Direction.E).GetNeighbor(Direction.E), "BindRune", faction);
+        //MakeRune(center.GetNeighbor(Direction.S).GetNeighbor(Direction.S).GetNeighbor(Direction.S), "BindRune", faction);
+        //MakeRune(center.GetNeighbor(Direction.W).GetNeighbor(Direction.W).GetNeighbor(Direction.W), "BindRune", faction);
     }
 }

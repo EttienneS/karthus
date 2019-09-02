@@ -100,7 +100,7 @@ public class CellData
                     return -1;
             }
 
-            return Structure != null && !Structure.IsBluePrint ? Structure.TravelCost : 1;
+            return Structure != null && !Structure.IsBluePrint ? Structure.TravelCost : 1.5f;
         }
     }
 
@@ -112,7 +112,7 @@ public class CellData
     public void RefreshColor()
     {
         const float totalShade = 1f;
-        const float maxShade = 0.4f;
+        const float maxShade = 0.2f;
         var baseColor = new Color(totalShade, Bound ? totalShade : 0.6f, totalShade, Bound ? 1f : 0.6f);
 
         var range = Game.MapGenerator.MapPreset.GetCellTypeRange(CellType);
