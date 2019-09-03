@@ -41,17 +41,18 @@ public class MapGenerator
 
         var towns = new List<Town>();
 
-        var townSize = 50;
+        var townSize = Game.MapGrid.MapSize / 20;
         var squares = Game.MapGrid.MapSize / townSize;
         var optionsX = new List<int>();
         var optionsY = new List<int>();
+        var townsCount = Mathf.Max(1, (Game.MapGrid.MapSize / (townSize * 2)) - 1);
         for (int i = 0; i < squares; i++)
         {
             optionsX.Add(i);
             optionsY.Add(i);
         }
 
-        for (int i = 0; i < Mathf.Max(1, (Game.MapGrid.MapSize / townSize) - 2); i++)
+        for (int i = 0; i < townsCount; i++)
         {
             var x = optionsX[Random.Range(0, optionsX.Count - 1)];
             var y = optionsY[Random.Range(0, optionsY.Count - 1)];
@@ -154,7 +155,6 @@ public class MapGenerator
                 {
                     Debug.LogWarning($"Road fail: {ex}");
                 }
-
             }
         }
     }
@@ -188,8 +188,7 @@ public class MapGenerator
 
     public void SpawnCreatures()
     {
-        SummonCells(Game.MapGrid.Center, FactionController.PlayerFaction);
-        Game.MapGrid.Center.SetStructure(FactionController.PlayerFaction.Core);
+        MakeFactionCore(Game.MapGrid.Center, FactionController.PlayerFaction);
 
         for (int i = 0; i < 3; i++)
         {
@@ -199,14 +198,6 @@ public class MapGenerator
         }
 
         Game.CameraController.MoveToCell(Game.MapGrid.Center.GetNeighbor(Direction.E));
-    }
-
-    internal void FillCells()
-    {
-        foreach (var cell in Game.MapGrid.Cells)
-        {
-            PopulateCell(cell);
-        }
     }
 
     internal void GenerateMapFromPreset()
@@ -287,14 +278,6 @@ public class MapGenerator
         Debug.Log($"Generated towns in {sw.Elapsed}");
         sw.Restart();
 
-        FillCells();
-        Debug.Log($"Filled cells in {sw.Elapsed}");
-        sw.Restart();
-
-        CreateBindRunes();
-        Debug.Log($"Spawned bindings in {sw.Elapsed}");
-        sw.Restart();
-
         CreateLeyLines();
         Debug.Log($"Created ley lines in {sw.Elapsed}");
         sw.Restart();
@@ -307,13 +290,16 @@ public class MapGenerator
         Debug.Log($"Spawned monsters in {sw.Elapsed}");
         sw.Restart();
 
-        foreach (var cell in Game.MapGrid.GetRectangle(Game.MapGrid.Center.Coordinates.X - 50, Game.MapGrid.Center.Coordinates.Y - 50, 100, 100))
+        RefreshPlayerCells();
+        Debug.Log($"Refreshed cells in {sw.Elapsed}");
+    }
+
+    private static void RefreshPlayerCells()
+    {
+        foreach (var cell in Game.MapGrid.GetCircle(Game.MapGrid.Center.Coordinates, 25))
         {
             Game.MapGrid.RefreshCell(cell);
         }
-        Game.MapGrid.ProcessBindings(Game.MapGrid.PendingBinding.Count * 30);
-
-        Debug.Log($"Refreshed cells in {sw.Elapsed}");
     }
 
     internal void ResetSearchPriorities()
@@ -330,30 +316,12 @@ public class MapGenerator
 
     private static void SpawnMonsters()
     {
-        for (int i = 0; i < Game.MapGrid.MapSize; i++)
+        for (int i = 0; i < Game.MapGrid.MapSize / 10; i++)
         {
             Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("AbyssWraith"),
                                              Game.MapGrid.GetRandomCell().Coordinates,
                                              FactionController.MonsterFaction);
         }
-    }
-
-    private void CreateBindRunes()
-    {
-        for (int i = 0; i < Game.MapGrid.MapSize / 2; i++)
-        {
-            var cell = Game.MapGrid.GetRandomCell();
-            while (cell.Structure != null)
-            {
-                cell = Game.MapGrid.GetRandomCell();
-            }
-            MakeRune(cell, "BindRune", FactionController.WorldFaction);
-        }
-
-        Game.MapGenerator.MakeRune(Game.MapGrid.Center.GetNeighbor(Direction.NE).GetNeighbor(Direction.NE), "BindRune", FactionController.WorldFaction);
-        Game.MapGenerator.MakeRune(Game.MapGrid.Center.GetNeighbor(Direction.SE).GetNeighbor(Direction.SE), "BindRune", FactionController.WorldFaction);
-        Game.MapGenerator.MakeRune(Game.MapGrid.Center.GetNeighbor(Direction.NW).GetNeighbor(Direction.NW), "BindRune", FactionController.WorldFaction);
-        Game.MapGenerator.MakeRune(Game.MapGrid.Center.GetNeighbor(Direction.SW).GetNeighbor(Direction.SW), "BindRune", FactionController.WorldFaction);
     }
 
     private void CreateLeyLines()
@@ -398,16 +366,22 @@ public class MapGenerator
 
     private void LinkTowns(List<Town> towns, Town town)
     {
+        int max = Random.Range(0, Mathf.Min(2, towns.Count));
         foreach (var otherTown in towns)
         {
             if (town == otherTown)
                 continue;
-
+            max--;
             MakeRoad(town.Center, otherTown.Center);
+
+            if (max <= 0)
+            {
+                break;
+            }
         }
     }
 
-    private void PopulateCell(CellData cell)
+    internal void PopulateCell(CellData cell)
     {
         if (cell.Structure != null)
         {
@@ -437,18 +411,12 @@ public class MapGenerator
         }
     }
 
-    private void SummonCells(CellData center, Faction faction)
+    private void MakeFactionCore(CellData center, Faction faction)
     {
-        Game.MapGrid.BindCell(center, faction.Core);
-
-        foreach (var cell in center.Neighbors)
+        Game.MapGrid.Center.SetStructure(FactionController.PlayerFaction.Core);
+        foreach (var cell in Game.MapGrid.GetCircle(center.Coordinates, 5))
         {
             Game.MapGrid.BindCell(cell, faction.Core);
         }
-
-        //MakeRune(center.GetNeighbor(Direction.N).GetNeighbor(Direction.N).GetNeighbor(Direction.N), "BindRune", faction);
-        //MakeRune(center.GetNeighbor(Direction.E).GetNeighbor(Direction.E).GetNeighbor(Direction.E), "BindRune", faction);
-        //MakeRune(center.GetNeighbor(Direction.S).GetNeighbor(Direction.S).GetNeighbor(Direction.S), "BindRune", faction);
-        //MakeRune(center.GetNeighbor(Direction.W).GetNeighbor(Direction.W).GetNeighbor(Direction.W), "BindRune", faction);
     }
 }

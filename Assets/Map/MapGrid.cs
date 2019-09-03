@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -25,6 +24,7 @@ public class MapGrid : MonoBehaviour
     public Vector2 Offset;
     public Dictionary<string, List<CellData>> PendingBinding = new Dictionary<string, List<CellData>>();
 
+    public List<CellData> PendingRefresh;
     public Dictionary<string, List<CellData>> PendingUnbinding = new Dictionary<string, List<CellData>>();
 
     [Range(0f, 1f)] public float Persistance = 0.5f;
@@ -37,24 +37,11 @@ public class MapGrid : MonoBehaviour
 
     internal Tilemap Tilemap;
 
-    internal Canvas WorldCanvas;
-
     private Dictionary<(int x, int y), CellData> _cellLookup;
 
     private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
 
     private int _searchFrontierPhase;
-
-    internal float GetAngle(Coordinates c1, Coordinates c2)
-    {
-        return Mathf.Atan2(c2.X - c1.X, c2.Y - c1.Y) * 180.0f / Mathf.PI;
-    }
-
-    internal Coordinates GetPointAtDistanceOnAngle(Coordinates point, int distance, float angle)
-    {
-        var pos = new Coordinates(Mathf.FloorToInt(distance * Mathf.Cos(angle)), Mathf.FloorToInt(distance * Mathf.Cos(angle)));
-        return new Coordinates(point.X + pos.X, point.Y + pos.Y);
-    }
 
     public Dictionary<(int x, int y), CellData> CellLookup
     {
@@ -94,18 +81,14 @@ public class MapGrid : MonoBehaviour
     public void Awake()
     {
         Tilemap = GetComponentInChildren<Tilemap>();
-        WorldCanvas = GetComponentInChildren<Canvas>();
         Background = GetComponentInChildren<SpriteRenderer>();
 
         Background.transform.position = new Vector3(Game.MapGrid.MapSize / 2, Game.MapGrid.MapSize / 2, 0);
-        Background.transform.localScale = new Vector3(Game.MapGrid.MapSize, Game.MapGrid.MapSize, 1);
+        Background.transform.localScale = new Vector3(Game.MapGrid.MapSize + 2, Game.MapGrid.MapSize + 2, 1);
         Background.material.SetColor("_EffectColor", Color.magenta);
     }
 
-    public void Start()
-    {
-        StartCoroutine("BackgroundRefresh");
-    }
+
 
     public void BindCell(CellData cell, IEntity originator)
     {
@@ -255,11 +238,6 @@ public class MapGrid : MonoBehaviour
         return chunk;
     }
 
-    internal void ResetRefreshCache()
-    {
-        PendingRefresh = Cells.ToList();
-    }
-
     public CellData GetRandomPathableCell()
     {
         var cell = GetRandomCell();
@@ -287,12 +265,11 @@ public class MapGrid : MonoBehaviour
         return cells;
     }
 
-    public List<CellData> PendingRefresh;
-
     public void RefreshCell(CellData cell)
     {
         if (PendingRefresh.Contains(cell))
         {
+            Game.MapGenerator.PopulateCell(cell);
             PendingRefresh.Remove(cell);
         }
 
@@ -309,40 +286,18 @@ public class MapGrid : MonoBehaviour
 
     public void Update()
     {
-        if (!Game.TimeManager.Paused)
-        {
-            ProcessBindings(100);
-        }
-
-    }
-
-    public IEnumerator BackgroundRefresh()
-    {
-        while (true)
-        {
-            for (int i = 0; i < Mathf.Min(50, PendingRefresh.Count); i++)
-            {
-                RefreshCell(PendingRefresh[0]);
-            }
-
-            if (PendingRefresh.Count == 0)
-            {
-                break;
-            }
-            yield return null;
-        }
-        yield return null;
+        ProcessBindings(50);
     }
 
     internal void AddCellLabel(CellData cell)
     {
-        if (Game.MapGrid.WorldCanvas != null)
-        {
-            var label = Instantiate(CellLabel, WorldCanvas.transform);
-            label.name = $"CL_{cell.Coordinates}";
-            label.transform.position = cell.Coordinates.ToTopOfMapVector();
-            label.text = cell.Coordinates.ToStringOnSeparateLines();
-        }
+        //if (Game.MapGrid.WorldCanvas != null)
+        //{
+        //    var label = Instantiate(CellLabel, WorldCanvas.transform);
+        //    label.name = $"CL_{cell.Coordinates}";
+        //    label.transform.position = cell.Coordinates.ToTopOfMapVector();
+        //    label.text = cell.Coordinates.ToStringOnSeparateLines();
+        //}
     }
 
     internal void ClearCache()
@@ -356,6 +311,11 @@ public class MapGrid : MonoBehaviour
         {
             Game.StructureController.DestroyStructure(cell.Structure);
         }
+    }
+
+    internal float GetAngle(Coordinates c1, Coordinates c2)
+    {
+        return Mathf.Atan2(c2.X - c1.X, c2.Y - c1.Y) * 180.0f / Mathf.PI;
     }
 
     internal Direction GetDirection(CellData fromCell, CellData toCell)
@@ -414,6 +374,12 @@ public class MapGrid : MonoBehaviour
                                        .Where(c => c.Bound && c.TravelCost > 0)
                                        .OrderBy(c => c.TravelCost)
                                        .First().Coordinates;
+    }
+
+    internal Coordinates GetPointAtDistanceOnAngle(Coordinates point, int distance, float angle)
+    {
+        var pos = new Coordinates(Mathf.FloorToInt(distance * Mathf.Cos(angle)), Mathf.FloorToInt(distance * Mathf.Cos(angle)));
+        return new Coordinates(point.X + pos.X, point.Y + pos.Y);
     }
 
     internal CellData GetRandomRadian(Coordinates center, int radius)
@@ -510,6 +476,11 @@ public class MapGrid : MonoBehaviour
 
         doneBind.ForEach(r => PendingBinding.Remove(r));
         doneUnbind.ForEach(r => PendingUnbinding.Remove(r));
+    }
+
+    internal void ResetRefreshCache()
+    {
+        PendingRefresh = Cells.ToList();
     }
 
     internal void Unbind(string id)

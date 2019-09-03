@@ -123,7 +123,6 @@ public class Core
             subCore.Draw();
         }
 
-        Game.MapGenerator.MakeRune(Center, "BindRune", FactionController.WorldFaction);
         LinkCores();
 
         foreach (var cell in square)
