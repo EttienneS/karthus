@@ -105,20 +105,16 @@ public class CellData
         }
     }
 
-    private Tile _tile;
 
     [JsonIgnore]
     public Tile Tile
     {
         get
         {
-            if (_tile == null)
-            {
-                _tile = ScriptableObject.CreateInstance<Tile>();
-                _tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(CellType);
-            }
-            _tile.color = Color;
-            return _tile;
+            var tile = ScriptableObject.CreateInstance<Tile>();
+            tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(CellType);
+            tile.color = Color;
+            return tile;
         }
     }
 

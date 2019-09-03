@@ -19,7 +19,7 @@ public class MapGrid : MonoBehaviour
     public Text CellLabel;
     [Range(0f, 1f)] public float JitterProbability = 0.8f;
     public float Lancunarity = 2;
-    [Range(5, 1000)] public int MapSize = 100;
+    [Range(100, 500)] public int MapSize = 100;
     public int Octaves = 4;
     public Vector2 Offset;
     public Dictionary<string, List<CellData>> PendingBinding = new Dictionary<string, List<CellData>>();
