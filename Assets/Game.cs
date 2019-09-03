@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Debug = UnityEngine.Debug;
 
 public enum SelectionPreference
 {
@@ -261,7 +263,10 @@ public partial class Game : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("Bind");
+        var sw = new Stopwatch();
+        sw.Start();
+        Debug.Log("Start mapgen");
+
         LineRenderer = GetComponent<LineRenderer>();
 
         selectSquareImage.gameObject.SetActive(false);
@@ -269,9 +274,11 @@ public partial class Game : MonoBehaviour
 
         InitFactions();
 
-        Debug.Log("Start map gen");
         MapGenerator = new MapGenerator();
         MapGenerator.Make();
+
+        Debug.Log($"Map gen complete in: {sw.Elapsed}");
+
     }
 
     private void Update()

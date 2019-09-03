@@ -94,5 +94,8 @@ public class Coordinates : IEquatable<Coordinates>
         return $"X: {X}\nY: {Y}";
     }
 
-    
+    internal Vector3Int ToVector3Int()
+    {
+        return new Vector3Int(X, Y, 0);
+    }
 }

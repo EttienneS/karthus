@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -37,25 +38,13 @@ public class StructureController : MonoBehaviour
             return;
         }
 
-        var tile = ScriptableObject.CreateInstance<Tile>();
-        tile.sprite = Game.SpriteStore.GetSpriteByName(structure.SpriteName);
-
-        if (structure.IsBluePrint)
-        {
-            tile.color = ColorConstants.BluePrintColor;
-        }
-        else
-        {
-            tile.color = Game.MapGrid.GetCellAtCoordinate(structure.Coordinates).Color;
-        }
-
         if (structure.Material != "rune")
         {
-            DefaultStructureMap.SetTile(new Vector3Int(structure.Coordinates.X, structure.Coordinates.Y, 0), tile);
+            DefaultStructureMap.SetTile(new Vector3Int(structure.Coordinates.X, structure.Coordinates.Y, 0), structure.Tile);
         }
         else
         {
-            RuneMap.SetTile(new Vector3Int(structure.Coordinates.X, structure.Coordinates.Y, 0), tile);
+            RuneMap.SetTile(new Vector3Int(structure.Coordinates.X, structure.Coordinates.Y, 0), structure.Tile);
         }
     }
 
@@ -110,5 +99,18 @@ public class StructureController : MonoBehaviour
     private void IndexStructure(Structure structure)
     {
         IdService.EnrollEntity(structure);
+    }
+
+    public void DrawAllStructures()
+    {
+        var structures = IdService.StructureIdLookup.Values.Where(s => s.Material != "rune" && s.Coordinates != null);
+        var tiles = structures.Select(c => c.Tile).ToArray();
+        var coords = structures.Select(c => c.Coordinates.ToVector3Int()).ToArray();
+        Game.StructureController.DefaultStructureMap.SetTiles(coords, tiles);
+
+        var runes = IdService.StructureIdLookup.Values.Where(s => s.Material == "rune" && s.Coordinates != null);
+        tiles = runes.Select(c => c.Tile).ToArray();
+        coords = runes.Select(c => c.Coordinates.ToVector3Int()).ToArray();
+        Game.StructureController.RuneMap.SetTiles(coords, tiles);
     }
 }

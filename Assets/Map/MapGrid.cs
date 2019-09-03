@@ -24,7 +24,6 @@ public class MapGrid : MonoBehaviour
     public Vector2 Offset;
     public Dictionary<string, List<CellData>> PendingBinding = new Dictionary<string, List<CellData>>();
 
-    public List<CellData> PendingRefresh;
     public Dictionary<string, List<CellData>> PendingUnbinding = new Dictionary<string, List<CellData>>();
 
     [Range(0f, 1f)] public float Persistance = 0.5f;
@@ -85,7 +84,6 @@ public class MapGrid : MonoBehaviour
 
         Background.transform.position = new Vector3(Game.MapGrid.MapSize / 2, Game.MapGrid.MapSize / 2, 0);
         Background.transform.localScale = new Vector3(Game.MapGrid.MapSize + 2, Game.MapGrid.MapSize + 2, 1);
-        Background.material.SetColor("_EffectColor", Color.magenta);
     }
 
 
@@ -267,17 +265,7 @@ public class MapGrid : MonoBehaviour
 
     public void RefreshCell(CellData cell)
     {
-        if (PendingRefresh.Contains(cell))
-        {
-            Game.MapGenerator.PopulateCell(cell);
-            PendingRefresh.Remove(cell);
-        }
-
-        var tile = ScriptableObject.CreateInstance<Tile>();
-        tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(cell.CellType);
-        tile.color = cell.Color;
-
-        Tilemap.SetTile(new Vector3Int(cell.Coordinates.X, cell.Coordinates.Y, 0), tile);
+        Tilemap.SetTile(new Vector3Int(cell.Coordinates.X, cell.Coordinates.Y, 0), cell.Tile);
         if (cell.Structure != null)
         {
             Game.StructureController.RefreshStructure(cell.Structure);
@@ -478,10 +466,6 @@ public class MapGrid : MonoBehaviour
         doneUnbind.ForEach(r => PendingUnbinding.Remove(r));
     }
 
-    internal void ResetRefreshCache()
-    {
-        PendingRefresh = Cells.ToList();
-    }
 
     internal void Unbind(string id)
     {

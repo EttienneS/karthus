@@ -75,6 +75,32 @@ public class Structure : IEntity
     [JsonIgnore]
     public TaskBase Task { get; set; }
 
+    private Tile _tile;
+
+    [JsonIgnore]
+    public Tile Tile
+    {
+        get
+        {
+            if (_tile == null)
+            {
+                _tile = ScriptableObject.CreateInstance<Tile>();
+                _tile.sprite = Game.SpriteStore.GetSpriteByName(SpriteName);
+            }
+
+            if (IsBluePrint)
+            {
+                _tile.color = ColorConstants.BluePrintColor;
+            }
+            else
+            {
+                _tile.color = Game.MapGrid.GetCellAtCoordinate(Coordinates).Color;
+            }
+
+            return _tile;
+        }
+    }
+
     public static Structure GetFromJson(string json)
     {
         return JsonConvert.DeserializeObject<Structure>(json, new JsonSerializerSettings

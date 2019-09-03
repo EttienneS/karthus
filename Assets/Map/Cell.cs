@@ -105,7 +105,23 @@ public class CellData
         }
     }
 
-   
+    private Tile _tile;
+
+    [JsonIgnore]
+    public Tile Tile
+    {
+        get
+        {
+            if (_tile == null)
+            {
+                _tile = ScriptableObject.CreateInstance<Tile>();
+                _tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(CellType);
+            }
+            _tile.color = Color;
+            return _tile;
+        }
+    }
+
     public CellData GetNeighbor(Direction direction)
     {
         return Neighbors[(int)direction];
@@ -147,8 +163,6 @@ public class CellData
         {
             cell.Structure = structure;
         }
-
-        Game.StructureController.RefreshStructure(structure);
     }
 
     internal int CountNeighborsOfType(CellType? cellType)

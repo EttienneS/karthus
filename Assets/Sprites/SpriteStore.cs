@@ -17,7 +17,7 @@ public class SpriteStore : MonoBehaviour
         {
             if (_itemSprites == null)
             {
-                Debug.Log("load item sprites");
+                //Debug.Log("load item sprites");
 
                 _itemSprites = new Dictionary<string, Sprite>();
 
@@ -28,19 +28,20 @@ public class SpriteStore : MonoBehaviour
                 {
                     _itemSprites.Add(sprite.name, sprite);
                 }
-                Debug.Log("load item sprites");
+                // Debug.Log("load item sprites");
             }
 
             return _itemSprites;
         }
     }
+
     internal Dictionary<string, Sprite> MapSpriteTypeDictionary
     {
         get
         {
             if (_mapSprites == null)
             {
-                Debug.Log("load map sprites");
+                // Debug.Log("load map sprites");
                 LoadCreatureSprites();
 
                 _mapSprites = new Dictionary<string, Sprite>();
@@ -54,7 +55,7 @@ public class SpriteStore : MonoBehaviour
                         MapSpriteTypeDictionary.Add(typeName, sprite);
                     }
                 }
-                Debug.Log("load map sprites");
+                //  Debug.Log("load map sprites");
             }
 
             return _mapSprites;
@@ -63,14 +64,14 @@ public class SpriteStore : MonoBehaviour
 
     public void LoadCreatureSprites()
     {
-        Debug.Log("load creature sprites");
+        //  Debug.Log("load creature sprites");
 
         foreach (var sprite in Resources.LoadAll<Sprite>("Sprites/Creature"))
         {
             CreatureSprites.Add(sprite.name, sprite);
         }
 
-        Debug.Log("load creature sprites");
+        //  Debug.Log("load creature sprites");
     }
 
     internal bool FacingUp(Direction facing)
@@ -101,6 +102,7 @@ public class SpriteStore : MonoBehaviour
     {
         return GetSpriteByName("Placeholder");
     }
+
     internal Sprite GetSpriteByName(string spriteName)
     {
         try

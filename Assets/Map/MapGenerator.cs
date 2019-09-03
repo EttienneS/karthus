@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
 
@@ -212,8 +214,6 @@ public class MapGenerator
             }
         }
 
-        Game.MapGrid.ResetRefreshCache();
-
         LinkNeighbours();
 
         if (Game.MapGrid.Seed == 0)
@@ -290,17 +290,25 @@ public class MapGenerator
         Debug.Log($"Spawned monsters in {sw.Elapsed}");
         sw.Restart();
 
-        RefreshPlayerCells();
+        UpdateCells();
         Debug.Log($"Refreshed cells in {sw.Elapsed}");
     }
 
-    private static void RefreshPlayerCells()
+    private void UpdateCells()
     {
-        foreach (var cell in Game.MapGrid.GetCircle(Game.MapGrid.Center.Coordinates, 25))
+        var cells = Game.MapGrid.Cells;
+        foreach (var cell in cells)
         {
-            Game.MapGrid.RefreshCell(cell);
+            PopulateCell(cell);
         }
+
+        var tiles = cells.Select(c => c.Tile).ToArray();
+        var coords = cells.Select(c => c.Coordinates.ToVector3Int()).ToArray();
+        Game.MapGrid.Tilemap.SetTiles(coords, tiles);
+        Game.StructureController.DrawAllStructures();
     }
+
+
 
     internal void ResetSearchPriorities()
     {
@@ -416,7 +424,7 @@ public class MapGenerator
         Game.MapGrid.Center.SetStructure(FactionController.PlayerFaction.Core);
         foreach (var cell in Game.MapGrid.GetCircle(center.Coordinates, 5))
         {
-            Game.MapGrid.BindCell(cell, faction.Core);
+            cell.Binding = faction.Core;
         }
     }
 }
