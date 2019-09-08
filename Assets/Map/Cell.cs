@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -174,5 +175,10 @@ public class CellData
     internal IEnumerable<CreatureData> GetCreatures()
     {
         return Game.CreatureController.CreatureLookup.Where(c => c.Key.Coordinates == Coordinates).Select(c => c.Key);
+    }
+
+    internal void CreateStructure(string structureName, string faction = FactionConstants.World)
+    {
+        SetStructure(Game.StructureController.GetStructure(structureName, FactionController.Factions[faction]));
     }
 }

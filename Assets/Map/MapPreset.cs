@@ -9,7 +9,7 @@ public class MapPreset
 
     public MapPreset(params (float min, CellType type)[] param)
     {
-        _noiseMap = Noise.GenerateNoiseMap(Game.MapGrid.MapSize, Game.MapGrid.MapSize,
+        _noiseMap = Noise.GenerateNoiseMap(Game.MapGrid.Width, Game.MapGrid.Height,
             Game.MapGrid.Seed,
             Game.MapGrid.Scale,
             Game.MapGrid.Octaves,

@@ -1,0 +1,9 @@
+{
+  "Name": "Reserved",
+  "SpriteName": "Reserved",
+  "TravelCost": "1",
+  "StructureType": "Floor",
+  "ManaValue": {
+  },
+  "Buildable": "False"
+}

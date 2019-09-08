@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class Core
@@ -9,26 +8,42 @@ public class Core
     public CellData Center;
     public int Radius;
     public List<Core> SubCores;
+    public float damper = 0.5f;
+    public float Momentum;
 
-    public Core(CellData center, int radius)
+    public Core Parent;
+
+    public Core(CellData center, int radius, float momentum, Core parent)
     {
+        Parent = parent;
         Center = center;
         Radius = radius;
-
+        Momentum = momentum * damper;
         Cells = Game.MapGrid.GetCircle(Center.Coordinates, radius);
         SubCores = new List<Core>();
     }
 
+    public Core GetRoot()
+    {
+        if (Parent == null)
+        {
+            return this;
+        }
+        else
+        {
+            return Parent.GetRoot();
+        }
+    }
+
     public bool CellAvailable(CellData cell)
     {
-        if (Cells.Contains(cell))
-        {
-            return false;
-        }
-
         foreach (var core in SubCores)
         {
             if (core.Cells.Contains(cell))
+            {
+                return false;
+            }
+            if (!core.CellAvailable(cell))
             {
                 return false;
             }
@@ -37,118 +52,117 @@ public class Core
         return true;
     }
 
-    public void Propagte(float splitThreshold, int minLevel, float damper, Town town)
+    public const int MinStructureSize = 8;
+    public const int MaxStructureSize = 11;
+    public const int MinDistance = 10;
+    public const int MaxDistance = 15;
+
+    public void Propagate()
     {
-        if (damper < 0.2f)
+        if (Momentum < 0.1f)
         {
             return;
         }
 
-        for (int i = 0; i < minLevel; i++)
+        var radians = new List<int> { 60, 120, 180, 240, 300, 360 };
+        for (int i = 0; i < 5; i++)
         {
-            var angle = Game.MapGrid.GetAngle(town.Center.Coordinates, Center.Coordinates);
+            var rad = radians[Random.Range(0, radians.Count - 1)];
+            radians.Remove(rad);
 
-            var offPoint = Game.MapGrid.GetPointAtDistanceOnAngle(Center.Coordinates,
-                                                                  Random.Range(Town.MinDistance, Town.MaxDistance),
-                                                                  angle + Random.Range(-20f, 20f));
-
+           // rad += Random.Range(-15, 15);
+            var offPoint = Game.MapGrid.GetCellAttRadian(Center.Coordinates, Random.Range(MinDistance, MaxDistance), rad);
             if (offPoint == null)
             {
                 continue;
             }
-            if (!TryGetSubCore(Game.MapGrid.GetCellAtCoordinate(offPoint), town, out var core))
+
+            if (!TryGetSubCore(offPoint, out var core))
             {
                 continue;
             }
 
             SubCores.Add(core);
-
-            if (Random.value < splitThreshold)
-            {
-                core.Propagte(splitThreshold * damper, Mathf.FloorToInt(minLevel * damper), damper / 2, town);
-            }
         }
     }
 
-    public bool TryGetSubCore(CellData center, Town town, out Core core)
+    public bool TryGetSubCore(CellData center, out Core core)
     {
         if (center == null)
         {
             core = null;
             return false;
         }
-        core = new Core(center, Random.Range(Town.MinStructureSize, Town.MaxStructureSize));
+        core = new Core(center, Random.Range(MinStructureSize, MaxStructureSize), Momentum, this);
 
-        bool valid = true;
-        foreach (var cell in core.Cells)
+        return core.Valid();
+    }
+
+    internal void Link()
+    {
+        foreach (var core in SubCores)
         {
-            if (!CellAvailable(cell))
-            {
-                valid = false;
-                break;
-            }
-
-            if (!town.CellAvailable(cell))
-            {
-                valid = false;
-                break;
-            }
+            Game.MapGenerator.MakeRoad(Center, core.Center);
+            core.Link();
         }
-
-        return valid;
     }
 
     internal void Draw()
     {
-        var originX = Center.Coordinates.X - (Radius / 2);
-        var originY = Center.Coordinates.Y - (Radius / 2);
-
-        var square = Game.MapGrid.GetRectangle(originX, originY, Radius, Radius);
-        var subSquare = Game.MapGrid.GetRectangle(originX + 1, originY + 1, Radius - 2, Radius - 2);
-
-        square.RemoveAll(c => subSquare.Contains(c));
-
-        foreach (var cell in square)
+        if (SubCores.Count == 0)
         {
-            cell.SetStructure(Game.StructureController.GetStructure("Stone Wall", FactionController.WorldFaction));
-        }
+            var originX = Center.Coordinates.X - (Radius / 2);
+            var originY = Center.Coordinates.Y - (Radius / 2);
 
-        foreach (var cell in subSquare)
-        {
-            cell.SetStructure(Game.StructureController.GetStructure("Wood Tile", FactionController.WorldFaction));
-        }
+            var square = Game.MapGrid.GetRectangle(originX, originY, Radius, Radius);
+            var subSquare = Game.MapGrid.GetRectangle(originX + 1, originY + 1, Radius - 2, Radius - 2);
 
-        foreach (var subCore in SubCores)
-        {
-            subCore.Draw();
-        }
+            square.RemoveAll(c => subSquare.Contains(c));
 
-        LinkCores();
+            foreach (var cell in square)
+            {
+                cell.SetStructure(Game.StructureController.GetStructure("Stone Wall", FactionController.WorldFaction));
+            }
 
-        foreach (var cell in square)
-        {
-            if (cell.Neighbors.Count(c => c?.Structure?.Name == "Road") >= 2)
+            foreach (var cell in subSquare)
             {
                 cell.SetStructure(Game.StructureController.GetStructure("Wood Tile", FactionController.WorldFaction));
-                break;
+            }
+
+            foreach (var cell in square)
+            {
+                if (cell.Neighbors.Count(c => c?.Structure?.Name == "Road") >= 2)
+                {
+                    cell.SetStructure(Game.StructureController.GetStructure("Wood Tile", FactionController.WorldFaction));
+                    break;
+                }
+            }
+        }
+        else
+        {
+            foreach (var cell in Game.MapGrid.GetCircle(Center.Coordinates, 4))
+            {
+                if (cell.Structure == null)
+                    cell.SetStructure(Game.StructureController.GetStructure("Road", FactionController.WorldFaction));
+            }
+
+            foreach (var subCore in SubCores)
+            {
+                subCore.Draw();
             }
         }
     }
 
-    internal void LinkCores()
+    internal bool Valid()
     {
-        foreach (var subCore in SubCores)
-        {
-            Game.MapGenerator.MakeRoad(Center, subCore.Center, false, MapGenerator.RoadSize.Single);
-            subCore.LinkCores();
-        }
-    }
-
-    internal bool Valid(Town town)
-    {
+        var root = GetRoot();
         foreach (var cell in Cells)
         {
-            if (!town.CellAvailable(cell))
+            if (cell.TravelCost < 0)
+            {
+                return false;
+            }
+            if (!root.CellAvailable(cell))
             {
                 return false;
             }

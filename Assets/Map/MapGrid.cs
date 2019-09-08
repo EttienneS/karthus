@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -19,7 +18,8 @@ public class MapGrid : MonoBehaviour
     public Text CellLabel;
     [Range(0f, 1f)] public float JitterProbability = 0.8f;
     public float Lancunarity = 2;
-    [Range(100, 500)] public int MapSize = 100;
+    [Range(100, 500)] public int Width = 100;
+    [Range(100, 500)] public int Height = 100;
     public int Octaves = 4;
     public Vector2 Offset;
     public Dictionary<string, List<CellData>> PendingBinding = new Dictionary<string, List<CellData>>();
@@ -63,7 +63,7 @@ public class MapGrid : MonoBehaviour
     {
         get
         {
-            return CellLookup[(Game.MapGrid.MapSize / 2, Game.MapGrid.MapSize / 2)];
+            return CellLookup[(Game.MapGrid.Width / 2, Game.MapGrid.Height / 2)];
         }
     }
 
@@ -71,7 +71,7 @@ public class MapGrid : MonoBehaviour
 
     public void AddCellIfValid(int x, int y, List<CellData> cells)
     {
-        if (x >= 0 && x < Game.MapGrid.MapSize && y >= 0 && y < Game.MapGrid.MapSize)
+        if (x >= 0 && x < Game.MapGrid.Width && y >= 0 && y < Game.MapGrid.Height)
         {
             cells.Add(CellLookup[(x, y)]);
         }
@@ -82,11 +82,9 @@ public class MapGrid : MonoBehaviour
         Tilemap = GetComponentInChildren<Tilemap>();
         Background = GetComponentInChildren<SpriteRenderer>();
 
-        Background.transform.position = new Vector3(Game.MapGrid.MapSize / 2, Game.MapGrid.MapSize / 2, 0);
-        Background.transform.localScale = new Vector3(Game.MapGrid.MapSize + 2, Game.MapGrid.MapSize + 2, 1);
+        Background.transform.position = new Vector3(Game.MapGrid.Width / 2, Game.MapGrid.Height / 2, 0);
+        Background.transform.localScale = new Vector3(Game.MapGrid.Width + 2, Game.MapGrid.Height + 2, 1);
     }
-
-
 
     public void BindCell(CellData cell, IEntity originator)
     {
@@ -144,12 +142,17 @@ public class MapGrid : MonoBehaviour
         return newGroup.Distinct().ToList();
     }
 
+    public CellData GetCellAtCoordinate(int x, int y)
+    {
+        return GetCellAtCoordinate(new Coordinates(x, y));
+    }
+
     public CellData GetCellAtCoordinate(Coordinates coordinates)
     {
         if (coordinates.X < 0
             || coordinates.Y < 0
-            || coordinates.X >= Game.MapGrid.MapSize
-            || coordinates.Y >= Game.MapGrid.MapSize)
+            || coordinates.X >= Game.MapGrid.Width
+            || coordinates.Y >= Game.MapGrid.Height)
         {
             return null;
         }
@@ -162,7 +165,8 @@ public class MapGrid : MonoBehaviour
         // subtract half a unit to compensate for cell offset
         var coordinates = Coordinates.FromPosition(position - new Vector3(0.5f, 0.5f));
 
-        if (coordinates.X < 0 || coordinates.Y < 0 || coordinates.X >= Game.MapGrid.MapSize || coordinates.Y >= Game.MapGrid.MapSize)
+        if (coordinates.X < 0 || coordinates.Y < 0 ||
+            coordinates.X >= Game.MapGrid.Width || coordinates.Y >= Game.MapGrid.Height)
         {
             return null;
         }
@@ -196,7 +200,7 @@ public class MapGrid : MonoBehaviour
 
     public CellData GetRandomCell()
     {
-        return CellLookup[((int)(Random.value * (Game.MapGrid.MapSize - 1)), (int)(Random.value * (Game.MapGrid.MapSize - 1)))];
+        return CellLookup[((int)(Random.value * (Game.MapGrid.Width - 1)), (int)(Random.value * (Game.MapGrid.Height - 1)))];
     }
 
     public List<CellData> GetRandomChunk(int chunkSize)
@@ -373,8 +377,16 @@ public class MapGrid : MonoBehaviour
     internal CellData GetRandomRadian(Coordinates center, int radius)
     {
         var angle = Random.Range(0, 360);
-        var mineX = Mathf.Clamp(Mathf.FloorToInt(center.X + (radius * Mathf.Cos(angle))), 0, Game.MapGrid.MapSize);
-        var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Y + (radius * Mathf.Sin(angle))), 0, Game.MapGrid.MapSize);
+        var mineX = Mathf.Clamp(Mathf.FloorToInt(center.X + (radius * Mathf.Cos(angle))), 0, Game.MapGrid.Width);
+        var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Y + (radius * Mathf.Sin(angle))), 0, Game.MapGrid.Height);
+
+        return GetCellAtCoordinate(new Coordinates(mineX, mineY));
+    }
+
+    internal CellData GetCellAttRadian(Coordinates center, int radius, int angle)
+    {
+        var mineX = Mathf.Clamp(Mathf.FloorToInt(center.X + (radius * Mathf.Cos(angle))), 0, Game.MapGrid.Width);
+        var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Y + (radius * Mathf.Sin(angle))), 0, Game.MapGrid.Height);
 
         return GetCellAtCoordinate(new Coordinates(mineX, mineY));
     }
@@ -466,7 +478,6 @@ public class MapGrid : MonoBehaviour
         doneUnbind.ForEach(r => PendingUnbinding.Remove(r));
     }
 
-
     internal void Unbind(string id)
     {
         if (CellBinding.ContainsKey(id))
@@ -481,9 +492,14 @@ public class MapGrid : MonoBehaviour
 
     private void OnValidate()
     {
-        if (MapSize < 1)
+        if (Width < 1)
         {
-            MapSize = 1;
+            Width = 1;
+        }
+
+        if (Height < 1)
+        {
+            Height = 1;
         }
 
         if (Lancunarity < 1)
