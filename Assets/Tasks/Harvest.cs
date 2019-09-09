@@ -10,7 +10,7 @@
     {
         Target = structure;
 
-        AddSubTask(new Move(Game.MapGrid.GetPathableNeighbour(Target.Coordinates)));
+        AddSubTask(new Move(Game.MapGrid.GetPathableNeighbour(Target.Cell)));
         AddSubTask(new Wait(2f, "Harvesting"));
 
         foreach (var mana in Target.ManaValue)
@@ -18,7 +18,7 @@
             AddSubTask(Channel.GetChannelFrom(mana.Key, mana.Value, Target));
         }
 
-        Message = $"Harvesting {structure.Name} at {structure.Coordinates}";
+        Message = $"Harvesting {structure.Name} at {structure.Cell}";
     }
 
     public override bool Done()

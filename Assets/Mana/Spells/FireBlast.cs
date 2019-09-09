@@ -15,10 +15,9 @@ public class FireBlast : IAttack
             return false;
         }
 
-        if (Pathfinder.Distance(Game.MapGrid.GetCellAtCoordinate(Attacker.Coordinates),
-            Game.MapGrid.GetCellAtCoordinate(Target.Coordinates), Mobility.Walk) <= Range)
+        if (Pathfinder.Distance(Attacker.Cell, Target.Cell, Mobility.Walk) <= Range)
         {
-            Attacker.Task.AddSubTask(new Move(Game.MapGrid.GetCircle(Target.Coordinates, Range - 1).First().Coordinates));
+            Attacker.Task.AddSubTask(new Move(Game.MapGrid.GetCircle(Target.Cell, Range - 1).First()));
             return false;
         }
         return true;
@@ -28,7 +27,7 @@ public class FireBlast : IAttack
     {
         Attacker.ManaPool.BurnMana(ManaColor.Red, 1);
 
-        Game.EffectController.SpawnEffect(Target.Coordinates, 3);
+        Game.EffectController.SpawnEffect(Target.Cell, 3);
         Game.LeyLineController.MakeChannellingLine(Attacker,
                                                    Target, 5, 3,
                                                    ManaColor.Red);

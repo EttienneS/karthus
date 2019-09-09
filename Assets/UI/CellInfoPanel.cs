@@ -25,7 +25,7 @@ public class CellInfoPanel : MonoBehaviour
     {
         if (_cell != null)
         {
-            CellName.text = _cell.Coordinates.ToString();
+            CellName.text = _cell.ToString();
             CellContent.text = string.Empty;
 
             CellContent.text += "\n";

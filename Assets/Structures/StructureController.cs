@@ -33,26 +33,26 @@ public class StructureController : MonoBehaviour
 
     public void RefreshStructure(Structure structure)
     {
-        if (structure.Coordinates == null)
+        if (structure.Cell == null)
         {
             return;
         }
 
         if (structure.Material != "rune")
         {
-            DefaultStructureMap.SetTile(new Vector3Int(structure.Coordinates.X, structure.Coordinates.Y, 0), structure.Tile);
+            DefaultStructureMap.SetTile(new Vector3Int(structure.Cell.X, structure.Cell.Y, 0), structure.Tile);
         }
         else
         {
-            RuneMap.SetTile(new Vector3Int(structure.Coordinates.X, structure.Coordinates.Y, 0), structure.Tile);
+            RuneMap.SetTile(new Vector3Int(structure.Cell.X, structure.Cell.Y, 0), structure.Tile);
         }
     }
 
-    public void ClearStructure(Coordinates coordinates)
+    public void ClearStructure(CellData cell)
     {
         var tile = ScriptableObject.CreateInstance<Tile>();
-        DefaultStructureMap.SetTile(new Vector3Int(coordinates.X, coordinates.Y, 0), tile);
-        RuneMap.SetTile(new Vector3Int(coordinates.X, coordinates.Y, 0), tile);
+        DefaultStructureMap.SetTile(new Vector3Int(cell.X, cell.Y, 0), tile);
+        RuneMap.SetTile(new Vector3Int(cell.X, cell.Y, 0), tile);
     }
 
     public Structure GetStructure(string name, Faction faction)
@@ -77,9 +77,9 @@ public class StructureController : MonoBehaviour
     {
         if (structure != null)
         {
-            Game.MapGrid.GetCellAtCoordinate(structure.Coordinates).Structure = null;
+            structure.Cell.Structure = null;
             Game.MapGrid.Unbind(structure.Id);
-            ClearStructure(structure.Coordinates);
+            ClearStructure(structure.Cell);
 
             if (structure.Spell != null)
             {
@@ -103,14 +103,14 @@ public class StructureController : MonoBehaviour
 
     public void DrawAllStructures()
     {
-        var structures = IdService.StructureIdLookup.Values.Where(s => s.Material != "rune" && s.Coordinates != null);
+        var structures = IdService.StructureIdLookup.Values.Where(s => s.Material != "rune" && s.Cell != null);
         var tiles = structures.Select(c => c.Tile).ToArray();
-        var coords = structures.Select(c => c.Coordinates.ToVector3Int()).ToArray();
+        var coords = structures.Select(c => c.Cell.ToVector3Int()).ToArray();
         Game.StructureController.DefaultStructureMap.SetTiles(coords, tiles);
 
-        var runes = IdService.StructureIdLookup.Values.Where(s => s.Material == "rune" && s.Coordinates != null);
+        var runes = IdService.StructureIdLookup.Values.Where(s => s.Material == "rune" && s.Cell != null);
         tiles = runes.Select(c => c.Tile).ToArray();
-        coords = runes.Select(c => c.Coordinates.ToVector3Int()).ToArray();
+        coords = runes.Select(c => c.Cell.ToVector3Int()).ToArray();
         Game.StructureController.RuneMap.SetTiles(coords, tiles);
     }
 }

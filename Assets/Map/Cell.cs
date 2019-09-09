@@ -6,10 +6,12 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
-public class CellData
+public class CellData : IEquatable<CellData>
 {
     public CellType CellType;
-    public Coordinates Coordinates;
+    public int X;
+
+    public int Y;
 
     [JsonIgnore]
     public CellData[] Neighbors = new CellData[8];
@@ -155,8 +157,8 @@ public class CellData
             Game.StructureController.DestroyStructure(Structure);
         }
 
-        structure.Coordinates = Coordinates;
-        foreach (var cell in structure.GetCellsForStructure(Coordinates))
+        structure.Cell = this;
+        foreach (var cell in structure.GetCellsForStructure(this))
         {
             cell.Structure = structure;
         }
@@ -174,11 +176,99 @@ public class CellData
 
     internal IEnumerable<CreatureData> GetCreatures()
     {
-        return Game.CreatureController.CreatureLookup.Where(c => c.Key.Coordinates == Coordinates).Select(c => c.Key);
+        return Game.CreatureController.CreatureLookup.Where(c => c.Key.Cell == this).Select(c => c.Key);
     }
 
     internal void CreateStructure(string structureName, string faction = FactionConstants.World)
     {
         SetStructure(Game.StructureController.GetStructure(structureName, FactionController.Factions[faction]));
+    }
+
+
+
+    public static CellData FromPosition(Vector2 position)
+    {
+        // add half a unit to each position to account for offset (cells are at point 0,0 in the very center)
+        position += new Vector2(0.5f, 0.5f);
+
+        return Game.MapGrid.GetCellAtCoordinate(Mathf.FloorToInt(position.x), Mathf.FloorToInt(position.y));
+    }
+
+    public Vector2 ToMapVector()
+    {
+        // add half a unit to each position to account for offset (cells are at point 0,0 in the very center)
+        return new Vector2(Mathf.FloorToInt(X) + 0.5f, Mathf.FloorToInt(Y) + 0.5f);
+    }
+
+    public Vector3 ToTopOfMapVector()
+    {
+        return new Vector3(Mathf.FloorToInt(X) + 0.5f, Mathf.FloorToInt(Y) + 0.5f, -1);
+    }
+
+    public static bool operator !=(CellData obj1, CellData obj2)
+    {
+        if (ReferenceEquals(obj1, null))
+        {
+            return !ReferenceEquals(obj2, null);
+        }
+
+        return !obj1.Equals(obj2);
+    }
+
+    public static bool operator ==(CellData obj1, CellData obj2)
+    {
+        if (ReferenceEquals(obj1, null))
+        {
+            return ReferenceEquals(obj2, null);
+        }
+
+        return obj1.Equals(obj2);
+    }
+
+    public int DistanceTo(CellData other)
+    {
+        return (X < other.X ? other.X - X : X - other.X)
+                + (Y < other.Y ? other.Y - Y : Y - other.Y);
+    }
+
+    public bool Equals(CellData other)
+    {
+        if (ReferenceEquals(other, null))
+        {
+            return false;
+        }
+
+        return X == other.X && Y == other.Y;
+    }
+
+    public override bool Equals(object obj)
+    {
+        var other = obj as CellData;
+        if (other == null)
+        {
+            return false;
+        }
+
+        return this == other;
+    }
+
+    public override int GetHashCode()
+    {
+        return $"{X}:{Y}".GetHashCode();
+    }
+
+    public override string ToString()
+    {
+        return "Cell: (" + X + ", " + Y + ")";
+    }
+
+    public string ToStringOnSeparateLines()
+    {
+        return $"X: {X}\nY: {Y}";
+    }
+
+    internal Vector3Int ToVector3Int()
+    {
+        return new Vector3Int(X, Y, 0);
     }
 }

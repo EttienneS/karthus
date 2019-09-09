@@ -61,12 +61,12 @@ public class CreatureController : MonoBehaviour
         return CreatureLookup[creatureData];
     }
 
-    internal CreatureRenderer SpawnCreature(CreatureData creatureData, Coordinates coordinates, Faction faction)
+    internal CreatureRenderer SpawnCreature(CreatureData creatureData, CellData cell, Faction faction)
     {
         var creature = Instantiate(CreaturePrefab, transform, true);
         creature.Data = creatureData;
-        creature.Data.Coordinates = coordinates;
-        creature.transform.position = coordinates.ToMapVector();
+        creature.Data.Cell = cell;
+        creature.transform.position = cell.ToMapVector();
         creature.Data.WorkTick = Random.Range(0, Game.TimeManager.WorkInterval);
         creature.Data.GetBehaviourTask = Behaviours.GetBehaviourFor(creature.Data.BehaviourName);
 

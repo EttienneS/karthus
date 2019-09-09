@@ -23,7 +23,7 @@ public class SpellBase : TaskBase
         {
             if (_runeStructure == null)
             {
-                _runeStructure = EpicentreCell.Structure;
+                _runeStructure = Epicentre.Structure;
             }
 
             return _runeStructure;
@@ -34,33 +34,20 @@ public class SpellBase : TaskBase
     public CellData _epicentreCell;
 
     [JsonIgnore]
-    public Coordinates Epicentre
+    public CellData Epicentre
     {
         get
         {
             if (_epicenter == null)
             {
-                _epicenter = Originator.Coordinates;
+                _epicenter = Originator.Cell;
             }
             return _epicenter;
         }
     }
 
     [JsonIgnore]
-    public CellData EpicentreCell
-    {
-        get
-        {
-            if (_epicentreCell == null)
-            {
-                _epicentreCell = Game.MapGrid.GetCellAtCoordinate(Epicentre);
-            }
-            return _epicentreCell;
-        }
-    }
-
-    [JsonIgnore]
-    private Coordinates _epicenter;
+    private CellData _epicenter;
 
     public SpellBase()
     {

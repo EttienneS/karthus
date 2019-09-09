@@ -71,7 +71,7 @@ public class SaveManager : MonoBehaviour
 
         //foreach (var saveCell in save.Cells)
         //{
-        //    var newCell = Game.MapGrid.CreateCell(saveCell.Coordinates.X, saveCell.Coordinates.Y);
+        //    var newCell = Game.MapGrid.CreateCell(saveCell.X, saveCell.Y);
         //    newCell = saveCell;
 
         //    if (saveCell.Structure != null)
@@ -86,7 +86,7 @@ public class SaveManager : MonoBehaviour
 
         foreach (var SavedCreature in save.Creatures)
         {
-            Game.CreatureController.SpawnCreature(SavedCreature, SavedCreature.Coordinates, SavedCreature.GetFaction());
+            Game.CreatureController.SpawnCreature(SavedCreature, SavedCreature.Cell, SavedCreature.GetFaction());
         }
 
         //foreach (var task in save.Tasks)

@@ -79,7 +79,7 @@ public partial class OrderSelectionController //.Structure
                             Debug.Log("Structure already flagged to remove");
                             continue;
                         }
-                        FactionController.PlayerFaction.AddTask(new RemoveStructure(structure, cell.Coordinates), null);
+                        FactionController.PlayerFaction.AddTask(new RemoveStructure(structure, cell), null);
                         structure.SetStatusSprite(Game.SpriteStore.GetSpriteByName("Remove"));
                     }
                 }

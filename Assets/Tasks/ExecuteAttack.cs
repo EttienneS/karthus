@@ -18,7 +18,7 @@
         Attack.Attacker = AssignedEntity;
         Attack.Target = Target;
 
-        (Attack.Attacker as CreatureData)?.Face(Target.Coordinates);
+        (Attack.Attacker as CreatureData)?.Face(Target.Cell);
 
         if (Faction.QueueComplete(SubTasks) && Attack.Ready())
         {

@@ -19,7 +19,7 @@ public class Core
         Center = center;
         Radius = radius;
         Momentum = momentum * damper;
-        Cells = Game.MapGrid.GetCircle(Center.Coordinates, radius);
+        Cells = Game.MapGrid.GetCircle(Center, radius);
         SubCores = new List<Core>();
     }
 
@@ -71,7 +71,7 @@ public class Core
             radians.Remove(rad);
 
            // rad += Random.Range(-15, 15);
-            var offPoint = Game.MapGrid.GetCellAttRadian(Center.Coordinates, Random.Range(MinDistance, MaxDistance), rad);
+            var offPoint = Game.MapGrid.GetCellAttRadian(Center, Random.Range(MinDistance, MaxDistance), rad);
             if (offPoint == null)
             {
                 continue;
@@ -111,8 +111,8 @@ public class Core
     {
         if (SubCores.Count == 0)
         {
-            var originX = Center.Coordinates.X - (Radius / 2);
-            var originY = Center.Coordinates.Y - (Radius / 2);
+            var originX = Center.X - (Radius / 2);
+            var originY = Center.Y - (Radius / 2);
 
             var square = Game.MapGrid.GetRectangle(originX, originY, Radius, Radius);
             var subSquare = Game.MapGrid.GetRectangle(originX + 1, originY + 1, Radius - 2, Radius - 2);
@@ -140,7 +140,7 @@ public class Core
         }
         else
         {
-            foreach (var cell in Game.MapGrid.GetCircle(Center.Coordinates, 4))
+            foreach (var cell in Game.MapGrid.GetCircle(Center, 4))
             {
                 if (cell.Structure == null)
                     cell.SetStructure(Game.StructureController.GetStructure("Road", FactionController.WorldFaction));

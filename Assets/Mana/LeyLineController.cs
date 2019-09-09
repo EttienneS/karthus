@@ -17,7 +17,7 @@ public class LeyLineController : MonoBehaviour
         line.Jitter = Jitter;
         line.Line.material = Game.MaterialController.GetLeyLineMaterial(manaColor.GetActualColor());
         line.ManaColor = manaColor;
-        line.name = $"{cells.First().Coordinates}-{cells.Last().Coordinates}";
+        line.name = $"{cells.First()}-{cells.Last()}";
         Lines.Add(line);
 
         line.Cells.AddRange(cells);

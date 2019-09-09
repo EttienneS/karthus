@@ -6,11 +6,11 @@ public class EffectController : MonoBehaviour
 
     public Badge BadgePrefab;
 
-    public void SpawnEffect(Coordinates coordinates, float lifeSpan)
+    public void SpawnEffect(CellData cell, float lifeSpan)
     {
         var effect = Instantiate(EffectPrefab, transform);
         effect.LifeSpan = lifeSpan;
-        effect.transform.position = coordinates.ToTopOfMapVector();
+        effect.transform.position = cell.ToTopOfMapVector();
     }
 
     public Badge Spawn()
@@ -26,11 +26,11 @@ public class EffectController : MonoBehaviour
         return badge;
     }
 
-    internal Badge AddBadge(Coordinates coordinates, string iconName)
+    internal Badge AddBadge(CellData cell, string iconName)
     {
         var badge = Spawn();
         badge.SetSprite(iconName);
-        badge.transform.position = coordinates.ToTopOfMapVector();
+        badge.transform.position = cell.ToTopOfMapVector();
 
         return badge;
     }

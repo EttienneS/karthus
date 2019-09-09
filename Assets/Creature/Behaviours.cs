@@ -24,12 +24,12 @@ public static class Behaviours
         TaskBase task = null;
         if (Random.value > 0.8f)
         {
-            task = new Move(Game.MapGrid.GetRectangle(creature.Coordinates.X - (WraithRange / 2),
-                creature.Coordinates.Y - (WraithRange / 2), WraithRange, WraithRange).GetRandomItem().Coordinates);
+            task = new Move(Game.MapGrid.GetRectangle(creature.Cell.X - (WraithRange / 2),
+                creature.Cell.Y - (WraithRange / 2), WraithRange, WraithRange).GetRandomItem());
         }
         else
         {
-            task = new Wait(Random.value * 2f, "Lingering...");
+            task = new Wait(Random.value * 2f, "Lingering..");
         }
 
         return task;
@@ -74,7 +74,7 @@ public static class Behaviours
 
             if (bed == null)
             {
-                task = new Sleep(creature.Coordinates, 0.75f);
+                task = new Sleep(creature.Cell, 0.75f);
             }
             else
             {
@@ -88,6 +88,6 @@ public static class Behaviours
     private static CreatureData FindEnemy(CreatureData creature)
     {
         return Game.CreatureController.CreatureLookup.Keys.FirstOrDefault(c => c.FactionName != creature.FactionName
-        && creature.Awareness.Contains(Game.MapGrid.GetCellAtCoordinate(c.Coordinates)));
+        && creature.Awareness.Contains(c.Cell));
     }
 }

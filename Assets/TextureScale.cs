@@ -62,7 +62,7 @@ public class TextureScale
         //Set the RTT in order to render to it
         Graphics.SetRenderTarget(rtt);
 
-        //Setup 2D matrix in range 0..1, so nobody needs to care about sized
+        //Setup 2D matrix in range 0.1, so nobody needs to care about sized
         GL.LoadPixelMatrix(0, 1, 1, 0);
 
         //Then clear & draw the texture to fill the entire RTT.

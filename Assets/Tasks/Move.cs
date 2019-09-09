@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Move : TaskBase
 {
-    public Coordinates TargetCoordinates;
+    public CellData TargetCoordinates;
 
     [JsonIgnore] private float _journeyLength;
     [JsonIgnore] private CellData _nextCell;
@@ -16,7 +16,7 @@ public class Move : TaskBase
     {
     }
 
-    public Move(Coordinates targetCoordinates, int maxSpeed = int.MaxValue)
+    public Move(CellData targetCoordinates, int maxSpeed = int.MaxValue)
     {
         TargetCoordinates = targetCoordinates;
         MaxSpeed = maxSpeed;
@@ -28,29 +28,29 @@ public class Move : TaskBase
 
     public override bool Done()
     {
-        if (Creature == null || Creature.Coordinates == null)
+        if (Creature == null || Creature.Cell == null)
         {
             return false;
         }
 
-        if (Creature == null || Creature.Coordinates == null)
+        if (Creature == null || Creature.Cell == null)
         {
             return false;
         }
 
-        if (Creature.Coordinates == TargetCoordinates)
+        if (Creature.Cell == TargetCoordinates)
         {
             return true;
         }
 
         if (_nextCell == null)
         {
-            var currentCreatureCell = Game.MapGrid.GetCellAtCoordinate(Creature.Coordinates);
+            var currentCreatureCell = Creature.Cell;
 
             if (_path == null || _path.Count == 0)
             {
                 _path = Pathfinder.FindPath(currentCreatureCell,
-                    Game.MapGrid.GetCellAtCoordinate(TargetCoordinates),
+                    TargetCoordinates,
                     Creature.Mobility);
             }
 
@@ -68,11 +68,11 @@ public class Move : TaskBase
             else
             {
                 // found valid next cell
-                _targetPos = _nextCell.Coordinates.ToMapVector();
+                _targetPos = _nextCell.ToMapVector();
 
                 // calculate the movement journey to the next cell, include the cell travelcost to make moving through
                 // difficults cells take longer
-                _journeyLength = Vector3.Distance(currentCreatureCell.Coordinates.ToMapVector(), _targetPos) + _nextCell.TravelCost;
+                _journeyLength = Vector3.Distance(currentCreatureCell.ToMapVector(), _targetPos) + _nextCell.TravelCost;
 
                 Creature.Facing = Game.MapGrid.GetDirection(currentCreatureCell, _nextCell);
                 _startTime = Time.time;
@@ -84,19 +84,19 @@ public class Move : TaskBase
             // move between two cells
             var distCovered = (Time.time - _startTime) * Mathf.Min(Creature.Speed, MaxSpeed);
             var fracJourney = distCovered / _journeyLength;
-            Creature.CreatureRenderer.transform.position = Vector3.Lerp(Creature.CurrentCell.Coordinates.ToMapVector(),
+            Creature.CreatureRenderer.transform.position = Vector3.Lerp(Creature.Cell.ToMapVector(),
                                       _targetPos,
                                       fracJourney);
         }
         else
         {
             // reached next cell
-            Creature.Coordinates = _nextCell.Coordinates;
+            Creature.Cell = _nextCell;
             Creature.CreatureRenderer.MainRenderer.SetBoundMaterial(_nextCell);
             _nextCell = null;
             _path = null;
         }
 
-        return Creature.Coordinates == TargetCoordinates;
+        return Creature.Cell == TargetCoordinates;
     }
 }

@@ -45,8 +45,8 @@ public class LeyLine : MonoBehaviour
             if (neighbors.Count > 0)
             {
                 newCell = neighbors[(int)Random.value * neighbors.Count];
-                LineMoves.Add(index, new KeyValuePair<Vector3, Vector3>(newCell.Coordinates.ToTopOfMapVector(),
-                                                            newCell.Coordinates.ToTopOfMapVector()));
+                LineMoves.Add(index, new KeyValuePair<Vector3, Vector3>(newCell.ToTopOfMapVector(),
+                                                            newCell.ToTopOfMapVector()));
                 Cells[index] = newCell;
             }
         }
@@ -55,7 +55,7 @@ public class LeyLine : MonoBehaviour
     public void Start()
     {
         Line.positionCount = Cells.Count;
-        Line.SetPositions(Cells.Select(c => c.Coordinates.ToTopOfMapVector()).ToArray());
+        Line.SetPositions(Cells.Select(c => c.ToTopOfMapVector()).ToArray());
     }
 
 

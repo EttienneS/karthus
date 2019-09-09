@@ -18,7 +18,7 @@
             Target = target
         };
 
-        task.AddSubTask(new Move(Game.MapGrid.GetPathableNeighbour(target.Coordinates)));
+        task.AddSubTask(new Move(Game.MapGrid.GetPathableNeighbour(target.Cell)));
 
         return task;
     }
@@ -32,7 +32,7 @@
             Source = source
         };
 
-        task.AddSubTask(new Move(Game.MapGrid.GetPathableNeighbour(source.Coordinates)));
+        task.AddSubTask(new Move(Game.MapGrid.GetPathableNeighbour(source.Cell)));
 
         return task;
     }
@@ -48,7 +48,7 @@
             Target = Creature;
         }
 
-        (Source as CreatureData)?.Face(Target.Coordinates);
+        (Source as CreatureData)?.Face(Target.Cell);
 
         if (Faction.QueueComplete(SubTasks))
         {

@@ -41,7 +41,7 @@ public class CreatureData : IEntity
     internal float InternalTick;
 
     [JsonIgnore]
-    internal Coordinates LastPercievedCoordinate;
+    internal CellData LastPercievedCoordinate;
 
     internal float WorkTick;
 
@@ -55,16 +55,16 @@ public class CreatureData : IEntity
     {
         get
         {
-            if (_awareness == null && Coordinates != null)
+            if (_awareness == null && Cell != null)
             {
-                _awareness = Game.MapGrid.GetCircle(Coordinates, Perception);
+                _awareness = Game.MapGrid.GetCircle(Cell, Perception);
             }
 
             return _awareness;
         }
     }
 
-    public Coordinates Coordinates { get; set; }
+    public CellData Cell { get; set; }
 
     [JsonIgnore]
     public CreatureRenderer CreatureRenderer
@@ -75,15 +75,7 @@ public class CreatureData : IEntity
         }
     }
 
-    [JsonIgnore]
-    public CellData CurrentCell
-    {
-        get
-        {
-            return Game.MapGrid.GetCellAtCoordinate(Coordinates);
-        }
-    }
-
+    
     public string FactionName { get; set; }
     public string Id { get; set; }
     public ManaPool ManaPool { get; set; } = new ManaPool();
@@ -130,25 +122,25 @@ public class CreatureData : IEntity
         }
         else
         {
-            Game.EffectController.SpawnEffect(Coordinates, 1);
+            Game.EffectController.SpawnEffect(Cell, 1);
         }
     }
 
-    public void Face(Coordinates coordinates)
+    public void Face(CellData cell)
     {
-        if (coordinates.Y < Coordinates.Y)
+        if (cell.Y < Cell.Y)
         {
             Facing = Direction.S;
         }
-        else if (coordinates.Y > Coordinates.Y)
+        else if (cell.Y > Cell.Y)
         {
             Facing = Direction.N;
         }
-        else if (coordinates.X < Coordinates.X)
+        else if (cell.X < Cell.X)
         {
             Facing = Direction.W;
         }
-        else if (coordinates.X > Coordinates.X)
+        else if (cell.X > Cell.X)
         {
             Facing = Direction.E;
         }
@@ -221,10 +213,10 @@ public class CreatureData : IEntity
 
     internal void Perceive()
     {
-        if (LastPercievedCoordinate != Coordinates)
+        if (LastPercievedCoordinate != Cell)
         {
             _awareness = null;
-            LastPercievedCoordinate = Coordinates;
+            LastPercievedCoordinate = Cell;
         }
     }
 
@@ -238,9 +230,9 @@ public class CreatureData : IEntity
 
         if (ManaPool.Empty())
         {
-            Game.EffectController.SpawnEffect(Coordinates, 3f);
-            Game.EffectController.SpawnEffect(Coordinates, 3f);
-            Game.EffectController.SpawnEffect(Coordinates, 3f);
+            Game.EffectController.SpawnEffect(Cell, 3f);
+            Game.EffectController.SpawnEffect(Cell, 3f);
+            Game.EffectController.SpawnEffect(Cell, 3f);
 
             Game.CreatureController.DestroyCreature(CreatureRenderer);
             return false;

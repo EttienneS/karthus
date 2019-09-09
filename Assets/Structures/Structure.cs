@@ -35,7 +35,7 @@ public class Structure : IEntity
         SpriteName = sprite;
     }
 
-    public Coordinates Coordinates { get; set; }
+    public CellData Cell { get; set; }
 
     [JsonIgnore]
     public int Height
@@ -90,7 +90,7 @@ public class Structure : IEntity
             }
             else
             {
-                tile.color = Game.MapGrid.GetCellAtCoordinate(Coordinates).Color;
+                tile.color = Cell.Color;
             }
 
             return tile;
@@ -106,14 +106,14 @@ public class Structure : IEntity
         });
     }
 
-    public List<CellData> GetCellsForStructure(Coordinates origin)
+    public List<CellData> GetCellsForStructure(CellData origin)
     {
         List<CellData> cells = new List<CellData>();
         for (int x = 0; x < Width; x++)
         {
             for (int y = 0; y < Height; y++)
             {
-                cells.Add(Game.MapGrid.GetCellAtCoordinate(new Coordinates(origin.X + x, origin.Y + y)));
+                cells.Add(Game.MapGrid.GetCellAtCoordinate(origin.X + x, origin.Y + y));
             }
         }
 
@@ -126,9 +126,9 @@ public class Structure : IEntity
         Game.StructureController.RefreshStructure(this);
     }
 
-    public bool ValidateCellLocationForStructure(CellData CellData)
+    public bool ValidateCellLocationForStructure(CellData cellData)
     {
-        foreach (var cell in GetCellsForStructure(CellData.Coordinates))
+        foreach (var cell in GetCellsForStructure(cellData))
         {
             if (!cell.Buildable)
             {

@@ -16,7 +16,7 @@
             AddSubTask(Channel.GetChannelTo(mana.Key, mana.Value, structure));
         }
 
-        Message = $"Building {structure.Name} at {structure.Coordinates}";
+        Message = $"Building {structure.Name} at {structure.Cell}";
     }
 
     public override bool Done()

@@ -34,7 +34,7 @@ public partial class Game : MonoBehaviour
         }
     }
 
-    public void AddLine(Coordinates start, Coordinates end)
+    public void AddLine(CellData start, CellData end)
     {
         LineRenderer.startColor = ColorConstants.InvalidColor;
         LineRenderer.endColor = ColorConstants.InvalidColor;
@@ -79,7 +79,7 @@ public partial class Game : MonoBehaviour
         ClearLine();
         foreach (var structure in SelectedStructures)
         {
-            var cell = MapGrid.GetCellAtCoordinate(structure.Coordinates);
+            var cell = structure.Cell;
             //structure.LinkedGameObject.SpriteRenderer.color = cell.Bound ? ColorConstants.BaseColor :
             //                                                               ColorConstants.UnboundColor;
         }
@@ -222,7 +222,7 @@ public partial class Game : MonoBehaviour
 
         if (OrderSelectionController.CellClickOrder != null)
         {
-            Debug.Log($"Clicked: {SelectedCells.Count}: {SelectedCells[0].Coordinates}");
+            Debug.Log($"Clicked: {SelectedCells.Count}: {SelectedCells[0]}");
             OrderSelectionController.CellClickOrder.Invoke(SelectedCells);
         }
     }
@@ -255,7 +255,7 @@ public partial class Game : MonoBehaviour
             {
                 foreach (var boundCell in MapGrid.CellBinding[id])
                 {
-                    AddLine(structure.Coordinates, boundCell.Coordinates);
+                    AddLine(structure.Cell, boundCell);
                 }
             }
         }

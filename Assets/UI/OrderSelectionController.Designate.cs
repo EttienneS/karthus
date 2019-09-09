@@ -41,7 +41,7 @@ public partial class OrderSelectionController //.Designate
         Game.Controller.SelectionPreference = SelectionPreference.Cell;
         CellClickOrder = cells =>
         {
-            var cell = cells.First().Coordinates;
+            var cell = cells.First();
             FactionController.PlayerFaction.AddTaskWithCellBadge(new Move(cell), null, cell, MoveIcon);
         };
     }
@@ -72,7 +72,7 @@ public partial class OrderSelectionController //.Designate
                 {
                     cell.Structure.SetStatusSprite(Game.SpriteStore.GetSpriteByName(icon));
 
-                    FactionController.PlayerFaction.AddTaskWithCellBadge(new Harvest(cell.Structure), null, cell.Coordinates, icon);
+                    FactionController.PlayerFaction.AddTaskWithCellBadge(new Harvest(cell.Structure), null, cell, icon);
                 }
             }
             Game.Controller.DeselectCell();

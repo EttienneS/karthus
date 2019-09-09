@@ -2,7 +2,7 @@
 
 public interface IEntity
 {
-    Coordinates Coordinates { get; set; }
+    CellData Cell { get; set; }
 
     string Id { get; set; }
 

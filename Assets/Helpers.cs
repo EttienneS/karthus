@@ -249,21 +249,3 @@ public static class TextureHelpers
         TextureScale.scale(texture, width * MapGrid.PixelsPerCell, height * MapGrid.PixelsPerCell);
     }
 }
-
-public static class VHelpers
-{
-    public static Coordinates ToCoordinate(this VPoint point)
-    {
-        return new Coordinates((int)point.X, (int)point.Y);
-    }
-
-    public static Vector2 ToVector2(this VPoint point)
-    {
-        return new Vector2((float)point.X, (float)point.Y);
-    }
-
-    public static VPoint ToVpoint(this Coordinates coordinates)
-    {
-        return new VPoint(coordinates.X, coordinates.Y);
-    }
-}

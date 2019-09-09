@@ -26,15 +26,15 @@ public class Bind : SpellBase
     {
         if (_affectAbleCells == null)
         {
-            _affectAbleCells = Game.MapGrid.GetCircle(Epicentre, Size).OrderBy(c => c.Coordinates.DistanceTo(Epicentre)).ToList();
+            _affectAbleCells = Game.MapGrid.GetCircle(Epicentre, Size).OrderBy(c => c.DistanceTo(Epicentre)).ToList();
         }
 
         if (Faction.QueueComplete(SubTasks))
         {
             CellData cell;
-            if (EpicentreCell.Binding != Originator)
+            if (Epicentre.Binding != Originator)
             {
-                cell = EpicentreCell;
+                cell = Epicentre;
             }
             else
             {

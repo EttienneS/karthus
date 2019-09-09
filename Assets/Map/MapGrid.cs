@@ -52,7 +52,7 @@ public class MapGrid : MonoBehaviour
 
                 foreach (var cell in Cells)
                 {
-                    _cellLookup.Add((cell.Coordinates.X, cell.Coordinates.Y), cell);
+                    _cellLookup.Add((cell.X, cell.Y), cell);
                 }
             }
             return _cellLookup;
@@ -144,36 +144,28 @@ public class MapGrid : MonoBehaviour
 
     public CellData GetCellAtCoordinate(int x, int y)
     {
-        return GetCellAtCoordinate(new Coordinates(x, y));
-    }
-
-    public CellData GetCellAtCoordinate(Coordinates coordinates)
-    {
-        if (coordinates.X < 0
-            || coordinates.Y < 0
-            || coordinates.X >= Game.MapGrid.Width
-            || coordinates.Y >= Game.MapGrid.Height)
+        if (x < 0 || y < 0 || x >= Game.MapGrid.Width || y >= Game.MapGrid.Height)
         {
             return null;
         }
 
-        return CellLookup[(coordinates.X, coordinates.Y)];
+        return CellLookup[(x, y)];
     }
 
     public CellData GetCellAtPoint(Vector3 position)
     {
         // subtract half a unit to compensate for cell offset
-        var coordinates = Coordinates.FromPosition(position - new Vector3(0.5f, 0.5f));
+        var cell = CellData.FromPosition(position - new Vector3(0.5f, 0.5f));
 
-        if (coordinates.X < 0 || coordinates.Y < 0 ||
-            coordinates.X >= Game.MapGrid.Width || coordinates.Y >= Game.MapGrid.Height)
+        if (cell.X < 0 || cell.Y < 0 ||
+            cell.X >= Game.MapGrid.Width || cell.Y >= Game.MapGrid.Height)
         {
             return null;
         }
-        return CellLookup[(coordinates.X, coordinates.Y)];
+        return CellLookup[(cell.X, cell.Y)];
     }
 
-    public List<CellData> GetCircle(Coordinates center, int radius)
+    public List<CellData> GetCircle(CellData center, int radius)
     {
         var cells = new List<CellData>();
 
@@ -212,7 +204,7 @@ public class MapGrid : MonoBehaviour
         firstCell.SearchHeuristic = 0;
         _searchFrontier.Enqueue(firstCell);
 
-        var center = firstCell.Coordinates;
+        var center = firstCell;
         int size = 0;
 
         var chunk = new List<CellData>();
@@ -228,7 +220,7 @@ public class MapGrid : MonoBehaviour
                 if (neighbor != null && neighbor.SearchPhase < _searchFrontierPhase)
                 {
                     neighbor.SearchPhase = _searchFrontierPhase;
-                    neighbor.Distance = neighbor.Coordinates.DistanceTo(center);
+                    neighbor.Distance = neighbor.DistanceTo(center);
                     neighbor.SearchHeuristic = Random.value < Game.MapGrid.JitterProbability ? 1 : 0;
                     _searchFrontier.Enqueue(neighbor);
                 }
@@ -269,7 +261,7 @@ public class MapGrid : MonoBehaviour
 
     public void RefreshCell(CellData cell)
     {
-        Tilemap.SetTile(new Vector3Int(cell.Coordinates.X, cell.Coordinates.Y, 0), cell.Tile);
+        Tilemap.SetTile(new Vector3Int(cell.X, cell.Y, 0), cell.Tile);
         if (cell.Structure != null)
         {
             Game.StructureController.RefreshStructure(cell.Structure);
@@ -305,7 +297,7 @@ public class MapGrid : MonoBehaviour
         }
     }
 
-    internal float GetAngle(Coordinates c1, Coordinates c2)
+    internal float GetAngle(CellData c1, CellData c2)
     {
         return Mathf.Atan2(c2.X - c1.X, c2.Y - c1.Y) * 180.0f / Mathf.PI;
     }
@@ -316,8 +308,8 @@ public class MapGrid : MonoBehaviour
 
         if (fromCell != null && toCell != null)
         {
-            var x = fromCell.Coordinates.X - toCell.Coordinates.X;
-            var y = fromCell.Coordinates.Y - toCell.Coordinates.Y;
+            var x = fromCell.X - toCell.X;
+            var y = fromCell.Y - toCell.Y;
 
             if (x < 0 && y == 0)
             {
@@ -352,43 +344,37 @@ public class MapGrid : MonoBehaviour
         return direction;
     }
 
-    internal CellData GetNearestCellOfType(Coordinates centerPoint, CellType cellType, int radius)
+    internal CellData GetNearestCellOfType(CellData centerPoint, CellType cellType, int radius)
     {
         return GetCircle(centerPoint, radius)
                     .Where(c => c.Bound && c.CellType == cellType)
-                    .OrderBy(c => c.Coordinates.DistanceTo(centerPoint))
+                    .OrderBy(c => c.DistanceTo(centerPoint))
                     .First();
     }
 
-    internal Coordinates GetPathableNeighbour(Coordinates coordinates)
+    internal CellData GetPathableNeighbour(CellData coordinates)
     {
-        return GetCellAtCoordinate(coordinates).Neighbors
-                                       .Where(c => c.Bound && c.TravelCost > 0)
-                                       .OrderBy(c => c.TravelCost)
-                                       .First().Coordinates;
+        return coordinates.Neighbors
+                          .Where(c => c.Bound && c.TravelCost > 0)
+                          .OrderBy(c => c.TravelCost)
+                          .First();
     }
 
-    internal Coordinates GetPointAtDistanceOnAngle(Coordinates point, int distance, float angle)
-    {
-        var pos = new Coordinates(Mathf.FloorToInt(distance * Mathf.Cos(angle)), Mathf.FloorToInt(distance * Mathf.Cos(angle)));
-        return new Coordinates(point.X + pos.X, point.Y + pos.Y);
-    }
-
-    internal CellData GetRandomRadian(Coordinates center, int radius)
+    internal CellData GetRandomRadian(CellData center, int radius)
     {
         var angle = Random.Range(0, 360);
         var mineX = Mathf.Clamp(Mathf.FloorToInt(center.X + (radius * Mathf.Cos(angle))), 0, Game.MapGrid.Width);
         var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Y + (radius * Mathf.Sin(angle))), 0, Game.MapGrid.Height);
 
-        return GetCellAtCoordinate(new Coordinates(mineX, mineY));
+        return GetCellAtCoordinate(mineX, mineY);
     }
 
-    internal CellData GetCellAttRadian(Coordinates center, int radius, int angle)
+    internal CellData GetCellAttRadian(CellData center, int radius, int angle)
     {
         var mineX = Mathf.Clamp(Mathf.FloorToInt(center.X + (radius * Mathf.Cos(angle))), 0, Game.MapGrid.Width);
         var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Y + (radius * Mathf.Sin(angle))), 0, Game.MapGrid.Height);
 
-        return GetCellAtCoordinate(new Coordinates(mineX, mineY));
+        return GetCellAtCoordinate(mineX, mineY);
     }
 
     internal void ProcessBindings(int maxDraws)

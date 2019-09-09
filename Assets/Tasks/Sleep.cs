@@ -4,7 +4,7 @@ using Random = UnityEngine.Random;
 public class Sleep : TaskBase
 {
     public float RecoveryRate;
-    public Coordinates Location;
+    public CellData Location;
 
     [JsonIgnore]
     private Structure _bed;
@@ -13,14 +13,14 @@ public class Sleep : TaskBase
     {
     }
 
-    public Sleep(Structure bed) : this(bed.Coordinates, float.Parse(bed.Properties["RecoveryRate"]))
+    public Sleep(Structure bed) : this(bed.Cell, float.Parse(bed.Properties["RecoveryRate"]))
     {
         _bed = bed;
     }
 
-    public Sleep(Coordinates location, float recoveryRate)
+    public Sleep(CellData location, float recoveryRate)
     {
-        BusyEmote = Message = "Zzzz..";
+        BusyEmote = Message = "Zzzz.";
         RecoveryRate = recoveryRate;
         Location = location;
 

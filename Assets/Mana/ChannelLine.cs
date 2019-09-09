@@ -25,8 +25,8 @@ public class ChannelLine : MonoBehaviour
         {
             var frac = Delta / Duration;
 
-            var srcPoint = Source.Coordinates.ToTopOfMapVector() + new Vector3(0, 0.4f);
-            var trgPoint = Target.Coordinates.ToTopOfMapVector();
+            var srcPoint = Source.Cell.ToTopOfMapVector() + new Vector3(0, 0.4f);
+            var trgPoint = Target.Cell.ToTopOfMapVector();
 
             var drawPoints = new List<Vector3>();
             drawPoints.Add(trgPoint);

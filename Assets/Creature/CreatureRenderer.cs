@@ -41,10 +41,10 @@ public class CreatureRenderer : MonoBehaviour
 
     public void DrawAwareness()
     {
-        var awareness = new List<Vector3> { Data.Coordinates.ToTopOfMapVector() };
+        var awareness = new List<Vector3> { Data.Cell.ToTopOfMapVector() };
         awareness.AddRange(Data.Awareness.Where(c => c.Neighbors.Any(n => !Data.Awareness.Contains(n)))
-                                         .Select(c => c.Coordinates.ToTopOfMapVector()));
-        awareness.Add(Data.Coordinates.ToTopOfMapVector());
+                                         .Select(c => c.ToTopOfMapVector()));
+        awareness.Add(Data.Cell.ToTopOfMapVector());
 
         ShowLine(Color.white, awareness.ToArray());
     }
@@ -167,7 +167,7 @@ public class CreatureRenderer : MonoBehaviour
         if (TempMaterialDelta >= TempMaterialDuration)
         {
             TempMaterialDuration = 0;
-            MainRenderer.SetBoundMaterial(Data.CurrentCell);
+            MainRenderer.SetBoundMaterial(Data.Cell);
         }
     }
 }
