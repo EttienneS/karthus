@@ -17,7 +17,7 @@ public partial class Game : MonoBehaviour
     public RectTransform selectSquareImage;
 
     internal LineRenderer LineRenderer;
-    internal List<CellData> SelectedCells = new List<CellData>();
+    internal List<Cell> SelectedCells = new List<Cell>();
     internal List<CreatureRenderer> SelectedCreatures = new List<CreatureRenderer>();
     internal List<Structure> SelectedStructures = new List<Structure>();
 
@@ -34,7 +34,7 @@ public partial class Game : MonoBehaviour
         }
     }
 
-    public void AddLine(CellData start, CellData end)
+    public void AddLine(Cell start, Cell end)
     {
         LineRenderer.startColor = ColorConstants.InvalidColor;
         LineRenderer.endColor = ColorConstants.InvalidColor;

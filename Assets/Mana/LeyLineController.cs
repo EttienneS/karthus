@@ -10,7 +10,7 @@ public class LeyLineController : MonoBehaviour
 
     public List<LeyLine> Lines = new List<LeyLine>();
 
-    public LeyLine MakeLine(List<CellData> cells, ManaColor manaColor)
+    public LeyLine MakeLine(List<Cell> cells, ManaColor manaColor)
     {
         var line = Instantiate(LeyLinePrefab, transform);
 
@@ -21,7 +21,6 @@ public class LeyLineController : MonoBehaviour
         Lines.Add(line);
 
         line.Cells.AddRange(cells);
-
         
         line.JitterLine();
         return line;

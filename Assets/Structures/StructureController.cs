@@ -48,7 +48,7 @@ public class StructureController : MonoBehaviour
         }
     }
 
-    public void ClearStructure(CellData cell)
+    public void ClearStructure(Cell cell)
     {
         var tile = ScriptableObject.CreateInstance<Tile>();
         DefaultStructureMap.SetTile(new Vector3Int(cell.X, cell.Y, 0), tile);
@@ -101,14 +101,18 @@ public class StructureController : MonoBehaviour
         IdService.EnrollEntity(structure);
     }
 
-    public void DrawAllStructures()
+    public void DrawAllStructures(IEnumerable<Cell> cells)
     {
-        var structures = IdService.StructureIdLookup.Values.Where(s => s.Material != "rune" && s.Cell != null);
+        var structures = cells.Where(c => c.Structure != null)
+                              .Select(c => c.Structure)
+                              .Where(c => c.Cell != null);
+
+        var nonRunes = structures.Where(s => s.Material != "rune");
         var tiles = structures.Select(c => c.Tile).ToArray();
         var coords = structures.Select(c => c.Cell.ToVector3Int()).ToArray();
         Game.StructureController.DefaultStructureMap.SetTiles(coords, tiles);
 
-        var runes = IdService.StructureIdLookup.Values.Where(s => s.Material == "rune" && s.Cell != null);
+        var runes = structures.Except(nonRunes);
         tiles = runes.Select(c => c.Tile).ToArray();
         coords = runes.Select(c => c.Cell.ToVector3Int()).ToArray();
         Game.StructureController.RuneMap.SetTiles(coords, tiles);

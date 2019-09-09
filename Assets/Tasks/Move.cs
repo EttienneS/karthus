@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Move : TaskBase
 {
-    public CellData TargetCoordinates;
+    public Cell TargetCoordinates;
 
     [JsonIgnore] private float _journeyLength;
-    [JsonIgnore] private CellData _nextCell;
-    [JsonIgnore] private List<CellData> _path = new List<CellData>();
+    [JsonIgnore] private Cell _nextCell;
+    [JsonIgnore] private List<Cell> _path = new List<Cell>();
     [JsonIgnore] private float _startTime;
     [JsonIgnore] private Vector3 _targetPos;
 
@@ -16,7 +16,7 @@ public class Move : TaskBase
     {
     }
 
-    public Move(CellData targetCoordinates, int maxSpeed = int.MaxValue)
+    public Move(Cell targetCoordinates, int maxSpeed = int.MaxValue)
     {
         TargetCoordinates = targetCoordinates;
         MaxSpeed = maxSpeed;

@@ -35,7 +35,7 @@ public class CameraData
 public class Save
 {
     public CameraData CameraData;
-    public CellData[] Cells;
+    public Cell[] Cells;
 
     public CreatureData[] Creatures;
 

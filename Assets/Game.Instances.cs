@@ -15,7 +15,7 @@ public partial class Game //.Instances
     private static LeyLineController _leyLineController;
     private static MagicController _magicController;
     private static ManaDisplay _manaDisplay;
-    private static MapGrid _mapGrid;
+    private static Map _mapGrid;
     private static MaterialController _materialController;
     private static OrderSelectionController _orderSelectionController;
     private static OrderTrayController _orderTrayController;
@@ -165,13 +165,13 @@ public partial class Game //.Instances
         }
     }
 
-    public static MapGrid MapGrid
+    public static Map MapGrid
     {
         get
         {
             if (_mapGrid == null)
             {
-                _mapGrid = GameObject.Find(ControllerConstants.MapController).GetComponent<MapGrid>();
+                _mapGrid = GameObject.Find(ControllerConstants.MapController).GetComponent<Map>();
             }
 
             return _mapGrid;

@@ -9,7 +9,7 @@ public class Bind : SpellBase
     public int Size;
 
     [JsonIgnore]
-    private List<CellData> _affectAbleCells;
+    private List<Cell> _affectAbleCells;
 
     public Bind()
     {
@@ -31,7 +31,7 @@ public class Bind : SpellBase
 
         if (Faction.QueueComplete(SubTasks))
         {
-            CellData cell;
+            Cell cell;
             if (Epicentre.Binding != Originator)
             {
                 cell = Epicentre;

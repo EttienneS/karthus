@@ -35,7 +35,7 @@ public class Structure : IEntity
         SpriteName = sprite;
     }
 
-    public CellData Cell { get; set; }
+    public Cell Cell { get; set; }
 
     [JsonIgnore]
     public int Height
@@ -106,34 +106,17 @@ public class Structure : IEntity
         });
     }
 
-    public List<CellData> GetCellsForStructure(CellData origin)
-    {
-        List<CellData> cells = new List<CellData>();
-        for (int x = 0; x < Width; x++)
-        {
-            for (int y = 0; y < Height; y++)
-            {
-                cells.Add(Game.MapGrid.GetCellAtCoordinate(origin.X + x, origin.Y + y));
-            }
-        }
-
-        return cells;
-    }
-
     public void SetBluePrintState(bool state)
     {
         IsBluePrint = state;
         Game.StructureController.RefreshStructure(this);
     }
 
-    public bool ValidateCellLocationForStructure(CellData cellData)
+    public bool ValidateCellLocationForStructure(Cell cell)
     {
-        foreach (var cell in GetCellsForStructure(cellData))
+        if (!cell.Buildable)
         {
-            if (!cell.Buildable)
-            {
-                return false;
-            }
+            return false;
         }
         return true;
     }

@@ -41,17 +41,17 @@ public class CreatureData : IEntity
     internal float InternalTick;
 
     [JsonIgnore]
-    internal CellData LastPercievedCoordinate;
+    internal Cell LastPercievedCoordinate;
 
     internal float WorkTick;
 
     [JsonIgnore]
-    private List<CellData> _awareness;
+    private List<Cell> _awareness;
 
     [JsonIgnore]
     private bool _firstRun = true;
 
-    public List<CellData> Awareness
+    public List<Cell> Awareness
     {
         get
         {
@@ -64,7 +64,7 @@ public class CreatureData : IEntity
         }
     }
 
-    public CellData Cell { get; set; }
+    public Cell Cell { get; set; }
 
     [JsonIgnore]
     public CreatureRenderer CreatureRenderer
@@ -126,7 +126,7 @@ public class CreatureData : IEntity
         }
     }
 
-    public void Face(CellData cell)
+    public void Face(Cell cell)
     {
         if (cell.Y < Cell.Y)
         {

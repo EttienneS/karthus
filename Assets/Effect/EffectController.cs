@@ -6,7 +6,7 @@ public class EffectController : MonoBehaviour
 
     public Badge BadgePrefab;
 
-    public void SpawnEffect(CellData cell, float lifeSpan)
+    public void SpawnEffect(Cell cell, float lifeSpan)
     {
         var effect = Instantiate(EffectPrefab, transform);
         effect.LifeSpan = lifeSpan;
@@ -26,7 +26,7 @@ public class EffectController : MonoBehaviour
         return badge;
     }
 
-    internal Badge AddBadge(CellData cell, string iconName)
+    internal Badge AddBadge(Cell cell, string iconName)
     {
         var badge = Spawn();
         badge.SetSprite(iconName);

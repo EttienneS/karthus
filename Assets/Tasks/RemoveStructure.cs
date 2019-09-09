@@ -1,13 +1,13 @@
 ﻿public class RemoveStructure : TaskBase
 {
-    public CellData Coordinates;
+    public Cell Coordinates;
     public Structure Structure;
 
     public RemoveStructure()
     {
     }
 
-    public RemoveStructure(Structure structure, CellData coordinates)
+    public RemoveStructure(Structure structure, Cell coordinates)
     {
         Structure = structure;
         Coordinates = coordinates;

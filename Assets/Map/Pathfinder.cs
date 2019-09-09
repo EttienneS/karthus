@@ -7,7 +7,7 @@ public static class Pathfinder
     private static CellPriorityQueue _searchFrontier;
     private static int _searchFrontierPhase;
 
-    internal static float Distance(CellData fromCell, CellData toCell, Mobility mobility)
+    internal static float Distance(Cell fromCell, Cell toCell, Mobility mobility)
     {
         var distance = 0f;
 
@@ -26,13 +26,13 @@ public static class Pathfinder
         }
     }
 
-    public static List<CellData> FindPath(CellData fromCell, CellData toCell, Mobility mobility)
+    public static List<Cell> FindPath(Cell fromCell, Cell toCell, Mobility mobility)
     {
         if (fromCell != null && toCell != null)
         {
             if (Search(fromCell, toCell, mobility))
             {
-                var path = new List<CellData>
+                var path = new List<Cell>
                 {
                     toCell
                 };
@@ -51,21 +51,21 @@ public static class Pathfinder
         return null;
     }
 
-    public static CellData GetClosestOpenCell(CellData[] map, CellData origin, Mobility mobility)
+    public static Cell GetClosestOpenCell(Cell[] map, Cell origin, Mobility mobility)
     {
         return GetReachableCells(map, origin, 3, mobility).FirstOrDefault();
     }
 
-    public static float GetPathCost(IEnumerable<CellData> path)
+    public static float GetPathCost(IEnumerable<Cell> path)
     {
         return path.Where(cell => cell != null).Sum(cell => cell.TravelCost);
     }
 
-    public static IEnumerable<CellData> GetReachableCells(CellData[] map, CellData startPoint, int speed, Mobility mobility)
+    public static IEnumerable<Cell> GetReachableCells(Cell[] map, Cell startPoint, int speed, Mobility mobility)
     {
         if (startPoint == null)
         {
-            return new List<CellData>();
+            return new List<Cell>();
         }
 
         var reachableCells = (from cell in
@@ -83,7 +83,7 @@ public static class Pathfinder
         return reachableCells;
     }
 
-    internal static float GetPathCost(CellData fromCell, CellData toCell, Mobility mobility)
+    internal static float GetPathCost(Cell fromCell, Cell toCell, Mobility mobility)
     {
         var path = FindPath(fromCell, toCell, mobility);
 
@@ -95,7 +95,7 @@ public static class Pathfinder
         return GetPathCost(path);
     }
 
-    private static bool Search(CellData fromCell, CellData toCell, Mobility mobility)
+    private static bool Search(Cell fromCell, Cell toCell, Mobility mobility)
     {
         try
         {

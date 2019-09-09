@@ -4,8 +4,8 @@ using Random = UnityEngine.Random;
 
 public class Core
 {
-    public List<CellData> Cells;
-    public CellData Center;
+    public List<Cell> Cells;
+    public Cell Center;
     public int Radius;
     public List<Core> SubCores;
     public float damper = 0.5f;
@@ -13,7 +13,7 @@ public class Core
 
     public Core Parent;
 
-    public Core(CellData center, int radius, float momentum, Core parent)
+    public Core(Cell center, int radius, float momentum, Core parent)
     {
         Parent = parent;
         Center = center;
@@ -35,7 +35,7 @@ public class Core
         }
     }
 
-    public bool CellAvailable(CellData cell)
+    public bool CellAvailable(Cell cell)
     {
         foreach (var core in SubCores)
         {
@@ -86,7 +86,7 @@ public class Core
         }
     }
 
-    public bool TryGetSubCore(CellData center, out Core core)
+    public bool TryGetSubCore(Cell center, out Core core)
     {
         if (center == null)
         {

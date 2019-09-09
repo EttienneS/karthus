@@ -62,7 +62,7 @@ public class Faction : MonoBehaviour
         return task;
     }
 
-    public TaskBase AddTaskWithCellBadge(TaskBase task, IEntity originatorId, CellData cell, string badgeIcon)
+    public TaskBase AddTaskWithCellBadge(TaskBase task, IEntity originatorId, Cell cell, string badgeIcon)
     {
         var badge = Game.EffectController.AddBadge(cell, badgeIcon);
         AddTask(task, originatorId, badge.Destroy);

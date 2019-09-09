@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
-public class CellData : IEquatable<CellData>
+public class Cell : IEquatable<Cell>
 {
     public CellType CellType;
     public int X;
@@ -14,7 +14,7 @@ public class CellData : IEquatable<CellData>
     public int Y;
 
     [JsonIgnore]
-    public CellData[] Neighbors = new CellData[8];
+    public Cell[] Neighbors = new Cell[8];
 
     public Structure Structure;
     internal Color Color;
@@ -70,7 +70,7 @@ public class CellData : IEquatable<CellData>
     }
 
     [JsonIgnore]
-    public CellData NextWithSamePriority { get; set; }
+    public Cell NextWithSamePriority { get; set; }
 
     public bool Pathable
     {
@@ -81,7 +81,7 @@ public class CellData : IEquatable<CellData>
     }
 
     [JsonIgnore]
-    public CellData PathFrom { get; set; }
+    public Cell PathFrom { get; set; }
 
     [JsonIgnore]
     public int SearchHeuristic { private get; set; }
@@ -114,14 +114,18 @@ public class CellData : IEquatable<CellData>
     {
         get
         {
+            DrawnOnce = true;
             var tile = ScriptableObject.CreateInstance<Tile>();
             tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(CellType);
             tile.color = Color;
             return tile;
         }
     }
+    [JsonIgnore]
+    public bool DrawnOnce { get; set; }
+   
 
-    public CellData GetNeighbor(Direction direction)
+    public Cell GetNeighbor(Direction direction)
     {
         return Neighbors[(int)direction];
     }
@@ -138,13 +142,13 @@ public class CellData : IEquatable<CellData>
         Color = new Color(baseColor.r - scaled, baseColor.g - scaled, baseColor.b - scaled, baseColor.a);
     }
 
-    public void SetNeighbor(Direction direction, CellData cell)
+    public void SetNeighbor(Direction direction, Cell cell)
     {
         Neighbors[(int)direction] = cell;
         cell.Neighbors[(int)direction.Opposite()] = this;
     }
 
-    internal CellData GetRandomNeighbor()
+    internal Cell GetRandomNeighbor()
     {
         var neighbors = Neighbors.Where(n => n != null).ToList();
         return neighbors[Random.Range(0, neighbors.Count - 1)];
@@ -158,10 +162,7 @@ public class CellData : IEquatable<CellData>
         }
 
         structure.Cell = this;
-        foreach (var cell in structure.GetCellsForStructure(this))
-        {
-            cell.Structure = structure;
-        }
+        Structure = structure;
     }
 
     internal int CountNeighborsOfType(CellType? cellType)
@@ -179,14 +180,17 @@ public class CellData : IEquatable<CellData>
         return Game.CreatureController.CreatureLookup.Where(c => c.Key.Cell == this).Select(c => c.Key);
     }
 
-    internal void CreateStructure(string structureName, string faction = FactionConstants.World)
+    internal Structure CreateStructure(string structureName, string faction = FactionConstants.World)
     {
-        SetStructure(Game.StructureController.GetStructure(structureName, FactionController.Factions[faction]));
+        var structure = Game.StructureController.GetStructure(structureName, FactionController.Factions[faction]);
+        SetStructure(structure);
+
+        return structure;
     }
 
 
 
-    public static CellData FromPosition(Vector2 position)
+    public static Cell FromPosition(Vector2 position)
     {
         // add half a unit to each position to account for offset (cells are at point 0,0 in the very center)
         position += new Vector2(0.5f, 0.5f);
@@ -205,7 +209,7 @@ public class CellData : IEquatable<CellData>
         return new Vector3(Mathf.FloorToInt(X) + 0.5f, Mathf.FloorToInt(Y) + 0.5f, -1);
     }
 
-    public static bool operator !=(CellData obj1, CellData obj2)
+    public static bool operator !=(Cell obj1, Cell obj2)
     {
         if (ReferenceEquals(obj1, null))
         {
@@ -215,7 +219,7 @@ public class CellData : IEquatable<CellData>
         return !obj1.Equals(obj2);
     }
 
-    public static bool operator ==(CellData obj1, CellData obj2)
+    public static bool operator ==(Cell obj1, Cell obj2)
     {
         if (ReferenceEquals(obj1, null))
         {
@@ -225,13 +229,13 @@ public class CellData : IEquatable<CellData>
         return obj1.Equals(obj2);
     }
 
-    public int DistanceTo(CellData other)
+    public int DistanceTo(Cell other)
     {
         return (X < other.X ? other.X - X : X - other.X)
                 + (Y < other.Y ? other.Y - Y : Y - other.Y);
     }
 
-    public bool Equals(CellData other)
+    public bool Equals(Cell other)
     {
         if (ReferenceEquals(other, null))
         {
@@ -243,7 +247,7 @@ public class CellData : IEquatable<CellData>
 
     public override bool Equals(object obj)
     {
-        var other = obj as CellData;
+        var other = obj as Cell;
         if (other == null)
         {
             return false;

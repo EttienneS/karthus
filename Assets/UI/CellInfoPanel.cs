@@ -38,9 +38,9 @@ public class CellInfoPanel : MonoBehaviour
         }
     }
 
-    private CellData _cell;
+    private Cell _cell;
 
-    public void Show(CellData cell)
+    public void Show(Cell cell)
     {
         _cell = cell;
         Game.CreatureInfoPanel.Hide();

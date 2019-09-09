@@ -91,7 +91,7 @@ public class Construct
             {
                 _sprite = Sprite.Create(Texture,
                                         new Rect(0, 0, Texture.width, Texture.height),
-                                        new Vector2(0.5f, 0.5f), MapGrid.PixelsPerCell);
+                                        new Vector2(0.5f, 0.5f), Map.PixelsPerCell);
             }
             return _sprite;
         }
@@ -132,7 +132,7 @@ public class Construct
 
     internal Texture2D GetTexture()
     {
-        var texture = new Texture2D(Width * MapGrid.PixelsPerCell, Height * MapGrid.PixelsPerCell);
+        var texture = new Texture2D(Width * Map.PixelsPerCell, Height * Map.PixelsPerCell);
 
         var y = 0;
         var x = 0;
@@ -141,8 +141,8 @@ public class Construct
         {
             foreach (var character in line)
             {
-                var startX = x * MapGrid.PixelsPerCell;
-                var startY = y * MapGrid.PixelsPerCell;
+                var startX = x * Map.PixelsPerCell;
+                var startY = y * Map.PixelsPerCell;
 
                 Texture2D sourceTexture;
                 if (character == '.')
@@ -159,9 +159,9 @@ public class Construct
                 var constructTexture = sourceTexture.Clone();
                 constructTexture.ScaleToGridSize(1, 1);
 
-                for (var subTexX = 0; subTexX < MapGrid.PixelsPerCell; subTexX++)
+                for (var subTexX = 0; subTexX < Map.PixelsPerCell; subTexX++)
                 {
-                    for (var subTexY = 0; subTexY < MapGrid.PixelsPerCell; subTexY++)
+                    for (var subTexY = 0; subTexY < Map.PixelsPerCell; subTexY++)
                     {
                         var pixel = constructTexture.GetPixel(subTexX, subTexY);
                         texture.SetPixel(startX + subTexX,
@@ -190,7 +190,7 @@ public class Construct
         return structureName;
     }
 
-    internal bool ValidateStartPos(CellData cellData)
+    internal bool ValidateStartPos(Cell cellData)
     {
         var x = 0;
         var y = 0;
@@ -225,7 +225,7 @@ public class Construct
         return true;
     }
 
-    internal bool Place(CellData cellData, Faction faction)
+    internal bool Place(Cell cellData, Faction faction)
     {
         var x = 0;
         var y = 0;

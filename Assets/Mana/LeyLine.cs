@@ -5,7 +5,7 @@ using Random = UnityEngine.Random;
 
 public class LeyLine : MonoBehaviour
 {
-    public List<CellData> Cells = new List<CellData>();
+    public List<Cell> Cells = new List<Cell>();
     public LineRenderer Line;
 
     public ManaColor ManaColor;
@@ -15,6 +15,7 @@ public class LeyLine : MonoBehaviour
 
     public void JitterLine()
     {
+        Cells = Cells.Distinct().ToList();
         for (int i = 0; i < Cells.Count / 10; i++)
         {
             if (Random.value < Jitter)
@@ -50,6 +51,7 @@ public class LeyLine : MonoBehaviour
                 Cells[index] = newCell;
             }
         }
+
     }
 
     public void Start()

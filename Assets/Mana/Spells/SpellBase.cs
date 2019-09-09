@@ -31,10 +31,10 @@ public class SpellBase : TaskBase
     }
 
     [JsonIgnore]
-    public CellData _epicentreCell;
+    public Cell _epicentreCell;
 
     [JsonIgnore]
-    public CellData Epicentre
+    public Cell Epicentre
     {
         get
         {
@@ -47,7 +47,7 @@ public class SpellBase : TaskBase
     }
 
     [JsonIgnore]
-    private CellData _epicenter;
+    private Cell _epicenter;
 
     public SpellBase()
     {

@@ -6,7 +6,7 @@ public partial class OrderSelectionController : MonoBehaviour
 {
     public OrderButton OrderButtonPrefab;
 
-    public delegate void CellClickedDelegate(List<CellData> cell);
+    public delegate void CellClickedDelegate(List<Cell> cell);
 
     public CellClickedDelegate CellClickOrder { get; set; }
 

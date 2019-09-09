@@ -10,7 +10,7 @@ public partial class Game // .Mouse
 
     public delegate void Rotate();
 
-    public delegate bool ValidateMouseSpriteDelegate(CellData currentCell);
+    public delegate bool ValidateMouseSpriteDelegate(Cell currentCell);
 
     public void DisableMouseSprite()
     {
@@ -26,8 +26,8 @@ public partial class Game // .Mouse
 
         MouseSpriteRenderer.gameObject.SetActive(true);
         MouseSpriteRenderer.sprite = Sprite.Create(mouseTex,
-                                                   new Rect(0, 0, width * MapGrid.PixelsPerCell, height * MapGrid.PixelsPerCell),
-                                                   new Vector2(0, 0), MapGrid.PixelsPerCell);
+                                                   new Rect(0, 0, width * Map.PixelsPerCell, height * Map.PixelsPerCell),
+                                                   new Vector2(0, 0), Map.PixelsPerCell);
         ValidateMouse = validation;
     }
 

@@ -147,7 +147,7 @@ public static class ListHelpers
 
 public static class RenderHelpers
 {
-    public static void SetBoundMaterial(this SpriteRenderer renderer, CellData cell)
+    public static void SetBoundMaterial(this SpriteRenderer renderer, Cell cell)
     {
         if (cell.Bound)
         {
@@ -246,6 +246,6 @@ public static class TextureHelpers
 
     public static void ScaleToGridSize(this Texture2D texture, int width, int height)
     {
-        TextureScale.scale(texture, width * MapGrid.PixelsPerCell, height * MapGrid.PixelsPerCell);
+        TextureScale.scale(texture, width * Map.PixelsPerCell, height * Map.PixelsPerCell);
     }
 }

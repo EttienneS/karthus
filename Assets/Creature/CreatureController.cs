@@ -61,7 +61,7 @@ public class CreatureController : MonoBehaviour
         return CreatureLookup[creatureData];
     }
 
-    internal CreatureRenderer SpawnCreature(CreatureData creatureData, CellData cell, Faction faction)
+    internal CreatureRenderer SpawnCreature(CreatureData creatureData, Cell cell, Faction faction)
     {
         var creature = Instantiate(CreaturePrefab, transform, true);
         creature.Data = creatureData;

@@ -2,7 +2,7 @@
 
 public interface IEntity
 {
-    CellData Cell { get; set; }
+    Cell Cell { get; set; }
 
     string Id { get; set; }
 
