@@ -463,7 +463,14 @@ public class Map : MonoBehaviour
         return Mathf.Atan2(c2.X - c1.X, c2.Y - c1.Y) * 180.0f / Mathf.PI;
     }
 
-  
+    internal Cell GetCellAttRadian(Cell center, int radius, int angle)
+    {
+        var mineX = Mathf.Clamp(Mathf.FloorToInt(center.X + (radius * Mathf.Cos(angle))), 0, Game.MapGrid.Width);
+        var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Y + (radius * Mathf.Sin(angle))), 0, Game.MapGrid.Height);
+
+        return GetCellAtCoordinate(mineX, mineY);
+    }
+
     internal Direction GetDirection(Cell fromCell, Cell toCell)
     {
         var direction = Direction.S;
@@ -522,6 +529,14 @@ public class Map : MonoBehaviour
                           .First();
     }
 
+    internal Cell GetRandomRadian(Cell center, int radius)
+    {
+        var angle = Random.Range(0, 360);
+        var mineX = Mathf.Clamp(Mathf.FloorToInt(center.X + (radius * Mathf.Cos(angle))), 0, Game.MapGrid.Width);
+        var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Y + (radius * Mathf.Sin(angle))), 0, Game.MapGrid.Height);
+
+        return GetCellAtCoordinate(mineX, mineY);
+    }
 
     internal void ProcessBindings(int maxDraws)
     {
@@ -612,9 +627,12 @@ public class Map : MonoBehaviour
 
     internal void Refresh(RectInt rect)
     {
-        var cells = Game.MapGrid.GetRectangle(rect.x, rect.y, rect.width, rect.height).Where(c => !c.DrawnOnce).ToList();
+        var cells = Game.MapGrid.GetRectangle(rect.x,
+                                              rect.y,
+                                              rect.width,
+                                              rect.height).Where(c => !c.DrawnOnce).ToList();
 
-        if (cells.Any())
+        if (cells.Count > 0)
         {
             cells.ForEach(c => Game.MapGenerator.PopulateCell(c));
             var tiles = cells.Select(c => c.Tile).ToArray();
@@ -622,23 +640,6 @@ public class Map : MonoBehaviour
             Game.MapGrid.Tilemap.SetTiles(coords, tiles);
             Game.StructureController.DrawAllStructures(cells);
         }
-    }
-
-    internal Cell GetRandomRadian(Cell center, int radius)
-    {
-        var angle = Random.Range(0, 360);
-        var mineX = Mathf.Clamp(Mathf.FloorToInt(center.X + (radius * Mathf.Cos(angle))), 0, Game.MapGrid.Width);
-        var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Y + (radius * Mathf.Sin(angle))), 0, Game.MapGrid.Height);
-
-        return GetCellAtCoordinate(mineX, mineY);
-    }
-
-    internal Cell GetCellAttRadian(Cell center, int radius, int angle)
-    {
-        var mineX = Mathf.Clamp(Mathf.FloorToInt(center.X + (radius * Mathf.Cos(angle))), 0, Game.MapGrid.Width);
-        var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Y + (radius * Mathf.Sin(angle))), 0, Game.MapGrid.Height);
-
-        return GetCellAtCoordinate(mineX, mineY);
     }
 
     internal void Unbind(string id)
@@ -655,16 +656,6 @@ public class Map : MonoBehaviour
 
     private void OnValidate()
     {
-        if (Width < 1)
-        {
-            Width = 1;
-        }
-
-        if (Height < 1)
-        {
-            Height = 1;
-        }
-
         if (Lancunarity < 1)
         {
             Lancunarity = 1;
