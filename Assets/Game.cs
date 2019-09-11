@@ -23,8 +23,8 @@ public partial class Game : MonoBehaviour
 
     private List<GameObject> _destroyCache = new List<GameObject>();
     private TimeStep _oldTimeStep = TimeStep.Normal;
-    private Vector3 _selectionEnd;
-    private Vector3 _selectionStart;
+    public Vector3 SelectionEnd;
+    public Vector3 SelectionStart;
 
     public void AddItemToDestroy(GameObject gameObject)
     {
@@ -214,12 +214,6 @@ public partial class Game : MonoBehaviour
 
     private void SelectCell()
     {
-        if (SelectedCells.Count == 1)
-        {
-            var cell = SelectedCells.First();
-            CellInfoPanel.Show(cell);
-        }
-
         if (OrderSelectionController.CellClickOrder != null)
         {
             Debug.Log($"Clicked: {SelectedCells.Count}: {SelectedCells[0]}");
@@ -251,9 +245,9 @@ public partial class Game : MonoBehaviour
         foreach (var structure in SelectedStructures)
         {
             var id = structure.Id;
-            if (MapGrid.CellBinding.ContainsKey(id))
+            if (Map.CellBinding.ContainsKey(id))
             {
-                foreach (var boundCell in MapGrid.CellBinding[id])
+                foreach (var boundCell in Map.CellBinding[id])
                 {
                     AddLine(structure.Cell, boundCell);
                 }
@@ -298,7 +292,6 @@ public partial class Game : MonoBehaviour
 
             //CraftingScreen.Hide();
             CreatureInfoPanel.Hide();
-            CellInfoPanel.Hide();
 
             OrderSelectionController.DisableAndReset();
         }
@@ -311,7 +304,7 @@ public partial class Game : MonoBehaviour
                     return;
                 }
 
-                _selectionStart = Camera.main.ScreenToWorldPoint(mousePosition);
+                SelectionStart = Camera.main.ScreenToWorldPoint(mousePosition);
             }
 
             if (Input.GetMouseButtonUp(0))
@@ -326,18 +319,18 @@ public partial class Game : MonoBehaviour
                 DeselectCell();
                 selectSquareImage.gameObject.SetActive(false);
 
-                var endPoint = Camera.main.ScreenToWorldPoint(_selectionEnd);
+                var endPoint = Camera.main.ScreenToWorldPoint(SelectionEnd);
 
-                var startX = Mathf.Clamp(Mathf.Min(_selectionStart.x, endPoint.x), 0, MapGrid.Width);
-                var startY = Mathf.Clamp(Mathf.Min(_selectionStart.y, endPoint.y), 0, MapGrid.Height);
-                var endX = Mathf.Clamp(Mathf.Max(_selectionStart.x, endPoint.x), 0, MapGrid.Width);
-                var endY = Mathf.Clamp(Mathf.Max(_selectionStart.y, endPoint.y), 0, MapGrid.Height);
+                var startX = Mathf.Clamp(Mathf.Min(SelectionStart.x, endPoint.x), 0, Map.Width);
+                var startY = Mathf.Clamp(Mathf.Min(SelectionStart.y, endPoint.y), 0, Map.Height);
+                var endX = Mathf.Clamp(Mathf.Max(SelectionStart.x, endPoint.x), 0, Map.Width);
+                var endY = Mathf.Clamp(Mathf.Max(SelectionStart.y, endPoint.y), 0, Map.Height);
 
                 if (startX == endX && startY == endY)
                 {
                     var point = new Vector3(startX, endY);
 
-                    var clickedCell = MapGrid.GetCellAtPoint(point);
+                    var clickedCell = Map.GetCellAtPoint(point);
                     if (clickedCell != null)
                     {
                         SelectedCells.Add(clickedCell);
@@ -361,7 +354,7 @@ public partial class Game : MonoBehaviour
                         {
                             var point = new Vector3(selX, selY);
 
-                            var clickedCell = MapGrid.GetCellAtPoint(point);
+                            var clickedCell = Map.GetCellAtPoint(point);
                             if (clickedCell != null && !SelectedCells.Contains(clickedCell))
                             {
                                 SelectedCells.Add(clickedCell);
@@ -412,15 +405,15 @@ public partial class Game : MonoBehaviour
                     selectSquareImage.gameObject.SetActive(true);
                 }
 
-                _selectionEnd = mousePosition;
+                SelectionEnd = mousePosition;
 
-                var start = Camera.main.WorldToScreenPoint(_selectionStart);
+                var start = Camera.main.WorldToScreenPoint(SelectionStart);
                 start.z = 0f;
 
-                selectSquareImage.position = (start + _selectionEnd) / 2;
+                selectSquareImage.position = (start + SelectionEnd) / 2;
 
-                var sizeX = Mathf.Abs(start.x - _selectionEnd.x);
-                var sizeY = Mathf.Abs(start.y - _selectionEnd.y);
+                var sizeX = Mathf.Abs(start.x - SelectionEnd.x);
+                var sizeY = Mathf.Abs(start.y - SelectionEnd.y);
 
                 selectSquareImage.sizeDelta = new Vector2(sizeX, sizeY);
             }

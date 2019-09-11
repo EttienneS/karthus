@@ -45,7 +45,7 @@ public class Save
 
     public Save()
     {
-        Cells = Game.MapGrid.Cells.ToArray();
+        Cells = Game.Map.Cells.ToArray();
         Creatures = Game.CreatureController.CreatureLookup.Keys.ToArray();
         //Tasks = Factions.Taskmasters[Data.Faction].Tasks.ToArray();
         Time = Game.TimeManager.Data;
@@ -128,9 +128,9 @@ public class SaveManager : MonoBehaviour
 
     private static void DestroyScene()
     {
-        foreach (var cell in Game.MapGrid.Cells)
+        foreach (var cell in Game.Map.Cells)
         {
-            Game.MapGrid.DestroyCell(cell);
+            Game.Map.DestroyCell(cell);
         }
 
         foreach (var creature in Game.CreatureController.CreatureLookup)
@@ -138,8 +138,8 @@ public class SaveManager : MonoBehaviour
             Game.CreatureController.DestroyCreature(creature.Value);
         }
 
-        Game.MapGrid.CellLookup.Clear();
-        Game.MapGrid.Cells.Clear();
+        Game.Map.CellLookup.Clear();
+        Game.Map.Cells.Clear();
 
         Game.CreatureController.CreatureLookup.Clear();
         IdService.Clear();

@@ -63,7 +63,6 @@ public class CreatureInfoPanel : MonoBehaviour
 
     public void Show(CreatureRenderer creature)
     {
-        Game.CellInfoPanel.Hide();
         gameObject.SetActive(true);
         CurrentCreature = creature;
     }

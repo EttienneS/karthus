@@ -18,7 +18,7 @@
             Target = target
         };
 
-        task.AddSubTask(new Move(Game.MapGrid.GetPathableNeighbour(target.Cell)));
+        task.AddSubTask(new Move(Game.Map.GetPathableNeighbour(target.Cell)));
 
         return task;
     }
@@ -32,7 +32,7 @@
             Source = source
         };
 
-        task.AddSubTask(new Move(Game.MapGrid.GetPathableNeighbour(source.Cell)));
+        task.AddSubTask(new Move(Game.Map.GetPathableNeighbour(source.Cell)));
 
         return task;
     }

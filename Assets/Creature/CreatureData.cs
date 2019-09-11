@@ -57,7 +57,7 @@ public class CreatureData : IEntity
         {
             if (_awareness == null && Cell != null)
             {
-                _awareness = Game.MapGrid.GetCircle(Cell, Perception);
+                _awareness = Game.Map.GetCircle(Cell, Perception);
             }
 
             return _awareness;

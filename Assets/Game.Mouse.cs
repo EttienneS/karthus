@@ -35,7 +35,7 @@ public partial class Game // .Mouse
     {
         if (MouseSpriteRenderer.gameObject.activeInHierarchy)
         {
-            var cell = MapGrid.GetCellAtPoint(Camera.main.ScreenToWorldPoint(mousePosition));
+            var cell = Map.GetCellAtPoint(Camera.main.ScreenToWorldPoint(mousePosition));
             float x = cell.X;
             float y = cell.Y;
 

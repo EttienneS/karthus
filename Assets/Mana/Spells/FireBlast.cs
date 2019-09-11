@@ -17,7 +17,7 @@ public class FireBlast : IAttack
 
         if (Pathfinder.Distance(Attacker.Cell, Target.Cell, Mobility.Walk) <= Range)
         {
-            Attacker.Task.AddSubTask(new Move(Game.MapGrid.GetCircle(Target.Cell, Range - 1).First()));
+            Attacker.Task.AddSubTask(new Move(Game.Map.GetCircle(Target.Cell, Range - 1).First()));
             return false;
         }
         return true;

@@ -9,22 +9,6 @@ public class MapGenerator
 {
     public MapPreset MapPreset;
 
-    public enum RoadSize
-    {
-        Single, Double, Triple
-    }
-
-    public int Clamp(int value, int min, int max)
-    {
-        if (value > max)
-            return max;
-
-        if (value < min)
-            return min;
-
-        return value;
-    }
-
     public Cell CreateCell(int x, int y)
     {
         var cell = new Cell
@@ -33,9 +17,9 @@ public class MapGenerator
             Y = y
         };
 
-        Game.MapGrid.Cells.Add(cell);
+        Game.Map.Cells.Add(cell);
 
-        Game.MapGrid.AddCellLabel(cell);
+        Game.Map.AddCellLabel(cell);
 
         return cell;
     }
@@ -46,36 +30,33 @@ public class MapGenerator
         {
             var v = Random.value;
 
-            if (!Grow(building, 1).Any(c => c.Structure?.Name == "Road"))
+            if (!Grow(building, 1).Any(c => c.Floor?.Name == "Road"))
             {
                 foreach (var cell in building)
                 {
-                    if (cell.Structure != null)
-                    {
-                        Game.StructureController.DestroyStructure(cell.Structure);
-                    }
+                    cell.Clear();
                 }
             }
             else
             {
-                foreach (var cell in Game.MapGrid.HollowSquare(building))
+                foreach (var cell in Game.Map.HollowSquare(building))
                 {
+                    Game.StructureController.DestroyStructure(cell.Structure);
                     cell.CreateStructure("Wood Tile");
                 }
 
                 var doors = GetPossibleDoors(building);
                 if (doors.Count > 0)
                 {
-                    doors[Random.Range(0, doors.Count)].CreateStructure("Wood Tile");
+                    var door = doors[Random.Range(0, doors.Count)];
+                    Game.StructureController.DestroyStructure(door.Structure);
+                    door.CreateStructure("Wood Tile");
                 }
                 else
                 {
                     foreach (var cell in building)
                     {
-                        if (cell.Structure != null)
-                        {
-                            Game.StructureController.DestroyStructure(cell.Structure);
-                        }
+                        cell.Clear();
                     }
                 }
             }
@@ -84,14 +65,14 @@ public class MapGenerator
 
     public List<Cell> GetCorners(List<Cell> square)
     {
-        var minMax = Game.MapGrid.GetMinMax(square);
+        var minMax = Game.Map.GetMinMax(square);
 
         return new List<Cell>
             {
-                Game.MapGrid.GetCellAtCoordinate(minMax.minx, minMax.miny),
-                Game.MapGrid.GetCellAtCoordinate(minMax.minx, minMax.maxy),
-                Game.MapGrid.GetCellAtCoordinate(minMax.maxx, minMax.miny),
-                Game.MapGrid.GetCellAtCoordinate(minMax.maxx, minMax.maxy)
+                Game.Map.GetCellAtCoordinate(minMax.minx, minMax.miny),
+                Game.Map.GetCellAtCoordinate(minMax.minx, minMax.maxy),
+                Game.Map.GetCellAtCoordinate(minMax.maxx, minMax.miny),
+                Game.Map.GetCellAtCoordinate(minMax.maxx, minMax.maxy)
             };
     }
 
@@ -99,14 +80,14 @@ public class MapGenerator
     {
         var doors = new List<Cell>();
         var corners = GetCorners(building);
-        foreach (var cell in Game.MapGrid.GetBorder(building))
+        foreach (var cell in Game.Map.GetBorder(building))
         {
             if (corners.Any(c => c.X == cell.X && c.Y == cell.Y))
             {
                 continue;
             }
 
-            var neighbours = cell.Neighbors.Count(c => c?.Structure?.Name == "Road");
+            var neighbours = cell.Neighbors.Count(c => c?.Floor?.Name == "Road");
             if (neighbours > 1)
             {
                 doors.Add(cell);
@@ -134,9 +115,9 @@ public class MapGenerator
                         continue;
                     }
 
-                    if (tx >= 0 && tx < Game.MapGrid.Width && ty >= 0 && ty < Game.MapGrid.Height)
+                    if (tx >= 0 && tx < Game.Map.Width && ty >= 0 && ty < Game.Map.Height)
                     {
-                        group.Add(Game.MapGrid.GetCellAtCoordinate(tx, ty));
+                        group.Add(Game.Map.GetCellAtCoordinate(tx, ty));
                     }
                 }
             }
@@ -145,77 +126,10 @@ public class MapGenerator
         return group.Distinct().ToList();
     }
 
-    public void MakeRoad(Cell point1, Cell point2, RoadSize roadSize = RoadSize.Double)
-    {
-        var path = Pathfinder.FindPath(point1.GetRandomNeighbor(),
-                                                 point2.GetRandomNeighbor(),
-                                                 Mobility.AbyssWalk);
-
-        if (path == null || path.Count == 0)
-        {
-            return;
-        }
-
-        foreach (var cell in path)
-        {
-            Direction[] dirs;
-            switch (roadSize)
-            {
-                case RoadSize.Single:
-                    dirs = new Direction[] { };
-                    break;
-
-                case RoadSize.Double:
-                    dirs = new Direction[] { Direction.N, Direction.W };
-                    break;
-
-                case RoadSize.Triple:
-                    dirs = new Direction[] { Direction.N, Direction.W, Direction.E, Direction.S };
-                    break;
-
-                default:
-                    throw new Exception("Unknown road type");
-            }
-
-            foreach (var dir in dirs)
-            {
-                try
-                {
-                    var neighbour = cell.GetNeighbor(dir);
-                    if (neighbour == null || neighbour.TravelCost < 0 || neighbour.Structure != null)
-                    {
-                        var tempDir = Direction.E;
-                        if (dir == Direction.N)
-                        {
-                            tempDir = Direction.S;
-                        }
-
-                        neighbour = cell.GetNeighbor(tempDir);
-                    }
-
-                    if (neighbour == null || neighbour.TravelCost < 0 || neighbour.Structure != null)
-                    {
-                        continue;
-                    }
-
-                    neighbour.SetStructure(Game.StructureController.GetStructure("Road", FactionController.WorldFaction));
-                }
-                catch (Exception ex)
-                {
-                    Debug.LogWarning($"Road fail: {ex}");
-                }
-            }
-
-            if (cell != null && cell.TravelCost > 0 && cell.Structure == null)
-            {
-                cell.SetStructure(Game.StructureController.GetStructure("Road", FactionController.WorldFaction));
-            }
-        }
-    }
 
     public Structure MakeRune(Cell location, string name, Faction faction)
     {
-        Game.MapGrid.BindCell(location, faction.Core);
+        Game.Map.BindCell(location, faction.Core);
 
         if (location.Structure != null)
             Game.StructureController.DestroyStructure(location.Structure);
@@ -233,16 +147,16 @@ public class MapGenerator
 
     public void SpawnCreatures()
     {
-        MakeFactionCore(Game.MapGrid.Center, FactionController.PlayerFaction);
+        MakeFactionCore(Game.Map.Center, FactionController.PlayerFaction);
 
         for (int i = 0; i < 3; i++)
         {
             Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("Person"),
-                                         Game.MapGrid.Center.GetNeighbor(Helpers.RandomEnumValue<Direction>()),
+                                         Game.Map.Center.GetNeighbor(Helpers.RandomEnumValue<Direction>()),
                                          FactionController.PlayerFaction);
         }
 
-        Game.CameraController.MoveToCell(Game.MapGrid.Center.GetNeighbor(Direction.E));
+        Game.CameraController.MoveToCell(Game.Map.Center.GetNeighbor(Direction.E));
     }
 
     internal void CreateTown()
@@ -256,7 +170,7 @@ public class MapGenerator
         // Allotments: Divide the edges of all building blocks into lots(this means each lot has at least one edge which is connected to a road).
         // Buildings: Generate a fitting building for each lot.
 
-        var streets = CreateStreets(Game.MapGrid.Center, 0.5f);
+        var streets = CreateStreets(Game.Map.Center, 0.5f);
         var buildings = new List<List<Cell>>();
         foreach (var street in streets)
         {
@@ -267,11 +181,11 @@ public class MapGenerator
 
     internal void GenerateMapFromPreset()
     {
-        Game.MapGrid.Cells = new List<Cell>();
+        Game.Map.Cells = new List<Cell>();
 
-        for (var y = 0; y < Game.MapGrid.Height; y++)
+        for (var y = 0; y < Game.Map.Height; y++)
         {
-            for (var x = 0; x < Game.MapGrid.Width; x++)
+            for (var x = 0; x < Game.Map.Width; x++)
             {
                 CreateCell(x, y);
             }
@@ -279,9 +193,9 @@ public class MapGenerator
 
         LinkNeighbours();
 
-        if (Game.MapGrid.Seed == 0)
+        if (Game.Map.Seed == 0)
         {
-            Game.MapGrid.Seed = Random.Range(1, 10000);
+            Game.Map.Seed = Random.Range(1, 10000);
         }
 
         GenerateMapCells();
@@ -291,30 +205,30 @@ public class MapGenerator
 
     internal void LinkNeighbours()
     {
-        for (var y = 0; y < Game.MapGrid.Height; y++)
+        for (var y = 0; y < Game.Map.Height; y++)
         {
-            for (var x = 0; x < Game.MapGrid.Width; x++)
+            for (var x = 0; x < Game.Map.Width; x++)
             {
-                var cell = Game.MapGrid.CellLookup[(x, y)];
+                var cell = Game.Map.CellLookup[(x, y)];
 
                 if (x > 0)
                 {
-                    cell.SetNeighbor(Direction.W, Game.MapGrid.CellLookup[(x - 1, y)]);
+                    cell.SetNeighbor(Direction.W, Game.Map.CellLookup[(x - 1, y)]);
 
                     if (y > 0)
                     {
-                        cell.SetNeighbor(Direction.SW, Game.MapGrid.CellLookup[(x - 1, y - 1)]);
+                        cell.SetNeighbor(Direction.SW, Game.Map.CellLookup[(x - 1, y - 1)]);
 
-                        if (x < Game.MapGrid.Width - 1)
+                        if (x < Game.Map.Width - 1)
                         {
-                            cell.SetNeighbor(Direction.SE, Game.MapGrid.CellLookup[(x + 1, y - 1)]);
+                            cell.SetNeighbor(Direction.SE, Game.Map.CellLookup[(x + 1, y - 1)]);
                         }
                     }
                 }
 
                 if (y > 0)
                 {
-                    cell.SetNeighbor(Direction.S, Game.MapGrid.CellLookup[(x, y - 1)]);
+                    cell.SetNeighbor(Direction.S, Game.Map.CellLookup[(x, y - 1)]);
                 }
             }
         }
@@ -361,7 +275,7 @@ public class MapGenerator
             Game.StructureController.DestroyStructure(cell.Structure);
         }
 
-        if (cell.Structure != null)
+        if (!cell.Empty())
         {
             return;
         }
@@ -371,7 +285,7 @@ public class MapGenerator
         switch (cell.CellType)
         {
             case CellType.Grass:
-                if (value > 0.8)
+                if (value > 0.85)
                 {
                     cell.SetStructure(Game.StructureController.GetStructure("Bush", world));
                 }
@@ -393,21 +307,21 @@ public class MapGenerator
     internal void ResetSearchPriorities()
     {
         // ensure that all cells have their phases reset
-        for (var y = 0; y < Game.MapGrid.Height; y++)
+        for (var y = 0; y < Game.Map.Height; y++)
         {
-            for (var x = 0; x < Game.MapGrid.Width; x++)
+            for (var x = 0; x < Game.Map.Width; x++)
             {
-                Game.MapGrid.CellLookup[(x, y)].SearchPhase = 0;
+                Game.Map.CellLookup[(x, y)].SearchPhase = 0;
             }
         }
     }
 
     private static void SpawnMonsters()
     {
-        for (int i = 0; i < Game.MapGrid.Width / 10; i++)
+        for (int i = 0; i < Game.Map.Width / 10; i++)
         {
             Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("AbyssWraith"),
-                                             Game.MapGrid.GetRandomCell(),
+                                             Game.Map.GetRandomCell(),
                                              FactionController.MonsterFaction);
         }
     }
@@ -423,10 +337,10 @@ public class MapGenerator
             var neighbours = new List<Cell>
                     {
                         cell,
-                        Game.MapGrid.GetCellAtCoordinate(cell.X + 1, cell.Y),
-                        Game.MapGrid.GetCellAtCoordinate(cell.X - 1, cell.Y),
-                        Game.MapGrid.GetCellAtCoordinate(cell.X, cell.Y + 1),
-                        Game.MapGrid.GetCellAtCoordinate(cell.X, cell.Y - 1),
+                        Game.Map.GetCellAtCoordinate(cell.X + 1, cell.Y),
+                        Game.Map.GetCellAtCoordinate(cell.X - 1, cell.Y),
+                        Game.Map.GetCellAtCoordinate(cell.X, cell.Y + 1),
+                        Game.Map.GetCellAtCoordinate(cell.X, cell.Y - 1),
                     };
             foreach (var neighbour in neighbours)
             {
@@ -435,8 +349,8 @@ public class MapGenerator
                 {
                     for (int height = -maxHeight; height < maxHeight; height++)
                     {
-                        var structure = Game.MapGrid.GetRectangle(neighbour, width, height);
-                        var measure = Game.MapGrid.GetWidthAndHeight(structure);
+                        var structure = Game.Map.GetRectangle(neighbour, width, height);
+                        var measure = Game.Map.GetWidthAndHeight(structure);
 
                         if (measure.Item1 < minWidth)
                         {
@@ -448,7 +362,7 @@ public class MapGenerator
                             continue;
                         }
 
-                        if (structure.TrueForAll(c => c.Structure == null))
+                        if (structure.TrueForAll(c => c.Empty()))
                         {
                             if (Random.value > 0.9)
                             {
@@ -488,9 +402,11 @@ public class MapGenerator
                 biggest.ForEach(c => c.CreateStructure("Stone Wall"));
                 buildings.Add(biggest);
 
+                var avgHeight = biggest.Average(c => c.Height);
                 foreach (var buffer in Grow(biggest, Random.Range(1, 3)))
                 {
-                    if (buffer.Structure == null)
+                    buffer.Height = avgHeight;
+                    if (buffer.Structure == null && buffer.Floor == null)
                     {
                         buffer.CreateStructure("Reserved");
                     }
@@ -504,9 +420,9 @@ public class MapGenerator
     private void CreateLeyLines()
     {
         var nexusPoints = new List<Cell>();
-        for (int i = 0; i < Game.MapGrid.Width / 10; i++)
+        for (int i = 0; i < Game.Map.Width / 10; i++)
         {
-            var point = Game.MapGrid.GetRandomCell();
+            var point = Game.Map.GetRandomEmptyCell();
             nexusPoints.Add(point);
             MakeRune(point, "LeySpring", FactionController.WorldFaction);
         }
@@ -516,7 +432,7 @@ public class MapGenerator
         foreach (var cell in nexusPoints)
         {
             var target = nexusPoints[(int)(Random.value * (nexusPoints.Count - 1))];
-            Game.LeyLineController.MakeLine(Game.MapGrid.GetLine(cell, target), (ManaColor)v.GetValue(counter));
+            Game.LeyLineController.MakeLine(Game.Map.GetLine(cell, target), (ManaColor)v.GetValue(counter));
 
             counter++;
 
@@ -530,7 +446,7 @@ public class MapGenerator
     private List<List<Cell>> CreateStreets(Cell center, float momentum)
     {
         var streets = new List<List<Cell>>();
-        var mainStreet = Game.MapGrid.GetDiameterLine(center, Random.Range(30, 90), Random.Range(-10, 10));
+        var mainStreet = Game.Map.GetDiameterLine(center, Random.Range(30, 90), Random.Range(-10, 10));
         mainStreet.ForEach(c => c.CreateStructure("Road"));
         streets.Add(mainStreet);
 
@@ -548,11 +464,11 @@ public class MapGenerator
 
     private void GenerateMapCells()
     {
-        for (int x = 0; x < Game.MapGrid.Width; x++)
+        for (int x = 0; x < Game.Map.Width; x++)
         {
-            for (int y = 0; y < Game.MapGrid.Height; y++)
+            for (int y = 0; y < Game.Map.Height; y++)
             {
-                var cell = Game.MapGrid.GetCellAtCoordinate(x, y);
+                var cell = Game.Map.GetCellAtCoordinate(x, y);
 
                 cell.Height = MapPreset.GetCellHeight(cell.X, cell.Y);
             }
@@ -561,8 +477,8 @@ public class MapGenerator
 
     private void MakeFactionCore(Cell center, Faction faction)
     {
-        Game.MapGrid.Center.SetStructure(FactionController.PlayerFaction.Core);
-        foreach (var cell in Game.MapGrid.GetCircle(center, 25))
+        Game.Map.Center.SetStructure(FactionController.PlayerFaction.Core);
+        foreach (var cell in Game.Map.GetCircle(center, 25))
         {
             cell.Binding = faction.Core;
         }
@@ -578,7 +494,7 @@ public class MapGenerator
             angle += Random.Range(-10, 10);
         }
 
-        var street = Game.MapGrid.GetLine(crossingPoint, Game.MapGrid.GetPointAtDistanceOnAngle(crossingPoint, length, angle));
+        var street = Game.Map.GetLine(crossingPoint, Game.Map.GetPointAtDistanceOnAngle(crossingPoint, length, angle));
 
         foreach (var cell in street)
         {

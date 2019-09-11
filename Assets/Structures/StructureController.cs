@@ -38,13 +38,20 @@ public class StructureController : MonoBehaviour
             return;
         }
 
-        if (structure.Material != "rune")
+        if (structure.StructureType == "Floor")
         {
-            DefaultStructureMap.SetTile(new Vector3Int(structure.Cell.X, structure.Cell.Y, 0), structure.Tile);
+            Game.Map.RefreshCell(structure.Cell);
         }
         else
         {
-            RuneMap.SetTile(new Vector3Int(structure.Cell.X, structure.Cell.Y, 0), structure.Tile);
+            if (structure.Material != "rune")
+            {
+                DefaultStructureMap.SetTile(new Vector3Int(structure.Cell.X, structure.Cell.Y, 0), structure.Tile);
+            }
+            else
+            {
+                RuneMap.SetTile(new Vector3Int(structure.Cell.X, structure.Cell.Y, 0), structure.Tile);
+            }
         }
     }
 
@@ -78,7 +85,7 @@ public class StructureController : MonoBehaviour
         if (structure != null)
         {
             structure.Cell.Structure = null;
-            Game.MapGrid.Unbind(structure.Id);
+            Game.Map.Unbind(structure.Id);
             ClearStructure(structure.Cell);
 
             if (structure.Spell != null)

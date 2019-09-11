@@ -10,7 +10,7 @@
     {
         Target = structure;
 
-        AddSubTask(new Move(Game.MapGrid.GetPathableNeighbour(Target.Cell)));
+        AddSubTask(new Move(Game.Map.GetPathableNeighbour(Target.Cell)));
         AddSubTask(new Wait(2f, "Harvesting"));
 
         foreach (var mana in Target.ManaValue)

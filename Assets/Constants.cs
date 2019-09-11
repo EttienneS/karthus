@@ -37,6 +37,7 @@ public static class GameConstants
 
 public static class ControllerConstants
 {
+    public const string MinimapCamera = "MinimapCamera";
     public const string CameraController = "Main Camera";
     public const string CreatureController = "CreatureController";
     public const string GameController = "GameController";

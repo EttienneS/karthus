@@ -5,7 +5,6 @@ public class CameraController : MonoBehaviour
     public Camera Camera;
     public float Speed = 1;
 
-    public float SpeedMax = 2f;
     public float SpeedMin = 0.1f;
     public int ZoomMax = 15;
     public int ZoomMin = 2;
@@ -42,7 +41,7 @@ public class CameraController : MonoBehaviour
         MoveToViewPoint(cell.ToMapVector());
     }
 
-    private void Update()
+    public void Update()
     {
         bool moved = false;
         if (_panning)
@@ -110,14 +109,14 @@ public class CameraController : MonoBehaviour
             if (horizontal != 0 || vertical != 0 || mouseWheel != 0)
             {
                 var step = Mathf.Clamp((int)Game.TimeManager.TimeStep, 1, 8);
-                var x = Mathf.Clamp(transform.position.x + (horizontal * Speed * step), 0, Game.MapGrid.Width);
-                var y = Mathf.Clamp(transform.position.y + (vertical * Speed * step), 0, Game.MapGrid.Height);
+                var x = Mathf.Clamp(transform.position.x + (horizontal * Speed * step), 0, Game.Map.Width);
+                var y = Mathf.Clamp(transform.position.y + (vertical * Speed * step), 0, Game.Map.Height);
                 transform.position = new Vector3(x, y, transform.position.z);
 
                 Camera.orthographicSize = Mathf.Clamp(Camera.orthographicSize - (mouseWheel * ZoomStep),
                     ZoomMin, ZoomMax);
 
-                Speed = Helpers.ScaleValueInRange(SpeedMin, SpeedMax, ZoomMin, ZoomMax, Camera.orthographicSize);
+               // Speed = Helpers.ScaleValueInRange(SpeedMin, SpeedMax, ZoomMin, ZoomMax, Camera.orthographicSize);
                 ZoomStep = Mathf.Max(2f, Camera.orthographicSize / 2f);
                 moved = true;
             }
@@ -126,13 +125,18 @@ public class CameraController : MonoBehaviour
 
         if (moved)
         {
-            var width = Mathf.CeilToInt(Camera.orthographicSize * RenderWidth);
-            var height = Mathf.CeilToInt(Camera.orthographicSize * RenderHeight);
-            Game.MapGrid.Refresh(new RectInt(
-                                 Mathf.CeilToInt(transform.position.x - (width / 2)),
-                                 Mathf.CeilToInt(transform.position.y - (height / 2)),
-                                 width,
-                                 height));
+            UpdateCellsBasedOnCamera();
         }
+    }
+
+    public void UpdateCellsBasedOnCamera()
+    {
+        var width = Mathf.CeilToInt(Camera.orthographicSize * RenderWidth);
+        var height = Mathf.CeilToInt(Camera.orthographicSize * RenderHeight);
+        Game.Map.Refresh(new RectInt(
+                             Mathf.CeilToInt(transform.position.x - (width / 2)),
+                             Mathf.CeilToInt(transform.position.y - (height / 2)),
+                             width,
+                             height));
     }
 }

@@ -47,8 +47,6 @@ public partial class OrderSelectionController : MonoBehaviour
     {
         Game.OrderTrayController.gameObject.SetActive(false);
         Game.CreatureInfoPanel.gameObject.SetActive(false);
-        Game.CellInfoPanel.gameObject.SetActive(false);
-        //Game.CraftingScreen.gameObject.SetActive(false);
 
         BuildButton = CreateOrderButton(DefaultBuildText, BuildTypeClicked, "hammer", false);
         TaskButton = CreateOrderButton(DefaultDesignateText, DesignateTypeClicked, "designate", false);

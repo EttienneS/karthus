@@ -2,7 +2,7 @@
   "Name": "Reserved",
   "SpriteName": "Reserved",
   "TravelCost": "1",
-  "StructureType": "Floor",
+  "StructureType": "Other",
   "ManaValue": {
   },
   "Buildable": "False"

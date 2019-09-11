@@ -59,7 +59,7 @@ public class Map : MonoBehaviour
     {
         get
         {
-            return CellLookup[(Game.MapGrid.Width / 2, Game.MapGrid.Height / 2)];
+            return CellLookup[(Game.Map.Width / 2, Game.Map.Height / 2)];
         }
     }
 
@@ -67,7 +67,7 @@ public class Map : MonoBehaviour
 
     public void AddCellIfValid(int x, int y, List<Cell> cells)
     {
-        if (x >= 0 && x < Game.MapGrid.Width && y >= 0 && y < Game.MapGrid.Height)
+        if (x >= 0 && x < Game.Map.Width && y >= 0 && y < Game.Map.Height)
         {
             cells.Add(CellLookup[(x, y)]);
         }
@@ -78,8 +78,8 @@ public class Map : MonoBehaviour
         Tilemap = GetComponentInChildren<Tilemap>();
         Background = GetComponentInChildren<SpriteRenderer>();
 
-        Background.transform.position = new Vector3(Game.MapGrid.Width / 2, Game.MapGrid.Height / 2, 0);
-        Background.transform.localScale = new Vector3(Game.MapGrid.Width + 2, Game.MapGrid.Height + 2, 1);
+        Background.transform.position = new Vector3(Game.Map.Width / 2, Game.Map.Height / 2, 0);
+        Background.transform.localScale = new Vector3(Game.Map.Width + 2, Game.Map.Height + 2, 1);
     }
 
     public void BindCell(Cell cell, IEntity originator)
@@ -149,7 +149,7 @@ public class Map : MonoBehaviour
 
     public Cell GetCellAtCoordinate(int x, int y)
     {
-        if (x < 0 || y < 0 || x >= Game.MapGrid.Width || y >= Game.MapGrid.Height)
+        if (x < 0 || y < 0 || x >= Game.Map.Width || y >= Game.Map.Height)
         {
             return null;
         }
@@ -163,7 +163,7 @@ public class Map : MonoBehaviour
         var cell = Cell.FromPosition(position - new Vector3(0.5f, 0.5f));
 
         if (cell.X < 0 || cell.Y < 0 ||
-            cell.X >= Game.MapGrid.Width || cell.Y >= Game.MapGrid.Height)
+            cell.X >= Game.Map.Width || cell.Y >= Game.Map.Height)
         {
             return null;
         }
@@ -244,7 +244,7 @@ public class Map : MonoBehaviour
         var numerator = longest >> 1;
         for (var i = 0; i <= longest; i++)
         {
-            line.Add(Game.MapGrid.GetCellAtCoordinate(x, y));
+            line.Add(Game.Map.GetCellAtCoordinate(x, y));
             numerator += shortest;
             if (!(numerator < longest))
             {
@@ -312,12 +312,12 @@ public class Map : MonoBehaviour
         }
 
         // add 1 to offset rounding errors
-        return Game.MapGrid.GetCellAtCoordinate(tX, tY);
+        return Game.Map.GetCellAtCoordinate(tX, tY);
     }
 
     public Cell GetRandomCell()
     {
-        return CellLookup[((int)(Random.value * (Game.MapGrid.Width - 1)), (int)(Random.value * (Game.MapGrid.Height - 1)))];
+        return CellLookup[((int)(Random.value * (Game.Map.Width - 1)), (int)(Random.value * (Game.Map.Height - 1)))];
     }
 
     public List<Cell> GetRandomChunk(int chunkSize)
@@ -346,7 +346,7 @@ public class Map : MonoBehaviour
                 {
                     neighbor.SearchPhase = _searchFrontierPhase;
                     neighbor.Distance = neighbor.DistanceTo(center);
-                    neighbor.SearchHeuristic = Random.value < Game.MapGrid.JitterProbability ? 1 : 0;
+                    neighbor.SearchHeuristic = Random.value < Game.Map.JitterProbability ? 1 : 0;
                     _searchFrontier.Enqueue(neighbor);
                 }
             }
@@ -398,7 +398,7 @@ public class Map : MonoBehaviour
         {
             for (var y = fromY; y < toY; y++)
             {
-                Game.MapGrid.AddCellIfValid(x, y, cells);
+                Game.Map.AddCellIfValid(x, y, cells);
             }
         }
 
@@ -414,7 +414,7 @@ public class Map : MonoBehaviour
     public List<Cell> HollowSquare(List<Cell> square)
     {
         var minMax = GetMinMax(square);
-        var src = Game.MapGrid.GetCellAtCoordinate(minMax.minx + 1, minMax.miny + 1);
+        var src = Game.Map.GetCellAtCoordinate(minMax.minx + 1, minMax.miny + 1);
         return GetRectangle(src,
                             minMax.maxx - minMax.minx - 1,
                             minMax.maxy - minMax.miny - 1);
@@ -465,8 +465,8 @@ public class Map : MonoBehaviour
 
     internal Cell GetCellAttRadian(Cell center, int radius, int angle)
     {
-        var mineX = Mathf.Clamp(Mathf.FloorToInt(center.X + (radius * Mathf.Cos(angle))), 0, Game.MapGrid.Width);
-        var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Y + (radius * Mathf.Sin(angle))), 0, Game.MapGrid.Height);
+        var mineX = Mathf.Clamp(Mathf.FloorToInt(center.X + (radius * Mathf.Cos(angle))), 0, Game.Map.Width);
+        var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Y + (radius * Mathf.Sin(angle))), 0, Game.Map.Height);
 
         return GetCellAtCoordinate(mineX, mineY);
     }
@@ -513,6 +513,23 @@ public class Map : MonoBehaviour
         return direction;
     }
 
+    internal Cell GetRandomEmptyCell()
+    {
+        Cell cell = null;
+
+        while (cell == null)
+        {
+            cell = GetRandomCell();
+
+            if (cell.Floor != null || cell.Structure != null)
+            {
+                cell = null;
+            }
+        }
+
+        return cell;
+    }
+
     internal Cell GetNearestCellOfType(Cell centerPoint, CellType cellType, int radius)
     {
         return GetCircle(centerPoint, radius)
@@ -532,8 +549,8 @@ public class Map : MonoBehaviour
     internal Cell GetRandomRadian(Cell center, int radius)
     {
         var angle = Random.Range(0, 360);
-        var mineX = Mathf.Clamp(Mathf.FloorToInt(center.X + (radius * Mathf.Cos(angle))), 0, Game.MapGrid.Width);
-        var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Y + (radius * Mathf.Sin(angle))), 0, Game.MapGrid.Height);
+        var mineX = Mathf.Clamp(Mathf.FloorToInt(center.X + (radius * Mathf.Cos(angle))), 0, Game.Map.Width);
+        var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Y + (radius * Mathf.Sin(angle))), 0, Game.Map.Height);
 
         return GetCellAtCoordinate(mineX, mineY);
     }
@@ -627,7 +644,7 @@ public class Map : MonoBehaviour
 
     internal void Refresh(RectInt rect)
     {
-        var cells = Game.MapGrid.GetRectangle(rect.x,
+        var cells = Game.Map.GetRectangle(rect.x,
                                               rect.y,
                                               rect.width,
                                               rect.height).Where(c => !c.DrawnOnce).ToList();
@@ -637,7 +654,7 @@ public class Map : MonoBehaviour
             cells.ForEach(c => Game.MapGenerator.PopulateCell(c));
             var tiles = cells.Select(c => c.Tile).ToArray();
             var coords = cells.Select(c => c.ToVector3Int()).ToArray();
-            Game.MapGrid.Tilemap.SetTiles(coords, tiles);
+            Game.Map.Tilemap.SetTiles(coords, tiles);
             Game.StructureController.DrawAllStructures(cells);
         }
     }

@@ -203,7 +203,7 @@ public class Construct
                     x++;
                     continue;
                 }
-                var cell = Game.MapGrid.GetCellAtCoordinate(cellData.X + x, cellData.Y + y);
+                var cell = Game.Map.GetCellAtCoordinate(cellData.X + x, cellData.Y + y);
 
                 if (cell.Pathable)
                 {

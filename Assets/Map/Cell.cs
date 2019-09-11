@@ -52,6 +52,19 @@ public class Cell : IEquatable<Cell>
         }
     }
 
+    internal void Clear()
+    {
+        if (Structure != null)
+        {
+            Game.StructureController.DestroyStructure(Structure);
+        }
+
+        if (Floor != null)
+        {
+            Game.StructureController.DestroyStructure(Floor);
+        }
+    }
+
     [JsonIgnore]
     public float Distance { get; set; }
 
@@ -102,11 +115,14 @@ public class Cell : IEquatable<Cell>
         {
             DrawnOnce = true;
             var tile = ScriptableObject.CreateInstance<Tile>();
-            tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(CellType);
+            tile.sprite = Floor == null ? Game.SpriteStore.GetSpriteForTerrainType(CellType)
+                                        : Game.SpriteStore.GetSpriteByName(Floor.SpriteName);
             tile.color = Color;
             return tile;
         }
     }
+
+    public Structure Floor;
 
     [JsonIgnore]
     public float TravelCost
@@ -128,7 +144,7 @@ public class Cell : IEquatable<Cell>
     {
         // add half a unit to each position to account for offset (cells are at point 0,0 in the very center)
         position += new Vector2(0.5f, 0.5f);
-        return Game.MapGrid.GetCellAtCoordinate(Mathf.FloorToInt(position.x), Mathf.FloorToInt(position.y));
+        return Game.Map.GetCellAtCoordinate(Mathf.FloorToInt(position.x), Mathf.FloorToInt(position.y));
     }
 
     public static bool operator !=(Cell obj1, Cell obj2)
@@ -208,13 +224,25 @@ public class Cell : IEquatable<Cell>
 
     public void SetStructure(Structure structure)
     {
-        if (Structure != null)
+        if (structure.StructureType != "Floor")
         {
-            Game.StructureController.DestroyStructure(Structure);
-        }
+            if (Structure != null)
+            {
+                Game.StructureController.DestroyStructure(Structure);
+            }
 
-        structure.Cell = this;
-        Structure = structure;
+            structure.Cell = this;
+            Structure = structure;
+        }
+        else
+        {
+            if (Floor != null)
+            {
+                Game.StructureController.DestroyStructure(Floor);
+            }
+            structure.Cell = this;
+            Floor = structure;
+        }
     }
 
     public Vector2 ToMapVector()
@@ -252,7 +280,6 @@ public class Cell : IEquatable<Cell>
     {
         var structure = Game.StructureController.GetStructure(structureName, FactionController.Factions[faction]);
         SetStructure(structure);
-
         return structure;
     }
 
@@ -270,5 +297,10 @@ public class Cell : IEquatable<Cell>
     internal Vector3Int ToVector3Int()
     {
         return new Vector3Int(X, Y, 0);
+    }
+
+    internal bool Empty()
+    {
+        return Structure == null && Floor == null;
     }
 }

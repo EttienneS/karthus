@@ -3,7 +3,6 @@
 public partial class Game //.Instances
 {
     private static CameraController _cameraController;
-    private static CellInfoPanel _cellInfoPanel;
 
     //private static CraftingScreen _craftinScreen;
     private static CreatureController _creatureController;
@@ -15,7 +14,7 @@ public partial class Game //.Instances
     private static LeyLineController _leyLineController;
     private static MagicController _magicController;
     private static ManaDisplay _manaDisplay;
-    private static Map _mapGrid;
+    private static Map _map;
     private static MaterialController _materialController;
     private static OrderSelectionController _orderSelectionController;
     private static OrderTrayController _orderTrayController;
@@ -37,19 +36,6 @@ public partial class Game //.Instances
             }
 
             return _cameraController;
-        }
-    }
-
-    public static CellInfoPanel CellInfoPanel
-    {
-        get
-        {
-            if (_cellInfoPanel == null)
-            {
-                _cellInfoPanel = GameObject.Find("CellInfoPanel").GetComponent<CellInfoPanel>();
-            }
-
-            return _cellInfoPanel;
         }
     }
 
@@ -165,16 +151,16 @@ public partial class Game //.Instances
         }
     }
 
-    public static Map MapGrid
+    public static Map Map
     {
         get
         {
-            if (_mapGrid == null)
+            if (_map == null)
             {
-                _mapGrid = GameObject.Find(ControllerConstants.MapController).GetComponent<Map>();
+                _map = GameObject.Find(ControllerConstants.MapController).GetComponent<Map>();
             }
 
-            return _mapGrid;
+            return _map;
         }
     }
 

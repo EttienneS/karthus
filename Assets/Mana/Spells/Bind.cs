@@ -26,7 +26,7 @@ public class Bind : SpellBase
     {
         if (_affectAbleCells == null)
         {
-            _affectAbleCells = Game.MapGrid.GetCircle(Epicentre, Size).OrderBy(c => c.DistanceTo(Epicentre)).ToList();
+            _affectAbleCells = Game.Map.GetCircle(Epicentre, Size).OrderBy(c => c.DistanceTo(Epicentre)).ToList();
         }
 
         if (Faction.QueueComplete(SubTasks))
@@ -43,7 +43,7 @@ public class Bind : SpellBase
 
             if (cell != null)
             {
-                FireRune(() => Game.MapGrid.BindCell(cell, Originator));
+                FireRune(() => Game.Map.BindCell(cell, Originator));
             }
             else
             {

@@ -9,13 +9,13 @@ public class MapPreset
 
     public MapPreset(params (float min, CellType type)[] param)
     {
-        _noiseMap = Noise.GenerateNoiseMap(Game.MapGrid.Width, Game.MapGrid.Height,
-            Game.MapGrid.Seed,
-            Game.MapGrid.Scale,
-            Game.MapGrid.Octaves,
-            Game.MapGrid.Persistance,
-            Game.MapGrid.Lancunarity,
-            Game.MapGrid.Offset);
+        _noiseMap = Noise.GenerateNoiseMap(Game.Map.Width, Game.Map.Height,
+            Game.Map.Seed,
+            Game.Map.Scale,
+            Game.Map.Octaves,
+            Game.Map.Persistance,
+            Game.Map.Lancunarity,
+            Game.Map.Offset);
 
         foreach (var p in param)
         {

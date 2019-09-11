@@ -24,7 +24,7 @@ public static class Behaviours
         TaskBase task = null;
         if (Random.value > 0.8f)
         {
-            task = new Move(Game.MapGrid.GetRectangle(creature.Cell.X - (WraithRange / 2),
+            task = new Move(Game.Map.GetRectangle(creature.Cell.X - (WraithRange / 2),
                 creature.Cell.Y - (WraithRange / 2), WraithRange, WraithRange).GetRandomItem());
         }
         else
