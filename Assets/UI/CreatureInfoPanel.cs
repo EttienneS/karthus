@@ -8,6 +8,13 @@ public class CreatureInfoPanel : MonoBehaviour
     public Text Properties;
     public Text Task;
 
+    public Text RedLabel;
+    public Text GreenLabel;
+    public Text BlueLabel;
+    public Text WhiteLabel;
+    public Text BlackLabel;
+
+
     private bool _firstRun = true;
 
     public void Start()
@@ -18,6 +25,12 @@ public class CreatureInfoPanel : MonoBehaviour
             CreatureName = children.First(t => t.name == "CreatureName");
             Properties = children.First(t => t.name == "Properties");
             Task = children.First(t => t.name == "Task");
+
+            RedLabel = children.First(t => t.name == "Red");
+            GreenLabel = children.First(t => t.name == "Green");
+            BlueLabel = children.First(t => t.name == "Blue");
+            WhiteLabel = children.First(t => t.name == "White");
+            BlackLabel = children.First(t => t.name == "Black");
 
             _firstRun = true;
         }
@@ -41,12 +54,11 @@ public class CreatureInfoPanel : MonoBehaviour
                 Properties.text += $"{property.Key}:\t{property.Value}\n";
             }
 
-            Properties.text += "\nMana:\n\n";
-
-            foreach (var property in CurrentCreature.Data.ManaPool)
-            {
-                Properties.text += $"- {property.Key}:\t{property.Value.Total}/{property.Value.Max} ({property.Value.Desired})\n";
-            }
+            RedLabel.text = CurrentCreature.Data.ManaPool[ManaColor.Red].Total.ToString();
+            GreenLabel.text = CurrentCreature.Data.ManaPool[ManaColor.Green].Total.ToString();
+            BlueLabel.text = CurrentCreature.Data.ManaPool[ManaColor.Blue].Total.ToString();
+            BlackLabel.text = CurrentCreature.Data.ManaPool[ManaColor.Black].Total.ToString();
+            WhiteLabel.text = CurrentCreature.Data.ManaPool[ManaColor.White].Total.ToString();
 
             //Properties.text += $"\nMoving:\t{CurrentCreature.Data.Facing}";
 

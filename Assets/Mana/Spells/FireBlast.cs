@@ -3,7 +3,7 @@ using System.Linq;
 
 public class FireBlast : IAttack
 {
-    public int Range { get; set; } = 3;
+    public int Range { get; set; } = 5;
     public IEntity Attacker { get; set; }
     public IEntity Target { get; set; }
 
