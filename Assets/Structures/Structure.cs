@@ -83,9 +83,6 @@ public class Structure : IEntity
         get
         {
             var tile = ScriptableObject.CreateInstance<Tile>();
-
-            var flipX = false;
-            var flipY = false;
             if (IsWall())
             {
                 tile.sprite = Game.SpriteStore.GetWallSprite(this);

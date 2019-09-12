@@ -30,6 +30,17 @@
         {
             Structure.SetBluePrintState(false);
 
+            if (Structure.IsWall())
+            {
+                foreach (var neighbour in Structure.Cell.Neighbors)
+                {
+                    if (neighbour != null)
+                    {
+                        Game.Map.RefreshCell(neighbour);
+                    }
+                }
+            }
+
             Creature.GetFaction().AddStructure(Structure);
             Creature.UpdateMemory(Context, MemoryType.Structure, Structure.Id);
 
