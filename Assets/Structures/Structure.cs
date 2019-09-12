@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -82,7 +83,17 @@ public class Structure : IEntity
         get
         {
             var tile = ScriptableObject.CreateInstance<Tile>();
-            tile.sprite = Game.SpriteStore.GetSpriteByName(SpriteName);
+
+            var flipX = false;
+            var flipY = false;
+            if (IsWall())
+            {
+                tile.sprite = Game.SpriteStore.GetWallSprite(this);
+            }
+            else
+            {
+                tile.sprite = Game.SpriteStore.GetSpriteByName(SpriteName);
+            }
 
             if (IsBluePrint)
             {
@@ -95,6 +106,11 @@ public class Structure : IEntity
 
             return tile;
         }
+    }
+
+    public bool IsWall()
+    {
+        return StructureType == "Wall";
     }
 
     public static Structure GetFromJson(string json)

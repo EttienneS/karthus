@@ -84,8 +84,17 @@ public class StructureController : MonoBehaviour
     {
         if (structure != null)
         {
-            structure.Cell.Structure = null;
             Game.Map.Unbind(structure.Id);
+
+            if (structure.Cell.Floor == structure)
+            {
+                structure.Cell.Floor = null;
+            }
+            else
+            {
+                structure.Cell.Structure = null;
+            }
+
             ClearStructure(structure.Cell);
 
             if (structure.Spell != null)

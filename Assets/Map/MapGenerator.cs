@@ -507,12 +507,12 @@ public class MapGenerator
 
         if (momentum > 0.1f)
         {
-            for (int i = (int)Math.Ceiling(length / 3f); i < street.Count; i++)
+            for (int i = (int)Math.Ceiling(length / 2f); i < street.Count; i++)
             {
-                if (Random.value > 0.9)
+                if (Random.value > 0.95)
                 {
                     MakeStreet(street[i], length, !vertical, momentum, color, streets);
-                    i += 5;
+                    i += Random.Range(5, 10);
                 }
             }
         }

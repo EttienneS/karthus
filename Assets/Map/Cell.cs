@@ -204,6 +204,23 @@ public class Cell : IEquatable<Cell>
         return Neighbors[(int)direction];
     }
 
+    public bool IsWall(Direction direction)
+    {
+        var neighbor = Neighbors[(int)direction];
+
+        if (neighbor == null)
+        {
+            return false;
+        }
+
+        if (neighbor.Structure == null)
+        {
+            return false;
+        }
+
+        return neighbor.Structure.IsWall();
+    }
+
     public void RefreshColor()
     {
         const float totalShade = 1f;

@@ -74,6 +74,75 @@ public class SpriteStore : MonoBehaviour
         //  Debug.Log("load creature sprites");
     }
 
+    internal Sprite GetWallSprite(Structure structure)
+    {
+        // _H == ─
+        var type = "_H";
+
+        var n = structure.Cell.IsWall(Direction.N);
+        var s = structure.Cell.IsWall(Direction.S);
+        var e = structure.Cell.IsWall(Direction.E);
+        var w = structure.Cell.IsWall(Direction.W);
+
+        if (n && e && s && w)
+        {
+            // _X == ┼
+            type = "_X";
+        }
+        else if (n && s && !e && !w)
+        {
+            // _V == │
+            type = "_V";
+        }
+        else if (n && !s && e & !w)
+        {
+            // _C == └
+            type = "_C";
+        }
+        else if (n && !s && !e & w)
+        {
+            // _C_F == ┘
+            type = "_C_F";
+        }
+        else if (!n && s && e & !w)
+        {
+            // _CT == ┌
+            type = "_CT";
+        }
+        else if (!n && s && !e & w)
+        {
+            // _CT_F == ┐
+            type = "_CT_F";
+        }
+        else if (n && s && e & !w)
+        {
+            // _TS == ├
+            type = "_TS";
+        }
+        else if (n && s && !e & w)
+        {
+            // _TS_F == ┤
+            type = "_TS_F";
+        }
+        else if (n && !s && e & w)
+        {
+            // _T_F == ┴
+            type = "_T_F";
+        }
+        else if (!n && s && e & w)
+        {
+            // _T == ┬
+            type = "_T";
+        }
+        else if ((!n && s && !e & !w) || (n && !s && !e & !w))
+        {
+            // _V == │
+            type = "_V";
+        }
+
+        return GetSpriteByName(structure.SpriteName + type);
+    }
+
     internal bool FacingUp(Direction facing)
     {
         switch (facing)
