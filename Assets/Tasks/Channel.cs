@@ -1,4 +1,4 @@
-﻿public class Channel : TaskBase
+﻿public class Channel : Task
 {
     public Channel()
     {
@@ -50,7 +50,7 @@
 
         (Source as CreatureData)?.Face(Target.Cell);
 
-        if (Faction.QueueComplete(SubTasks))
+        if (Creature.TaskQueueComplete(SubTasks))
         {
             if (AmountToChannel <= 0)
             {

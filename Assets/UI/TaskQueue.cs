@@ -8,7 +8,7 @@ public class TaskQueue : MonoBehaviour
     public DataDisplay DisplayPrefab;
     public GameObject Content;
     public ScrollRect ScrollRect;
-    public Dictionary<TaskBase, DataDisplay> Lookup = new Dictionary<TaskBase, DataDisplay>();
+    public Dictionary<Task, DataDisplay> Lookup = new Dictionary<Task, DataDisplay>();
 
     private void Update()
     {
@@ -33,7 +33,7 @@ public class TaskQueue : MonoBehaviour
         Scale();
     }
 
-    private void TaskQueue_Clicked(TaskBase task)
+    private void TaskQueue_Clicked(Task task)
     {
         if (task.Failed)
         {
@@ -41,7 +41,7 @@ public class TaskQueue : MonoBehaviour
         }
         else
         {
-            FactionController.PlayerFaction.TaskFailed(task, "SUSPENDED");
+            FactionController.PlayerFaction.CancelTask(task);
         }
     }
 

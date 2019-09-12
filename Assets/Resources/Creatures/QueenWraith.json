@@ -1,11 +1,11 @@
 ﻿{
-  "Name": "AbyssWraith",
+  "Name": "QueenWraith",
   "ValueProperties": {
     "Energy": "200",
     "Hunger": "200"
   },
-  "Speed": 15.0,
-  "Sprite": "AbyssWraith",
+  "Speed": 10.0,
+  "Sprite": "QueenWraith",
   "Perception": 2,
   "BehaviourName": "AbyssWraith",
   "Mobility": "Walk"

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-public class Acrue : TaskBase
+public class Acrue : Task
 {
     public Acrue()
     {
@@ -15,7 +15,7 @@ public class Acrue : TaskBase
 
     public override bool Done()
     {
-        if (Faction.QueueComplete(SubTasks))
+        if (Creature.TaskQueueComplete(SubTasks))
         {
             foreach (var targetLevel in TargetManaLevel)
             {

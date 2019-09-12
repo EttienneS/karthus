@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Wait : TaskBase
+public class Wait : Task
 {
     public float Duration;
     public float ElapsedTime;

@@ -29,11 +29,13 @@ public class CreatureData : IEntity
     public Dictionary<string, Memory> Mind = new Dictionary<string, Memory>();
     public Mobility Mobility;
     public string Name;
+
     [JsonIgnore]
     public Color SkinColor;
 
     public float Speed = 10f;
     public Dictionary<string, string> StringProperties = new Dictionary<string, string>();
+
     [JsonIgnore]
     public Color TopColor;
 
@@ -75,7 +77,6 @@ public class CreatureData : IEntity
         }
     }
 
-    
     public string FactionName { get; set; }
     public string Id { get; set; }
     public ManaPool ManaPool { get; set; } = new ManaPool();
@@ -99,7 +100,7 @@ public class CreatureData : IEntity
     public string Sprite { get; set; }
 
     [JsonIgnore]
-    public TaskBase Task { get; set; }
+    public Task Task { get; set; }
 
     public static CreatureData Load(string creatureData)
     {
@@ -114,7 +115,7 @@ public class CreatureData : IEntity
     {
         if (!ManaPool.Empty())
         {
-            for (var i = 0; i < amount; i--)
+            for (var i = amount; i > 0; i--)
             {
                 var mana = ManaPool.GetRandomManaColorFromPool();
                 ManaPool.BurnMana(mana, i);
@@ -122,7 +123,7 @@ public class CreatureData : IEntity
         }
         else
         {
-            Game.EffectController.SpawnEffect(Cell, 1);
+            //Game.EffectController.SpawnEffect(Cell, 1);
         }
     }
 
@@ -230,9 +231,9 @@ public class CreatureData : IEntity
 
         if (ManaPool.Empty())
         {
-            Game.EffectController.SpawnEffect(Cell, 3f);
-            Game.EffectController.SpawnEffect(Cell, 3f);
-            Game.EffectController.SpawnEffect(Cell, 3f);
+            Game.EffectController.SpawnEffect(Cell, 0.1f);
+            Game.EffectController.SpawnEffect(Cell, 0.1f);
+            Game.EffectController.SpawnEffect(Cell, 0.1f);
 
             Game.CreatureController.DestroyCreature(CreatureRenderer);
             return false;
@@ -301,10 +302,11 @@ public class CreatureData : IEntity
             catch (Exception ex)
             {
                 Debug.LogWarning($"Task failed: {ex}");
-                faction.TaskFailed(Task, ex.Message);
+                faction.CancelTask(Task);
             }
         }
     }
+
     private void UpdateSprite()
     {
         bool flip = Facing == Direction.W || Facing == Direction.NW || Facing == Direction.SW;
@@ -337,7 +339,20 @@ public class CreatureData : IEntity
             CreatureRenderer.TopRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite + facingKey + "top");
             CreatureRenderer.BottomRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite + facingKey + "bottom");
             CreatureRenderer.HairRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite + facingKey + "hair_" + HairStyle);
-
         }
+    }
+
+    public bool TaskQueueComplete(Queue<Task> queue)
+    {
+        if (queue == null || queue.Count == 0)
+        {
+            return true;
+        }
+        var current = queue.Peek();
+        if (current.Done())
+        {
+            queue.Dequeue();
+        }
+        return false;
     }
 }

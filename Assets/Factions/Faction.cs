@@ -8,7 +8,7 @@ public class Faction : MonoBehaviour
     public const int RecyleTime = 3;
     public int LastRecyle;
     internal string FactionName;
-    internal List<TaskBase> Tasks = new List<TaskBase>();
+    internal List<Task> Tasks = new List<Task>();
 
     internal Structure Core;
 
@@ -16,20 +16,7 @@ public class Faction : MonoBehaviour
 
     internal List<Structure> Structures = new List<Structure>();
 
-    public static void ProcessQueue(Queue<TaskBase> queue)
-    {
-        if (queue == null || queue.Count == 0)
-        {
-            return;
-        }
-
-        var current = queue.Peek();
-
-        if (current.Done())
-        {
-            queue.Dequeue();
-        }
-    }
+   
 
     internal void AddStructure(Structure structure)
     {
@@ -37,17 +24,9 @@ public class Faction : MonoBehaviour
         structure.FactionName = FactionName;
     }
 
-    public static bool QueueComplete(Queue<TaskBase> queue)
-    {
-        if (queue == null || queue.Count == 0)
-        {
-            return true;
-        }
-        ProcessQueue(queue);
-        return false;
-    }
+   
 
-    public TaskBase AddTask(TaskBase task, IEntity originatorId, TaskComplete taskComplete = null)
+    public Task AddTask(Task task, IEntity originatorId, TaskComplete taskComplete = null)
     {
         task.Originator = originatorId;
         task.CompleteEvent = taskComplete;
@@ -55,21 +34,21 @@ public class Faction : MonoBehaviour
         return task;
     }
 
-    public TaskBase AddTaskWithEntityBadge(TaskBase task, IEntity originatorId, IEntity badgedEntity, string badgeIcon)
+    public Task AddTaskWithEntityBadge(Task task, IEntity originatorId, IEntity badgedEntity, string badgeIcon)
     {
         var badge = Game.EffectController.AddBadge(badgedEntity, badgeIcon);
         AddTask(task, originatorId, badge.Destroy);
         return task;
     }
 
-    public TaskBase AddTaskWithCellBadge(TaskBase task, IEntity originatorId, Cell cell, string badgeIcon)
+    public Task AddTaskWithCellBadge(Task task, IEntity originatorId, Cell cell, string badgeIcon)
     {
         var badge = Game.EffectController.AddBadge(cell, badgeIcon);
         AddTask(task, originatorId, badge.Destroy);
         return task;
     }
 
-    public void AssignTask(CreatureData creature, TaskBase task, IEntity originator = null)
+    public void AssignTask(CreatureData creature, Task task, IEntity originator = null)
     {
         task.AssignedEntity = creature;
 
@@ -94,9 +73,9 @@ public class Faction : MonoBehaviour
         data.FactionName = FactionName;
     }
 
-    public TaskBase GetNextAvailableTask()
+    public Task GetNextAvailableTask()
     {
-        TaskBase task = null;
+        Task task = null;
         foreach (var availableTask in Tasks.Where(t => t.AssignedEntity == null && !t.Failed))
         {
             //var craftTask = availableTask as Craft;
@@ -123,7 +102,7 @@ public class Faction : MonoBehaviour
         return task;
     }
 
-    public TaskBase GetTask(CreatureData creature)
+    public Task GetTask(CreatureData creature)
     {
         var task = creature.GetBehaviourTask?.Invoke(creature);
         if (task == null)
@@ -135,7 +114,7 @@ public class Faction : MonoBehaviour
         return task;
     }
 
-    public IEnumerable<TaskBase> GetTaskByOriginator(IEntity originator)
+    public IEnumerable<Task> GetTaskByOriginator(IEntity originator)
     {
         return Tasks.Where(t => t.Originator == originator);
     }
@@ -155,13 +134,13 @@ public class Faction : MonoBehaviour
         }
     }
 
-    internal void TaskComplete(TaskBase task)
+    internal void TaskComplete(Task task)
     {
         task.CompleteEvent?.Invoke();
         Tasks.Remove(task);
     }
 
-    internal void CancelTask(TaskBase task)
+    internal void CancelTask(Task task)
     {
         task.CompleteEvent?.Invoke();
 
@@ -173,17 +152,5 @@ public class Faction : MonoBehaviour
 
         Tasks.Remove(task);
 
-    }
-
-    internal void TaskFailed(TaskBase task, string reason)
-    {
-        task.Failed = true;
-
-        task.Message += $"\n{reason}";
-        task.AssignedEntity = null;
-
-        // move task to bottom of the list
-        Tasks.Remove(task);
-        Tasks.Add(task);
     }
 }

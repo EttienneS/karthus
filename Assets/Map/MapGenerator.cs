@@ -324,6 +324,10 @@ public class MapGenerator
                                              Game.Map.GetRandomCell(),
                                              FactionController.MonsterFaction);
         }
+
+        Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("QueenWraith"),
+                                             Game.Map.GetRandomCell(),
+                                             FactionController.MonsterFaction);
     }
 
     private List<List<Cell>> CreateBuildings(int maxWidth, int maxHeight, int minWidth, int minHeight, List<Cell> street)

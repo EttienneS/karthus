@@ -29,7 +29,7 @@ public class Bind : SpellBase
             _affectAbleCells = Game.Map.GetCircle(Epicentre, Size).OrderBy(c => c.DistanceTo(Epicentre)).ToList();
         }
 
-        if (Faction.QueueComplete(SubTasks))
+        if (Creature.TaskQueueComplete(SubTasks))
         {
             Cell cell;
             if (Epicentre.Binding != Originator)

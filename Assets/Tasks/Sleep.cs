@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Random = UnityEngine.Random;
 
-public class Sleep : TaskBase
+public class Sleep : Task
 {
     public float RecoveryRate;
     public Cell Location;
@@ -34,7 +34,7 @@ public class Sleep : TaskBase
             _bed.Reserve(Creature.Id);
         }
 
-        if (Faction.QueueComplete(SubTasks))
+        if (Creature.TaskQueueComplete(SubTasks))
         {
             if (Creature.ValueProperties[Prop.Energy] < Random.Range(80, 100))
             {

@@ -39,7 +39,7 @@ public class Save
 
     public CreatureData[] Creatures;
 
-    public TaskBase[] Tasks;
+    public Task[] Tasks;
 
     public TimeData Time;
 

@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using UnityEngine;
 
-public class SpellBase : TaskBase
+public class SpellBase : Task
 {
     public const float EffectTime = 1f;
 
@@ -61,7 +61,7 @@ public class SpellBase : TaskBase
 
     public override bool Done()
     {
-        if (Faction.QueueComplete(SubTasks))
+        if (Creature.TaskQueueComplete(SubTasks))
         {
             FireRune(null);
         }

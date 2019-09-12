@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public delegate void TaskComplete();
 
-public class TaskBase
+public class Task
 {
     public IEntity AssignedEntity;
     public IEntity Originator;
@@ -23,7 +23,9 @@ public class TaskBase
         }
     }
 
-    public Queue<TaskBase> SubTasks = new Queue<TaskBase>();
+    public Task Parent;
+
+    public Queue<Task> SubTasks = new Queue<Task>();
 
     [JsonIgnore]
     public CreatureData Creature
@@ -41,8 +43,9 @@ public class TaskBase
     [JsonIgnore]
     public TaskComplete CompleteEvent { get; set; }
 
-    public TaskBase AddSubTask(TaskBase subTask)
+    public Task AddSubTask(Task subTask)
     {
+        subTask.Parent = this;
         subTask.Context = Context;
         subTask.Originator = Originator;
         subTask.AssignedEntity = AssignedEntity;

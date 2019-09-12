@@ -11,7 +11,7 @@ public interface IEntity
     string FactionName { get; set; }
 
     [JsonIgnore]
-    TaskBase Task { get; set; }
+    Task Task { get; set; }
 
     void Damage(int amount, ManaColor type);
 }

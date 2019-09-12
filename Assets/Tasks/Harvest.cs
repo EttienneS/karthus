@@ -1,4 +1,4 @@
-﻿public class Harvest : TaskBase
+﻿public class Harvest : Task
 {
     public Structure Target;
 
@@ -23,7 +23,7 @@
 
     public override bool Done()
     {
-        if (Faction.QueueComplete(SubTasks))
+        if (Creature.TaskQueueComplete(SubTasks))
         {
             Game.StructureController.DestroyStructure(Target);
             return true;

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-public class Eat : TaskBase
+public class Eat : Task
 {
     public Eat()
     {
@@ -17,7 +17,7 @@ public class Eat : TaskBase
 
     public override bool Done()
     {
-        if (Faction.QueueComplete(SubTasks))
+        if (Creature.TaskQueueComplete(SubTasks))
         {
             Creature.ManaPool[FoodColor].Burn(1);
             Creature.ValueProperties[Prop.Hunger] -= 50;

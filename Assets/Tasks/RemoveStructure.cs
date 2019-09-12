@@ -1,4 +1,4 @@
-﻿public class RemoveStructure : TaskBase
+﻿public class RemoveStructure : Task
 {
     public Cell Coordinates;
     public Structure Structure;
@@ -20,7 +20,7 @@
 
     public override bool Done()
     {
-        if (Faction.QueueComplete(SubTasks))
+        if (Creature.TaskQueueComplete(SubTasks))
         {
             Game.StructureController.DestroyStructure(Structure);
 

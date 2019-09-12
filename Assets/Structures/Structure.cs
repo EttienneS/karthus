@@ -20,7 +20,7 @@ public class Structure : IEntity
     public SpellBase Spell;
     public string SpriteName;
     public string StructureType;
-    public List<TaskBase> Tasks = new List<TaskBase>();
+    public List<Task> Tasks = new List<Task>();
     public float TravelCost;
 
     [JsonIgnore]
@@ -74,7 +74,7 @@ public class Structure : IEntity
     }
 
     [JsonIgnore]
-    public TaskBase Task { get; set; }
+    public Task Task { get; set; }
 
 
     [JsonIgnore]

@@ -1,4 +1,4 @@
-﻿public class ExecuteAttack : TaskBase
+﻿public class ExecuteAttack : Task
 {
     public ExecuteAttack()
     {
@@ -20,7 +20,7 @@
 
         (Attack.Attacker as CreatureData)?.Face(Target.Cell);
 
-        if (Faction.QueueComplete(SubTasks) && Attack.Ready())
+        if (Creature.TaskQueueComplete(SubTasks) && Attack.Ready())
         {
             Attack.Resolve();
             return true;

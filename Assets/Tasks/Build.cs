@@ -1,4 +1,4 @@
-﻿public class Build : TaskBase
+﻿public class Build : Task
 {
     public Structure Structure;
 
@@ -26,7 +26,7 @@
             throw new TaskFailedException();
         }
 
-        if (Faction.QueueComplete(SubTasks))
+        if (Creature.TaskQueueComplete(SubTasks))
         {
             Structure.SetBluePrintState(false);
 

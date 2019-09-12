@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Move : TaskBase
+public class Move : Task
 {
     public Cell TargetCoordinates;
 

@@ -15,29 +15,37 @@ public static class Behaviours
         return BehaviourTypes[type];
     }
 
-    public delegate TaskBase GetBehaviourTaskDelegate(CreatureData creature);
+    public delegate Task GetBehaviourTaskDelegate(CreatureData creature);
 
     public const int WraithRange = 10;
 
-    public static TaskBase AbyssWraith(CreatureData creature)
+    public static Task AbyssWraith(CreatureData creature)
     {
-        TaskBase task = null;
-        if (Random.value > 0.8f)
+        Task task = null;
+        
+        if (FactionController.PlayerFaction.Creatures.Count > 0)
         {
-            task = new Move(Game.Map.GetRectangle(creature.Cell.X - (WraithRange / 2),
-                creature.Cell.Y - (WraithRange / 2), WraithRange, WraithRange).GetRandomItem());
+            task = new ExecuteAttack(FactionController.PlayerFaction.Creatures.GetRandomItem(), new Bite());
         }
         else
-        {
-            task = new Wait(Random.value * 2f, "Lingering..");
+        { 
+            if (Random.value > 0.8f)
+            {
+                task = new Move(Game.Map.GetRectangle(creature.Cell.X - (WraithRange / 2),
+                    creature.Cell.Y - (WraithRange / 2), WraithRange, WraithRange).GetRandomItem());
+            }
+            else
+            {
+                task = new Wait(Random.value * 2f, "Lingering..");
+            }
         }
 
         return task;
     }
 
-    public static TaskBase Person(CreatureData creature)
+    public static Task Person(CreatureData creature)
     {
-        TaskBase task = null;
+        Task task = null;
 
         var enemy = FindEnemy(creature);
 

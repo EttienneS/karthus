@@ -12,7 +12,7 @@
 
     public override bool Done()
     {
-        if (Faction.QueueComplete(SubTasks))
+        if (Creature.TaskQueueComplete(SubTasks))
         {
             FireRune(() => Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("Person"),
                                                                  Originator.Cell,

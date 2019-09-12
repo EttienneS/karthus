@@ -39,6 +39,7 @@ public class CreatureController : MonoBehaviour
             if (creature.Data.Task != null)
                 creature.Data.Task.CancelTask();
 
+            FactionController.Factions[creature.Data.FactionName].Creatures.Remove(creature.Data);
             CreatureLookup.Remove(creature.Data);
             IdService.RemoveEntity(creature.Data);
             Game.Controller.AddItemToDestroy(creature.gameObject);
@@ -75,6 +76,14 @@ public class CreatureController : MonoBehaviour
         if (creatureData.Name == "Person")
         {
             creature.Data.ManaPool.InitColor(ManaColor.White, 10, 10, 10);
+            creature.Data.ManaPool.InitColor(ManaColor.Red, 3, 10, 5);
+            creature.Data.ManaPool.InitColor(ManaColor.Green, 3, 10, 5);
+            creature.Data.ManaPool.InitColor(ManaColor.Blue, 0, 10, 0);
+            creature.Data.ManaPool.InitColor(ManaColor.Black, 0, 10, 0);
+        }
+        else if (creatureData.Name == "QueenWraith")
+        {
+            creature.Data.ManaPool.InitColor(ManaColor.White, 15, 15, 15);
             creature.Data.ManaPool.InitColor(ManaColor.Red, 3, 10, 5);
             creature.Data.ManaPool.InitColor(ManaColor.Green, 3, 10, 5);
             creature.Data.ManaPool.InitColor(ManaColor.Blue, 0, 10, 0);
