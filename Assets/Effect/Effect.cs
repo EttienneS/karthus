@@ -45,18 +45,6 @@ public class Effect : MonoBehaviour
 
             transform.position += Vector;
         }
-
-        if (PulseIntensity > 0)
-        {
-            var pulse = Mathf.SmoothStep(0, 1, t);
-            transform.localScale += new Vector3(pulse, pulse);
-        }
-    }
-
-    internal Effect Pulsing(float intensity)
-    {
-        PulseIntensity = intensity;
-        return this;
     }
 
     internal Effect FadeUp()

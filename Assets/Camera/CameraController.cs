@@ -116,7 +116,7 @@ public class CameraController : MonoBehaviour
                 Camera.orthographicSize = Mathf.Clamp(Camera.orthographicSize - (mouseWheel * ZoomStep),
                     ZoomMin, ZoomMax);
 
-               // Speed = Helpers.ScaleValueInRange(SpeedMin, SpeedMax, ZoomMin, ZoomMax, Camera.orthographicSize);
+                // Speed = Helpers.ScaleValueInRange(SpeedMin, SpeedMax, ZoomMin, ZoomMax, Camera.orthographicSize);
                 ZoomStep = Mathf.Max(2f, Camera.orthographicSize / 2f);
                 moved = true;
             }
@@ -138,5 +138,12 @@ public class CameraController : MonoBehaviour
                              Mathf.CeilToInt(transform.position.y - (height / 2)),
                              width,
                              height));
+    }
+
+    internal void JumpToCell(Cell cell)
+    {
+        var point = cell.ToMapVector();
+        transform.position = new Vector3(point.x, point.y, transform.position.z);
+        UpdateCellsBasedOnCamera();
     }
 }

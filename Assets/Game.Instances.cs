@@ -7,7 +7,7 @@ public partial class Game //.Instances
     //private static CraftingScreen _craftinScreen;
     private static CreatureController _creatureController;
 
-    private static CreatureInfoPanel _creatureInfoPanel;
+    private static EntityInfoPanel _creatureInfoPanel;
     private static EffectController _effectController;
     private static FileController _fileController;
     private static Game _gameInstance;
@@ -65,20 +65,13 @@ public partial class Game //.Instances
         }
     }
 
-    //public static CraftingScreen CraftingScreen
-    //{
-    //    get
-    //    {
-    //        return _craftinScreen ?? (_craftinScreen = GameObject.Find("CraftingPanel").GetComponent<CraftingScreen>());
-    //    }
-    //}
-    public static CreatureInfoPanel CreatureInfoPanel
+    public static EntityInfoPanel EntityInfoPanel
     {
         get
         {
             if (_creatureInfoPanel == null)
             {
-                _creatureInfoPanel = GameObject.Find("CreatureInfoPanel").GetComponent<CreatureInfoPanel>();
+                _creatureInfoPanel = GameObject.Find("EntityInfoPanel").GetComponent<EntityInfoPanel>();
             }
 
             return _creatureInfoPanel;

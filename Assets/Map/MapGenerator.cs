@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
 
@@ -155,8 +156,8 @@ public class MapGenerator
                                          Game.Map.Center.GetNeighbor(Helpers.RandomEnumValue<Direction>()),
                                          FactionController.PlayerFaction);
         }
-
-        Game.CameraController.MoveToCell(Game.Map.Center.GetNeighbor(Direction.E));
+       
+        Game.CameraController.JumpToCell(Game.Map.Center);
     }
 
     internal void CreateTown()

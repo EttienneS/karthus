@@ -65,7 +65,7 @@ public partial class Game : MonoBehaviour
         {
             creature.DisableHightlight();
         }
-        CreatureInfoPanel.Hide();
+        EntityInfoPanel.Hide();
         SelectedCreatures.Clear();
     }
 
@@ -231,7 +231,7 @@ public partial class Game : MonoBehaviour
 
         if (SelectedCreatures.Count == 1)
         {
-            CreatureInfoPanel.Show(SelectedCreatures.First());
+            EntityInfoPanel.Show(SelectedCreatures[0].Data);
         }
     }
 
@@ -251,6 +251,11 @@ public partial class Game : MonoBehaviour
                     AddLine(structure.Cell, boundCell);
                 }
             }
+        }
+
+        if (SelectedStructures.Count == 1)
+        {
+            EntityInfoPanel.Show(SelectedStructures.First());
         }
     }
 
@@ -308,7 +313,7 @@ public partial class Game : MonoBehaviour
             DeselectStructure(true);
 
             //CraftingScreen.Hide();
-            CreatureInfoPanel.Hide();
+            EntityInfoPanel.Hide();
 
             OrderSelectionController.DisableAndReset();
         }

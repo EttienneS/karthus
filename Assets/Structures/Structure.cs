@@ -199,7 +199,6 @@ public class Structure : IEntity
     {
         _outline = Game.EffectController
                        .SpawnSpriteEffect(Cell, "CellOutline", float.MaxValue)
-                       .Regular()
-                       .Pulsing(0.1f);
+                       .Regular();
     }
 }
