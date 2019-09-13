@@ -275,6 +275,24 @@ public partial class Game : MonoBehaviour
 
     }
 
+    public float MaxTimeToClick { get; set; } = 0.60f;
+    public float MinTimeToClick { get; set; } = 0.05f;
+
+    private float _minCurrentTime;
+    private float _maxCurrentTime;
+
+    public bool DoubleClick()
+    {
+        if (Time.time >= _minCurrentTime && Time.time <= _maxCurrentTime)
+        {
+            _minCurrentTime = 0;
+            _maxCurrentTime = 0;
+            return true;
+        }
+        _minCurrentTime = Time.time + MinTimeToClick; _maxCurrentTime = Time.time + MaxTimeToClick;
+        return false;
+    }
+
     private void Update()
     {
         var mousePosition = Input.mousePosition;
@@ -304,7 +322,22 @@ public partial class Game : MonoBehaviour
                     return;
                 }
 
-                SelectionStart = Camera.main.ScreenToWorldPoint(mousePosition);
+                var point = Camera.main.ScreenToWorldPoint(mousePosition);
+                if (DoubleClick())
+                {
+                    var cell = Map.GetCellAtPoint(point);
+                    var creatures = cell.GetCreatures();
+                    
+                    if (!creatures.Any())
+                    {
+                        SelectedCreatures.AddRange(creatures.FirstOrDefault()?.GetFaction().Creatures.Select(c => c.CreatureRenderer));
+                    }
+                }
+                else
+                {
+                    SelectionStart = point;
+                }
+
             }
 
             if (Input.GetMouseButtonUp(0))
@@ -421,3 +454,5 @@ public partial class Game : MonoBehaviour
         DestroyItemsInCache();
     }
 }
+
+
