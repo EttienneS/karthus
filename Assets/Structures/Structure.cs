@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -67,7 +68,7 @@ public class Structure : IEntity
         if (ManaPool == null)
         {
             ManaPool = new ManaPool(this);
-        }        
+        }
     }
 
     [JsonIgnore]
@@ -108,6 +109,15 @@ public class Structure : IEntity
             }
 
             return tile;
+        }
+    }
+
+
+    internal void HideOutline()
+    {
+        if (_outline != null)
+        {
+            _outline.Kill();
         }
     }
 
@@ -181,5 +191,15 @@ public class Structure : IEntity
             ManaPool.BurnMana(mana, amount);
         }
         Game.StructureController.DestroyStructure(this);
+    }
+
+    private Effect _outline;
+
+    internal void ShowOutline()
+    {
+        _outline = Game.EffectController
+                       .SpawnSpriteEffect(Cell, "CellOutline", float.MaxValue)
+                       .Regular()
+                       .Pulsing(0.1f);
     }
 }

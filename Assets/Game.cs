@@ -79,9 +79,7 @@ public partial class Game : MonoBehaviour
         ClearLine();
         foreach (var structure in SelectedStructures)
         {
-            var cell = structure.Cell;
-            //structure.LinkedGameObject.SpriteRenderer.color = cell.Bound ? ColorConstants.BaseColor :
-            //                                                               ColorConstants.UnboundColor;
+            structure.HideOutline();
         }
         SelectedStructures.Clear();
     }
@@ -244,6 +242,7 @@ public partial class Game : MonoBehaviour
 
         foreach (var structure in SelectedStructures)
         {
+            structure.ShowOutline();
             var id = structure.Id;
             if (Map.CellBinding.ContainsKey(id))
             {

@@ -17,9 +17,11 @@ public class ManaPool : Dictionary<ManaColor, Mana>
     {
         if (Entity?.Cell != null)
         {
-            var effect = Game.EffectController.SpawnSpriteEffect(Entity.Cell, color.ToString(), 0.5f);
-            effect.Sprite.sprite = Game.SpriteStore.GetSprite(color.ToString());
-            effect.FadeDown();
+            Game.EffectController
+                .SpawnSpriteEffect(Entity.Cell, color.ToString(), 0.5f)
+                .Tiny()
+                .FadeDown();
+            
         }
 
         if (!ContainsKey(color))
@@ -51,10 +53,10 @@ public class ManaPool : Dictionary<ManaColor, Mana>
     {
         if (Entity?.Cell != null)
         {
-            var effect = Game.EffectController.SpawnSpriteEffect(Entity.Cell, color.ToString(), 0.5f);
-
-            effect.Sprite.sprite = Game.SpriteStore.GetSprite(color.ToString());
-            effect.FadeUp();
+            Game.EffectController
+                .SpawnSpriteEffect(Entity.Cell, color.ToString(), 0.5f)
+                .Tiny()
+                .FadeUp();
         }
 
         if (!ContainsKey(color))
