@@ -22,22 +22,31 @@ public static class Behaviours
     public static Task AbyssWraith(CreatureData creature)
     {
         Task task = null;
-        
-        if (FactionController.PlayerFaction.Creatures.Count > 0)
+
+        var rand = Random.value;
+
+        if (rand > 0.999f)
         {
-            task = new ExecuteAttack(FactionController.PlayerFaction.Creatures.GetRandomItem(), new Bite());
+            if (FactionController.PlayerFaction.Creatures.Count > 0)
+            {
+                task = new ExecuteAttack(FactionController.PlayerFaction.Creatures.GetRandomItem(), new Bite());
+            }
+        }
+        else if (rand > 0.8f)
+        {
+            task = new Move(Game.Map.GetRectangle(creature.Cell.X - (WraithRange / 2),
+                creature.Cell.Y - (WraithRange / 2), WraithRange, WraithRange).GetRandomItem());
         }
         else
-        { 
-            if (Random.value > 0.8f)
-            {
-                task = new Move(Game.Map.GetRectangle(creature.Cell.X - (WraithRange / 2),
-                    creature.Cell.Y - (WraithRange / 2), WraithRange, WraithRange).GetRandomItem());
-            }
-            else
-            {
-                task = new Wait(Random.value * 2f, "Lingering..");
-            }
+        {
+            task = new Wait(Random.value * 2f, "Lingering..");
+        }
+        if (FactionController.PlayerFaction.Creatures.Count > 0)
+        {
+        }
+        else
+        {
+
         }
 
         return task;

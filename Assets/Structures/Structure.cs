@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -61,7 +60,15 @@ public class Structure : IEntity
 
     public bool IsBluePrint { get; private set; }
 
-    public ManaPool ManaPool { get; set; } = new ManaPool();
+    public ManaPool ManaPool { get; set; }
+
+    public void Awake()
+    {
+        if (ManaPool == null)
+        {
+            ManaPool = new ManaPool(this);
+        }        
+    }
 
     [JsonIgnore]
     public int Width
@@ -76,7 +83,6 @@ public class Structure : IEntity
     [JsonIgnore]
     public Task Task { get; set; }
 
-
     [JsonIgnore]
     public Tile Tile
     {
@@ -89,7 +95,7 @@ public class Structure : IEntity
             }
             else
             {
-                tile.sprite = Game.SpriteStore.GetSpriteByName(SpriteName);
+                tile.sprite = Game.SpriteStore.GetSprite(SpriteName);
             }
 
             if (IsBluePrint)

@@ -29,7 +29,7 @@ public partial class OrderSelectionController : MonoBehaviour
 
     private OrderButton CreateOrderButton(string text, UnityAction action, string sprite, bool isSubButton = true)
     {
-        return CreateOrderButton(text, action, Game.SpriteStore.GetSpriteByName(sprite), isSubButton);
+        return CreateOrderButton(text, action, Game.SpriteStore.GetSprite(sprite), isSubButton);
     }
 
     private OrderButton CreateOrderButton(string text, UnityAction action, Sprite sprite, bool isSubButton = true)

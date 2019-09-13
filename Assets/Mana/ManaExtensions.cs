@@ -43,9 +43,9 @@ public static class ManaExtensions
         return flat;
     }
 
-    public static ManaPool ToManaPool(this Dictionary<ManaColor, int> manaCost)
+    public static ManaPool ToManaPool(this Dictionary<ManaColor, int> manaCost, IEntity entity)
     {
-        var pool = new ManaPool();
+        var pool = new ManaPool(entity);
 
         foreach (var kvp in manaCost)
         {

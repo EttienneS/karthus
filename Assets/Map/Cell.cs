@@ -116,7 +116,7 @@ public class Cell : IEquatable<Cell>
             DrawnOnce = true;
             var tile = ScriptableObject.CreateInstance<Tile>();
             tile.sprite = Floor == null ? Game.SpriteStore.GetSpriteForTerrainType(CellType)
-                                        : Game.SpriteStore.GetSpriteByName(Floor.SpriteName);
+                                        : Game.SpriteStore.GetSprite(Floor.SpriteName);
             tile.color = Color;
             return tile;
         }

@@ -140,7 +140,7 @@ public class SpriteStore : MonoBehaviour
             type = "_V";
         }
 
-        return GetSpriteByName(structure.SpriteName + type);
+        return GetSprite(structure.SpriteName + type);
     }
 
     internal bool FacingUp(Direction facing)
@@ -169,10 +169,10 @@ public class SpriteStore : MonoBehaviour
 
     internal Sprite GetPlaceholder()
     {
-        return GetSpriteByName("Placeholder");
+        return GetSprite("Placeholder");
     }
 
-    internal Sprite GetSpriteByName(string spriteName)
+    internal Sprite GetSprite(string spriteName)
     {
         try
         {

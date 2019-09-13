@@ -6,11 +6,23 @@ public class EffectController : MonoBehaviour
 
     public Badge BadgePrefab;
 
+    public Effect SpriteEffectPrefab;
+
     public void SpawnEffect(Cell cell, float lifeSpan)
     {
         var effect = Instantiate(EffectPrefab, transform);
         effect.LifeSpan = lifeSpan;
         effect.transform.position = cell.ToTopOfMapVector();
+    }
+
+    public Effect SpawnSpriteEffect(Cell cell, string sprite, float lifeSpan)
+    {
+        var effect = Instantiate(SpriteEffectPrefab, transform);
+        effect.Sprite.sprite = Game.SpriteStore.GetSprite(sprite);
+        effect.LifeSpan = lifeSpan;
+        effect.transform.position = cell.ToTopOfMapVector();
+
+        return effect;
     }
 
     public Badge Spawn()

@@ -79,7 +79,7 @@ public class CreatureData : IEntity
 
     public string FactionName { get; set; }
     public string Id { get; set; }
-    public ManaPool ManaPool { get; set; } = new ManaPool();
+    public ManaPool ManaPool { get; set; }
 
     public int Perception { get; set; }
 

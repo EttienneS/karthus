@@ -73,6 +73,8 @@ public class CreatureController : MonoBehaviour
 
         creature.MainRenderer.material = Game.MaterialController.DefaultMaterial;
 
+        creature.Data.ManaPool = new ManaPool(creature.Data);
+
         if (creatureData.Name == "Person")
         {
             creature.Data.ManaPool.InitColor(ManaColor.White, 10, 10, 10);

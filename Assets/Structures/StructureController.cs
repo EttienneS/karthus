@@ -70,7 +70,7 @@ public class StructureController : MonoBehaviour
         IndexStructure(structure);
 
         structure.SetBluePrintState(false);
-        structure.ManaPool = structure.ManaValue.ToManaPool();
+        structure.ManaPool = structure.ManaValue.ToManaPool(structure);
 
         if (faction != null)
         {

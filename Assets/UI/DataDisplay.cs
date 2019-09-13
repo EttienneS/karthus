@@ -35,7 +35,7 @@ public class DataDisplay : MonoBehaviour
 
     internal void SetData(Structure structure)
     {
-        SetData(structure.Name, structure.Name, Game.SpriteStore.GetSpriteByName(structure.SpriteName));
+        SetData(structure.Name, structure.Name, Game.SpriteStore.GetSprite(structure.SpriteName));
     }
 
     internal void SetData(Cell cell)

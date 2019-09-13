@@ -70,7 +70,7 @@ public partial class OrderSelectionController //.Designate
             {
                 if (cell.Bound && cell.Structure != null && cell.Structure.StructureType == type)
                 {
-                    cell.Structure.SetStatusSprite(Game.SpriteStore.GetSpriteByName(icon));
+                    cell.Structure.SetStatusSprite(Game.SpriteStore.GetSprite(icon));
 
                     FactionController.PlayerFaction.AddTaskWithCellBadge(new Harvest(cell.Structure), null, cell, icon);
                 }

@@ -6,8 +6,22 @@ using Random = UnityEngine.Random;
 
 public class ManaPool : Dictionary<ManaColor, Mana>
 {
+    public IEntity Entity;
+
+    public ManaPool(IEntity owner)
+    {
+        Entity = owner;
+    }
+
     public void BurnMana(ManaColor color, int amount)
     {
+        if (Entity?.Cell != null)
+        {
+            var effect = Game.EffectController.SpawnSpriteEffect(Entity.Cell, color.ToString(), 0.5f);
+            effect.Sprite.sprite = Game.SpriteStore.GetSprite(color.ToString());
+            effect.FadeDown();
+        }
+
         if (!ContainsKey(color))
         {
             Debug.LogWarning("Unable to burn mana you do not have!");
@@ -35,6 +49,14 @@ public class ManaPool : Dictionary<ManaColor, Mana>
 
     public void GainMana(ManaColor color, int amount)
     {
+        if (Entity?.Cell != null)
+        {
+            var effect = Game.EffectController.SpawnSpriteEffect(Entity.Cell, color.ToString(), 0.5f);
+
+            effect.Sprite.sprite = Game.SpriteStore.GetSprite(color.ToString());
+            effect.FadeUp();
+        }
+
         if (!ContainsKey(color))
         {
             Add(color, GetBaseMana(color, amount));

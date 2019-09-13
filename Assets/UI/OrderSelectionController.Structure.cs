@@ -14,7 +14,7 @@ public partial class OrderSelectionController //.Structure
 
         var structure = Game.StructureController.StructureDataReference[structureName];
         Game.Controller.SelectionPreference = SelectionPreference.Cell;
-        Game.Controller.SetMouseSprite(Game.SpriteStore.GetSpriteByName(structure.SpriteName).texture,
+        Game.Controller.SetMouseSprite(Game.SpriteStore.GetSprite(structure.SpriteName).texture,
                                        structure.Width, structure.Height,
                                        (CellData) => structure.ValidateCellLocationForStructure(CellData));
 
@@ -80,7 +80,7 @@ public partial class OrderSelectionController //.Structure
                             continue;
                         }
                         FactionController.PlayerFaction.AddTask(new RemoveStructure(structure, cell), null);
-                        structure.SetStatusSprite(Game.SpriteStore.GetSpriteByName("Remove"));
+                        structure.SetStatusSprite(Game.SpriteStore.GetSprite("Remove"));
                     }
                 }
             }

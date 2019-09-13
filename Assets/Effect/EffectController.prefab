@@ -47,3 +47,5 @@ MonoBehaviour:
     type: 3}
   BadgePrefab: {fileID: 1139112596583442113, guid: 7a7de7f5deeaf6d4ea62e51f5d945911,
     type: 3}
+  SpriteEffectPrefab: {fileID: 2276569073954430951, guid: 355bb63af5ebd0d4b82b8f412f2b8ea7,
+    type: 3}
