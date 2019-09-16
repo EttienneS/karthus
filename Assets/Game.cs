@@ -195,7 +195,6 @@ public partial class Game : MonoBehaviour
             faction.transform.position = new Vector2(-100, -100);
             FactionController.Factions.Add(factionName, faction);
         }
-
     }
 
     private bool MouseOverUi()
@@ -276,7 +275,6 @@ public partial class Game : MonoBehaviour
         MapGenerator.Make();
 
         Debug.Log($"Map gen complete in: {sw.Elapsed}");
-
     }
 
     public float MaxTimeToClick { get; set; } = 0.60f;
@@ -311,7 +309,7 @@ public partial class Game : MonoBehaviour
             DeselectCreature();
             DeselectCell();
             DeselectStructure(true);
-            
+
             EntityInfoPanel.Hide();
             DisableMouseSprite();
             OrderSelectionController.DisableAndReset();
@@ -326,20 +324,21 @@ public partial class Game : MonoBehaviour
                 }
 
                 var point = Camera.main.ScreenToWorldPoint(mousePosition);
-                if (DoubleClick())
-                {
-                    var cell = Map.GetCellAtPoint(point);
-                    
-                    if (cell.Creatures.Count == 0)
-                    {
-                        SelectedCreatures.AddRange(cell.Creatures.FirstOrDefault()?.GetFaction().Creatures.Select(c => c.CreatureRenderer));
-                    }
-                }
-                else
-                {
-                    SelectionStart = point;
-                }
+                //if (DoubleClick())
+                //{
+                //    var cell = Map.GetCellAtPoint(point);
 
+                //    if (cell.Creatures.Count == 0)
+                //    {
+                //        SelectedCreatures.AddRange(cell.Creatures
+                //                                       .FirstOrDefault()?.GetFaction()
+                //                                       .Creatures.Select(c => c.CreatureRenderer));
+                //    }
+                //}
+                //else
+                //{
+                SelectionStart = point;
+                //}
             }
 
             if (Input.GetMouseButtonUp(0))
@@ -454,5 +453,3 @@ public partial class Game : MonoBehaviour
         DestroyItemsInCache();
     }
 }
-
-

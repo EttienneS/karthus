@@ -143,9 +143,38 @@ public class EntityInfoPanel : MonoBehaviour
         else
         {
             var structure = entity as Structure;
-            Instantiate(ImageButtonPrefab, ButtonPanel.transform).SetText("Hammer");
-            Instantiate(ImageButtonPrefab, ButtonPanel.transform).SetText("Time");
+            AddRemoveStructureButton(structure);
         }
+    }
+
+    private void AddRemoveStructureButton(Structure structure)
+    {
+        var btn = AddButton(OrderSelectionController.DefaultRemoveText, OrderSelectionController.DefaultRemoveImage);
+        btn.SetOnClick(() =>
+        {
+            SetActiveButton(btn);
+
+            if (structure.IsBluePrint)
+            {
+                Game.StructureController.DestroyStructure(structure);
+            }
+            else
+            {
+                if (FactionController.PlayerFaction.Tasks.OfType<RemoveStructure>().Any(t => t.Structure == structure))
+                {
+                    Debug.Log("Structure already flagged to remove");
+                }
+                else
+                {
+                    FactionController.PlayerFaction
+                                     .AddTaskWithCellBadge(
+                                            new RemoveStructure(structure),
+                                            null,
+                                            structure.Cell,
+                                            OrderSelectionController.DefaultRemoveImage);
+                }
+            }
+        });
     }
 
     private void AddMoveButton(CreatureData creature)

@@ -2,20 +2,15 @@
 
 public partial class OrderSelectionController //.Designate
 {
-    internal const string DefaultDesignateText = "Designate";
-
-    internal const string CutText = "Cut Tree";
-    internal const string CutIcon = "axe_t";
-
-    internal const string HarvestText = "Harvest Plant";
-    internal const string HarvestIcon = "wheat_t";
-
-    internal const string MoveText = "Move Here";
-    internal const string MoveIcon = "location_t";
-
-    internal const string AttackText = "Attack";
     internal const string AttackIcon = "war_t";
-
+    internal const string AttackText = "Attack";
+    internal const string CutIcon = "axe_t";
+    internal const string CutText = "Cut Tree";
+    internal const string DefaultDesignateText = "Designate";
+    internal const string HarvestIcon = "wheat_t";
+    internal const string HarvestText = "Harvest Plant";
+    internal const string MoveIcon = "location_t";
+    internal const string MoveText = "Move Here";
     internal OrderButton TaskButton;
 
     public void DesignateTypeClicked()
@@ -34,16 +29,6 @@ public partial class OrderSelectionController //.Designate
             CreateOrderButton(MoveText, MoveClicked, MoveIcon);
             CreateOrderButton(AttackText, AttackClicked, AttackIcon);
         }
-    }
-
-    private void MoveClicked()
-    {
-        Game.Controller.SelectionPreference = SelectionPreference.Cell;
-        CellClickOrder = cells =>
-        {
-            var cell = cells.First();
-            FactionController.PlayerFaction.AddTaskWithCellBadge(new Move(cell), null, cell, MoveIcon);
-        };
     }
 
     private void AttackClicked()
@@ -70,12 +55,20 @@ public partial class OrderSelectionController //.Designate
             {
                 if (cell.Bound && cell.Structure != null && cell.Structure.StructureType == type)
                 {
-                    cell.Structure.SetStatusSprite(Game.SpriteStore.GetSprite(icon));
-
                     FactionController.PlayerFaction.AddTaskWithCellBadge(new Harvest(cell.Structure), null, cell, icon);
                 }
             }
             Game.Controller.DeselectCell();
+        };
+    }
+
+    private void MoveClicked()
+    {
+        Game.Controller.SelectionPreference = SelectionPreference.Cell;
+        CellClickOrder = cells =>
+        {
+            var cell = cells.First();
+            FactionController.PlayerFaction.AddTaskWithCellBadge(new Move(cell), null, cell, MoveIcon);
         };
     }
 }

@@ -160,11 +160,6 @@ public class Structure : IEntity
         InUseBy = reservedBy;
     }
 
-    internal void SetStatusSprite(Sprite sprite)
-    {
-        //throw new NotImplementedException();
-    }
-
     private void ParseHeight()
     {
         if (_width == -1 || _height == -1)

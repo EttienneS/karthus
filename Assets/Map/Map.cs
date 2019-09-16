@@ -542,7 +542,8 @@ public class Map : MonoBehaviour
         return coordinates.Neighbors
                           .Where(c => c.Bound && c.TravelCost > 0)
                           .OrderBy(c => c.TravelCost)
-                          .First();
+                          .ToList()
+                          .GetRandomItem();
     }
 
     internal Cell GetRandomRadian(Cell center, int radius)

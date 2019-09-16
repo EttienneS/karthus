@@ -1,12 +1,12 @@
 ﻿using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
 public partial class OrderSelectionController //.Structure
 {
+    internal const string DefaultBuildText = "Select Building";
+    internal const string DefaultRemoveImage = "cancel";
+    internal const string DefaultRemoveText = "Remove Building";
     internal OrderButton BuildButton;
-    private const string DefaultBuildText = "Select Building";
-    private const string DefaultRemoveText = "Remove Building";
 
     public void BuildClicked(string structureName)
     {
@@ -51,7 +51,7 @@ public partial class OrderSelectionController //.Structure
                 var button = CreateOrderButton(structureData.Name, () => BuildClicked(structureData.Name), structureData.SpriteName);
             }
 
-            CreateOrderButton(DefaultRemoveText, RemoveStructureClicked, "cancel");
+            CreateOrderButton(DefaultRemoveText, RemoveStructureClicked, DefaultRemoveImage);
         }
     }
 
@@ -78,8 +78,12 @@ public partial class OrderSelectionController //.Structure
                             Debug.Log("Structure already flagged to remove");
                             continue;
                         }
-                        FactionController.PlayerFaction.AddTask(new RemoveStructure(structure, cell), null);
-                        structure.SetStatusSprite(Game.SpriteStore.GetSprite("Remove"));
+                        FactionController.PlayerFaction
+                                         .AddTaskWithCellBadge(
+                                                new RemoveStructure(structure),
+                                                null,
+                                                structure.Cell,
+                                                DefaultRemoveImage);
                     }
                 }
             }

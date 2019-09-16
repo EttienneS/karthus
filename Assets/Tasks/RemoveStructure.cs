@@ -1,21 +1,19 @@
 ﻿public class RemoveStructure : Task
 {
-    public Cell Coordinates;
     public Structure Structure;
 
     public RemoveStructure()
     {
     }
 
-    public RemoveStructure(Structure structure, Cell coordinates)
+    public RemoveStructure(Structure structure)
     {
         Structure = structure;
-        Coordinates = coordinates;
 
-        AddSubTask(new Move(Coordinates));
+        AddSubTask(new Move(Game.Map.GetPathableNeighbour(Structure.Cell)));
         AddSubTask(new Wait(2f, "Removing"));
 
-        Message = $"Removing {Structure.Name} at {coordinates}";
+        Message = $"Removing {Structure.Name} at {Structure.Cell}";
     }
 
     public override bool Done()
