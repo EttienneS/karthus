@@ -53,7 +53,7 @@ public partial class OrderSelectionController //.Designate
         {
             foreach (var cell in cells)
             {
-                foreach (var creature in cell.GetCreatures())
+                foreach (var creature in cell.GetEnemyCreaturesOf(FactionConstants.Player))
                 {
                     FactionController.PlayerFaction.AddTaskWithEntityBadge(new ExecuteAttack(creature, new FireBlast()), null, creature, AttackIcon);
                 }

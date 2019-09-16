@@ -311,10 +311,9 @@ public partial class Game : MonoBehaviour
             DeselectCreature();
             DeselectCell();
             DeselectStructure(true);
-
-            //CraftingScreen.Hide();
+            
             EntityInfoPanel.Hide();
-
+            DisableMouseSprite();
             OrderSelectionController.DisableAndReset();
         }
         else
@@ -330,11 +329,10 @@ public partial class Game : MonoBehaviour
                 if (DoubleClick())
                 {
                     var cell = Map.GetCellAtPoint(point);
-                    var creatures = cell.GetCreatures();
                     
-                    if (!creatures.Any())
+                    if (cell.Creatures.Count == 0)
                     {
-                        SelectedCreatures.AddRange(creatures.FirstOrDefault()?.GetFaction().Creatures.Select(c => c.CreatureRenderer));
+                        SelectedCreatures.AddRange(cell.Creatures.FirstOrDefault()?.GetFaction().Creatures.Select(c => c.CreatureRenderer));
                     }
                 }
                 else
@@ -351,8 +349,6 @@ public partial class Game : MonoBehaviour
                     return;
                 }
 
-                DeselectStructure(false);
-                DeselectCreature();
                 DeselectCell();
                 selectSquareImage.gameObject.SetActive(false);
 

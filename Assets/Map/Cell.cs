@@ -96,6 +96,11 @@ public class Cell : IEquatable<Cell>
         }
     }
 
+    internal IEnumerable<CreatureData> GetEnemyCreaturesOf(string faction)
+    {
+        return Creatures.Where(c => c.FactionName != faction);
+    }
+
     [JsonIgnore]
     public Cell PathFrom { get; set; }
 
@@ -300,10 +305,7 @@ public class Cell : IEquatable<Cell>
         return structure;
     }
 
-    internal IEnumerable<CreatureData> GetCreatures()
-    {
-        return Game.CreatureController.CreatureLookup.Where(c => c.Key.Cell == this).Select(c => c.Key);
-    }
+    public List<CreatureData> Creatures = new List<CreatureData>();
 
     internal Cell GetRandomNeighbor()
     {

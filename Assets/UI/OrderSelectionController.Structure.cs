@@ -14,8 +14,7 @@ public partial class OrderSelectionController //.Structure
 
         var structure = Game.StructureController.StructureDataReference[structureName];
         Game.Controller.SelectionPreference = SelectionPreference.Cell;
-        Game.Controller.SetMouseSprite(Game.SpriteStore.GetSprite(structure.SpriteName).texture,
-                                       structure.Width, structure.Height,
+        Game.Controller.SetMouseSprite(structure.SpriteName,
                                        (CellData) => structure.ValidateCellLocationForStructure(CellData));
 
         CellClickOrder = cells =>

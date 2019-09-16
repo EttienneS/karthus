@@ -66,7 +66,27 @@ public class CreatureData : IEntity
         }
     }
 
-    public Cell Cell { get; set; }
+    private Cell _cell;
+    public Cell Cell
+    {
+        get
+        {
+            return _cell;
+        }
+        set
+        {
+            if(_cell != null)
+            {
+                _cell.Creatures.Remove(this);
+            }
+
+            if (value != null)
+            {
+                _cell = value;
+                _cell.Creatures.Add(this);
+            }
+        }
+    }
 
     [JsonIgnore]
     public CreatureRenderer CreatureRenderer

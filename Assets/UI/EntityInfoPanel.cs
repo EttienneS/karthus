@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,8 +14,11 @@ public class EntityInfoPanel : MonoBehaviour
     public Text BlueLabel;
     public Text WhiteLabel;
     public Text BlackLabel;
+    public GameObject ButtonPanel;
 
     private bool _firstRun = true;
+
+    public ImageButton ImageButtonPrefab;
 
     public void Start()
     {
@@ -118,15 +122,100 @@ public class EntityInfoPanel : MonoBehaviour
         }
     }
 
+    private List<ImageButton> _contextButtons = new List<ImageButton>();
+
     public void Show(IEntity entity)
     {
         gameObject.SetActive(true);
         CurrentEntity = entity;
+
+        _contextButtons.Clear();
+        foreach (Transform child in ButtonPanel.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
+        if (entity is CreatureData creature)
+        {
+            AddMoveButton(creature);
+            AddAttackButton(creature);
+        }
+        else
+        {
+            var structure = entity as Structure;
+            Instantiate(ImageButtonPrefab, ButtonPanel.transform).SetText("Hammer");
+            Instantiate(ImageButtonPrefab, ButtonPanel.transform).SetText("Time");
+        }
     }
 
-    public void Cancel()
+    private void AddMoveButton(CreatureData creature)
     {
-        CurrentEntity.Task.CancelTask();
+        var btn = AddButton(OrderSelectionController.MoveText, OrderSelectionController.MoveIcon);
+        btn.SetOnClick(() =>
+        {
+            SetActiveButton(btn);
+
+            Game.Controller.SelectionPreference = SelectionPreference.Cell;
+            Game.Controller.SetMouseSprite(OrderSelectionController.MoveIcon, (c) => c.TravelCost > 0);
+            Game.OrderSelectionController.CellClickOrder = cells =>
+            {
+                var cell = cells[0];
+
+                var faction = creature.GetFaction();
+                var task = faction.AddTaskWithCellBadge(new Move(cell), creature, cell, OrderSelectionController.MoveIcon);
+                faction.AssignTask(creature, task);
+
+                creature.Task.CancelTask();
+                creature.Task = task;
+            };
+        });
+    }
+
+    private void AddAttackButton(CreatureData creature)
+    {
+        var btn = AddButton(OrderSelectionController.AttackText, OrderSelectionController.AttackIcon);
+        btn.SetOnClick(() =>
+        {
+            SetActiveButton(btn);
+
+            Game.Controller.SelectionPreference = SelectionPreference.Cell;
+            Game.Controller.SetMouseSprite(OrderSelectionController.AttackIcon, (c) => c.GetEnemyCreaturesOf(creature.FactionName).Any());
+
+            Game.OrderSelectionController.CellClickOrder = cells =>
+            {
+                foreach (var cell in cells)
+                {
+                    foreach (var enemy in cell.GetEnemyCreaturesOf(creature.FactionName))
+                    {
+                        FactionController.PlayerFaction
+                                         .AddTaskWithEntityBadge(new ExecuteAttack(enemy, new FireBlast()),
+                                                                 null,
+                                                                 creature,
+                                                                 OrderSelectionController.AttackIcon);
+                    }
+                }
+            };
+        });
+    }
+
+    private void SetActiveButton(ImageButton btn)
+    {
+        foreach (var button in _contextButtons)
+        {
+            button.Image.color = Color.white;
+        }
+        btn.Button.image.color = Color.red;
+    }
+
+    public ImageButton AddButton(string title, string spriteName)
+    {
+        var button = Instantiate(ImageButtonPrefab, ButtonPanel.transform);
+        button.SetText(title);
+        button.SetImage(Game.SpriteStore.GetSprite(spriteName));
+
+        _contextButtons.Add(button);
+
+        return button;
     }
 
     public void Hide()

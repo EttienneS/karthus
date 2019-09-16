@@ -19,15 +19,10 @@ public partial class Game // .Mouse
         RotateMouseRight = null;
     }
 
-    public void SetMouseSprite(Texture2D texture, int width, int height, ValidateMouseSpriteDelegate validation)
+    public void SetMouseSprite(string spriteName, ValidateMouseSpriteDelegate validation)
     {
-        var mouseTex = texture.Clone();
-        mouseTex.ScaleToGridSize(width, height);
-
         MouseSpriteRenderer.gameObject.SetActive(true);
-        MouseSpriteRenderer.sprite = Sprite.Create(mouseTex,
-                                                   new Rect(0, 0, width * Map.PixelsPerCell, height * Map.PixelsPerCell),
-                                                   new Vector2(0, 0), Map.PixelsPerCell);
+        MouseSpriteRenderer.sprite = SpriteStore.GetSprite(spriteName);
         ValidateMouse = validation;
     }
 
@@ -36,8 +31,8 @@ public partial class Game // .Mouse
         if (MouseSpriteRenderer.gameObject.activeInHierarchy)
         {
             var cell = Map.GetCellAtPoint(Camera.main.ScreenToWorldPoint(mousePosition));
-            float x = cell.X;
-            float y = cell.Y;
+            float x = cell.X + 0.5f;
+            float y = cell.Y + 0.5f;
 
             MouseSpriteRenderer.transform.position = new Vector2(x, y);
 

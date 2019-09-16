@@ -66,6 +66,7 @@ public class CreatureController : MonoBehaviour
     {
         var creature = Instantiate(CreaturePrefab, transform, true);
         creature.Data = creatureData;
+        creature.Data.Name = CreatureHelper.GetRandomName();
         creature.Data.Cell = cell;
         creature.transform.position = cell.ToMapVector();
         creature.Data.WorkTick = Random.Range(0, Game.TimeManager.WorkInterval);
