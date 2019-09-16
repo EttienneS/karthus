@@ -76,7 +76,7 @@ public class CreatureController : MonoBehaviour
 
         creature.Data.ManaPool = new ManaPool(creature.Data);
 
-        if (creatureData.Name == "Person")
+        if (creatureData.BehaviourName == "Person")
         {
             creature.Data.ManaPool.InitColor(ManaColor.White, 10, 10, 10);
             creature.Data.ManaPool.InitColor(ManaColor.Red, 3, 10, 5);
