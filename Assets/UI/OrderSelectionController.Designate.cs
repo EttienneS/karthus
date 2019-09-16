@@ -55,7 +55,7 @@ public partial class OrderSelectionController //.Designate
             {
                 if (cell.Bound && cell.Structure != null && cell.Structure.StructureType == type)
                 {
-                    FactionController.PlayerFaction.AddTaskWithCellBadge(new Harvest(cell.Structure), null, cell, icon);
+                    FactionController.PlayerFaction.AddTaskWithCellBadge(new RemoveStructure(cell.Structure), null, cell, icon);
                 }
             }
             Game.Controller.DeselectCell();
