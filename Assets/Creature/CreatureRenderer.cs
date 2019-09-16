@@ -73,7 +73,7 @@ public class CreatureRenderer : MonoBehaviour
         Text.text = text;
         Text.color = Color.white;
 
-        RemainingTextDuration = duration + 1f;
+        RemainingTextDuration = duration;
     }
 
     public void Start()

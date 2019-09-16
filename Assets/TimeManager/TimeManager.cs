@@ -6,8 +6,8 @@ using UnityEngine.UI;
 public enum TimeStep
 {
     Paused = 0,
-    Normal = 2,
-    Fast = 8,
+    Normal = 1,
+    Fast = 6,
     Hyper = 16
 }
 

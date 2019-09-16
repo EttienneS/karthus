@@ -14,12 +14,12 @@ public class Idle : Task
             var wanderCircle = Game.Map.GetCircle(creature.Cell, 2).Where(c => c.Bound && c.TravelCost == 1).ToList();
             if (wanderCircle.Count > 0)
             {
-                AddSubTask(new Move(wanderCircle[Random.Range(0, wanderCircle.Count - 1)], (int)creature.Speed / Random.Range(2, 6)));
+                AddSubTask(new Move(wanderCircle[Random.Range(0, wanderCircle.Count - 1)], (int)creature.Speed));
             }
         }
         else
         {
-            AddSubTask(new Wait(Random.Range(1f, 2f), "Chilling"));
+            AddSubTask(new Wait(0.1f, "Wait"));
         }
 
         Message = "Waiting for something to do.";

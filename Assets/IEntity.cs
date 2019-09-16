@@ -4,6 +4,7 @@ public interface IEntity
 {
     Cell Cell { get; set; }
 
+    string Name { get; set; }
     string Id { get; set; }
 
     ManaPool ManaPool { get; set; }

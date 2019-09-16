@@ -12,7 +12,7 @@ public class Structure : IEntity
     public string Layer;
     public Dictionary<ManaColor, int> ManaValue;
     public string Material;
-    public string Name;
+    public string Name { get; set; }
     public Dictionary<string, string> Properties = new Dictionary<string, string>();
     public string ShiftX;
     public string ShiftY;

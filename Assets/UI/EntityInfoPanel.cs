@@ -39,31 +39,61 @@ public class EntityInfoPanel : MonoBehaviour
         }
     }
 
-    public IEntity CurrentEntity;
+    public List<IEntity> CurrentEntities;
 
     public void Update()
     {
-        if (CurrentEntity != null)
+        if (CurrentEntities != null)
         {
             Properties.text = string.Empty;
 
-            var creature = CurrentEntity as CreatureData;
-            if (creature != null)
+            if (CurrentEntities.Count == 1)
             {
-                CreatureName.text = creature.Name;
-                foreach (var property in creature.ValueProperties)
+                var currentEntity = CurrentEntities[0];
+
+                CreatureName.text = currentEntity.Name;
+
+                if (currentEntity is CreatureData creature)
                 {
-                    Properties.text += $"{property.Key}:\t{property.Value.ToString()}\n";
+                    foreach (var property in creature.ValueProperties)
+                    {
+                        Properties.text += $"{property.Key}:\t{property.Value.ToString()}\n";
+                    }
+
+                    foreach (var property in creature.StringProperties)
+                    {
+                        Properties.text += $"{property.Key}:\t{property.Value}\n";
+                    }
+
+                    if (creature.Task != null)
+                    {
+                        Task.text = creature.Task.ToString();
+                    }
+                    else
+                    {
+                        Task.text = "Finding Task";
+                    }
+                }
+                else
+                {
+                    var structure = currentEntity as Structure;
+
+                    Properties.text += $"Type:\t{structure.StructureType}\n";
+
+                    foreach (var property in structure.Properties)
+                    {
+                        Properties.text += $"{property.Key}:\t{property.Value}\n";
+                    }
+
+                    if (!string.IsNullOrEmpty(structure.InUseBy))
+                    {
+                        Properties.text += $"In use by:\t{structure.InUseBy}\n";
+                    }
                 }
 
-                foreach (var property in creature.StringProperties)
+                if (currentEntity.Task != null)
                 {
-                    Properties.text += $"{property.Key}:\t{property.Value}\n";
-                }
-
-                if (creature.Task != null)
-                {
-                    Task.text = creature.Task.ToString();
+                    Task.text = currentEntity.Task.ToString();
                 }
                 else
                 {
@@ -72,29 +102,12 @@ public class EntityInfoPanel : MonoBehaviour
             }
             else
             {
-                var structure = CurrentEntity as Structure;
-                CreatureName.text = structure.Name;
-
-                Properties.text += $"Type:\t{structure.StructureType}\n";
-
-                foreach (var property in structure.Properties)
+                CreatureName.text = $"{CurrentEntities.Count} entities";
+                foreach (var entity in CurrentEntities)
                 {
-                    Properties.text += $"{property.Key}:\t{property.Value}\n";
+                    Properties.text += $"- {entity.Name}\n";
                 }
-
-                if (!string.IsNullOrEmpty(structure.InUseBy))
-                {
-                    Properties.text += $"In use by:\t{structure.InUseBy}\n";
-                }
-            }
-
-            if (CurrentEntity.Task != null)
-            {
-                Task.text = CurrentEntity.Task.ToString();
-            }
-            else
-            {
-                Task.text = "Finding Task";
+                Task.text = "Various";
             }
 
             SetManaLabels();
@@ -112,9 +125,18 @@ public class EntityInfoPanel : MonoBehaviour
 
     private void SetManaLabel(Text text, ManaColor col)
     {
-        if (CurrentEntity.ManaPool.ContainsKey(col))
+        var total = 0;
+        foreach (var entity in CurrentEntities)
         {
-            text.text = CurrentEntity.ManaPool[col].Total.ToString();
+            if (entity.ManaPool.ContainsKey(col))
+            {
+                total += entity.ManaPool[col].Total;
+            }
+        }
+
+        if (total > 0)
+        {
+            text.text = total.ToString();
         }
         else
         {
@@ -124,10 +146,10 @@ public class EntityInfoPanel : MonoBehaviour
 
     private List<ImageButton> _contextButtons = new List<ImageButton>();
 
-    public void Show(IEntity entity)
+    public void Show(IEnumerable<IEntity> entities)
     {
         gameObject.SetActive(true);
-        CurrentEntity = entity;
+        CurrentEntities = entities.ToList();
 
         _contextButtons.Clear();
         foreach (Transform child in ButtonPanel.transform)
@@ -135,72 +157,78 @@ public class EntityInfoPanel : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        if (entity is CreatureData creature)
+        if (entities.First() is CreatureData)
         {
-            AddMoveButton(creature);
-            AddAttackButton(creature);
+            var creatures = entities.OfType<CreatureData>();
+            AddMoveButton(creatures);
+            AddAttackButton(creatures);
         }
         else
         {
-            var structure = entity as Structure;
-            AddRemoveStructureButton(structure);
+            AddRemoveStructureButton(entities.OfType<Structure>());
         }
     }
 
-    private void AddRemoveStructureButton(Structure structure)
+    private void AddRemoveStructureButton(IEnumerable<Structure> structures)
     {
         var btn = AddButton(OrderSelectionController.DefaultRemoveText, OrderSelectionController.DefaultRemoveImage);
         btn.SetOnClick(() =>
         {
             SetActiveButton(btn);
 
-            if (structure.IsBluePrint)
+            foreach (var structure in structures)
             {
-                Game.StructureController.DestroyStructure(structure);
-            }
-            else
-            {
-                if (FactionController.PlayerFaction.Tasks.OfType<RemoveStructure>().Any(t => t.Structure == structure))
+                if (structure.IsBluePrint)
                 {
-                    Debug.Log("Structure already flagged to remove");
+                    Game.StructureController.DestroyStructure(structure);
                 }
                 else
                 {
-                    FactionController.PlayerFaction
-                                     .AddTaskWithCellBadge(
-                                            new RemoveStructure(structure),
-                                            null,
-                                            structure.Cell,
-                                            OrderSelectionController.DefaultRemoveImage);
+                    if (FactionController.PlayerFaction.Tasks.OfType<RemoveStructure>().Any(t => t.Structure == structure))
+                    {
+                        Debug.Log("Structure already flagged to remove");
+                    }
+                    else
+                    {
+                        FactionController.PlayerFaction
+                                         .AddTaskWithCellBadge(
+                                                new RemoveStructure(structure),
+                                                null,
+                                                structure.Cell,
+                                                OrderSelectionController.DefaultRemoveImage);
+                    }
                 }
             }
         });
     }
 
-    private void AddMoveButton(CreatureData creature)
+    private void AddMoveButton(IEnumerable<CreatureData> creatures)
     {
         var btn = AddButton(OrderSelectionController.MoveText, OrderSelectionController.MoveIcon);
         btn.SetOnClick(() =>
         {
             SetActiveButton(btn);
-
             Game.Controller.SelectionPreference = SelectionPreference.Cell;
             Game.Controller.SetMouseSprite(OrderSelectionController.MoveIcon, (c) => c.TravelCost > 0);
+
             Game.OrderSelectionController.CellClickOrder = cells =>
             {
-                var cell = cells[0];
+                foreach (var creature in creatures)
+                {
+                    var cell = cells[0];
 
-                var faction = creature.GetFaction();
-                var task = faction.AddTaskWithCellBadge(new Move(cell), creature, cell, OrderSelectionController.MoveIcon);
-                faction.AssignTask(creature, task);
+                    var faction = creature.GetFaction();
+                    var task = faction.AddTaskWithCellBadge(new Move(cell), creature, cell, OrderSelectionController.MoveIcon);
+                    faction.AssignTask(creature, task);
 
-                creature.Task.CancelTask();
-                creature.Task = task;
+                    creature.Task.CancelTask();
+                    creature.Task = task;
+                }
             };
         });
     }
 
-    private void AddAttackButton(CreatureData creature)
+    private void AddAttackButton(IEnumerable<CreatureData> creatures)
     {
         var btn = AddButton(OrderSelectionController.AttackText, OrderSelectionController.AttackIcon);
         btn.SetOnClick(() =>
@@ -208,19 +236,23 @@ public class EntityInfoPanel : MonoBehaviour
             SetActiveButton(btn);
 
             Game.Controller.SelectionPreference = SelectionPreference.Cell;
-            Game.Controller.SetMouseSprite(OrderSelectionController.AttackIcon, (c) => c.GetEnemyCreaturesOf(creature.FactionName).Any());
+            Game.Controller.SetMouseSprite(OrderSelectionController.AttackIcon,
+                                            (c) => c.GetEnemyCreaturesOf(FactionConstants.Player).Any());
 
             Game.OrderSelectionController.CellClickOrder = cells =>
             {
-                foreach (var cell in cells)
+                foreach (var creature in creatures)
                 {
-                    foreach (var enemy in cell.GetEnemyCreaturesOf(creature.FactionName))
+                    foreach (var cell in cells)
                     {
-                        FactionController.PlayerFaction
-                                         .AddTaskWithEntityBadge(new ExecuteAttack(enemy, new FireBlast()),
-                                                                 null,
-                                                                 creature,
-                                                                 OrderSelectionController.AttackIcon);
+                        foreach (var enemy in cell.GetEnemyCreaturesOf(creature.FactionName))
+                        {
+                            FactionController.PlayerFaction
+                                             .AddTaskWithEntityBadge(new ExecuteAttack(enemy, new FireBlast()),
+                                                                     null,
+                                                                     enemy,
+                                                                     OrderSelectionController.AttackIcon);
+                        }
                     }
                 }
             };

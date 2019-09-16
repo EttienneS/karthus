@@ -28,7 +28,7 @@ public class CreatureData : IEntity
     public int HairStyle;
     public Dictionary<string, Memory> Mind = new Dictionary<string, Memory>();
     public Mobility Mobility;
-    public string Name;
+    public string Name { get; set; }
 
     [JsonIgnore]
     public Color SkinColor;
