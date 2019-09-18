@@ -25,7 +25,7 @@ public partial class OrderSelectionController //.Structure
                 {
                     var blueprint = Game.StructureController.GetStructureBluePrint(structureName, FactionController.PlayerFaction);
                     cell.SetStructure(blueprint);
-                    Game.Map.RefreshCell(cell);
+                    cell.UpdateTile();
                     FactionController.PlayerFaction.AddTask(new Build(blueprint), null);
                 }
             }

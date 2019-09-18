@@ -156,7 +156,7 @@ public class MapGenerator
                                          Game.Map.Center.GetNeighbor(Helpers.RandomEnumValue<Direction>()),
                                          FactionController.PlayerFaction);
         }
-       
+
         Game.CameraController.JumpToCell(Game.Map.Center);
     }
 

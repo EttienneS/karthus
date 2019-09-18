@@ -419,15 +419,6 @@ public class Map : MonoBehaviour
                             minMax.maxy - minMax.miny - 1);
     }
 
-    public void RefreshCell(Cell cell)
-    {
-        Tilemap.SetTile(new Vector3Int(cell.X, cell.Y, 0), cell.Tile);
-        if (cell.Structure != null)
-        {
-            Game.StructureController.RefreshStructure(cell.Structure);
-        }
-    }
-
     public void Update()
     {
         ProcessBindings(50);
@@ -584,7 +575,7 @@ public class Map : MonoBehaviour
                     }
 
                     CellBinding[kvp.Key].Add(cell);
-                    RefreshCell(cell);
+                    cell.UpdateTile();
                     if (draws++ > maxDraws)
                     {
                         break;
@@ -620,8 +611,7 @@ public class Map : MonoBehaviour
                 {
                     CellBinding[kvp.Key].Remove(cell);
                 }
-
-                RefreshCell(cell);
+                cell.UpdateTile();
 
                 if (draws++ > maxDraws)
                 {

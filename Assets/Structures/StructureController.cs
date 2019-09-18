@@ -40,7 +40,7 @@ public class StructureController : MonoBehaviour
 
         if (structure.StructureType == "Floor")
         {
-            Game.Map.RefreshCell(structure.Cell);
+            structure.Cell.UpdateTile();
         }
         else
         {

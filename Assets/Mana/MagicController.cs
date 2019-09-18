@@ -39,7 +39,7 @@ public class MagicController : MonoBehaviour
 
         try
         {
-            if (WorkTick >= Game.TimeManager.MagicInterval)
+            if (WorkTick >= Game.TimeManager.MagicInterval && Tasks.Count > 0)
             {
                 for (int i = 0; i < 50; i++)
                 {
@@ -55,6 +55,7 @@ public class MagicController : MonoBehaviour
                         break;
                     }
                 }
+                WorkTick = 0;
             }
         }
         catch (Exception ex)

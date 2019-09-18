@@ -128,6 +128,15 @@ public partial class Game : MonoBehaviour
         {
             RotateMouseLeft?.Invoke();
         }
+
+        if (Input.GetKeyDown("f"))
+        {
+            var point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            var cell = Map.GetCellAtPoint(point);
+
+            cell.FluidLevel += 0.5f;
+            cell.UpdateTile();
+        }
     }
 
     private void HandleTimeControls()
@@ -145,15 +154,7 @@ public partial class Game : MonoBehaviour
             }
         }
 
-        //if (Input.GetKeyDown("u"))
-        //{
-        //    var cell = MapGrid.GetRandomCell();
-        //    CameraController.MoveToCell(cell);
 
-        //    var texture = MapGrid.ChangeCell(cell, CellType.Abyss);
-
-        //    MapGrid.UpdateSprite(texture);
-        //}
 
         if (Input.GetKeyDown("1"))
         {

@@ -36,7 +36,7 @@
                 {
                     if (neighbour != null)
                     {
-                        Game.Map.RefreshCell(neighbour);
+                        neighbour.UpdateTile();
                     }
                 }
             }

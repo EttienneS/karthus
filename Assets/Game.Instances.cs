@@ -2,6 +2,8 @@
 
 public partial class Game //.Instances
 {
+    internal static PhysicsController _physicsController;
+    internal static MapGenerator MapGenerator;
     private static CameraController _cameraController;
 
     //private static CraftingScreen _craftinScreen;
@@ -23,8 +25,6 @@ public partial class Game //.Instances
     private static StructureController _structureController;
     private static SunController _sunController;
     private static TimeManager _timeManager;
-    internal static MapGenerator MapGenerator;
-
 
     public static CameraController CameraController
     {
@@ -65,19 +65,6 @@ public partial class Game //.Instances
         }
     }
 
-    public static EntityInfoPanel EntityInfoPanel
-    {
-        get
-        {
-            if (_creatureInfoPanel == null)
-            {
-                _creatureInfoPanel = GameObject.Find("EntityInfoPanel").GetComponent<EntityInfoPanel>();
-            }
-
-            return _creatureInfoPanel;
-        }
-    }
-
     public static EffectController EffectController
     {
         get
@@ -88,6 +75,19 @@ public partial class Game //.Instances
             }
 
             return _effectController;
+        }
+    }
+
+    public static EntityInfoPanel EntityInfoPanel
+    {
+        get
+        {
+            if (_creatureInfoPanel == null)
+            {
+                _creatureInfoPanel = GameObject.Find("EntityInfoPanel").GetComponent<EntityInfoPanel>();
+            }
+
+            return _creatureInfoPanel;
         }
     }
 
@@ -193,6 +193,19 @@ public partial class Game //.Instances
             }
 
             return _orderTrayController;
+        }
+    }
+
+    public static PhysicsController PhysicsController
+    {
+        get
+        {
+            if (_physicsController == null)
+            {
+                _physicsController = GameObject.Find(ControllerConstants.PhysicsController).GetComponent<PhysicsController>();
+            }
+
+            return _physicsController;
         }
     }
 

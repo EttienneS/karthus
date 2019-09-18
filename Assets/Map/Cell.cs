@@ -10,6 +10,10 @@ public class Cell : IEquatable<Cell>
 {
     public CellType CellType;
 
+    public List<CreatureData> Creatures = new List<CreatureData>();
+
+    public Structure Floor;
+
     [JsonIgnore]
     public Cell[] Neighbors = new Cell[8];
 
@@ -20,6 +24,7 @@ public class Cell : IEquatable<Cell>
     internal Color Color;
     private IEntity _binding;
 
+    private float _fluidLevel;
     private float _height;
 
     public IEntity Binding
@@ -52,24 +57,28 @@ public class Cell : IEquatable<Cell>
         }
     }
 
-    internal void Clear()
-    {
-        if (Structure != null)
-        {
-            Game.StructureController.DestroyStructure(Structure);
-        }
-
-        if (Floor != null)
-        {
-            Game.StructureController.DestroyStructure(Floor);
-        }
-    }
-
     [JsonIgnore]
     public float Distance { get; set; }
 
     [JsonIgnore]
     public bool DrawnOnce { get; set; }
+
+    public float FluidLevel
+    {
+        get
+        {
+            return _fluidLevel;
+        }
+        set
+        {
+            _fluidLevel = value;
+            if (_fluidLevel < 0)
+            {
+                _fluidLevel = 0;
+            }
+            Game.PhysicsController.Track(this);
+        }
+    }
 
     public float Height
     {
@@ -85,6 +94,20 @@ public class Cell : IEquatable<Cell>
         }
     }
 
+    public float Level
+    {
+        get
+        {
+            var height = Height + FluidLevel;
+            if (Structure?.IsWall() == true)
+            {
+                height += 2;
+            }
+
+            return height;
+        }
+    }
+
     [JsonIgnore]
     public Cell NextWithSamePriority { get; set; }
 
@@ -94,11 +117,6 @@ public class Cell : IEquatable<Cell>
         {
             return Bound && TravelCost > 0;
         }
-    }
-
-    internal IEnumerable<CreatureData> GetEnemyCreaturesOf(string faction)
-    {
-        return Creatures.Where(c => c.FactionName != faction);
     }
 
     [JsonIgnore]
@@ -120,14 +138,29 @@ public class Cell : IEquatable<Cell>
         {
             DrawnOnce = true;
             var tile = ScriptableObject.CreateInstance<Tile>();
-            tile.sprite = Floor == null ? Game.SpriteStore.GetSpriteForTerrainType(CellType)
-                                        : Game.SpriteStore.GetSprite(Floor.SpriteName);
-            tile.color = Color;
+
+            if (Floor == null || FluidLevel > 0)
+            {
+                if (FluidLevel > 0)
+                {
+                    tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(CellType.Water);
+                    tile.color = new Color(0f, 0f, 1f - (FluidLevel / 2), 1f);
+                }
+                else
+                {
+                    tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(CellType);
+                    tile.color = Color;
+                }
+            }
+            else
+            {
+                tile.sprite = Game.SpriteStore.GetSprite(Floor.SpriteName);
+                tile.color = Color;
+            }
+
             return tile;
         }
     }
-
-    public Structure Floor;
 
     [JsonIgnore]
     public float TravelCost
@@ -288,6 +321,28 @@ public class Cell : IEquatable<Cell>
         return new Vector3(Mathf.FloorToInt(X) + 0.5f, Mathf.FloorToInt(Y) + 0.5f, -1);
     }
 
+    public void UpdateTile()
+    {
+        Game.Map.Tilemap.SetTile(new Vector3Int(X, Y, 0), Tile);
+        if (Structure != null)
+        {
+            Game.StructureController.RefreshStructure(Structure);
+        }
+    }
+
+    internal void Clear()
+    {
+        if (Structure != null)
+        {
+            Game.StructureController.DestroyStructure(Structure);
+        }
+
+        if (Floor != null)
+        {
+            Game.StructureController.DestroyStructure(Floor);
+        }
+    }
+
     internal int CountNeighborsOfType(CellType? cellType)
     {
         if (!cellType.HasValue)
@@ -305,7 +360,15 @@ public class Cell : IEquatable<Cell>
         return structure;
     }
 
-    public List<CreatureData> Creatures = new List<CreatureData>();
+    internal bool Empty()
+    {
+        return Structure == null && Floor == null;
+    }
+
+    internal IEnumerable<CreatureData> GetEnemyCreaturesOf(string faction)
+    {
+        return Creatures.Where(c => c.FactionName != faction);
+    }
 
     internal Cell GetRandomNeighbor()
     {
@@ -318,8 +381,24 @@ public class Cell : IEquatable<Cell>
         return new Vector3Int(X, Y, 0);
     }
 
-    internal bool Empty()
+    internal void UpdatePhysics()
     {
-        return Structure == null && Floor == null;
+        const float minLevel = 0.1f;
+        if (FluidLevel <= minLevel)
+        {
+            UpdateTile();
+            return;
+        }
+
+        var drop = Mathf.Max(minLevel, FluidLevel / 2);
+        var options = Neighbors.Where(n => n != null && n.Level <= Level).ToList();
+
+        if (options.Count > 0)
+        {
+            var lower = options.GetRandomItem();
+            lower.FluidLevel += drop;
+            FluidLevel -= drop;
+            UpdateTile();
+        }
     }
 }
