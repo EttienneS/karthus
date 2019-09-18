@@ -120,7 +120,7 @@ public class CreatureData : IEntity
     public string Sprite { get; set; }
 
     [JsonIgnore]
-    public Task Task { get; set; }
+    public EntityTask Task { get; set; }
 
     public static CreatureData Load(string creatureData)
     {
@@ -362,17 +362,5 @@ public class CreatureData : IEntity
         }
     }
 
-    public bool TaskQueueComplete(Queue<Task> queue)
-    {
-        if (queue == null || queue.Count == 0)
-        {
-            return true;
-        }
-        var current = queue.Peek();
-        if (current.Done())
-        {
-            queue.Dequeue();
-        }
-        return false;
-    }
+    
 }

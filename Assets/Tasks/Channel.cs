@@ -1,4 +1,4 @@
-﻿public class Channel : Task
+﻿public class Channel : EntityTask
 {
     public Channel()
     {
@@ -41,16 +41,16 @@
     {
         if (Source == null)
         {
-            Source = Creature;
+            Source = AssignedEntity;
         }
         else if (Target == null)
         {
-            Target = Creature;
+            Target = AssignedEntity;
         }
 
         (Source as CreatureData)?.Face(Target.Cell);
 
-        if (Creature.TaskQueueComplete(SubTasks))
+        if (SubTasksComplete())
         {
             if (AmountToChannel <= 0)
             {
@@ -62,7 +62,7 @@
                 Target.ManaPool.GainMana(ManaColor, 1);
 
                 Game.LeyLineController.MakeChannellingLine(Source, Target, 5, GameConstants.ChannelDuration, ManaColor);
-                Creature.CreatureRenderer.DisplayChannel(ManaColor, GameConstants.ChannelDuration);
+                CreatureData?.CreatureRenderer.DisplayChannel(ManaColor, GameConstants.ChannelDuration);
                 AmountToChannel--;
                 AddSubTask(new Wait(GameConstants.ChannelDuration, $"{ManaColor}!!", true));
             }

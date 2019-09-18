@@ -15,13 +15,13 @@ public static class Behaviours
         return BehaviourTypes[type];
     }
 
-    public delegate Task GetBehaviourTaskDelegate(CreatureData creature);
+    public delegate EntityTask GetBehaviourTaskDelegate(CreatureData creature);
 
     public const int WraithRange = 10;
 
-    public static Task AbyssWraith(CreatureData creature)
+    public static EntityTask AbyssWraith(CreatureData creature)
     {
-        Task task = null;
+        EntityTask task = null;
 
         var rand = Random.value;
 
@@ -52,9 +52,9 @@ public static class Behaviours
         return task;
     }
 
-    public static Task Person(CreatureData creature)
+    public static EntityTask Person(CreatureData creature)
     {
-        Task task = null;
+        EntityTask task = null;
 
         var enemy = FindEnemy(creature);
 
@@ -72,6 +72,11 @@ public static class Behaviours
                     break;
                 }
             }
+        }
+        else if (creature.Cell.Creatures.Count > 1)
+        {
+            // split up
+            task = new Move(Game.Map.GetPathableNeighbour(creature.Cell));
         }
         else if (creature.ValueProperties[Prop.Hunger] > 50)
         {

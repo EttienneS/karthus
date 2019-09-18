@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class MagicController : MonoBehaviour
 {
-    internal float WorkTick;
+    public List<Structure> Runes = new List<Structure>();
     internal float MagicRate = 100;
+    internal float WorkTick;
 
-    public void AddRune(Structure source)
+    public void AddRune(Structure runeStructure)
     {
-        source.Spell.Originator = source;
-
-        Runes.Add(source);
-        Work.Enqueue(source.Spell);
+        runeStructure.Spell.Originator = runeStructure;
+        runeStructure.Spell.AssignedEntity = runeStructure;
+        Runes.Add(runeStructure);
     }
 
     public void FreeRune(Structure stucture)
@@ -20,8 +20,7 @@ public class MagicController : MonoBehaviour
         Runes.Remove(stucture);
     }
 
-    public List<Structure> Runes = new List<Structure>();
-    public Queue<SpellBase> Work = new Queue<SpellBase>();
+    public Queue<EntityTask> Tasks = new Queue<EntityTask>();
 
     private void Update()
     {
@@ -30,33 +29,30 @@ public class MagicController : MonoBehaviour
 
         WorkTick += Time.deltaTime;
 
+        if (Tasks.Count == 0)
+        {
+            foreach (var rune in Runes)
+            {
+                Tasks.Enqueue(rune.Spell);
+            }
+        }
+
         try
         {
             if (WorkTick >= Game.TimeManager.MagicInterval)
             {
-                if (Work.Count == 0 || Work.Peek() == null)
+                for (int i = 0; i < 50; i++)
                 {
-                    return;
-                }
+                    var task = Tasks.Peek();
 
-                var spells = new List<SpellBase>();
-
-                for (int i = 0; i < MagicRate; i++)
-                {
-                    if (Work.Count == 0 || Work.Peek() == null)
+                    if (task != null)
+                    {
+                        Tasks.Dequeue();
+                        task.Done();
+                    }
+                    else
                     {
                         break;
-                    }
-                    var spell = Work.Dequeue();
-                    spell.Done();
-                    spells.Add(spell);
-                }
-
-                foreach (var spell in spells)
-                {
-                    if (IdService.GetStructureFromId(spell.Originator.Id) != null)
-                    {
-                        Work.Enqueue(spell);
                     }
                 }
             }

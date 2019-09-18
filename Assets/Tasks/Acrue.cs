@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-public class Acrue : Task
+public class Acrue : EntityTask
 {
     public Acrue()
     {
@@ -15,21 +15,21 @@ public class Acrue : Task
 
     public override bool Done()
     {
-        if (Creature.TaskQueueComplete(SubTasks))
+        if (SubTasksComplete())
         {
             foreach (var targetLevel in TargetManaLevel)
             {
-                if (!Creature.ManaPool.ContainsKey(targetLevel.Key))
+                if (!AssignedEntity.ManaPool.ContainsKey(targetLevel.Key))
                 {
-                    AddSubTask(Channel.GetChannelFrom(targetLevel.Key, targetLevel.Value, Creature.GetFaction().Core));
+                    AddSubTask(Channel.GetChannelFrom(targetLevel.Key, targetLevel.Value, AssignedEntity.GetFaction().Core));
                     return false;
                 }
                 else
                 {
-                    var currentLevel = Creature.ManaPool[targetLevel.Key].Total;
+                    var currentLevel = AssignedEntity.ManaPool[targetLevel.Key].Total;
                     if (currentLevel < targetLevel.Value)
                     {
-                        AddSubTask(Channel.GetChannelFrom(targetLevel.Key, targetLevel.Value - currentLevel, Creature.GetFaction().Core));
+                        AddSubTask(Channel.GetChannelFrom(targetLevel.Key, targetLevel.Value - currentLevel, AssignedEntity.GetFaction().Core));
                         return false;
                     }
                 }

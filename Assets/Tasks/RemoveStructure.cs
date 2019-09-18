@@ -1,4 +1,4 @@
-﻿public class RemoveStructure : Task
+﻿public class RemoveStructure : EntityTask
 {
     public Structure Structure;
 
@@ -25,7 +25,7 @@
 
     public override bool Done()
     {
-        if (Creature.TaskQueueComplete(SubTasks))
+        if (SubTasksComplete())
         {
             Game.StructureController.DestroyStructure(Structure);
 

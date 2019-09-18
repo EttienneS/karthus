@@ -8,7 +8,7 @@ public class Faction : MonoBehaviour
     public const int RecyleTime = 3;
     public int LastRecyle;
     internal string FactionName;
-    internal List<Task> Tasks = new List<Task>();
+    internal List<EntityTask> Tasks = new List<EntityTask>();
 
     internal Structure Core;
 
@@ -26,7 +26,7 @@ public class Faction : MonoBehaviour
 
    
 
-    public Task AddTask(Task task, IEntity originatorId, TaskComplete taskComplete = null)
+    public EntityTask AddTask(EntityTask task, IEntity originatorId, TaskComplete taskComplete = null)
     {
         task.Originator = originatorId;
         task.CompleteEvent = taskComplete;
@@ -34,21 +34,21 @@ public class Faction : MonoBehaviour
         return task;
     }
 
-    public Task AddTaskWithEntityBadge(Task task, IEntity originatorId, IEntity badgedEntity, string badgeIcon)
+    public EntityTask AddTaskWithEntityBadge(EntityTask task, IEntity originatorId, IEntity badgedEntity, string badgeIcon)
     {
         var badge = Game.EffectController.AddBadge(badgedEntity, badgeIcon);
         AddTask(task, originatorId, badge.Destroy);
         return task;
     }
 
-    public Task AddTaskWithCellBadge(Task task, IEntity originatorId, Cell cell, string badgeIcon)
+    public EntityTask AddTaskWithCellBadge(EntityTask task, IEntity originatorId, Cell cell, string badgeIcon)
     {
         var badge = Game.EffectController.AddBadge(cell, badgeIcon);
         AddTask(task, originatorId, badge.Destroy);
         return task;
     }
 
-    public void AssignTask(CreatureData creature, Task task, IEntity originator = null)
+    public void AssignTask(CreatureData creature, EntityTask task, IEntity originator = null)
     {
         task.AssignedEntity = creature;
 
@@ -73,9 +73,9 @@ public class Faction : MonoBehaviour
         data.FactionName = FactionName;
     }
 
-    public Task GetNextAvailableTask()
+    public EntityTask GetNextAvailableTask()
     {
-        Task task = null;
+        EntityTask task = null;
         foreach (var availableTask in Tasks.Where(t => t.AssignedEntity == null && !t.Failed))
         {
             //var craftTask = availableTask as Craft;
@@ -102,7 +102,7 @@ public class Faction : MonoBehaviour
         return task;
     }
 
-    public Task GetTask(CreatureData creature)
+    public EntityTask GetTask(CreatureData creature)
     {
         var task = creature.GetBehaviourTask?.Invoke(creature);
         if (task == null)
@@ -114,7 +114,7 @@ public class Faction : MonoBehaviour
         return task;
     }
 
-    public IEnumerable<Task> GetTaskByOriginator(IEntity originator)
+    public IEnumerable<EntityTask> GetTaskByOriginator(IEntity originator)
     {
         return Tasks.Where(t => t.Originator == originator);
     }
@@ -134,13 +134,13 @@ public class Faction : MonoBehaviour
         }
     }
 
-    internal void TaskComplete(Task task)
+    internal void TaskComplete(EntityTask task)
     {
         task.CompleteEvent?.Invoke();
         Tasks.Remove(task);
     }
 
-    internal void CancelTask(Task task)
+    internal void CancelTask(EntityTask task)
     {
         task.CompleteEvent?.Invoke();
 

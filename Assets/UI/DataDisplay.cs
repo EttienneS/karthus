@@ -43,10 +43,10 @@ public class DataDisplay : MonoBehaviour
         SetData(cell.ToString(), cell.ToString(), Game.SpriteStore.MapSpriteTypeDictionary[cell.CellType.ToString()]);
     }
 
-    internal void SetData(Task task)
+    internal void SetData(EntityTask task)
     {
         SetData(task.GetType().Name, task.Message, task.AssignedEntity != null ?
-                                                   task.Creature.CreatureRenderer.GetIcon() :
+                                                   task.CreatureData.CreatureRenderer.GetIcon() :
                                                    Game.SpriteStore.GetPlaceholder());
 
         if (task.Failed)

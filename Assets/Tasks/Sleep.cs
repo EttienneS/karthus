@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Random = UnityEngine.Random;
 
-public class Sleep : Task
+public class Sleep : EntityTask
 {
     public float RecoveryRate;
     public Cell Location;
@@ -31,23 +31,23 @@ public class Sleep : Task
     {
         if (_bed != null)
         {
-            _bed.Reserve(Creature.Id);
+            _bed.Reserve(AssignedEntity.Id);
         }
 
-        if (Creature.TaskQueueComplete(SubTasks))
+        if (SubTasksComplete())
         {
-            if (Creature.ValueProperties[Prop.Energy] < Random.Range(80, 100))
+            if (CreatureData.ValueProperties[Prop.Energy] < Random.Range(80, 100))
             {
                 var wait = new Wait(0.5f, "Sleeping") { AssignedEntity = AssignedEntity };
                 AddSubTask(wait);
 
-                Creature.ValueProperties[Prop.Energy] += RecoveryRate;
+                CreatureData.ValueProperties[Prop.Energy] += RecoveryRate;
                 return false;
             }
 
             if (RecoveryRate < 1f)
             {
-                Creature.CreatureRenderer.ShowText("*stretch* Ow my back!", 1f);
+                CreatureData.CreatureRenderer.ShowText("*stretch* Ow my back!", 1f);
             }
 
             return true;

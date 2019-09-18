@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public delegate void TaskComplete();
 
-public class Task
+public class EntityTask
 {
     public IEntity AssignedEntity;
     public IEntity Originator;
@@ -23,27 +23,76 @@ public class Task
         }
     }
 
-    public Task Parent;
+    public EntityTask Parent;
 
-    public Queue<Task> SubTasks = new Queue<Task>();
+    public Queue<EntityTask> SubTasks = new Queue<EntityTask>();
+
+
+    private bool? _isStructure;
+    private bool? _isCreature;
 
     [JsonIgnore]
-    public CreatureData Creature
+    public bool IsCreature
     {
         get
         {
-            if (IdService.CreatureLookup.ContainsKey(AssignedEntity))
+            if (_isCreature == null)
             {
-                return IdService.CreatureLookup[AssignedEntity];
+                _isCreature = AssignedEntity is CreatureData;
             }
-            return null;
+            return _isCreature.Value;
+        }
+    }
+
+    [JsonIgnore]
+    public bool IsStructure
+    {
+        get
+        {
+            if (_isStructure == null)
+            {
+                _isStructure = AssignedEntity is Structure;
+            }
+            return _isStructure.Value;
+        }
+    }
+
+
+
+    private CreatureData _creatureData;
+
+    [JsonIgnore]
+    public CreatureData CreatureData
+            {
+        get
+        {
+            if (_creatureData == null && IsCreature)
+            {
+                _creatureData = AssignedEntity as CreatureData;
+            }
+            return _creatureData;
+        }
+    }
+
+    private Structure _structure;
+
+    [JsonIgnore]
+    public Structure Structure
+    {
+        get
+        {
+            if (_structure == null && IsStructure)
+            {
+                _structure = AssignedEntity as Structure;
+            }
+            return _structure;
         }
     }
 
     [JsonIgnore]
     public TaskComplete CompleteEvent { get; set; }
 
-    public Task AddSubTask(Task subTask)
+    public EntityTask AddSubTask(EntityTask subTask)
     {
         subTask.Parent = this;
         subTask.Context = Context;
@@ -64,7 +113,7 @@ public class Task
     {
         if (!string.IsNullOrEmpty(BusyEmote))
         {
-            Creature.CreatureRenderer.ShowText(BusyEmote, 1f);
+            CreatureData?.CreatureRenderer.ShowText(BusyEmote, 1f);
         }
     }
 
@@ -72,7 +121,21 @@ public class Task
     {
         if (!string.IsNullOrEmpty(DoneEmote))
         {
-            Creature.CreatureRenderer.ShowText(DoneEmote, 0.8f);
+            CreatureData?.CreatureRenderer.ShowText(DoneEmote, 0.8f);
         }
+    }
+
+    public bool SubTasksComplete()
+    {
+        if (SubTasks == null || SubTasks.Count == 0)
+        {
+            return true;
+        }
+        var current = SubTasks.Peek();
+        if (current.Done())
+        {
+            SubTasks.Dequeue();
+        }
+        return false;
     }
 }

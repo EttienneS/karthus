@@ -3,8 +3,6 @@
   "Material": "rune",
   "Spell": {
     "$type": "Bind, Assembly-CSharp",
-    "Power": "25.0",
-    "PowerRate": "1",
     "Size": "10"
   },
   "ManaValue": {

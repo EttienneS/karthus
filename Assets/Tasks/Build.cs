@@ -1,6 +1,6 @@
-﻿public class Build : Task
+﻿public class Build : EntityTask
 {
-    public Structure Structure;
+    public Structure TargetStructure;
 
     public Build()
     {
@@ -8,7 +8,7 @@
 
     public Build(Structure structure)
     {
-        Structure = structure;
+        TargetStructure = structure;
 
         AddSubTask(new Acrue(structure.ManaValue));
         foreach (var mana in structure.ManaValue)
@@ -21,18 +21,18 @@
 
     public override bool Done()
     {
-        if (Structure == null)
+        if (TargetStructure == null)
         {
             throw new TaskFailedException();
         }
 
-        if (Creature.TaskQueueComplete(SubTasks))
+        if (SubTasksComplete())
         {
-            Structure.SetBluePrintState(false);
+            TargetStructure.SetBluePrintState(false);
 
-            if (Structure.IsWall())
+            if (TargetStructure.IsWall())
             {
-                foreach (var neighbour in Structure.Cell.Neighbors)
+                foreach (var neighbour in TargetStructure.Cell.Neighbors)
                 {
                     if (neighbour != null)
                     {
@@ -41,12 +41,12 @@
                 }
             }
 
-            Creature.GetFaction().AddStructure(Structure);
-            Creature.UpdateMemory(Context, MemoryType.Structure, Structure.Id);
+            AssignedEntity.GetFaction().AddStructure(TargetStructure);
+            CreatureData?.UpdateMemory(Context, MemoryType.Structure, TargetStructure.Id);
 
-            if (Structure.Spell != null)
+            if (TargetStructure.Spell != null)
             {
-                Game.MagicController.AddRune(Structure);
+                Game.MagicController.AddRune(TargetStructure);
             }
 
             return true;

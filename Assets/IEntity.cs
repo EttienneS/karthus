@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 public interface IEntity
 {
@@ -12,7 +13,7 @@ public interface IEntity
     string FactionName { get; set; }
 
     [JsonIgnore]
-    Task Task { get; set; }
+    EntityTask Task { get; set; }
 
     void Damage(int amount, ManaColor type);
 }

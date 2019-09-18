@@ -62,9 +62,25 @@ public class CreatureController : MonoBehaviour
         return CreatureLookup[creatureData];
     }
 
+    public List<(CreatureData creature, Cell cell, Faction faction)> SpawnCache = new List<(CreatureData, Cell, Faction)>();
+
+    public void Update()
+    {
+        foreach (var cached in SpawnCache)
+        {
+            SpawnCreature(cached.creature, cached.cell, cached.faction);
+        }
+        SpawnCache.Clear();
+    }
+
+    internal void CacheSpawn(CreatureData creatureData, Cell cell, Faction faction)
+    {
+        SpawnCache.Add((creatureData, cell, faction));
+    }
+
     internal CreatureRenderer SpawnCreature(CreatureData creatureData, Cell cell, Faction faction)
     {
-        var creature = Instantiate(CreaturePrefab, transform, true);
+        var creature = Instantiate(CreaturePrefab, transform);
         creature.Data = creatureData;
         creature.Data.Name = CreatureHelper.GetRandomName();
         creature.Data.Cell = cell;
@@ -105,8 +121,6 @@ public class CreatureController : MonoBehaviour
         faction.AddCreature(creatureData);
         return creature;
     }
-
-
 
     private void IndexCreature(CreatureRenderer creature)
     {

@@ -33,7 +33,8 @@ public class FireBlast : IAttack
         {
             throw new TaskFailedException();
         }
-        Attacker.Task.DoneEmote = "BLAST!";
+
+        Attacker.Task.DoneEmote = "Piss off ghost!!";
         Attacker.ManaPool.BurnMana(ManaColor.Red, 1);
 
         Game.EffectController.SpawnEffect(Target.Cell, 0.5f);

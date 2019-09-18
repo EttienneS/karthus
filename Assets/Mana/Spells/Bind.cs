@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public class Bind : SpellBase
+public class Bind : EntityTask
 {
     public const float BindTime = 1f;
 
@@ -15,40 +15,28 @@ public class Bind : SpellBase
     {
     }
 
-    public Bind(int size, float initialPower, float powerRate)
+    public Bind(int size)
     {
         Size = size;
-        PowerRate = powerRate;
-        Power = initialPower;
     }
 
     public override bool Done()
     {
         if (_affectAbleCells == null)
         {
-            _affectAbleCells = Game.Map.GetCircle(Epicentre, Size).OrderBy(c => c.DistanceTo(Epicentre)).ToList();
+            _affectAbleCells = Game.Map.GetCircle(AssignedEntity.Cell, Size)
+                                       .OrderBy(c => c.DistanceTo(AssignedEntity.Cell))
+                                       .ToList();
         }
 
-        if (Creature.TaskQueueComplete(SubTasks))
+        if (SubTasksComplete())
         {
-            Cell cell;
-            if (Epicentre.Binding != Originator)
+            var cellToBind = _affectAbleCells.Find(c => !c.Bound);
+            if (cellToBind != null)
             {
-                cell = Epicentre;
+                Game.Map.BindCell(cellToBind, AssignedEntity);
             }
-            else
-            {
-                cell = _affectAbleCells.Find(c => !c.Bound);
-            }
-
-            if (cell != null)
-            {
-                FireRune(() => Game.Map.BindCell(cell, Originator));
-            }
-            else
-            {
-                FireRune(null);
-            }
+            return true;
         }
 
         return false;

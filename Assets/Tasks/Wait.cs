@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Wait : Task
+public class Wait : EntityTask
 {
     public float Duration;
     public float ElapsedTime;

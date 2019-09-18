@@ -17,10 +17,10 @@ public class Structure : IEntity
     public string ShiftX;
     public string ShiftY;
     public string Size;
-    public SpellBase Spell;
+    public EntityTask Spell;
     public string SpriteName;
     public string StructureType;
-    public List<Task> Tasks = new List<Task>();
+    public List<EntityTask> Tasks = new List<EntityTask>();
     public float TravelCost;
 
     [JsonIgnore]
@@ -82,7 +82,7 @@ public class Structure : IEntity
     }
 
     [JsonIgnore]
-    public Task Task { get; set; }
+    public EntityTask Task { get; set; }
 
     [JsonIgnore]
     public Tile Tile

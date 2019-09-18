@@ -1,22 +1,20 @@
-﻿public class Spawn : SpellBase
+﻿public class Spawn : EntityTask
 {
     public Spawn()
     {
     }
 
-    public Spawn(float initialPower, float powerRate)
-    {
-        PowerRate = powerRate;
-        Power = initialPower;
-    }
-
     public override bool Done()
     {
-        if (Creature.TaskQueueComplete(SubTasks))
+        if (SubTasksComplete())
         {
-            FireRune(() => Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("Person"),
-                                                                 Originator.Cell,
-                                                                 Originator.GetFaction()));
+            Game.CreatureController
+                .CacheSpawn(Game.CreatureController.GetCreatureOfType("Person"),
+                               AssignedEntity.Cell,
+                               AssignedEntity.GetFaction());
+
+            Game.StructureController.DestroyStructure(Structure);
+            return true;
         }
 
         return false;

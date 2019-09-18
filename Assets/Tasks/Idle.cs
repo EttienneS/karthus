@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using UnityEngine;
 
-public class Idle : Task
+public class Idle : EntityTask
 {
     public Idle()
     {
@@ -27,6 +27,6 @@ public class Idle : Task
 
     public override bool Done()
     {
-        return Creature.TaskQueueComplete(SubTasks);
+        return SubTasksComplete();
     }
 }

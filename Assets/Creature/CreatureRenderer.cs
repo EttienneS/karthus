@@ -95,14 +95,14 @@ public class CreatureRenderer : MonoBehaviour
 
     public void Update()
     {
+        UpdateFloatingText();
+
         if (Data.Update(Time.deltaTime))
         {
             if (Random.value > 0.65)
             {
                 Data.Task?.ShowBusyEmote();
             }
-
-            UpdateFloatingText();
 
             //if (Highlight.gameObject.activeInHierarchy)
             //{

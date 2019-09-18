@@ -541,7 +541,6 @@ public class Map : MonoBehaviour
     {
         return coordinates.Neighbors
                           .Where(c => c.Bound && c.TravelCost > 0)
-                          .OrderBy(c => c.TravelCost)
                           .ToList()
                           .GetRandomItem();
     }

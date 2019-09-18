@@ -8,7 +8,7 @@ public class TaskQueue : MonoBehaviour
     public DataDisplay DisplayPrefab;
     public GameObject Content;
     public ScrollRect ScrollRect;
-    public Dictionary<Task, DataDisplay> Lookup = new Dictionary<Task, DataDisplay>();
+    public Dictionary<EntityTask, DataDisplay> Lookup = new Dictionary<EntityTask, DataDisplay>();
 
     private void Update()
     {
@@ -33,7 +33,7 @@ public class TaskQueue : MonoBehaviour
         Scale();
     }
 
-    private void TaskQueue_Clicked(Task task)
+    private void TaskQueue_Clicked(EntityTask task)
     {
         if (task.Failed)
         {
