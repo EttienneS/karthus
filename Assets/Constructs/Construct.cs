@@ -225,10 +225,11 @@ public class Construct
         return true;
     }
 
-    internal bool Place(Cell cellData, Faction faction)
+    internal bool Place(Cell origin, Faction faction)
     {
         var x = 0;
         var y = 0;
+
         foreach (var line in FlippedPlan)
         {
             foreach (var character in line)
@@ -239,11 +240,12 @@ public class Construct
                     continue;
                 }
 
-                var cell = cellData;
+                var cell = Game.Map.GetCellAtCoordinate(origin.X + x, origin.Y + y);
 
                 if (cell.Pathable && cell.Structure == null)
                 {
                     cell.SetStructure(Game.StructureController.GetStructureBluePrint(GetStructure(character), faction));
+                    cell.UpdateTile();
                     faction.AddTask(new Build(cell.Structure), null);
                 }
 
