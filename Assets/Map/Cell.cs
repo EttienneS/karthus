@@ -17,6 +17,14 @@ public class Cell : IEquatable<Cell>
     [JsonIgnore]
     public Cell[] Neighbors = new Cell[8];
 
+    internal bool HasBuilding
+    {
+        get
+        {
+            return Structure != null || Floor != null;
+        }
+    }
+
     public Structure Structure;
     public int X;
 

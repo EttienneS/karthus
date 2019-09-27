@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public delegate void TaskComplete();
 
-public class EntityTask
+public abstract class EntityTask
 {
     public IEntity AssignedEntity;
     public IEntity Originator;
@@ -104,10 +104,7 @@ public class EntityTask
         return subTask;
     }
 
-    public virtual bool Done()
-    {
-        return false;
-    }
+    public abstract bool Done();
 
     public void ShowBusyEmote()
     {

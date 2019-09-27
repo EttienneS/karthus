@@ -5,7 +5,6 @@ using UnityEngine;
 public class MagicController : MonoBehaviour
 {
     public List<Structure> Runes = new List<Structure>();
-    internal float MagicRate = 100;
     internal float WorkTick;
 
     public void AddRune(Structure runeStructure)
@@ -43,11 +42,14 @@ public class MagicController : MonoBehaviour
             {
                 for (int i = 0; i < 50; i++)
                 {
-                    var task = Tasks.Peek();
+                    if (Tasks.Count == 0)
+                    {
+                        break;
+                    }
+                    var task = Tasks.Dequeue();
 
                     if (task != null)
                     {
-                        Tasks.Dequeue();
                         task.Done();
                     }
                     else

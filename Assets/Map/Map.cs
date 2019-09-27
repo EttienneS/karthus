@@ -22,7 +22,7 @@ public class Map : MonoBehaviour
     public int Octaves = 4;
     public Vector2 Offset;
     public Dictionary<string, List<Cell>> PendingBinding = new Dictionary<string, List<Cell>>();
-    public Dictionary<string, List<Cell>> PendingUnbinding = new Dictionary<string, List<Cell>>();
+    public List<Cell> PendingUnbinding = new List<Cell>();
     [Range(0f, 1f)] public float Persistance = 0.5f;
     [Range(0.5f, 100f)] public float Scale = 10;
     public int Seed;
@@ -106,6 +106,14 @@ public class Map : MonoBehaviour
             }
 
             PendingBinding[originator.Id].Add(cell);
+        }
+    }
+
+    internal void Unbind(Structure structure)
+    {
+        foreach (var cell in Cells.Where(c => c.Binding == structure))
+        {
+            Unbind(cell);
         }
     }
 
@@ -550,7 +558,7 @@ public class Map : MonoBehaviour
         var draws = 0;
 
         var doneBind = new List<string>();
-        var doneUnbind = new List<string>();
+        var doneUnbind = new List<Cell>();
 
         foreach (var kvp in PendingBinding)
         {
@@ -595,22 +603,11 @@ public class Map : MonoBehaviour
             }
         }
 
-        foreach (var kvp in PendingUnbinding)
+        foreach (var cell in PendingUnbinding)
         {
-            var cell = kvp.Value.FirstOrDefault();
             if (cell != null)
             {
                 cell.Binding = null;
-
-                if (cell.Structure != null)
-                {
-                    Game.StructureController.DestroyStructure(cell.Structure);
-                }
-
-                if (CellBinding.ContainsKey(kvp.Key))
-                {
-                    CellBinding[kvp.Key].Remove(cell);
-                }
                 cell.UpdateTile();
 
                 if (draws++ > maxDraws)
@@ -618,17 +615,11 @@ public class Map : MonoBehaviour
                     break;
                 }
             }
-
-            kvp.Value.Remove(cell);
-
-            if (kvp.Value.Count == 0)
-            {
-                doneUnbind.Add(kvp.Key);
-            }
+            doneUnbind.Add(cell);
         }
 
         doneBind.ForEach(r => PendingBinding.Remove(r));
-        doneUnbind.ForEach(r => PendingUnbinding.Remove(r));
+        doneUnbind.ForEach(b => PendingUnbinding.Remove(b));
     }
 
     internal void Refresh(RectInt rect)
@@ -648,16 +639,13 @@ public class Map : MonoBehaviour
         }
     }
 
-    internal void Unbind(string id)
+    internal void Unbind(Cell cell)
     {
-        if (CellBinding.ContainsKey(id))
+        if (cell.Binding == null)
         {
-            if (!PendingUnbinding.ContainsKey(id))
-            {
-                PendingUnbinding.Add(id, new List<Cell>());
-            }
-            PendingUnbinding[id].AddRange(CellBinding[id]);
+            return;
         }
+        PendingUnbinding.Add(cell);
     }
 
     private void OnValidate()

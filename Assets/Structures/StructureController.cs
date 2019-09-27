@@ -84,7 +84,7 @@ public class StructureController : MonoBehaviour
     {
         if (structure != null)
         {
-            Game.Map.Unbind(structure.Id);
+            Game.Map.Unbind(structure);
 
             if (structure.Cell.Floor == structure)
             {

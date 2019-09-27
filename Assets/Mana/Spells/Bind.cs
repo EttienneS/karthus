@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public class Bind : EntityTask
+public class Bind : SpellBase
 {
-    public const float BindTime = 1f;
-
     public int Size;
 
     [JsonIgnore]
@@ -20,7 +18,7 @@ public class Bind : EntityTask
         Size = size;
     }
 
-    public override bool Done()
+    public override bool DoSpell()
     {
         if (_affectAbleCells == null)
         {

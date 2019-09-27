@@ -13,6 +13,27 @@ public class ManaPool : Dictionary<ManaColor, Mana>
         Entity = owner;
     }
 
+    internal bool HasMana(Dictionary<ManaColor, int> manaCost)
+    {
+        foreach (var kvp in manaCost)
+        {
+            if (!HasMana(kvp.Key, kvp.Value))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    internal void BurnMana(Dictionary<ManaColor, int> manaCost)
+    {
+        foreach (var kvp in manaCost)
+        {
+            BurnMana(kvp.Key, kvp.Value);
+        }
+    }
+
     public void BurnMana(ManaColor color, int amount)
     {
         if (Entity?.Cell != null)

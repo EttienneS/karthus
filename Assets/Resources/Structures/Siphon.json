@@ -1,0 +1,16 @@
+{
+  "Name": "Siphon",
+  "Material": "rune",
+  "ManaValue": {
+    "Blue": "3"
+  },
+  "Buildable": true,
+  "SpriteName": "Siphon",
+  "TravelCost": "10",
+  "StructureType": "Siphon",
+  "Spell": {
+    "$type": "Siphon, Assembly-CSharp",
+    "Size": "2",
+    "CastTime": "1"
+  }
+}
