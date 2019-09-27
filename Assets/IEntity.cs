@@ -16,6 +16,9 @@ public interface IEntity
     EntityTask Task { get; set; }
 
     void Damage(int amount, ManaColor type);
+
+    Dictionary<string, string> Properties { get; set; }
+    Dictionary<string, float> ValueProperties { get; set; }
 }
 
 public static class EntityHelpers

@@ -2,8 +2,10 @@
   "Name": "Reserved",
   "SpriteName": "Reserved",
   "TravelCost": "1",
-  "StructureType": "Other",
   "ManaValue": {
   },
-  "Buildable": "False"
+  "Buildable": "False",
+  "Properties": {
+    "Type": "Reserved"
+  }
 }

@@ -4,6 +4,31 @@ using UnityEngine;
 
 public static class ManaExtensions
 {
+    public static Color GetActualColorFromString(string colorName, float alpha)
+    {
+        var color = new Color(1f, 0.9f, 0.15f);
+        switch (colorName)
+        {
+            case "Red":
+                color = GetActualColor(ManaColor.Red);
+                break;
+            case "Green":
+                color = GetActualColor(ManaColor.Green);
+                break;
+            case "Blue":
+                color = GetActualColor(ManaColor.Blue);
+                break;
+            case "Black":
+                color = GetActualColor(ManaColor.Black);
+                break;
+            case "White":
+                color = GetActualColor(ManaColor.White);
+                break;
+        }
+        color.a = alpha + 0.1f;
+        return color;
+    }
+
     public static Color GetActualColor(this ManaColor manaColor)
     {
         switch (manaColor)

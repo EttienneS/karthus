@@ -53,18 +53,18 @@ public class EntityInfoPanel : MonoBehaviour
 
                 CreatureName.text = currentEntity.Name;
 
+                foreach (var property in currentEntity.ValueProperties)
+                {
+                    Properties.text += $"{property.Key}:\t{property.Value.ToString()}\n";
+                }
+
+                foreach (var property in currentEntity.Properties)
+                {
+                    Properties.text += $"{property.Key}:\t{property.Value}\n";
+                }
+
                 if (currentEntity is CreatureData creature)
                 {
-                    foreach (var property in creature.ValueProperties)
-                    {
-                        Properties.text += $"{property.Key}:\t{property.Value.ToString()}\n";
-                    }
-
-                    foreach (var property in creature.StringProperties)
-                    {
-                        Properties.text += $"{property.Key}:\t{property.Value}\n";
-                    }
-
                     if (creature.Task != null)
                     {
                         Task.text = creature.Task.ToString();
@@ -78,27 +78,20 @@ public class EntityInfoPanel : MonoBehaviour
                 {
                     var structure = currentEntity as Structure;
 
-                    Properties.text += $"Type:\t{structure.StructureType}\n";
-
-                    foreach (var property in structure.Properties)
-                    {
-                        Properties.text += $"{property.Key}:\t{property.Value}\n";
-                    }
-
                     if (!string.IsNullOrEmpty(structure.InUseBy))
                     {
                         Properties.text += $"In use by:\t{structure.InUseBy}\n";
                     }
-                }
 
-                if (currentEntity.Task != null)
-                {
-                    Task.text = currentEntity.Task.ToString();
-                }
-                else
-                {
-                    Task.text = "Finding Task";
-                }
+                    if (structure.Spell != null)
+                    {
+                        Task.text = structure.Spell.ToString();
+                    }
+                    else
+                    {
+                        Task.text = "--";
+                    }
+                }              
             }
             else
             {

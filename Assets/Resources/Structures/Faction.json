@@ -2,7 +2,6 @@
   "Name": "Faction",
   "SpriteName": "pylon",
   "TravelCost": "-1",
-  "StructureType": "Faction",
   "Buildable": "False",
   "Layer": "Structure",
   "Material": "rune",
@@ -12,5 +11,8 @@
     "Blue": "100",
     "Black": "100",
     "White": "100"
+  },
+  "Properties": {
+    "Type": "Faction"
   }
 }

@@ -23,7 +23,7 @@ public class LeyLine : MonoBehaviour
 
             var newCell = Cells[Random.Range(0, Cells.Count - 1)];
 
-            if (newCell.Structure?.StructureType == "Anchor")
+            if (newCell.Structure?.IsType("Anchor") == true)
             {
                 continue;
             }

@@ -18,7 +18,9 @@ public class Siphon : SpellBase
     {
         ManaColor col;
 
-        var siphonedCell = Game.Map.GetCircle(AssignedEntity.Cell, Size).Where(c => c != AssignedEntity.Cell && !c.HasBuilding && c.Bound).ToList().GetRandomItem();
+        var siphonedCell = Game.Map.GetCircle(AssignedEntity.Cell, Size)
+                                   .Where(c => c != AssignedEntity.Cell && !c.HasBuilding && c.Bound)
+                                   .GetRandomItem();
 
         switch (siphonedCell.CellType)
         {

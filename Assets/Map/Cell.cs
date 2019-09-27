@@ -186,6 +186,15 @@ public class Cell : IEquatable<Cell>
         }
     }
 
+    public IEnumerable<Structure> LinkedPipes
+    {
+        get
+        {
+            return Neighbors.Where(n => n?.Structure?.IsPipe() == true && !n.Structure.IsBluePrint)
+                            .Select(c => c.Structure);
+        }
+    }
+
     public static Cell FromPosition(Vector2 position)
     {
         // add half a unit to each position to account for offset (cells are at point 0,0 in the very center)
@@ -287,7 +296,16 @@ public class Cell : IEquatable<Cell>
 
     public void SetStructure(Structure structure)
     {
-        if (structure.StructureType != "Floor")
+        if (structure.IsFloor())
+        {
+            if (Floor != null)
+            {
+                Game.StructureController.DestroyStructure(Floor);
+            }
+            structure.Cell = this;
+            Floor = structure;
+        }
+        else
         {
             if (Structure != null)
             {
@@ -296,15 +314,6 @@ public class Cell : IEquatable<Cell>
 
             structure.Cell = this;
             Structure = structure;
-        }
-        else
-        {
-            if (Floor != null)
-            {
-                Game.StructureController.DestroyStructure(Floor);
-            }
-            structure.Cell = this;
-            Floor = structure;
         }
     }
 

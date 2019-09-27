@@ -2,7 +2,6 @@
   "Name": "Bush",
   "SpriteName": "Bush2",
   "TravelCost": "3",
-  "StructureType": "Bush",
   "Scatter": "True",
   "Buildable": "False",
   "ShiftY": "-0.2~0.2",

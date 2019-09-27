@@ -252,7 +252,7 @@ public class MapGenerator
         Debug.Log($"Generated map in {sw.Elapsed}");
         sw.Restart();
 
-        CreateTown();
+        //CreateTown();
         Debug.Log($"Generated towns in {sw.Elapsed}");
         sw.Restart();
 

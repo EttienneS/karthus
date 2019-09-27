@@ -38,7 +38,7 @@ public class StructureController : MonoBehaviour
             return;
         }
 
-        if (structure.StructureType == "Floor")
+        if (structure.IsFloor())
         {
             structure.Cell.UpdateTile();
         }

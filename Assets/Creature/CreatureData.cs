@@ -34,12 +34,11 @@ public class CreatureData : IEntity
     public Color SkinColor;
 
     public float Speed = 10f;
-    public Dictionary<string, string> StringProperties = new Dictionary<string, string>();
 
     [JsonIgnore]
     public Color TopColor;
 
-    public Dictionary<string, float> ValueProperties = new Dictionary<string, float>();
+    
     internal float InternalTick;
 
     [JsonIgnore]
@@ -121,6 +120,8 @@ public class CreatureData : IEntity
 
     [JsonIgnore]
     public EntityTask Task { get; set; }
+    public Dictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
+    public Dictionary<string, float> ValueProperties { get; set; } = new Dictionary<string, float>();
 
     public static CreatureData Load(string creatureData)
     {

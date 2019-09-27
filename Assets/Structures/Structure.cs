@@ -1,27 +1,24 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class Structure : IEntity
 {
     public bool Buildable;
-    public string FactionName { get; set; }
     public string InUseBy;
     public string Layer;
     public Dictionary<ManaColor, int> ManaValue;
     public string Material;
-    public string Name { get; set; }
-    public Dictionary<string, string> Properties = new Dictionary<string, string>();
     public string ShiftX;
     public string ShiftY;
     public string Size;
     public EntityTask Spell;
     public string SpriteName;
-    public string StructureType;
     public List<EntityTask> Tasks = new List<EntityTask>();
     public float TravelCost;
+    private Effect _outline;
 
     [JsonIgnore]
     private int _width, _height = -1;
@@ -37,6 +34,7 @@ public class Structure : IEntity
     }
 
     public Cell Cell { get; set; }
+    public string FactionName { get; set; }
 
     [JsonIgnore]
     public int Height
@@ -60,26 +58,9 @@ public class Structure : IEntity
     }
 
     public bool IsBluePrint { get; private set; }
-
     public ManaPool ManaPool { get; set; }
-
-    public void Awake()
-    {
-        if (ManaPool == null)
-        {
-            ManaPool = new ManaPool(this);
-        }
-    }
-
-    [JsonIgnore]
-    public int Width
-    {
-        get
-        {
-            ParseHeight();
-            return _width;
-        }
-    }
+    public string Name { get; set; }
+    public Dictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
 
     [JsonIgnore]
     public EntityTask Task { get; set; }
@@ -92,7 +73,7 @@ public class Structure : IEntity
             var tile = ScriptableObject.CreateInstance<Tile>();
             if (IsWall())
             {
-                tile.sprite = Game.SpriteStore.GetWallSprite(this);
+                tile.sprite = Game.SpriteStore.GetInterlockingSprite(this);
             }
             else
             {
@@ -106,24 +87,26 @@ public class Structure : IEntity
             else
             {
                 tile.color = Cell.Color;
+                if (Properties.ContainsKey(PipeConstants.Content))
+                {
+                    tile.color = ManaExtensions.GetActualColorFromString(Properties[PipeConstants.Content], ValueProperties[PipeConstants.Pressure] / 10);
+                }
             }
 
             return tile;
         }
     }
 
+    public Dictionary<string, float> ValueProperties { get; set; } = new Dictionary<string, float>();
 
-    internal void HideOutline()
+    [JsonIgnore]
+    public int Width
     {
-        if (_outline != null)
+        get
         {
-            _outline.Kill();
+            ParseHeight();
+            return _width;
         }
-    }
-
-    public bool IsWall()
-    {
-        return StructureType == "Wall";
     }
 
     public static Structure GetFromJson(string json)
@@ -133,6 +116,39 @@ public class Structure : IEntity
             TypeNameHandling = TypeNameHandling.Auto,
             NullValueHandling = NullValueHandling.Ignore,
         });
+    }
+
+    public void Awake()
+    {
+        if (ManaPool == null)
+        {
+            ManaPool = new ManaPool(this);
+        }
+    }
+
+    public void Damage(int amount, ManaColor type)
+    {
+        if (!ManaPool.Empty())
+        {
+            var mana = ManaPool.GetRandomManaColorFromPool();
+            ManaPool.BurnMana(mana, amount);
+        }
+        Game.StructureController.DestroyStructure(this);
+    }
+
+    public bool IsPipe()
+    {
+        return IsType("Pipe");
+    }
+
+    public bool IsType(string name)
+    {
+        return Properties.ContainsKey("Type") && Properties["Type"].Split(',').Contains(name);
+    }
+
+    public bool IsWall()
+    {
+        return IsType("Wall");
     }
 
     public void SetBluePrintState(bool state)
@@ -155,9 +171,29 @@ public class Structure : IEntity
         InUseBy = string.Empty;
     }
 
+    internal void HideOutline()
+    {
+        if (_outline != null)
+        {
+            _outline.Kill();
+        }
+    }
+
+    internal bool IsFloor()
+    {
+        return IsType("Floor");
+    }
+
     internal void Reserve(string reservedBy)
     {
         InUseBy = reservedBy;
+    }
+
+    internal void ShowOutline()
+    {
+        _outline = Game.EffectController
+                       .SpawnSpriteEffect(Cell, "CellOutline", float.MaxValue)
+                       .Regular();
     }
 
     private void ParseHeight()
@@ -176,24 +212,5 @@ public class Structure : IEntity
                 _height = 1;
             }
         }
-    }
-
-    public void Damage(int amount, ManaColor type)
-    {
-        if (!ManaPool.Empty())
-        {
-            var mana = ManaPool.GetRandomManaColorFromPool();
-            ManaPool.BurnMana(mana, amount);
-        }
-        Game.StructureController.DestroyStructure(this);
-    }
-
-    private Effect _outline;
-
-    internal void ShowOutline()
-    {
-        _outline = Game.EffectController
-                       .SpawnSpriteEffect(Cell, "CellOutline", float.MaxValue)
-                       .Regular();
     }
 }

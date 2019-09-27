@@ -1,0 +1,18 @@
+{
+  "Name": "Sucker",
+  "Material": "rune",
+  "SpriteName": "Sucker",
+  "TravelCost": "-1",
+  "Scatter": "False",
+  "ManaValue": {
+    "Blue": "1"
+  },
+  "Properties": {
+    "Type": "Sucker"
+  },
+  "Buildable": "True",
+  "Spell": {
+    "$type": "Suck, Assembly-CSharp",
+    "CastTime": "0.1"
+  }
+}

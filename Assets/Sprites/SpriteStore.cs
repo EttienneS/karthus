@@ -74,7 +74,7 @@ public class SpriteStore : MonoBehaviour
         //  Debug.Log("load creature sprites");
     }
 
-    internal Sprite GetWallSprite(Structure structure)
+    internal Sprite GetInterlockingSprite(Structure structure)
     {
         // _H == ─
         var type = "_H";

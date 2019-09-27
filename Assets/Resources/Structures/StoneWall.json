@@ -7,5 +7,8 @@
   "ManaValue": {
     "Red": "1"
   },
-  "Buildable": "True"
+  "Buildable": "True",
+  "Properties": {
+    "Type": "Wall"
+  }
 }

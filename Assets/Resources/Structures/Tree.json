@@ -2,7 +2,6 @@
   "Name": "Tree",
   "SpriteName": "Tree",
   "TravelCost": "-1",
-  "StructureType": "Tree",
   "Buildable": "False",
   "Layer": "Tree",
   "ShiftY": "0.7~1",

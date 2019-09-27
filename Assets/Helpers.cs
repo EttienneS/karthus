@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using VoronoiLib.Structures;
@@ -139,9 +140,9 @@ public static class Helpers
 
 public static class ListHelpers
 {
-    public static T GetRandomItem<T>(this List<T> list)
+    public static T GetRandomItem<T>(this IEnumerable<T> list)
     {
-        return list[Random.Range(0, list.Count - 1)];
+        return list.ElementAt(Random.Range(0, list.Count() - 1));
     }
 }
 

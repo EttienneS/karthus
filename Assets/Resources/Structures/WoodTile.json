@@ -2,10 +2,12 @@
   "Name": "Wood Tile",
   "SpriteName": "WoodTile",
   "TravelCost": "0.5",
-  "StructureType": "Floor",
   "Scatter": "False",
   "ManaValue": {
     "Green": "1"
   },
-  "Buildable": "True"
+  "Buildable": "True",
+  "Properties": {
+    "Type": "Floor"
+  }
 }

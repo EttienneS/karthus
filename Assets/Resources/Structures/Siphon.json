@@ -12,5 +12,8 @@
     "$type": "Siphon, Assembly-CSharp",
     "Size": "2",
     "CastTime": "1"
+  },
+  "Properties": {
+    "Type": "Siphon,Suckable"
   }
 }

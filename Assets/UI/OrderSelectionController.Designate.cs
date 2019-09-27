@@ -53,7 +53,7 @@ public partial class OrderSelectionController //.Designate
         {
             foreach (var cell in cells)
             {
-                if (cell.Bound && cell.Structure != null && cell.Structure.StructureType == type)
+                if (cell.Bound && cell.Structure != null && cell.Structure.IsType(type))
                 {
                     FactionController.PlayerFaction.AddTaskWithCellBadge(new RemoveStructure(cell.Structure), null, cell, icon);
                 }

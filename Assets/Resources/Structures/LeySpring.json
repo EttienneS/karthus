@@ -10,5 +10,7 @@
   "Buildable": false,
   "SpriteName": "LeySpring",
   "TravelCost": "10",
-  "StructureType": "Anchor"
+  "Properties": {
+    "Type": "Anchor"
+  }
 }
