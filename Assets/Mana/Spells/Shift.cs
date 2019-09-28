@@ -30,6 +30,8 @@ public class Shift : SpellBase
             var targetContent = linkedpipe.Properties[PipeConstants.Content];
             if ((targetContent == content || targetContent == PipeConstants.Nothing) && linkedpipe.ValueProperties[PipeConstants.Pressure] < pressure)
             {
+                linkedpipe.Properties[PipeConstants.Content] = content;
+
                 AssignedEntity.ValueProperties[PipeConstants.Pressure]--;
                 linkedpipe.ValueProperties[PipeConstants.Pressure]++;
 
