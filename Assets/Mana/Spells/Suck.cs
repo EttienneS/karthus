@@ -22,14 +22,14 @@ public class Suck : SpellBase
         if (suckedStructures.Count > 0)
         {
             var suckedStructure = suckedStructures.GetRandomItem().Structure;
-            var mana = suckedStructure.ManaPool.GetRandomManaColorFromPool();
+            var mana = suckedStructure.ManaPool.GetManaWithMost();
             AssignedEntity.ManaPool.GainMana(mana, 1);
             suckedStructure.ManaPool.BurnMana(mana, 1);
         }
 
         foreach (var linkedpipe in AssignedEntity.Cell.LinkedPipes)
         {
-            var mana = AssignedEntity.ManaPool.GetRandomManaColorFromPool();
+            var mana = AssignedEntity.ManaPool.GetManaWithMost();
             if (linkedpipe.Properties[PipeConstants.Content] == PipeConstants.Nothing
                 || linkedpipe.Properties[PipeConstants.Content] == mana.ToString())
             {

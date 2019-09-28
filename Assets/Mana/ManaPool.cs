@@ -34,6 +34,20 @@ public class ManaPool : Dictionary<ManaColor, Mana>
         }
     }
 
+    internal ManaColor GetManaWithMost()
+    {
+        var most = ManaColor.Blue;
+        var max = int.MinValue;
+        foreach (var kvp in this)
+        {
+            if (kvp.Value.Total > max)
+            {
+                most = kvp.Key;
+            }
+        }
+        return most;
+    }
+
     public void BurnMana(ManaColor color, int amount)
     {
         if (Entity?.Cell != null)
@@ -42,7 +56,7 @@ public class ManaPool : Dictionary<ManaColor, Mana>
                 .SpawnSpriteEffect(Entity.Cell, color.ToString(), 0.5f)
                 .Tiny()
                 .FadeDown();
-            
+
         }
 
         if (!ContainsKey(color))
@@ -58,6 +72,12 @@ public class ManaPool : Dictionary<ManaColor, Mana>
             }
             this[color].Burn(amount);
         }
+
+        //if (Empty())
+        //{
+        //    Debug.Log("No mana, destroy!");
+        //    IdService.DestroyEntity(Entity);
+        //}
     }
 
     internal bool HasMana(ManaColor color, int amount)

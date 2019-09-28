@@ -344,6 +344,8 @@ public partial class Game : MonoBehaviour
                 }
 
                 DeselectCell();
+                DeselectCreature();
+                DeselectStructure(false);
                 selectSquareImage.gameObject.SetActive(false);
 
                 var endPoint = Camera.main.ScreenToWorldPoint(SelectionEnd);

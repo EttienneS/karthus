@@ -39,6 +39,19 @@ public static class IdService
         }
     }
 
+    internal static void DestroyEntity(IEntity entity)
+    {
+        if (StructureLookup.ContainsKey(entity))
+        {
+            Game.StructureController.DestroyStructure(entity as Structure);
+        }
+
+        if (CreatureLookup.ContainsKey(entity))
+        {
+            Game.CreatureController.DestroyCreature((entity as CreatureData).CreatureRenderer);
+        }
+    }
+
     public static CreatureData GetCreatureFromId(string id)
     {
         if (!CreatureIdLookup.TryGetValue(id, out var creature))

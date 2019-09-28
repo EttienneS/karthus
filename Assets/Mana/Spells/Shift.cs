@@ -28,7 +28,8 @@ public class Shift : SpellBase
         foreach (var linkedpipe in linkedPipes)
         {
             var targetContent = linkedpipe.Properties[PipeConstants.Content];
-            if ((targetContent == content || targetContent == PipeConstants.Nothing) && linkedpipe.ValueProperties[PipeConstants.Pressure] < pressure)
+            if ((targetContent == content || targetContent == PipeConstants.Nothing) 
+                && linkedpipe.ValueProperties[PipeConstants.Pressure] < pressure)
             {
                 linkedpipe.Properties[PipeConstants.Content] = content;
 

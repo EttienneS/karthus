@@ -73,7 +73,7 @@ public partial class OrderSelectionController //.Structure
                     }
                     else
                     {
-                        if (FactionController.PlayerFaction.Tasks.OfType<RemoveStructure>().Any(t => t.Structure == structure))
+                        if (FactionController.PlayerFaction.Tasks.OfType<RemoveStructure>().Any(t => t.StructureToRemove == structure))
                         {
                             Debug.Log("Structure already flagged to remove");
                             continue;

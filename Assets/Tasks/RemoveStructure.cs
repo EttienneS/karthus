@@ -1,6 +1,6 @@
 ﻿public class RemoveStructure : EntityTask
 {
-    public Structure Structure;
+    public Structure StructureToRemove;
 
     public RemoveStructure()
     {
@@ -8,9 +8,9 @@
 
     public RemoveStructure(Structure structure)
     {
-        Structure = structure;
+        StructureToRemove = structure;
 
-        AddSubTask(new Move(Game.Map.GetPathableNeighbour(Structure.Cell)));
+        AddSubTask(new Move(Game.Map.GetPathableNeighbour(StructureToRemove.Cell)));
 
         foreach (var mana in structure.ManaPool)
         {
@@ -20,14 +20,14 @@
             }
         }
 
-        Message = $"Removing {Structure.Name} at {Structure.Cell}";
+        Message = $"Removing {StructureToRemove.Name} at {StructureToRemove.Cell}";
     }
 
     public override bool Done()
     {
         if (SubTasksComplete())
         {
-            Game.StructureController.DestroyStructure(Structure);
+            Game.StructureController.DestroyStructure(StructureToRemove);
 
             return true;
         }
