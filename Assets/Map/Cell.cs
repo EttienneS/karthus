@@ -171,17 +171,17 @@ public class Cell : IEquatable<Cell>
         }
     }
 
-    public Rotation Rotation;
+    public Direction Rotation;
 
     public void RotateCW()
     {
-        Rotation = Rotation.RotateCW();
+        Rotation = Rotation.RotateCW().RotateCW();
         UpdateTile();
     }
 
     public void RotateCCW()
     {
-        Rotation = Rotation.RotateCCW();
+        Rotation = Rotation.RotateCCW().RotateCCW();
         UpdateTile();
     }
 

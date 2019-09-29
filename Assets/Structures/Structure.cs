@@ -20,8 +20,8 @@ public class Structure : IEntity
     public float TravelCost;
     private Effect _outline;
 
-    public Rotation Rotation;
-
+    public Direction Rotation;
+    
     [JsonIgnore]
     private int _width, _height = -1;
 
@@ -69,14 +69,14 @@ public class Structure : IEntity
 
     public void RotateCW()
     {
-        Rotation = Rotation.RotateCW();
+        Rotation = Rotation.RotateCW().RotateCW();
         Game.StructureController.RefreshStructure(this);
         Refresh();
     }
 
     public void RotateCCW()
     {
-        Rotation = Rotation.RotateCCW();
+        Rotation = Rotation.RotateCCW().RotateCCW();
         Refresh();
     }
 

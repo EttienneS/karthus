@@ -1,44 +1,34 @@
-﻿using System.Linq;
-
+﻿
 public class Suck : SpellBase
 {
-
     public Suck()
     {
     }
 
     public override bool DoSpell()
     {
-        var structures = new[]
+        var fromCell = Structure.Cell.GetNeighbor(Structure.Rotation);
+        if (fromCell != null && fromCell.Structure != null)
         {
-            AssignedEntity.Cell.GetNeighbor(Direction.N),
-            AssignedEntity.Cell.GetNeighbor(Direction.E),
-            AssignedEntity.Cell.GetNeighbor(Direction.S),
-            AssignedEntity.Cell.GetNeighbor(Direction.W)
-        };
-
-        var suckedStructures = structures.Where(c => c?.Bound == true && c.Structure?.IsType(PipeConstants.Suckable) == true).ToList();
-
-        if (suckedStructures.Count > 0)
-        {
-            var suckedStructure = suckedStructures.GetRandomItem().Structure;
-            var mana = suckedStructure.ManaPool.GetManaWithMost();
+            var mana = fromCell.Structure.ManaPool.GetManaWithMost();
             AssignedEntity.ManaPool.GainMana(mana, 1);
-            suckedStructure.ManaPool.BurnMana(mana, 1);
+            fromCell.Structure.ManaPool.BurnMana(mana, 1);
         }
 
-        foreach (var linkedpipe in AssignedEntity.Cell.LinkedPipes)
+        var toCell = Structure.Cell.GetNeighbor(Structure.Rotation.Opposite());
+        if (toCell != null && toCell.Structure != null && toCell.Structure.IsPipe())
         {
+            var linkedPipe = toCell.Structure;
+
             var mana = AssignedEntity.ManaPool.GetManaWithMost();
-            if (linkedpipe.Properties[PipeConstants.Content] == PipeConstants.Nothing
-                || linkedpipe.Properties[PipeConstants.Content] == mana.ToString())
+            if (linkedPipe.Properties[PipeConstants.Content] == PipeConstants.Nothing
+                || linkedPipe.Properties[PipeConstants.Content] == mana.ToString())
             {
-                linkedpipe.Properties[PipeConstants.Content] = mana.ToString();
-                
-                linkedpipe.ValueProperties[PipeConstants.Pressure]++;
-                linkedpipe.Cell.UpdateTile();
+                linkedPipe.Properties[PipeConstants.Content] = mana.ToString();
+
+                linkedPipe.ValueProperties[PipeConstants.Pressure]++;
+                linkedPipe.Cell.UpdateTile();
                 AssignedEntity.ManaPool.BurnMana(mana, 1);
-                break;
             }
         }
 

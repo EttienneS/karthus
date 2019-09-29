@@ -133,7 +133,6 @@ public partial class Game : MonoBehaviour
         {
             var point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             var cell = Map.GetCellAtPoint(point);
-            cell.RotateCW();
 
             if (cell.Structure != null)
             {
@@ -144,7 +143,6 @@ public partial class Game : MonoBehaviour
         {
             var point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             var cell = Map.GetCellAtPoint(point);
-            cell.RotateCCW();
 
             if (cell.Structure != null)
             {

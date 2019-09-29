@@ -10,5 +10,9 @@
   "Properties": {
     "Type": "Blower"
   },
-  "Buildable": "True"
+  "Buildable": "True",
+  "Spell": {
+    "$type": "Suck, Assembly-CSharp",
+    "CastTime": "0.1"
+  }
 }
