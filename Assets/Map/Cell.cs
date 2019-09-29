@@ -165,7 +165,7 @@ public class Cell : IEquatable<Cell>
                 tile.sprite = Game.SpriteStore.GetSprite(Floor.SpriteName);
                 tile.color = Color;
             }
-
+            
             return tile;
         }
     }
