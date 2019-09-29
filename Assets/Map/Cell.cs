@@ -146,6 +146,7 @@ public class Cell : IEquatable<Cell>
         {
             DrawnOnce = true;
             var tile = ScriptableObject.CreateInstance<Tile>();
+            tile.RotateTile(Rotation);
 
             if (Floor == null || FluidLevel > 0)
             {
@@ -165,9 +166,23 @@ public class Cell : IEquatable<Cell>
                 tile.sprite = Game.SpriteStore.GetSprite(Floor.SpriteName);
                 tile.color = Color;
             }
-            
+
             return tile;
         }
+    }
+
+    public Rotation Rotation;
+
+    public void RotateCW()
+    {
+        Rotation = Rotation.RotateCW();
+        UpdateTile();
+    }
+
+    public void RotateCCW()
+    {
+        Rotation = Rotation.RotateCCW();
+        UpdateTile();
     }
 
     [JsonIgnore]
@@ -340,6 +355,7 @@ public class Cell : IEquatable<Cell>
 
     public void UpdateTile()
     {
+        Game.Map.Tilemap.SetTile(new Vector3Int(X, Y, 0), null);
         Game.Map.Tilemap.SetTile(new Vector3Int(X, Y, 0), Tile);
         if (Structure != null)
         {

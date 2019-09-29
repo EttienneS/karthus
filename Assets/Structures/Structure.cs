@@ -20,6 +20,8 @@ public class Structure : IEntity
     public float TravelCost;
     private Effect _outline;
 
+    public Rotation Rotation;
+
     [JsonIgnore]
     private int _width, _height = -1;
 
@@ -65,12 +67,32 @@ public class Structure : IEntity
     [JsonIgnore]
     public EntityTask Task { get; set; }
 
+    public void RotateCW()
+    {
+        Rotation = Rotation.RotateCW();
+        Game.StructureController.RefreshStructure(this);
+        Refresh();
+    }
+
+    public void RotateCCW()
+    {
+        Rotation = Rotation.RotateCCW();
+        Refresh();
+    }
+
+    public void Refresh()
+    {
+        Game.StructureController.RefreshStructure(this);
+    }
+
+
     [JsonIgnore]
     public Tile Tile
     {
         get
         {
             var tile = ScriptableObject.CreateInstance<Tile>();
+            tile.RotateTile(Rotation);
             if (IsWall())
             {
                 tile.sprite = Game.SpriteStore.GetInterlockingSprite(this);

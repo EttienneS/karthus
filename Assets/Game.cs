@@ -129,6 +129,29 @@ public partial class Game : MonoBehaviour
             RotateMouseLeft?.Invoke();
         }
 
+        if (Input.GetKeyDown("r"))
+        {
+            var point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            var cell = Map.GetCellAtPoint(point);
+            cell.RotateCW();
+
+            if (cell.Structure != null)
+            {
+                cell.Structure.RotateCW();
+            }
+        }
+        if (Input.GetKeyDown("t"))
+        {
+            var point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            var cell = Map.GetCellAtPoint(point);
+            cell.RotateCCW();
+
+            if (cell.Structure != null)
+            {
+                cell.Structure.RotateCCW();
+            }
+        }
+
         if (Input.GetKeyDown("f"))
         {
             var point = Camera.main.ScreenToWorldPoint(Input.mousePosition);

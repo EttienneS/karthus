@@ -44,13 +44,16 @@ public class StructureController : MonoBehaviour
         }
         else
         {
+            var coords = new Vector3Int(structure.Cell.X, structure.Cell.Y, 0);
             if (structure.Material != "rune")
             {
-                DefaultStructureMap.SetTile(new Vector3Int(structure.Cell.X, structure.Cell.Y, 0), structure.Tile);
+                DefaultStructureMap.SetTile(coords, null);
+                DefaultStructureMap.SetTile(coords, structure.Tile);
             }
             else
             {
-                RuneMap.SetTile(new Vector3Int(structure.Cell.X, structure.Cell.Y, 0), structure.Tile);
+                RuneMap.SetTile(coords, null);
+                RuneMap.SetTile(coords, structure.Tile);
             }
         }
     }
