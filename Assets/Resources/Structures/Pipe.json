@@ -2,18 +2,18 @@
   "Name": "Pipe",
   "Material": "rune",
   "SpriteName": "Pipe",
-  "TravelCost": "-1",
+  "TravelCost": "5",
   "Scatter": "False",
   "ManaValue": {
     "Red": "1"
   },
   "Buildable": "True",
   "Properties": {
-    "Type": "Pipe,Wall",
+    "Type": "Pipe",
     "Content": "Nothing"
   },
   "ValueProperties": {
-    "Pressure": "0",
+    "Pressure": "0"
   },
   "Spell": {
     "$type": "Shift, Assembly-CSharp",

@@ -79,10 +79,10 @@ public class SpriteStore : MonoBehaviour
         // _H == ─
         var type = "_H";
 
-        var n = structure.Cell.IsWall(Direction.N);
-        var s = structure.Cell.IsWall(Direction.S);
-        var e = structure.Cell.IsWall(Direction.E);
-        var w = structure.Cell.IsWall(Direction.W);
+        var n = structure.Cell.IsInterlocking(Direction.N);
+        var s = structure.Cell.IsInterlocking(Direction.S);
+        var e = structure.Cell.IsInterlocking(Direction.E);
+        var w = structure.Cell.IsInterlocking(Direction.W);
 
         if (n && e && s && w)
         {

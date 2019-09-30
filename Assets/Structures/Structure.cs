@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -35,6 +36,11 @@ public class Structure : IEntity
         SpriteName = sprite;
     }
 
+    internal bool IsInterlocking()
+    {
+        return IsWall() || IsPipe() || IsPipeEnd();
+    }
+
     public Cell Cell { get; set; }
     public string FactionName { get; set; }
 
@@ -69,14 +75,14 @@ public class Structure : IEntity
 
     public void RotateCW()
     {
-        Rotation = Rotation.RotateCW().RotateCW();
+        Rotation = Rotation.Rotate90CW();
         Game.StructureController.RefreshStructure(this);
         Refresh();
     }
 
     public void RotateCCW()
     {
-        Rotation = Rotation.RotateCCW().RotateCCW();
+        Rotation = Rotation.Rotate90CCW();
         Refresh();
     }
 
@@ -93,7 +99,7 @@ public class Structure : IEntity
         {
             var tile = ScriptableObject.CreateInstance<Tile>();
             tile.RotateTile(Rotation);
-            if (IsWall())
+            if (IsWall() || IsPipe())
             {
                 tile.sprite = Game.SpriteStore.GetInterlockingSprite(this);
             }
@@ -131,14 +137,25 @@ public class Structure : IEntity
         }
     }
 
-    public static Structure GetFromJson(string json)
+    public static Structure GetFromJson(string json, string name)
     {
+        if (name == "Pipe")
+        {
+            return JsonConvert.DeserializeObject<Pipe>(json, new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto,
+                NullValueHandling = NullValueHandling.Ignore,
+            });
+        }
+
         return JsonConvert.DeserializeObject<Structure>(json, new JsonSerializerSettings
         {
             TypeNameHandling = TypeNameHandling.Auto,
             NullValueHandling = NullValueHandling.Ignore,
         });
     }
+
+   
 
     public void Awake()
     {
@@ -161,6 +178,11 @@ public class Structure : IEntity
     public bool IsPipe()
     {
         return IsType("Pipe");
+    }
+
+    public bool IsPipeEnd()
+    {
+        return IsType("PipeEnd");
     }
 
     public bool IsType(string name)

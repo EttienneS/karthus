@@ -8,39 +8,47 @@ public enum Direction
 
 public static class DirectionExtensions
 {
-    // 8    1    2
-    // 7    C    3
-    // 6    5    4
-    // adding or subracting 4 will give the oposite cell
     public static Direction Opposite(this Direction direction)
     {
-        return (int)direction < 4 ? direction + 4 : direction - 4;
+        return Rotate(direction, 4);
+    }
+
+    public static Direction Rotate(this Direction rotation, int amount)
+    {
+        var value = (int)rotation;
+
+        value += amount;
+
+        if (value < 0)
+        {
+            value += 8;
+        }
+        else if (value > 7)
+        {
+            value -= 8;
+        }
+
+        return (Direction)value;
+    }
+
+    public static Direction Rotate90CCW(this Direction rotation)
+    {
+        return Rotate(rotation, 2);
+    }
+
+    public static Direction Rotate90CW(this Direction rotation)
+    {
+        return Rotate(rotation, -2);
     }
 
     public static Direction RotateCCW(this Direction rotation)
     {
-        if (rotation == Direction.N)
-        {
-            rotation = Direction.NW;
-        }
-        else
-        {
-            rotation++;
-        }
-        return rotation;
+        return Rotate(rotation, 1);
     }
 
     public static Direction RotateCW(this Direction rotation)
     {
-        if (rotation == Direction.NW)
-        {
-            rotation = Direction.N;
-        }
-        else
-        {
-            rotation--;
-        }
-        return rotation;
+        return Rotate(rotation, -1);
     }
 
     public static int ToDegrees(this Direction rotation)

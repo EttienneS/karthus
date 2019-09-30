@@ -30,7 +30,7 @@
         {
             TargetStructure.SetBluePrintState(false);
 
-            if (TargetStructure.IsWall())
+            if (TargetStructure.IsInterlocking())
             {
                 foreach (var neighbour in TargetStructure.Cell.Neighbors)
                 {

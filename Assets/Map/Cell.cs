@@ -146,7 +146,6 @@ public class Cell : IEquatable<Cell>
         {
             DrawnOnce = true;
             var tile = ScriptableObject.CreateInstance<Tile>();
-            tile.RotateTile(Rotation);
 
             if (Floor == null || FluidLevel > 0)
             {
@@ -175,13 +174,13 @@ public class Cell : IEquatable<Cell>
 
     public void RotateCW()
     {
-        Rotation = Rotation.RotateCW().RotateCW();
+        Rotation = Rotation.Rotate90CW();
         UpdateTile();
     }
 
     public void RotateCCW()
     {
-        Rotation = Rotation.RotateCCW().RotateCCW();
+        Rotation = Rotation.Rotate90CCW();
         UpdateTile();
     }
 
@@ -201,14 +200,7 @@ public class Cell : IEquatable<Cell>
         }
     }
 
-    public IEnumerable<Structure> LinkedPipes
-    {
-        get
-        {
-            return Neighbors.Where(n => n?.Structure?.IsPipe() == true && !n.Structure.IsBluePrint)
-                            .Select(c => c.Structure);
-        }
-    }
+    
 
     public static Cell FromPosition(Vector2 position)
     {
@@ -274,7 +266,7 @@ public class Cell : IEquatable<Cell>
         return Neighbors[(int)direction];
     }
 
-    public bool IsWall(Direction direction)
+    public bool IsInterlocking(Direction direction)
     {
         var neighbor = Neighbors[(int)direction];
 
@@ -288,7 +280,7 @@ public class Cell : IEquatable<Cell>
             return false;
         }
 
-        return neighbor.Structure.IsWall();
+        return neighbor.Structure.IsWall() || neighbor.Structure.IsPipe() || neighbor.Structure.IsPipeEnd();
     }
 
     public void RefreshColor()

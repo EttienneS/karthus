@@ -8,11 +8,11 @@
     "Blue": "1"
   },
   "Properties": {
-    "Type": "Blower"
+    "Type": "Blower,PipeEnd"
   },
   "Buildable": "True",
   "Spell": {
-    "$type": "Suck, Assembly-CSharp",
+    "$type": "Blow, Assembly-CSharp",
     "CastTime": "0.1"
   }
 }

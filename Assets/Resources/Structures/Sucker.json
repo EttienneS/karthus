@@ -8,7 +8,7 @@
     "Blue": "1"
   },
   "Properties": {
-    "Type": "Sucker"
+    "Type": "Sucker,PipeEnd"
   },
   "Buildable": "True",
   "Spell": {

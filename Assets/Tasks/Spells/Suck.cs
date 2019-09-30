@@ -1,5 +1,4 @@
-﻿
-public class Suck : SpellBase
+﻿public class Suck : SpellBase
 {
     public Suck()
     {
@@ -8,27 +7,27 @@ public class Suck : SpellBase
     public override bool DoSpell()
     {
         var fromCell = Structure.Cell.GetNeighbor(Structure.Rotation);
-        if (fromCell != null && fromCell.Structure != null)
+        if (fromCell?.Structure?.IsBluePrint == false)
         {
             var mana = fromCell.Structure.ManaPool.GetManaWithMost();
             AssignedEntity.ManaPool.GainMana(mana, 1);
             fromCell.Structure.ManaPool.BurnMana(mana, 1);
         }
 
+        
         var toCell = Structure.Cell.GetNeighbor(Structure.Rotation.Opposite());
-        if (toCell != null && toCell.Structure != null && toCell.Structure.IsPipe())
+        if (toCell?.Structure?.IsPipe() == true)
         {
-            var linkedPipe = toCell.Structure;
-
+            var linkedPipe = toCell.Structure as Pipe;
             var mana = AssignedEntity.ManaPool.GetManaWithMost();
-            if (linkedPipe.Properties[PipeConstants.Content] == PipeConstants.Nothing
-                || linkedPipe.Properties[PipeConstants.Content] == mana.ToString())
-            {
-                linkedPipe.Properties[PipeConstants.Content] = mana.ToString();
 
-                linkedPipe.ValueProperties[PipeConstants.Pressure]++;
-                linkedPipe.Cell.UpdateTile();
+            if (AssignedEntity.ManaPool[mana].Total > 0
+                && (!linkedPipe.Content.HasValue || linkedPipe.Content == mana))
+            {
                 AssignedEntity.ManaPool.BurnMana(mana, 1);
+
+                linkedPipe.Content = mana;
+                linkedPipe.Pressure++;
             }
         }
 
