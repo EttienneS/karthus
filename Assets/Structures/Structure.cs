@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -22,7 +21,7 @@ public class Structure : IEntity
     private Effect _outline;
 
     public Direction Rotation;
-    
+
     [JsonIgnore]
     private int _width, _height = -1;
 
@@ -91,7 +90,6 @@ public class Structure : IEntity
         Game.StructureController.RefreshStructure(this);
     }
 
-
     [JsonIgnore]
     public Tile Tile
     {
@@ -115,9 +113,15 @@ public class Structure : IEntity
             else
             {
                 tile.color = Cell.Color;
-                if (Properties.ContainsKey(PipeConstants.Content))
+
+                if (IsPipe())
                 {
-                    tile.color = ManaExtensions.GetActualColorFromString(Properties[PipeConstants.Content], ValueProperties[PipeConstants.Pressure] / 10);
+                    var pipe = this as Pipe;
+                    if (pipe.Attunement.HasValue)
+                    {
+                        var alpha = ((float)pipe.ManaPool[pipe.Attunement.Value].Total) / 10f;
+                        tile.color = pipe.Attunement.Value.GetActualColor(alpha);
+                    }
                 }
             }
 
@@ -154,8 +158,6 @@ public class Structure : IEntity
             NullValueHandling = NullValueHandling.Ignore,
         });
     }
-
-   
 
     public void Awake()
     {

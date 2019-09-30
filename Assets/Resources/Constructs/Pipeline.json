@@ -1,0 +1,16 @@
+{
+  "Name": "Pipeline",
+  "Key": {
+    "S": "Sucker",
+    "P": "Pipe",
+    "B": "Blower"
+  },
+  "Plan": [
+    "S",
+    "P",
+    "P",
+    "P",
+    "P",
+    "B"
+  ]
+}

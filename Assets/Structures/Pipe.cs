@@ -1,90 +1,73 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
 public class Pipe : Structure
 {
-    public IEnumerable<Pipe> LinkedPipes
+    public static Direction[] PipeNeighours = new Direction[]
+            {
+                Direction.N, Direction.E, Direction.S, Direction.W
+            };
+
+    public List<Pipe> LinkedPipes
     {
         get
         {
-            return Cell.Neighbors.Where(n => n?.Structure?.IsPipe() == true && !n.Structure.IsBluePrint)
-                                 .Select(c => c.Structure as Pipe);
+            var linked = new List<Pipe>();
+            foreach (var dir in PipeNeighours)
+            {
+                var n = Cell.GetNeighbor(dir);
+
+                if (!n?.Structure?.IsBluePrint == true && n?.Structure?.IsPipe() == true)
+                {
+                    linked.Add(n.Structure as Pipe);
+                }
+            }
+
+            return linked;
         }
     }
 
-    public int Pressure
-    {
-        get
-        {
-            return (int)ValueProperties[PipeConstants.Pressure];
-        }
-        set
-        {
-            ValueProperties[PipeConstants.Pressure] = value;
-
-            if (value < 0)
-            {
-                Content = null;
-            }
-
-            Cell.UpdateTile();
-        }
-    }
-
-    public ManaColor? Content
-    {
-        get
-        {
-            var content = Properties[PipeConstants.Content];
-
-            if (string.IsNullOrWhiteSpace(content) || content == PipeConstants.Nothing)
-            {
-                return null;
-            }
-
-            return (ManaColor)Enum.Parse(typeof(ManaColor), content);
-        }
-        set
-        {
-            if (value != null)
-            {
-                Properties[PipeConstants.Content] = value.ToString();
-            }
-            else
-            {
-                Properties[PipeConstants.Content] = PipeConstants.Nothing;
-            }
-        }
-    }
+    public ManaColor? Attunement;
 
     internal void Flow()
     {
-        var linkedPipes = LinkedPipes;
-
-        if (!Content.HasValue || Pressure <= 0)
+        if (!Attunement.HasValue)
         {
-            Content = null;
-            Pressure = 0;
             return;
         }
 
-        foreach (var linkedpipe in linkedPipes)
+        var color = Attunement.Value;
+        int count = int.MaxValue;
+        Pipe target = null;
+
+        foreach (var linkedpipe in LinkedPipes)
         {
-            var targetContent = linkedpipe.Content;
-            var targetPressure = linkedpipe.Pressure;
-
-            var pressure = Pressure;
-            if ((targetContent.HasValue || targetContent == null) && targetPressure < pressure)
+            if (!linkedpipe.Attunement.HasValue || !linkedpipe.ManaPool.ContainsKey(color))
             {
-                linkedpipe.Content = Content;
-
-                var pressureDiff = Mathf.Max(1, (pressure - targetPressure) / 2);
-                Pressure -= pressureDiff;
-                linkedpipe.Pressure += pressureDiff;
+                count = 0;
+                target = linkedpipe;
+                break;
+            }
+            else
+            {
+                var amount = linkedpipe.ManaPool[color].Total;
+                if (amount < count)
+                {
+                    count = amount;
+                    target = linkedpipe;
+                }
             }
         }
-    }
 
+        var pressure = ManaPool[color].Total;
+        if (target != null && pressure > count)
+        {
+            var amount = (pressure - count) / 2;
+
+            ManaPool.Transfer(target.ManaPool, color, amount);
+
+            target.Attunement = color;
+            target.Cell.UpdateTile();
+            Cell.UpdateTile();
+        }
+    }
 }

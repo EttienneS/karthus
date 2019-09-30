@@ -13,6 +13,6 @@
   "Buildable": "True",
   "Spell": {
     "$type": "Suck, Assembly-CSharp",
-    "CastTime": "0.1"
+    "CastTime": "0.01"
   }
 }

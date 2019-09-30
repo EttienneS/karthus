@@ -78,23 +78,49 @@ public class EntityInfoPanel : MonoBehaviour
                 {
                     var structure = currentEntity as Structure;
 
-                    if (!string.IsNullOrEmpty(structure.InUseBy))
-                    {
-                        Properties.text += $"In use by:\t{structure.InUseBy}\n";
-                    }
+                    Properties.text += $"Rotation:\t {structure.Rotation}\n";
 
-                    if (structure.Spell != null)
+                    if (structure.IsBluePrint)
                     {
-                        Task.text = structure.Spell.ToString();
+                        Properties.text += "\n*Blueprint, waiting for construction...*\n";
                     }
                     else
                     {
-                        Task.text = "--";
+                        if (!string.IsNullOrEmpty(structure.InUseBy))
+                        {
+                            Properties.text += $"In use by:\t{structure.InUseBy}\n";
+                        }
+
+                        if (structure is Pipe pipe)
+                        {
+                            if (pipe.Attunement.HasValue)
+                            {
+                                Properties.text += $"Attunment:\t{pipe.Attunement.Value}\n";
+                            }
+                            else
+                            {
+                                Properties.text += $"Attunment:\tNone\n";
+                            }
+                        }
+
+                        if (structure.Spell != null)
+                        {
+                            Task.text = structure.Spell.ToString();
+                        }
+                        else
+                        {
+                            Task.text = "--";
+                        }
                     }
-                }              
+
+                }
+
+                Properties.text += $"\nLocation:\t{currentEntity.Cell}\n";
             }
             else
             {
+
+
                 CreatureName.text = $"{CurrentEntities.Count} entities";
                 foreach (var entity in CurrentEntities)
                 {

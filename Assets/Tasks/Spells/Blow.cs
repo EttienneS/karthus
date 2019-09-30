@@ -8,27 +8,44 @@ public class Blow : SpellBase
 
     public override bool DoSpell()
     {
+        Pipe fromPipe;
+        ManaPool toPool;
+
         var fromCell = Structure.Cell.GetNeighbor(Structure.Rotation);
+
         if (fromCell?.Structure?.IsPipe() == true)
         {
             var linkedPipe = fromCell.Structure as Pipe;
 
-            if (linkedPipe.Content.HasValue)
+            if (linkedPipe.Attunement.HasValue)
             {
-                AssignedEntity.ManaPool.GainMana(linkedPipe.Content.Value, 1);
-                linkedPipe.Pressure--;
+                fromPipe = linkedPipe;
             }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
         }
 
         var toCell = Structure.Cell.GetNeighbor(Structure.Rotation.Opposite());
         if (toCell?.Structure?.IsBluePrint == false)
         {
-            var mana = AssignedEntity.ManaPool.GetManaWithMost();
-            if (AssignedEntity.ManaPool[mana].Total > 0)
-            {
-                AssignedEntity.ManaPool.BurnMana(mana, 1);
-                toCell.Structure.ManaPool.GainMana(mana, 1);
-            }
+            toPool = toCell.Structure.ManaPool;
+        }
+        else
+        {
+            return false;
+        }
+
+        fromPipe.ManaPool.Transfer(toPool, fromPipe.Attunement.Value, 1);
+
+        if (fromPipe.ManaPool[fromPipe.Attunement.Value].Total <= 0)
+        {
+            fromPipe.Attunement = null;
         }
 
         return true;

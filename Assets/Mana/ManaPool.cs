@@ -80,6 +80,20 @@ public class ManaPool : Dictionary<ManaColor, Mana>
         //}
     }
 
+    internal void Transfer(ManaPool target, ManaColor manaColor, int amount)
+    {
+        if (amount > 0)
+        {
+            BurnMana(manaColor, amount);
+            target.GainMana(manaColor, amount);
+        }
+        else
+        {
+            target.BurnMana(manaColor, amount);
+            GainMana(manaColor, amount);
+        }
+    }
+
     internal bool HasMana(ManaColor color, int amount)
     {
         if (!ContainsKey(color))

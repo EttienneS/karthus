@@ -9,11 +9,7 @@
   },
   "Buildable": "True",
   "Properties": {
-    "Type": "Pipe",
-    "Content": "Nothing"
-  },
-  "ValueProperties": {
-    "Pressure": "0"
+    "Type": "Pipe"
   },
   "Spell": {
     "$type": "Shift, Assembly-CSharp",

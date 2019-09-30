@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public static class ManaExtensions
@@ -12,15 +11,19 @@ public static class ManaExtensions
             case "Red":
                 color = GetActualColor(ManaColor.Red);
                 break;
+
             case "Green":
                 color = GetActualColor(ManaColor.Green);
                 break;
+
             case "Blue":
                 color = GetActualColor(ManaColor.Blue);
                 break;
+
             case "Black":
                 color = GetActualColor(ManaColor.Black);
                 break;
+
             case "White":
                 color = GetActualColor(ManaColor.White);
                 break;
@@ -29,28 +32,35 @@ public static class ManaExtensions
         return color;
     }
 
-    public static Color GetActualColor(this ManaColor manaColor)
+    public static Color GetActualColor(this ManaColor manaColor, float alpha = 1f)
     {
+        var color = new Color(0, 0, 0, alpha);
         switch (manaColor)
         {
             case ManaColor.Green:
-                return new Color(0, 0.6f, 0);
+                color = new Color(0, 0.6f, 0);
+                break;
 
             case ManaColor.Blue:
-                return Color.blue;
+                color = Color.blue;
+                break;
 
             case ManaColor.Black:
-                return new Color(0.3f, 0.3f, 0.3f);
+                color = new Color(0.3f, 0.3f, 0.3f);
+                break;
 
             case ManaColor.White:
-                return Color.white;
+                color = Color.white;
+                break;
 
             case ManaColor.Red:
-                return Color.red;
-
-            default:
-                throw new NotImplementedException();
+                color = Color.red;
+                break;
         }
+
+        color.a = Mathf.Max(alpha, 0.1f);
+
+        return color;
     }
 
     public static List<ManaColor> ToFlatArray(this Dictionary<ManaColor, int> manaPool)
