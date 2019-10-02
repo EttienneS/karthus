@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 
-public class EffectController : MonoBehaviour
+public class VisualEffectController : MonoBehaviour
 {
-    public Effect EffectPrefab;
+    public VisualEffect EffectPrefab;
 
     public Badge BadgePrefab;
 
-    public Effect SpriteEffectPrefab;
+    public VisualEffect SpriteEffectPrefab;
 
     public void SpawnEffect(Cell cell, float lifeSpan)
     {
@@ -15,7 +15,7 @@ public class EffectController : MonoBehaviour
         effect.transform.position = cell.ToTopOfMapVector();
     }
 
-    public Effect SpawnSpriteEffect(Cell cell, string sprite, float lifeSpan)
+    public VisualEffect SpawnSpriteEffect(Cell cell, string sprite, float lifeSpan)
     {
         var effect = Instantiate(SpriteEffectPrefab, transform);
         effect.Sprite.sprite = Game.SpriteStore.GetSprite(sprite);

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public class Bind : SpellBase
+public class Bind : EffectBase
 {
     public int Size;
 
@@ -18,7 +18,7 @@ public class Bind : SpellBase
         Size = size;
     }
 
-    public override bool DoSpell()
+    public override bool DoEffect()
     {
         if (_affectAbleCells == null)
         {

@@ -64,7 +64,7 @@
                 Game.LeyLineController.MakeChannellingLine(Source, Target, 5, GameConstants.ChannelDuration, ManaColor);
                 CreatureData?.CreatureRenderer.DisplayChannel(ManaColor, GameConstants.ChannelDuration);
                 AmountToChannel--;
-                AddSubTask(new Wait(GameConstants.ChannelDuration, $"{ManaColor}!!", true));
+                AddSubTask(new Wait(GameConstants.ChannelDuration, $"{ManaColor}!!"));
             }
         }
 

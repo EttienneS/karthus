@@ -9,7 +9,7 @@ public class PipeConstants
     public const string Suckable = "Suckable";
 }
 
-public class Shift : SpellBase
+public class Shift : EffectBase
 {
     private Pipe _pipe;
 
@@ -17,7 +17,7 @@ public class Shift : SpellBase
     {
     }
 
-    public override bool DoSpell()
+    public override bool DoEffect()
     {
         if (_pipe == null)
         {

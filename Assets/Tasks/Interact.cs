@@ -1,21 +1,23 @@
 ﻿using UnityEngine;
 
-public class Wait : EntityTask
+public class Interact : EntityTask
 {
     public float Duration;
     public float ElapsedTime;
-    public string Reason;
+    public IEntity Target;
 
-    public Wait()
+    public EffectBase Effect;
+
+    public Interact()
     {
     }
 
-    public Wait(float duration, string reason)
+    public Interact(float duration, IEntity target, EffectBase effect)
     {
         Duration = duration;
-        Reason = reason;
         ElapsedTime = 0;
-        Message = $"{Reason} {Duration}";
+        Target = target;
+        Effect = effect;
     }
 
     public override bool Done()

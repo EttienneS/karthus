@@ -2,7 +2,7 @@
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class Effect : MonoBehaviour
+public class VisualEffect : MonoBehaviour
 {
     internal float LifeSpan;
 
@@ -47,14 +47,14 @@ public class Effect : MonoBehaviour
         }
     }
 
-    internal Effect FadeUp()
+    internal VisualEffect FadeUp()
     {
         Vector = new Vector2(Random.Range(-0.01f, 0.01f), Random.Range(0.01f, 0.05f));
         Fade = true;
         return this;
     }
 
-    internal Effect FadeDown()
+    internal VisualEffect FadeDown()
     {
         Vector = new Vector2(Random.Range(-0.01f, 0.01f), Random.Range(-0.05f, -0.01f));
         Fade = true;
@@ -68,25 +68,25 @@ public class Effect : MonoBehaviour
         LifeSpan = timeTillGone;
     }
 
-    internal Effect Big()
+    internal VisualEffect Big()
     {
         transform.localScale = new Vector3(2, 2, 2);
         return this;
     }
 
-    internal Effect Regular()
+    internal VisualEffect Regular()
     {
         transform.localScale = new Vector3(1, 1, 1);
         return this;
     }
 
-    internal Effect Small()
+    internal VisualEffect Small()
     {
         transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
         return this;
     }
 
-    internal Effect Tiny()
+    internal VisualEffect Tiny()
     {
         transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
         return this;

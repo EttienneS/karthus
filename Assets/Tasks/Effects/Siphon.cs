@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using UnityEngine;
 
-public class Siphon : SpellBase
+public class Siphon : EffectBase
 {
     public int Size;
 
@@ -14,7 +14,7 @@ public class Siphon : SpellBase
         Size = size;
     }
 
-    public override bool DoSpell()
+    public override bool DoEffect()
     {
         ManaColor col;
 

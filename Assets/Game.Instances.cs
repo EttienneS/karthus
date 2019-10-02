@@ -10,7 +10,7 @@ public partial class Game //.Instances
     private static CreatureController _creatureController;
 
     private static EntityInfoPanel _creatureInfoPanel;
-    private static EffectController _effectController;
+    private static VisualEffectController _effectController;
     private static FileController _fileController;
     private static Game _gameInstance;
     private static LeyLineController _leyLineController;
@@ -65,13 +65,13 @@ public partial class Game //.Instances
         }
     }
 
-    public static EffectController EffectController
+    public static VisualEffectController EffectController
     {
         get
         {
             if (_effectController == null)
             {
-                _effectController = GameObject.Find(ControllerConstants.EffectController).GetComponent<EffectController>();
+                _effectController = GameObject.Find(ControllerConstants.EffectController).GetComponent<VisualEffectController>();
             }
 
             return _effectController;

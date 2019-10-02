@@ -1,12 +1,12 @@
 ﻿using System;
 
-public class Blow : SpellBase
+public class Blow : EffectBase
 {
     public Blow()
     {
     }
 
-    public override bool DoSpell()
+    public override bool DoEffect()
     {
         Pipe fromPipe;
         ManaPool toPool;

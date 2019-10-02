@@ -18,7 +18,7 @@ public class Structure : IEntity
     public string SpriteName;
     public List<EntityTask> Tasks = new List<EntityTask>();
     public float TravelCost;
-    private Effect _outline;
+    private VisualEffect _outline;
 
     public Direction Rotation;
 

@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class SpellBase : EntityTask
+public abstract class EffectBase : EntityTask
 {
     public Dictionary<ManaColor, int> ManaCost;
-
     public float CastTime = 0.5f;
-
     public float Elapsed;
 
     public override bool Done()
@@ -27,7 +25,7 @@ public abstract class SpellBase : EntityTask
             return false;
         }
 
-        if (DoSpell())
+        if (DoEffect())
         {
             if (ManaCost != null)
             {
@@ -39,5 +37,5 @@ public abstract class SpellBase : EntityTask
         return false;
     }
 
-    public abstract bool DoSpell();
+    public abstract bool DoEffect();
 }

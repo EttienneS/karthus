@@ -1,10 +1,10 @@
-﻿public class Suck : SpellBase
+﻿public class Suck : EffectBase
 {
     public Suck()
     {
     }
 
-    public override bool DoSpell()
+    public override bool DoEffect()
     {
         Pipe toPipe;
         ManaPool fromPool;
