@@ -43,7 +43,7 @@ public class Blow : SpellBase
 
         if (fromPipe.ManaPool.HasMana(fromPipe.Attunement.Value))
         {
-            fromPipe.ManaPool.Transfer(toPool, fromPipe.Attunement.Value, 1);
+             fromPipe.ManaPool.Transfer(toPool, fromPipe.Attunement.Value, 1);
         }
         else
         {

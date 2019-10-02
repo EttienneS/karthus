@@ -32,6 +32,12 @@ public class Pipe : Structure
 
     internal void Flow()
     {
+        if (!ManaPool.HasMana(Attunement.Value))
+        {
+            Attunement = null;
+        }
+        Cell.UpdateTile();
+
         if (!Attunement.HasValue)
         {
             return;
@@ -72,12 +78,6 @@ public class Pipe : Structure
 
             target.Attunement = color;
             target.Cell.UpdateTile();
-
-            if (ManaPool.HasMana(Attunement.Value))
-            {
-                Attunement = null;
-            }
-            Cell.UpdateTile();
         }
     }
 }
