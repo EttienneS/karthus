@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public static class ManaExtensions
@@ -30,6 +31,18 @@ public static class ManaExtensions
         }
         color.a = alpha + 0.1f;
         return color;
+    }
+
+    internal static Dictionary<ManaColor, int> GetCostPool(params (ManaColor, int)[] requiredPool)
+    {
+        var pool = new Dictionary<ManaColor, int>();
+
+        foreach (var v in requiredPool)
+        {
+            pool.Add(v.Item1, v.Item2);
+        }
+
+        return pool;
     }
 
     public static Color GetActualColor(this ManaColor manaColor, float alpha = 1f)

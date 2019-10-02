@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 
 public partial class OrderSelectionController //.Designate
 {
@@ -79,7 +78,7 @@ public partial class OrderSelectionController //.Designate
             {
                 foreach (var creature in cell.GetEnemyCreaturesOf(FactionConstants.Player))
                 {
-                    FactionController.PlayerFaction.AddTaskWithEntityBadge(new ExecuteAttack(creature, new FireBlast()), null, creature, AttackIcon);
+                    FactionController.PlayerFaction.AddTaskWithEntityBadge(new Interact(new ManaBlast(), creature), null, creature, AttackIcon);
                 }
             }
         };

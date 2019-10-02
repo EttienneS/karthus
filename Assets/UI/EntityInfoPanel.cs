@@ -266,11 +266,16 @@ public class EntityInfoPanel : MonoBehaviour
                     {
                         foreach (var enemy in cell.GetEnemyCreaturesOf(creature.FactionName))
                         {
-                            FactionController.PlayerFaction
-                                             .AddTaskWithEntityBadge(new ExecuteAttack(enemy, new FireBlast()),
+                            var task =  FactionController.PlayerFaction
+                                             .AddTaskWithEntityBadge(new Interact(new ManaBlast(), enemy),
                                                                      null,
                                                                      enemy,
                                                                      OrderSelectionController.AttackIcon);
+
+                            creature.Task?.CancelTask();
+                            FactionController.PlayerFaction.AssignTask(creature, task);
+
+                            break;
                         }
                     }
                 }

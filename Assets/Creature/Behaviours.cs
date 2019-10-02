@@ -29,7 +29,7 @@ public static class Behaviours
         {
             if (FactionController.PlayerFaction.Creatures.Count > 0)
             {
-                task = new ExecuteAttack(FactionController.PlayerFaction.Creatures.GetRandomItem(), new Bite());
+                task = new Interact(new Bite(), FactionController.PlayerFaction.Creatures.GetRandomItem());
             }
         }
         else if (rand > 0.8f)
@@ -60,7 +60,7 @@ public static class Behaviours
 
         if (enemy != null)
         {
-            task = new ExecuteAttack(enemy, new FireBlast());
+            task = new Interact(new ManaBlast(), enemy);
         }
         else if (creature.ManaPool.Any(m => m.Value.Total > m.Value.Max && m.Value.Total > m.Value.Max))
         {

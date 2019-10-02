@@ -2,32 +2,33 @@
 
 public class Interact : EntityTask
 {
-    public float Duration;
-    public float ElapsedTime;
-    public IEntity Target;
-
     public EffectBase Effect;
+
+    public IEntity Target;
 
     public Interact()
     {
     }
 
-    public Interact(float duration, IEntity target, EffectBase effect)
+    public Interact(EffectBase effect, IEntity target)
     {
-        Duration = duration;
-        ElapsedTime = 0;
-        Target = target;
         Effect = effect;
+        Target = target;
+
     }
 
     public override bool Done()
     {
-        ElapsedTime += Time.deltaTime;
-
-        if (ElapsedTime >= Duration)
+        if (Effect.AssignedEntity == null)
         {
-            ShowDoneEmote();
-            return true;
+            Effect.Originator = Originator;
+            Effect.AssignedEntity = AssignedEntity;
+            Effect.Target = Target;
+        }
+
+        if (SubTasksComplete() && Effect.Ready())
+        {
+            return Effect.DoEffect();
         }
         return false;
     }

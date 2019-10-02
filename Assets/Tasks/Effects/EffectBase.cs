@@ -7,6 +7,9 @@ public abstract class EffectBase : EntityTask
     public float CastTime = 0.5f;
     public float Elapsed;
 
+    public IEntity Target;
+
+
     public override bool Done()
     {
         if (Elapsed < CastTime)
@@ -25,6 +28,11 @@ public abstract class EffectBase : EntityTask
             return false;
         }
 
+        if (!Ready())
+        {
+            return false;
+        }
+
         if (DoEffect())
         {
             if (ManaCost != null)
@@ -38,4 +46,11 @@ public abstract class EffectBase : EntityTask
     }
 
     public abstract bool DoEffect();
+
+    public virtual bool Ready()
+    {
+        return true;
+    }
+
+
 }
