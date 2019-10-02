@@ -1,16 +1,19 @@
-﻿using System.Linq;
+﻿using System.Diagnostics;
+using System.Linq;
 
 public partial class OrderSelectionController //.Designate
 {
     internal const string AttackIcon = "war_t";
     internal const string AttackText = "Attack";
-    internal const string CutIcon = "axe_t";
-    internal const string CutText = "Cut Tree";
+
     internal const string DefaultDesignateText = "Designate";
-    internal const string HarvestIcon = "wheat_t";
-    internal const string HarvestText = "Harvest Plant";
+
     internal const string MoveIcon = "location_t";
     internal const string MoveText = "Move Here";
+
+    internal const string DefaultRemoveImage = "cancel";
+    internal const string DefaultRemoveText = "Remove Building";
+
     internal OrderButton TaskButton;
 
     public void DesignateTypeClicked()
@@ -24,11 +27,44 @@ public partial class OrderSelectionController //.Designate
         {
             EnableAndClear();
 
-            CreateOrderButton(CutText, () => HarvestClicked("Tree", CutIcon), CutIcon);
-            CreateOrderButton(HarvestText, () => HarvestClicked("Bush", HarvestIcon), HarvestIcon);
             CreateOrderButton(MoveText, MoveClicked, MoveIcon);
             CreateOrderButton(AttackText, AttackClicked, AttackIcon);
+            CreateOrderButton(DefaultRemoveText, RemoveStructureClicked, DefaultRemoveImage);
         }
+    }
+
+    private void RemoveStructureClicked()
+    {
+        BuildButton.Text = DefaultRemoveText;
+        Game.Controller.SelectionPreference = SelectionPreference.Cell;
+        CellClickOrder = cells =>
+        {
+            foreach (var cell in cells)
+            {
+                if (cell.Structure?.Buildable == true)
+                {
+                    var structure = cell.Structure;
+
+                    if (structure.IsBluePrint)
+                    {
+                        Game.StructureController.DestroyStructure(structure);
+                    }
+                    else
+                    {
+                        if (FactionController.PlayerFaction.Tasks.OfType<RemoveStructure>().Any(t => t.StructureToRemove == structure))
+                        {
+                            continue;
+                        }
+                        FactionController.PlayerFaction
+                                         .AddTaskWithCellBadge(
+                                                new RemoveStructure(structure),
+                                                null,
+                                                structure.Cell,
+                                                DefaultRemoveImage);
+                    }
+                }
+            }
+        };
     }
 
     private void AttackClicked()
@@ -46,24 +82,6 @@ public partial class OrderSelectionController //.Designate
                     FactionController.PlayerFaction.AddTaskWithEntityBadge(new ExecuteAttack(creature, new FireBlast()), null, creature, AttackIcon);
                 }
             }
-        };
-    }
-
-    private void HarvestClicked(string type, string icon)
-    {
-        Game.Controller.SelectionPreference = SelectionPreference.Cell;
-        Game.Controller.SetMouseSprite(AttackIcon, (cell) => cell.Bound && cell.Structure?.IsType(type) == true);
-
-        CellClickOrder = cells =>
-        {
-            foreach (var cell in cells)
-            {
-                if (cell.Bound && cell.Structure?.IsType(type) == true)
-                {
-                    FactionController.PlayerFaction.AddTaskWithCellBadge(new RemoveStructure(cell.Structure), null, cell, icon);
-                }
-            }
-            Game.Controller.DeselectCell();
         };
     }
 
