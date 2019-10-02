@@ -14,7 +14,6 @@ public class Interact : EntityTask
     {
         Effect = effect;
         Target = target;
-
     }
 
     public override bool Done()

@@ -67,7 +67,14 @@ public class EntityInfoPanel : MonoBehaviour
                 {
                     if (creature.Task != null)
                     {
-                        Task.text = creature.Task.ToString();
+                        if (string.IsNullOrWhiteSpace(creature.Task.Message))
+                        {
+                            Task.text = creature.Task.ToString();
+                        }
+                        else
+                        {
+                            Task.text = creature.Task.Message;
+                        }
                     }
                     else
                     {
@@ -273,8 +280,7 @@ public class EntityInfoPanel : MonoBehaviour
                                                                      OrderSelectionController.AttackIcon);
 
                             creature.Task?.CancelTask();
-                            FactionController.PlayerFaction.AssignTask(creature, task);
-
+                            creature.Task = task;
                             break;
                         }
                     }
