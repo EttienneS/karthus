@@ -250,7 +250,7 @@ public partial class Game : MonoBehaviour
             creature.EnableHighlight(ColorConstants.InvalidColor);
         }
 
-        EntityInfoPanel.Show(SelectedCreatures.Select(c => c.Data));
+        EntityInfoPanel.Show(SelectedCreatures.Select(c => c.Data).ToList());
     }
 
     private void SelectStructure()
@@ -271,7 +271,7 @@ public partial class Game : MonoBehaviour
             }
         }
 
-        EntityInfoPanel.Show(SelectedStructures);
+        EntityInfoPanel.Show(SelectedStructures.ToList());
     }
 
     private void Start()

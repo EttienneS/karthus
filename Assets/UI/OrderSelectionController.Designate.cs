@@ -34,6 +34,9 @@ public partial class OrderSelectionController //.Designate
     private void AttackClicked()
     {
         Game.Controller.SelectionPreference = SelectionPreference.Cell;
+        Game.Controller.SetMouseSprite(OrderSelectionController.AttackIcon,
+                                           (c) => c.GetEnemyCreaturesOf(FactionConstants.Player).Any());
+
         CellClickOrder = cells =>
         {
             foreach (var cell in cells)
@@ -49,11 +52,13 @@ public partial class OrderSelectionController //.Designate
     private void HarvestClicked(string type, string icon)
     {
         Game.Controller.SelectionPreference = SelectionPreference.Cell;
+        Game.Controller.SetMouseSprite(AttackIcon, (cell) => cell.Bound && cell.Structure?.IsType(type) == true);
+
         CellClickOrder = cells =>
         {
             foreach (var cell in cells)
             {
-                if (cell.Bound && cell.Structure != null && cell.Structure.IsType(type))
+                if (cell.Bound && cell.Structure?.IsType(type) == true)
                 {
                     FactionController.PlayerFaction.AddTaskWithCellBadge(new RemoveStructure(cell.Structure), null, cell, icon);
                 }
@@ -65,6 +70,8 @@ public partial class OrderSelectionController //.Designate
     private void MoveClicked()
     {
         Game.Controller.SelectionPreference = SelectionPreference.Cell;
+        Game.Controller.SetMouseSprite(MoveIcon, (c) => c.TravelCost > 0);
+
         CellClickOrder = cells =>
         {
             var cell = cells.First();
