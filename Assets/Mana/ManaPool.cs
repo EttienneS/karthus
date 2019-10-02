@@ -43,6 +43,7 @@ public class ManaPool : Dictionary<ManaColor, Mana>
             if (kvp.Value.Total > max)
             {
                 most = kvp.Key;
+                max = kvp.Value.Total;
             }
         }
         return most;

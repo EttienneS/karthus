@@ -29,10 +29,12 @@ public class Shift : SpellBase
             return true;
         }
 
+        if (Random.value > 0.9)
+        {
+            return true;
+        }
+
         _pipe.Flow();
-
-      
-
         return true;
     }
 

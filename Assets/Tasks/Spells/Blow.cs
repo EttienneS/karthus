@@ -41,11 +41,14 @@ public class Blow : SpellBase
             return false;
         }
 
-        fromPipe.ManaPool.Transfer(toPool, fromPipe.Attunement.Value, 1);
-
-        if (fromPipe.ManaPool[fromPipe.Attunement.Value].Total <= 0)
+        if (fromPipe.ManaPool.HasMana(fromPipe.Attunement.Value))
+        {
+            fromPipe.ManaPool.Transfer(toPool, fromPipe.Attunement.Value, 1);
+        }
+        else
         {
             fromPipe.Attunement = null;
+            fromPipe.Cell.UpdateTile();
         }
 
         return true;

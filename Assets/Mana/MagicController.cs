@@ -47,7 +47,7 @@ public class MagicController : MonoBehaviour
                         break;
                     }
                     var task = Tasks.Dequeue();
-
+                     
                     if (task != null)
                     {
                         task.Done();
