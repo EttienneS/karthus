@@ -29,7 +29,10 @@ public abstract class SpellBase : EntityTask
 
         if (DoSpell())
         {
-            AssignedEntity.ManaPool.BurnMana(ManaCost);
+            if (ManaCost != null)
+            {
+                AssignedEntity.ManaPool.BurnMana(ManaCost);
+            }
             return true;
         }
 

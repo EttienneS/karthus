@@ -36,9 +36,15 @@
             return false;
         }
 
+        if (!toPipe.Attunement.HasValue)
+        {
+            toPipe.Attunement = fromPool.GetManaWithMost();
+        }
 
-        toPipe.Attunement = fromPool.GetManaWithMost();
-        fromPool.Transfer(toPipe.ManaPool, toPipe.Attunement.Value, 1);
+        if (fromPool.HasMana(toPipe.Attunement.Value))
+        {
+            fromPool.Transfer(toPipe.ManaPool, toPipe.Attunement.Value, 1);
+        }
 
         return true;
     }

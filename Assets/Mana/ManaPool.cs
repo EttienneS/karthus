@@ -48,6 +48,11 @@ public class ManaPool : Dictionary<ManaColor, Mana>
         return most;
     }
 
+    internal bool HasMana(ManaColor value)
+    {
+        return ContainsKey(value) && this[value].Total > 0;
+    }
+
     public void BurnMana(ManaColor color, int amount)
     {
         if (Entity?.Cell != null)
