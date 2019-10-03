@@ -17,6 +17,8 @@ public class Shift : EffectBase
     {
     }
 
+    public override int Range { get { return -1; } }
+
     public override bool DoEffect()
     {
         if (_pipe == null)

@@ -94,13 +94,9 @@ public static class Behaviours
                                                 && s.Properties.ContainsKey("RecoveryRate"));
             }
 
-            if (bed == null)
+            if (bed != null)
             {
-                task = new Sleep(creature.Cell, 0.75f);
-            }
-            else
-            {
-                task = new Sleep(bed);
+                task = new Interact(new DelayedPropertyEffect(25, Prop.Energy, bed.ValueProperties["RecoveryRate"] * 25,0), bed);
             }
         }
 

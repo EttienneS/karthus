@@ -4,6 +4,7 @@ using UnityEngine;
 public class Siphon : EffectBase
 {
     public int Size;
+    public override int Range { get { return -1; } }
 
     public Siphon()
     {

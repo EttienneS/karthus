@@ -9,7 +9,9 @@
   "Scatter": "False",
   "Buildable": "True",
   "Properties": {
-    "Type": "Bed",
+    "Type": "Bed"
+  },
+  "ValueProperties": {
     "RecoveryRate": "2"
   }
 }

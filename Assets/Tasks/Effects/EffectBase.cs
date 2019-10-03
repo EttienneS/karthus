@@ -9,6 +9,8 @@ public abstract class EffectBase : EntityTask
 
     public IEntity Target;
 
+    public abstract int Range { get; }
+
 
     public override bool Done()
     {
@@ -33,6 +35,11 @@ public abstract class EffectBase : EntityTask
             return false;
         }
 
+        if (!InRange())
+        {
+            return false;
+        }
+
         if (DoEffect())
         {
             if (ManaCost != null)
@@ -43,6 +50,24 @@ public abstract class EffectBase : EntityTask
         }
 
         return false;
+    }
+
+    public virtual bool InRange()
+    {
+        if (Range < 0)
+        {
+            return true;
+        }
+
+        if (AssignedEntity.Cell.DistanceTo(Target.Cell) > Range)
+        {
+            var spot = Game.Map.GetCircle(Target.Cell, Range - 1);
+            spot.Shuffle();
+            AssignedEntity.Task.AddSubTask(new Move(spot[0]));
+            return false;
+        }
+
+        return true;
     }
 
     public abstract bool DoEffect();

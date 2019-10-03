@@ -5,7 +5,6 @@ using System.Linq;
 public class Bind : EffectBase
 {
     public int Size;
-
     [JsonIgnore]
     private List<Cell> _affectAbleCells;
 
@@ -18,6 +17,7 @@ public class Bind : EffectBase
         Size = size;
     }
 
+    public override int Range { get { return -1; } }
     public override bool DoEffect()
     {
         if (_affectAbleCells == null)

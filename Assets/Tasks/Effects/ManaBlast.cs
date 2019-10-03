@@ -1,6 +1,6 @@
 ﻿public class ManaBlast : EffectBase
 {
-    public int Range { get; set; } = 5;
+    public override int Range { get { return 5; } }
 
     public override bool Ready()
     {
@@ -14,13 +14,6 @@
             ManaCost = ManaExtensions.GetCostPool((AssignedEntity.ManaPool.GetManaWithMost(), 1));
         }
 
-        if (AssignedEntity.Cell.DistanceTo(Target.Cell) > Range)
-        {
-            var spot = Game.Map.GetCircle(Target.Cell, Range - 1);
-            spot.Shuffle();
-            AssignedEntity.Task.AddSubTask(new Move(spot[0]));
-            return false;
-        }
         return true;
     }
 

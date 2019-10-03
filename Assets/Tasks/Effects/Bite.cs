@@ -3,13 +3,14 @@ using System.Linq;
 
 public class Bite : EffectBase
 {
-    public int Range { get; set; } = 0;
 
 
     public Bite()
     {
         ManaCost = ManaExtensions.GetCostPool((ManaColor.Red, 1));
     }
+
+    public override int Range { get { return 0; } }
 
     public override bool DoEffect()
     {
@@ -24,17 +25,5 @@ public class Bite : EffectBase
         return true;
     }
 
-    public override bool Ready()
-    {
-        if (Target == null)
-        {
-            throw new TaskFailedException();
-        }
-        if (AssignedEntity.Cell.DistanceTo(Target.Cell) > Range)
-        {
-            AssignedEntity.Task.AddSubTask(new Move(Target.Cell));
-            return false;
-        }
-        return true;
-    }
+
 }

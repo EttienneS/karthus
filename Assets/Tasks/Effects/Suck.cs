@@ -3,6 +3,7 @@
     public Suck()
     {
     }
+    public override int Range { get { return -1; } }
 
     public override bool DoEffect()
     {

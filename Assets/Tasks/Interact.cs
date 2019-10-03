@@ -14,7 +14,6 @@ public class Interact : EntityTask
     {
         Effect = effect;
         Target = target;
-
     }
 
     public override bool Done()
@@ -26,9 +25,9 @@ public class Interact : EntityTask
             Effect.Target = Target;
         }
 
-        if (SubTasksComplete() && Effect.Ready())
+        if (SubTasksComplete())
         {
-            return Effect.DoEffect();
+            return Effect.Done();
         }
         return false;
     }

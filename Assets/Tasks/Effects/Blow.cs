@@ -5,6 +5,7 @@ public class Blow : EffectBase
     public Blow()
     {
     }
+    public override int Range { get { return -1; } }
 
     public override bool DoEffect()
     {
