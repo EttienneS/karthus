@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class EntityInfoPanel : MonoBehaviour
 {
     public Text CreatureName;
-    public Text Properties;
+    public GameObject PropertiesPanel;
     public Text Task;
 
     public Text RedLabel;
@@ -16,17 +16,18 @@ public class EntityInfoPanel : MonoBehaviour
     public Text BlackLabel;
     public GameObject ButtonPanel;
 
-    private bool _firstRun = true;
+    private bool _hasRunOnce = true;
 
     public ImageButton ImageButtonPrefab;
 
     public void Start()
     {
-        if (_firstRun)
+        if (_hasRunOnce)
         {
+            PropertiesPanel = transform.Find("Content").Find("Properties").gameObject;
+
             var children = GetComponentsInChildren<Text>().ToList();
             CreatureName = children.First(t => t.name == "CreatureName");
-            Properties = children.First(t => t.name == "Properties");
             Task = children.First(t => t.name == "Task");
 
             RedLabel = children.First(t => t.name == "Red");
@@ -35,7 +36,7 @@ public class EntityInfoPanel : MonoBehaviour
             WhiteLabel = children.First(t => t.name == "White");
             BlackLabel = children.First(t => t.name == "Black");
 
-            _firstRun = true;
+            _hasRunOnce = true;
         }
     }
 
@@ -45,96 +46,96 @@ public class EntityInfoPanel : MonoBehaviour
     {
         if (CurrentEntities != null)
         {
-            Properties.text = string.Empty;
+            //PropertiesPanel.text = string.Empty;
 
-            if (CurrentEntities.Count == 1)
-            {
-                var currentEntity = CurrentEntities[0];
+            //if (CurrentEntities.Count == 1)
+            //{
+            //    var currentEntity = CurrentEntities[0];
 
-                CreatureName.text = currentEntity.Name;
+            //    CreatureName.text = currentEntity.Name;
 
-                foreach (var property in currentEntity.ValueProperties)
-                {
-                    Properties.text += $"{property.Key}:\t{property.Value.ToString()}\n";
-                }
+            //    foreach (var property in currentEntity.ValueProperties)
+            //    {
+            //        PropertiesPanel.text += $"{property.Key}:\t{property.Value.ToString()}\n";
+            //    }
 
-                foreach (var property in currentEntity.Properties)
-                {
-                    Properties.text += $"{property.Key}:\t{property.Value}\n";
-                }
+            //    foreach (var property in currentEntity.Properties)
+            //    {
+            //        PropertiesPanel.text += $"{property.Key}:\t{property.Value}\n";
+            //    }
 
-                if (currentEntity is CreatureData creature)
-                {
-                    if (creature.Task != null)
-                    {
-                        if (string.IsNullOrWhiteSpace(creature.Task.Message))
-                        {
-                            Task.text = creature.Task.ToString();
-                        }
-                        else
-                        {
-                            Task.text = creature.Task.Message;
-                        }
-                    }
-                    else
-                    {
-                        Task.text = "Finding Task";
-                    }
-                }
-                else
-                {
-                    var structure = currentEntity as Structure;
+            //    if (currentEntity is CreatureData creature)
+            //    {
+            //        if (creature.Task != null)
+            //        {
+            //            if (string.IsNullOrWhiteSpace(creature.Task.Message))
+            //            {
+            //                Task.text = creature.Task.ToString();
+            //            }
+            //            else
+            //            {
+            //                Task.text = creature.Task.Message;
+            //            }
+            //        }
+            //        else
+            //        {
+            //            Task.text = "Finding Task";
+            //        }
+            //    }
+            //    else
+            //    {
+            //        var structure = currentEntity as Structure;
 
-                    Properties.text += $"Rotation:\t {structure.Rotation}\n";
+            //        PropertiesPanel.text += $"Rotation:\t {structure.Rotation}\n";
 
-                    if (structure.IsBluePrint)
-                    {
-                        Properties.text += "\n*Blueprint, waiting for construction...*\n";
-                    }
-                    else
-                    {
-                        if (!string.IsNullOrEmpty(structure.InUseBy))
-                        {
-                            Properties.text += $"In use by:\t{structure.InUseBy}\n";
-                        }
+            //        if (structure.IsBluePrint)
+            //        {
+            //            PropertiesPanel.text += "\n*Blueprint, waiting for construction...*\n";
+            //        }
+            //        else
+            //        {
+            //            if (!string.IsNullOrEmpty(structure.InUseBy))
+            //            {
+            //                PropertiesPanel.text += $"In use by:\t{structure.InUseBy}\n";
+            //            }
 
-                        if (structure is Pipe pipe)
-                        {
-                            if (pipe.Attunement.HasValue)
-                            {
-                                Properties.text += $"Attunment:\t{pipe.Attunement.Value}\n";
-                            }
-                            else
-                            {
-                                Properties.text += $"Attunment:\tNone\n";
-                            }
-                        }
+            //            if (structure is Pipe pipe)
+            //            {
+            //                if (pipe.Attunement.HasValue)
+            //                {
+            //                    PropertiesPanel.text += $"Attunment:\t{pipe.Attunement.Value}\n";
+            //                }
+            //                else
+            //                {
+            //                    PropertiesPanel.text += $"Attunment:\tNone\n";
+            //                }
+            //            }
 
-                        if (structure.Spell != null)
-                        {
-                            Task.text = structure.Spell.ToString();
-                        }
-                        else
-                        {
-                            Task.text = "--";
-                        }
-                    }
+            //            if (structure.Spell != null)
+            //            {
+            //                Task.text = structure.Spell.ToString();
+            //            }
+            //            else
+            //            {
+            //                Task.text = "--";
+            //            }
+            //        }
 
-                }
+            //    }
 
-                Properties.text += $"\nLocation:\t{currentEntity.Cell}\n";
-            }
-            else
-            {
+            //    PropertiesPanel.text += $"\nLocation:\t{currentEntity.Cell}\n";
+            //}
+            //else
+            //{
 
 
-                CreatureName.text = $"{CurrentEntities.Count} entities";
-                foreach (var entity in CurrentEntities)
-                {
-                    Properties.text += $"- {entity.Name}\n";
-                }
-                Task.text = "Various";
-            }
+            //    CreatureName.text = $"{CurrentEntities.Count} entities";
+            //    foreach (var entity in CurrentEntities)
+            //    {
+            //        PropertiesPanel.text += $"- {entity.Name}\n";
+            //    }
+            //    Task.text = "Various";
+            //}
 
             SetManaLabels();
         }
