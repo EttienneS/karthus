@@ -32,7 +32,7 @@ public class Pipe : Structure
 
     internal void Flow()
     {
-        if (!ManaPool.HasMana(Attunement.Value))
+        if (Attunement.HasValue && !ManaPool.HasMana(Attunement.Value))
         {
             Attunement = null;
         }
