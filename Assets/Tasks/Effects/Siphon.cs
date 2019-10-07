@@ -1,10 +1,10 @@
-﻿using System.Linq;
+﻿ using System.Linq;
 using UnityEngine;
 
 public class Siphon : EffectBase
 {
     public int Size;
-    public new int Range = -1;
+    public new int Range = 1;
 
     public Siphon()
     {

@@ -82,7 +82,7 @@ public static class Behaviours
         {
             task = new Eat(ManaColor.Green);
         }
-        else if (creature.ValueProperties[Prop.Energy] < 150)
+        else if (creature.ValueProperties[Prop.Energy] < 15)
         {
             var bed = creature.Self.Structures.FirstOrDefault(s => s.Properties.ContainsKey("RecoveryRate"));
 

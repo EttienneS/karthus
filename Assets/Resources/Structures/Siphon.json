@@ -7,10 +7,10 @@
   "Buildable": true,
   "SpriteName": "Siphon",
   "TravelCost": "10",
-  "AutoInteractions": [
+  "ActivatedInteractions": [
     {
       "$type": "Siphon, Assembly-CSharp",
-      "Size": "2",
+      "Size": "5",
       "ActivationTime": "1"
     }
   ],

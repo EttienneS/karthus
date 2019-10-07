@@ -54,6 +54,7 @@ public class EntityInfoPanel : MonoBehaviour
             var creatures = entities.OfType<CreatureData>();
             AddMoveButton(creatures);
             AddAttackButton(creatures);
+            AddWorkButton(creatures);
         }
         else
         {
@@ -211,6 +212,31 @@ public class EntityInfoPanel : MonoBehaviour
 
                     creature.Task.CancelTask();
                     creature.Task = task;
+                }
+            };
+        });
+    }
+
+    private void AddWorkButton(IEnumerable<CreatureData> creatures)
+    {
+        var btn = AddButton("Work at", "anvil_t");
+        btn.SetOnClick(() =>
+        {
+            SetActiveButton(btn);
+            Game.Controller.SelectionPreference = SelectionPreference.Cell;
+            Game.Controller.SetMouseSprite("anvil_t", (c) => c.Structure?.ActivatedInteractions?.Count > 0);
+
+            Game.OrderSelectionController.CellClickOrder = cells =>
+            {
+                foreach (var creature in creatures)
+                {
+                    var cell = cells[0];
+
+                    if (cell.Structure?.ActivatedInteractions?.Count > 0)
+                    {
+                        creature.Task.CancelTask();
+                        creature.Task = new Interact(cell.Structure.ActivatedInteractions[0], creature, cell.Structure);
+                    }
                 }
             };
         });

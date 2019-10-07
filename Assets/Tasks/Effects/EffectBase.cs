@@ -63,9 +63,14 @@ public abstract class EffectBase : EntityTask
             AssignedEntity.Cell.DistanceTo(Target.Cell) > Range)
         {
             var cell = Target.Cell;
-            if (Range > 0)
+            if (Range == 1)
             {
-                var inRangeCells = Game.Map.GetCircle(Target.Cell, Range - 1);
+                cell = Target.Cell.GetRandomNeighbor();
+            }
+            else if (Range > 1)
+            {
+                var inRangeCells = Game.Map.GetCircle(Target.Cell, Range);
+                inRangeCells.Remove(Target.Cell);
                 inRangeCells.Shuffle();
                 cell = inRangeCells[0];
             }
