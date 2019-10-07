@@ -58,6 +58,7 @@ public class EntityInfoPanel : MonoBehaviour
         else
         {
             AddRemoveStructureButton(entities.OfType<Structure>());
+            AddCycleModeButton(entities.OfType<Structure>());
         }
     }
 
@@ -133,9 +134,9 @@ public class EntityInfoPanel : MonoBehaviour
                             }
                         }
 
-                        if (structure.Spell != null)
+                        if (structure.Interaction != null)
                         {
-                            PropertiesPanel.text += $"Effect: \t{structure.Spell}\n";
+                            PropertiesPanel.text += $"Effect: \t{structure.Interaction}\n";
                         }
                     }
                 }
@@ -213,6 +214,47 @@ public class EntityInfoPanel : MonoBehaviour
                 }
             };
         });
+    }
+
+    private void AddCycleModeButton(IEnumerable<Structure> structures)
+    {
+        var prime = structures.First();
+
+        if (!structures.All(s => s.Name == prime.Name && s.Interactions.Count > 0))
+        {
+            return;
+        }
+
+        var btn = AddButton($"{GetInteractionName(prime)}", "quest_complete_t");
+        btn.SetOnClick(() =>
+        {
+            SetActiveButton(btn);
+
+            prime.SelectedInteraction++;
+            if (prime.SelectedInteraction >= prime.Interactions.Count)
+            {
+                prime.SelectedInteraction = -1;
+            }
+
+            foreach (var structure in structures)
+            {
+                structure.SelectedInteraction = prime.SelectedInteraction;
+            }
+
+            btn.Text.text = $"{GetInteractionName(prime)}";
+        });
+    }
+
+    public string GetInteractionName(Structure structure)
+    {
+        if (structure.SelectedInteraction < 0)
+        {
+            return "Disabled";
+        }
+        else
+        {
+            return structure.Interactions[structure.SelectedInteraction].GetType().Name;
+        }
     }
 
     private void AddRemoveStructureButton(IEnumerable<Structure> structures)

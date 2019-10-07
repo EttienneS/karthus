@@ -1,9 +1,11 @@
 {
   "Name": "SpawnRune",
   "Material": "rune",
-  "Spell": {
-    "$type": "Spawn, Assembly-CSharp"
-  },
+  "Interactions": [
+    {
+      "$type": "Spawn, Assembly-CSharp"
+    }
+  ],
   "ManaValue": {
     "Black": "5",
     "Blue": "5"

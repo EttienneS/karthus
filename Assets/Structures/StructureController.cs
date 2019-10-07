@@ -100,7 +100,7 @@ public class StructureController : MonoBehaviour
 
             ClearStructure(structure.Cell);
 
-            if (structure.Spell != null)
+            if (structure.Interactions.Count > 0)
             {
                 Game.MagicController.FreeRune(structure);
             }

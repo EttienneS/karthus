@@ -12,9 +12,6 @@ public interface IEntity
 
     string FactionName { get; set; }
 
-    [JsonIgnore]
-    EntityTask Task { get; set; }
-
     void Damage(int amount, ManaColor type);
 
     Dictionary<string, string> Properties { get; set; }

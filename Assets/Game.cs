@@ -209,11 +209,6 @@ public partial class Game : MonoBehaviour
 
             faction.AddStructure(factionBody);
 
-            if (factionName != FactionConstants.Player)
-            {
-                factionBody.Spell = null;
-            }
-
             faction.transform.position = new Vector2(-100, -100);
             FactionController.Factions.Add(factionName, faction);
         }

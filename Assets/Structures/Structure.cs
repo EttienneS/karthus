@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -14,19 +15,37 @@ public class Structure : IEntity
     public string ShiftX;
     public string ShiftY;
     public string Size;
-    public EntityTask Spell;
+    public int SelectedInteraction;
     public string SpriteName;
-    public List<EntityTask> Tasks = new List<EntityTask>();
+    public List<EntityTask> Interactions = new List<EntityTask>();
     public float TravelCost;
     private VisualEffect _outline;
 
     public Direction Rotation;
 
     [JsonIgnore]
+    public EntityTask Interaction;
+
+    [JsonIgnore]
     private int _width, _height = -1;
 
     public Structure()
     {
+    }
+
+    internal EntityTask GetInteraction()
+    {
+        if (SelectedInteraction >= 0 && SelectedInteraction < Interactions.Count)
+        {
+            Interaction = Interactions[SelectedInteraction];
+
+            Interaction.AssignedEntity = this;
+            Interaction.Originator = this;
+
+            return Interaction;
+        }
+
+        return null;
     }
 
     public Structure(string name, string sprite)
@@ -68,9 +87,6 @@ public class Structure : IEntity
     public ManaPool ManaPool { get; set; }
     public string Name { get; set; }
     public Dictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
-
-    [JsonIgnore]
-    public EntityTask Task { get; set; }
 
     public void RotateCW()
     {

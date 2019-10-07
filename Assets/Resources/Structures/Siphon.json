@@ -7,12 +7,15 @@
   "Buildable": true,
   "SpriteName": "Siphon",
   "TravelCost": "10",
-  "Spell": {
-    "$type": "Siphon, Assembly-CSharp",
-    "Size": "2",
-    "CastTime": "1"
-  },
-  "Properties": {
+  "Interactions": [
+    {
+      "$type": "Siphon, Assembly-CSharp",
+      "Size": "2",
+      "CastTime": "1"
+    }
+  ],
+  "Properties":
+  {
     "Type": "Siphon,Suckable"
   }
 }

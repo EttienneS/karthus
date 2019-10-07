@@ -24,7 +24,7 @@
             throw new TaskFailedException();
         }
 
-        AssignedEntity.Task.DoneEmote = "Piss off ghost!!";
+        CreatureData.Task.DoneEmote = "Piss off ghost!!";
 
         Game.EffectController.SpawnEffect(Target.Cell, 0.5f);
 

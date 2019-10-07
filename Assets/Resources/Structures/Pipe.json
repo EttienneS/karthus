@@ -11,8 +11,10 @@
   "Properties": {
     "Type": "Pipe"
   },
-  "Spell": {
-    "$type": "Shift, Assembly-CSharp",
-    "CastTime": "0.1"
-  }
+  "Interactions": [
+    {
+      "$type": "Shift, Assembly-CSharp",
+      "CastTime": "0.1"
+    }
+  ]
 }

@@ -1,4 +1,6 @@
-﻿public class Build : EntityTask
+﻿using System.Linq;
+
+public class Build : EntityTask
 {
     public Structure TargetStructure;
 
@@ -44,7 +46,7 @@
             AssignedEntity.GetFaction().AddStructure(TargetStructure);
             CreatureData?.UpdateMemory(Context, MemoryType.Structure, TargetStructure.Id);
 
-            if (TargetStructure.Spell != null)
+            if (TargetStructure.Interactions.Count > 0)
             {
                 Game.MagicController.AddRune(TargetStructure);
             }

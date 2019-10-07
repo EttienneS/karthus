@@ -146,7 +146,10 @@ public class Faction : MonoBehaviour
 
         if (task.AssignedEntity != null)
         {
-            task.AssignedEntity.Task = null;
+            if (task.IsCreature)
+            {
+                task.CreatureData.Task = null;
+            }
             task.AssignedEntity = null;
         }
 

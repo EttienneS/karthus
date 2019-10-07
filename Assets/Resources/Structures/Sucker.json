@@ -11,8 +11,10 @@
     "Type": "Sucker,PipeEnd"
   },
   "Buildable": "True",
-  "Spell": {
-    "$type": "Suck, Assembly-CSharp",
-    "CastTime": "0.01"
-  }
+  "Interactions": [
+    {
+      "$type": "Suck, Assembly-CSharp",
+      "CastTime": "0.01"
+    }
+  ]
 }

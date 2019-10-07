@@ -138,11 +138,6 @@ public class MapGenerator
         var rune = location.CreateStructure(name, faction.FactionName);
         location.SetStructure(rune);
 
-        if (rune.Spell != null)
-        {
-            Game.MagicController.AddRune(rune);
-        }
-
         return rune;
     }
 

@@ -1,16 +1,18 @@
 {
   "Name": "BindRune",
   "Material": "rune",
-  "Spell": {
-    "$type": "Bind, Assembly-CSharp",
-    "Size": "10",
-    "CastTime": "0.1",
-    "ManaCost": {
-      "Blue": "1",
-      "Red": "1",
-      "Green": "1"
+  "Interactions": [
+    {
+      "$type": "Bind, Assembly-CSharp",
+      "Size": "10",
+      "CastTime": "0.1",
+      "ManaCost": {
+        "Blue": "1",
+        "Red": "1",
+        "Green": "1"
+      }
     }
-  },
+  ],
   "ManaValue": {
     "Blue": "5",
     "Red": "5",

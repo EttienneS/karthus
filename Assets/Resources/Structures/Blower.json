@@ -11,8 +11,10 @@
     "Type": "Blower,PipeEnd"
   },
   "Buildable": "True",
-  "Spell": {
-    "$type": "Blow, Assembly-CSharp",
-    "CastTime": "0.1"
-  }
+  "Interactions": [
+    {
+      "$type": "Blow, Assembly-CSharp",
+      "CastTime": "0.1"
+    }
+  ]
 }

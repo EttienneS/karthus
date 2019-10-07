@@ -11,7 +11,6 @@ public abstract class EffectBase : EntityTask
 
     public abstract int Range { get; }
 
-
     public override bool Done()
     {
         if (Elapsed < CastTime)
@@ -59,11 +58,12 @@ public abstract class EffectBase : EntityTask
             return true;
         }
 
-        if (AssignedEntity.Cell.DistanceTo(Target.Cell) > Range)
+        if (AssignedEntity is CreatureData creature &&
+            AssignedEntity.Cell.DistanceTo(Target.Cell) > Range)
         {
-            var spot = Game.Map.GetCircle(Target.Cell, Range - 1);
-            spot.Shuffle();
-            AssignedEntity.Task.AddSubTask(new Move(spot[0]));
+            var inRangeCells = Game.Map.GetCircle(Target.Cell, Range - 1);
+            inRangeCells.Shuffle();
+            creature.Task.AddSubTask(new Move(inRangeCells[0]));
             return false;
         }
 
@@ -76,6 +76,4 @@ public abstract class EffectBase : EntityTask
     {
         return true;
     }
-
-
 }

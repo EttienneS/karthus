@@ -4,19 +4,17 @@ using UnityEngine;
 
 public class MagicController : MonoBehaviour
 {
-    public List<Structure> Runes = new List<Structure>();
+    public List<Structure> Structures = new List<Structure>();
     internal float WorkTick;
 
     public void AddRune(Structure runeStructure)
     {
-        runeStructure.Spell.Originator = runeStructure;
-        runeStructure.Spell.AssignedEntity = runeStructure;
-        Runes.Add(runeStructure);
+        Structures.Add(runeStructure);
     }
 
     public void FreeRune(Structure stucture)
     {
-        Runes.Remove(stucture);
+        Structures.Remove(stucture);
     }
 
     public Queue<EntityTask> Tasks = new Queue<EntityTask>();
@@ -30,9 +28,14 @@ public class MagicController : MonoBehaviour
 
         if (Tasks.Count == 0)
         {
-            foreach (var rune in Runes)
+            foreach (var structure in Structures)
             {
-                Tasks.Enqueue(rune.Spell);
+                var interaction = structure.GetInteraction();
+                if (interaction == null)
+                {
+                    continue;
+                }
+                Tasks.Enqueue(interaction);
             }
         }
 

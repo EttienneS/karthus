@@ -6,30 +6,39 @@ public delegate void TaskComplete();
 public abstract class EntityTask
 {
     public IEntity AssignedEntity;
-    public IEntity Originator;
-    public string Context;
-    public string Message;
-
     public string BusyEmote;
+    public string Context;
     public string DoneEmote;
-
     public bool Failed;
-
-    public void CancelTask()
-    {
-        if (AssignedEntity != null)
-        {
-            AssignedEntity.GetFaction().CancelTask(this);
-        }
-    }
-
+    public string Message;
+    public IEntity Originator;
     public EntityTask Parent;
 
     public Queue<EntityTask> SubTasks = new Queue<EntityTask>();
 
+    private CreatureData _creatureData;
+
+    private bool? _isCreature;
 
     private bool? _isStructure;
-    private bool? _isCreature;
+
+    private Structure _structure;
+
+    [JsonIgnore]
+    public TaskComplete CompleteEvent { get; set; }
+
+    [JsonIgnore]
+    public CreatureData CreatureData
+    {
+        get
+        {
+            if (_creatureData == null && IsCreature)
+            {
+                _creatureData = AssignedEntity as CreatureData;
+            }
+            return _creatureData;
+        }
+    }
 
     [JsonIgnore]
     public bool IsCreature
@@ -57,25 +66,6 @@ public abstract class EntityTask
         }
     }
 
-
-
-    private CreatureData _creatureData;
-
-    [JsonIgnore]
-    public CreatureData CreatureData
-            {
-        get
-        {
-            if (_creatureData == null && IsCreature)
-            {
-                _creatureData = AssignedEntity as CreatureData;
-            }
-            return _creatureData;
-        }
-    }
-
-    private Structure _structure;
-
     [JsonIgnore]
     public Structure Structure
     {
@@ -89,9 +79,6 @@ public abstract class EntityTask
         }
     }
 
-    [JsonIgnore]
-    public TaskComplete CompleteEvent { get; set; }
-
     public EntityTask AddSubTask(EntityTask subTask)
     {
         subTask.Parent = this;
@@ -102,6 +89,14 @@ public abstract class EntityTask
         SubTasks.Enqueue(subTask);
 
         return subTask;
+    }
+
+    public void CancelTask()
+    {
+        if (AssignedEntity != null)
+        {
+            AssignedEntity.GetFaction().CancelTask(this);
+        }
     }
 
     public abstract bool Done();
