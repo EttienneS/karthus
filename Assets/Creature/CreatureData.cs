@@ -213,7 +213,7 @@ public class CreatureData : IEntity
             foreach (var structureId in Mind[context][MemoryType.Structure])
             {
                 var structure = IdService.GetStructureFromId(structureId);
-                if (structure != null && structure.InUseBy == Id)
+                if (structure != null && structure.InUseBy == this)
                 {
                     structure.Free();
                 }

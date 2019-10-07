@@ -11,10 +11,10 @@
   "Properties": {
     "Type": "Pipe"
   },
-  "Interactions": [
+  "AutoInteractions": [
     {
       "$type": "Shift, Assembly-CSharp",
-      "CastTime": "0.1"
+      "ActivationTime": "0.1"
     }
   ]
 }

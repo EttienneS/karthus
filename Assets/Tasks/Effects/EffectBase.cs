@@ -4,16 +4,17 @@ using UnityEngine;
 public abstract class EffectBase : EntityTask
 {
     public Dictionary<ManaColor, int> ManaCost;
-    public float CastTime = 0.5f;
+    public float ActivationTime = 0.5f;
     public float Elapsed;
 
     public IEntity Target;
+    public string DisplayName;
 
-    public abstract int Range { get; }
+    public int Range;
 
     public override bool Done()
     {
-        if (Elapsed < CastTime)
+        if (Elapsed < ActivationTime)
         {
             Elapsed += Time.deltaTime;
             return false;
@@ -61,9 +62,15 @@ public abstract class EffectBase : EntityTask
         if (AssignedEntity is CreatureData creature &&
             AssignedEntity.Cell.DistanceTo(Target.Cell) > Range)
         {
-            var inRangeCells = Game.Map.GetCircle(Target.Cell, Range - 1);
-            inRangeCells.Shuffle();
-            creature.Task.AddSubTask(new Move(inRangeCells[0]));
+            var cell = Target.Cell;
+            if (Range > 0)
+            {
+                var inRangeCells = Game.Map.GetCircle(Target.Cell, Range - 1);
+                inRangeCells.Shuffle();
+                cell = inRangeCells[0];
+            }
+            
+            creature.Task.AddSubTask(new Move(cell));
             return false;
         }
 

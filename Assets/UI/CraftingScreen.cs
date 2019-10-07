@@ -82,7 +82,7 @@ public class CraftingScreen : MonoBehaviour
 
     private void Scale()
     {
-        OptionsPanel.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _craftSource.Interactions.Count * 70f);
+        OptionsPanel.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _craftSource.AutoInteractions.Count * 70f);
         QueuePanel.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, FactionController.PlayerFaction.GetTaskByOriginator(_craftSource).Count() * 70f);
 
         //OptionsPanel.transform.position = new Vector2(0, 0);

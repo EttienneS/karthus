@@ -46,7 +46,7 @@ public class Build : EntityTask
             AssignedEntity.GetFaction().AddStructure(TargetStructure);
             CreatureData?.UpdateMemory(Context, MemoryType.Structure, TargetStructure.Id);
 
-            if (TargetStructure.Interactions.Count > 0)
+            if (TargetStructure.AutoInteractions.Count > 0)
             {
                 Game.MagicController.AddRune(TargetStructure);
             }

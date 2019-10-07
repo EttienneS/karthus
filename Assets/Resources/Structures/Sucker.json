@@ -11,10 +11,10 @@
     "Type": "Sucker,PipeEnd"
   },
   "Buildable": "True",
-  "Interactions": [
+  "AutoInteractions": [
     {
       "$type": "Suck, Assembly-CSharp",
-      "CastTime": "0.01"
+      "ActivationTime": "0.01"
     }
   ]
 }

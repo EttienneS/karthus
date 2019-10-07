@@ -117,9 +117,9 @@ public class EntityInfoPanel : MonoBehaviour
                     }
                     else
                     {
-                        if (!string.IsNullOrEmpty(structure.InUseBy))
+                        if (structure.InUseByAnyone)
                         {
-                            PropertiesPanel.text += $"In use by:\t{structure.InUseBy}\n";
+                            PropertiesPanel.text += $"In use by:\t{structure.InUseBy.Name}\n";
                         }
 
                         if (structure is Pipe pipe)
@@ -134,9 +134,9 @@ public class EntityInfoPanel : MonoBehaviour
                             }
                         }
 
-                        if (structure.Interaction != null)
+                        if (structure.AutoInteraction != null)
                         {
-                            PropertiesPanel.text += $"Effect: \t{structure.Interaction}\n";
+                            PropertiesPanel.text += $"Effect: \t{structure.AutoInteraction}\n";
                         }
                     }
                 }
@@ -175,7 +175,7 @@ public class EntityInfoPanel : MonoBehaviour
                         foreach (var enemy in cell.GetEnemyCreaturesOf(creature.FactionName))
                         {
                             var task = FactionController.PlayerFaction
-                                             .AddTaskWithEntityBadge(new Interact(new ManaBlast(), enemy),
+                                             .AddTaskWithEntityBadge(new Interact(new ManaBlast(), creature, enemy),
                                                                      null,
                                                                      enemy,
                                                                      OrderSelectionController.AttackIcon);
@@ -220,7 +220,7 @@ public class EntityInfoPanel : MonoBehaviour
     {
         var prime = structures.First();
 
-        if (!structures.All(s => s.Name == prime.Name && s.Interactions.Count > 0))
+        if (!structures.All(s => s.Name == prime.Name && s.AutoInteractions.Count > 0))
         {
             return;
         }
@@ -230,15 +230,15 @@ public class EntityInfoPanel : MonoBehaviour
         {
             SetActiveButton(btn);
 
-            prime.SelectedInteraction++;
-            if (prime.SelectedInteraction >= prime.Interactions.Count)
+            prime.SelectedAutoInteraction++;
+            if (prime.SelectedAutoInteraction >= prime.AutoInteractions.Count)
             {
-                prime.SelectedInteraction = -1;
+                prime.SelectedAutoInteraction = -1;
             }
 
             foreach (var structure in structures)
             {
-                structure.SelectedInteraction = prime.SelectedInteraction;
+                structure.SelectedAutoInteraction = prime.SelectedAutoInteraction;
             }
 
             btn.Text.text = $"{GetInteractionName(prime)}";
@@ -247,13 +247,19 @@ public class EntityInfoPanel : MonoBehaviour
 
     public string GetInteractionName(Structure structure)
     {
-        if (structure.SelectedInteraction < 0)
+        if (structure.SelectedAutoInteraction < 0)
         {
             return "Disabled";
         }
         else
         {
-            return structure.Interactions[structure.SelectedInteraction].GetType().Name;
+            var interaction = structure.AutoInteractions[structure.SelectedAutoInteraction];
+
+            if (!string.IsNullOrEmpty(interaction.DisplayName))
+            {
+                return interaction.DisplayName;
+            }
+            return interaction.GetType().Name;
         }
     }
 

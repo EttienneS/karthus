@@ -8,23 +8,24 @@ using UnityEngine.Tilemaps;
 public class Structure : IEntity
 {
     public bool Buildable;
-    public string InUseBy;
+    public IEntity InUseBy;
     public string Layer;
     public Dictionary<ManaColor, int> ManaValue;
     public string Material;
     public string ShiftX;
     public string ShiftY;
     public string Size;
-    public int SelectedInteraction;
+    public int SelectedAutoInteraction;
     public string SpriteName;
-    public List<EntityTask> Interactions = new List<EntityTask>();
+    public List<EffectBase> AutoInteractions = new List<EffectBase>();
+    public List<EffectBase> ActivatedInteractions = new List<EffectBase>();
     public float TravelCost;
     private VisualEffect _outline;
 
     public Direction Rotation;
 
     [JsonIgnore]
-    public EntityTask Interaction;
+    public EntityTask AutoInteraction;
 
     [JsonIgnore]
     private int _width, _height = -1;
@@ -35,14 +36,14 @@ public class Structure : IEntity
 
     internal EntityTask GetInteraction()
     {
-        if (SelectedInteraction >= 0 && SelectedInteraction < Interactions.Count)
+        if (SelectedAutoInteraction >= 0 && SelectedAutoInteraction < AutoInteractions.Count)
         {
-            Interaction = Interactions[SelectedInteraction];
+            AutoInteraction = AutoInteractions[SelectedAutoInteraction];
 
-            Interaction.AssignedEntity = this;
-            Interaction.Originator = this;
+            AutoInteraction.AssignedEntity = this;
+            AutoInteraction.Originator = this;
 
-            return Interaction;
+            return AutoInteraction;
         }
 
         return null;
@@ -79,7 +80,7 @@ public class Structure : IEntity
     {
         get
         {
-            return !string.IsNullOrEmpty(InUseBy);
+            return InUseBy != null;
         }
     }
 
@@ -230,7 +231,7 @@ public class Structure : IEntity
 
     internal void Free()
     {
-        InUseBy = string.Empty;
+        InUseBy = null;
     }
 
     internal void HideOutline()
@@ -246,7 +247,7 @@ public class Structure : IEntity
         return IsType("Floor");
     }
 
-    internal void Reserve(string reservedBy)
+    internal void Reserve(IEntity reservedBy)
     {
         InUseBy = reservedBy;
     }

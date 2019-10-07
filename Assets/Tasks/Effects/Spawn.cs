@@ -1,10 +1,10 @@
-﻿public class Spawn : EntityTask
+﻿public class Spawn : EffectBase
 {
     public Spawn()
     {
     }
 
-    public override bool Done()
+    public override bool DoEffect()
     {
         if (SubTasksComplete())
         {
@@ -19,4 +19,5 @@
 
         return false;
     }
+
 }

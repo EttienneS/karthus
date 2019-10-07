@@ -1,11 +1,11 @@
 {
   "Name": "BindRune",
   "Material": "rune",
-  "Interactions": [
+  "AutoInteractions": [
     {
       "$type": "Bind, Assembly-CSharp",
       "Size": "10",
-      "CastTime": "0.1",
+      "ActivationTime": "0.1",
       "ManaCost": {
         "Blue": "1",
         "Red": "1",

@@ -29,7 +29,7 @@ public static class Behaviours
         {
             if (FactionController.PlayerFaction.Creatures.Count > 0)
             {
-                task = new Interact(new Bite(), FactionController.PlayerFaction.Creatures.GetRandomItem());
+                task = new Interact(new Bite(), creature, FactionController.PlayerFaction.Creatures.GetRandomItem());
             }
         }
         else if (rand > 0.8f)
@@ -60,7 +60,7 @@ public static class Behaviours
 
         if (enemy != null)
         {
-            task = new Interact(new ManaBlast(), enemy);
+            task = new Interact(new ManaBlast(), creature, enemy);
         }
         else if (creature.ManaPool.Any(m => m.Value.Total > m.Value.Max && m.Value.Total > m.Value.Max))
         {
@@ -82,7 +82,7 @@ public static class Behaviours
         {
             task = new Eat(ManaColor.Green);
         }
-        else if (creature.ValueProperties[Prop.Energy] < 15)
+        else if (creature.ValueProperties[Prop.Energy] < 150)
         {
             var bed = creature.Self.Structures.FirstOrDefault(s => s.Properties.ContainsKey("RecoveryRate"));
 
@@ -91,12 +91,13 @@ public static class Behaviours
                 bed = IdService.StructureIdLookup.Values
                                          .FirstOrDefault(s =>
                                                 !s.InUseByAnyone
-                                                && s.Properties.ContainsKey("RecoveryRate"));
+                                                && !s.IsBluePrint
+                                                && s.Name == "Bed");
             }
 
             if (bed != null)
             {
-                task = new Interact(new DelayedPropertyEffect(25, Prop.Energy, bed.ValueProperties["RecoveryRate"] * 25,0), bed);
+                task = new Interact(bed.ActivatedInteractions[0], creature, bed);
             }
         }
 

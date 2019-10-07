@@ -1,6 +1,6 @@
 ﻿public class ManaBlast : EffectBase
 {
-    public override int Range { get { return 5; } }
+    public new int Range = 5;
 
     public override bool Ready()
     {

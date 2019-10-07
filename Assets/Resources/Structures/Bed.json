@@ -11,7 +11,15 @@
   "Properties": {
     "Type": "Bed"
   },
-  "ValueProperties": {
-    "RecoveryRate": "2"
-  }
+  "ActivatedInteractions": [
+    {
+      "$type": "ChangeEntityProperty, Assembly-CSharp",
+      "DisplayName": "Sleep",
+      "PropertyName": "Energy",
+      "FloatOperation": "Add",
+      "PropertyValueFloat": "50",
+      "ActivationTime": "1",
+      "Range": "0"
+    }
+  ]
 }
