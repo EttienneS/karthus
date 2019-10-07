@@ -815,7 +815,7 @@ RectTransform:
   - {fileID: 1273770522}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -1, y: 1, z: -0.009000001}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
@@ -1285,16 +1285,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcf195d82228c4f44a6512c749f68998, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CreatureName: {fileID: 990388309327533829}
-  PropertiesPanel: {fileID: 6143163147481105603}
-  RedLabel: {fileID: 4152624153885127340}
-  GreenLabel: {fileID: 5806323183197307615}
-  BlueLabel: {fileID: 2282520540198914259}
-  WhiteLabel: {fileID: 939332380534240820}
   BlackLabel: {fileID: 7873000406375277078}
+  BlueLabel: {fileID: 2282520540198914259}
   ButtonPanel: {fileID: 7169414191687086885}
+  CreatureName: {fileID: 990388309327533829}
+  GreenLabel: {fileID: 5806323183197307615}
   ImageButtonPrefab: {fileID: 4290916507904024791, guid: 3c8db75ef38709c4492ffa74ba7da10b,
     type: 3}
+  PropertiesPanel: {fileID: 4476075562749702981}
+  RedLabel: {fileID: 4152624153885127340}
+  WhiteLabel: {fileID: 939332380534240820}
 --- !u!1 &990388310669057176
 GameObject:
   m_ObjectHideFlags: 0
@@ -2415,10 +2415,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 0779b6384fecfe045980a212f8515238, type: 3}
-    m_FontSize: 14
+    m_FontSize: 18
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 1
     m_MaxSize: 40
     m_Alignment: 0
     m_AlignByGeometry: 0

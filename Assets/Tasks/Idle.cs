@@ -22,7 +22,7 @@ public class Idle : EntityTask
             AddSubTask(new Wait(0.1f, "Wait"));
         }
 
-        Message = "Waiting for something to do.";
+        Message = "Idle...";
     }
 
     public override bool Done()
