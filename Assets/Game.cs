@@ -54,6 +54,13 @@ public partial class Game : MonoBehaviour
         LineRenderer.positionCount = 0;
     }
 
+    public void DeselectAll()
+    {
+        DeselectCreature();
+        DeselectCell();
+        DeselectStructure(true);
+    }
+
     public void DeselectCell()
     {
         SelectedCells.Clear();
@@ -175,8 +182,6 @@ public partial class Game : MonoBehaviour
             }
         }
 
-
-
         if (Input.GetKeyDown("1"))
         {
             TimeManager.TimeStep = TimeStep.Normal;
@@ -232,6 +237,7 @@ public partial class Game : MonoBehaviour
         {
             Debug.Log($"Clicked: {SelectedCells.Count}: {SelectedCells[0]}");
             OrderSelectionController.CellClickOrder.Invoke(SelectedCells);
+            DeselectCell();
         }
     }
 
@@ -250,9 +256,6 @@ public partial class Game : MonoBehaviour
 
     private void SelectStructure()
     {
-        DeselectCell();
-        DeselectCreature();
-
         foreach (var structure in SelectedStructures)
         {
             structure.ShowOutline();
@@ -317,9 +320,7 @@ public partial class Game : MonoBehaviour
         if (Input.GetMouseButton(1))
         {
             // right mouse deselect all
-            DeselectCreature();
-            DeselectCell();
-            DeselectStructure(true);
+            DeselectAll();
 
             EntityInfoPanel.Hide();
             DisableMouseSprite();
@@ -359,9 +360,12 @@ public partial class Game : MonoBehaviour
                     return;
                 }
 
-                DeselectCell();
-                DeselectCreature();
-                DeselectStructure(false);
+                if (!Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.RightShift) 
+                    && OrderSelectionController.CellClickOrder == null)
+                {
+                    DeselectAll();
+                }
+
                 selectSquareImage.gameObject.SetActive(false);
 
                 var endPoint = Camera.main.ScreenToWorldPoint(SelectionEnd);
