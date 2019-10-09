@@ -4,7 +4,7 @@ using System.Linq;
 
 public enum MemoryType
 {
-    Item, Craft, Location, Creature, Stockpile, Structure
+    Item, Location, Creature, Stockpile, Structure
 }
 
 public class Memory : Dictionary<MemoryType, List<string>>

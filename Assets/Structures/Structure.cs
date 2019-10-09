@@ -25,7 +25,7 @@ public class Structure : IEntity
     public Direction Rotation;
 
     [JsonIgnore]
-    public EntityTask AutoInteraction;
+    public EffectBase AutoInteraction;
 
     [JsonIgnore]
     private int _width, _height = -1;
@@ -34,14 +34,12 @@ public class Structure : IEntity
     {
     }
 
-    internal EntityTask GetInteraction()
+    internal EffectBase GetInteraction()
     {
         if (SelectedAutoInteraction >= 0 && SelectedAutoInteraction < AutoInteractions.Count)
         {
             AutoInteraction = AutoInteractions[SelectedAutoInteraction];
-
             AutoInteraction.AssignedEntity = this;
-            AutoInteraction.Originator = this;
 
             return AutoInteraction;
         }

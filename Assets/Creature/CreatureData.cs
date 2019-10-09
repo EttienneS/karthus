@@ -12,45 +12,36 @@ public enum Mobility
 public class CreatureData : IEntity
 {
     public const string SelfKey = "Self";
-    public string BehaviourName;
 
-    [JsonIgnore]
-    public Color BottomColor;
+    [JsonIgnore] public Color BottomColor;
 
     public Direction Facing = Direction.S;
 
-    [JsonIgnore]
-    public Behaviours.GetBehaviourTaskDelegate GetBehaviourTask;
-
-    [JsonIgnore]
-    public Color HairColor;
+    [JsonIgnore] public Behaviours.GetBehaviourTaskDelegate GetBehaviourTask;
+    [JsonIgnore] public Color HairColor;
 
     public int HairStyle;
     public Dictionary<string, Memory> Mind = new Dictionary<string, Memory>();
     public Mobility Mobility;
-    public string Name { get; set; }
 
-    [JsonIgnore]
-    public Color SkinColor;
+    [JsonIgnore] public Color SkinColor;
 
     public float Speed = 10f;
 
-    [JsonIgnore]
-    public Color TopColor;
+    [JsonIgnore] public Color TopColor;
 
-    
     internal float InternalTick;
 
-    [JsonIgnore]
-    internal Cell LastPercievedCoordinate;
+    [JsonIgnore] internal Cell LastPercievedCoordinate;
 
     internal float WorkTick;
 
-    [JsonIgnore]
-    private List<Cell> _awareness;
+    [JsonIgnore] private List<Cell> _awareness;
 
-    [JsonIgnore]
-    private bool _firstRun = true;
+    private Cell _cell;
+
+    private Faction _faction;
+    [JsonIgnore] private bool _firstRun = true;
 
     public List<Cell> Awareness
     {
@@ -65,7 +56,8 @@ public class CreatureData : IEntity
         }
     }
 
-    private Cell _cell;
+    public string BehaviourName { get; set; }
+
     public Cell Cell
     {
         get
@@ -74,7 +66,7 @@ public class CreatureData : IEntity
         }
         set
         {
-            if(_cell != null)
+            if (_cell != null)
             {
                 _cell.Creatures.Remove(this);
             }
@@ -96,11 +88,26 @@ public class CreatureData : IEntity
         }
     }
 
+    [JsonIgnore]
+    public Faction Faction
+    {
+        get
+        {
+            if (_faction == null)
+            {
+                _faction = FactionController.Factions[FactionName];
+            }
+
+            return _faction;
+        }
+    }
+
     public string FactionName { get; set; }
     public string Id { get; set; }
     public ManaPool ManaPool { get; set; }
-
+    public string Name { get; set; }
     public int Perception { get; set; }
+    public Dictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
 
     [JsonIgnore]
     public Memory Self
@@ -116,11 +123,28 @@ public class CreatureData : IEntity
         }
     }
 
+    public List<Skill> Skills { get; set; }
     public string Sprite { get; set; }
 
+    private CreatureTask _task;
+
     [JsonIgnore]
-    public EntityTask Task { get; set; }
-    public Dictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
+    public CreatureTask Task
+    {
+        get
+        {
+            return _task;
+        }
+        set
+        {
+            if (_task != null)
+            {
+                _task.Destroy();
+            }
+            _task = value;
+        }
+    }
+
     public Dictionary<string, float> ValueProperties { get; set; } = new Dictionary<string, float>();
 
     public static CreatureData Load(string creatureData)
@@ -173,6 +197,51 @@ public class CreatureData : IEntity
         }
     }
 
+    public void GainSkill(string skillName, float amount)
+    {
+        var skill = GetSkill(skillName);
+
+        if (skill != null)
+        {
+            skill = new Skill(skillName);
+            Skills.Add(skill);
+        }
+
+        skill.Level += amount;
+    }
+
+    public Skill GetSkill(string skillName)
+    {
+        return Skills.Find(s => s.Name == skillName);
+    }
+
+    public float GetSkillLevel(string skillName)
+    {
+        var skill = GetSkill(skillName);
+
+        if (skill == null)
+        {
+            return 5; // untyped
+        }
+
+        if (skill.Enabled != true)
+        {
+            return float.MinValue;
+        }
+
+        return skill.Level;
+    }
+
+    public bool HasSkill(string skillName)
+    {
+        if (string.IsNullOrEmpty(skillName))
+        {
+            return true; // unskilled
+        }
+        var skill = GetSkill(skillName);
+        return skill?.Enabled == true;
+    }
+
     public void SetColors()
     {
         if (_firstRun)
@@ -189,6 +258,23 @@ public class CreatureData : IEntity
         CreatureRenderer.TopRenderer.color = TopColor;
         CreatureRenderer.BottomRenderer.color = BottomColor;
         CreatureRenderer.HairRenderer.color = HairColor;
+    }
+
+    internal void CancelTask()
+    {
+        Faction.RemoveTask(Task);
+        Task.Destroy();
+        Task = null;
+    }
+
+    internal bool CanDo(CreatureTask t)
+    {
+        if (HasSkill(t.RequiredSkill))
+        {
+            return GetSkillLevel(t.RequiredSkill) >= t.RequiredSkillLevel;
+        }
+
+        return false;
     }
 
     internal void Forget(string context)
@@ -219,6 +305,21 @@ public class CreatureData : IEntity
                 }
             }
         }
+    }
+
+    internal int GetPriority(CreatureTask t)
+    {
+        if (string.IsNullOrEmpty(t.RequiredSkill))
+        {
+            return 5; // untyped return baseline
+        }
+
+        if (HasSkill(t.RequiredSkill))
+        {
+            return GetSkill(t.RequiredSkill).Priority;
+        }
+
+        return 0;
     }
 
     internal void Know(string context)
@@ -292,38 +393,45 @@ public class CreatureData : IEntity
 
     private void ProcessTask()
     {
-        var faction = this.GetFaction();
         if (Task == null)
         {
-            var task = faction.GetTask(this);
-            var context = $"{Id} - {task} - {Game.TimeManager.Now}";
+            var task = Faction.TakeTask(this);
 
-            Know(context);
-            task.Context = context;
+            if (task != null)
+            {
+                var context = $"{Id} - {task} - {Game.TimeManager.Now}";
 
-            faction.AssignTask(this, task);
-            Task = task;
+                Know(context);
+                task.Context = context;
+
+                Task = task;
+            }
         }
         else
         {
             try
             {
-                faction.AssignTask(this, Task);
-
-                if (Task.Done())
+                if (Task.Done(this))
                 {
-                    Task.ShowDoneEmote();
+                    Task.ShowDoneEmote(this);
                     FreeResources(Task.Context);
                     Forget(Task.Context);
 
-                    faction.TaskComplete(Task);
+                    Faction.RemoveTask(Task);
                     Task = null;
+                }
+                else
+                {
+                    if (Random.value > 0.8)
+                    {
+                        Task.ShowBusyEmote(this);
+                    }
                 }
             }
             catch (Exception ex)
             {
                 Debug.LogWarning($"Task failed: {ex}");
-                faction.CancelTask(Task);
+                CancelTask();
             }
         }
     }
@@ -362,6 +470,45 @@ public class CreatureData : IEntity
             CreatureRenderer.HairRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite + facingKey + "hair_" + HairStyle);
         }
     }
+}
 
-    
+public class Skill
+{
+    private int _priority;
+
+    public Skill(string name)
+    {
+        Name = name;
+        Level = 0f;
+        Enabled = true;
+        Priority = 5;
+    }
+
+    public bool Enabled { get; set; }
+    public float Level { get; set; }
+    public string Name { get; set; }
+
+    public int Priority
+    {
+        get
+        {
+            return _priority;
+        }
+        set
+        {
+            _priority = Mathf.Clamp(value, 1, 10);
+        }
+    }
+
+    public override string ToString()
+    {
+        var skill = $"{Name}: {Level.ToString("N2")} [{Priority}]";
+
+        if (!Enabled)
+        {
+            skill = $"-{skill}-";
+        }
+
+        return skill;
+    }
 }

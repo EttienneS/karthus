@@ -1,4 +1,4 @@
-﻿public class RemoveStructure : EntityTask
+﻿public class RemoveStructure : CreatureTask
 {
     public Structure StructureToRemove;
 
@@ -23,9 +23,9 @@
         Message = $"Removing {StructureToRemove.Name} at {StructureToRemove.Cell}";
     }
 
-    public override bool Done()
+    public override bool Done(CreatureData creature)
     {
-        if (SubTasksComplete())
+        if (SubTasksComplete(creature))
         {
             Game.StructureController.DestroyStructure(StructureToRemove);
 

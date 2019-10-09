@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-public class Eat : EntityTask
+public class Eat : CreatureTask
 {
     public Eat()
     {
@@ -15,12 +15,12 @@ public class Eat : EntityTask
         AddSubTask(new Acrue(food));
     }
 
-    public override bool Done()
+    public override bool Done(CreatureData creature)
     {
-        if (SubTasksComplete())
+        if (SubTasksComplete(creature))
         {
-            AssignedEntity.ManaPool[FoodColor].Burn(1);
-            CreatureData.ValueProperties[Prop.Hunger] -= 50;
+            creature.ManaPool[FoodColor].Burn(1);
+            creature.ValueProperties[Prop.Hunger] -= 50;
             return true;
         }
 

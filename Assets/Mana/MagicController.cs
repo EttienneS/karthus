@@ -5,19 +5,18 @@ using UnityEngine;
 public class MagicController : MonoBehaviour
 {
     public List<Structure> Structures = new List<Structure>();
+    public Queue<EffectBase> Tasks = new Queue<EffectBase>();
     internal float WorkTick;
 
-    public void AddRune(Structure runeStructure)
+    public void AddEffector(Structure structure)
     {
-        Structures.Add(runeStructure);
+        Structures.Add(structure);
     }
 
-    public void FreeRune(Structure stucture)
+    public void RemoveEffector(Structure stucture)
     {
         Structures.Remove(stucture);
     }
-
-    public Queue<EntityTask> Tasks = new Queue<EntityTask>();
 
     private void Update()
     {
@@ -50,7 +49,7 @@ public class MagicController : MonoBehaviour
                         break;
                     }
                     var task = Tasks.Dequeue();
-                     
+
                     if (task != null)
                     {
                         task.Done();
@@ -65,7 +64,7 @@ public class MagicController : MonoBehaviour
         }
         catch (Exception ex)
         {
-            Debug.LogWarning($"Magic glitch: {ex.Message}");
+            Debug.LogWarning($"Effect glitch: {ex.Message}");
         }
     }
 }

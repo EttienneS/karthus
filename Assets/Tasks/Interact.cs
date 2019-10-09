@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Interact : EntityTask
+public class Interact : CreatureTask
 {
     public EffectBase Effect;
 
@@ -18,7 +18,7 @@ public class Interact : EntityTask
         Interactor = interactor;
     }
 
-    public override bool Done()
+    public override bool Done(CreatureData creature)
     {
         if (Interactor == null)
         {
@@ -26,7 +26,7 @@ public class Interact : EntityTask
         }
         else
         {
-            Effect.AssignedEntity = AssignedEntity;
+            Effect.AssignedEntity = creature;
         }
 
         Effect.Target = Target;
@@ -36,7 +36,7 @@ public class Interact : EntityTask
             structure.Reserve(Interactor);
         }
 
-        if (SubTasksComplete() && Effect.Done())
+        if (SubTasksComplete(creature) && Effect.Done())
         {
             Target = null;
             return true;

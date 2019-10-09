@@ -99,11 +99,6 @@ public class CreatureRenderer : MonoBehaviour
 
         if (Data.Update(Time.deltaTime))
         {
-            if (Random.value > 0.65)
-            {
-                Data.Task?.ShowBusyEmote();
-            }
-
             //if (Highlight.gameObject.activeInHierarchy)
             //{
             //    DrawAwareness();

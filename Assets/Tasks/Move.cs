@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Move : EntityTask
+public class Move : CreatureTask
 {
     public Cell TargetCoordinates;
 
@@ -26,32 +26,32 @@ public class Move : EntityTask
 
     public int MaxSpeed { get; set; }
 
-    public override bool Done()
+    public override bool Done(CreatureData creature)
     {
-        if (AssignedEntity == null || AssignedEntity.Cell == null)
+        if (creature == null || creature.Cell == null)
         {
             return false;
         }
 
-        if (AssignedEntity == null || AssignedEntity.Cell == null)
+        if (creature == null || creature.Cell == null)
         {
             return false;
         }
 
-        if (AssignedEntity.Cell == TargetCoordinates)
+        if (creature.Cell == TargetCoordinates)
         {
             return true;
         }
 
         if (_nextCell == null)
         {
-            var currentCreatureCell = AssignedEntity.Cell;
+            var currentCreatureCell = creature.Cell;
 
             if (_path == null || _path.Count == 0)
             {
                 _path = Pathfinder.FindPath(currentCreatureCell,
                     TargetCoordinates,
-                    CreatureData.Mobility);
+                    creature.Mobility);
             }
 
             if (_path == null)
@@ -74,29 +74,29 @@ public class Move : EntityTask
                 // difficults cells take longer
                 _journeyLength = Vector3.Distance(currentCreatureCell.ToMapVector(), _targetPos) + _nextCell.TravelCost;
 
-                CreatureData.Facing = Game.Map.GetDirection(currentCreatureCell, _nextCell);
+                creature.Facing = Game.Map.GetDirection(currentCreatureCell, _nextCell);
                 _startTime = Time.time;
             }
         }
 
-        if (_nextCell != null && CreatureData.CreatureRenderer.transform.position != _targetPos)
+        if (_nextCell != null && creature.CreatureRenderer.transform.position != _targetPos)
         {
             // move between two cells
-            var distCovered = (Time.time - _startTime) * Mathf.Min(CreatureData.Speed, MaxSpeed);
+            var distCovered = (Time.time - _startTime) * Mathf.Min(creature.Speed, MaxSpeed);
             var fracJourney = distCovered / _journeyLength;
-            CreatureData.CreatureRenderer.transform.position = Vector3.Lerp(AssignedEntity.Cell.ToMapVector(),
+            creature.CreatureRenderer.transform.position = Vector3.Lerp(creature.Cell.ToMapVector(),
                                       _targetPos,
                                       fracJourney);
         }
         else
         {
             // reached next cell
-            AssignedEntity.Cell = _nextCell;
-            CreatureData.CreatureRenderer.MainRenderer.SetBoundMaterial(_nextCell);
+            creature.Cell = _nextCell;
+            creature.CreatureRenderer.MainRenderer.SetBoundMaterial(_nextCell);
             _nextCell = null;
             _path = null;
         }
 
-        return AssignedEntity.Cell == TargetCoordinates;
+        return creature.Cell == TargetCoordinates;
     }
 }

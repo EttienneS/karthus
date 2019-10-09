@@ -23,7 +23,7 @@ public class Shift : EffectBase
     {
         if (_pipe == null)
         {
-            _pipe = Structure as Pipe;
+            _pipe = AssignedEntity as Pipe;
         }
 
         if (_pipe == null)

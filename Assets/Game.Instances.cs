@@ -6,7 +6,6 @@ public partial class Game //.Instances
     internal static MapGenerator MapGenerator;
     private static CameraController _cameraController;
 
-    //private static CraftingScreen _craftinScreen;
     private static CreatureController _creatureController;
 
     private static EntityInfoPanel _creatureInfoPanel;

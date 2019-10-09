@@ -246,7 +246,7 @@ public class Construct
                 {
                     cell.SetStructure(Game.StructureController.GetStructureBluePrint(GetStructure(character), faction));
                     cell.UpdateTile();
-                    faction.AddTask(new Build(cell.Structure), null);
+                    faction.AddTask(new Build(cell.Structure));
                 }
 
                 x++;

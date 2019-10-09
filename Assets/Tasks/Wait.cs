@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Wait : EntityTask
+public class Wait : CreatureTask
 {
     public float Duration;
     public float ElapsedTime;
@@ -18,13 +18,13 @@ public class Wait : EntityTask
         Message = $"{Reason} {Duration}";
     }
 
-    public override bool Done()
+    public override bool Done(CreatureData creature)
     {
         ElapsedTime += Time.deltaTime;
 
         if (ElapsedTime >= Duration)
         {
-            ShowDoneEmote();
+            ShowDoneEmote(creature);
             return true;
         }
         return false;

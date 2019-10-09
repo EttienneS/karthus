@@ -1,16 +1,22 @@
-﻿using System;
-
-public class Blow : EffectBase
+﻿public class Blow : EffectBase
 {
+    public new int Range = -1;
+
+    public Structure Structure;
+
     public Blow()
     {
     }
-    public new int Range = -1;
 
     public override bool DoEffect()
     {
         Pipe fromPipe;
         ManaPool toPool;
+
+        if (Structure == null)
+        {
+            Structure = AssignedEntity as Structure;
+        }
 
         var fromCell = Structure.Cell.GetNeighbor(Structure.Rotation);
 
@@ -44,7 +50,7 @@ public class Blow : EffectBase
 
         if (fromPipe.ManaPool.HasMana(fromPipe.Attunement.Value))
         {
-             fromPipe.ManaPool.Transfer(toPool, fromPipe.Attunement.Value, 1);
+            fromPipe.ManaPool.Transfer(toPool, fromPipe.Attunement.Value, 1);
         }
         else
         {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class EffectBase : EntityTask
+public abstract class EffectBase
 {
     public Dictionary<ManaColor, int> ManaCost;
     public float ActivationTime = 0.5f;
@@ -12,7 +12,9 @@ public abstract class EffectBase : EntityTask
 
     public int Range;
 
-    public override bool Done()
+    public IEntity AssignedEntity;
+
+    public bool Done()
     {
         if (Elapsed < ActivationTime)
         {

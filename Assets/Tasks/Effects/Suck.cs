@@ -1,14 +1,22 @@
 ﻿public class Suck : EffectBase
 {
+    public new int Range = -1;
+
+    public Structure Structure;
+
     public Suck()
     {
     }
-    public new int Range= -1; 
 
     public override bool DoEffect()
     {
         Pipe toPipe;
         ManaPool fromPool;
+
+        if (Structure == null)
+        {
+            Structure = AssignedEntity as Structure;
+        }
 
         var fromCell = Structure.Cell.GetNeighbor(Structure.Rotation);
         if (fromCell?.Structure?.IsBluePrint == false)

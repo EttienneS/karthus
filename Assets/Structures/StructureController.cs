@@ -102,7 +102,7 @@ public class StructureController : MonoBehaviour
 
             if (structure.AutoInteractions.Count > 0)
             {
-                Game.MagicController.FreeRune(structure);
+                Game.MagicController.RemoveEffector(structure);
             }
             IdService.RemoveEntity(structure);
             FactionController.Factions[structure.FactionName].Structures.Remove(structure);

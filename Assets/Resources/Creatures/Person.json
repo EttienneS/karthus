@@ -8,5 +8,19 @@
   "Sprite": "guy_",
   "Perception": 5,
   "BehaviourName": "Person",
-  "Mobility": "Walk"
+  "Mobility": "Walk",
+  "Skills": [
+    {
+      "Name": "Build",
+      "Enabled": "True",
+      "Level": 5,
+      "Priority": 5
+    },
+    {
+      "Name": "Mine",
+      "Enabled": "True",
+      "Level": 5,
+      "Priority": 5
+    }
+  ]
 }

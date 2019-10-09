@@ -6,18 +6,13 @@
 
     public override bool DoEffect()
     {
-        if (SubTasksComplete())
-        {
-            Game.CreatureController
+        Game.CreatureController
                 .CacheSpawn(Game.CreatureController.GetCreatureOfType("Person"),
                                AssignedEntity.Cell,
                                AssignedEntity.GetFaction());
 
-            Game.StructureController.DestroyStructure(Structure);
-            return true;
-        }
-
-        return false;
+        IdService.DestroyEntity(AssignedEntity);
+        return true;
     }
 
 }

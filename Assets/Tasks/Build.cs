@@ -1,14 +1,15 @@
 ﻿using System.Linq;
 
-public class Build : EntityTask
+public class Build : CreatureTask
 {
     public Structure TargetStructure;
 
     public Build()
     {
+        RequiredSkill = "Build";
     }
 
-    public Build(Structure structure)
+    public Build(Structure structure) : this()
     {
         TargetStructure = structure;
 
@@ -21,14 +22,14 @@ public class Build : EntityTask
         Message = $"Building {structure.Name} at {structure.Cell}";
     }
 
-    public override bool Done()
+    public override bool Done(CreatureData creature)
     {
         if (TargetStructure == null)
         {
             throw new TaskFailedException();
         }
 
-        if (SubTasksComplete())
+        if (SubTasksComplete(creature))
         {
             TargetStructure.SetBluePrintState(false);
 
@@ -43,12 +44,12 @@ public class Build : EntityTask
                 }
             }
 
-            AssignedEntity.GetFaction().AddStructure(TargetStructure);
-            CreatureData?.UpdateMemory(Context, MemoryType.Structure, TargetStructure.Id);
+            creature.GetFaction().AddStructure(TargetStructure);
+            creature.UpdateMemory(Context, MemoryType.Structure, TargetStructure.Id);
 
             if (TargetStructure.AutoInteractions.Count > 0)
             {
-                Game.MagicController.AddRune(TargetStructure);
+                Game.MagicController.AddEffector(TargetStructure);
             }
 
             return true;

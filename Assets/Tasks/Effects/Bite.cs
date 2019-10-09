@@ -17,9 +17,11 @@ public class Bite : EffectBase
             throw new TaskFailedException();
         }
 
-        CreatureData.Task.DoneEmote = "OMNOMONOM";
+        
         Target.Damage(2, ManaColor.Black);
-        CreatureData.Task.AddSubTask(new Move(Target.Cell.Neighbors.Where(n => n != null && n.TravelCost > 0).ToList().GetRandomItem()));
+
+        if (AssignedEntity is CreatureData creature)
+            creature.Task.AddSubTask(new Move(Target.Cell.Neighbors.Where(n => n != null && n.TravelCost > 0).ToList().GetRandomItem()));
 
         return true;
     }

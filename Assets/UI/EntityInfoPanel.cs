@@ -79,7 +79,7 @@ public class EntityInfoPanel : MonoBehaviour
 
                 foreach (var property in currentEntity.ValueProperties)
                 {
-                    PropertiesPanel.text += $"{property.Key}:\t{property.Value.ToString()}\n";
+                    PropertiesPanel.text += $"{property.Key}:\t{property.Value.ToString("N0")}\n";
                 }
 
                 foreach (var property in currentEntity.Properties)
@@ -90,6 +90,15 @@ public class EntityInfoPanel : MonoBehaviour
 
                 if (currentEntity is CreatureData creature)
                 {
+                    PropertiesPanel.text += "\nSkills: \n\n";
+
+                    foreach (var skill in creature.Skills)
+                    {
+                        PropertiesPanel.text += $"\t{skill}\n";
+                    }
+                    PropertiesPanel.text += "\n";
+
+
                     if (creature.Task != null)
                     {
                         if (string.IsNullOrWhiteSpace(creature.Task.Message))
@@ -175,13 +184,10 @@ public class EntityInfoPanel : MonoBehaviour
                     {
                         foreach (var enemy in cell.GetEnemyCreaturesOf(creature.FactionName))
                         {
-                            var task = FactionController.PlayerFaction
-                                             .AddTaskWithEntityBadge(new Interact(new ManaBlast(), creature, enemy),
-                                                                     null,
-                                                                     enemy,
-                                                                     OrderSelectionController.AttackIcon);
+                            var task = new Interact(new ManaBlast(), creature, enemy);
+                            task.AddEntityBadge(enemy, OrderSelectionController.AttackIcon);
 
-                            creature.Task?.CancelTask();
+                            creature.CancelTask();
                             creature.Task = task;
                             break;
                         }
@@ -207,10 +213,9 @@ public class EntityInfoPanel : MonoBehaviour
                     var cell = cells[0];
 
                     var faction = creature.GetFaction();
-                    var task = faction.AddTaskWithCellBadge(new Move(cell), creature, cell, OrderSelectionController.MoveIcon);
-                    faction.AssignTask(creature, task);
-
-                    creature.Task.CancelTask();
+                    var task = new Move(cell);
+                    task.AddCellBadge(cell, OrderSelectionController.MoveIcon);
+                    creature.CancelTask();
                     creature.Task = task;
                 }
             };
@@ -234,7 +239,7 @@ public class EntityInfoPanel : MonoBehaviour
 
                     if (cell.Structure?.ActivatedInteractions?.Count > 0)
                     {
-                        creature.Task.CancelTask();
+                        creature.CancelTask();
                         creature.Task = new Interact(cell.Structure.ActivatedInteractions[0], creature, cell.Structure);
                     }
                 }
@@ -304,18 +309,16 @@ public class EntityInfoPanel : MonoBehaviour
                 }
                 else
                 {
-                    if (FactionController.PlayerFaction.Tasks.OfType<RemoveStructure>().Any(t => t.StructureToRemove == structure))
+                    if (FactionController.PlayerFaction.AvailableTasks.OfType<RemoveStructure>().Any(t => t.StructureToRemove == structure))
                     {
                         Debug.Log("Structure already flagged to remove");
                     }
                     else
                     {
                         FactionController.PlayerFaction
-                                         .AddTaskWithCellBadge(
-                                                new RemoveStructure(structure),
-                                                null,
-                                                structure.Cell,
-                                                OrderSelectionController.DefaultRemoveImage);
+                                         .AddTask(new RemoveStructure(structure))
+                                         .AddCellBadge(structure.Cell,
+                                                       OrderSelectionController.DefaultRemoveImage);
                     }
                 }
             }

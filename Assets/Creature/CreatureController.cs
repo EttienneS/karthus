@@ -37,7 +37,7 @@ public class CreatureController : MonoBehaviour
         if (creature != null)
         {
             if (creature.Data.Task != null)
-                creature.Data.Task.CancelTask();
+                creature.Data.CancelTask();
 
             FactionController.Factions[creature.Data.FactionName].Creatures.Remove(creature.Data);
             CreatureLookup.Remove(creature.Data);

@@ -50,16 +50,13 @@ public partial class OrderSelectionController //.Designate
                     }
                     else
                     {
-                        if (FactionController.PlayerFaction.Tasks.OfType<RemoveStructure>().Any(t => t.StructureToRemove == structure))
+                        if (FactionController.PlayerFaction.AvailableTasks.OfType<RemoveStructure>().Any(t => t.StructureToRemove == structure))
                         {
                             continue;
                         }
                         FactionController.PlayerFaction
-                                         .AddTaskWithCellBadge(
-                                                new RemoveStructure(structure),
-                                                null,
-                                                structure.Cell,
-                                                DefaultRemoveImage);
+                                         .AddTask(new RemoveStructure(structure))
+                                         .AddCellBadge(structure.Cell, DefaultRemoveImage);
                     }
                 }
             }
@@ -78,7 +75,8 @@ public partial class OrderSelectionController //.Designate
             {
                 foreach (var creature in cell.GetEnemyCreaturesOf(FactionConstants.Player))
                 {
-                    FactionController.PlayerFaction.AddTaskWithEntityBadge(new Interact(new ManaBlast(), null, creature), null, creature, AttackIcon);
+                    FactionController.PlayerFaction.AddTask(new Interact(new ManaBlast(), null, creature))
+                                                   .AddEntityBadge(creature, AttackIcon);
                 }
             }
         };
@@ -92,7 +90,8 @@ public partial class OrderSelectionController //.Designate
         CellClickOrder = cells =>
         {
             var cell = cells.First();
-            FactionController.PlayerFaction.AddTaskWithCellBadge(new Move(cell), null, cell, MoveIcon);
+            FactionController.PlayerFaction.AddTask(new Move(cell))
+                                           .AddCellBadge(cell, MoveIcon);
         };
     }
 }

@@ -39,7 +39,7 @@ public class Save
 
     public CreatureData[] Creatures;
 
-    public EntityTask[] Tasks;
+    public CreatureTask[] Tasks;
 
     public TimeData Time;
 

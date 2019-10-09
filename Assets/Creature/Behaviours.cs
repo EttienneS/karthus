@@ -15,13 +15,13 @@ public static class Behaviours
         return BehaviourTypes[type];
     }
 
-    public delegate EntityTask GetBehaviourTaskDelegate(CreatureData creature);
+    public delegate CreatureTask GetBehaviourTaskDelegate(CreatureData creature);
 
     public const int WraithRange = 10;
 
-    public static EntityTask AbyssWraith(CreatureData creature)
+    public static CreatureTask AbyssWraith(CreatureData creature)
     {
-        EntityTask task = null;
+        CreatureTask task = null;
 
         var rand = Random.value;
 
@@ -52,9 +52,9 @@ public static class Behaviours
         return task;
     }
 
-    public static EntityTask Person(CreatureData creature)
+    public static CreatureTask Person(CreatureData creature)
     {
-        EntityTask task = null;
+        CreatureTask task = null;
 
         var enemy = FindEnemy(creature);
 

@@ -28,16 +28,11 @@ public class Bind : EffectBase
                                        .ToList();
         }
 
-        if (SubTasksComplete())
+        var cellToBind = _affectAbleCells.Find(c => !c.Bound);
+        if (cellToBind != null)
         {
-            var cellToBind = _affectAbleCells.Find(c => !c.Bound);
-            if (cellToBind != null)
-            {
-                Game.Map.BindCell(cellToBind, AssignedEntity);
-            }
-            return true;
+            Game.Map.BindCell(cellToBind, AssignedEntity);
         }
-
-        return false;
+        return true;
     }
 }

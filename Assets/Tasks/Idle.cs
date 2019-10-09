@@ -1,11 +1,9 @@
 ﻿using System.Linq;
 using UnityEngine;
 
-public class Idle : EntityTask
+public class Idle : CreatureTask
 {
-    public Idle()
-    {
-    }
+    public Idle() { }
 
     public Idle(CreatureData creature)
     {
@@ -25,8 +23,8 @@ public class Idle : EntityTask
         Message = "Idle...";
     }
 
-    public override bool Done()
+    public override bool Done(CreatureData Creature)
     {
-        return SubTasksComplete();
+        return SubTasksComplete(Creature);
     }
 }

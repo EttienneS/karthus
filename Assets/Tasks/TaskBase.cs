@@ -1,133 +1,83 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 public delegate void TaskComplete();
 
-public abstract class EntityTask
+public abstract class CreatureTask
 {
-    public IEntity AssignedEntity;
     public string BusyEmote;
     public string Context;
     public string DoneEmote;
-    public bool Failed;
     public string Message;
-    public IEntity Originator;
-    public EntityTask Parent;
+    public CreatureTask Parent;
 
-    public Queue<EntityTask> SubTasks = new Queue<EntityTask>();
+    public Queue<CreatureTask> SubTasks = new Queue<CreatureTask>();
 
-    private CreatureData _creatureData;
+    public string RequiredSkill { get; set; }
+    public float RequiredSkillLevel { get; set; }
 
-    private bool? _isCreature;
+    public List<Badge> Badges { get; set; } = new List<Badge>();
 
-    private bool? _isStructure;
-
-    private Structure _structure;
-
-    [JsonIgnore]
-    public TaskComplete CompleteEvent { get; set; }
-
-    [JsonIgnore]
-    public CreatureData CreatureData
+    public void AddCellBadge(Cell cell, string badgeIcon)
     {
-        get
-        {
-            if (_creatureData == null && IsCreature)
-            {
-                _creatureData = AssignedEntity as CreatureData;
-            }
-            return _creatureData;
-        }
+        Badges.Add(Game.EffectController.AddBadge(cell, badgeIcon));
     }
 
-    [JsonIgnore]
-    public bool IsCreature
+    public void AddEntityBadge(IEntity badgedEntity, string badgeIcon)
     {
-        get
-        {
-            if (_isCreature == null)
-            {
-                _isCreature = AssignedEntity is CreatureData;
-            }
-            return _isCreature.Value;
-        }
+        Badges.Add(Game.EffectController.AddBadge(badgedEntity, badgeIcon));
     }
 
-    [JsonIgnore]
-    public bool IsStructure
-    {
-        get
-        {
-            if (_isStructure == null)
-            {
-                _isStructure = AssignedEntity is Structure;
-            }
-            return _isStructure.Value;
-        }
-    }
-
-    [JsonIgnore]
-    public Structure Structure
-    {
-        get
-        {
-            if (_structure == null && IsStructure)
-            {
-                _structure = AssignedEntity as Structure;
-            }
-            return _structure;
-        }
-    }
-
-    public EntityTask AddSubTask(EntityTask subTask)
+    public CreatureTask AddSubTask(CreatureTask subTask)
     {
         subTask.Parent = this;
         subTask.Context = Context;
-        subTask.Originator = Originator;
-        subTask.AssignedEntity = AssignedEntity;
 
         SubTasks.Enqueue(subTask);
 
         return subTask;
     }
 
-    public void CancelTask()
-    {
-        if (AssignedEntity != null)
-        {
-            AssignedEntity.GetFaction().CancelTask(this);
-        }
-    }
+    public abstract bool Done(CreatureData creature);
 
-    public abstract bool Done();
-
-    public void ShowBusyEmote()
+    public void ShowBusyEmote(CreatureData creature)
     {
         if (!string.IsNullOrEmpty(BusyEmote))
         {
-            CreatureData?.CreatureRenderer.ShowText(BusyEmote, 1f);
+            creature.CreatureRenderer.ShowText(BusyEmote, 1f);
         }
     }
 
-    public void ShowDoneEmote()
+    public void ShowDoneEmote(CreatureData creature)
     {
         if (!string.IsNullOrEmpty(DoneEmote))
         {
-            CreatureData?.CreatureRenderer.ShowText(DoneEmote, 0.8f);
+            creature.CreatureRenderer.ShowText(DoneEmote, 0.8f);
         }
     }
 
-    public bool SubTasksComplete()
+    public bool SubTasksComplete(CreatureData creature)
     {
         if (SubTasks == null || SubTasks.Count == 0)
         {
             return true;
         }
         var current = SubTasks.Peek();
-        if (current.Done())
+        if (current.Done(creature))
         {
             SubTasks.Dequeue();
         }
         return false;
+    }
+
+    public void Destroy()
+    {
+        foreach (var badge in Badges)
+        {
+            badge.Destroy();
+        }
+        foreach (var task in SubTasks)
+        {
+            task.Destroy();
+        }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-public class Acrue : EntityTask
+public class Acrue : CreatureTask
 {
     public Acrue()
     {
@@ -13,23 +13,23 @@ public class Acrue : EntityTask
         TargetManaLevel = targetManaLevel;
     }
 
-    public override bool Done()
+    public override bool Done(CreatureData creature)
     {
-        if (SubTasksComplete())
+        if (SubTasksComplete(creature))
         {
             foreach (var targetLevel in TargetManaLevel)
             {
-                if (!AssignedEntity.ManaPool.ContainsKey(targetLevel.Key))
+                if (!creature.ManaPool.ContainsKey(targetLevel.Key))
                 {
-                    AddSubTask(Channel.GetChannelFrom(targetLevel.Key, targetLevel.Value, AssignedEntity.GetFaction().Core));
+                    AddSubTask(Channel.GetChannelFrom(targetLevel.Key, targetLevel.Value, creature.GetFaction().Core));
                     return false;
                 }
                 else
                 {
-                    var currentLevel = AssignedEntity.ManaPool[targetLevel.Key].Total;
+                    var currentLevel = creature.ManaPool[targetLevel.Key].Total;
                     if (currentLevel < targetLevel.Value)
                     {
-                        AddSubTask(Channel.GetChannelFrom(targetLevel.Key, targetLevel.Value - currentLevel, AssignedEntity.GetFaction().Core));
+                        AddSubTask(Channel.GetChannelFrom(targetLevel.Key, targetLevel.Value - currentLevel, creature.GetFaction().Core));
                         return false;
                     }
                 }
