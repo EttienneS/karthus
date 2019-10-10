@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering.LWRP;
 using Random = UnityEngine.Random;
 
 public class CreatureRenderer : MonoBehaviour
@@ -37,6 +39,7 @@ public class CreatureRenderer : MonoBehaviour
         LineRenderer = GetComponent<LineRenderer>();
 
         Highlight.gameObject.SetActive(false);
+        Light.gameObject.SetActive(false);
     }
 
     public void DrawAwareness()
@@ -127,6 +130,16 @@ public class CreatureRenderer : MonoBehaviour
         TempMaterialDelta = 0;
     }
 
+    internal void EnableLight()
+    {
+        if (Light != null)
+        {
+            Light.gameObject.SetActive(true);
+        }
+    }
+
+    public Light2D Light;
+
     internal void EnableHighlight(Color color)
     {
         if (Highlight != null)
@@ -155,6 +168,13 @@ public class CreatureRenderer : MonoBehaviour
 
     private void UpdateMaterial()
     {
+        var totalMana = Data.ManaPool.Sum(t => t.Value.Total);
+        //Light.volumeOpacity = totalMana / 100;
+        Light.pointLightOuterRadius = totalMana / 50.0f;
+        Light.pointLightInnerRadius = Light.pointLightOuterRadius / 2.0f;
+        Light.intensity = Light.pointLightOuterRadius;
+        Light.color = Data.ManaPool.GetManaWithMost().GetActualColor();
+
         if (TempMaterialDuration <= 0)
             return;
 
@@ -164,5 +184,6 @@ public class CreatureRenderer : MonoBehaviour
             TempMaterialDuration = 0;
             MainRenderer.SetBoundMaterial(Data.Cell);
         }
+
     }
 }

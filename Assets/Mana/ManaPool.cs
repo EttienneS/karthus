@@ -38,6 +38,7 @@ public class ManaPool : Dictionary<ManaColor, Mana>
     {
         var most = ManaColor.Blue;
         var max = int.MinValue;
+
         foreach (var kvp in this)
         {
             if (kvp.Value.Total > max)

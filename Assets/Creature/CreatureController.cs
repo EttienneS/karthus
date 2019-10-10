@@ -99,6 +99,8 @@ public class CreatureController : MonoBehaviour
             creature.Data.ManaPool.InitColor(ManaColor.Green, 3, 10, 5);
             creature.Data.ManaPool.InitColor(ManaColor.Blue, 0, 10, 0);
             creature.Data.ManaPool.InitColor(ManaColor.Black, 0, 10, 0);
+
+            creature.EnableLight();
         }
         else if (creatureData.Name == "QueenWraith")
         {
