@@ -42,8 +42,8 @@ public class Minimap : MonoBehaviour, IPointerClickHandler, IDragHandler
 
         MapSquareImage.transform.localPosition = new Vector3(relativeX, relativeY, -10);
 
-        var width = Mathf.CeilToInt(Game.CameraController.Camera.orthographicSize * Game.CameraController.RenderWidth * 2);
-        var height = Mathf.CeilToInt(Game.CameraController.Camera.orthographicSize * Game.CameraController.RenderHeight * 2);
+        var width = Mathf.CeilToInt(Game.CameraController.Camera.orthographicSize * Game.CameraController.RenderWidth);
+        var height = Mathf.CeilToInt(Game.CameraController.Camera.orthographicSize * Game.CameraController.RenderHeight);
 
         MapSquareImage.sizeDelta = new Vector2(width, height);
 
