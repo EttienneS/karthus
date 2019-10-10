@@ -184,7 +184,7 @@ public class EntityInfoPanel : MonoBehaviour
                     {
                         foreach (var enemy in cell.GetEnemyCreaturesOf(creature.FactionName))
                         {
-                            var task = new Interact(new ManaBlast(), creature, enemy);
+                            var task = new Interact(new ManaBlast(), creature, enemy.Id);
                             task.AddEntityBadge(enemy, OrderSelectionController.AttackIcon);
 
                             creature.CancelTask();
@@ -240,7 +240,7 @@ public class EntityInfoPanel : MonoBehaviour
                     if (cell.Structure?.ActivatedInteractions?.Count > 0)
                     {
                         creature.CancelTask();
-                        creature.Task = new Interact(cell.Structure.ActivatedInteractions[0], creature, cell.Structure);
+                        creature.Task = new Interact(cell.Structure.ActivatedInteractions[0], creature, cell.Structure.Id);
                     }
                 }
             };

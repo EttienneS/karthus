@@ -69,6 +69,8 @@ public abstract class CreatureTask
         return false;
     }
 
+    public bool Destroyed;
+
     public void Destroy()
     {
         foreach (var badge in Badges)
@@ -79,5 +81,6 @@ public abstract class CreatureTask
         {
             task.Destroy();
         }
+        Destroyed = true;
     }
 }

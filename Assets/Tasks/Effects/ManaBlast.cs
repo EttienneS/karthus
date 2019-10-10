@@ -9,9 +9,9 @@
             throw new TaskFailedException();
         }
 
-        if (ManaCost == null)
+        if (Cost == null)
         {
-            ManaCost = ManaExtensions.GetCostPool((AssignedEntity.ManaPool.GetManaWithMost(), 1));
+            Cost = ManaExtensions.GetCostPool((AssignedEntity.ManaPool.GetManaWithMost(), 1));
         }
 
         return true;
@@ -26,7 +26,7 @@
 
         Game.EffectController.SpawnEffect(Target.Cell, 0.5f);
 
-        foreach (var kvp in ManaCost)
+        foreach (var kvp in Cost)
         {
             Game.LeyLineController.MakeChannellingLine(AssignedEntity, Target, 5, 0.5f, kvp.Key);
             Target.Damage(5, kvp.Key);

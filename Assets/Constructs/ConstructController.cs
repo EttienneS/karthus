@@ -14,7 +14,7 @@ public static class ConstructController
                 _constructs = new List<Construct>();
                 foreach (var constructFile in Game.FileController.ConstructFiles)
                 {
-                    _constructs.Add(LoadConstruct(constructFile.text));
+                    _constructs.Add(constructFile.text.LoadJson<Construct>());
                 }
             }
 
@@ -22,14 +22,5 @@ public static class ConstructController
         }
     }
 
-    private static Construct LoadConstruct(string data)
-    {
-        var construct = JsonConvert.DeserializeObject<Construct>(data, new JsonSerializerSettings
-        {
-            TypeNameHandling = TypeNameHandling.Auto,
-            NullValueHandling = NullValueHandling.Ignore,
-        });
-
-        return construct;
-    }
+   
 }

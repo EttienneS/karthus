@@ -147,14 +147,6 @@ public class CreatureData : IEntity
 
     public Dictionary<string, float> ValueProperties { get; set; } = new Dictionary<string, float>();
 
-    public static CreatureData Load(string creatureData)
-    {
-        return JsonConvert.DeserializeObject<CreatureData>(creatureData, new JsonSerializerSettings
-        {
-            TypeNameHandling = TypeNameHandling.Auto,
-            NullValueHandling = NullValueHandling.Ignore,
-        });
-    }
 
     public void Damage(int amount, ManaColor type)
     {

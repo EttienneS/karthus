@@ -29,7 +29,7 @@ public static class Behaviours
         {
             if (FactionController.PlayerFaction.Creatures.Count > 0)
             {
-                task = new Interact(new Bite(), creature, FactionController.PlayerFaction.Creatures.GetRandomItem());
+                task = new Interact(new Bite(), creature, FactionController.PlayerFaction.Creatures.GetRandomItem().Id);
             }
         }
         else if (rand > 0.8f)
@@ -60,7 +60,7 @@ public static class Behaviours
 
         if (enemy != null)
         {
-            task = new Interact(new ManaBlast(), creature, enemy);
+            task = new Interact(new ManaBlast(), creature, enemy.Id);
         }
         else if (creature.ManaPool.Any(m => m.Value.Total > m.Value.Max && m.Value.Total > m.Value.Max))
         {
@@ -97,7 +97,7 @@ public static class Behaviours
 
             if (bed != null)
             {
-                task = new Interact(bed.ActivatedInteractions[0], creature, bed);
+                task = new Interact(bed.ActivatedInteractions[0], creature, bed.Id);
             }
         }
 

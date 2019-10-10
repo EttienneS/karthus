@@ -61,6 +61,21 @@ public class Structure : IEntity
     public Cell Cell { get; set; }
     public string FactionName { get; set; }
 
+    private Faction _faction;
+
+    [JsonIgnore]
+    public Faction Faction
+    {
+        get
+        {
+            if (_faction == null)
+            {
+                _faction = FactionController.Factions[FactionName];
+            }
+            return _faction;
+        }
+    }
+
     [JsonIgnore]
     public int Height
     {
@@ -160,18 +175,10 @@ public class Structure : IEntity
     {
         if (name == "Pipe")
         {
-            return JsonConvert.DeserializeObject<Pipe>(json, new JsonSerializerSettings
-            {
-                TypeNameHandling = TypeNameHandling.Auto,
-                NullValueHandling = NullValueHandling.Ignore,
-            });
+            return json.LoadJson<Pipe>();
         }
 
-        return JsonConvert.DeserializeObject<Structure>(json, new JsonSerializerSettings
-        {
-            TypeNameHandling = TypeNameHandling.Auto,
-            NullValueHandling = NullValueHandling.Ignore,
-        });
+        return json.LoadJson<Structure>();
     }
 
     public void Awake()

@@ -7,7 +7,7 @@ public class Bite : EffectBase
 
     public Bite()
     {
-        ManaCost = ManaExtensions.GetCostPool((ManaColor.Red, 1));
+        Cost = ManaExtensions.GetCostPool((ManaColor.Red, 1));
     }
 
     public override bool DoEffect()

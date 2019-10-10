@@ -1,20 +1,38 @@
-﻿using UnityEngine;
+﻿using Newtonsoft.Json;
+using UnityEngine;
 
 public class Interact : CreatureTask
 {
     public EffectBase Effect;
 
     public IEntity Interactor;
-    public IEntity Target;
+
+    public IEntity _target;
+
+    [JsonIgnore]
+    public IEntity Target
+    {
+        get
+        {
+            if (_target == null)
+            {
+                _target = IdService.GetEntityFromId(TargetID);
+            }
+
+            return _target;
+        }
+    }
+
+    public string TargetID;
 
     public Interact()
     {
     }
 
-    public Interact(EffectBase effect, IEntity interactor, IEntity target)
+    public Interact(EffectBase effect, IEntity interactor, string targetID)
     {
         Effect = effect;
-        Target = target;
+        TargetID = targetID;
         Interactor = interactor;
     }
 
@@ -22,9 +40,10 @@ public class Interact : CreatureTask
     {
         if (Interactor == null)
         {
-            Effect.AssignedEntity = Interactor;
+            Interactor = creature;
         }
-        else
+
+        if (Effect.AssignedEntity == null)
         {
             Effect.AssignedEntity = creature;
         }
@@ -38,7 +57,7 @@ public class Interact : CreatureTask
 
         if (SubTasksComplete(creature) && Effect.Done())
         {
-            Target = null;
+            TargetID = null;
             return true;
         }
         return false;

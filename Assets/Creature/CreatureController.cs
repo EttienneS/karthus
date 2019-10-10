@@ -27,7 +27,7 @@ public class CreatureController : MonoBehaviour
     {
         foreach (var creatureFile in Game.FileController.CreatureFiles)
         {
-            var creature = CreatureData.Load(creatureFile.text);
+            var creature = creatureFile.text.LoadJson<CreatureData>();
             Beastiary.Add(creature.Name, creature);
         }
     }

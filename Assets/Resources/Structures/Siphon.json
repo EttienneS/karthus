@@ -7,15 +7,24 @@
   "Buildable": true,
   "SpriteName": "Siphon",
   "TravelCost": "10",
-  "ActivatedInteractions": [
+  "AutoInteractions": [
     {
-      "$type": "Siphon, Assembly-CSharp",
-      "Size": "5",
-      "ActivationTime": "1"
+      "$type": "Job, Assembly-CSharp",
+      "ActivationTime": 0.5,
+      "Task": [
+        "{",
+        " \"$type\": \"Interact, Assembly-CSharp\",",
+        " \"Effect\": {",
+        "   \"$type\": \"Siphon, Assembly-CSharp\",",
+        "   \"Size\": \"5\",",
+        "   \"ActivationTime\": \"1\"",
+        " },",
+        " \"TargetID\": \"[THIS]\"",
+        "}"
+      ]
     }
   ],
-  "Properties":
-  {
+  "Properties": {
     "Type": "Siphon,Suckable"
   }
 }

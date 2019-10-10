@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class EffectBase
 {
-    public Dictionary<ManaColor, int> ManaCost;
+    public Dictionary<ManaColor, int> Cost;
     public float ActivationTime = 0.5f;
     public float Elapsed;
 
@@ -23,11 +24,11 @@ public abstract class EffectBase
         }
         Elapsed = 0f;
 
-        if (ManaCost != null && !AssignedEntity.ManaPool.HasMana(ManaCost))
+        if (Cost != null && !AssignedEntity.ManaPool.HasMana(Cost))
         {
             if (AssignedEntity is CreatureData creature)
             {
-                creature.Task.AddSubTask(new Acrue(ManaCost));
+                creature.Task.AddSubTask(new Acrue(Cost));
             }
             return false;
         }
@@ -44,9 +45,9 @@ public abstract class EffectBase
 
         if (DoEffect())
         {
-            if (ManaCost != null)
+            if (Cost != null)
             {
-                AssignedEntity.ManaPool.BurnMana(ManaCost);
+                AssignedEntity.ManaPool.BurnMana(Cost);
             }
             return true;
         }
@@ -90,4 +91,5 @@ public abstract class EffectBase
     {
         return true;
     }
+
 }

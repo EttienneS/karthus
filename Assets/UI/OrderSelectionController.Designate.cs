@@ -75,7 +75,7 @@ public partial class OrderSelectionController //.Designate
             {
                 foreach (var creature in cell.GetEnemyCreaturesOf(FactionConstants.Player))
                 {
-                    FactionController.PlayerFaction.AddTask(new Interact(new ManaBlast(), null, creature))
+                    FactionController.PlayerFaction.AddTask(new Interact(new ManaBlast(), null, creature.Id))
                                                    .AddEntityBadge(creature, AttackIcon);
                 }
             }

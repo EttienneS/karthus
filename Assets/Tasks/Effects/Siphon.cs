@@ -45,7 +45,7 @@ public class Siphon : EffectBase
         }
 
         AssignedEntity.ManaPool.GainMana(col, Random.Range(1, 3));
-        //Game.Map.Unbind(siphonedCell);
+        Game.Map.Unbind(siphonedCell);
         return true;
     }
 }
