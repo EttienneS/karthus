@@ -7,44 +7,30 @@ using UnityEngine.Tilemaps;
 
 public class Structure : IEntity
 {
+    public List<EffectBase> ActivatedInteractions = new List<EffectBase>();
+    [JsonIgnore]
+    public EffectBase AutoInteraction;
+
+    public List<EffectBase> AutoInteractions = new List<EffectBase>();
     public bool Buildable;
     public IEntity InUseBy;
     public string Layer;
     public Dictionary<ManaColor, int> ManaValue;
     public string Material;
+    public Direction Rotation;
+    public int SelectedAutoInteraction;
     public string ShiftX;
     public string ShiftY;
     public string Size;
-    public int SelectedAutoInteraction;
     public string SpriteName;
-    public List<EffectBase> AutoInteractions = new List<EffectBase>();
-    public List<EffectBase> ActivatedInteractions = new List<EffectBase>();
     public float TravelCost;
+    private Faction _faction;
     private VisualEffect _outline;
-
-    public Direction Rotation;
-
-    [JsonIgnore]
-    public EffectBase AutoInteraction;
-
     [JsonIgnore]
     private int _width, _height = -1;
 
     public Structure()
     {
-    }
-
-    internal EffectBase GetInteraction()
-    {
-        if (SelectedAutoInteraction >= 0 && SelectedAutoInteraction < AutoInteractions.Count)
-        {
-            AutoInteraction = AutoInteractions[SelectedAutoInteraction];
-            AutoInteraction.AssignedEntity = this;
-
-            return AutoInteraction;
-        }
-
-        return null;
     }
 
     public Structure(string name, string sprite)
@@ -53,15 +39,8 @@ public class Structure : IEntity
         SpriteName = sprite;
     }
 
-    internal bool IsInterlocking()
-    {
-        return IsWall() || IsPipe() || IsPipeEnd();
-    }
-
+    [JsonIgnore]
     public Cell Cell { get; set; }
-    public string FactionName { get; set; }
-
-    private Faction _faction;
 
     [JsonIgnore]
     public Faction Faction
@@ -75,6 +54,8 @@ public class Structure : IEntity
             return _faction;
         }
     }
+
+    public string FactionName { get; set; }
 
     [JsonIgnore]
     public int Height
@@ -98,27 +79,12 @@ public class Structure : IEntity
     }
 
     public bool IsBluePrint { get; private set; }
+
     public ManaPool ManaPool { get; set; }
+
     public string Name { get; set; }
+
     public Dictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
-
-    public void RotateCW()
-    {
-        Rotation = Rotation.Rotate90CW();
-        Game.StructureController.RefreshStructure(this);
-        Refresh();
-    }
-
-    public void RotateCCW()
-    {
-        Rotation = Rotation.Rotate90CCW();
-        Refresh();
-    }
-
-    public void Refresh()
-    {
-        Game.StructureController.RefreshStructure(this);
-    }
 
     [JsonIgnore]
     public Tile Tile
@@ -219,6 +185,24 @@ public class Structure : IEntity
         return IsType("Wall");
     }
 
+    public void Refresh()
+    {
+        Game.StructureController.RefreshStructure(this);
+    }
+
+    public void RotateCCW()
+    {
+        Rotation = Rotation.Rotate90CCW();
+        Refresh();
+    }
+
+    public void RotateCW()
+    {
+        Rotation = Rotation.Rotate90CW();
+        Game.StructureController.RefreshStructure(this);
+        Refresh();
+    }
+
     public void SetBluePrintState(bool state)
     {
         IsBluePrint = state;
@@ -239,6 +223,18 @@ public class Structure : IEntity
         InUseBy = null;
     }
 
+    internal EffectBase GetInteraction()
+    {
+        if (SelectedAutoInteraction >= 0 && SelectedAutoInteraction < AutoInteractions.Count)
+        {
+            AutoInteraction = AutoInteractions[SelectedAutoInteraction];
+            AutoInteraction.AssignedEntity = this;
+
+            return AutoInteraction;
+        }
+
+        return null;
+    }
     internal void HideOutline()
     {
         if (_outline != null)
@@ -252,6 +248,10 @@ public class Structure : IEntity
         return IsType("Floor");
     }
 
+    internal bool IsInterlocking()
+    {
+        return IsWall() || IsPipe() || IsPipeEnd();
+    }
     internal void Reserve(IEntity reservedBy)
     {
         InUseBy = reservedBy;

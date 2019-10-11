@@ -122,7 +122,6 @@ public class VisualEffect : MonoBehaviour
                                          Sprite.color.b,
                                          step);
             }
-
         }
 
         if (Light != null)
@@ -131,10 +130,8 @@ public class VisualEffect : MonoBehaviour
             {
                 Light.intensity = Intensity * (LifeSpan / FullSpan);
             }
-
         }
 
         transform.position += Vector;
-
     }
 }

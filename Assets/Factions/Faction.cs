@@ -2,7 +2,8 @@
 using System.Linq;
 using UnityEngine;
 
-public class Faction : MonoBehaviour
+
+public class Faction
 {
     public const int RecyleCount = 5;
     public const int RecyleTime = 3;
@@ -45,9 +46,7 @@ public class Faction : MonoBehaviour
         return new Idle(creature);
     }
 
-    public void Update()
-    {
-    }
+
 
     internal void AddCreature(CreatureData data)
     {
@@ -70,4 +69,5 @@ public class Faction : MonoBehaviour
 
         task.Destroy();
     }
+
 }

@@ -167,6 +167,15 @@ public partial class Game : MonoBehaviour
             cell.FluidLevel += 0.5f;
             cell.UpdateTile();
         }
+
+        if (Input.GetKeyDown("p"))
+        {
+            SaveManager.Save();
+        }
+        if (Input.GetKeyDown("["))
+        {
+            SaveManager.Load();
+        }
     }
 
     private void HandleTimeControls()
@@ -208,15 +217,13 @@ public partial class Game : MonoBehaviour
         })
         {
             var factionBody = StructureController.GetStructure(FactionConstants.StructureName, null);
-            var faction = new GameObject(factionName, typeof(Faction)).GetComponent<Faction>();
-            faction.transform.SetParent(transform);
+            var faction = new Faction();
 
             faction.FactionName = factionName;
             faction.Core = factionBody;
 
             faction.AddStructure(factionBody);
 
-            faction.transform.position = new Vector2(-100, -100);
             FactionController.Factions.Add(factionName, faction);
         }
     }

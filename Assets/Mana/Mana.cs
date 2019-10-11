@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 
 public class Mana
 {
@@ -9,14 +10,17 @@ public class Mana
         Color = color;
     }
 
+    [JsonIgnore]
     public Action<int> BurnAction { get; set; }
+
     public ManaColor Color { get; set; }
+    public int Desired { get; set; }
+
+    [JsonIgnore]
     public Action<int> GainAction { get; set; }
 
-    public int Total { get; set; }
-
     public int Max { get; set; }
-    public int Desired { get; set; }
+    public int Total { get; set; }
 
     public void Burn(int amount)
     {

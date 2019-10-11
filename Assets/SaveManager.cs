@@ -37,17 +37,14 @@ public class Save
     public CameraData CameraData;
     public Cell[] Cells;
 
-    public CreatureData[] Creatures;
-
-    public CreatureTask[] Tasks;
+    public Faction[] Factions;
 
     public TimeData Time;
 
     public Save()
     {
         Cells = Game.Map.Cells.ToArray();
-        Creatures = Game.CreatureController.CreatureLookup.Keys.ToArray();
-        //Tasks = Factions.Taskmasters[Data.Faction].Tasks.ToArray();
+        Factions = FactionController.Factions.Values.ToArray();
         Time = Game.TimeManager.Data;
         CameraData = new CameraData(Game.CameraController.Camera);
     }
@@ -84,10 +81,10 @@ public class SaveManager : MonoBehaviour
         //Game.MapGrid.LinkNeighbours();
         //Game.MapGrid.ResetSearchPriorities();
 
-        foreach (var SavedCreature in save.Creatures)
-        {
-            Game.CreatureController.SpawnCreature(SavedCreature, SavedCreature.Cell, SavedCreature.GetFaction());
-        }
+        //foreach (var SavedCreature in save.Creatures)
+        //{
+        //    Game.CreatureController.SpawnCreature(SavedCreature, SavedCreature.Cell, SavedCreature.GetFaction());
+        //}
 
         //foreach (var task in save.Tasks)
         //{

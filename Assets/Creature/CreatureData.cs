@@ -11,6 +11,9 @@ public enum Mobility
 
 public class CreatureData : IEntity
 {
+    // rather than serialzing the cell object we keep this lazy link for load
+    public (int X, int Y) Coords = (-1, -1);
+
     public const string SelfKey = "Self";
 
     [JsonIgnore] public Color BottomColor;
@@ -36,13 +39,16 @@ public class CreatureData : IEntity
 
     internal float WorkTick;
 
-    [JsonIgnore] private List<Cell> _awareness;
+    private List<Cell> _awareness;
 
     private Cell _cell;
 
     private Faction _faction;
-    [JsonIgnore] private bool _firstRun = true;
+    private bool _firstRun = true;
 
+    private CreatureTask _task;
+
+    [JsonIgnore]
     public List<Cell> Awareness
     {
         get
@@ -58,10 +64,15 @@ public class CreatureData : IEntity
 
     public string BehaviourName { get; set; }
 
+    [JsonIgnore]
     public Cell Cell
     {
         get
         {
+            if (_cell == null && Coords.X >= 0 && Coords.Y >= 0)
+            {
+                _cell = Game.Map.GetCellAtCoordinate(Coords.X, Coords.Y);
+            }
             return _cell;
         }
         set
@@ -73,6 +84,7 @@ public class CreatureData : IEntity
 
             if (value != null)
             {
+                Coords = (Cell.X, Cell.Y);
                 _cell = value;
                 _cell.Creatures.Add(this);
             }
@@ -125,9 +137,6 @@ public class CreatureData : IEntity
 
     public List<Skill> Skills { get; set; }
     public string Sprite { get; set; }
-
-    private CreatureTask _task;
-
     [JsonIgnore]
     public CreatureTask Task
     {
