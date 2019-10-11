@@ -70,7 +70,7 @@ public partial class Game //.Instances
         {
             if (_effectController == null)
             {
-                _effectController = GameObject.Find(ControllerConstants.EffectController).GetComponent<VisualEffectController>();
+                _effectController = GameObject.Find(ControllerConstants.VisualEffectController).GetComponent<VisualEffectController>();
             }
 
             return _effectController;

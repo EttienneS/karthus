@@ -1137,7 +1137,7 @@ PrefabInstance:
     - target: {fileID: 1699233023680752940, guid: ffe42bc49a7e309479ff71bc89d1d0bd,
         type: 3}
       propertyPath: m_Name
-      value: EffectController
+      value: VisualEffectController
       objectReference: {fileID: 0}
     - target: {fileID: 7449035809356891847, guid: ffe42bc49a7e309479ff71bc89d1d0bd,
         type: 3}

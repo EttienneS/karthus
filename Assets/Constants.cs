@@ -53,7 +53,7 @@ public static class ControllerConstants
     public const string MaterialController = "MaterialController";
     public const string LeyLineController = "LeyLineController";
     public const string MagicController = "MagicController";
-    public const string EffectController = "EffectController";
+    public const string VisualEffectController = "VisualEffectController";
 }
 
 public static class LayerConstants

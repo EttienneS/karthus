@@ -49,3 +49,5 @@ MonoBehaviour:
     type: 3}
   SpriteEffectPrefab: {fileID: 2276569073954430951, guid: 355bb63af5ebd0d4b82b8f412f2b8ea7,
     type: 3}
+  LightEffectPrefab: {fileID: -143350072419988112, guid: 5fd113746d0af3d40b4bc8ce54dee195,
+    type: 3}

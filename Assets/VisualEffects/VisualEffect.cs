@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering.LWRP;
 using Random = UnityEngine.Random;
 
 public class VisualEffect : MonoBehaviour
@@ -10,12 +11,14 @@ public class VisualEffect : MonoBehaviour
     public bool Fade { get; set; }
     public SpriteRenderer Sprite { get; set; }
     public ParticleSystem ParticleSystem { get; set; }
+    public Light2D Light { get; set; }
 
     public float PulseIntensity { get; set; } = -1;
 
     public void Awake()
     {
         Sprite = GetComponent<SpriteRenderer>();
+        Light = GetComponent<Light2D>();
         ParticleSystem = GetComponent<ParticleSystem>();
         _startTime = Time.time;
     }
