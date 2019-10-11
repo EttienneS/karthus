@@ -32,7 +32,7 @@ public static class ColorConstants
 
 public static class GameConstants
 {
-    public static float ChannelDuration = 2f;
+    public static float ChannelDuration = 0.5f;
 }
 
 public static class ControllerConstants
