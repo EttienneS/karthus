@@ -17,15 +17,17 @@ public class VisualEffectController : MonoBehaviour
         effect.transform.position = cell.ToTopOfMapVector();
     }
 
-    public void SpawnLightEffect(Cell cell, Color color, int radius, float intensity, float lifeSpan)
+    public VisualEffect SpawnLightEffect(Cell cell, Color color, float radius, float intensity, float lifeSpan)
     {
         var effect = Instantiate(LightEffectPrefab, transform);
 
         effect.Light.color = color;
-        effect.Light.intensity = intensity;
+        effect.Intensity = intensity;
         effect.Light.pointLightOuterRadius = radius;
         effect.LifeSpan = lifeSpan;
         effect.transform.position = cell.ToTopOfMapVector();
+
+        return effect;
     }
 
     public VisualEffect SpawnSpriteEffect(Cell cell, string sprite, float lifeSpan)

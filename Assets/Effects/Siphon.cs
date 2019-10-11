@@ -44,7 +44,13 @@ public class Siphon : EffectBase
                 return false;
         }
 
-        AssignedEntity.ManaPool.GainMana(col, Random.Range(1, 3));
+        var amount = Random.Range(1, 3);
+        AssignedEntity.ManaPool.GainMana(col, amount);
+        Game.VisualEffectController.SpawnLightEffect(AssignedEntity.Cell, col.GetActualColor(), 1.5f, amount * 2f, 3)
+                                      .Fades();
+
+        Game.VisualEffectController.SpawnLightEffect(siphonedCell, Color.magenta, 1.5f, 8, 8)
+                                      .Fades();
         Game.Map.Unbind(siphonedCell);
         return true;
     }

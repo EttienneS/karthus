@@ -345,9 +345,9 @@ public class CreatureData : IEntity
 
         if (ManaPool.Empty())
         {
-            Game.EffectController.SpawnEffect(Cell, 0.1f);
-            Game.EffectController.SpawnEffect(Cell, 0.1f);
-            Game.EffectController.SpawnEffect(Cell, 0.1f);
+            Game.VisualEffectController.SpawnEffect(Cell, 0.1f);
+            Game.VisualEffectController.SpawnEffect(Cell, 0.1f);
+            Game.VisualEffectController.SpawnEffect(Cell, 0.1f);
 
             Game.CreatureController.DestroyCreature(CreatureRenderer);
             return false;

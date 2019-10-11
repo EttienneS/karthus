@@ -19,12 +19,12 @@ public abstract class CreatureTask
 
     public void AddCellBadge(Cell cell, string badgeIcon)
     {
-        Badges.Add(Game.EffectController.AddBadge(cell, badgeIcon));
+        Badges.Add(Game.VisualEffectController.AddBadge(cell, badgeIcon));
     }
 
     public void AddEntityBadge(IEntity badgedEntity, string badgeIcon)
     {
-        Badges.Add(Game.EffectController.AddBadge(badgedEntity, badgeIcon));
+        Badges.Add(Game.VisualEffectController.AddBadge(badgedEntity, badgeIcon));
     }
 
     public CreatureTask AddSubTask(CreatureTask subTask)

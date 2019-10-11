@@ -5,15 +5,20 @@ using Random = UnityEngine.Random;
 public class VisualEffect : MonoBehaviour
 {
     public bool FadeOut;
+
     internal float LifeSpan;
+    internal float FullSpan = -1;
 
     private float _startTime;
     public bool Fade { get; set; }
     public Light2D Light { get; set; }
     public ParticleSystem ParticleSystem { get; set; }
-    public float PulseIntensity { get; set; } = -1;
+    public float Intensity { get; set; } = -1;
+    public float StartIntensity { get; set; } = -1;
+
     public SpriteRenderer Sprite { get; set; }
     public Vector3 Vector { get; set; }
+
     public void Awake()
     {
         Sprite = GetComponent<SpriteRenderer>();
@@ -21,6 +26,7 @@ public class VisualEffect : MonoBehaviour
         ParticleSystem = GetComponent<ParticleSystem>();
         _startTime = Time.time;
     }
+
     internal VisualEffect Big()
     {
         transform.localScale = new Vector3(2, 2, 2);
@@ -86,6 +92,16 @@ public class VisualEffect : MonoBehaviour
         if (Game.TimeManager.Paused)
             return;
 
+        if (FullSpan < 0)
+        {
+            FullSpan = LifeSpan;
+        }
+
+        if (StartIntensity < 0)
+        {
+            StartIntensity = Intensity;
+        }
+
         LifeSpan -= Time.deltaTime;
         if (LifeSpan <= 0)
         {
@@ -95,18 +111,30 @@ public class VisualEffect : MonoBehaviour
 
         float t = (Time.time - _startTime) / LifeSpan;
 
+        var step = FadeOut ? Mathf.SmoothStep(0, FullSpan, t) : Mathf.SmoothStep(FullSpan, 0, t);
+
         if (Sprite != null)
         {
             if (Fade)
             {
-                var step = FadeOut ? Mathf.SmoothStep(0, 1, t) : Mathf.SmoothStep(1, 0, t);
                 Sprite.color = new Color(Sprite.color.r,
                                          Sprite.color.g,
                                          Sprite.color.b,
                                          step);
             }
 
-            transform.position += Vector;
         }
+
+        if (Light != null)
+        {
+            if (Fade)
+            {
+                Light.intensity = Intensity * (LifeSpan / FullSpan);
+            }
+
+        }
+
+        transform.position += Vector;
+
     }
 }

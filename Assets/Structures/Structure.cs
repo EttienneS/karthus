@@ -259,7 +259,7 @@ public class Structure : IEntity
 
     internal void ShowOutline()
     {
-        _outline = Game.EffectController
+        _outline = Game.VisualEffectController
                        .SpawnSpriteEffect(Cell, "CellOutline", float.MaxValue)
                        .Regular();
     }
