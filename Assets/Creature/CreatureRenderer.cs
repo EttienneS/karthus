@@ -169,11 +169,12 @@ public class CreatureRenderer : MonoBehaviour
     private void UpdateMaterial()
     {
         var totalMana = Data.ManaPool.Sum(t => t.Value.Total);
-        //Light.volumeOpacity = totalMana / 100;
-        Light.pointLightOuterRadius = totalMana / 50.0f;
-        Light.pointLightInnerRadius = Light.pointLightOuterRadius / 2.0f;
-        Light.intensity = Light.pointLightOuterRadius;
+        Light.pointLightOuterRadius = 1 + Mathf.PingPong(Time.time, 0.1f);
+        Light.intensity = (totalMana / 15.0f) * (1 + Mathf.PingPong(Time.time, 0.1f));
+        Light.pointLightInnerAngle = Mathf.Min(totalMana * 5.0f, 360.0f);
+
         Light.color = Data.ManaPool.GetManaWithMost().GetActualColor();
+
 
         if (TempMaterialDuration <= 0)
             return;
