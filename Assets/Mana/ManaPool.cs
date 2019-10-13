@@ -16,11 +16,12 @@ public class ManaPool : Dictionary<ManaColor, Mana>
         {
             if (_entity == null)
             {
-
+                _entity = IdService.GetEntity(EntityId);
             }
+            return _entity;
         }
-        
     }
+
     public string EntityId;
 
     public ManaPool()
