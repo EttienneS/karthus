@@ -46,6 +46,7 @@ public class CreatureData : IEntity
     private Faction _faction;
     private bool _firstRun = true;
 
+
     private CreatureTask _task;
 
     [JsonIgnore]
@@ -72,6 +73,7 @@ public class CreatureData : IEntity
             if (_cell == null && Coords.X >= 0 && Coords.Y >= 0)
             {
                 _cell = Game.Map.GetCellAtCoordinate(Coords.X, Coords.Y);
+                _cell.AddCreature(this);
             }
             return _cell;
         }
@@ -79,26 +81,21 @@ public class CreatureData : IEntity
         {
             if (_cell != null)
             {
-                _cell.Creatures.Remove(this);
+                _cell.RemoveCreature(this);
             }
 
             if (value != null)
             {
-                Coords = (Cell.X, Cell.Y);
                 _cell = value;
-                _cell.Creatures.Add(this);
+                _cell.AddCreature(this);
+
+                Coords = (_cell.X, _cell.Y);
             }
         }
     }
 
     [JsonIgnore]
-    public CreatureRenderer CreatureRenderer
-    {
-        get
-        {
-            return Game.CreatureController.GetCreatureForCreatureData(this);
-        }
-    }
+    public CreatureRenderer CreatureRenderer { get; set; }
 
     [JsonIgnore]
     public Faction Faction
@@ -137,7 +134,7 @@ public class CreatureData : IEntity
 
     public List<Skill> Skills { get; set; }
     public string Sprite { get; set; }
-    [JsonIgnore]
+
     public CreatureTask Task
     {
         get
@@ -299,7 +296,7 @@ public class CreatureData : IEntity
         {
             foreach (var structureId in Mind[context][MemoryType.Structure])
             {
-                var structure = IdService.GetStructureFromId(structureId);
+                var structure = IdService.GetStructure(structureId);
                 if (structure != null && structure.InUseBy == this)
                 {
                     structure.Free();

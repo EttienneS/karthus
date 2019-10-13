@@ -16,7 +16,7 @@ public class Interact : CreatureTask
         {
             if (_target == null)
             {
-                _target = IdService.GetEntityFromId(TargetID);
+                _target = IdService.GetEntity(TargetID);
             }
 
             return _target;

@@ -106,7 +106,7 @@ public static class Behaviours
 
     private static CreatureData FindEnemy(CreatureData creature)
     {
-        return Game.CreatureController.CreatureLookup.Keys.FirstOrDefault(c => c.FactionName != creature.FactionName
+        return IdService.CreatureIdLookup.Values.FirstOrDefault(c => c.FactionName != creature.FactionName
         && creature.Awareness.Contains(c.Cell));
     }
 }

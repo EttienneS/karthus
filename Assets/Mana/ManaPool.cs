@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -6,11 +7,31 @@ using Random = UnityEngine.Random;
 
 public class ManaPool : Dictionary<ManaColor, Mana>
 {
-    public IEntity Entity;
+    private IEntity _entity;
+
+    [JsonIgnore]
+    public IEntity Entity
+    {
+        get
+        {
+            if (_entity == null)
+            {
+
+            }
+        }
+        
+    }
+    public string EntityId;
+
+    public ManaPool()
+    {
+        // do not use
+    }
 
     public ManaPool(IEntity owner)
     {
-        Entity = owner;
+        _entity = owner;
+        EntityId = owner.Id;
     }
 
     internal bool HasMana(Dictionary<ManaColor, int> manaCost)

@@ -567,7 +567,7 @@ public class Map : MonoBehaviour
             {
                 if (!cell.Bound)
                 {
-                    cell.Binding = IdService.GetEntityFromId(kvp.Key);
+                    cell.Binding = IdService.GetEntity(kvp.Key);
 
                     if (cell.Binding == null)
                     {

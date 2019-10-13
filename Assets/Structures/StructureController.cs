@@ -89,16 +89,23 @@ public class StructureController : MonoBehaviour
         {
             Game.Map.Unbind(structure);
 
-            if (structure.Cell.Floor == structure)
+            if (structure.Cell != null)
             {
-                structure.Cell.Floor = null;
+                if (structure.Cell.Floor == structure)
+                {
+                    structure.Cell.Floor = null;
+                }
+                else
+                {
+                    structure.Cell.Structure = null;
+                }
+
+                ClearStructure(structure.Cell);
             }
             else
             {
-                structure.Cell.Structure = null;
+                Debug.Log("Unbound structure");
             }
-
-            ClearStructure(structure.Cell);
 
             if (structure.AutoInteractions.Count > 0)
             {

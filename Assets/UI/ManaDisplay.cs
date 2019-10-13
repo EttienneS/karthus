@@ -21,6 +21,11 @@ public class ManaDisplay : MonoBehaviour
 
     private void Update()
     {
+        if (Game.TimeManager.Paused)
+        {
+            return;
+        }
+
         if (!_runOnce)
         {
             foreach (var mana in FactionController.PlayerFaction.Core.ManaPool)

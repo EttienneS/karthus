@@ -52,7 +52,7 @@ public static class IdService
         }
     }
 
-    public static CreatureData GetCreatureFromId(string id)
+    public static CreatureData GetCreature(this string id)
     {
         if (!CreatureIdLookup.TryGetValue(id, out var creature))
         {
@@ -61,7 +61,7 @@ public static class IdService
         return creature;
     }
 
-    public static Structure GetStructureFromId(string id)
+    public static Structure GetStructure(this string id)
     {
         if (StructureIdLookup.TryGetValue(id, out var structure))
         {
@@ -88,15 +88,15 @@ public static class IdService
         CreatureIdLookup.Clear();
     }
 
-    internal static IEntity GetEntityFromId(string id)
+    internal static IEntity GetEntity(this string id)
     {
         if (IsCreature(id))
         {
-            return GetCreatureFromId(id);
+            return GetCreature(id);
         }
         if (IsStructure(id))
         {
-            return GetStructureFromId(id);
+            return GetStructure(id);
         }
 
         Debug.LogWarning("Unknown entity type!");

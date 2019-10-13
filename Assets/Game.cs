@@ -91,7 +91,7 @@ public partial class Game : MonoBehaviour
         SelectedStructures.Clear();
     }
 
-    private void DestroyItemsInCache()
+    public void DestroyItemsInCache()
     {
         try
         {

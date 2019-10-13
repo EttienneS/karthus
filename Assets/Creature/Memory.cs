@@ -28,7 +28,7 @@ public class Memory : Dictionary<MemoryType, List<string>>
         {
             if (ContainsKey(MemoryType.Structure))
             {
-                return this[MemoryType.Structure].Select(IdService.GetStructureFromId);
+                return this[MemoryType.Structure].Select(IdService.GetStructure);
             }
             return new List<Structure>();
         }

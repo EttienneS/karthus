@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -8,11 +7,16 @@ using UnityEngine.Tilemaps;
 public class Structure : IEntity
 {
     public List<EffectBase> ActivatedInteractions = new List<EffectBase>();
+
     [JsonIgnore]
     public EffectBase AutoInteraction;
 
     public List<EffectBase> AutoInteractions = new List<EffectBase>();
+
     public bool Buildable;
+
+    // rather than serialzing the cell object we keep this lazy link for load
+    public (int X, int Y) Coords = (-1, -1);
     public IEntity InUseBy;
     public string Layer;
     public Dictionary<ManaColor, int> ManaValue;
@@ -24,8 +28,10 @@ public class Structure : IEntity
     public string Size;
     public string SpriteName;
     public float TravelCost;
+    private Cell _cell;
     private Faction _faction;
     private VisualEffect _outline;
+
     [JsonIgnore]
     private int _width, _height = -1;
 
@@ -40,7 +46,25 @@ public class Structure : IEntity
     }
 
     [JsonIgnore]
-    public Cell Cell { get; set; }
+    public Cell Cell
+    {
+        get
+        {
+            if (_cell == null && Coords.X >= 0 && Coords.Y >= 0)
+            {
+                _cell = Game.Map.GetCellAtCoordinate(Coords.X, Coords.Y);
+            }
+            return _cell;
+        }
+        set
+        {
+            if (value != null)
+            {
+                _cell = value;
+                Coords = (_cell.X, _cell.Y);
+            }
+        }
+    }
 
     [JsonIgnore]
     public Faction Faction
@@ -235,6 +259,7 @@ public class Structure : IEntity
 
         return null;
     }
+
     internal void HideOutline()
     {
         if (_outline != null)
@@ -252,6 +277,7 @@ public class Structure : IEntity
     {
         return IsWall() || IsPipe() || IsPipeEnd();
     }
+
     internal void Reserve(IEntity reservedBy)
     {
         InUseBy = reservedBy;

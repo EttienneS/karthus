@@ -1,18 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
-
 
 public class Faction
 {
     public const int RecyleCount = 5;
     public const int RecyleTime = 3;
+    public List<CreatureTask> AvailableTasks = new List<CreatureTask>();
+
+    public Structure Core;
+
+    public List<CreatureData> Creatures = new List<CreatureData>();
+    public string FactionName;
     public int LastRecyle;
-    internal List<CreatureTask> AvailableTasks = new List<CreatureTask>();
-    internal Structure Core;
-    internal List<CreatureData> Creatures = new List<CreatureData>();
-    internal string FactionName;
-    internal List<Structure> Structures = new List<Structure>();
+    public List<Structure> Structures = new List<Structure>();
 
     public CreatureTask AddTask(CreatureTask task)
     {
@@ -46,8 +47,6 @@ public class Faction
         return new Idle(creature);
     }
 
-
-
     internal void AddCreature(CreatureData data)
     {
         Creatures.Add(data);
@@ -69,5 +68,4 @@ public class Faction
 
         task.Destroy();
     }
-
 }

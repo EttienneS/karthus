@@ -7,16 +7,16 @@ public class CreatureController : MonoBehaviour
     public CreatureRenderer CreaturePrefab;
 
     internal Dictionary<string, CreatureData> Beastiary = new Dictionary<string, CreatureData>();
-    internal Dictionary<CreatureData, CreatureRenderer> CreatureLookup = new Dictionary<CreatureData, CreatureRenderer>();
+    //internal Dictionary<CreatureData, CreatureRenderer> CreatureLookup = new Dictionary<CreatureData, CreatureRenderer>();
 
     public CreatureRenderer GetCreatureAtPoint(Vector2 point)
     {
-        foreach (var creature in CreatureLookup.Values)
+        foreach (var creature in IdService.CreatureLookup.Values)
         {
-            var rect = new Rect(creature.transform.position.x - 0.5f, creature.transform.position.y - 0.5f, 1f, 1f);
+            var rect = new Rect(creature.CreatureRenderer.transform.position.x - 0.5f, creature.CreatureRenderer.transform.position.y - 0.5f, 1f, 1f);
             if (rect.Contains(point))
             {
-                return creature;
+                return creature.CreatureRenderer;
             }
         }
 
@@ -40,7 +40,6 @@ public class CreatureController : MonoBehaviour
                 creature.Data.CancelTask();
 
             FactionController.Factions[creature.Data.FactionName].Creatures.Remove(creature.Data);
-            CreatureLookup.Remove(creature.Data);
             IdService.RemoveEntity(creature.Data);
             Game.Controller.AddItemToDestroy(creature.gameObject);
         }
@@ -55,11 +54,6 @@ public class CreatureController : MonoBehaviour
         }
 
         return Beastiary[v].CloneJson();
-    }
-
-    internal CreatureRenderer GetCreatureForCreatureData(CreatureData creatureData)
-    {
-        return CreatureLookup[creatureData];
     }
 
     public List<(CreatureData creature, Cell cell, Faction faction)> SpawnCache = new List<(CreatureData, Cell, Faction)>();
@@ -82,6 +76,10 @@ public class CreatureController : MonoBehaviour
     {
         var creature = Instantiate(CreaturePrefab, transform);
         creature.Data = creatureData;
+        creature.Data.CreatureRenderer = creature;
+        IdService.EnrollEntity(creature.Data);
+        creature.name = $"{creature.Data.Name} ({creature.Data.Id})"; 
+
         creature.Data.Name = CreatureHelper.GetRandomName();
         creature.Data.Cell = cell;
         creature.transform.position = cell.ToMapVector();
@@ -119,16 +117,8 @@ public class CreatureController : MonoBehaviour
             creature.Data.ManaPool.InitColor(ManaColor.Black, 0, 10, 0);
         }
 
-        IndexCreature(creature);
         faction.AddCreature(creatureData);
         return creature;
     }
 
-    private void IndexCreature(CreatureRenderer creature)
-    {
-        CreatureLookup.Add(creature.Data, creature);
-        IdService.EnrollEntity(creature.Data);
-
-        creature.name = $"{creature.Data.Name} ({creature.Data.Id})";
-    }
 }

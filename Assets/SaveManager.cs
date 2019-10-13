@@ -4,52 +4,6 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 
-public class CameraData
-{
-    public float X;
-    public float Y;
-    public float Z;
-
-    public float Zoom;
-
-    public CameraData()
-    {
-    }
-
-    public CameraData(Camera c)
-    {
-        X = c.transform.position.x;
-        Y = c.transform.position.y;
-        Z = c.transform.position.z;
-
-        Zoom = c.orthographicSize;
-    }
-
-    public void Load(Camera c)
-    {
-        c.transform.position = new Vector3(X, Y, Z);
-        c.orthographicSize = Zoom;
-    }
-}
-
-public class Save
-{
-    public CameraData CameraData;
-    public Cell[] Cells;
-
-    public Faction[] Factions;
-
-    public TimeData Time;
-
-    public Save()
-    {
-        Cells = Game.Map.Cells.ToArray();
-        Factions = FactionController.Factions.Values.ToArray();
-        Time = Game.TimeManager.Data;
-        CameraData = new CameraData(Game.CameraController.Camera);
-    }
-}
-
 public class SaveManager : MonoBehaviour
 {
     public void Load()
@@ -66,35 +20,32 @@ public class SaveManager : MonoBehaviour
 
         Game.TimeManager.Data = save.Time;
 
-        //foreach (var saveCell in save.Cells)
-        //{
-        //    var newCell = Game.MapGrid.CreateCell(saveCell.X, saveCell.Y);
-        //    newCell = saveCell;
+        foreach (var saveCell in save.Cells)
+        {
+            Game.Map.Cells.Add(saveCell);
+        }
 
-        //    if (saveCell.Structure != null)
-        //    {
-        //        throw new Exception("Load structure here!");
-        //    }
-        //}
+        Game.Map.ClearCache();
+        Game.MapGenerator.LinkNeighbours();
+        Game.MapGenerator.ResetSearchPriorities();
 
-        //Game.MapGrid.ClearCache();
-        //Game.MapGrid.LinkNeighbours();
-        //Game.MapGrid.ResetSearchPriorities();
+        foreach (var faction in save.Factions)
+        {
+            FactionController.Factions.Add(faction.FactionName, faction);
 
-        //foreach (var SavedCreature in save.Creatures)
-        //{
-        //    Game.CreatureController.SpawnCreature(SavedCreature, SavedCreature.Cell, SavedCreature.GetFaction());
-        //}
+            foreach (var structure in faction.Structures)
+            {
+                // call the method just to force update
+                Debug.Log(structure.Cell.ToMapVector());
+                structure.Cell.SetStructure(structure);
+            }
 
-        //foreach (var task in save.Tasks)
-        //{
-        //    Factions.Taskmasters[Data.Faction].AddTask(task, task.Originator);
-
-        //    if (task.AssignedCreatureId > 0)
-        //    {
-        //        Taskmaster.AssignTask(IdService.CreatureIdLookup[task.AssignedCreatureId], task, task.Context);
-        //    }
-        //}
+            foreach (var creature in faction.Creatures)
+            {
+                // call the method just to force update
+                Debug.Log(creature.Cell.ToMapVector());
+            }
+        }
 
         save.CameraData.Load(Game.CameraController.Camera);
     }
@@ -111,6 +62,12 @@ public class SaveManager : MonoBehaviour
             serializer.TypeNameHandling = TypeNameHandling.Auto;
             serializer.Formatting = Formatting.Indented;
 
+            var serializeSettings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                DefaultValueHandling = DefaultValueHandling.Ignore,
+            };
+
             using (var sw = new StreamWriter("save.json"))
             using (var writer = new JsonTextWriter(sw))
             {
@@ -125,21 +82,34 @@ public class SaveManager : MonoBehaviour
 
     private static void DestroyScene()
     {
+        var creatures = IdService.CreatureLookup.Values.ToList();
+        foreach (var creature in creatures)
+        {
+            Game.CreatureController.DestroyCreature(creature.CreatureRenderer);
+        }
+        Game.Controller.DestroyItemsInCache();
+
+        var structures = IdService.StructureLookup.Values.ToList();
+        foreach (var structure in structures)
+        {
+            Game.StructureController.DestroyStructure(structure);
+        }
+        Game.Controller.DestroyItemsInCache();
+
         foreach (var cell in Game.Map.Cells)
         {
             Game.Map.DestroyCell(cell);
         }
-
-        foreach (var creature in Game.CreatureController.CreatureLookup)
-        {
-            Game.CreatureController.DestroyCreature(creature.Value);
-        }
+        Game.Controller.DestroyItemsInCache();
 
         Game.Map.CellLookup.Clear();
         Game.Map.Cells.Clear();
 
-        Game.CreatureController.CreatureLookup.Clear();
+        Game.Map.CellBinding.Clear();
+        Game.Map.PendingBinding.Clear();
+
         IdService.Clear();
-        //Factions.Taskmasters[Data.Faction].Tasks.Clear();
+
+        FactionController.Factions.Clear();
     }
 }

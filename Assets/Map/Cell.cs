@@ -8,42 +8,61 @@ using Random = UnityEngine.Random;
 
 public class Cell : IEquatable<Cell>
 {
+    public string Binder;
+
     public CellType CellType;
 
-    public List<CreatureData> Creatures = new List<CreatureData>();
+    public List<string> CreatureIds = new List<string>();
 
-    public Structure Floor;
+    public string FloorId;
 
     [JsonIgnore]
     public Cell[] Neighbors = new Cell[8];
 
-    internal bool HasBuilding
-    {
-        get
-        {
-            return Structure != null || Floor != null;
-        }
-    }
+    public Direction Rotation;
 
-    public Structure Structure;
+    public string StructureId;
+
     public int X;
 
     public int Y;
+
     internal Color Color;
+
     private IEntity _binding;
 
+    private Structure _floor;
+
     private float _fluidLevel;
+
     private float _height;
 
+    private Structure _structure;
+
+    [JsonIgnore]
     public IEntity Binding
     {
         get
         {
+            if (_binding == null && !string.IsNullOrEmpty(Binder))
+            {
+                _binding = Binder.GetEntity();
+            }
+
             return _binding;
         }
         set
         {
             _binding = value;
+            if (_binding == null)
+            {
+                Binder = string.Empty;
+            }
+            else
+            {
+                Binder = _binding.Id;
+            }
+
             RefreshColor();
         }
     }
@@ -57,6 +76,7 @@ public class Cell : IEquatable<Cell>
         }
     }
 
+    [JsonIgnore]
     public bool Buildable
     {
         get
@@ -66,10 +86,45 @@ public class Cell : IEquatable<Cell>
     }
 
     [JsonIgnore]
+    public List<CreatureData> Creatures
+    {
+        get
+        {
+            return CreatureIds.Select(c => c.GetCreature()).ToList();
+        }
+    }
+
+    [JsonIgnore]
     public float Distance { get; set; }
 
     [JsonIgnore]
     public bool DrawnOnce { get; set; }
+
+    [JsonIgnore]
+    public Structure Floor
+    {
+        get
+        {
+            if (_floor == null && !string.IsNullOrEmpty(FloorId))
+            {
+                _floor = FloorId.GetStructure();
+            }
+            return _floor;
+        }
+        set
+        {
+            _floor = value;
+
+            if (_floor == null)
+            {
+                FloorId = string.Empty;
+            }
+            else
+            {
+                FloorId = _floor.Id;
+            }
+        }
+    }
 
     public float FluidLevel
     {
@@ -102,6 +157,7 @@ public class Cell : IEquatable<Cell>
         }
     }
 
+    [JsonIgnore]
     public float Level
     {
         get
@@ -119,6 +175,7 @@ public class Cell : IEquatable<Cell>
     [JsonIgnore]
     public Cell NextWithSamePriority { get; set; }
 
+    [JsonIgnore]
     public bool Pathable
     {
         get
@@ -138,6 +195,33 @@ public class Cell : IEquatable<Cell>
 
     [JsonIgnore]
     public int SearchPriority => (int)Distance + SearchHeuristic;
+
+    [JsonIgnore]
+    public Structure Structure
+    {
+        get
+        {
+            if (_structure == null && !string.IsNullOrEmpty(StructureId))
+            {
+                _structure = StructureId.GetStructure();
+            }
+
+            return _structure;
+        }
+        set
+        {
+            _structure = value;
+
+            if (_structure == null)
+            {
+                StructureId = string.Empty;
+            }
+            else
+            {
+                StructureId = _structure.Id;
+            }
+        }
+    }
 
     [JsonIgnore]
     public Tile Tile
@@ -170,20 +254,6 @@ public class Cell : IEquatable<Cell>
         }
     }
 
-    public Direction Rotation;
-
-    public void RotateCW()
-    {
-        Rotation = Rotation.Rotate90CW();
-        UpdateTile();
-    }
-
-    public void RotateCCW()
-    {
-        Rotation = Rotation.Rotate90CCW();
-        UpdateTile();
-    }
-
     [JsonIgnore]
     public float TravelCost
     {
@@ -200,7 +270,13 @@ public class Cell : IEquatable<Cell>
         }
     }
 
-    
+    internal bool HasBuilding
+    {
+        get
+        {
+            return Structure != null || Floor != null;
+        }
+    }
 
     public static Cell FromPosition(Vector2 position)
     {
@@ -227,6 +303,11 @@ public class Cell : IEquatable<Cell>
         }
 
         return obj1.Equals(obj2);
+    }
+
+    public void AddCreature(CreatureData creature)
+    {
+        CreatureIds.Add(creature.Id);
     }
 
     public int DistanceTo(Cell other)
@@ -293,6 +374,23 @@ public class Cell : IEquatable<Cell>
         var scaled = Helpers.Scale(range.Item1, range.Item2, 0f, maxShade, Height);
 
         Color = new Color(baseColor.r - scaled, baseColor.g - scaled, baseColor.b - scaled, baseColor.a);
+    }
+
+    public void RemoveCreature(CreatureData creature)
+    {
+        CreatureIds.Remove(creature.Id);
+    }
+
+    public void RotateCCW()
+    {
+        Rotation = Rotation.Rotate90CCW();
+        UpdateTile();
+    }
+
+    public void RotateCW()
+    {
+        Rotation = Rotation.Rotate90CW();
+        UpdateTile();
     }
 
     public void SetNeighbor(Direction direction, Cell cell)
