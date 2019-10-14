@@ -97,7 +97,6 @@ public class Cell : IEquatable<Cell>
     [JsonIgnore]
     public float Distance { get; set; }
 
-    [JsonIgnore]
     public bool DrawnOnce { get; set; }
 
     [JsonIgnore]

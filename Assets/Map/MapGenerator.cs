@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
 
@@ -127,24 +126,20 @@ public class MapGenerator
         return group.Distinct().ToList();
     }
 
-
-    public Structure MakeRune(Cell location, string name, Faction faction)
+    public Structure MakeStructure(Cell location, string name, Faction faction)
     {
-        Game.Map.BindCell(location, faction.Core);
-
         if (location.Structure != null)
             Game.StructureController.DestroyStructure(location.Structure);
 
-        var rune = location.CreateStructure(name, faction.FactionName);
-        location.SetStructure(rune);
+        var structure = location.CreateStructure(name, faction.FactionName);
+        location.SetStructure(structure);
+        Game.Map.BindCell(location, structure);
 
-        return rune;
+        return structure;
     }
 
     public void SpawnCreatures()
     {
-        MakeFactionCore(Game.Map.Center, FactionController.PlayerFaction);
-
         for (int i = 0; i < 3; i++)
         {
             Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("Person"),
@@ -255,6 +250,10 @@ public class MapGenerator
         Debug.Log($"Created ley lines in {sw.Elapsed}");
         sw.Restart();
 
+        MakeFactionBootStrap(Game.Map.Center, FactionController.PlayerFaction);
+        Debug.Log($"Made bootastrap in {sw.Elapsed}");
+        sw.Restart();
+
         SpawnCreatures();
         Debug.Log($"Spawned creatures in {sw.Elapsed}");
         sw.Restart();
@@ -262,6 +261,22 @@ public class MapGenerator
         SpawnMonsters();
         Debug.Log($"Spawned monsters in {sw.Elapsed}");
         sw.Restart();
+    }
+
+    private void MakeFactionBootStrap(Cell center, Faction faction)
+    {
+        var core = Game.StructureController.GetStructure("Battery", faction);
+        core.ManaPool.GainMana(ManaColor.Green, 100);
+        core.ManaPool.GainMana(ManaColor.Red, 100);
+        core.ManaPool.GainMana(ManaColor.Blue, 100);
+        core.ManaPool.GainMana(ManaColor.White, 100);
+        core.ManaPool.GainMana(ManaColor.Black, 100);
+
+        Game.Map.Center.SetStructure(core);
+        foreach (var cell in Game.Map.GetCircle(center, 25))
+        {
+            cell.Binding = core;
+        }
     }
 
     internal void PopulateCell(Cell cell)
@@ -426,7 +441,7 @@ public class MapGenerator
         {
             var point = Game.Map.GetRandomEmptyCell();
             nexusPoints.Add(point);
-            MakeRune(point, "LeySpring", FactionController.WorldFaction);
+            MakeStructure(point, "LeySpring", FactionController.WorldFaction);
         }
 
         var v = Enum.GetValues(typeof(ManaColor));
@@ -477,15 +492,6 @@ public class MapGenerator
         }
     }
 
-    private void MakeFactionCore(Cell center, Faction faction)
-    {
-        Game.Map.Center.SetStructure(FactionController.PlayerFaction.Core);
-        foreach (var cell in Game.Map.GetCircle(center, 25))
-        {
-            cell.Binding = faction.Core;
-        }
-    }
-
     private void MakeStreet(Cell crossingPoint, int length, bool vertical, double momentum, int color, List<List<Cell>> streets)
     {
         var degrees = vertical ? new[] { 90, 270 } : new[] { 0, 180 };
@@ -519,5 +525,4 @@ public class MapGenerator
             }
         }
     }
-
 }

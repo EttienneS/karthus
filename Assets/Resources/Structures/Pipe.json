@@ -1,6 +1,5 @@
 {
   "Name": "Pipe",
-  "Material": "rune",
   "SpriteName": "Pipe",
   "TravelCost": "5",
   "Scatter": "False",

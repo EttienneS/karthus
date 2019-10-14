@@ -20,12 +20,9 @@ public class SaveManager : MonoBehaviour
 
         Game.TimeManager.Data = save.Time;
 
-        foreach (var saveCell in save.Cells)
-        {
-            Game.Map.Cells.Add(saveCell);
-        }
-
+        Game.Map.Cells = save.Cells;
         Game.Map.ClearCache();
+
         Game.MapGenerator.LinkNeighbours();
         Game.MapGenerator.ResetSearchPriorities();
 
@@ -33,21 +30,28 @@ public class SaveManager : MonoBehaviour
         {
             FactionController.Factions.Add(faction.FactionName, faction);
 
-            foreach (var structure in faction.Structures)
+            foreach (var creature in faction.Creatures.ToList())
             {
-                // call the method just to force update
-                Debug.Log(structure.Cell.ToMapVector());
-                structure.Cell.SetStructure(structure);
+                Game.CreatureController.SpawnCreature(creature, creature.Cell, faction);
             }
 
-            foreach (var creature in faction.Creatures)
+            foreach (var structure in faction.Structures.ToList())
             {
-                // call the method just to force update
-                Debug.Log(creature.Cell.ToMapVector());
+                IdService.EnrollEntity(structure);
+            }
+        }
+
+        foreach (var cell in Game.Map.Cells.Where(c => c.Bound))
+        {
+            cell.RefreshColor();
+            if (cell.DrawnOnce)
+            {
+                cell.UpdateTile();
             }
         }
 
         save.CameraData.Load(Game.CameraController.Camera);
+
     }
 
     public void Save()
@@ -107,6 +111,10 @@ public class SaveManager : MonoBehaviour
 
         Game.Map.CellBinding.Clear();
         Game.Map.PendingBinding.Clear();
+        Game.Map.PendingUnbinding.Clear();
+
+        Game.Map.Tilemap.ClearAllTiles();
+        Game.StructureController.DefaultStructureMap.ClearAllTiles();
 
         IdService.Clear();
 

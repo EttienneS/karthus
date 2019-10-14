@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class Move : CreatureTask
@@ -28,11 +27,6 @@ public class Move : CreatureTask
 
     public override bool Done(CreatureData creature)
     {
-        if (creature == null || creature.Cell == null)
-        {
-            return false;
-        }
-
         if (creature == null || creature.Cell == null)
         {
             return false;

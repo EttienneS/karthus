@@ -4,16 +4,47 @@ using UnityEngine;
 
 public abstract class EffectBase
 {
+    private IEntity _assignedEntity;
+
+    [JsonIgnore]
+    public IEntity AssignedEntity
+    {
+        get
+        {
+            if (_assignedEntity == null)
+            {
+                _assignedEntity = IdService.GetEntity(AssignedEntityId);
+            }
+            return _assignedEntity;
+        }
+    }
+
+    public string AssignedEntityId;
+
+    private IEntity _target;
+
+    [JsonIgnore]
+    public IEntity Target
+    {
+        get
+        {
+            if (_target == null)
+            {
+                _target = IdService.GetEntity(TargetId);
+            }
+            return _target;
+        }
+    }
+
+    public string TargetId;
+
     public Dictionary<ManaColor, int> Cost;
     public float ActivationTime = 0.5f;
     public float Elapsed;
 
-    public IEntity Target;
     public string DisplayName;
 
     public int Range;
-
-    public IEntity AssignedEntity;
 
     public bool Done()
     {
@@ -77,7 +108,7 @@ public abstract class EffectBase
                 inRangeCells.Shuffle();
                 cell = inRangeCells[0];
             }
-            
+
             creature.Task.AddSubTask(new Move(cell));
             return false;
         }
@@ -91,5 +122,4 @@ public abstract class EffectBase
     {
         return true;
     }
-
 }

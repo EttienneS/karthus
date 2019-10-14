@@ -1,6 +1,5 @@
 {
   "Name": "SpawnRune",
-  "Material": "rune",
   "AutoInteractions": [
     {
       "$type": "Spawn, Assembly-CSharp"

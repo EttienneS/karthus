@@ -1,0 +1,17 @@
+{
+  "Name": "Battery",
+  "SpriteName": "Battery",
+  "TravelCost": "-1",
+  "Layer": "Structure",
+  "Buildable": "True",
+  "ManaValue": {
+    "Red": "5",
+    "Green": "5",
+    "Blue": "5",
+    "Black": "5",
+    "White": "5"
+  },
+  "Properties": {
+    "Type": "Battery"
+  }
+}

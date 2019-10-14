@@ -20,7 +20,6 @@ public class Structure : IEntity
     public IEntity InUseBy;
     public string Layer;
     public Dictionary<ManaColor, int> ManaValue;
-    public string Material;
     public Direction Rotation;
     public int SelectedAutoInteraction;
     public string ShiftX;
@@ -252,7 +251,7 @@ public class Structure : IEntity
         if (SelectedAutoInteraction >= 0 && SelectedAutoInteraction < AutoInteractions.Count)
         {
             AutoInteraction = AutoInteractions[SelectedAutoInteraction];
-            AutoInteraction.AssignedEntity = this;
+            AutoInteraction.AssignedEntityId = this.Id;
 
             return AutoInteraction;
         }

@@ -68,7 +68,7 @@ public static class Behaviours
             {
                 if (mana.Value.Total - mana.Value.Desired > mana.Value.Max)
                 {
-                    task = Channel.GetChannelTo(mana.Key, mana.Value.Total - mana.Value.Desired, creature.GetFaction().Core);
+                    task = Channel.GetChannelTo(mana.Key, mana.Value.Total - mana.Value.Desired, creature.GetClosestBattery());
                     break;
                 }
             }

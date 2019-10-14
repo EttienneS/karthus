@@ -1,6 +1,5 @@
 {
   "Name": "Sucker",
-  "Material": "rune",
   "SpriteName": "Sucker",
   "TravelCost": "-1",
   "Scatter": "False",

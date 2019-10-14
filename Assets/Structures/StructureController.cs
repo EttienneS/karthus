@@ -9,8 +9,6 @@ public class StructureController : MonoBehaviour
 
     public Tilemap DefaultStructureMap;
 
-    public Tilemap RuneMap;
-
     private Dictionary<string, string> _structureTypeFileMap;
 
     internal Dictionary<string, string> StructureTypeFileMap
@@ -45,16 +43,8 @@ public class StructureController : MonoBehaviour
         else
         {
             var coords = new Vector3Int(structure.Cell.X, structure.Cell.Y, 0);
-            if (structure.Material != "rune")
-            {
-                DefaultStructureMap.SetTile(coords, null);
-                DefaultStructureMap.SetTile(coords, structure.Tile);
-            }
-            else
-            {
-                RuneMap.SetTile(coords, null);
-                RuneMap.SetTile(coords, structure.Tile);
-            }
+            DefaultStructureMap.SetTile(coords, null);
+            DefaultStructureMap.SetTile(coords, structure.Tile);
         }
     }
 
@@ -62,7 +52,6 @@ public class StructureController : MonoBehaviour
     {
         var tile = ScriptableObject.CreateInstance<Tile>();
         DefaultStructureMap.SetTile(new Vector3Int(cell.X, cell.Y, 0), tile);
-        RuneMap.SetTile(new Vector3Int(cell.X, cell.Y, 0), tile);
     }
 
     public Structure GetStructure(string name, Faction faction)
@@ -134,14 +123,8 @@ public class StructureController : MonoBehaviour
                               .Select(c => c.Structure)
                               .Where(c => c.Cell != null);
 
-        var nonRunes = structures.Where(s => s.Material != "rune");
         var tiles = structures.Select(c => c.Tile).ToArray();
         var coords = structures.Select(c => c.Cell.ToVector3Int()).ToArray();
         Game.StructureController.DefaultStructureMap.SetTiles(coords, tiles);
-
-        var runes = structures.Except(nonRunes);
-        tiles = runes.Select(c => c.Tile).ToArray();
-        coords = runes.Select(c => c.Cell.ToVector3Int()).ToArray();
-        Game.StructureController.RuneMap.SetTiles(coords, tiles);
     }
 }

@@ -97,6 +97,11 @@ public class CreatureData : IEntity
     [JsonIgnore]
     public CreatureRenderer CreatureRenderer { get; set; }
 
+    internal IEntity GetClosestBattery()
+    {
+        return Faction.GetClosestBattery(this);
+    }
+
     [JsonIgnore]
     public Faction Faction
     {

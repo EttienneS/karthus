@@ -216,14 +216,10 @@ public partial class Game : MonoBehaviour
             FactionConstants.World
         })
         {
-            var factionBody = StructureController.GetStructure(FactionConstants.StructureName, null);
-            var faction = new Faction();
-
-            faction.FactionName = factionName;
-            faction.Core = factionBody;
-
-            faction.AddStructure(factionBody);
-
+            var faction = new Faction
+            {
+                FactionName = factionName
+            };
             FactionController.Factions.Add(factionName, faction);
         }
     }

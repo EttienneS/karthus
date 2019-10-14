@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 public delegate void TaskComplete();
 
@@ -8,6 +9,8 @@ public abstract class CreatureTask
     public string Context;
     public string DoneEmote;
     public string Message;
+
+    [JsonIgnore]
     public CreatureTask Parent;
 
     public Queue<CreatureTask> SubTasks = new Queue<CreatureTask>();
@@ -15,6 +18,7 @@ public abstract class CreatureTask
     public string RequiredSkill { get; set; }
     public float RequiredSkillLevel { get; set; }
 
+    [JsonIgnore]
     public List<Badge> Badges { get; set; } = new List<Badge>();
 
     public void AddCellBadge(Cell cell, string badgeIcon)

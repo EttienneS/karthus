@@ -21,7 +21,7 @@ public class Acrue : CreatureTask
             {
                 if (!creature.ManaPool.ContainsKey(targetLevel.Key))
                 {
-                    AddSubTask(Channel.GetChannelFrom(targetLevel.Key, targetLevel.Value, creature.GetFaction().Core));
+                    AddSubTask(Channel.GetChannelFrom(targetLevel.Key, targetLevel.Value, creature.GetClosestBattery()));
                     return false;
                 }
                 else
@@ -29,7 +29,7 @@ public class Acrue : CreatureTask
                     var currentLevel = creature.ManaPool[targetLevel.Key].Total;
                     if (currentLevel < targetLevel.Value)
                     {
-                        AddSubTask(Channel.GetChannelFrom(targetLevel.Key, targetLevel.Value - currentLevel, creature.GetFaction().Core));
+                        AddSubTask(Channel.GetChannelFrom(targetLevel.Key, targetLevel.Value - currentLevel, creature.GetClosestBattery()));
                         return false;
                     }
                 }

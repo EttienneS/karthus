@@ -1,6 +1,5 @@
 {
   "Name": "Blower",
-  "Material": "rune",
   "SpriteName": "Blower",
   "TravelCost": "-1",
   "Scatter": "False",

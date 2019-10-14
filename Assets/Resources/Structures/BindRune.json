@@ -1,6 +1,5 @@
 {
   "Name": "BindRune",
-  "Material": "rune",
   "AutoInteractions": [
     {
       "$type": "Bind, Assembly-CSharp",

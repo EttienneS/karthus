@@ -45,10 +45,10 @@ public class Interact : CreatureTask
 
         if (Effect.AssignedEntity == null)
         {
-            Effect.AssignedEntity = creature;
+            Effect.AssignedEntityId = creature.Id;
         }
 
-        Effect.Target = Target;
+        Effect.TargetId = Target.Id;
 
         if (Target is Structure structure)
         {
