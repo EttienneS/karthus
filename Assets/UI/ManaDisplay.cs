@@ -25,6 +25,7 @@ public class ManaDisplay : MonoBehaviour
                 value.color = mana.GetActualColor();
                 LabelDictionary.Add(mana, value);
             }
+            _runOnce = true;
         }
 
         foreach (var kvp in LabelDictionary)

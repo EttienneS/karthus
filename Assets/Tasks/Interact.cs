@@ -43,7 +43,7 @@ public class Interact : CreatureTask
             Interactor = creature;
         }
 
-        if (Effect.AssignedEntity == null)
+        if (string.IsNullOrEmpty(Effect.AssignedEntityId))
         {
             Effect.AssignedEntityId = creature.Id;
         }
