@@ -19,8 +19,6 @@ public class MapGenerator
 
         Game.Map.Cells.Add(cell);
 
-        Game.Map.AddCellLabel(cell);
-
         return cell;
     }
 
@@ -133,7 +131,7 @@ public class MapGenerator
 
         var structure = location.CreateStructure(name, faction.FactionName);
         location.SetStructure(structure);
-        Game.Map.BindCell(location, structure);
+        location.Bind(structure);
 
         return structure;
     }

@@ -1,26 +1,35 @@
-﻿public class Channel : CreatureTask
+﻿using Newtonsoft.Json;
+
+public class Channel : CreatureTask
 {
+    public int AmountToChannel;
+
+    public ManaColor ManaColor;
+
+    public string SourceId;
+
+    public string TargetId;
+
     public Channel()
     {
     }
 
-    public ManaColor ManaColor;
-    public int AmountToChannel;
-    public IEntity Source;
-    public IEntity Target;
-
-    public static Channel GetChannelTo(ManaColor color, int amount, IEntity target)
+    [JsonIgnore]
+    public IEntity Source
     {
-        var task = new Channel
+        get
         {
-            ManaColor = color,
-            AmountToChannel = amount,
-            Target = target
-        };
+            return IdService.GetEntity(SourceId);
+        }
+    }
 
-        task.AddSubTask(new Move(Game.Map.GetPathableNeighbour(target.Cell)));
-
-        return task;
+    [JsonIgnore]
+    public IEntity Target
+    {
+        get
+        {
+            return IdService.GetEntity(TargetId);
+        }
     }
 
     public static Channel GetChannelFrom(ManaColor color, int amount, IEntity source)
@@ -29,7 +38,7 @@
         {
             ManaColor = color,
             AmountToChannel = amount,
-            Source = source
+            SourceId = source.Id
         };
 
         task.AddSubTask(new Move(Game.Map.GetPathableNeighbour(source.Cell)));
@@ -37,18 +46,33 @@
         return task;
     }
 
+    public static Channel GetChannelTo(ManaColor color, int amount, IEntity target)
+    {
+        var task = new Channel
+        {
+            ManaColor = color,
+            AmountToChannel = amount,
+            TargetId = target.Id
+        };
+
+        task.AddSubTask(new Move(Game.Map.GetPathableNeighbour(target.Cell)));
+
+        return task;
+    }
+
     public override bool Done(CreatureData creature)
     {
-        if (Source == null)
+        if (string.IsNullOrEmpty(SourceId))
         {
-            Source = creature;
+            SourceId = creature.Id;
         }
-        else if (Target == null)
+        else if (string.IsNullOrEmpty(TargetId))
         {
-            Target = creature;
+            TargetId = creature.Id;
         }
 
         (Source as CreatureData)?.Face(Target.Cell);
+        (Target as CreatureData)?.Face(Source.Cell);
 
         if (SubTasksComplete(creature))
         {

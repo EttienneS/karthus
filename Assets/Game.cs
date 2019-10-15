@@ -265,12 +265,9 @@ public partial class Game : MonoBehaviour
         {
             structure.ShowOutline();
             var id = structure.Id;
-            if (Map.CellBinding.ContainsKey(id))
+            foreach (var boundCell in Map.Cells.Where(c => c.Binding == structure))
             {
-                foreach (var boundCell in Map.CellBinding[id])
-                {
-                    AddLine(structure.Cell, boundCell);
-                }
+                AddLine(structure.Cell, boundCell);
             }
         }
 

@@ -32,11 +32,9 @@ public class Bind : EffectBase
         var cellToBind = _affectAbleCells.Find(c => !c.Bound);
         if (cellToBind != null)
         {
-            Game.Map.BindCell(cellToBind, AssignedEntity);
-
-            Game.VisualEffectController.SpawnLightEffect(cellToBind, Color.magenta, 2, 4, 5)
-                                       .Fades();
+            cellToBind.Bind(AssignedEntity);           
         }
+
         return true;
     }
 }

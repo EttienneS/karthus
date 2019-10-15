@@ -5,21 +5,23 @@ public class Interact : CreatureTask
 {
     public EffectBase Effect;
 
-    public IEntity Interactor;
+    [JsonIgnore]
+    public IEntity Interactor
+    {
+        get
+        {
+            return IdService.GetEntity(InteractorID);
+        }
+    }
 
-    public IEntity _target;
+    public string InteractorID;
 
     [JsonIgnore]
     public IEntity Target
     {
         get
         {
-            if (_target == null)
-            {
-                _target = IdService.GetEntity(TargetID);
-            }
-
-            return _target;
+            return IdService.GetEntity(TargetID); ;
         }
     }
 
@@ -33,14 +35,14 @@ public class Interact : CreatureTask
     {
         Effect = effect;
         TargetID = targetID;
-        Interactor = interactor;
+        InteractorID = interactor.Id;
     }
 
     public override bool Done(CreatureData creature)
     {
-        if (Interactor == null)
+        if (string.IsNullOrEmpty(InteractorID))
         {
-            Interactor = creature;
+            InteractorID = creature.Id;
         }
 
         if (string.IsNullOrEmpty(Effect.AssignedEntityId))

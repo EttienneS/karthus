@@ -62,8 +62,6 @@ public class Cell : IEquatable<Cell>
             {
                 Binder = _binding.Id;
             }
-
-            RefreshColor();
         }
     }
 
@@ -83,6 +81,22 @@ public class Cell : IEquatable<Cell>
         {
             return Bound && TravelCost > 0 && Structure == null;
         }
+    }
+
+    internal void Unbind()
+    {
+        Binding = null;
+        UpdateTile();
+        Game.VisualEffectController.SpawnLightEffect(this, Color.magenta, 1.5f, 8, 8)
+                                   .Fades();
+    }
+
+    internal void Bind(IEntity entity)
+    {
+        Binding = entity;
+        UpdateTile();
+        Game.VisualEffectController.SpawnLightEffect(this, Color.magenta, 2, 4, 5)
+                                   .Fades();
     }
 
     [JsonIgnore]
@@ -152,7 +166,6 @@ public class Cell : IEquatable<Cell>
         {
             _height = value;
             CellType = Game.MapGenerator.MapPreset.GetCellType(_height);
-            RefreshColor();
         }
     }
 
@@ -229,6 +242,7 @@ public class Cell : IEquatable<Cell>
         {
             DrawnOnce = true;
             var tile = ScriptableObject.CreateInstance<Tile>();
+            RefreshColor();
 
             if (Floor == null || FluidLevel > 0)
             {

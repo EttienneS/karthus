@@ -43,7 +43,6 @@ public class SaveManager : MonoBehaviour
 
         foreach (var cell in Game.Map.Cells.Where(c => c.Bound))
         {
-            cell.RefreshColor();
             if (cell.DrawnOnce)
             {
                 cell.UpdateTile();
@@ -108,10 +107,6 @@ public class SaveManager : MonoBehaviour
 
         Game.Map.CellLookup.Clear();
         Game.Map.Cells.Clear();
-
-        Game.Map.CellBinding.Clear();
-        Game.Map.PendingBinding.Clear();
-        Game.Map.PendingUnbinding.Clear();
 
         Game.Map.Tilemap.ClearAllTiles();
         Game.StructureController.DefaultStructureMap.ClearAllTiles();

@@ -15,14 +15,11 @@ public enum CellType
 public class Map : MonoBehaviour
 {
     public const int PixelsPerCell = 64;
-    public Dictionary<string, List<Cell>> CellBinding = new Dictionary<string, List<Cell>>();
     [Range(50, 1000)] public int Height = 100;
     [Range(0f, 1f)] public float JitterProbability = 0.8f;
     public float Lancunarity = 2;
     public int Octaves = 4;
     public Vector2 Offset;
-    public Dictionary<string, List<Cell>> PendingBinding = new Dictionary<string, List<Cell>>();
-    public List<Cell> PendingUnbinding = new List<Cell>();
     [Range(0f, 1f)] public float Persistance = 0.5f;
     [Range(0.5f, 100f)] public float Scale = 10;
     public int Seed;
@@ -81,39 +78,11 @@ public class Map : MonoBehaviour
         Background.transform.localScale = new Vector3(Game.Map.Width + 2, Game.Map.Height + 2, 1);
     }
 
-    public void BindCell(Cell cell, IEntity originator)
-    {
-        if (cell.Bound)
-        {
-            if (!CellBinding.ContainsKey(originator.Id))
-            {
-                CellBinding.Add(originator.Id, new List<Cell>());
-            }
-
-            if (CellBinding.ContainsKey(cell.Binding.Id))
-            {
-                CellBinding[cell.Binding.Id].Remove(cell);
-            }
-
-            CellBinding[originator.Id].Add(cell);
-            cell.Binding = originator;
-        }
-        else
-        {
-            if (!PendingBinding.ContainsKey(originator.Id))
-            {
-                PendingBinding.Add(originator.Id, new List<Cell>());
-            }
-
-            PendingBinding[originator.Id].Add(cell);
-        }
-    }
-
     internal void Unbind(Structure structure)
     {
         foreach (var cell in Cells.Where(c => c.Binding == structure))
         {
-            Unbind(cell);
+            cell.Unbind();
         }
     }
 
@@ -427,22 +396,6 @@ public class Map : MonoBehaviour
                             minMax.maxy - minMax.miny - 1);
     }
 
-    public void Update()
-    {
-        ProcessBindings(50);
-    }
-
-    internal void AddCellLabel(Cell cell)
-    {
-        //if (Game.MapGrid.WorldCanvas != null)
-        //{
-        //    var label = Instantiate(CellLabel, WorldCanvas.transform);
-        //    label.name = $"CL_{cell.Coordinates}";
-        //    label.transform.position = cell.Coordinates.ToTopOfMapVector();
-        //    label.text = cell.Coordinates.ToStringOnSeparateLines();
-        //}
-    }
-
     internal void ClearCache()
     {
         _cellLookup = null;
@@ -552,76 +505,7 @@ public class Map : MonoBehaviour
 
         return GetCellAtCoordinate(mineX, mineY);
     }
-
-    internal void ProcessBindings(int maxDraws)
-    {
-        var draws = 0;
-
-        var doneBind = new List<string>();
-        var doneUnbind = new List<Cell>();
-
-        foreach (var kvp in PendingBinding)
-        {
-            List<Cell> done = new List<Cell>();
-            foreach (var cell in kvp.Value)
-            {
-                if (!cell.Bound)
-                {
-                    cell.Binding = IdService.GetEntity(kvp.Key);
-
-                    if (cell.Binding == null)
-                    {
-                        doneBind.Add(kvp.Key);
-                        kvp.Value.Clear();
-                        Debug.LogWarning("Unbindable entity found, clearing.");
-                        continue;
-                    }
-
-                    if (!CellBinding.ContainsKey(kvp.Key))
-                    {
-                        CellBinding.Add(kvp.Key, new List<Cell>());
-                    }
-
-                    CellBinding[kvp.Key].Add(cell);
-                    cell.UpdateTile();
-                    if (draws++ > maxDraws)
-                    {
-                        break;
-                    }
-                }
-                else
-                {
-                    done.Add(cell);
-                }
-            }
-
-            done.ForEach(c => kvp.Value.Remove(c));
-
-            if (kvp.Value.Count == 0)
-            {
-                doneBind.Add(kvp.Key);
-            }
-        }
-
-        foreach (var cell in PendingUnbinding)
-        {
-            if (cell != null)
-            {
-                cell.Binding = null;
-                cell.UpdateTile();
-
-                if (draws++ > maxDraws)
-                {
-                    break;
-                }
-            }
-            doneUnbind.Add(cell);
-        }
-
-        doneBind.ForEach(r => PendingBinding.Remove(r));
-        doneUnbind.ForEach(b => PendingUnbinding.Remove(b));
-    }
-
+       
     internal void Refresh(RectInt rect)
     {
         var cells = Game.Map.GetRectangle(rect.x,
@@ -638,16 +522,7 @@ public class Map : MonoBehaviour
             Game.StructureController.DrawAllStructures(cells);
         }
     }
-
-    internal void Unbind(Cell cell)
-    {
-        if (cell.Binding == null)
-        {
-            return;
-        }
-        PendingUnbinding.Add(cell);
-    }
-
+        
     private void OnValidate()
     {
         if (Lancunarity < 1)
