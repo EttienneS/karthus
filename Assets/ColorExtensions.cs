@@ -21,7 +21,7 @@ public static class ColorExtensions
         return new[] { color.r, color.g, color.b, color.a };
     }
 
-    internal static Color GetColorFromHex(string hexString)
+    internal static Color GetColorFromHex(this string hexString)
     {
         Color col;
 

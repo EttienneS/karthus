@@ -1,0 +1,23 @@
+{
+  "Name": "Light",
+  "SpriteName": "Gem",
+  "Layer": "Structure",
+  "Buildable": "True",
+  "ManaValue": {
+    "Red": "5"
+  },
+  "Properties": {
+    "Type": "Light"
+  },
+  "AutoInteractions": [
+    {
+      "$type": "MaintainVisualEffect, Assembly-CSharp",
+      "ActivationTime": 0.1,
+      "Radius": 10,
+      "Intensity": 5,
+      "Fades": false,
+      "Color": "#7700FF",
+      "Duration": 5
+    }
+  ]
+}
