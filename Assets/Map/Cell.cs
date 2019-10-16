@@ -489,10 +489,21 @@ public class Cell : IEquatable<Cell>
         return Neighbors.Count(n => n != null && n.CellType == cellType.Value);
     }
 
-    internal Structure CreateStructure(string structureName, string faction = FactionConstants.World)
+    internal Structure CreateStructure(string structureName, bool bind = false, string faction = FactionConstants.World)
     {
         var structure = Game.StructureController.GetStructure(structureName, FactionController.Factions[faction]);
         SetStructure(structure);
+
+        if (bind)
+        {
+            Bind(structure);
+        }
+
+        if (structure.AutoInteractions.Count > 0)
+        {
+            Game.MagicController.AddEffector(structure);
+        }
+
         return structure;
     }
 

@@ -124,17 +124,7 @@ public class MapGenerator
         return group.Distinct().ToList();
     }
 
-    public Structure MakeStructure(Cell location, string name, Faction faction)
-    {
-        if (location.Structure != null)
-            Game.StructureController.DestroyStructure(location.Structure);
 
-        var structure = location.CreateStructure(name, faction.FactionName);
-        location.SetStructure(structure);
-        location.Bind(structure);
-
-        return structure;
-    }
 
     public void SpawnCreatures()
     {
@@ -264,14 +254,13 @@ public class MapGenerator
 
     private void MakeFactionBootStrap(Cell center, Faction faction)
     {
-        var core = Game.StructureController.GetStructure("Battery", faction);
+        var core = center.CreateStructure("Battery", true, faction.FactionName);
         core.ManaPool.GainMana(ManaColor.Green, 100);
         core.ManaPool.GainMana(ManaColor.Red, 100);
         core.ManaPool.GainMana(ManaColor.Blue, 100);
         core.ManaPool.GainMana(ManaColor.White, 100);
         core.ManaPool.GainMana(ManaColor.Black, 100);
 
-        Game.Map.Center.SetStructure(core);
         foreach (var cell in Game.Map.GetCircle(center, 25))
         {
             cell.Binding = core;
@@ -440,7 +429,7 @@ public class MapGenerator
         {
             var point = Game.Map.GetRandomEmptyCell();
             nexusPoints.Add(point);
-            MakeStructure(point, "LeySpring", FactionController.WorldFaction);
+            point.CreateStructure("LeySpring", true, FactionController.WorldFaction.FactionName);
         }
 
         var v = Enum.GetValues(typeof(ManaColor));

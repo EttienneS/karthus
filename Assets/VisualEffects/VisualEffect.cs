@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering.LWRP;
 
@@ -44,6 +45,22 @@ public class VisualEffect : MonoBehaviour
         {
             particleObject.SetActive(false);
         }
+    }
+
+    internal void DestroySelf()
+    {
+        if (!string.IsNullOrEmpty(Data.HolderId))
+        {
+            var holder = Data.Holder;
+
+            if (holder?.LinkedVisualEffects.Contains(Data) == true)
+            {
+                Data.Holder.LinkedVisualEffects.Remove(Data);
+            }
+        }
+
+        Data.Destroyed = true;
+        Destroy(gameObject);
     }
 
     internal VisualEffect Big()
@@ -101,17 +118,7 @@ public class VisualEffect : MonoBehaviour
         Data.LifeSpan -= Time.deltaTime;
         if (Data.LifeSpan <= 0)
         {
-            if (!string.IsNullOrEmpty(Data.HolderId))
-            {
-                var holder = Data.Holder;
-
-                if (holder?.LinkedVisualEffects.Contains(Data) == true)
-                {
-                    Data.Holder.LinkedVisualEffects.Remove(Data);
-                }
-            }
-
-            Destroy(gameObject);
+            DestroySelf();
             return;
         }
 
@@ -180,4 +187,5 @@ public class VisualEffectData
     }
 
     public float StartIntensity { get; set; } = -1;
+    public bool Destroyed { get; set; }
 }
