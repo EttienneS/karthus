@@ -87,7 +87,7 @@ public class Cell : IEquatable<Cell>
     {
         Binding = null;
         UpdateTile();
-        Game.VisualEffectController.SpawnLightEffect(this, Color.magenta, 1.5f, 8, 8)
+        Game.VisualEffectController.SpawnLightEffect(null, this, Color.magenta, 1.5f, 8, 8)
                                    .Fades();
     }
 
@@ -95,7 +95,7 @@ public class Cell : IEquatable<Cell>
     {
         Binding = entity;
         UpdateTile();
-        Game.VisualEffectController.SpawnLightEffect(this, Color.magenta, 2, 4, 5)
+        Game.VisualEffectController.SpawnLightEffect(null, this, Color.magenta, 2, 4, 5)
                                    .Fades();
     }
 

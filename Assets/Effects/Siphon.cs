@@ -1,4 +1,4 @@
-﻿ using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 
 public class Siphon : EffectBase
@@ -46,10 +46,10 @@ public class Siphon : EffectBase
 
         var amount = Random.Range(1, 3);
         AssignedEntity.ManaPool.GainMana(col, amount);
-        Game.VisualEffectController.SpawnLightEffect(AssignedEntity.Cell, col.GetActualColor(), 1.5f, amount * 2f, 3)
+        Game.VisualEffectController.SpawnLightEffect(AssignedEntity, AssignedEntity.Cell, col.GetActualColor(), 1.5f, amount * 2f, 3)
                                       .Fades();
 
-      
+
         siphonedCell.Unbind();
         return true;
     }

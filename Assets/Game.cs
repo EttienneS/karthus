@@ -162,7 +162,7 @@ public partial class Game : MonoBehaviour
             var point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             var cell = Map.GetCellAtPoint(point);
 
-            VisualEffectController.SpawnLightEffect(cell, Color.blue, 2, 2, 4)
+            VisualEffectController.SpawnLightEffect(null, cell, Color.blue, 2, 2, 4)
                                   .Fades();
             cell.FluidLevel += 0.5f;
             cell.UpdateTile();

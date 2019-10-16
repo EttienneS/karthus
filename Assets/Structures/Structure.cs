@@ -6,6 +6,8 @@ using UnityEngine.Tilemaps;
 
 public class Structure : IEntity
 {
+    public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
+
     public List<EffectBase> ActivatedInteractions = new List<EffectBase>();
 
     [JsonIgnore]
@@ -17,6 +19,7 @@ public class Structure : IEntity
 
     // rather than serialzing the cell object we keep this lazy link for load
     public (int X, int Y) Coords = (-1, -1);
+
     public IEntity InUseBy;
     public string Layer;
     public Dictionary<ManaColor, int> ManaValue;
@@ -285,7 +288,7 @@ public class Structure : IEntity
     internal void ShowOutline()
     {
         _outline = Game.VisualEffectController
-                       .SpawnSpriteEffect(Cell, "CellOutline", float.MaxValue)
+                       .SpawnSpriteEffect(this, Cell, "CellOutline", float.MaxValue)
                        .Regular();
     }
 

@@ -11,6 +11,8 @@ public enum Mobility
 
 public class CreatureData : IEntity
 {
+    public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
+
     // rather than serialzing the cell object we keep this lazy link for load
     public (int X, int Y) Coords = (-1, -1);
 
@@ -45,7 +47,6 @@ public class CreatureData : IEntity
 
     private Faction _faction;
     private bool _firstRun = true;
-
 
     private CreatureTask _task;
 
@@ -157,7 +158,6 @@ public class CreatureData : IEntity
     }
 
     public Dictionary<string, float> ValueProperties { get; set; } = new Dictionary<string, float>();
-
 
     public void Damage(int amount, ManaColor type)
     {
@@ -356,9 +356,9 @@ public class CreatureData : IEntity
 
         if (ManaPool.Empty())
         {
-            Game.VisualEffectController.SpawnEffect(Cell, 0.1f);
-            Game.VisualEffectController.SpawnEffect(Cell, 0.1f);
-            Game.VisualEffectController.SpawnEffect(Cell, 0.1f);
+            Game.VisualEffectController.SpawnEffect(this, Cell, 0.1f);
+            Game.VisualEffectController.SpawnEffect(this, Cell, 0.1f);
+            Game.VisualEffectController.SpawnEffect(this, Cell, 0.1f);
 
             Game.CreatureController.DestroyCreature(CreatureRenderer);
             return false;

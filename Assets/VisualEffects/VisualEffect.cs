@@ -1,30 +1,49 @@
-﻿using UnityEngine;
+﻿using Newtonsoft.Json;
+using UnityEngine;
 using UnityEngine.Experimental.Rendering.LWRP;
-using Random = UnityEngine.Random;
 
 public class VisualEffect : MonoBehaviour
 {
-    public bool FadeOut;
+    public VisualEffectData Data;
 
-    internal float LifeSpan;
-    internal float FullSpan = -1;
+    public Light2D Light;
 
-    private float _startTime;
-    public bool Fade { get; set; }
-    public Light2D Light { get; set; }
-    public ParticleSystem ParticleSystem { get; set; }
-    public float Intensity { get; set; } = -1;
-    public float StartIntensity { get; set; } = -1;
+    public ParticleSystem ParticleSystem;
 
-    public SpriteRenderer Sprite { get; set; }
-    public Vector3 Vector { get; set; }
+    public SpriteRenderer Sprite;
 
-    public void Awake()
+    public void Start()
     {
-        Sprite = GetComponent<SpriteRenderer>();
-        Light = GetComponent<Light2D>();
-        ParticleSystem = GetComponent<ParticleSystem>();
-        _startTime = Time.time;
+        var lightObject = transform.Find("Light").gameObject;
+        var spriteObject = transform.Find("Sprite").gameObject;
+        var particleObject = transform.Find("Particle").gameObject;
+
+        if ((Data.EffectType & EffectType.Light) == EffectType.Light)
+        {
+            Light = lightObject.GetComponent<Light2D>();
+        }
+        else
+        {
+            lightObject.SetActive(false);
+        }
+
+        if ((Data.EffectType & EffectType.Sprite) == EffectType.Sprite)
+        {
+            Sprite = spriteObject.GetComponent<SpriteRenderer>();
+        }
+        else
+        {
+            spriteObject.SetActive(false);
+        }
+
+        if ((Data.EffectType & EffectType.Particle) == EffectType.Particle)
+        {
+            ParticleSystem = particleObject.GetComponent<ParticleSystem>();
+        }
+        else
+        {
+            particleObject.SetActive(false);
+        }
     }
 
     internal VisualEffect Big()
@@ -33,45 +52,22 @@ public class VisualEffect : MonoBehaviour
         return this;
     }
 
-    internal VisualEffect FadeDown()
+    internal VisualEffect Fades(bool fadeOut = false)
     {
-        Vector = new Vector2(Random.Range(-0.001f, 0.001f), Random.Range(-0.005f, -0.001f));
-        Fades();
-        return this;
-    }
-
-    internal VisualEffect FadeTo(Vector2 vector)
-    {
-        Vector = vector;
-        Fades();
-
-        return this;
-    }
-
-    internal VisualEffect FadeUp()
-    {
-        Vector = new Vector2(Random.Range(-0.001f, 0.001f), Random.Range(0.001f, 0.005f));
-        Fades();
-
+        Data.TimeAlive = 0;
+        Data.Fade = true;
+        Data.FadeOut = fadeOut;
         return this;
     }
 
     internal void Kill()
     {
-        LifeSpan = 0;
+        Data.LifeSpan = 0;
     }
 
     internal VisualEffect Regular()
     {
         transform.localScale = new Vector3(1, 1, 1);
-        return this;
-    }
-
-    internal VisualEffect Fades(bool fadeOut = false)
-    {
-        _startTime = Time.time;
-        Fade = true;
-        FadeOut = fadeOut;
         return this;
     }
 
@@ -92,30 +88,39 @@ public class VisualEffect : MonoBehaviour
         if (Game.TimeManager.Paused)
             return;
 
-        if (FullSpan < 0)
+        if (Data.FullSpan < 0)
         {
-            FullSpan = LifeSpan;
+            Data.FullSpan = Data.LifeSpan;
         }
 
-        if (StartIntensity < 0)
+        if (Data.StartIntensity < 0)
         {
-            StartIntensity = Intensity;
+            Data.StartIntensity = Data.Intensity;
         }
-
-        LifeSpan -= Time.deltaTime;
-        if (LifeSpan <= 0)
+        Data.TimeAlive += Time.deltaTime;
+        Data.LifeSpan -= Time.deltaTime;
+        if (Data.LifeSpan <= 0)
         {
+            if (!string.IsNullOrEmpty(Data.HolderId))
+            {
+                var holder = Data.Holder;
+
+                if (holder?.LinkedVisualEffects.Contains(Data) == true)
+                {
+                    Data.Holder.LinkedVisualEffects.Remove(Data);
+                }
+            }
+
             Destroy(gameObject);
             return;
         }
 
-        float t = (Time.time - _startTime) / LifeSpan;
-
-        var step = FadeOut ? Mathf.SmoothStep(0, FullSpan, t) : Mathf.SmoothStep(FullSpan, 0, t);
+        float t = Data.TimeAlive / Data.LifeSpan;
+        var step = Data.FadeOut ? Mathf.SmoothStep(0, Data.FullSpan, t) : Mathf.SmoothStep(Data.FullSpan, 0, t);
 
         if (Sprite != null)
         {
-            if (Fade)
+            if (Data.Fade)
             {
                 Sprite.color = new Color(Sprite.color.r,
                                          Sprite.color.g,
@@ -126,12 +131,53 @@ public class VisualEffect : MonoBehaviour
 
         if (Light != null)
         {
-            if (Fade)
+            if (Data.Fade)
             {
-                Light.intensity = Intensity * (LifeSpan / FullSpan);
+                Light.intensity = Data.Intensity * (Data.LifeSpan / Data.FullSpan);
             }
         }
-
-        transform.position += Vector;
     }
+}
+
+public class VisualEffectData
+{
+    public bool FadeOut;
+
+    public float FullSpan = -1;
+    public float LifeSpan;
+    public float TimeAlive;
+    private VisualEffect _linkedGameObject;
+    public EffectType EffectType { get; set; }
+    public bool Fade { get; set; }
+
+    [JsonIgnore]
+    public IEntity Holder
+    {
+        get
+        {
+            return IdService.GetEntity(HolderId);
+        }
+    }
+
+    public string HolderId { get; set; }
+    public float Intensity { get; set; } = -1;
+
+    [JsonIgnore]
+    public VisualEffect LinkedGameObject
+    {
+        get
+        {
+            if (_linkedGameObject == null)
+            {
+                _linkedGameObject = Game.VisualEffectController.SpawnEffect(this);
+            }
+            return _linkedGameObject;
+        }
+        set
+        {
+            _linkedGameObject = value;
+        }
+    }
+
+    public float StartIntensity { get; set; } = -1;
 }

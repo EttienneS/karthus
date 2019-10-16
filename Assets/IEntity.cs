@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json;
 
 public interface IEntity
 {
@@ -16,6 +15,7 @@ public interface IEntity
 
     Dictionary<string, string> Properties { get; set; }
     Dictionary<string, float> ValueProperties { get; set; }
+    List<VisualEffectData> LinkedVisualEffects { get; set; } 
 }
 
 public static class EntityHelpers

@@ -24,7 +24,7 @@
             throw new TaskFailedException();
         }
 
-        Game.VisualEffectController.SpawnEffect(Target.Cell, 0.5f);
+        Game.VisualEffectController.SpawnEffect(AssignedEntity, Target.Cell, 0.5f);
 
         foreach (var kvp in Cost)
         {

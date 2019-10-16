@@ -236,6 +236,7 @@ public class MapGenerator
                                   (0.2f, CellType.Dirt),
                                   (0.0f, CellType.Water));
 
+
         GenerateMapFromPreset();
         Debug.Log($"Generated map in {sw.Elapsed}");
         sw.Restart();
