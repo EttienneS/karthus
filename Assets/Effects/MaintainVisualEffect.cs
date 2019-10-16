@@ -8,17 +8,16 @@ public class MaintainVisualEffect : EffectBase
     public string Color;
 
     public bool Fades;
-    public int Intensity = 1;
-    public int Radius = 2;
-    public int Duration = 2;
+    public float Intensity = 1.0f;
+    public float Radius = 2.0f;
+    public float Duration = 2.0f;
 
     public override bool DoEffect()
     {
         if (VisualEffect?.Destroyed != false)
         {
-            if (VisualEffect != null && AssignedEntity.LinkedVisualEffects.Contains(VisualEffect))
+            if (VisualEffect != null)
             {
-                AssignedEntity.LinkedVisualEffects.Remove(VisualEffect);
                 VisualEffect.LinkedGameObject.DestroySelf();
             }
 
@@ -35,7 +34,7 @@ public class MaintainVisualEffect : EffectBase
 
             if (Fades)
             {
-                VisualEffect = VisualEffect.LinkedGameObject.Fades().Data;
+                VisualEffect.LinkedGameObject.Fades();
             }
 
         }

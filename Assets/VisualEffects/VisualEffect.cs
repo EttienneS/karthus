@@ -63,18 +63,12 @@ public class VisualEffect : MonoBehaviour
         Destroy(gameObject);
     }
 
-    internal VisualEffect Big()
-    {
-        transform.localScale = new Vector3(2, 2, 2);
-        return this;
-    }
 
-    internal VisualEffect Fades(bool fadeOut = false)
+    internal void Fades(bool fadeOut = false)
     {
         Data.TimeAlive = 0;
         Data.Fade = true;
         Data.FadeOut = fadeOut;
-        return this;
     }
 
     internal void Kill()
@@ -82,22 +76,16 @@ public class VisualEffect : MonoBehaviour
         Data.LifeSpan = 0;
     }
 
-    internal VisualEffect Regular()
+    internal void Regular()
     {
         transform.localScale = new Vector3(1, 1, 1);
-        return this;
+        
     }
 
-    internal VisualEffect Small()
-    {
-        transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-        return this;
-    }
 
-    internal VisualEffect Tiny()
+    internal void Tiny()
     {
         transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
-        return this;
     }
 
     private void Update()

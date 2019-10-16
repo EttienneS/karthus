@@ -288,8 +288,8 @@ public class Structure : IEntity
     internal void ShowOutline()
     {
         _outline = Game.VisualEffectController
-                       .SpawnSpriteEffect(this, Cell, "CellOutline", float.MaxValue)
-                       .Regular();
+                       .SpawnSpriteEffect(this, Cell, "CellOutline", float.MaxValue);
+        _outline.Regular();
     }
 
     private void ParseHeight()
