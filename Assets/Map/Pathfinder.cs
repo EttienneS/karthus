@@ -182,6 +182,5 @@ public static class Pathfinder
             Debug.LogWarning("Pathing error: " + ex.ToString());
             throw;
         }
-
     }
 }

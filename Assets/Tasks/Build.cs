@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-public class Build : CreatureTask
+﻿public class Build : CreatureTask
 {
     public Structure TargetStructure;
 

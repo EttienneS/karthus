@@ -124,8 +124,6 @@ public class MapGenerator
         return group.Distinct().ToList();
     }
 
-
-
     public void SpawnCreatures()
     {
         for (int i = 0; i < 3; i++)
@@ -225,7 +223,6 @@ public class MapGenerator
                                   (0.3f, CellType.Grass),
                                   (0.2f, CellType.Dirt),
                                   (0.0f, CellType.Water));
-
 
         GenerateMapFromPreset();
         Debug.Log($"Generated map in {sw.Elapsed}");

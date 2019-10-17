@@ -78,7 +78,7 @@ public class CreatureController : MonoBehaviour
         creature.Data = creatureData;
         creature.Data.CreatureRenderer = creature;
         IdService.EnrollEntity(creature.Data);
-        creature.name = $"{creature.Data.Name} ({creature.Data.Id})"; 
+        creature.name = $"{creature.Data.Name} ({creature.Data.Id})";
 
         creature.Data.Name = CreatureHelper.GetRandomName();
         creature.Data.Cell = cell;
@@ -120,5 +120,4 @@ public class CreatureController : MonoBehaviour
         faction.AddCreature(creatureData);
         return creature;
     }
-
 }

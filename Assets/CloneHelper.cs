@@ -22,7 +22,7 @@ public static class JsonHelper
         {
             Debug.LogError(traceWriter);
             throw;
-        }        
+        }
 
         return obj;
     }

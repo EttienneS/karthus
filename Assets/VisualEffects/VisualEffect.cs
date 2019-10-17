@@ -1,5 +1,4 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering.LWRP;
 
@@ -63,7 +62,6 @@ public class VisualEffect : MonoBehaviour
         Destroy(gameObject);
     }
 
-
     internal void Fades(bool fadeOut = false)
     {
         Data.TimeAlive = 0;
@@ -79,9 +77,7 @@ public class VisualEffect : MonoBehaviour
     internal void Regular()
     {
         transform.localScale = new Vector3(1, 1, 1);
-        
     }
-
 
     internal void Tiny()
     {

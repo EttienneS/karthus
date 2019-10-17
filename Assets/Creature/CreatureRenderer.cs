@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering.LWRP;
-using Random = UnityEngine.Random;
 
 public class CreatureRenderer : MonoBehaviour
 {
@@ -175,7 +173,6 @@ public class CreatureRenderer : MonoBehaviour
 
         Light.color = Data.ManaPool.GetManaWithMost().GetActualColor();
 
-
         if (TempMaterialDuration <= 0)
             return;
 
@@ -185,6 +182,5 @@ public class CreatureRenderer : MonoBehaviour
             TempMaterialDuration = 0;
             MainRenderer.SetBoundMaterial(Data.Cell);
         }
-
     }
 }

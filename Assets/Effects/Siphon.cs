@@ -49,7 +49,6 @@ public class Siphon : EffectBase
         Game.VisualEffectController.SpawnLightEffect(AssignedEntity, AssignedEntity.Cell, col.GetActualColor(), 1.5f, amount * 2f, 3)
                                       .Fades();
 
-
         siphonedCell.Unbind();
         return true;
     }

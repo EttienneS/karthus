@@ -51,7 +51,6 @@ public class LeyLine : MonoBehaviour
                 Cells[index] = newCell;
             }
         }
-
     }
 
     public void Start()
@@ -59,7 +58,6 @@ public class LeyLine : MonoBehaviour
         Line.positionCount = Cells.Count;
         Line.SetPositions(Cells.Select(c => c.ToTopOfMapVector()).ToArray());
     }
-
 
     internal void Awake()
     {

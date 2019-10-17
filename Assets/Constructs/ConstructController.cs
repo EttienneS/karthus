@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 public static class ConstructController
 {
@@ -21,6 +20,4 @@ public static class ConstructController
             return _constructs;
         }
     }
-
-   
 }

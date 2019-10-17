@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PipeConstants
 {
@@ -39,6 +38,4 @@ public class Shift : EffectBase
         _pipe.Flow();
         return true;
     }
-
-    
 }

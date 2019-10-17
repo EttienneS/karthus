@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -85,7 +84,6 @@ public class ManaPool : Dictionary<ManaColor, Mana>
                 .SpawnSpriteEffect(Entity, Entity.Cell, color.ToString(), GameConstants.ChannelDuration);
             effect.Tiny();
             effect.Fades(true);
-
         }
 
         if (!ContainsKey(color))

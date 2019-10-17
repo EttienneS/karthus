@@ -50,7 +50,6 @@ public class SaveManager : MonoBehaviour
         }
 
         save.CameraData.Load(Game.CameraController.Camera);
-
     }
 
     public void Save()

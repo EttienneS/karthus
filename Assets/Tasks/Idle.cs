@@ -3,7 +3,9 @@ using UnityEngine;
 
 public class Idle : CreatureTask
 {
-    public Idle() { }
+    public Idle()
+    {
+    }
 
     public Idle(CreatureData creature)
     {

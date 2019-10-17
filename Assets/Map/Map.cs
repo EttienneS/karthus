@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using UnityEngine.UI;
-using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
 
 public enum CellType
@@ -505,7 +503,7 @@ public class Map : MonoBehaviour
 
         return GetCellAtCoordinate(mineX, mineY);
     }
-       
+
     internal void Refresh(RectInt rect)
     {
         var cells = Game.Map.GetRectangle(rect.x,
@@ -522,7 +520,7 @@ public class Map : MonoBehaviour
             Game.StructureController.DrawAllStructures(cells);
         }
     }
-        
+
     private void OnValidate()
     {
         if (Lancunarity < 1)

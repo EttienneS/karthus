@@ -1,10 +1,7 @@
-﻿using System.Linq;
-using UnityEngine;
-
-public partial class OrderSelectionController //.Structure
+﻿public partial class OrderSelectionController //.Structure
 {
     internal const string DefaultBuildText = "Select Building";
-    
+
     internal OrderButton BuildButton;
 
     public void BuildClicked(string structureName)
@@ -49,8 +46,6 @@ public partial class OrderSelectionController //.Structure
 
                 var button = CreateOrderButton(structureData.Name, () => BuildClicked(structureData.Name), structureData.SpriteName);
             }
-
         }
     }
-    
 }

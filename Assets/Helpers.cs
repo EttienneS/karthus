@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using UnityEngine;
-using VoronoiLib.Structures;
 using Random = UnityEngine.Random;
 
 public static class Helpers

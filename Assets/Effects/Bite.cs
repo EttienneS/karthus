@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 
 public class Bite : EffectBase
 {
-
-
     public Bite()
     {
         Cost = ManaExtensions.GetCostPool((ManaColor.Red, 1));
@@ -17,7 +14,6 @@ public class Bite : EffectBase
             throw new TaskFailedException();
         }
 
-        
         Target.Damage(2, ManaColor.Black);
 
         if (AssignedEntity is CreatureData creature)
@@ -25,6 +21,4 @@ public class Bite : EffectBase
 
         return true;
     }
-
-
 }

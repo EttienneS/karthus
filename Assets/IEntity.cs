@@ -15,13 +15,5 @@ public interface IEntity
 
     Dictionary<string, string> Properties { get; set; }
     Dictionary<string, float> ValueProperties { get; set; }
-    List<VisualEffectData> LinkedVisualEffects { get; set; } 
-}
-
-public static class EntityHelpers
-{
-    public static Faction GetFaction(this IEntity entity)
-    {
-        return Game.FactionController.Factions[entity.FactionName];
-    }
+    List<VisualEffectData> LinkedVisualEffects { get; set; }
 }

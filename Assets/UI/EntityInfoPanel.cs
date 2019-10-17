@@ -87,7 +87,6 @@ public class EntityInfoPanel : MonoBehaviour
                     PropertiesPanel.text += $"{property.Key}:\t{property.Value}\n";
                 }
 
-
                 if (currentEntity is CreatureData creature)
                 {
                     PropertiesPanel.text += "\nSkills: \n\n";
@@ -97,7 +96,6 @@ public class EntityInfoPanel : MonoBehaviour
                         PropertiesPanel.text += $"\t{skill}\n";
                     }
                     PropertiesPanel.text += "\n";
-
 
                     if (creature.Task != null)
                     {
@@ -145,7 +143,6 @@ public class EntityInfoPanel : MonoBehaviour
                         }
                     }
                 }
-
             }
             else
             {
@@ -273,9 +270,7 @@ public class EntityInfoPanel : MonoBehaviour
                 btn.Image.sprite = Game.SpriteStore.GetSprite(interaction.Disabled ? "check_mark_t" : "quest_complete_t");
             });
         }
-
     }
-
 
     private void AddRemoveStructureButton(IEnumerable<Structure> structures)
     {

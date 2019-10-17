@@ -10,7 +10,7 @@ public class ChangeEntityProperty : EffectBase
     public float PropertyValueFloat { get; set; }
 
     public FloatOperation FloatOperation { get; set; }
-    
+
     public override bool DoEffect()
     {
         if (!string.IsNullOrWhiteSpace(PropertyValueString))

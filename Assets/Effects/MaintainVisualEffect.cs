@@ -36,7 +36,6 @@ public class MaintainVisualEffect : EffectBase
             {
                 VisualEffect.LinkedGameObject.Fades();
             }
-
         }
 
         return true;

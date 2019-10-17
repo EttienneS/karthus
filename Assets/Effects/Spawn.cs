@@ -14,5 +14,4 @@
         IdService.DestroyEntity(AssignedEntity);
         return true;
     }
-
 }

@@ -102,7 +102,7 @@ public static class IdService
         Debug.LogWarning("Unknown entity type!");
         return null;
     }
-   
+
     internal static void RemoveEntity(IEntity entity)
     {
         if (StructureLookup.ContainsKey(entity))

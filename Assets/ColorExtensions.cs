@@ -9,8 +9,6 @@ public static class ColorExtensions
         return new Color(Random.value, Random.value, Random.value, alpha);
     }
 
-    
-
     public static Color ToColor(this float[] arr)
     {
         return new Color(arr[0], arr[1], arr[2], arr[3]);

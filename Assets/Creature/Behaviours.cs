@@ -46,7 +46,6 @@ public static class Behaviours
         }
         else
         {
-
         }
 
         return task;

@@ -136,7 +136,6 @@ public class TimeManager : MonoBehaviour
                     Data.Hour = 0;
                 }
             }
-
         }
 
         TimeDisplay.text = $"{Data.Hour.ToString().PadLeft(2, '0')}:{Data.Minute.ToString().PadLeft(2, '0')}";

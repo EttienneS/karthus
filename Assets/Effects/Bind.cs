@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 public class Bind : EffectBase
 {
     public int Size;
+
     [JsonIgnore]
     private List<Cell> _affectAbleCells;
 
@@ -32,7 +32,7 @@ public class Bind : EffectBase
         var cellToBind = _affectAbleCells.Find(c => !c.Bound);
         if (cellToBind != null)
         {
-            cellToBind.Bind(AssignedEntity);           
+            cellToBind.Bind(AssignedEntity);
         }
 
         return true;

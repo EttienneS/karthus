@@ -4,7 +4,7 @@ public static class ColorConstants
 {
     public static Color AbyssColor = Color.magenta;
     public static Color BluePrintColor = new Color(0.3f, 1f, 1f, 0.4f);
-    
+
     public static Color InvalidColor = Color.red;
 
     public static Color[] SkinArray = new[]
@@ -13,7 +13,7 @@ public static class ColorConstants
         ColorExtensions.GetColorFromHex("#553827"),
         ColorExtensions.GetColorFromHex("#935934"),
         ColorExtensions.GetColorFromHex("#bd804a"),
-        ColorExtensions.GetColorFromHex("#fee4d7"),
+        ColorExtensions.GetColorFromHex("#F4C7B1"),
         ColorExtensions.GetColorFromHex("#e6a17d"),
         ColorExtensions.GetColorFromHex("#be7f5e"),
     };
@@ -22,8 +22,8 @@ public static class ColorConstants
     {
         // https://www.schemecolor.com/chairing-the-meeting.php
         ColorExtensions.GetColorFromHex("#b8aca7"),
-        ColorExtensions.GetColorFromHex("#e6ddd7"),
-        ColorExtensions.GetColorFromHex("#fbf5e6"),
+        ColorExtensions.GetColorFromHex("#E9E3DF"),
+        ColorExtensions.GetColorFromHex("#DED4BB"),
         ColorExtensions.GetColorFromHex("#9a765f"),
         ColorExtensions.GetColorFromHex("#5d3721"),
         ColorExtensions.GetColorFromHex("#492a18"),
