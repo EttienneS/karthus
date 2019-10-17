@@ -10,9 +10,6 @@ public class Structure : IEntity
 
     public List<EffectBase> ActivatedInteractions = new List<EffectBase>();
 
-    [JsonIgnore]
-    public EffectBase AutoInteraction;
-
     public List<EffectBase> AutoInteractions = new List<EffectBase>();
 
     public bool Buildable;
@@ -24,7 +21,6 @@ public class Structure : IEntity
     public string Layer;
     public Dictionary<ManaColor, int> ManaValue;
     public Direction Rotation;
-    public int SelectedAutoInteraction;
     public string ShiftX;
     public string ShiftY;
     public string Size;
@@ -249,17 +245,16 @@ public class Structure : IEntity
         InUseBy = null;
     }
 
-    internal EffectBase GetInteraction()
+    internal List<EffectBase> GetInteraction()
     {
-        if (SelectedAutoInteraction >= 0 && SelectedAutoInteraction < AutoInteractions.Count)
+        var interactions = new List<EffectBase>();
+        foreach (var interaction in AutoInteractions.Where(i => !i.Disabled))
         {
-            AutoInteraction = AutoInteractions[SelectedAutoInteraction];
-            AutoInteraction.AssignedEntityId = this.Id;
-
-            return AutoInteraction;
+            interaction.AssignedEntityId = this.Id;
+            interactions.Add(interaction);
         }
 
-        return null;
+        return interactions;
     }
 
     internal void HideOutline()

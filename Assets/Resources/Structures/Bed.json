@@ -14,7 +14,6 @@
   "ActivatedInteractions": [
     {
       "$type": "ChangeEntityProperty, Assembly-CSharp",
-      "DisplayName": "Sleep",
       "PropertyName": "Energy",
       "FloatOperation": "Add",
       "PropertyValueFloat": "50",

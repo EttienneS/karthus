@@ -143,11 +143,6 @@ public class EntityInfoPanel : MonoBehaviour
                                 PropertiesPanel.text += $"Attunment:\tNone\n";
                             }
                         }
-
-                        if (structure.AutoInteraction != null)
-                        {
-                            PropertiesPanel.text += $"Effect: \t{structure.AutoInteraction}\n";
-                        }
                     }
                 }
 
@@ -256,43 +251,31 @@ public class EntityInfoPanel : MonoBehaviour
             return;
         }
 
-        var btn = AddButton($"{GetInteractionName(prime)}", "quest_complete_t");
-        btn.SetOnClick(() =>
+        foreach (var interaction in prime.AutoInteractions)
         {
-            SetActiveButton(btn);
-
-            prime.SelectedAutoInteraction++;
-            if (prime.SelectedAutoInteraction >= prime.AutoInteractions.Count)
+            if (string.IsNullOrEmpty(interaction.DisplayName))
             {
-                prime.SelectedAutoInteraction = -1;
+                continue;
             }
 
-            foreach (var structure in structures)
+            var btn = AddButton($"{interaction.DisplayName} - {(interaction.Disabled ? "Off" : "On")}", interaction.Disabled ? "check_mark_t" : "quest_complete_t");
+            btn.SetOnClick(() =>
             {
-                structure.SelectedAutoInteraction = prime.SelectedAutoInteraction;
-            }
+                SetActiveButton(btn);
+                interaction.Disabled = !interaction.Disabled;
 
-            btn.Text.text = $"{GetInteractionName(prime)}";
-        });
+                foreach (var structure in structures)
+                {
+                    structure.AutoInteractions[prime.AutoInteractions.IndexOf(interaction)].Disabled = interaction.Disabled;
+                }
+
+                btn.Text.text = $"{interaction.DisplayName} - {(interaction.Disabled ? "Off" : "On")}";
+                btn.Image.sprite = Game.SpriteStore.GetSprite(interaction.Disabled ? "check_mark_t" : "quest_complete_t");
+            });
+        }
+
     }
 
-    public string GetInteractionName(Structure structure)
-    {
-        if (structure.SelectedAutoInteraction < 0)
-        {
-            return "Disabled";
-        }
-        else
-        {
-            var interaction = structure.AutoInteractions[structure.SelectedAutoInteraction];
-
-            if (!string.IsNullOrEmpty(interaction.DisplayName))
-            {
-                return interaction.DisplayName;
-            }
-            return interaction.GetType().Name;
-        }
-    }
 
     private void AddRemoveStructureButton(IEnumerable<Structure> structures)
     {

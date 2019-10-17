@@ -47,6 +47,8 @@ public abstract class EffectBase
 
     public int Range;
 
+    public bool Disabled;
+
     public bool Done()
     {
         if (Elapsed < ActivationTime)

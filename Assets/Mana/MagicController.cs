@@ -29,12 +29,10 @@ public class MagicController : MonoBehaviour
         {
             foreach (var structure in Structures)
             {
-                var interaction = structure.GetInteraction();
-                if (interaction == null)
+                foreach (var interaction in structure.GetInteraction())
                 {
-                    continue;
+                    Tasks.Enqueue(interaction);
                 }
-                Tasks.Enqueue(interaction);
             }
         }
 
