@@ -71,7 +71,7 @@ public class Structure : IEntity
         {
             if (_faction == null)
             {
-                _faction = FactionController.Factions[FactionName];
+                _faction = Game.FactionController.Factions[FactionName];
             }
             return _faction;
         }

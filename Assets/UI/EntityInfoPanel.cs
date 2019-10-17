@@ -54,7 +54,7 @@ public class EntityInfoPanel : MonoBehaviour
             var creatures = entities.OfType<CreatureData>();
             AddMoveButton(creatures);
             AddAttackButton(creatures);
-            AddWorkButton(creatures);
+            //AddWorkButton(creatures);
         }
         else
         {
@@ -292,13 +292,13 @@ public class EntityInfoPanel : MonoBehaviour
                 }
                 else
                 {
-                    if (FactionController.PlayerFaction.AvailableTasks.OfType<RemoveStructure>().Any(t => t.StructureToRemove == structure))
+                    if (Game.FactionController.PlayerFaction.AvailableTasks.OfType<RemoveStructure>().Any(t => t.StructureToRemove == structure))
                     {
                         Debug.Log("Structure already flagged to remove");
                     }
                     else
                     {
-                        FactionController.PlayerFaction
+                        Game.FactionController.PlayerFaction
                                          .AddTask(new RemoveStructure(structure))
                                          .AddCellBadge(structure.Cell,
                                                        OrderSelectionController.DefaultRemoveImage);

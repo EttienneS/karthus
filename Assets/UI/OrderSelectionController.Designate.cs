@@ -50,11 +50,11 @@ public partial class OrderSelectionController //.Designate
                     }
                     else
                     {
-                        if (FactionController.PlayerFaction.AvailableTasks.OfType<RemoveStructure>().Any(t => t.StructureToRemove == structure))
+                        if (Game.FactionController.PlayerFaction.AvailableTasks.OfType<RemoveStructure>().Any(t => t.StructureToRemove == structure))
                         {
                             continue;
                         }
-                        FactionController.PlayerFaction
+                        Game.FactionController.PlayerFaction
                                          .AddTask(new RemoveStructure(structure))
                                          .AddCellBadge(structure.Cell, DefaultRemoveImage);
                     }
@@ -75,7 +75,7 @@ public partial class OrderSelectionController //.Designate
             {
                 foreach (var creature in cell.GetEnemyCreaturesOf(FactionConstants.Player))
                 {
-                    FactionController.PlayerFaction.AddTask(new Interact(new ManaBlast(), null, creature.Id))
+                    Game.FactionController.PlayerFaction.AddTask(new Interact(new ManaBlast(), null, creature.Id))
                                                    .AddEntityBadge(creature, AttackIcon);
                 }
             }
@@ -90,7 +90,7 @@ public partial class OrderSelectionController //.Designate
         CellClickOrder = cells =>
         {
             var cell = cells.First();
-            FactionController.PlayerFaction.AddTask(new Move(cell))
+            Game.FactionController.PlayerFaction.AddTask(new Move(cell))
                                            .AddCellBadge(cell, MoveIcon);
         };
     }

@@ -22,10 +22,10 @@ public partial class OrderSelectionController //.Structure
             {
                 if (structure.ValidateCellLocationForStructure(cell))
                 {
-                    var blueprint = Game.StructureController.GetStructureBluePrint(structureName, FactionController.PlayerFaction);
+                    var blueprint = Game.StructureController.GetStructureBluePrint(structureName, Game.FactionController.PlayerFaction);
                     cell.SetStructure(blueprint);
                     cell.UpdateTile();
-                    FactionController.PlayerFaction.AddTask(new Build(blueprint));
+                    Game.FactionController.PlayerFaction.AddTask(new Build(blueprint));
                 }
             }
         };

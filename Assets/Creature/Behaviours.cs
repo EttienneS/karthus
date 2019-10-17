@@ -27,9 +27,9 @@ public static class Behaviours
 
         if (rand > 0.999f)
         {
-            if (FactionController.PlayerFaction.Creatures.Count > 0)
+            if (Game.FactionController.PlayerFaction.Creatures.Count > 0)
             {
-                task = new Interact(new Bite(), creature, FactionController.PlayerFaction.Creatures.GetRandomItem().Id);
+                task = new Interact(new Bite(), creature, Game.FactionController.PlayerFaction.Creatures.GetRandomItem().Id);
             }
         }
         else if (rand > 0.8f)
@@ -41,7 +41,7 @@ public static class Behaviours
         {
             task = new Wait(Random.value * 2f, "Lingering..");
         }
-        if (FactionController.PlayerFaction.Creatures.Count > 0)
+        if (Game.FactionController.PlayerFaction.Creatures.Count > 0)
         {
         }
         else

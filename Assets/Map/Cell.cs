@@ -491,7 +491,7 @@ public class Cell : IEquatable<Cell>
 
     internal Structure CreateStructure(string structureName, bool bind = false, string faction = FactionConstants.World)
     {
-        var structure = Game.StructureController.GetStructure(structureName, FactionController.Factions[faction]);
+        var structure = Game.StructureController.GetStructure(structureName, Game.FactionController.Factions[faction]);
         SetStructure(structure);
 
         if (bind)

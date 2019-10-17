@@ -24,6 +24,20 @@ public partial class Game //.Instances
     private static StructureController _structureController;
     private static SunController _sunController;
     private static TimeManager _timeManager;
+    private static FactionController _factionController;
+
+    public static FactionController FactionController
+    {
+        get
+        {
+            if (_factionController == null)
+            {
+                _factionController = GameObject.Find("FactionController").GetComponent<FactionController>();
+            }
+
+            return _factionController;
+        }
+    }
 
     public static CameraController CameraController
     {

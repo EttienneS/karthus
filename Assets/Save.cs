@@ -13,7 +13,7 @@ public class Save
     public Save()
     {
         Cells = Game.Map.Cells;
-        Factions = FactionController.Factions.Values.ToList();
+        Factions = Game.FactionController.Factions.Values.ToList();
         Time = Game.TimeManager.Data;
         CameraData = new CameraData(Game.CameraController.Camera);
     }

@@ -28,7 +28,7 @@ public class SaveManager : MonoBehaviour
 
         foreach (var faction in save.Factions)
         {
-            FactionController.Factions.Add(faction.FactionName, faction);
+            Game.FactionController.Factions.Add(faction.FactionName, faction);
 
             foreach (var creature in faction.Creatures.ToList())
             {
@@ -113,6 +113,6 @@ public class SaveManager : MonoBehaviour
 
         IdService.Clear();
 
-        FactionController.Factions.Clear();
+        Game.FactionController.Factions.Clear();
     }
 }

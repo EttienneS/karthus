@@ -132,7 +132,7 @@ public class MapGenerator
         {
             Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("Person"),
                                          Game.Map.Center.GetNeighbor(Helpers.RandomEnumValue<Direction>()),
-                                         FactionController.PlayerFaction);
+                                         Game.FactionController.PlayerFaction);
         }
 
         Game.CameraController.JumpToCell(Game.Map.Center);
@@ -239,7 +239,7 @@ public class MapGenerator
         Debug.Log($"Created ley lines in {sw.Elapsed}");
         sw.Restart();
 
-        MakeFactionBootStrap(Game.Map.Center, FactionController.PlayerFaction);
+        MakeFactionBootStrap(Game.Map.Center, Game.FactionController.PlayerFaction);
         Debug.Log($"Made bootastrap in {sw.Elapsed}");
         sw.Restart();
 
@@ -280,7 +280,7 @@ public class MapGenerator
         }
 
         var value = Random.value;
-        var world = FactionController.Factions[FactionConstants.World];
+        var world = Game.FactionController.Factions[FactionConstants.World];
         switch (cell.CellType)
         {
             case CellType.Grass:
@@ -321,12 +321,12 @@ public class MapGenerator
         {
             Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("AbyssWraith"),
                                              Game.Map.GetRandomCell(),
-                                             FactionController.MonsterFaction);
+                                             Game.FactionController.MonsterFaction);
         }
 
         var queen = Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("QueenWraith"),
                                              Game.Map.GetRandomCell(),
-                                             FactionController.MonsterFaction);
+                                             Game.FactionController.MonsterFaction);
 
         queen.Data.Name = "Queen " + queen.Data.Name;
     }
@@ -429,7 +429,7 @@ public class MapGenerator
         {
             var point = Game.Map.GetRandomEmptyCell();
             nexusPoints.Add(point);
-            point.CreateStructure("LeySpring", true, FactionController.WorldFaction.FactionName);
+            point.CreateStructure("LeySpring", true, Game.FactionController.WorldFaction.FactionName);
         }
 
         var v = Enum.GetValues(typeof(ManaColor));

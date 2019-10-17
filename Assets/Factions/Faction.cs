@@ -1,6 +1,6 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class Faction
 {
@@ -17,6 +17,49 @@ public class Faction
     {
         AvailableTasks.Add(task);
         return task;
+    }
+
+    public float LastUpdate;
+    public float UpdateTick = 1;
+
+    public void Update()
+    {
+        if (Game.TimeManager.Paused)
+        {
+            return;
+        }
+
+        LastUpdate += Time.deltaTime;
+        if (LastUpdate > UpdateTick)
+        {
+            LastUpdate = 0;
+
+            foreach (var structure in Structures.Where(s => s.IsBluePrint))
+            {
+                if (!AvailableTasks.OfType<Build>().Any(t => t.TargetStructure == structure) &&
+                    !Creatures.Any(t => t.Task is Build task && task.TargetStructure == structure))
+                {
+                    AddTask(new Build(structure));
+                }
+            }
+
+            foreach (var creature in Creatures)
+            {
+                // lost
+                if (creature.Cell == null)
+                {
+                    creature.Cell = Game.Map.Center;
+                    continue;
+                }
+
+                // stuck
+                if (creature.Mobility == Mobility.Walk && creature.Cell.TravelCost < 0)
+                {
+                    creature.Cell = Game.Map.GetCircle(creature.Cell, 4).Where(c => c.TravelCost > 0).GetRandomItem();
+                    creature.CancelTask();
+                }
+            }
+        }
     }
 
     public CreatureTask TakeTask(CreatureData creature)
@@ -52,7 +95,6 @@ public class Faction
             Creatures.Add(data);
         }
         data.FactionName = FactionName;
-
     }
 
     internal void AddStructure(Structure structure)

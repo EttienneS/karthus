@@ -35,7 +35,7 @@ public class ManaDisplay : MonoBehaviour
             var floatingMana = 0;
             var stored = 0;
 
-            foreach (var creature in FactionController.PlayerFaction.Creatures)
+            foreach (var creature in Game.FactionController.PlayerFaction.Creatures)
             {
                 if (creature.ManaPool.ContainsKey(mana))
                 {
@@ -43,7 +43,7 @@ public class ManaDisplay : MonoBehaviour
                 }
             }
 
-            foreach (var structure in FactionController.PlayerFaction.Structures)
+            foreach (var structure in Game.FactionController.PlayerFaction.Structures)
             {
                 if (structure.IsType("Battery"))
                 {

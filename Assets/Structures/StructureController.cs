@@ -101,7 +101,7 @@ public class StructureController : MonoBehaviour
                 Game.MagicController.RemoveEffector(structure);
             }
             IdService.RemoveEntity(structure);
-            FactionController.Factions[structure.FactionName].Structures.Remove(structure);
+            Game.FactionController.Factions[structure.FactionName].Structures.Remove(structure);
         }
     }
 

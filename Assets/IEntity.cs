@@ -22,6 +22,6 @@ public static class EntityHelpers
 {
     public static Faction GetFaction(this IEntity entity)
     {
-        return FactionController.Factions[entity.FactionName];
+        return Game.FactionController.Factions[entity.FactionName];
     }
 }

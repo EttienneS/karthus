@@ -220,7 +220,7 @@ public partial class Game : MonoBehaviour
             {
                 FactionName = factionName
             };
-            FactionController.Factions.Add(factionName, faction);
+            Game.FactionController.Factions.Add(factionName, faction);
         }
     }
 

@@ -1,18 +1,11 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
-public static class FactionController
+public class FactionController : MonoBehaviour
 {
-    internal static Dictionary<string, Faction> Factions = new Dictionary<string, Faction>();
+    internal Dictionary<string, Faction> Factions = new Dictionary<string, Faction>();
 
-    public static Faction PlayerFaction
-    {
-        get
-        {
-            return Factions[FactionConstants.Player];
-        }
-    }
-
-    public static Faction MonsterFaction
+    public Faction MonsterFaction
     {
         get
         {
@@ -20,11 +13,27 @@ public static class FactionController
         }
     }
 
-    public static Faction WorldFaction
+    public Faction PlayerFaction
+    {
+        get
+        {
+            return Factions[FactionConstants.Player];
+        }
+    }
+
+    public Faction WorldFaction
     {
         get
         {
             return Factions[FactionConstants.World];
+        }
+    }
+
+    public void Update()
+    {
+        foreach (var faction in Factions)
+        {
+            faction.Value.Update();
         }
     }
 }

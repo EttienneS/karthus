@@ -32,7 +32,7 @@ public partial class OrderSelectionController //.Construct
         {
             if (constuct.ValidateStartPos(cells[0]))
             {
-                constuct.Place(cells[0], FactionController.PlayerFaction);
+                constuct.Place(cells[0], Game.FactionController.PlayerFaction);
             }
         };
     }
