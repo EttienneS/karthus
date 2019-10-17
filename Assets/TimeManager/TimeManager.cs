@@ -137,10 +137,9 @@ public class TimeManager : MonoBehaviour
                 }
             }
 
-            Game.SunController.UpdateSun(Data.Hour, Data.Minute);
         }
 
-        TimeDisplay.text = $"{Data.Hour.ToString().PadLeft(2, '0')}:{Data.Minute.ToString().PadLeft(2, '0')} {Game.SunController.State}";
+        TimeDisplay.text = $"{Data.Hour.ToString().PadLeft(2, '0')}:{Data.Minute.ToString().PadLeft(2, '0')}";
     }
 
     internal void Pause()

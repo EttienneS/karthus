@@ -50,7 +50,7 @@ public class VisualEffectController : MonoBehaviour
     public VisualEffect SpawnLightEffect(IEntity holder, Cell cell, Color color, float radius, float intensity, float lifeSpan)
     {
         var effect = GetBase(EffectType.Light, holder);
-
+        
         effect.Light.color = color;
         effect.Data.Intensity = intensity;
         effect.Light.pointLightOuterRadius = radius;

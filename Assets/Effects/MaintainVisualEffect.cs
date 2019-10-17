@@ -8,9 +8,9 @@ public class MaintainVisualEffect : EffectBase
     public string Color;
 
     public bool Fades;
-    public float Intensity = 1.0f;
-    public float Radius = 2.0f;
-    public float Duration = 2.0f;
+    public float Intensity;
+    public float Radius;
+    public float Duration;
 
     public override bool DoEffect()
     {

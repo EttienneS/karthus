@@ -247,19 +247,6 @@ public partial class Game //.Instances
         }
     }
 
-    public static SunController SunController
-    {
-        get
-        {
-            if (_sunController == null)
-            {
-                _sunController = GameObject.Find("SunController").GetComponent<SunController>();
-            }
-
-            return _sunController;
-        }
-    }
-
     public static TimeManager TimeManager
     {
         get

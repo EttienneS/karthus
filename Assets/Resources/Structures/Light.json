@@ -12,12 +12,12 @@
   "AutoInteractions": [
     {
       "$type": "MaintainVisualEffect, Assembly-CSharp",
-      "ActivationTime": 0.1,
-      "Radius": 6,
-      "Intensity": 5,
-      "Fades": false,
+      "ActivationTime": "0.1",
+      "Radius": "6",
+      "Intensity": "5",
+      "Fades": "false",
       "Color": "#7700FF",
-      "Duration": 100
+      "Duration": "100"
     }
   ]
 }

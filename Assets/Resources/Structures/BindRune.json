@@ -13,11 +13,11 @@
     },
     {
       "$type": "MaintainVisualEffect, Assembly-CSharp",
-      "ActivationTime": 0.1,
-      "Radius": 3,
-      "Intensity": 3,
+      "ActivationTime": "0.1",
+      "Radius": "3",
+      "Intensity": "3",
       "Color": "#ff00ff",
-      "Duration": 100
+      "Duration": "100"
     }
   ],
   "ManaValue": {
