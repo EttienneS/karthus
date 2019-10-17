@@ -22,7 +22,6 @@ public partial class Game //.Instances
     private static SaveManager _saveManager;
     private static SpriteStore _spriteStore;
     private static StructureController _structureController;
-    private static SunController _sunController;
     private static TimeManager _timeManager;
     private static FactionController _factionController;
 
