@@ -55,7 +55,6 @@ public class SpriteStore : MonoBehaviour
                         MapSpriteTypeDictionary.Add(typeName, sprite);
                     }
                 }
-                //  Debug.Log("load map sprites");
             }
 
             return _mapSprites;

@@ -7,7 +7,8 @@ using Random = UnityEngine.Random;
 
 public enum CellType
 {
-    Dirt, Forest, Grass, Mountain, Stone, Water
+    Dirt, Forest, Grass, Mountain, Stone, Water,
+    Void
 }
 
 public class Map : MonoBehaviour
@@ -25,6 +26,7 @@ public class Map : MonoBehaviour
     internal SpriteRenderer Background;
 
     internal Tilemap Tilemap;
+    internal Tilemap LiquidMap;
 
     private Dictionary<(int x, int y), Cell> _cellLookup;
 
@@ -69,7 +71,8 @@ public class Map : MonoBehaviour
 
     public void Awake()
     {
-        Tilemap = GetComponentInChildren<Tilemap>();
+        Tilemap = transform.Find("Tilemap").gameObject.GetComponent<Tilemap>();
+        LiquidMap = transform.Find("Liquid Map").gameObject.GetComponent<Tilemap>();
         Background = GetComponentInChildren<SpriteRenderer>();
 
         Background.transform.position = new Vector3(Game.Map.Width / 2, Game.Map.Height / 2, 0);

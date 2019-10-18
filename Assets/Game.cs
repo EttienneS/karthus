@@ -157,14 +157,36 @@ public partial class Game : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown("f"))
+        if (Input.GetKey("z"))
+        {
+            SpawnLiquid(ManaColor.Blue);
+        }
+
+        if (Input.GetKey("x"))
+        {
+            SpawnLiquid(ManaColor.Red);
+        }
+
+        if (Input.GetKey("c"))
+        {
+            SpawnLiquid(ManaColor.Green);
+        } 
+
+        if (Input.GetKeyDown("g"))
         {
             var point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             var cell = Map.GetCellAtPoint(point);
 
-            VisualEffectController.SpawnLightEffect(null, cell, Color.blue, 2, 2, 4)
-                                  .Fades();
-            cell.FluidLevel += 0.5f;
+            cell.Height -= 0.5f;
+            cell.UpdateTile();
+        }
+
+        if (Input.GetKeyDown("h"))
+        {
+            var point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            var cell = Map.GetCellAtPoint(point);
+
+            cell.Height += 0.5f;
             cell.UpdateTile();
         }
 
@@ -176,6 +198,17 @@ public partial class Game : MonoBehaviour
         {
             SaveManager.Load();
         }
+    }
+
+    private static void SpawnLiquid(ManaColor color)
+    {
+        var point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        var cell = Map.GetCellAtPoint(point);
+
+        VisualEffectController.SpawnLightEffect(null, cell, color.GetActualColor(), 1, 1, 0.5f)
+                              .Fades();
+
+        cell.AddLiquid(color, 0.5f);
     }
 
     private void HandleTimeControls()

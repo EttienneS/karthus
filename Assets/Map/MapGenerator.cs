@@ -217,12 +217,14 @@ public class MapGenerator
 
         sw.Start();
 
-        MapPreset = new MapPreset((0.80f, CellType.Mountain),
-                                  (0.7f, CellType.Stone),
-                                  (0.5f, CellType.Forest),
-                                  (0.3f, CellType.Grass),
-                                  (0.2f, CellType.Dirt),
-                                  (0.0f, CellType.Water));
+        //MapPreset = new MapPreset((0.80f, CellType.Mountain),
+        //                          (0.7f, CellType.Stone),
+        //                          (0.5f, CellType.Forest),
+        //                          (0.3f, CellType.Grass),
+        //                          (0.2f, CellType.Dirt),
+        //                          (0.0f, CellType.Water));
+
+        MapPreset = new MapPreset((0.0f, CellType.Void));
 
         GenerateMapFromPreset();
         Debug.Log($"Generated map in {sw.Elapsed}");

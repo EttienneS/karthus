@@ -139,7 +139,7 @@ public class Cell : IEquatable<Cell>
         }
     }
 
-    public float FluidLevel
+    public float LiquidLevel
     {
         get
         {
@@ -169,20 +169,20 @@ public class Cell : IEquatable<Cell>
         }
     }
 
-    [JsonIgnore]
-    public float Level
-    {
-        get
-        {
-            var height = Height + FluidLevel;
-            if (Structure?.IsWall() == true)
-            {
-                height += 2;
-            }
+    //[JsonIgnore]
+    //public float Level
+    //{
+    //    get
+    //    {
+    //        var height = Height + FluidLevel;
+    //        if (Structure?.IsWall() == true)
+    //        {
+    //            height += 2;
+    //        }
 
-            return height;
-        }
-    }
+    //        return height;
+    //    }
+    //}
 
     [JsonIgnore]
     public Cell NextWithSamePriority { get; set; }
@@ -244,18 +244,10 @@ public class Cell : IEquatable<Cell>
             var tile = ScriptableObject.CreateInstance<Tile>();
             RefreshColor();
 
-            if (Floor == null || FluidLevel > 0)
+            if (Floor == null)
             {
-                if (FluidLevel > 0)
-                {
-                    tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(CellType.Water);
-                    tile.color = new Color(0f, 0f, 1f - (FluidLevel / 2), 1f);
-                }
-                else
-                {
-                    tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(CellType);
-                    tile.color = Color;
-                }
+                tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(CellType);
+                tile.color = Color;
             }
             else
             {
@@ -265,6 +257,35 @@ public class Cell : IEquatable<Cell>
 
             return tile;
         }
+    }
+
+    public ManaColor? Liquid;
+
+    [JsonIgnore]
+    public Tile LiquidTile
+    {
+        get
+        {
+            var tile = ScriptableObject.CreateInstance<Tile>();
+            tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(CellType.Void);
+
+            if (Liquid.HasValue && LiquidLevel > 0)
+            {
+                tile.color = Liquid.Value.GetActualColor(Mathf.Max(LiquidLevel, 0.2f));
+            }
+            else
+            {
+                tile.color = new Color(0, 0, 0, 0);
+            }
+
+            return tile;
+        }
+    }
+
+    internal void AddLiquid(ManaColor color, float volume)
+    {
+        Liquid = color;
+        LiquidLevel += 0.5f;
     }
 
     [JsonIgnore]
@@ -380,7 +401,7 @@ public class Cell : IEquatable<Cell>
     public void RefreshColor()
     {
         const float totalShade = 1f;
-        const float maxShade = 0.2f;
+        const float maxShade = 0.4f;
         var baseColor = new Color(totalShade, Bound ? totalShade : 0.6f, totalShade, Bound ? 1f : 0.6f);
 
         var range = Game.MapGenerator.MapPreset.GetCellTypeRange(CellType);
@@ -460,9 +481,20 @@ public class Cell : IEquatable<Cell>
     {
         Game.Map.Tilemap.SetTile(new Vector3Int(X, Y, 0), null);
         Game.Map.Tilemap.SetTile(new Vector3Int(X, Y, 0), Tile);
+
         if (Structure != null)
         {
             Game.StructureController.RefreshStructure(Structure);
+        }
+    }
+
+    public void UpdateLiquid()
+    {
+        Game.Map.LiquidMap.SetTile(new Vector3Int(X, Y, 0), null);
+
+        if (Liquid.HasValue)
+        {
+            Game.Map.LiquidMap.SetTile(new Vector3Int(X, Y, 0), LiquidTile);
         }
     }
 
@@ -531,21 +563,59 @@ public class Cell : IEquatable<Cell>
     internal void UpdatePhysics()
     {
         const float minLevel = 0.1f;
-        if (FluidLevel <= minLevel)
+        if (LiquidLevel <= minLevel || !Liquid.HasValue)
         {
-            UpdateTile();
+            UpdateLiquid();
             return;
         }
 
-        var drop = Mathf.Max(minLevel, FluidLevel / 2);
-        var options = Neighbors.Where(n => n != null && n.Level <= Level).ToList();
-
-        if (options.Count > 0)
+        var clash = Array.Find(Neighbors, n => n?.Liquid.HasValue == true && n.Liquid.Value != Liquid.Value);
+        const float max = 0.02f;
+        if (clash != null)
         {
-            var lower = options.GetRandomItem();
-            lower.FluidLevel += drop;
-            FluidLevel -= drop;
-            UpdateTile();
+            var winner = LiquidLevel > clash.LiquidLevel ? this : clash;
+            var loser = winner == this ? clash : this;
+
+            var diff = Mathf.Min(winner.LiquidLevel - loser.LiquidLevel, max);
+            winner.LiquidLevel -= diff;
+            loser.LiquidLevel -= diff;
+
+            loser.Liquid = null;
+            Game.VisualEffectController.SpawnLightEffect(null, loser, winner.Liquid.Value.GetActualColor(),
+                                        1 + diff, 1 + diff, 2).Fades();
+
+            winner.UpdateLiquid();
+            loser.UpdateLiquid();
         }
+        else
+        {
+            var drop = Mathf.Max(minLevel, LiquidLevel / 2);
+            var options = Neighbors.Where(n => n?.BlocksFluid() == false
+                                               && n.LiquidLevel < LiquidLevel).ToList();
+
+            if (options.Count > 0)
+            {
+                var lower = options.GetRandomItem();
+                lower.LiquidLevel += drop;
+                lower.Liquid = Liquid;
+                LiquidLevel -= drop;
+                UpdateLiquid();
+            }
+        }
+    }
+
+    private bool BlocksFluid()
+    {
+        if (!Bound)
+        {
+            return true;
+        }
+
+        if (Structure == null)
+        {
+            return false;
+        }
+
+        return Structure.IsWall();
     }
 }

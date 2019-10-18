@@ -49,18 +49,21 @@ public class MapPreset
 
     internal (float, float) GetCellTypeRange(CellType cellType)
     {
-        var reversedMap = _mapKey.Reverse();
-        var last = 0f;
-
-        foreach (var kvp in reversedMap)
+        if (_mapKey.Count > 1)
         {
-            if (cellType == kvp.Value)
-            {
-                return (kvp.Key, last);
-            }
-            last = kvp.Key;
-        }
+            var reversedMap = _mapKey.Reverse();
+            var last = 0f;
 
-        return (0f, 0f);
+            foreach (var kvp in reversedMap)
+            {
+                if (cellType == kvp.Value)
+                {
+                    return (kvp.Key, last);
+                }
+                last = kvp.Key;
+            }
+
+        }
+        return (0f, 1f);
     }
 }

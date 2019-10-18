@@ -64,4 +64,29 @@ public class LeyLine : MonoBehaviour
         Line = GetComponent<LineRenderer>();
         NextUpdate = Random.value * 5;
     }
+
+    public float UpdateInterval = 5.0f;
+    public float LastUpdate = 0f;
+
+    public void Update()
+    {
+        if (Game.TimeManager.Paused)
+        {
+            return;
+        }
+
+        LastUpdate += Time.deltaTime;
+
+        if (LastUpdate > UpdateInterval)
+        {
+            LastUpdate = 0;
+
+            var bound = Cells.Where(c => c.Bound);
+
+            if (bound.Any())
+            {
+                bound.GetRandomItem().AddLiquid(ManaColor, 0.1f);
+            }
+        }
+    }
 }

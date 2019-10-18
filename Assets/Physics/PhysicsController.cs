@@ -5,7 +5,7 @@ public class PhysicsController : MonoBehaviour
 {
     internal Queue<Cell> VolatileCells = new Queue<Cell>();
 
-    public int UpdatesPerFrame = 100;
+    public int UpdatesPerFrame = 200;
 
     [Range(0f, 0.2f)] public float PhysicsRate = 0.05f;
     internal float WorkTick;
