@@ -244,9 +244,15 @@ public class Construct
 
                 if (cell.Pathable && cell.Structure == null)
                 {
-                    cell.SetStructure(Game.StructureController.GetStructureBluePrint(GetStructure(character), faction));
+                    var structure = Game.StructureController.GetStructureBluePrint(GetStructure(character), faction);
+                    cell.SetStructure(structure);
+
+                    if (!structure.IsFloor() && !structure.IsWall() && !string.IsNullOrEmpty(Floor))
+                    {
+                        // if not floor or wall, add default floor
+                        cell.SetStructure(Game.StructureController.GetStructureBluePrint(Floor, faction));
+                    }
                     cell.UpdateTile();
-                    faction.AddTask(new Build(cell.Structure));
                 }
 
                 x++;

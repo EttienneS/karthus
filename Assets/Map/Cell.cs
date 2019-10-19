@@ -252,7 +252,15 @@ public class Cell : IEquatable<Cell>
             else
             {
                 tile.sprite = Game.SpriteStore.GetSprite(Floor.SpriteName);
-                tile.color = Color;
+                var col = Color;
+
+                if (Floor.IsBluePrint)
+                {
+                    col = ColorConstants.BluePrintColor;
+                    col.a = 1;
+                }
+
+                tile.color = col;
             }
 
             return tile;
@@ -443,6 +451,7 @@ public class Cell : IEquatable<Cell>
             }
             structure.Cell = this;
             Floor = structure;
+            UpdateTile();
         }
         else
         {
