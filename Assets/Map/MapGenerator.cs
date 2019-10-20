@@ -7,8 +7,6 @@ using Random = UnityEngine.Random;
 
 public class MapGenerator
 {
-    public MapPreset MapPreset;
-
     public Cell CreateCell(int x, int y)
     {
         var cell = new Cell
@@ -211,6 +209,8 @@ public class MapGenerator
         }
     }
 
+    public Dictionary<int, Biome> Biomes = new List<Biome>();
+
     internal void Make()
     {
         var sw = new Stopwatch();
@@ -224,7 +224,7 @@ public class MapGenerator
         //                          (0.2f, CellType.Dirt),
         //                          (0.0f, CellType.Water));
 
-        MapPreset = new MapPreset((0.0f, CellType.Void));
+        MapPreset = new Biome((0.0f, CellType.Void));
 
         GenerateMapFromPreset();
         Debug.Log($"Generated map in {sw.Elapsed}");

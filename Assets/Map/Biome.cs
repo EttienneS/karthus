@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-public class MapPreset
+public class Biome
 {
     private SortedDictionary<float, CellType> _mapKey = new SortedDictionary<float, CellType>();
 
     private float[,] _noiseMap;
 
-    public MapPreset(params (float min, CellType type)[] param)
+    public Biome(params (float min, CellType type)[] param)
     {
         _noiseMap = Noise.GenerateNoiseMap(Game.Map.Width, Game.Map.Height,
             Game.Map.Seed,
