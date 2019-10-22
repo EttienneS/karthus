@@ -100,14 +100,7 @@ public class CreatureRenderer : MonoBehaviour
 
         if (Data.Update(Time.deltaTime))
         {
-            //if (Highlight.gameObject.activeInHierarchy)
-            //{
-            //    DrawAwareness();
-            //}
-            //else
-            //{
-            //    HideLine();
-            //}
+           
         }
         UpdateMaterial();
     }

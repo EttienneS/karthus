@@ -156,7 +156,30 @@ public class SpriteStore : MonoBehaviour
         }
     }
 
-    internal Sprite GetCreatureSprite(string spriteName)
+    internal Sprite GetCreatureSprite(string spriteName, ref int index)
+    {
+        if (spriteName.Contains("-X"))
+        {
+            index++;
+            var tempName = spriteName.Replace("-X", $"-{index}");
+
+            if (!CreatureSprites.ContainsKey(tempName))
+            {
+                index = 1;
+                tempName = spriteName.Replace("-X", $"-{index}");
+            }
+            spriteName = tempName;
+        }
+
+        if (CreatureSprites.ContainsKey(spriteName))
+        {
+            return CreatureSprites[spriteName];
+        }
+
+        return GetPlaceholder();
+    }
+
+    internal Sprite GetBodySprite(string spriteName, int index = 1)
     {
         if (CreatureSprites.ContainsKey(spriteName))
         {

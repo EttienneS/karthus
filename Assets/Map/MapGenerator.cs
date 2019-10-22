@@ -209,7 +209,7 @@ public class MapGenerator
         }
     }
 
-    public Dictionary<int, Biome> Biomes = new List<Biome>();
+    public Dictionary<int, Biome> Biomes = new Dictionary<int, Biome>();
 
     internal void Make()
     {
@@ -217,14 +217,21 @@ public class MapGenerator
 
         sw.Start();
 
-        //MapPreset = new MapPreset((0.80f, CellType.Mountain),
-        //                          (0.7f, CellType.Stone),
-        //                          (0.5f, CellType.Forest),
-        //                          (0.3f, CellType.Grass),
-        //                          (0.2f, CellType.Dirt),
-        //                          (0.0f, CellType.Water));
+        //MapPreset = 
+        //            
+        //            
+        //            
+        //            
+        //            
 
-        MapPreset = new Biome((0.0f, CellType.Void));
+        Biomes.Add(0, new Biome((0.0f, CellType.Void)));
+        Biomes.Add(1, new Biome((0.80f, CellType.Mountain),
+                                (0.7f, CellType.Stone),
+                                (0.5f, CellType.Forest),
+                                (0.3f, CellType.Grass),
+                                (0.2f, CellType.Dirt),
+                                (0.0f, CellType.Water)));
+
 
         GenerateMapFromPreset();
         Debug.Log($"Generated map in {sw.Elapsed}");
@@ -316,18 +323,21 @@ public class MapGenerator
 
     private static void SpawnMonsters()
     {
-        for (int i = 0; i < Game.Map.Width / 10; i++)
+        foreach (var monster in Game.CreatureController.Beastiary)
         {
-            Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("AbyssWraith"),
-                                             Game.Map.GetRandomCell(),
-                                             Game.FactionController.MonsterFaction);
+            if (monster.Key == "Person")
+            {
+                continue;
+            }
+
+            for (int i = 0; i < Game.Map.Width / 20; i++)
+            {
+                Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType(monster.Key),
+                                                 Game.Map.GetRandomCell(),
+                                                 Game.FactionController.MonsterFaction);
+            }
         }
-
-        var queen = Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("QueenWraith"),
-                                             Game.Map.GetRandomCell(),
-                                             Game.FactionController.MonsterFaction);
-
-        queen.Data.Name = "Queen " + queen.Data.Name;
+       
     }
 
     private List<List<Cell>> CreateBuildings(int maxWidth, int maxHeight, int minWidth, int minHeight, List<Cell> street)
@@ -473,8 +483,7 @@ public class MapGenerator
             for (int y = 0; y < Game.Map.Height; y++)
             {
                 var cell = Game.Map.GetCellAtCoordinate(x, y);
-
-                cell.Height = MapPreset.GetCellHeight(cell.X, cell.Y);
+                cell.Height = cell.Biome.GetCellHeight(cell.X, cell.Y);
             }
         }
     }

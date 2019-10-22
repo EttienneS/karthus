@@ -368,7 +368,6 @@ public class CreatureData : IEntity
         {
             WorkTick = 0;
             ProcessTask();
-            UpdateSprite();
         }
 
         if (InternalTick >= Game.TimeManager.TickInterval)
@@ -376,6 +375,7 @@ public class CreatureData : IEntity
             InternalTick = 0;
             Perceive();
             Live();
+            UpdateSprite();
 
             return true;
         }
@@ -439,14 +439,17 @@ public class CreatureData : IEntity
         }
     }
 
+    public int Index = 0;
+
     private void UpdateSprite()
     {
         bool flip = Facing == Direction.W || Facing == Direction.NW || Facing == Direction.SW;
         if (!Sprite.Contains("_"))
         {
             CreatureRenderer.MainRenderer.flipX = flip;
-            CreatureRenderer.MainRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite);
-        }
+            CreatureRenderer.MainRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite, ref Index);
+
+        }        
         else
         {
             var facingKey = Game.SpriteStore.FacingUp(Facing) ? "b_" : "f_";
@@ -461,16 +464,16 @@ public class CreatureData : IEntity
 
             if (facingKey == "f_")
             {
-                CreatureRenderer.FaceRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite + "face");
+                CreatureRenderer.FaceRenderer.sprite = Game.SpriteStore.GetBodySprite(Sprite + "face");
             }
             else
             {
                 CreatureRenderer.FaceRenderer.sprite = null;
             }
-            CreatureRenderer.BodyRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite + facingKey + "body");
-            CreatureRenderer.TopRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite + facingKey + "top");
-            CreatureRenderer.BottomRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite + facingKey + "bottom");
-            CreatureRenderer.HairRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite + facingKey + "hair_" + HairStyle);
+            CreatureRenderer.BodyRenderer.sprite = Game.SpriteStore.GetBodySprite(Sprite + facingKey + "body");
+            CreatureRenderer.TopRenderer.sprite = Game.SpriteStore.GetBodySprite(Sprite + facingKey + "top");
+            CreatureRenderer.BottomRenderer.sprite = Game.SpriteStore.GetBodySprite(Sprite + facingKey + "bottom");
+            CreatureRenderer.HairRenderer.sprite = Game.SpriteStore.GetBodySprite(Sprite + facingKey + "hair_" + HairStyle);
         }
     }
 }
