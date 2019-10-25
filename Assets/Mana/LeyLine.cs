@@ -11,7 +11,6 @@ public class LeyLine : MonoBehaviour
     public ManaColor ManaColor;
     internal float Jitter;
     internal Dictionary<int, KeyValuePair<Vector3, Vector3>> LineMoves = new Dictionary<int, KeyValuePair<Vector3, Vector3>>();
-    internal float NextUpdate;
 
     public void JitterLine()
     {
@@ -62,10 +61,9 @@ public class LeyLine : MonoBehaviour
     internal void Awake()
     {
         Line = GetComponent<LineRenderer>();
-        NextUpdate = Random.value * 5;
     }
 
-    public float UpdateInterval = 5.0f;
+    public float UpdateInterval = 30.0f;
     public float LastUpdate = 0f;
 
     public void Update()

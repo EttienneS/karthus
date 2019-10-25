@@ -305,7 +305,7 @@ public class Cell : IEquatable<Cell>
     internal void AddLiquid(ManaColor color, float volume)
     {
         Liquid = color;
-        LiquidLevel += 0.5f;
+        LiquidLevel += volume;
     }
 
     [JsonIgnore]

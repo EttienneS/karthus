@@ -241,7 +241,7 @@ public class MapGenerator
         Debug.Log($"Generated towns in {sw.Elapsed}");
         sw.Restart();
 
-        CreateLeyLines();
+        //CreateLeyLines();
         Debug.Log($"Created ley lines in {sw.Elapsed}");
         sw.Restart();
 
@@ -337,7 +337,7 @@ public class MapGenerator
                                                  Game.FactionController.MonsterFaction);
             }
         }
-       
+
     }
 
     private List<List<Cell>> CreateBuildings(int maxWidth, int maxHeight, int minWidth, int minHeight, List<Cell> street)
