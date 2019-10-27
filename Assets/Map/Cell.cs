@@ -10,7 +10,14 @@ public class Cell : IEquatable<Cell>
 {
     public string Binder;
 
-    public CellType CellType;
+    [JsonIgnore]
+    public CellType CellType
+    {
+        get
+        {
+            return Game.MapGenerator.Biomes[BiomeId].GetCellType(_height);
+        }
+    }
 
     public List<string> CreatureIds = new List<string>();
 
@@ -176,8 +183,6 @@ public class Cell : IEquatable<Cell>
         set
         {
             _height = value;
-            
-            CellType = Game.MapGenerator.Biomes[BiomeId].GetCellType(_height);
         }
     }
 
@@ -424,7 +429,6 @@ public class Cell : IEquatable<Cell>
         const float maxShade = 0.4f;
         var baseColor = new Color(totalShade, Bound ? totalShade : 0.6f, totalShade, Bound ? 1f : 0.6f);
 
-        
         var range = Game.MapGenerator.Biomes[BiomeId].GetCellTypeRange(CellType);
         var scaled = Helpers.Scale(range.Item1, range.Item2, 0f, maxShade, Height);
 

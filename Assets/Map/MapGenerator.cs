@@ -224,6 +224,8 @@ public class MapGenerator
                                 (0.3f, CellType.Grass),
                                 (0.2f, CellType.Dirt),
                                 (0.0f, CellType.Water)));
+        Biomes.Add(2, new Biome((0.0f, CellType.Water)));
+        Biomes.Add(3, new Biome((0.0f, CellType.Mountain)));
 
         GenerateBaseMap();
         Debug.Log($"Generated base map in {sw.Elapsed}");
@@ -259,6 +261,16 @@ public class MapGenerator
         foreach (var cell in Game.Map.GetRandomChunk(500))
         {
             cell.BiomeId = 1;
+        }
+
+        foreach (var cell in Game.Map.GetRandomChunk(500))
+        {
+            cell.BiomeId = 2;
+        }
+
+        foreach (var cell in Game.Map.GetRandomChunk(500))
+        {
+            cell.BiomeId = 3;
         }
     }
 
