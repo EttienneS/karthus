@@ -154,7 +154,7 @@ public class MapGenerator
         FinishBuildings(buildings);
     }
 
-    internal void GenerateMapFromPreset()
+    internal void GenerateBaseMap()
     {
         Game.Map.Cells = new List<Cell>();
 
@@ -217,13 +217,6 @@ public class MapGenerator
 
         sw.Start();
 
-        //MapPreset = 
-        //            
-        //            
-        //            
-        //            
-        //            
-
         Biomes.Add(0, new Biome((0.0f, CellType.Void)));
         Biomes.Add(1, new Biome((0.80f, CellType.Mountain),
                                 (0.7f, CellType.Stone),
@@ -232,9 +225,12 @@ public class MapGenerator
                                 (0.2f, CellType.Dirt),
                                 (0.0f, CellType.Water)));
 
+        GenerateBaseMap();
+        Debug.Log($"Generated base map in {sw.Elapsed}");
+        sw.Restart();
 
-        GenerateMapFromPreset();
-        Debug.Log($"Generated map in {sw.Elapsed}");
+        MakeBiomes();
+        Debug.Log($"Made biomes in {sw.Elapsed}");
         sw.Restart();
 
         //CreateTown();
@@ -256,6 +252,14 @@ public class MapGenerator
         SpawnMonsters();
         Debug.Log($"Spawned monsters in {sw.Elapsed}");
         sw.Restart();
+    }
+
+    private void MakeBiomes()
+    {
+        foreach (var cell in Game.Map.GetRandomChunk(500))
+        {
+            cell.BiomeId = 1;
+        }
     }
 
     private void MakeFactionBootStrap(Cell center, Faction faction)
@@ -337,7 +341,6 @@ public class MapGenerator
                                                  Game.FactionController.MonsterFaction);
             }
         }
-
     }
 
     private List<List<Cell>> CreateBuildings(int maxWidth, int maxHeight, int minWidth, int minHeight, List<Cell> street)
