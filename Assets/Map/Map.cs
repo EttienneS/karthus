@@ -334,6 +334,11 @@ public class Map : MonoBehaviour
         return chunk;
     }
 
+    internal List<Cell> GetEdge(List<Cell> cells)
+    {
+        return cells.Where(c => c.Neighbors.Any(n => n != null && !cells.Contains(n))).ToList();
+    }
+
     public Cell GetRandomPathableCell()
     {
         var cell = GetRandomCell();

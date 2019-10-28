@@ -235,17 +235,17 @@ public class MapGenerator
         Debug.Log($"Generated base map in {sw.Elapsed}");
         sw.Restart();
 
-        MakeBiomes();
-        Debug.Log($"Made biomes in {sw.Elapsed}");
-        sw.Restart();
+        //MakeBiomes();
+        //Debug.Log($"Made biomes in {sw.Elapsed}");
+        //sw.Restart();
 
         //CreateTown();
-        Debug.Log($"Generated towns in {sw.Elapsed}");
-        sw.Restart();
+        //Debug.Log($"Generated towns in {sw.Elapsed}");
+        //sw.Restart();
 
         //CreateLeyLines();
-        Debug.Log($"Created ley lines in {sw.Elapsed}");
-        sw.Restart();
+        //Debug.Log($"Created ley lines in {sw.Elapsed}");
+        //sw.Restart();
 
         MakeFactionBootStrap(Game.Map.Center, Game.FactionController.PlayerFaction);
         Debug.Log($"Made bootastrap in {sw.Elapsed}");
@@ -262,22 +262,34 @@ public class MapGenerator
 
     private void MakeBiomes()
     {
-        GrowBiome(1, Game.Map.GetRandomCell());
-        GrowBiome(2, Game.Map.GetRandomCell());
-        GrowBiome(3, Game.Map.GetRandomCell());
-        GrowBiome(4, Game.Map.GetRandomCell());
-    }
-
-    private static void GrowBiome(int id, Cell origin)
-    {
-        foreach (var cell in Game.Map.GetRandomChunk(500, origin))
+        foreach (var biome in Biomes)
         {
-            cell.BiomeId = id;
-            if (Random.value > 0.99f)
+            foreach (var cell in GrowBiome(Game.Map.GetRandomChunk(Random.Range(250, 300), Game.Map.GetRandomCell())))
             {
-                GrowBiome(id, cell);
+                cell.BiomeId = biome.Key;
             }
         }
+    }
+
+    private static List<Cell> GrowBiome(List<Cell> cells = null, float momentum = 1f)
+    {
+        if (momentum < 0.1)
+        {
+            return cells;
+        }
+
+        if (Random.value < momentum)
+        {
+            var edge = Game.Map.GetEdge(cells);
+            var count = Random.Range(1, 5);
+            for (int i = 0; i < count; i++)
+            {
+                cells.AddRange(Game.Map.GetRandomChunk(Random.Range(100, 150), edge.GetRandomItem()));
+            }
+
+            momentum -= Random.value / 3;
+        }
+        return GrowBiome(cells.Distinct().ToList(), momentum);
     }
 
     private void MakeFactionBootStrap(Cell center, Faction faction)

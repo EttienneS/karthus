@@ -15,7 +15,7 @@ public partial class Game // .Mouse
     public void DisableMouseSprite()
     {
         MouseSpriteRenderer.gameObject.SetActive(false);
-        ValidateMouse = null;
+        ValidateMouse =  null;
         RotateMouseRight = null;
     }
 
