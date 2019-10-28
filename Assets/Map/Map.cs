@@ -297,10 +297,10 @@ public class Map : MonoBehaviour
         return CellLookup[((int)(Random.value * (Game.Map.Width - 1)), (int)(Random.value * (Game.Map.Height - 1)))];
     }
 
-    public List<Cell> GetRandomChunk(int chunkSize)
+    public List<Cell> GetRandomChunk(int chunkSize, Cell origin)
     {
         _searchFrontierPhase++;
-        var firstCell = GetRandomCell();
+        var firstCell = origin;
         firstCell.SearchPhase = _searchFrontierPhase;
         firstCell.Distance = 0;
         firstCell.SearchHeuristic = 0;

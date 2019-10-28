@@ -224,8 +224,12 @@ public class MapGenerator
                                 (0.3f, CellType.Grass),
                                 (0.2f, CellType.Dirt),
                                 (0.0f, CellType.Water)));
-        Biomes.Add(2, new Biome((0.0f, CellType.Water)));
-        Biomes.Add(3, new Biome((0.0f, CellType.Mountain)));
+        Biomes.Add(2, new Biome((0.30f, CellType.Water),
+                                (0.0f, CellType.Dirt)));
+        Biomes.Add(3, new Biome((0.4f, CellType.Mountain),
+                                (0.0f, CellType.Stone)));
+        Biomes.Add(4, new Biome((0.8f, CellType.Grass),
+                               (0.0f, CellType.Dirt)));
 
         GenerateBaseMap();
         Debug.Log($"Generated base map in {sw.Elapsed}");
@@ -258,19 +262,21 @@ public class MapGenerator
 
     private void MakeBiomes()
     {
-        foreach (var cell in Game.Map.GetRandomChunk(500))
-        {
-            cell.BiomeId = 1;
-        }
+        GrowBiome(1, Game.Map.GetRandomCell());
+        GrowBiome(2, Game.Map.GetRandomCell());
+        GrowBiome(3, Game.Map.GetRandomCell());
+        GrowBiome(4, Game.Map.GetRandomCell());
+    }
 
-        foreach (var cell in Game.Map.GetRandomChunk(500))
+    private static void GrowBiome(int id, Cell origin)
+    {
+        foreach (var cell in Game.Map.GetRandomChunk(500, origin))
         {
-            cell.BiomeId = 2;
-        }
-
-        foreach (var cell in Game.Map.GetRandomChunk(500))
-        {
-            cell.BiomeId = 3;
+            cell.BiomeId = id;
+            if (Random.value > 0.99f)
+            {
+                GrowBiome(id, cell);
+            }
         }
     }
 
