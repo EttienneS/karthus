@@ -9,6 +9,16 @@ public enum Mobility
     Walk, AbyssWalk, Fly
 }
 
+public class Limb
+{
+    public int HP { get; set; }
+
+    public string Name { get; set; }
+
+    public List<Limb> LinkedTo { get; set; }
+   
+}
+
 public class CreatureData : IEntity
 {
     public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
@@ -49,6 +59,8 @@ public class CreatureData : IEntity
     private bool _firstRun = true;
 
     private CreatureTask _task;
+
+    public List<Limb> Body { get; set; }
 
     [JsonIgnore]
     public List<Cell> Awareness
@@ -449,7 +461,7 @@ public class CreatureData : IEntity
             CreatureRenderer.MainRenderer.flipX = flip;
             CreatureRenderer.MainRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite, ref Index);
 
-        }        
+        }
         else
         {
             var facingKey = Game.SpriteStore.FacingUp(Facing) ? "b_" : "f_";

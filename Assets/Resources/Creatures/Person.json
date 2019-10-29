@@ -9,6 +9,12 @@
   "Perception": 5,
   "BehaviourName": "Person",
   "Mobility": "Walk",
+  "Body": [
+    {
+      "HP": 5,
+      "Name": "Torso"
+    }
+  ],
   "Skills": [
     {
       "Name": "Build",
