@@ -14,7 +14,7 @@ public enum CellType
 public class Map : MonoBehaviour
 {
     public const int PixelsPerCell = 64;
-    [Range(50, 1000)] public int Height = 100;
+    [Range(5, 2000)] public int Height = 100;
     [Range(0f, 1f)] public float JitterProbability = 0.8f;
     public float Lancunarity = 2;
     public int Octaves = 4;
@@ -22,7 +22,7 @@ public class Map : MonoBehaviour
     [Range(0f, 1f)] public float Persistance = 0.5f;
     [Range(0.5f, 100f)] public float Scale = 10;
     public int Seed;
-    [Range(50, 1000)] public int Width = 100;
+    [Range(5, 2000)] public int Width = 100;
     internal SpriteRenderer Background;
 
     internal Tilemap Tilemap;

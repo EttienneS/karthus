@@ -5,8 +5,15 @@
     "Hunger": "200"
   },
   "Speed": 15.0,
-  "Sprite": "AbyssWraith",
+  "Sprite": "HGhost-X",
   "Perception": 2,
-  "BehaviourName": "AbyssWraith",
-  "Mobility": "Walk"
+  "BehaviourName": "Monster",
+  "Mobility": "Walk",
+  "Body": [
+    {
+      "Name": "Torso",
+      "HP": 5,
+      "Max": 5
+    }
+  ]
 }

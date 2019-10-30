@@ -6,7 +6,7 @@ public static class Behaviours
 {
     public static Dictionary<string, GetBehaviourTaskDelegate> BehaviourTypes = new Dictionary<string, GetBehaviourTaskDelegate>
     {
-        { "AbyssWraith", AbyssWraith },
+        { "Monster", Monster },
         { "Person", Person }
     };
 
@@ -19,7 +19,7 @@ public static class Behaviours
 
     public const int WraithRange = 10;
 
-    public static CreatureTask AbyssWraith(CreatureData creature)
+    public static CreatureTask Monster(CreatureData creature)
     {
         CreatureTask task = null;
 

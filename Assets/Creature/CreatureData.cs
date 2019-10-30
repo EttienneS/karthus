@@ -13,10 +13,9 @@ public class Limb
 {
     public int HP { get; set; }
 
-    public string Name { get; set; }
+    public int Max { get; set; }
 
-    public List<Limb> LinkedTo { get; set; }
-   
+    public string Name { get; set; }
 }
 
 public class CreatureData : IEntity

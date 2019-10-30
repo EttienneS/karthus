@@ -122,18 +122,6 @@ public class MapGenerator
         return group.Distinct().ToList();
     }
 
-    public void SpawnCreatures()
-    {
-        for (int i = 0; i < 3; i++)
-        {
-            Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("Person"),
-                                         Game.Map.Center.GetNeighbor(Helpers.RandomEnumValue<Direction>()),
-                                         Game.FactionController.PlayerFaction);
-        }
-
-        Game.CameraController.JumpToCell(Game.Map.Center);
-    }
-
     internal void CreateTown()
     {
         // approach
@@ -248,16 +236,14 @@ public class MapGenerator
         //sw.Restart();
 
         MakeFactionBootStrap(Game.Map.Center, Game.FactionController.PlayerFaction);
-        Debug.Log($"Made bootastrap in {sw.Elapsed}");
+        Debug.Log($"Made bootstrap in {sw.Elapsed}");
         sw.Restart();
 
         SpawnCreatures();
         Debug.Log($"Spawned creatures in {sw.Elapsed}");
         sw.Restart();
 
-        SpawnMonsters();
-        Debug.Log($"Spawned monsters in {sw.Elapsed}");
-        sw.Restart();
+        Game.CameraController.JumpToCell(Game.Map.Center);
     }
 
     private void MakeBiomes()
@@ -355,16 +341,22 @@ public class MapGenerator
         }
     }
 
-    private static void SpawnMonsters()
+    private static void SpawnCreatures()
     {
         foreach (var monster in Game.CreatureController.Beastiary)
         {
             if (monster.Key == "Person")
             {
+                for (int i = 0; i < 1; i++)
+                {
+                    Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("Person"),
+                                                 Game.Map.Center.GetNeighbor(Helpers.RandomEnumValue<Direction>()),
+                                                 Game.FactionController.PlayerFaction);
+                }
                 continue;
             }
 
-            for (int i = 0; i < Game.Map.Width / 20; i++)
+            for (int i = 0; i < Game.Map.Width / 10; i++)
             {
                 Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType(monster.Key),
                                                  Game.Map.GetRandomCell(),
