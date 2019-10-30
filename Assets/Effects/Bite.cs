@@ -14,7 +14,7 @@ public class Bite : EffectBase
             throw new TaskFailedException();
         }
 
-        Target.Damage(2, ManaColor.Black);
+        Target.Damage(AssignedEntity, TargetType.Biggest, 5, 0.5f);
 
         if (AssignedEntity is CreatureData creature)
             creature.Task.AddSubTask(new Move(Target.Cell.Neighbors.Where(n => n != null && n.TravelCost > 0).ToList().GetRandomItem()));

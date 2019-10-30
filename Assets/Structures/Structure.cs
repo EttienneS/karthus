@@ -177,16 +177,6 @@ public class Structure : IEntity
         }
     }
 
-    public void Damage(int amount, ManaColor type)
-    {
-        if (!ManaPool.Empty())
-        {
-            var mana = ManaPool.GetRandomManaColorFromPool();
-            ManaPool.BurnMana(mana, amount);
-        }
-        Game.StructureController.DestroyStructure(this);
-    }
-
     public bool IsPipe()
     {
         return IsType("Pipe");
@@ -302,6 +292,22 @@ public class Structure : IEntity
                 _width = 1;
                 _height = 1;
             }
+        }
+    }
+
+    public float HP { get; set; } = 5;
+
+    public void Damage(IEntity attacker, TargetType target, float power, float accuracy)
+    {
+        if (target == TargetType.Critical && accuracy > 0.8f)
+        {
+            power *= 2;
+        }
+        HP -= power;
+
+        if (HP <= 0)
+        {
+            Game.StructureController.DestroyStructure(this);
         }
     }
 }

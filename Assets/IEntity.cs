@@ -11,9 +11,14 @@ public interface IEntity
 
     string FactionName { get; set; }
 
-    void Damage(int amount, ManaColor type);
+    void Damage(IEntity attacker, TargetType target, float power, float accuracy);
 
     Dictionary<string, string> Properties { get; set; }
     Dictionary<string, float> ValueProperties { get; set; }
     List<VisualEffectData> LinkedVisualEffects { get; set; }
+}
+
+public enum TargetType
+{
+    Easy, Critical, Biggest
 }

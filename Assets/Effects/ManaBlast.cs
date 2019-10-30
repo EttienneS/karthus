@@ -29,7 +29,7 @@
         foreach (var kvp in Cost)
         {
             Game.LeyLineController.MakeChannellingLine(AssignedEntity, Target, 5, 0.5f, kvp.Key);
-            Target.Damage(5, kvp.Key);
+            Target.Damage(AssignedEntity, TargetType.Biggest, 5, 0.5f);
         }
 
         return true;

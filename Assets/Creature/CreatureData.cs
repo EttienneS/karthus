@@ -170,6 +170,7 @@ public class CreatureData : IEntity
 
     public Dictionary<string, float> ValueProperties { get; set; } = new Dictionary<string, float>();
 
+
     public void Damage(int amount, ManaColor type)
     {
         if (!ManaPool.Empty())
@@ -486,6 +487,11 @@ public class CreatureData : IEntity
             CreatureRenderer.BottomRenderer.sprite = Game.SpriteStore.GetBodySprite(Sprite + facingKey + "bottom");
             CreatureRenderer.HairRenderer.sprite = Game.SpriteStore.GetBodySprite(Sprite + facingKey + "hair_" + HairStyle);
         }
+    }
+
+    public void Damage(IEntity attacker, TargetType target, float power, float accuracy)
+    {
+        throw new NotImplementedException();
     }
 }
 
