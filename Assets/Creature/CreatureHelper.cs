@@ -9,14 +9,18 @@ public static class CreatureHelper
         // todo: Add some kind of racial filter, perhaps a dragon has a longer name and elves have the classic el'ven style apostrophe names
         var front = new[]
         {
-            "Ch", "K", "Sh", "R", "S", "St", "B", "T", "X", "P", "D", "Kr", "Can", "Ex", "J", "H", "Th", "Sch", "Ten",
-            "W", "Wr", "V"
+                "Ch", "K", "Sh", "R","E", "Lo", "Ve", "Ko", "Tu", "Hi", "J", "S", "St", "B", "T", "X","Br", "M",
+                "P", "D", "Kr", "Can", "Ex", "J", "H", "Th", "Sch", "Ten", "W", "Wr", "V", "Ja", "Pi", "Fr", "Sw", "K", "Sp", "Sw"
         };
-        var mid = new[] { "a", "e", "u", "olo", "i", "o", "oo", "ee", "ero", "ane", "ala", "are", "ou", "y", "ai" };
+        var mid = new[]
+        {
+                "a", "e", "u", "olo", "i", "o", "oo", "ee", "ero", "ane", "ala", "are", "ou", "y", "ai",
+                "or", "ava", "oe", "ozo"
+        };
         var end = new[]
         {
-            "ll", "xel", "lle", "p", "ck", "t", "ne", "lla", "le", "x", "lo", "lee", "bel", "tel", "xa", "ty", "te",
-            "se"
+                "ll", "xel", "lle", "p", "ck", "t", "ne", "lla", "le", "x", "lo", "lee", "bel", "tel", "xa",
+                "ty", "te", "se", "tee", "ack", "f", "g", "u", "q", "ff", "ns", "es", "ko", "nna", "os","ner","ley","no","ba"
         };
 
         var name = string.Empty;

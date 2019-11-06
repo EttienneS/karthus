@@ -41,9 +41,9 @@ public abstract class CreatureTask
         return subTask;
     }
 
-    public abstract bool Done(CreatureData creature);
+    public abstract bool Done(Creature creature);
 
-    public void ShowBusyEmote(CreatureData creature)
+    public void ShowBusyEmote(Creature creature)
     {
         if (!string.IsNullOrEmpty(BusyEmote))
         {
@@ -51,7 +51,7 @@ public abstract class CreatureTask
         }
     }
 
-    public void ShowDoneEmote(CreatureData creature)
+    public void ShowDoneEmote(Creature creature)
     {
         if (!string.IsNullOrEmpty(DoneEmote))
         {
@@ -59,7 +59,7 @@ public abstract class CreatureTask
         }
     }
 
-    public bool SubTasksComplete(CreatureData creature)
+    public bool SubTasksComplete(Creature creature)
     {
         if (SubTasks == null || SubTasks.Count == 0)
         {

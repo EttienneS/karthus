@@ -15,7 +15,7 @@ public class Eat : CreatureTask
         AddSubTask(new Acrue(food));
     }
 
-    public override bool Done(CreatureData creature)
+    public override bool Done(Creature creature)
     {
         if (SubTasksComplete(creature))
         {

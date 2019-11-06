@@ -6,8 +6,7 @@ public class CreatureController : MonoBehaviour
 {
     public CreatureRenderer CreaturePrefab;
 
-    internal Dictionary<string, CreatureData> Beastiary = new Dictionary<string, CreatureData>();
-    //internal Dictionary<CreatureData, CreatureRenderer> CreatureLookup = new Dictionary<CreatureData, CreatureRenderer>();
+    internal Dictionary<string, Creature> Beastiary = new Dictionary<string, Creature>();
 
     public CreatureRenderer GetCreatureAtPoint(Vector2 point)
     {
@@ -27,7 +26,7 @@ public class CreatureController : MonoBehaviour
     {
         foreach (var creatureFile in Game.FileController.CreatureFiles)
         {
-            var creature = creatureFile.text.LoadJson<CreatureData>();
+            var creature = creatureFile.text.LoadJson<Creature>();
             Beastiary.Add(creature.Name, creature);
         }
     }
@@ -45,7 +44,7 @@ public class CreatureController : MonoBehaviour
         }
     }
 
-    internal CreatureData GetCreatureOfType(string v)
+    internal Creature GetCreatureOfType(string v)
     {
         if (!Beastiary.ContainsKey(v))
         {
@@ -53,10 +52,12 @@ public class CreatureController : MonoBehaviour
             throw new KeyNotFoundException();
         }
 
-        return Beastiary[v].CloneJson();
+        var creature =  Beastiary[v].CloneJson();
+        creature.CreateBody();
+        return creature;
     }
 
-    public List<(CreatureData creature, Cell cell, Faction faction)> SpawnCache = new List<(CreatureData, Cell, Faction)>();
+    public List<(Creature creature, Cell cell, Faction faction)> SpawnCache = new List<(Creature, Cell, Faction)>();
 
     public void Update()
     {
@@ -67,12 +68,12 @@ public class CreatureController : MonoBehaviour
         SpawnCache.Clear();
     }
 
-    internal void CacheSpawn(CreatureData creatureData, Cell cell, Faction faction)
+    internal void CacheSpawn(Creature creatureData, Cell cell, Faction faction)
     {
         SpawnCache.Add((creatureData, cell, faction));
     }
 
-    internal CreatureRenderer SpawnCreature(CreatureData creatureData, Cell cell, Faction faction)
+    internal CreatureRenderer SpawnCreature(Creature creatureData, Cell cell, Faction faction)
     {
         var creature = Instantiate(CreaturePrefab, transform);
         creature.Data = creatureData;

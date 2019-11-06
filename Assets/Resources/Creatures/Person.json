@@ -9,33 +9,6 @@
   "Perception": 5,
   "BehaviourName": "Person",
   "Mobility": "Walk",
-  "Body": [
-    {
-      "Name": "Torso",
-      "HP": 5,
-      "Max": 5
-    },
-    {
-      "Name": "Left Arm",
-      "HP": 5,
-      "Max": 5
-    },
-    {
-      "Name": "Right Arm",
-      "HP": 5,
-      "Max": 5
-    },
-    {
-      "Name": "Left Leg",
-      "HP": 5,
-      "Max": 5
-    },
-    {
-      "Name": "Right Leg",
-      "HP": 5,
-      "Max": 5
-    }
-  ],
   "Skills": [
     {
       "Name": "Build",

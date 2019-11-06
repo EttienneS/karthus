@@ -37,7 +37,7 @@ public class Interact : CreatureTask
         InteractorID = interactor.Id;
     }
 
-    public override bool Done(CreatureData creature)
+    public override bool Done(Creature creature)
     {
         if (string.IsNullOrEmpty(InteractorID))
         {

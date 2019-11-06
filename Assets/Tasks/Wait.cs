@@ -18,7 +18,7 @@ public class Wait : CreatureTask
         Message = $"{Reason} {Duration}";
     }
 
-    public override bool Done(CreatureData creature)
+    public override bool Done(Creature creature)
     {
         ElapsedTime += Time.deltaTime;
 

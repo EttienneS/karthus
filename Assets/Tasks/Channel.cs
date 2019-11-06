@@ -60,7 +60,7 @@ public class Channel : CreatureTask
         return task;
     }
 
-    public override bool Done(CreatureData creature)
+    public override bool Done(Creature creature)
     {
         if (string.IsNullOrEmpty(SourceId))
         {
@@ -71,8 +71,8 @@ public class Channel : CreatureTask
             TargetId = creature.Id;
         }
 
-        (Source as CreatureData)?.Face(Target.Cell);
-        (Target as CreatureData)?.Face(Source.Cell);
+        (Source as Creature)?.Face(Target.Cell);
+        (Target as Creature)?.Face(Source.Cell);
 
         if (SubTasksComplete(creature))
         {

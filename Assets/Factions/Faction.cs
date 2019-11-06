@@ -8,7 +8,7 @@ public class Faction
     public const int RecyleTime = 3;
     public List<CreatureTask> AvailableTasks = new List<CreatureTask>();
 
-    public List<CreatureData> Creatures = new List<CreatureData>();
+    public List<Creature> Creatures = new List<Creature>();
     public string FactionName;
     public int LastRecyle;
     public List<Structure> Structures = new List<Structure>();
@@ -62,7 +62,7 @@ public class Faction
         }
     }
 
-    public CreatureTask TakeTask(CreatureData creature)
+    public CreatureTask TakeTask(Creature creature)
     {
         var task = creature.GetBehaviourTask?.Invoke(creature);
         if (task == null)
@@ -88,7 +88,7 @@ public class Faction
         return new Idle(creature);
     }
 
-    internal void AddCreature(CreatureData data)
+    internal void AddCreature(Creature data)
     {
         if (!Creatures.Contains(data))
         {
@@ -124,7 +124,7 @@ public class Faction
         return Structures.Where(s => s.IsType("Battery") && !s.IsBluePrint);
     }
 
-    public Structure GetClosestBattery(CreatureData creature)
+    public Structure GetClosestBattery(Creature creature)
     {
         var cost = float.MaxValue;
         Structure closest = null;

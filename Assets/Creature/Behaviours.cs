@@ -15,11 +15,11 @@ public static class Behaviours
         return BehaviourTypes[type];
     }
 
-    public delegate CreatureTask GetBehaviourTaskDelegate(CreatureData creature);
+    public delegate CreatureTask GetBehaviourTaskDelegate(Creature creature);
 
     public const int WraithRange = 10;
 
-    public static CreatureTask Monster(CreatureData creature)
+    public static CreatureTask Monster(Creature creature)
     {
         CreatureTask task = null;
 
@@ -29,7 +29,7 @@ public static class Behaviours
         {
             if (Game.FactionController.PlayerFaction.Creatures.Count > 0)
             {
-                task = new Interact(new Bite(), creature, Game.FactionController.PlayerFaction.Creatures.GetRandomItem().Id);
+                creature.Combatants.Add(Game.FactionController.PlayerFaction.Creatures.GetRandomItem());
             }
         }
         else if (rand > 0.8f)
@@ -51,7 +51,7 @@ public static class Behaviours
         return task;
     }
 
-    public static CreatureTask Person(CreatureData creature)
+    public static CreatureTask Person(Creature creature)
     {
         CreatureTask task = null;
 
@@ -59,7 +59,7 @@ public static class Behaviours
 
         if (enemy != null)
         {
-            task = new Interact(new ManaBlast(), creature, enemy.Id);
+            creature.Combatants.Add(enemy);
         }
         else if (creature.ManaPool.Any(m => m.Value.Total > m.Value.Max && m.Value.Total > m.Value.Max))
         {
@@ -103,7 +103,7 @@ public static class Behaviours
         return task;
     }
 
-    private static CreatureData FindEnemy(CreatureData creature)
+    private static Creature FindEnemy(Creature creature)
     {
         return IdService.CreatureIdLookup.Values.FirstOrDefault(c => c.FactionName != creature.FactionName
         && creature.Awareness.Contains(c.Cell));

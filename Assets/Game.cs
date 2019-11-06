@@ -323,6 +323,8 @@ public partial class Game : MonoBehaviour
         MapGenerator = new MapGenerator();
         MapGenerator.Make();
 
+        TimeManager.TimeStep = TimeStep.Paused;
+
         Debug.Log($"Map gen complete in: {sw.Elapsed}");
     }
 

@@ -6,7 +6,7 @@ using UnityEngine.Experimental.Rendering.LWRP;
 
 public class CreatureRenderer : MonoBehaviour
 {
-    internal CreatureData Data = new CreatureData();
+    internal Creature Data = new Creature();
     internal SpriteRenderer Highlight;
     internal LineRenderer LineRenderer;
     internal float RemainingTextDuration;
@@ -100,7 +100,6 @@ public class CreatureRenderer : MonoBehaviour
 
         if (Data.Update(Time.deltaTime))
         {
-           
         }
         UpdateMaterial();
     }

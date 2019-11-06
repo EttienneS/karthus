@@ -13,7 +13,7 @@ public class Acrue : CreatureTask
         TargetManaLevel = targetManaLevel;
     }
 
-    public override bool Done(CreatureData creature)
+    public override bool Done(Creature creature)
     {
         if (SubTasksComplete(creature))
         {

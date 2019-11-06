@@ -7,7 +7,7 @@ public class Idle : CreatureTask
     {
     }
 
-    public Idle(CreatureData creature)
+    public Idle(Creature creature)
     {
         if (Random.value > 0.6)
         {
@@ -25,7 +25,7 @@ public class Idle : CreatureTask
         Message = "Idle...";
     }
 
-    public override bool Done(CreatureData Creature)
+    public override bool Done(Creature Creature)
     {
         return SubTasksComplete(Creature);
     }

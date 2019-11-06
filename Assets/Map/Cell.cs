@@ -107,7 +107,7 @@ public class Cell : IEquatable<Cell>
     }
 
     [JsonIgnore]
-    public List<CreatureData> Creatures
+    public List<Creature> Creatures
     {
         get
         {
@@ -364,7 +364,7 @@ public class Cell : IEquatable<Cell>
         return obj1.Equals(obj2);
     }
 
-    public void AddCreature(CreatureData creature)
+    public void AddCreature(Creature creature)
     {
         CreatureIds.Add(creature.Id);
     }
@@ -435,7 +435,7 @@ public class Cell : IEquatable<Cell>
         Color = new Color(baseColor.r - scaled, baseColor.g - scaled, baseColor.b - scaled, baseColor.a);
     }
 
-    public void RemoveCreature(CreatureData creature)
+    public void RemoveCreature(Creature creature)
     {
         CreatureIds.Remove(creature.Id);
     }
@@ -570,7 +570,7 @@ public class Cell : IEquatable<Cell>
         return Structure == null && Floor == null;
     }
 
-    internal IEnumerable<CreatureData> GetEnemyCreaturesOf(string faction)
+    internal IEnumerable<Creature> GetEnemyCreaturesOf(string faction)
     {
         return Creatures.Where(c => c.FactionName != faction);
     }

@@ -27,7 +27,6 @@ public partial class OrderSelectionController //.Designate
             EnableAndClear();
 
             CreateOrderButton(MoveText, MoveClicked, MoveIcon);
-            CreateOrderButton(AttackText, AttackClicked, AttackIcon);
             CreateOrderButton(DefaultRemoveText, RemoveStructureClicked, DefaultRemoveImage);
         }
     }
@@ -63,25 +62,7 @@ public partial class OrderSelectionController //.Designate
         };
     }
 
-    private void AttackClicked()
-    {
-        Game.Controller.SelectionPreference = SelectionPreference.Cell;
-        Game.Controller.SetMouseSprite(OrderSelectionController.AttackIcon,
-                                           (c) => c.GetEnemyCreaturesOf(FactionConstants.Player).Any());
-
-        CellClickOrder = cells =>
-        {
-            foreach (var cell in cells)
-            {
-                foreach (var creature in cell.GetEnemyCreaturesOf(FactionConstants.Player))
-                {
-                    Game.FactionController.PlayerFaction.AddTask(new Interact(new ManaBlast(), null, creature.Id))
-                                                   .AddEntityBadge(creature, AttackIcon);
-                }
-            }
-        };
-    }
-
+  
     private void MoveClicked()
     {
         Game.Controller.SelectionPreference = SelectionPreference.Cell;

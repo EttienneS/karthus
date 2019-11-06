@@ -59,7 +59,7 @@ public abstract class EffectBase
 
         if (Cost != null && !AssignedEntity.ManaPool.HasMana(Cost))
         {
-            if (AssignedEntity is CreatureData creature)
+            if (AssignedEntity is Creature creature)
             {
                 creature.Task.AddSubTask(new Acrue(Cost));
             }
@@ -95,7 +95,7 @@ public abstract class EffectBase
             return true;
         }
 
-        if (AssignedEntity is CreatureData creature &&
+        if (AssignedEntity is Creature creature &&
             AssignedEntity.Cell.DistanceTo(Target.Cell) > Range)
         {
             var cell = Target.Cell;

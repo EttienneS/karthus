@@ -8,12 +8,5 @@
   "Sprite": "HGhost-X",
   "Perception": 2,
   "BehaviourName": "Monster",
-  "Mobility": "Walk",
-  "Body": [
-    {
-      "Name": "Torso",
-      "HP": 5,
-      "Max": 5
-    }
-  ]
+  "Mobility": "Walk"
 }

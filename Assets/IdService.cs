@@ -4,8 +4,8 @@ using UnityEngine;
 
 public static class IdService
 {
-    public static Dictionary<string, CreatureData> CreatureIdLookup = new Dictionary<string, CreatureData>();
-    public static Dictionary<IEntity, CreatureData> CreatureLookup = new Dictionary<IEntity, CreatureData>();
+    public static Dictionary<string, Creature> CreatureIdLookup = new Dictionary<string, Creature>();
+    public static Dictionary<IEntity, Creature> CreatureLookup = new Dictionary<IEntity, Creature>();
     public static Dictionary<string, Structure> StructureIdLookup = new Dictionary<string, Structure>();
     public static Dictionary<IEntity, Structure> StructureLookup = new Dictionary<IEntity, Structure>();
     private static int _idCounter = 0;
@@ -28,7 +28,7 @@ public static class IdService
             StructureLookup.Add(entity, structure);
             StructureIdLookup.Add(entity.Id, structure);
         }
-        else if (entity is CreatureData creature)
+        else if (entity is Creature creature)
         {
             CreatureLookup.Add(entity, creature);
             CreatureIdLookup.Add(entity.Id, creature);
@@ -48,11 +48,11 @@ public static class IdService
 
         if (CreatureLookup.ContainsKey(entity))
         {
-            Game.CreatureController.DestroyCreature((entity as CreatureData).CreatureRenderer);
+            Game.CreatureController.DestroyCreature((entity as Creature).CreatureRenderer);
         }
     }
 
-    public static CreatureData GetCreature(this string id)
+    public static Creature GetCreature(this string id)
     {
         if (!CreatureIdLookup.TryGetValue(id, out var creature))
         {

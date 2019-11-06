@@ -49,9 +49,9 @@ public class EntityInfoPanel : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        if (entities.First() is CreatureData)
+        if (entities.First() is Creature)
         {
-            var creatures = entities.OfType<CreatureData>();
+            var creatures = entities.OfType<Creature>();
             AddMoveButton(creatures);
             AddAttackButton(creatures);
             //AddWorkButton(creatures);
@@ -87,7 +87,7 @@ public class EntityInfoPanel : MonoBehaviour
                     PropertiesPanel.text += $"{property.Key}:\t{property.Value}\n";
                 }
 
-                if (currentEntity is CreatureData creature)
+                if (currentEntity is Creature creature)
                 {
                     PropertiesPanel.text += "\nSkills: \n\n";
 
@@ -157,7 +157,7 @@ public class EntityInfoPanel : MonoBehaviour
         }
     }
 
-    private void AddAttackButton(IEnumerable<CreatureData> creatures)
+    private void AddAttackButton(IEnumerable<Creature> creatures)
     {
         var btn = AddButton(OrderSelectionController.AttackText, OrderSelectionController.AttackIcon);
         btn.SetOnClick(() =>
@@ -176,11 +176,8 @@ public class EntityInfoPanel : MonoBehaviour
                     {
                         foreach (var enemy in cell.GetEnemyCreaturesOf(creature.FactionName))
                         {
-                            var task = new Interact(new ManaBlast(), creature, enemy.Id);
-                            task.AddEntityBadge(enemy, OrderSelectionController.AttackIcon);
-
                             creature.CancelTask();
-                            creature.Task = task;
+                            creature.Combatants.Add(enemy);
                             break;
                         }
                     }
@@ -189,7 +186,7 @@ public class EntityInfoPanel : MonoBehaviour
         });
     }
 
-    private void AddMoveButton(IEnumerable<CreatureData> creatures)
+    private void AddMoveButton(IEnumerable<Creature> creatures)
     {
         var btn = AddButton(OrderSelectionController.MoveText, OrderSelectionController.MoveIcon);
         btn.SetOnClick(() =>
@@ -214,7 +211,7 @@ public class EntityInfoPanel : MonoBehaviour
         });
     }
 
-    private void AddWorkButton(IEnumerable<CreatureData> creatures)
+    private void AddWorkButton(IEnumerable<Creature> creatures)
     {
         var btn = AddButton("Work at", "anvil_t");
         btn.SetOnClick(() =>

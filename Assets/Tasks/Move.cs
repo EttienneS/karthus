@@ -25,7 +25,7 @@ public class Move : CreatureTask
 
     public int MaxSpeed { get; set; }
 
-    public override bool Done(CreatureData creature)
+    public override bool Done(Creature creature)
     {
         if (creature == null || creature.Cell == null)
         {
@@ -86,7 +86,6 @@ public class Move : CreatureTask
         {
             // reached next cell
             creature.Cell = _nextCell;
-            creature.CreatureRenderer.MainRenderer.SetBoundMaterial(_nextCell);
             _nextCell = null;
             _path = null;
         }

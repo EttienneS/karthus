@@ -20,7 +20,7 @@
         Message = $"Building {structure.Name} at {structure.Cell}";
     }
 
-    public override bool Done(CreatureData creature)
+    public override bool Done(Creature creature)
     {
         if (TargetStructure == null)
         {

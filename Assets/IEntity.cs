@@ -11,11 +11,11 @@ public interface IEntity
 
     string FactionName { get; set; }
 
-    void Damage(IEntity attacker, TargetType target, float power, float accuracy);
-
     Dictionary<string, string> Properties { get; set; }
     Dictionary<string, float> ValueProperties { get; set; }
     List<VisualEffectData> LinkedVisualEffects { get; set; }
+
+   
 }
 
 public enum TargetType

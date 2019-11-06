@@ -23,7 +23,7 @@
         Message = $"Removing {StructureToRemove.Name} at {StructureToRemove.Cell}";
     }
 
-    public override bool Done(CreatureData creature)
+    public override bool Done(Creature creature)
     {
         if (SubTasksComplete(creature))
         {
