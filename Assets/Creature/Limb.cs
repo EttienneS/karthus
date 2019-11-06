@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class Limb
 {
@@ -100,6 +101,7 @@ public class Limb
                 Owner.Dead = true;
 
                 Game.VisualEffectController.SpawnSpriteEffect(null, Owner.Cell, OrderSelectionController.AttackIcon, 1f);
+                Game.VisualEffectController.SpawnLightEffect(null, Owner.Cell, Color.red, 1f, 1f, 1f);
                 Game.CreatureController.DestroyCreature(Owner.CreatureRenderer);
             }
             else
@@ -115,6 +117,6 @@ public class Limb
 
     public override string ToString()
     {
-        return $"{Owner.Name}: {Name} [{HP}/{Max}]";
+        return $"{Name} [{HP}/{Max}]";
     }
 }

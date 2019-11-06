@@ -89,6 +89,15 @@ public class EntityInfoPanel : MonoBehaviour
 
                 if (currentEntity is Creature creature)
                 {
+                    PropertiesPanel.text += "\nBody: \n\n";
+
+                    foreach (var limb in creature.Limbs)
+                    {
+                        PropertiesPanel.text += $"\t{limb}\n";
+                    }
+                    PropertiesPanel.text += "\n";
+
+
                     PropertiesPanel.text += "\nSkills: \n\n";
 
                     foreach (var skill in creature.Skills)
