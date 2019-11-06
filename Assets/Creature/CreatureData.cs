@@ -182,6 +182,16 @@ public class Creature : IEntity
 
     public Dictionary<string, float> ValueProperties { get; set; } = new Dictionary<string, float>();
 
+    [JsonIgnore]
+    public bool InCombat
+    {
+        get
+        {
+            return Combatants.Count > 0;
+        }
+    }
+
+
     public void AddLimb(Limb limb)
     {
         limb.Owner = this;
@@ -453,22 +463,30 @@ public class Creature : IEntity
             return false;
         }
 
-        if (WorkTick >= Game.TimeManager.WorkInterval)
+        if (InCombat)
         {
-            WorkTick = 0;
-            
-            if (Combatants.Count > 0)
+            if (WorkTick >= Game.TimeManager.CombatInterval)
             {
+                WorkTick = 0;
                 ProcessCombat();
             }
             else
             {
+                ResolveIncomingAttacks(timeDelta);
+                UpdateLimbs(timeDelta);
+
+                Combatants.RemoveAll(c => c.Dead);
+            }
+        }
+        else
+        {
+            if (WorkTick >= Game.TimeManager.WorkInterval)
+            {
+                WorkTick = 0;
                 ProcessTask();
             }
-
-            ResolveIncomingAttacks(timeDelta);
-            UpdateLimbs(timeDelta);
         }
+
 
         if (InternalTick >= Game.TimeManager.TickInterval)
         {
@@ -708,12 +726,6 @@ public class Creature : IEntity
         try
         {
             var target = Combatants[0];
-            if (target == null)
-            {
-                Combatants.RemoveAt(0);
-                return;
-            }
-
             var incomingAttack = GetMostDangerousUnblockedIncomingAttack();
 
             var (defendedDamage, bestDefense) = GetDefense(incomingAttack);
@@ -766,7 +778,7 @@ public class Creature : IEntity
             Debug.LogError(ex.ToString());
         }
 
-       
+
     }
 
     private void ProcessTask()

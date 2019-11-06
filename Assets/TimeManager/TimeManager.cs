@@ -33,6 +33,7 @@ public class TimeManager : MonoBehaviour
     internal float TickInterval = 0.5f;
     internal Text TimeDisplay;
     internal float WorkInterval = 0.01f;
+    internal float CombatInterval = 0.5f;
 
     private TimeStep _timeStep;
 
