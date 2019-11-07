@@ -81,7 +81,7 @@ public class ManaPool : Dictionary<ManaColor, Mana>
         if (Entity?.Cell != null)
         {
             var effect = Game.VisualEffectController
-                .SpawnSpriteEffect(Entity, Entity.Cell, color.ToString(), GameConstants.ChannelDuration);
+                .SpawnSpriteEffect(Entity, Entity.Vector, color.ToString(), GameConstants.ChannelDuration);
             effect.Tiny();
             effect.Fades(true);
         }
@@ -137,7 +137,7 @@ public class ManaPool : Dictionary<ManaColor, Mana>
         {
             var effect =
                Game.VisualEffectController
-                   .SpawnSpriteEffect(Entity, Entity.Cell, color.ToString(), GameConstants.ChannelDuration);
+                   .SpawnSpriteEffect(Entity, Entity.Vector, color.ToString(), GameConstants.ChannelDuration);
             effect.Tiny();
             effect.Fades();
         }

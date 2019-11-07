@@ -32,8 +32,7 @@ public class TimeManager : MonoBehaviour
     internal Button PauseButton;
     internal float TickInterval = 0.5f;
     internal Text TimeDisplay;
-    internal float WorkInterval = 0.01f;
-    internal float CombatInterval = 0.5f;
+    internal float WorkInterval = 0.25f;
 
     private TimeStep _timeStep;
 

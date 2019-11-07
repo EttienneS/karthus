@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -42,10 +43,10 @@ public class CreatureRenderer : MonoBehaviour
 
     public void DrawAwareness()
     {
-        var awareness = new List<Vector3> { Data.Cell.ToTopOfMapVector() };
+        var awareness = new List<Vector3> { Data.Vector };
         awareness.AddRange(Data.Awareness.Where(c => c.Neighbors.Any(n => !Data.Awareness.Contains(n)))
-                                         .Select(c => c.ToTopOfMapVector()));
-        awareness.Add(Data.Cell.ToTopOfMapVector());
+                                         .Select(c => c.Vector));
+        awareness.Add(Data.Cell.Vector);
 
         ShowLine(Color.white, awareness.ToArray());
     }
@@ -92,6 +93,12 @@ public class CreatureRenderer : MonoBehaviour
         {
             MainRenderer.sprite = null;
         }
+    }
+
+    internal void UpdatePosition()
+    {
+        transform.position = new Vector2(Data.X, Data.Y);
+        MainRenderer.SetBoundMaterial(Data.Cell);
     }
 
     public void Update()

@@ -10,18 +10,11 @@ public class Cell : IEquatable<Cell>
 {
     public string Binder;
 
-    [JsonIgnore]
-    public CellType CellType
-    {
-        get
-        {
-            return Game.MapGenerator.Biomes[BiomeId].GetCellType(_height);
-        }
-    }
-
-    public List<string> CreatureIds = new List<string>();
+    public int BiomeId = 0;
 
     public string FloorId;
+
+    public ManaColor? Liquid;
 
     [JsonIgnore]
     public Cell[] Neighbors = new Cell[8];
@@ -73,6 +66,15 @@ public class Cell : IEquatable<Cell>
     }
 
     [JsonIgnore]
+    public Biome Biome
+    {
+        get
+        {
+            return Game.MapGenerator.Biomes[BiomeId];
+        }
+    }
+
+    [JsonIgnore]
     public bool Bound
     {
         get
@@ -90,28 +92,20 @@ public class Cell : IEquatable<Cell>
         }
     }
 
-    internal void Unbind()
+    [JsonIgnore]
+    public CellType CellType
     {
-        Binding = null;
-        UpdateTile();
-        Game.VisualEffectController.SpawnLightEffect(null, this, Color.magenta, 1.5f, 8, 8)
-                                   .Fades();
+        get
+        {
+            return Game.MapGenerator.Biomes[BiomeId].GetCellType(_height);
+        }
     }
-
-    internal void Bind(IEntity entity)
-    {
-        Binding = entity;
-        UpdateTile();
-        Game.VisualEffectController.SpawnLightEffect(null, this, Color.magenta, 2, 4, 5)
-                                   .Fades();
-    }
-
     [JsonIgnore]
     public List<Creature> Creatures
     {
         get
         {
-            return CreatureIds.Select(c => c.GetCreature()).ToList();
+            return IdService.CreatureLookup.Values.Where(c => c.Cell == this).ToList();
         }
     }
 
@@ -146,6 +140,18 @@ public class Cell : IEquatable<Cell>
         }
     }
 
+    public float Height
+    {
+        get
+        {
+            return _height;
+        }
+        set
+        {
+            _height = value;
+        }
+    }
+
     public float LiquidLevel
     {
         get
@@ -164,25 +170,38 @@ public class Cell : IEquatable<Cell>
     }
 
     [JsonIgnore]
-    public Biome Biome
+    public Tile LiquidTile
     {
         get
         {
-            return Game.MapGenerator.Biomes[BiomeId];
+            var tile = ScriptableObject.CreateInstance<Tile>();
+            tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(CellType.Void);
+
+            if (Liquid.HasValue && LiquidLevel > 0)
+            {
+                tile.color = Liquid.Value.GetActualColor(Mathf.Max(LiquidLevel, 0.2f));
+            }
+            else
+            {
+                tile.color = new Color(0, 0, 0, 0);
+            }
+
+            return tile;
         }
     }
 
-    public int BiomeId = 0;
+    [JsonIgnore]
+    public Cell NextWithSamePriority { get; set; }
 
-    public float Height
+    //        return height;
+    //    }
+    //}
+    [JsonIgnore]
+    public bool Pathable
     {
         get
         {
-            return _height;
-        }
-        set
-        {
-            _height = value;
+            return Bound && TravelCost > 0;
         }
     }
 
@@ -196,23 +215,6 @@ public class Cell : IEquatable<Cell>
     //        {
     //            height += 2;
     //        }
-
-    //        return height;
-    //    }
-    //}
-
-    [JsonIgnore]
-    public Cell NextWithSamePriority { get; set; }
-
-    [JsonIgnore]
-    public bool Pathable
-    {
-        get
-        {
-            return Bound && TravelCost > 0;
-        }
-    }
-
     [JsonIgnore]
     public Cell PathFrom { get; set; }
 
@@ -284,35 +286,6 @@ public class Cell : IEquatable<Cell>
         }
     }
 
-    public ManaColor? Liquid;
-
-    [JsonIgnore]
-    public Tile LiquidTile
-    {
-        get
-        {
-            var tile = ScriptableObject.CreateInstance<Tile>();
-            tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(CellType.Void);
-
-            if (Liquid.HasValue && LiquidLevel > 0)
-            {
-                tile.color = Liquid.Value.GetActualColor(Mathf.Max(LiquidLevel, 0.2f));
-            }
-            else
-            {
-                tile.color = new Color(0, 0, 0, 0);
-            }
-
-            return tile;
-        }
-    }
-
-    internal void AddLiquid(ManaColor color, float volume)
-    {
-        Liquid = color;
-        LiquidLevel += volume;
-    }
-
     [JsonIgnore]
     public float TravelCost
     {
@@ -326,6 +299,15 @@ public class Cell : IEquatable<Cell>
             }
 
             return Structure != null && !Structure.IsBluePrint ? Structure.TravelCost : 1.5f;
+        }
+    }
+
+    [JsonIgnore]
+    public Vector3 Vector
+    {
+        get
+        {
+            return new Vector3(Mathf.FloorToInt(X) + 0.5f, Mathf.FloorToInt(Y) + 0.5f, -1);
         }
     }
 
@@ -362,11 +344,6 @@ public class Cell : IEquatable<Cell>
         }
 
         return obj1.Equals(obj2);
-    }
-
-    public void AddCreature(Creature creature)
-    {
-        CreatureIds.Add(creature.Id);
     }
 
     public int DistanceTo(Cell other)
@@ -435,11 +412,6 @@ public class Cell : IEquatable<Cell>
         Color = new Color(baseColor.r - scaled, baseColor.g - scaled, baseColor.b - scaled, baseColor.a);
     }
 
-    public void RemoveCreature(Creature creature)
-    {
-        CreatureIds.Remove(creature.Id);
-    }
-
     public void RotateCCW()
     {
         Rotation = Rotation.Rotate90CCW();
@@ -498,9 +470,14 @@ public class Cell : IEquatable<Cell>
         return $"X: {X}\nY: {Y}";
     }
 
-    public Vector3 ToTopOfMapVector()
+    public void UpdateLiquid()
     {
-        return new Vector3(Mathf.FloorToInt(X) + 0.5f, Mathf.FloorToInt(Y) + 0.5f, -1);
+        Game.Map.LiquidMap.SetTile(new Vector3Int(X, Y, 0), null);
+
+        if (Liquid.HasValue)
+        {
+            Game.Map.LiquidMap.SetTile(new Vector3Int(X, Y, 0), LiquidTile);
+        }
     }
 
     public void UpdateTile()
@@ -514,14 +491,18 @@ public class Cell : IEquatable<Cell>
         }
     }
 
-    public void UpdateLiquid()
+    internal void AddLiquid(ManaColor color, float volume)
     {
-        Game.Map.LiquidMap.SetTile(new Vector3Int(X, Y, 0), null);
+        Liquid = color;
+        LiquidLevel += volume;
+    }
 
-        if (Liquid.HasValue)
-        {
-            Game.Map.LiquidMap.SetTile(new Vector3Int(X, Y, 0), LiquidTile);
-        }
+    internal void Bind(IEntity entity)
+    {
+        Binding = entity;
+        UpdateTile();
+        Game.VisualEffectController.SpawnLightEffect(null, Vector, Color.magenta, 2, 4, 5)
+                                   .Fades();
     }
 
     internal void Clear()
@@ -586,6 +567,13 @@ public class Cell : IEquatable<Cell>
         return new Vector3Int(X, Y, 0);
     }
 
+    internal void Unbind()
+    {
+        Binding = null;
+        UpdateTile();
+        Game.VisualEffectController.SpawnLightEffect(null, Vector, Color.magenta, 1.5f, 8, 8)
+                                   .Fades();
+    }
     internal void UpdatePhysics()
     {
         const float minLevel = 0.1f;
@@ -607,7 +595,7 @@ public class Cell : IEquatable<Cell>
             loser.LiquidLevel -= diff;
 
             loser.Liquid = null;
-            Game.VisualEffectController.SpawnLightEffect(null, loser, winner.Liquid.Value.GetActualColor(),
+            Game.VisualEffectController.SpawnLightEffect(null, loser.Vector, winner.Liquid.Value.GetActualColor(),
                                         1 + diff, 1 + diff, 2).Fades();
 
             winner.UpdateLiquid();

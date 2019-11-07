@@ -271,9 +271,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Dude launches a sword slash at Guys neck area!  Ow it hurts!! Dude launches
-    a sword slash at Guys neck area!  Ow it hurts!! Dude launches a sword slash at
-    Guys neck area!  Ow it hurts!!
+  m_text: Dude launches a sword slash at Guys neck area!  Ow it hurts!!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 33ba1128e70b8be42bf7c23ebf0f3a5b, type: 2}
   m_sharedMaterial: {fileID: -7501849821659355809, guid: 33ba1128e70b8be42bf7c23ebf0f3a5b,
@@ -302,8 +300,8 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 10
-  m_fontSizeBase: 10
+  m_fontSize: 8
+  m_fontSizeBase: 8
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -322,7 +320,7 @@ MonoBehaviour:
   m_firstOverflowCharacterIndex: -1
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
-  m_isTextTruncated: 1
+  m_isTextTruncated: 0
   m_enableKerning: 0
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
@@ -343,10 +341,10 @@ MonoBehaviour:
   m_margin: {x: 0, y: -0.05407715, z: 0, w: 2.168579}
   m_textInfo:
     textComponent: {fileID: 2906148915531817291}
-    characterCount: 73
+    characterCount: 61
     spriteCount: 0
-    spaceCount: 14
-    wordCount: 14
+    spaceCount: 12
+    wordCount: 12
     linkCount: 0
     lineCount: 3
     pageCount: 1

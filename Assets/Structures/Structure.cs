@@ -6,8 +6,6 @@ using UnityEngine.Tilemaps;
 
 public class Structure : IEntity
 {
-    public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
-
     public List<EffectBase> ActivatedInteractions = new List<EffectBase>();
 
     public List<EffectBase> AutoInteractions = new List<EffectBase>();
@@ -18,16 +16,27 @@ public class Structure : IEntity
     public (int X, int Y) Coords = (-1, -1);
 
     public IEntity InUseBy;
+
     public string Layer;
+
     public Dictionary<ManaColor, int> ManaValue;
+
     public Direction Rotation;
+
     public string ShiftX;
+
     public string ShiftY;
+
     public string Size;
+
     public string SpriteName;
+
     public float TravelCost;
+
     private Cell _cell;
+
     private Faction _faction;
+
     private VisualEffect _outline;
 
     [JsonIgnore]
@@ -89,6 +98,8 @@ public class Structure : IEntity
         }
     }
 
+    public float HP { get; set; } = 5;
+
     public string Id { get; set; }
 
     [JsonIgnore]
@@ -101,6 +112,8 @@ public class Structure : IEntity
     }
 
     public bool IsBluePrint { get; private set; }
+
+    public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
 
     public ManaPool ManaPool { get; set; }
 
@@ -149,6 +162,14 @@ public class Structure : IEntity
 
     public Dictionary<string, float> ValueProperties { get; set; } = new Dictionary<string, float>();
 
+    [JsonIgnore]
+    public Vector2 Vector
+    {
+        get
+        {
+            return Cell.Vector;
+        }
+    }
     [JsonIgnore]
     public int Width
     {
@@ -273,7 +294,7 @@ public class Structure : IEntity
     internal void ShowOutline()
     {
         _outline = Game.VisualEffectController
-                       .SpawnSpriteEffect(this, Cell, "CellOutline", float.MaxValue);
+                       .SpawnSpriteEffect(this, Vector, "CellOutline", float.MaxValue);
         _outline.Regular();
     }
 
@@ -294,7 +315,4 @@ public class Structure : IEntity
             }
         }
     }
-
-    public float HP { get; set; } = 5;
-
 }

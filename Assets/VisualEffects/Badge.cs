@@ -9,7 +9,7 @@ public class Badge : MonoBehaviour
     {
         if (Entity != null)
         {
-            transform.position = Entity.Cell.ToTopOfMapVector();
+            transform.position = Entity.Vector;
         }
     }
 

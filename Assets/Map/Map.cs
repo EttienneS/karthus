@@ -124,14 +124,17 @@ public class Map : MonoBehaviour
         return frame;
     }
 
-    public Cell GetCellAtCoordinate(int x, int y)
+    public Cell GetCellAtCoordinate(float x, float y)
     {
-        if (x < 0 || y < 0 || x >= Game.Map.Width || y >= Game.Map.Height)
+        var intx = Mathf.RoundToInt(x);
+        var inty = Mathf.RoundToInt(y);
+
+        if (intx < 0 || inty < 0 || intx >= Game.Map.Width || inty >= Game.Map.Height)
         {
             return null;
         }
 
-        return CellLookup[(x, y)];
+        return CellLookup[(intx, inty)];
     }
 
     public Cell GetCellAtPoint(Vector3 position)

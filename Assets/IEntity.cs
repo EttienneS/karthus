@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 public interface IEntity
 {
+    Vector2 Vector { get; }
+
     Cell Cell { get; set; }
 
     string Name { get; set; }
@@ -15,7 +18,7 @@ public interface IEntity
     Dictionary<string, float> ValueProperties { get; set; }
     List<VisualEffectData> LinkedVisualEffects { get; set; }
 
-   
+
 }
 
 public enum TargetType

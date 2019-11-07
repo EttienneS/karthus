@@ -10,7 +10,7 @@ public class ChannelLine : MonoBehaviour
     internal int Intensity;
     internal float Duration;
     internal float Delta;
-    internal List<Vector3> TargetPoints = new List<Vector3>();
+    internal List<Vector2> TargetPoints = new List<Vector2>();
 
     private void Awake()
     {
@@ -25,8 +25,8 @@ public class ChannelLine : MonoBehaviour
         {
             var frac = Delta / Duration;
 
-            var srcPoint = Source.Cell.ToTopOfMapVector() + new Vector3(0, 0.4f);
-            var trgPoint = Target.Cell.ToTopOfMapVector();
+            var srcPoint = Source.Vector;
+            var trgPoint = Target.Vector;
 
             var drawPoints = new List<Vector3>();
             drawPoints.Add(trgPoint);
@@ -34,12 +34,12 @@ public class ChannelLine : MonoBehaviour
 
             for (int i = 0; i < TargetPoints.Count; i++)
             {
-                drawPoints.Add(srcPoint + new Vector3(Random.Range(-0.05f, 0.05f), Random.Range(-0.05f, 0.05f), 0));
-                var trg = Vector3.Lerp(trgPoint, trgPoint + TargetPoints[i], frac);
+                drawPoints.Add(srcPoint + new Vector2(Random.Range(-0.05f, 0.05f), Random.Range(-0.05f, 0.05f)));
+                var trg = Vector2.Lerp(trgPoint, trgPoint + TargetPoints[i], frac);
                 drawPoints.Add(trg);
-                drawPoints.Add(trg + new Vector3(Random.Range(-0.05f, 0.05f), Random.Range(-0.05f, 0.05f), 0));
+                drawPoints.Add(trg + new Vector2(Random.Range(-0.05f, 0.05f), Random.Range(-0.05f, 0.05f)));
                 drawPoints.Add(trg);
-                drawPoints.Add(trg + new Vector3(Random.Range(-0.05f, 0.05f), Random.Range(-0.05f, 0.05f), 0));
+                drawPoints.Add(trg + new Vector2(Random.Range(-0.05f, 0.05f), Random.Range(-0.05f, 0.05f)));
                 drawPoints.Add(trg);
             }
 
@@ -61,11 +61,11 @@ public class ChannelLine : MonoBehaviour
         Intensity = intensity;
         Duration = duration;
 
-        TargetPoints = new List<Vector3>();
+        TargetPoints = new List<Vector2>();
 
         for (int i = 0; i < intensity; i++)
         {
-            TargetPoints.Add(new Vector3(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f), 0));
+            TargetPoints.Add(new Vector2(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f)));
         }
 
         LineRenderer.startColor = manaColor.GetActualColor();

@@ -41,9 +41,9 @@ public partial class Game : MonoBehaviour
 
         LineRenderer.positionCount += 3;
 
-        LineRenderer.SetPosition(LineRenderer.positionCount - 3, start.ToTopOfMapVector());
-        LineRenderer.SetPosition(LineRenderer.positionCount - 2, end.ToTopOfMapVector());
-        LineRenderer.SetPosition(LineRenderer.positionCount - 1, start.ToTopOfMapVector());
+        LineRenderer.SetPosition(LineRenderer.positionCount - 3, start.Vector);
+        LineRenderer.SetPosition(LineRenderer.positionCount - 2, end.Vector);
+        LineRenderer.SetPosition(LineRenderer.positionCount - 1, start.Vector);
 
         LineRenderer.startWidth = 0.1f;
         LineRenderer.endWidth = 0.1f;
@@ -205,7 +205,7 @@ public partial class Game : MonoBehaviour
         var point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         var cell = Map.GetCellAtPoint(point);
 
-        VisualEffectController.SpawnLightEffect(null, cell, color.GetActualColor(), 1, 1, 0.5f)
+        VisualEffectController.SpawnLightEffect(null, cell.Vector, color.GetActualColor(), 1, 1, 0.5f)
                               .Fades();
 
         cell.AddLiquid(color, 0.5f);

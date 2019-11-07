@@ -16,30 +16,26 @@ public class Creature : IEntity
     [JsonIgnore] public Color BottomColor;
     public List<Creature> Combatants = new List<Creature>();
 
-    // rather than serialzing the cell object we keep this lazy link for load
-    public (int X, int Y) Coords = (-1, -1);
-
     public Direction Facing = Direction.S;
     [JsonIgnore] public Behaviours.GetBehaviourTaskDelegate GetBehaviourTask;
     [JsonIgnore] public Color HairColor;
     public int HairStyle;
     public List<OffensiveActionBase> IncomingAttacks = new List<OffensiveActionBase>();
-    public int Index = 0;
+    public int Index = 1;
     public Dictionary<string, Memory> Mind = new Dictionary<string, Memory>();
     public Mobility Mobility;
     [JsonIgnore] public Color SkinColor;
     public float Speed = 10f;
     [JsonIgnore] public Color TopColor;
-    internal float InternalTick;
+    internal float InternalTick = float.MaxValue;
     [JsonIgnore] internal Cell LastPercievedCoordinate;
-    internal float WorkTick;
+    internal float WorkTick = float.MaxValue;
     private List<Cell> _awareness;
     private Cell _cell;
     private Faction _faction;
     private bool _firstRun = true;
     private CreatureTask _task;
     public float Aggression { get; set; }
-
     [JsonIgnore]
     public List<Cell> Awareness
     {
@@ -55,39 +51,16 @@ public class Creature : IEntity
     }
 
     public string BehaviourName { get; set; }
-
     [JsonIgnore]
     public Cell Cell
     {
         get
         {
-            if (_cell == null && Coords.X >= 0 && Coords.Y >= 0)
-            {
-                _cell = Game.Map.GetCellAtCoordinate(Coords.X, Coords.Y);
-                _cell.AddCreature(this);
-            }
-            return _cell;
+            return Game.Map.GetCellAtCoordinate(X, Y);
         }
         set
         {
-            if (_cell != null)
-            {
-                _cell.RemoveCreature(this);
-            }
-
-            if (value != null)
-            {
-                _cell = value;
-                _cell.AddCreature(this);
-
-                Coords = (_cell.X, _cell.Y);
-
-                if (CreatureRenderer != null)
-                {
-                    CreatureRenderer.transform.position = _cell.ToMapVector();
-                    CreatureRenderer.MainRenderer.SetBoundMaterial(_cell);
-                }
-            }
+            throw new Exception("Use MoveTo to change cell");
         }
     }
 
@@ -95,7 +68,6 @@ public class Creature : IEntity
     public CreatureRenderer CreatureRenderer { get; set; }
 
     public bool Dead { get; internal set; }
-
     public int DEX
     {
         get
@@ -105,7 +77,6 @@ public class Creature : IEntity
     }
 
     public int Dexterity { get; set; }
-
     [JsonIgnore]
     public Faction Faction
     {
@@ -121,21 +92,22 @@ public class Creature : IEntity
     }
 
     public string FactionName { get; set; }
-
     public string Id { get; set; }
+    [JsonIgnore]
+    public bool InCombat
+    {
+        get
+        {
+            return Combatants.Count > 0;
+        }
+    }
 
     public List<Limb> Limbs { get; set; }
-
     public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
-
     public ManaPool ManaPool { get; set; }
-
     public string Name { get; set; }
-
     public int Perception { get; set; }
-
     public Dictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
-
     [JsonIgnore]
     public Memory Self
     {
@@ -151,9 +123,7 @@ public class Creature : IEntity
     }
 
     public List<Skill> Skills { get; set; }
-
     public string Sprite { get; set; }
-
     public int STR
     {
         get
@@ -163,7 +133,6 @@ public class Creature : IEntity
     }
 
     public int Strenght { get; set; }
-
     public CreatureTask Task
     {
         get
@@ -181,21 +150,62 @@ public class Creature : IEntity
     }
 
     public Dictionary<string, float> ValueProperties { get; set; } = new Dictionary<string, float>();
-
     [JsonIgnore]
-    public bool InCombat
+    public Vector2 Vector
     {
         get
         {
-            return Combatants.Count > 0;
+            return new Vector2(X, Y);
         }
     }
 
-
+    public float X { get; set; }
+    public float Y { get; set; }
     public void AddLimb(Limb limb)
     {
         limb.Owner = this;
         Limbs.Add(limb);
+    }
+
+    public void CreateBody()
+    {
+        Strenght = 14;
+        Dexterity = 14;
+        Aggression = 1;
+        var leftArm = new Limb("Left Arm", 8, (DamageType.Bludgeoning, 1));
+        leftArm.AddDefensiveAction(new Block("left arm block", 3, DamageType.Bludgeoning));
+        leftArm.AddOffensiveAction(new Strike("left punch", 4, DamageType.Bludgeoning));
+        leftArm.AddBoostAction(new SummonShield("shield"));
+
+        var rightArm = new Limb("Right Arm", 8, (DamageType.Bludgeoning, 1));
+        rightArm.AddDefensiveAction(new Block("right arm block", 3, DamageType.Bludgeoning));
+        rightArm.AddOffensiveAction(new Strike("right punch", 4, DamageType.Bludgeoning));
+        rightArm.AddBoostAction(new SummonSword("sword"));
+
+        var torso = new Limb("Torso", 30, (DamageType.Bludgeoning, 1));
+        torso.AddDefensiveAction(new Brace("brace torso"));
+
+        var head = new Limb("Head", 20, (DamageType.Bludgeoning, 2))
+        {
+            Vital = true
+        };
+        head.AddDefensiveAction(new Brace("brace head"));
+
+        head.AddOffensiveAction(new Strike("headbutt", 4, DamageType.Bludgeoning));
+
+        var leftLeg = new Limb("Left Leg", 12, (DamageType.Bludgeoning, 1));
+        leftLeg.AddDefensiveAction(new Dodge("dodge left"));
+
+        var rightLeg = new Limb("Right Leg", 12, (DamageType.Bludgeoning, 1));
+        rightLeg.AddDefensiveAction(new Dodge("dodge right"));
+
+        Limbs = new List<Limb>();
+        AddLimb(torso);
+        AddLimb(head);
+        AddLimb(leftArm);
+        AddLimb(rightArm);
+        AddLimb(leftLeg);
+        AddLimb(rightLeg);
     }
 
     public void Face(Cell cell)
@@ -317,6 +327,52 @@ public class Creature : IEntity
         CreatureRenderer.ShowText(message, 0.5f);
     }
 
+    public void MoveTo(Creature creature)
+    {
+        MoveTo(creature.X, creature.Y);
+    }
+
+    public void MoveTo(IEntity entity)
+    {
+        MoveTo(entity.Cell);
+    }
+
+    public void MoveTo(Cell cell)
+    {
+        MoveTo(cell.X, cell.Y);
+    }
+
+    public void MoveTo(float targetX, float targetY)
+    {
+        var speed = 0.2f;
+        var message = $"##{Name} takes {speed} step from ({X}:{Y}) ";
+
+        if (targetY > Y)
+        {
+            message += "south ";
+            Y += speed;
+        }
+        else if (targetY < Y)
+        {
+            message += "north ";
+            Y -= speed;
+        }
+
+        if (targetX > X)
+        {
+            message += "west";
+            X += speed;
+        }
+        else if (targetX < X)
+        {
+            message += "east";
+            X -= speed;
+        }
+
+        //Log(message + $" to ({X}:{Y})##");
+        CreatureRenderer.UpdatePosition();
+    }
+
     public int RollDex()
     {
         return Random.Range(1, 20) + DEX;
@@ -343,6 +399,11 @@ public class Creature : IEntity
         CreatureRenderer.TopRenderer.color = TopColor;
         CreatureRenderer.BottomRenderer.color = BottomColor;
         CreatureRenderer.HairRenderer.color = HairColor;
+    }
+
+    public void Start()
+    {
+        UpdateSprite();
     }
 
     public override string ToString()
@@ -444,7 +505,6 @@ public class Creature : IEntity
             LastPercievedCoordinate = Cell;
         }
     }
-
     internal bool Update(float timeDelta)
     {
         if (Game.TimeManager.Paused)
@@ -453,38 +513,21 @@ public class Creature : IEntity
         InternalTick += timeDelta;
         WorkTick += timeDelta;
 
-        if (ManaPool.Empty())
+        if (WorkTick >= Game.TimeManager.WorkInterval)
         {
-            Game.VisualEffectController.SpawnEffect(this, Cell, 0.1f);
-            Game.VisualEffectController.SpawnEffect(this, Cell, 0.1f);
-            Game.VisualEffectController.SpawnEffect(this, Cell, 0.1f);
-
-            Game.CreatureController.DestroyCreature(CreatureRenderer);
-            return false;
-        }
-
-        if (InCombat)
-        {
-            if (WorkTick >= Game.TimeManager.CombatInterval)
+            WorkTick = 0;
+            if (InCombat)
             {
-                WorkTick = 0;
                 ProcessCombat();
             }
             else
             {
-                ResolveIncomingAttacks(timeDelta);
-                UpdateLimbs(timeDelta);
-
-                Combatants.RemoveAll(c => c.Dead);
-            }
-        }
-        else
-        {
-            if (WorkTick >= Game.TimeManager.WorkInterval)
-            {
-                WorkTick = 0;
                 ProcessTask();
             }
+
+            ResolveIncomingAttacks(timeDelta);
+            UpdateLimbs(timeDelta);
+            Combatants.RemoveAll(c => c.Dead);
         }
 
 
@@ -511,48 +554,6 @@ public class Creature : IEntity
     {
         UpdateMemory(SelfKey, memoryType, info);
     }
-
-    public void CreateBody()
-    {
-        Strenght = 14;
-        Dexterity = 14;
-        Aggression = 1;
-        var leftArm = new Limb("Left Arm", 8, (DamageType.Bludgeoning, 1));
-        leftArm.AddDefensiveAction(new Block("left arm block", 3, DamageType.Bludgeoning));
-        leftArm.AddOffensiveAction(new Strike("left punch", 4, DamageType.Bludgeoning));
-        leftArm.AddBoostAction(new SummonShield("shield"));
-
-        var rightArm = new Limb("Right Arm", 8, (DamageType.Bludgeoning, 1));
-        rightArm.AddDefensiveAction(new Block("right arm block", 3, DamageType.Bludgeoning));
-        rightArm.AddOffensiveAction(new Strike("right punch", 4, DamageType.Bludgeoning));
-        rightArm.AddBoostAction(new SummonSword("sword"));
-
-        var torso = new Limb("Torso", 30, (DamageType.Bludgeoning, 1));
-        torso.AddDefensiveAction(new Brace("brace torso"));
-
-        var head = new Limb("Head", 20, (DamageType.Bludgeoning, 2))
-        {
-            Vital = true
-        };
-        head.AddDefensiveAction(new Brace("brace head"));
-
-        head.AddOffensiveAction(new Strike("headbutt", 4, DamageType.Bludgeoning));
-
-        var leftLeg = new Limb("Left Leg", 12, (DamageType.Bludgeoning, 1));
-        leftLeg.AddDefensiveAction(new Dodge("dodge left"));
-
-        var rightLeg = new Limb("Right Leg", 12, (DamageType.Bludgeoning, 1));
-        rightLeg.AddDefensiveAction(new Dodge("dodge right"));
-
-        Limbs = new List<Limb>();
-        AddLimb(torso);
-        AddLimb(head);
-        AddLimb(leftArm);
-        AddLimb(rightArm);
-        AddLimb(leftLeg);
-        AddLimb(rightLeg);
-    }
-
     private OffensiveActionBase GetBestAttack(Creature target)
     {
         var most = int.MinValue;
@@ -688,39 +689,6 @@ public class Creature : IEntity
 
         return (outgoingDamage, bestAttack);
     }
-
-    private void MoveTo(Creature target)
-    {
-        var newCoords = Coords;
-
-        var speed = 1;
-        var message = $"##{Name} takes {speed} step from ({Coords.X}:{Coords.Y}) ";
-
-        if (target.Coords.Y > Coords.Y)
-        {
-            message += "south ";
-            newCoords.Y += speed;
-        }
-        else if (target.Coords.Y < Coords.Y)
-        {
-            message += "north ";
-            newCoords.Y -= speed;
-        }
-
-        if (target.Coords.X > Coords.X)
-        {
-            message += "west";
-            newCoords.X += speed;
-        }
-        else if (target.Coords.X < Coords.X)
-        {
-            message += "east";
-            newCoords.X -= speed;
-        }
-        Log(message + $" to ({newCoords.X}:{newCoords.Y})##");
-        Cell = Game.Map.GetCellAtCoordinate(newCoords.X, newCoords.Y);
-    }
-
     private void ProcessCombat()
     {
         try

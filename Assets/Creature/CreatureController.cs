@@ -52,7 +52,7 @@ public class CreatureController : MonoBehaviour
             throw new KeyNotFoundException();
         }
 
-        var creature =  Beastiary[v].CloneJson();
+        var creature = Beastiary[v].CloneJson();
         creature.CreateBody();
         return creature;
     }
@@ -82,8 +82,10 @@ public class CreatureController : MonoBehaviour
         creature.name = $"{creature.Data.Name} ({creature.Data.Id})";
 
         creature.Data.Name = CreatureHelper.GetRandomName();
-        creature.Data.Cell = cell;
-        creature.transform.position = cell.ToMapVector();
+        creature.Data.X = cell.X + Random.Range(-0.25f, 0.25f);
+        creature.Data.Y = cell.Y + Random.Range(-0.25f, 0.25f);
+        creature.UpdatePosition();
+
         creature.Data.WorkTick = Random.Range(0, Game.TimeManager.WorkInterval);
         creature.Data.GetBehaviourTask = Behaviours.GetBehaviourFor(creature.Data.BehaviourName);
 

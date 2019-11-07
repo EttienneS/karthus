@@ -73,21 +73,14 @@ public class Move : CreatureTask
             }
         }
 
-        if (_nextCell != null && creature.CreatureRenderer.transform.position != _targetPos)
+        if (creature.Cell == _nextCell)
         {
-            // move between two cells
-            var distCovered = (Time.time - _startTime) * Mathf.Min(creature.Speed, MaxSpeed);
-            var fracJourney = distCovered / _journeyLength;
-            creature.CreatureRenderer.transform.position = Vector3.Lerp(creature.Cell.ToMapVector(),
-                                      _targetPos,
-                                      fracJourney);
+            _nextCell = null;
+            _path = null;
         }
         else
         {
-            // reached next cell
-            creature.Cell = _nextCell;
-            _nextCell = null;
-            _path = null;
+            creature.MoveTo(_nextCell);
         }
 
         return creature.Cell == TargetCoordinates;

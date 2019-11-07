@@ -27,7 +27,7 @@ public class MaintainVisualEffect : EffectBase
 
             VisualEffect = Game.VisualEffectController
                                .SpawnLightEffect(AssignedEntity,
-                                                 AssignedEntity.Cell,
+                                                 AssignedEntity.Cell.Vector,
                                                  color,
                                                  Radius, Intensity, Duration)
                                .Data;

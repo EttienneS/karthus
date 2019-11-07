@@ -100,8 +100,8 @@ public class Limb
                 Owner.Log($"{Owner.Name} collapses!");
                 Owner.Dead = true;
 
-                Game.VisualEffectController.SpawnSpriteEffect(null, Owner.Cell, OrderSelectionController.AttackIcon, 1f);
-                Game.VisualEffectController.SpawnLightEffect(null, Owner.Cell, Color.red, 1f, 1f, 1f);
+                Game.VisualEffectController.SpawnSpriteEffect(null, Owner.Vector, OrderSelectionController.AttackIcon, 1f);
+                Game.VisualEffectController.SpawnLightEffect(null, Owner.Vector, Color.red, 1f, 1f, 1f);
                 Game.CreatureController.DestroyCreature(Owner.CreatureRenderer);
             }
             else

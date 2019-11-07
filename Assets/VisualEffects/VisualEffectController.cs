@@ -38,16 +38,16 @@ public class VisualEffectController : MonoBehaviour
         return GetBase(data.EffectType, data.Holder);
     }
 
-    public VisualEffect SpawnEffect(IEntity holder, Cell cell, float lifeSpan)
+    public VisualEffect SpawnEffect(IEntity holder, Vector2 vector, float lifeSpan)
     {
         var effect = GetBase(EffectType.Particle, holder);
         effect.Data.LifeSpan = lifeSpan;
-        effect.transform.position = cell.ToTopOfMapVector();
+        effect.transform.position = vector;
 
         return effect;
     }
 
-    public VisualEffect SpawnLightEffect(IEntity holder, Cell cell, Color color, float radius, float intensity, float lifeSpan)
+    public VisualEffect SpawnLightEffect(IEntity holder, Vector2 vector, Color color, float radius, float intensity, float lifeSpan)
     {
         var effect = GetBase(EffectType.Light, holder);
 
@@ -55,17 +55,17 @@ public class VisualEffectController : MonoBehaviour
         effect.Data.Intensity = intensity;
         effect.Light.pointLightOuterRadius = radius;
         effect.Data.LifeSpan = lifeSpan;
-        effect.transform.position = cell.ToTopOfMapVector();
+        effect.transform.position = vector;
 
         return effect;
     }
 
-    public VisualEffect SpawnSpriteEffect(IEntity holder, Cell cell, string sprite, float lifeSpan)
+    public VisualEffect SpawnSpriteEffect(IEntity holder, Vector2 vector, string sprite, float lifeSpan)
     {
         var effect = GetBase(EffectType.Sprite, holder);
         effect.Sprite.sprite = Game.SpriteStore.GetSprite(sprite);
         effect.Data.LifeSpan = lifeSpan;
-        effect.transform.position = cell.ToTopOfMapVector();
+        effect.transform.position = vector;
 
         return effect;
     }
@@ -82,7 +82,7 @@ public class VisualEffectController : MonoBehaviour
     {
         var badge = Spawn();
         badge.SetSprite(iconName);
-        badge.transform.position = cell.ToTopOfMapVector();
+        badge.transform.position = cell.Vector;
 
         return badge;
     }
