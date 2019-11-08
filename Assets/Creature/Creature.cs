@@ -703,7 +703,7 @@ public class Creature : IEntity
             else if (outgoingDamage > defendedDamage)
             {
                 // aggro
-                Log($"++ {Name} launches a {bestAttack.Name} at {target.Name}'s {bestAttack.TargetLimb.Name}");
+                Log($"{Name} launches a {bestAttack.Name} at {target.Name}'s {bestAttack.TargetLimb.Name}");
                 bestAttack.Reset();
 
                 if (!target.Combatants.Contains(this))
@@ -715,7 +715,7 @@ public class Creature : IEntity
             else
             {
                 // defend
-                Log($"-- {Name} defends with a {bestDefense.Name} against {incomingAttack.Owner.Name}'s {incomingAttack.Name}");
+                Log($"{Name} defends with a {bestDefense.Name} against {incomingAttack.Owner.Name}'s {incomingAttack.Name}");
 
                 incomingAttack.DefensiveActions.Add(bestDefense);
                 bestDefense.Limb.Busy = true;

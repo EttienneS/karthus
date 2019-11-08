@@ -25,12 +25,12 @@
         _sword = GetSword();
         Owner.AddLimb(_sword);
 
-        Owner.Log($"||{Owner.Name} summons a sword of pure force.");
+        Owner.Log($"{Owner.Name} summons a sword of pure force.");
     }
 
     internal override void EndBuff()
     {
-        Owner.Log($"||{Owner.Name}'s sword dissapates.");
+        Owner.Log($"{Owner.Name}'s sword dissapates.");
         Owner.Limbs.Remove(_sword);
     }
 }

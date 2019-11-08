@@ -25,12 +25,12 @@
         _shieldLimb = GetShieldLimb();
         Owner.AddLimb(_shieldLimb);
 
-        Owner.Log($"||{Owner.Name} summons a shield of pure force.");
+        Owner.Log($"{Owner.Name} summons a shield of pure force.");
     }
 
     internal override void EndBuff()
     {
-        Owner.Log($"||{Owner.Name}'s shield dissapates.");
+        Owner.Log($"{Owner.Name}'s shield dissapates.");
         Owner.Limbs.Remove(_shieldLimb);
     }
 }
