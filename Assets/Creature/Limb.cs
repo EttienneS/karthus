@@ -28,21 +28,7 @@ public class Limb
 
     public List<BuffBase> BuffActions { get; set; }
 
-    private bool _busy;
-    public bool Busy
-    {
-        get
-        {
-            return _busy;
-        }
-        set
-        {
-            if (value)
-                Debug.Log($"Set {Name} to busy");
-            _busy = value;
-        }
-
-    }
+    public bool Busy { get; set; }
     public List<DefensiveActionBase> DefensiveActions { get; set; }
 
     [JsonIgnore]
@@ -58,8 +44,10 @@ public class Limb
     public int Max { get; set; }
     public string Name { get; set; }
     public List<OffensiveActionBase> OffensiveActions { get; set; }
+
     [JsonIgnore]
     public Creature Owner { get; set; }
+
     [JsonIgnore]
     public float Percentage
     {
@@ -71,6 +59,7 @@ public class Limb
 
     public Dictionary<DamageType, int> Resistance { get; set; }
     public bool Vital { get; set; }
+
     public int GetDamageAfterResistance(DamageType type, int damage)
     {
         if (Resistance.ContainsKey(type))
@@ -97,11 +86,13 @@ public class Limb
         defensiveAction.Limb = this;
         DefensiveActions.Add(defensiveAction);
     }
+
     internal void AddOffensiveAction(OffensiveActionBase offensiveAction)
     {
         offensiveAction.Limb = this;
         OffensiveActions.Add(offensiveAction);
     }
+
     internal void Damage(DamageType type, int inputDamage)
     {
         var damage = GetDamageAfterResistance(type, inputDamage);
