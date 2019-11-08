@@ -332,20 +332,49 @@ public class Creature : IEntity
 
         if (targetY > Y)
         {
+            Facing = Direction.N;
             Y += yspeed;
         }
         else if (targetY < Y)
         {
+            Facing = Direction.S;
             Y -= yspeed;
         }
 
         if (targetX > X)
         {
             X += xspeed;
+
+            if (Facing == Direction.N)
+            {
+                Facing = Direction.NE;
+
+            }
+            else if (Facing == Direction.S)
+            {
+                Facing = Direction.SE;
+            }
+            else
+            {
+                Facing = Direction.E;
+            }
         }
         else if (targetX < X)
         {
             X -= xspeed;
+            if (Facing == Direction.N)
+            {
+                Facing = Direction.NW;
+
+            }
+            else if (Facing == Direction.S)
+            {
+                Facing = Direction.SW;
+            }
+            else
+            {
+                Facing = Direction.W;
+            }
         }
 
         CreatureRenderer.UpdatePosition();
@@ -800,9 +829,9 @@ public class Creature : IEntity
         }
     }
 
-    private void UpdateSprite()
+    public void UpdateSprite()
     {
-        bool flip = Facing == Direction.W || Facing == Direction.NW || Facing == Direction.SW;
+        bool flip = Facing == Direction.W || Facing == Direction.NE || Facing == Direction.SW;
         if (!Sprite.Contains("_"))
         {
             CreatureRenderer.MainRenderer.flipX = flip;
