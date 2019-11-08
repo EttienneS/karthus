@@ -35,6 +35,7 @@ public class CreatureController : MonoBehaviour
     {
         if (creature != null)
         {
+            Debug.Log($"Destroying: {creature.Data.Name}");
             if (creature.Data.Task != null)
                 creature.Data.CancelTask();
 
@@ -52,9 +53,7 @@ public class CreatureController : MonoBehaviour
             throw new KeyNotFoundException();
         }
 
-        var creature = Beastiary[v].CloneJson();
-        creature.CreateBody();
-        return creature;
+        return Beastiary[v].CloneJson();
     }
 
     public List<(Creature creature, Cell cell, Faction faction)> SpawnCache = new List<(Creature, Cell, Faction)>();
@@ -82,8 +81,8 @@ public class CreatureController : MonoBehaviour
         creature.name = $"{creature.Data.Name} ({creature.Data.Id})";
 
         creature.Data.Name = CreatureHelper.GetRandomName();
-        creature.Data.X = cell.X + Random.Range(-0.25f, 0.25f);
-        creature.Data.Y = cell.Y + Random.Range(-0.25f, 0.25f);
+        creature.Data.X = cell.Vector.x + Random.Range(-0.25f, 0.25f);
+        creature.Data.Y = cell.Vector.y + Random.Range(-0.25f, 0.25f);
         creature.UpdatePosition();
 
         creature.Data.WorkTick = Random.Range(0, Game.TimeManager.WorkInterval);

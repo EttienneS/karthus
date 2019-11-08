@@ -1,24 +1,34 @@
-﻿public abstract class BuffBase
+﻿using Newtonsoft.Json;
+
+public abstract class BuffBase
 {
     protected BuffBase(string name, float cooldown, float duration)
     {
         Name = name;
         CooldownMax = cooldown;
-        RemainingCooldown = cooldown;
         DurationMax = duration;
-        RemainingDuration = duration;
     }
 
+    [JsonIgnore]
+    public bool Active
+    {
+        get
+        {
+            return !OnCoolDown && RemainingDuration > 0;
+        }
+    }
+
+    public float CooldownMax { get; set; }
+
+    public float DurationMax { get; set; }
+
+    [JsonIgnore]
     public Limb Limb { get; set; }
 
     public string Name { get; set; }
     public bool OnCoolDown { get; set; }
-    public float RemainingCooldown { get; set; }
-    public float CooldownMax { get; set; }
 
-    public float RemainingDuration { get; set; }
-    public float DurationMax { get; set; }
-
+    [JsonIgnore]
     public Creature Owner
     {
         get
@@ -27,13 +37,20 @@
         }
     }
 
-    public bool Active
+    [JsonIgnore]
+    public float RemainingCooldown { get; set; }
+
+    [JsonIgnore]
+    public float RemainingDuration { get; set; }
+
+    public void Activate()
     {
-        get
-        {
-            return !OnCoolDown && RemainingDuration > 0;
-        }
+        RemainingDuration = DurationMax;
+        Limb.Busy = true;
+        StartBuff();
     }
+
+    public abstract int EstimateBuffEffect();
 
     public void Update(float deltaTime)
     {
@@ -60,16 +77,7 @@
         }
     }
 
-    public void Activate()
-    {
-        RemainingDuration = DurationMax;
-        Limb.Busy = true;
-        StartBuff();
-    }
-
-    internal abstract void StartBuff();
-
     internal abstract void EndBuff();
 
-    public abstract int EstimateBuffEffect();
+    internal abstract void StartBuff();
 }

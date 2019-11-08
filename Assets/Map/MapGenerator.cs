@@ -356,7 +356,7 @@ public class MapGenerator
                 continue;
             }
 
-            for (int i = 0; i < Game.Map.Width / 10; i++)
+            for (int i = 0; i < 1; i++)
             {
                 Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType(monster.Key),
                                                  Game.Map.GetRandomCell(),

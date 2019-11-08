@@ -50,8 +50,15 @@ public static class CloneHelper
         // for example in default constructor some list property initialized with some values,
         // but in 'source' these items are cleaned -
         // without ObjectCreationHandling.Replace default constructor values will be added to result
-        var deserializeSettings = new JsonSerializerSettings { ObjectCreationHandling = ObjectCreationHandling.Replace };
+        var serializeSettings = new JsonSerializerSettings
+        {
+            ObjectCreationHandling = ObjectCreationHandling.Replace,
+            TypeNameHandling = TypeNameHandling.Auto,
+            NullValueHandling = NullValueHandling.Ignore,
+        };
 
-        return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(source), deserializeSettings);
+        var serialized = JsonConvert.SerializeObject(source, serializeSettings);
+
+        return JsonConvert.DeserializeObject<T>(serialized, serializeSettings);
     }
 }

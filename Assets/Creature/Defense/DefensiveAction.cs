@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 
 public abstract class DefensiveActionBase
 {
@@ -7,6 +8,7 @@ public abstract class DefensiveActionBase
         Name = name;
     }
 
+    [JsonIgnore]
     public Limb Limb { get; set; }
 
     public string Name { get; set; }
@@ -29,6 +31,7 @@ public abstract class DefensiveActionBase
         return total / 10;
     }
 
+    [JsonIgnore]
     public Creature Owner
     {
         get

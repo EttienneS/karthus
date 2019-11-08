@@ -4,9 +4,12 @@
     "Energy": "100",
     "Hunger": "0"
   },
-  "Speed": 25.0,
-  "Sprite": "guy_",
+  "Speed": 0.2,
+  "Strenght": 14,
   "Perception": 5,
+  "Dexterity": 14,
+  "Aggression": 1,
+  "Sprite": "guy_",
   "BehaviourName": "Person",
   "Mobility": "Walk",
   "Skills": [
@@ -21,6 +24,176 @@
       "Enabled": "True",
       "Level": 5,
       "Priority": 5
+    }
+  ],
+  "Limbs": [
+    {
+      "Resistance": {
+        "Bludgeoning": 1
+      },
+      "DefensiveActions": [
+        {
+          "$type": "Brace, Assembly-CSharp",
+          "Name": "brace torso",
+          "ActivationTIme": 0.3
+        }
+      ],
+      "BuffActions": [],
+      "HP": 30,
+      "Max": 30,
+      "Name": "Torso",
+      "OffensiveActions": [],
+      "Vital": false,
+      "Percentage": 1.0
+    },
+    {
+      "Resistance": {
+        "Bludgeoning": 2
+      },
+      "DefensiveActions": [
+        {
+          "$type": "Brace, Assembly-CSharp",
+          "Name": "brace head",
+          "ActivationTIme": 0.3
+        }
+      ],
+      "BuffActions": [],
+      "HP": 20,
+      "Max": 20,
+      "Name": "Head",
+      "OffensiveActions": [
+        {
+          "$type": "Strike, Assembly-CSharp",
+          "DiceSize": 4,
+          "DamageType": "Bludgeoning",
+          "Range": 1,
+          "Name": "headbutt",
+          "ActivationTime": 1.0,
+          "Progress": 0.0
+        }
+      ],
+      "Vital": true,
+      "Percentage": 1.0
+    },
+    {
+      "Resistance": {
+        "Bludgeoning": 1
+      },
+      "DefensiveActions": [
+        {
+          "$type": "Block, Assembly-CSharp",
+          "BlockableTypes": [
+            "Bludgeoning"
+          ],
+          "Defense": 3,
+          "Name": "left arm block",
+          "ActivationTIme": 0.5
+        }
+      ],
+      "BuffActions": [
+        {
+          "$type": "SummonShield, Assembly-CSharp",
+          "Name": "shield",
+          "OnCoolDown": false,
+          "CooldownMax": 2.0,
+          "DurationMax": 10.0
+        }
+      ],
+      "HP": 8,
+      "Max": 8,
+      "Name": "Left Arm",
+      "OffensiveActions": [
+        {
+          "$type": "Strike, Assembly-CSharp",
+          "DiceSize": 4,
+          "DamageType": "Bludgeoning",
+          "Range": 1,
+          "Name": "left punch",
+          "ActivationTime": 1.0,
+          "Progress": 0.0
+        }
+      ],
+      "Vital": false,
+      "Percentage": 1.0
+    },
+    {
+      "Resistance": {
+        "Bludgeoning": 1
+      },
+      "DefensiveActions": [
+        {
+          "$type": "Block, Assembly-CSharp",
+          "BlockableTypes": [
+            "Bludgeoning"
+          ],
+          "Defense": 3,
+          "Name": "right arm block",
+          "ActivationTIme": 0.5
+        }
+      ],
+      "BuffActions": [
+        {
+          "$type": "SummonSword, Assembly-CSharp",
+          "Name": "sword",
+          "OnCoolDown": false,
+          "CooldownMax": 2.0,
+          "DurationMax": 10.0
+        }
+      ],
+      "HP": 8,
+      "Max": 8,
+      "Name": "Right Arm",
+      "OffensiveActions": [
+        {
+          "$type": "Strike, Assembly-CSharp",
+          "DiceSize": 4,
+          "DamageType": "Bludgeoning",
+          "Range": 1,
+          "Name": "right punch",
+          "ActivationTime": 1.0,
+          "Progress": 0.0
+        }
+      ],
+      "Vital": false,
+      "Percentage": 1.0
+    },
+    {
+      "Resistance": {
+        "Bludgeoning": 1
+      },
+      "DefensiveActions": [
+        {
+          "$type": "Dodge, Assembly-CSharp",
+          "Name": "dodge left",
+          "ActivationTIme": 0.5
+        }
+      ],
+      "BuffActions": [],
+      "HP": 12,
+      "Max": 12,
+      "Name": "Left Leg",
+      "OffensiveActions": [],
+      "Vital": false,
+      "Percentage": 1.0
+    },
+    {
+      "Resistance": {
+        "Bludgeoning": 1
+      },
+      "DefensiveActions": [
+        {
+          "$type": "Dodge, Assembly-CSharp",
+          "Name": "dodge right",
+          "ActivationTIme": 0.5
+        }
+      ],
+      "BuffActions": [],
+      "HP": 12,
+      "Max": 12,
+      "Name": "Right Leg",
+      "OffensiveActions": [],
+      "Vital": false,
+      "Percentage": 1.0
     }
   ]
 }

@@ -93,6 +93,8 @@ public class CreatureRenderer : MonoBehaviour
         {
             MainRenderer.sprite = null;
         }
+
+        Data.Start();
     }
 
     internal void UpdatePosition()

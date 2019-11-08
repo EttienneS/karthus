@@ -38,7 +38,7 @@ public class CameraController : MonoBehaviour
 
     internal void MoveToCell(Cell cell)
     {
-        MoveToViewPoint(cell.ToMapVector());
+        MoveToViewPoint(cell.Vector);
     }
 
     public void Update()
@@ -142,7 +142,7 @@ public class CameraController : MonoBehaviour
 
     internal void JumpToCell(Cell cell)
     {
-        var point = cell.ToMapVector();
+        var point = cell.Vector;
         transform.position = new Vector3(point.x, point.y, transform.position.z);
         UpdateCellsBasedOnCamera();
     }

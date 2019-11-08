@@ -1,11 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Limb
 {
-    public Dictionary<DamageType, int> Resistance { get; set; }
-
     public Limb(string name, int hp, params (DamageType damageType, int amount)[] resistances)
     {
         Name = name;
@@ -14,29 +13,54 @@ public class Limb
 
         Resistance = new Dictionary<DamageType, int>();
 
-        foreach (var (damageType, amount) in resistances)
+        if (resistances != null)
         {
-            Resistance.Add(damageType, amount);
+            foreach (var (damageType, amount) in resistances)
+            {
+                Resistance.Add(damageType, amount);
+            }
         }
 
         OffensiveActions = new List<OffensiveActionBase>();
         DefensiveActions = new List<DefensiveActionBase>();
-        BoostActions = new List<BuffBase>();
+        BuffActions = new List<BuffBase>();
     }
 
-    public bool Busy { get; set; }
+    public List<BuffBase> BuffActions { get; set; }
+
+    private bool _busy;
+    public bool Busy
+    {
+        get
+        {
+            return _busy;
+        }
+        set
+        {
+            if (value)
+                Debug.Log($"Set {Name} to busy");
+            _busy = value;
+        }
+
+    }
     public List<DefensiveActionBase> DefensiveActions { get; set; }
-    public List<BuffBase> BoostActions { get; set; }
+
+    [JsonIgnore]
+    public bool Enabled
+    {
+        get
+        {
+            return HP > 0;
+        }
+    }
+
     public int HP { get; set; }
     public int Max { get; set; }
     public string Name { get; set; }
     public List<OffensiveActionBase> OffensiveActions { get; set; }
+    [JsonIgnore]
     public Creature Owner { get; set; }
-
-    public bool Vital { get; set; }
-
-    public bool Enabled { get; set; } = true;
-
+    [JsonIgnore]
     public float Percentage
     {
         get
@@ -45,24 +69,8 @@ public class Limb
         }
     }
 
-    internal void AddDefensiveAction(DefensiveActionBase defensiveAction)
-    {
-        defensiveAction.Limb = this;
-        DefensiveActions.Add(defensiveAction);
-    }
-
-    internal void AddBoostAction(BuffBase boostAction)
-    {
-        boostAction.Limb = this;
-        BoostActions.Add(boostAction);
-    }
-
-    internal void AddOffensiveAction(OffensiveActionBase offensiveAction)
-    {
-        offensiveAction.Limb = this;
-        OffensiveActions.Add(offensiveAction);
-    }
-
+    public Dictionary<DamageType, int> Resistance { get; set; }
+    public bool Vital { get; set; }
     public int GetDamageAfterResistance(DamageType type, int damage)
     {
         if (Resistance.ContainsKey(type))
@@ -73,6 +81,27 @@ public class Limb
         return damage;
     }
 
+    public override string ToString()
+    {
+        return $"{Name} [{HP}/{Max}]";
+    }
+
+    internal void AddBoostAction(BuffBase boostAction)
+    {
+        boostAction.Limb = this;
+        BuffActions.Add(boostAction);
+    }
+
+    internal void AddDefensiveAction(DefensiveActionBase defensiveAction)
+    {
+        defensiveAction.Limb = this;
+        DefensiveActions.Add(defensiveAction);
+    }
+    internal void AddOffensiveAction(OffensiveActionBase offensiveAction)
+    {
+        offensiveAction.Limb = this;
+        OffensiveActions.Add(offensiveAction);
+    }
     internal void Damage(DamageType type, int inputDamage)
     {
         var damage = GetDamageAfterResistance(type, inputDamage);
@@ -104,19 +133,22 @@ public class Limb
                 Game.VisualEffectController.SpawnLightEffect(null, Owner.Vector, Color.red, 1f, 1f, 1f);
                 Game.CreatureController.DestroyCreature(Owner.CreatureRenderer);
             }
-            else
-            {
-                Enabled = false;
-            }
         }
+    }
+
+    internal void Link(Creature owner)
+    {
+        Owner = owner;
+
+        OffensiveActions.ForEach(a => a.Limb = this);
+        DefensiveActions.ForEach(a => a.Limb = this);
+        BuffActions.ForEach(a =>
+        {
+            a.Limb = this;
+        });
     }
 
     internal void Update(float timeDelta)
     {
-    }
-
-    public override string ToString()
-    {
-        return $"{Name} [{HP}/{Max}]";
     }
 }

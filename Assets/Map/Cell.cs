@@ -307,7 +307,7 @@ public class Cell : IEquatable<Cell>
     {
         get
         {
-            return new Vector3(Mathf.FloorToInt(X) + 0.5f, Mathf.FloorToInt(Y) + 0.5f, -1);
+            return new Vector3(X + 0.5f, Y + 0.5f, -1);
         }
     }
 
@@ -452,12 +452,6 @@ public class Cell : IEquatable<Cell>
             structure.Cell = this;
             Structure = structure;
         }
-    }
-
-    public Vector2 ToMapVector()
-    {
-        // add half a unit to each position to account for offset (cells are at point 0,0 in the very center)
-        return new Vector2(Mathf.FloorToInt(X) + 0.5f, Mathf.FloorToInt(Y) + 0.5f);
     }
 
     public override string ToString()

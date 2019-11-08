@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System.Collections.Generic;
 
+[JsonConverter(typeof(StringEnumConverter))]
 public enum DamageType
 {
     Slashing, Bludgeoning, Piercing, Energy
@@ -18,21 +21,26 @@ public abstract class OffensiveActionBase
         Range = range;
     }
 
+    [JsonIgnore]
     public abstract int Damage { get; }
     public int Range { get; }
 
+    [JsonIgnore]
     public Limb Limb { get; set; }
 
     public string Name { get; set; }
 
+    [JsonIgnore]
     public List<DefensiveActionBase> DefensiveActions { get; set; }
 
+    [JsonIgnore]
     public Limb TargetLimb { get; set; }
 
     public float ActivationTime { get; set; }
 
     public float Progress { get; set; }
 
+    [JsonIgnore]
     public Creature Owner
     {
         get

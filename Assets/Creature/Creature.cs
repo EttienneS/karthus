@@ -25,7 +25,6 @@ public class Creature : IEntity
     public Dictionary<string, Memory> Mind = new Dictionary<string, Memory>();
     public Mobility Mobility;
     [JsonIgnore] public Color SkinColor;
-    public float Speed = 10f;
     [JsonIgnore] public Color TopColor;
     internal float InternalTick = float.MaxValue;
     [JsonIgnore] internal Cell LastPercievedCoordinate;
@@ -60,7 +59,10 @@ public class Creature : IEntity
         }
         set
         {
-            throw new Exception("Use MoveTo to change cell");
+            X = Cell.Vector.x;
+            Y = Cell.Vector.y;
+
+            CreatureRenderer?.UpdatePosition();
         }
     }
 
@@ -122,8 +124,18 @@ public class Creature : IEntity
         }
     }
 
+    internal void Start()
+    {
+        foreach (var limb in Limbs)
+        {
+            limb.Link(this);
+        }
+    }
+
     public List<Skill> Skills { get; set; }
+    public float Speed { get; set; }
     public string Sprite { get; set; }
+
     public int STR
     {
         get
@@ -133,6 +145,7 @@ public class Creature : IEntity
     }
 
     public int Strenght { get; set; }
+
     public CreatureTask Task
     {
         get
@@ -150,6 +163,7 @@ public class Creature : IEntity
     }
 
     public Dictionary<string, float> ValueProperties { get; set; } = new Dictionary<string, float>();
+
     [JsonIgnore]
     public Vector2 Vector
     {
@@ -160,53 +174,15 @@ public class Creature : IEntity
     }
 
     public float X { get; set; }
+
     public float Y { get; set; }
+
     public void AddLimb(Limb limb)
     {
         limb.Owner = this;
         Limbs.Add(limb);
     }
 
-    public void CreateBody()
-    {
-        Strenght = 14;
-        Dexterity = 14;
-        Aggression = 1;
-        var leftArm = new Limb("Left Arm", 8, (DamageType.Bludgeoning, 1));
-        leftArm.AddDefensiveAction(new Block("left arm block", 3, DamageType.Bludgeoning));
-        leftArm.AddOffensiveAction(new Strike("left punch", 4, DamageType.Bludgeoning));
-        leftArm.AddBoostAction(new SummonShield("shield"));
-
-        var rightArm = new Limb("Right Arm", 8, (DamageType.Bludgeoning, 1));
-        rightArm.AddDefensiveAction(new Block("right arm block", 3, DamageType.Bludgeoning));
-        rightArm.AddOffensiveAction(new Strike("right punch", 4, DamageType.Bludgeoning));
-        rightArm.AddBoostAction(new SummonSword("sword"));
-
-        var torso = new Limb("Torso", 30, (DamageType.Bludgeoning, 1));
-        torso.AddDefensiveAction(new Brace("brace torso"));
-
-        var head = new Limb("Head", 20, (DamageType.Bludgeoning, 2))
-        {
-            Vital = true
-        };
-        head.AddDefensiveAction(new Brace("brace head"));
-
-        head.AddOffensiveAction(new Strike("headbutt", 4, DamageType.Bludgeoning));
-
-        var leftLeg = new Limb("Left Leg", 12, (DamageType.Bludgeoning, 1));
-        leftLeg.AddDefensiveAction(new Dodge("dodge left"));
-
-        var rightLeg = new Limb("Right Leg", 12, (DamageType.Bludgeoning, 1));
-        rightLeg.AddDefensiveAction(new Dodge("dodge right"));
-
-        Limbs = new List<Limb>();
-        AddLimb(torso);
-        AddLimb(head);
-        AddLimb(leftArm);
-        AddLimb(rightArm);
-        AddLimb(leftLeg);
-        AddLimb(rightLeg);
-    }
 
     public void Face(Cell cell)
     {
@@ -344,33 +320,40 @@ public class Creature : IEntity
 
     public void MoveTo(float targetX, float targetY)
     {
-        var speed = 0.2f;
-        var message = $"##{Name} takes {speed} step from ({X}:{Y}) ";
+        var maxX = Mathf.Max(targetX, X);
+        var minX = Mathf.Min(targetX, X);
+
+        var maxY = Mathf.Max(targetY, Y);
+        var minY = Mathf.Min(targetY, Y);
+
+
+        var yspeed = Mathf.Min(Speed + Random.Range(0f, 0.01f), maxY - minY);
+        var xspeed = Mathf.Min(Speed + Random.Range(0f, 0.01f), maxX - minX);
 
         if (targetY > Y)
         {
-            message += "south ";
-            Y += speed;
+            Y += yspeed;
         }
         else if (targetY < Y)
         {
-            message += "north ";
-            Y -= speed;
+            Y -= yspeed;
         }
 
         if (targetX > X)
         {
-            message += "west";
-            X += speed;
+            X += xspeed;
         }
         else if (targetX < X)
         {
-            message += "east";
-            X -= speed;
+            X -= xspeed;
         }
 
-        //Log(message + $" to ({X}:{Y})##");
         CreatureRenderer.UpdatePosition();
+    }
+
+    public void MoveTo(Vector2 vector)
+    {
+        MoveTo(vector.x, vector.y);
     }
 
     public int RollDex()
@@ -401,11 +384,6 @@ public class Creature : IEntity
         CreatureRenderer.HairRenderer.color = HairColor;
     }
 
-    public void Start()
-    {
-        UpdateSprite();
-    }
-
     public override string ToString()
     {
         var text = $"{Name}\n\n";
@@ -420,9 +398,12 @@ public class Creature : IEntity
 
     internal void CancelTask()
     {
-        Faction.RemoveTask(Task);
-        Task.Destroy();
-        Task = null;
+        if (Task != null)
+        {
+            Faction.RemoveTask(Task);
+            Task.Destroy();
+            Task = null;
+        }
     }
 
     internal bool CanDo(CreatureTask t)
@@ -496,7 +477,6 @@ public class Creature : IEntity
         ValueProperties[Prop.Hunger] += Random.value;
         ValueProperties[Prop.Energy] -= Random.Range(0.1f, 0.25f);
     }
-
     internal void Perceive()
     {
         if (LastPercievedCoordinate != Cell)
@@ -618,7 +598,7 @@ public class Creature : IEntity
     {
         return Limbs
              .Where(l => l.Enabled && !l.Busy)
-             .SelectMany(l => l.BoostActions)
+             .SelectMany(l => l.BuffActions)
              .ToList();
     }
 
@@ -809,7 +789,7 @@ public class Creature : IEntity
 
     private void UpdateLimbs(float timeDelta)
     {
-        foreach (var boost in Limbs.ToList().SelectMany(l => l.BoostActions))
+        foreach (var boost in Limbs.ToList().SelectMany(l => l.BuffActions))
         {
             boost.Update(timeDelta);
         }

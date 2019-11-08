@@ -1,15 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Move : CreatureTask
 {
-    public Cell TargetCoordinates;
+    public float TargetX;
+    public float TargetY;
 
-    private float _journeyLength;
     private Cell _nextCell;
     private List<Cell> _path = new List<Cell>();
-    private float _startTime;
-    private Vector3 _targetPos;
 
     public Move()
     {
@@ -17,13 +16,23 @@ public class Move : CreatureTask
 
     public Move(Cell targetCoordinates, int maxSpeed = int.MaxValue)
     {
-        TargetCoordinates = targetCoordinates;
+        TargetX = targetCoordinates.Vector.x;
+        TargetY = targetCoordinates.Vector.y;
         MaxSpeed = maxSpeed;
 
-        Message = $"Moving to {TargetCoordinates}";
+        Message = $"Moving to {TargetX}:{TargetY}";
     }
 
     public int MaxSpeed { get; set; }
+
+    [JsonIgnore]
+    public Cell TargetCoordinateCell
+    {
+        get
+        {
+            return Game.Map.GetCellAtCoordinate(TargetX, TargetY);
+        }
+    }
 
     public override bool Done(Creature creature)
     {
@@ -32,8 +41,14 @@ public class Move : CreatureTask
             return false;
         }
 
-        if (creature.Cell == TargetCoordinates)
+        if (creature.Cell == TargetCoordinateCell)
         {
+            // close final little gap
+            if (TargetX != creature.X || TargetY != creature.Y)
+            {
+                creature.MoveTo(TargetX, TargetY);
+                return false;
+            }
             return true;
         }
 
@@ -43,9 +58,7 @@ public class Move : CreatureTask
 
             if (_path == null || _path.Count == 0)
             {
-                _path = Pathfinder.FindPath(currentCreatureCell,
-                    TargetCoordinates,
-                    creature.Mobility);
+                _path = Pathfinder.FindPath(currentCreatureCell, TargetCoordinateCell, creature.Mobility);
             }
 
             if (_path == null)
@@ -59,18 +72,6 @@ public class Move : CreatureTask
                 // something changed the path making it unusable
                 _path = null;
             }
-            else
-            {
-                // found valid next cell
-                _targetPos = _nextCell.ToMapVector();
-
-                // calculate the movement journey to the next cell, include the cell travelcost to make moving through
-                // difficults cells take longer
-                _journeyLength = Vector3.Distance(currentCreatureCell.ToMapVector(), _targetPos) + _nextCell.TravelCost;
-
-                creature.Facing = Game.Map.GetDirection(currentCreatureCell, _nextCell);
-                _startTime = Time.time;
-            }
         }
 
         if (creature.Cell == _nextCell)
@@ -80,9 +81,10 @@ public class Move : CreatureTask
         }
         else
         {
-            creature.MoveTo(_nextCell);
+            creature.MoveTo(_nextCell.Vector);
         }
 
-        return creature.Cell == TargetCoordinates;
+
+        return false;
     }
 }

@@ -126,8 +126,8 @@ public class Map : MonoBehaviour
 
     public Cell GetCellAtCoordinate(float x, float y)
     {
-        var intx = Mathf.RoundToInt(x);
-        var inty = Mathf.RoundToInt(y);
+        var intx = Mathf.RoundToInt(x - 0.001f);
+        var inty = Mathf.RoundToInt(y - 0.001f);
 
         if (intx < 0 || inty < 0 || intx >= Game.Map.Width || inty >= Game.Map.Height)
         {

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Newtonsoft.Json;
+using UnityEngine;
 
 public class Strike : OffensiveActionBase
 {
@@ -9,6 +10,7 @@ public class Strike : OffensiveActionBase
         DiceSize = diceSize;
     }
 
+    [JsonIgnore]
     public override int Damage
     {
         get

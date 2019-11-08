@@ -4,9 +4,229 @@
     "Energy": "200",
     "Hunger": "200"
   },
-  "Speed": 15.0,
+  "Speed": 0.3,
+  "Strenght": 10,
+  "Perception": 3,
+  "Dexterity": 10,
+  "Aggression": 1,
+
   "Sprite": "HGhost-X",
-  "Perception": 2,
   "BehaviourName": "Monster",
-  "Mobility": "Walk"
+  "Mobility": "Walk",
+  "Limbs": [
+    {
+      "Resistance": {
+        "Bludgeoning": 5,
+        "Piercing": 5,
+        "Slashing": 5
+      },
+      "DefensiveActions": [
+        {
+          "$type": "Brace, Assembly-CSharp",
+          "Name": "brace head",
+          "ActivationTIme": 0.3
+        }
+      ],
+      "BuffActions": [],
+      "HP": 20,
+      "Max": 20,
+      "Name": "Head",
+      "OffensiveActions": [
+        {
+          "$type": "Strike, Assembly-CSharp",
+          "DiceSize": 4,
+          "DamageType": 2,
+          "Range": 1,
+          "Name": "bite",
+          "ActivationTime": 1.0,
+          "Progress": 0.0
+        }
+      ],
+      "Vital": true,
+      "Enabled": true,
+      "Percentage": 1.0
+    },
+    {
+      "Resistance": {
+        "Bludgeoning": 2,
+        "Piercing": 2,
+        "Slashing": 2
+      },
+      "DefensiveActions": [
+        {
+          "$type": "Block, Assembly-CSharp",
+          "BlockableTypes": [
+            "Slashing",
+            "Bludgeoning",
+            "Piercing"
+          ],
+          "Defense": 3,
+          "Name": "block",
+          "ActivationTIme": 0.5
+        }
+      ],
+      "BuffActions": [],
+      "HP": 8,
+      "Max": 8,
+      "Name": "Arm 1",
+      "OffensiveActions": [
+        {
+          "$type": "Strike, Assembly-CSharp",
+          "DiceSize": 2,
+          "DamageType": "Slashing",
+          "Range": 1,
+          "Name": "strike",
+          "ActivationTime": 1.0,
+          "Progress": 0.0
+        }
+      ],
+      "Vital": false
+    },
+    {
+      "Resistance": {
+        "Bludgeoning": 2,
+        "Piercing": 2,
+        "Slashing": 2
+      },
+      "DefensiveActions": [
+        {
+          "$type": "Block, Assembly-CSharp",
+          "BlockableTypes": [
+            "Slashing",
+            "Bludgeoning",
+            "Piercing"
+          ],
+          "Defense": 3,
+          "Name": "block",
+          "ActivationTIme": 0.5
+        }
+      ],
+      "BuffActions": [],
+      "HP": 8,
+      "Max": 8,
+      "Name": "Arm 1",
+      "OffensiveActions": [
+        {
+          "$type": "Strike, Assembly-CSharp",
+          "DiceSize": 2,
+          "DamageType": "Slashing",
+          "Range": 1,
+          "Name": "strike",
+          "ActivationTime": 1.0,
+          "Progress": 0.0
+        }
+      ],
+      "Vital": false
+    },
+    {
+      "Resistance": {
+        "Bludgeoning": 2,
+        "Piercing": 2,
+        "Slashing": 2
+      },
+      "DefensiveActions": [
+        {
+          "$type": "Block, Assembly-CSharp",
+          "BlockableTypes": [
+            "Slashing",
+            "Bludgeoning",
+            "Piercing"
+          ],
+          "Defense": 3,
+          "Name": "block",
+          "ActivationTIme": 0.5
+        }
+      ],
+      "BuffActions": [],
+      "HP": 8,
+      "Max": 8,
+      "Name": "Arm 2",
+      "OffensiveActions": [
+        {
+          "$type": "Strike, Assembly-CSharp",
+          "DiceSize": 2,
+          "DamageType": "Slashing",
+          "Range": 1,
+          "Name": "strike",
+          "ActivationTime": 1.0,
+          "Progress": 0.0
+        }
+      ],
+      "Vital": false
+    },
+    {
+      "Resistance": {
+        "Bludgeoning": 2,
+        "Piercing": 2,
+        "Slashing": 2
+      },
+      "DefensiveActions": [
+        {
+          "$type": "Block, Assembly-CSharp",
+          "BlockableTypes": [
+            "Slashing",
+            "Bludgeoning",
+            "Piercing"
+          ],
+          "Defense": 3,
+          "Name": "block",
+          "ActivationTIme": 0.5
+        }
+      ],
+      "BuffActions": [],
+      "HP": 8,
+      "Max": 8,
+      "Name": "Arm 3",
+      "OffensiveActions": [
+        {
+          "$type": "Strike, Assembly-CSharp",
+          "DiceSize": 2,
+          "DamageType": "Slashing",
+          "Range": 1,
+          "Name": "strike",
+          "ActivationTime": 1.0,
+          "Progress": 0.0
+        }
+      ],
+      "Vital": false
+    },
+    {
+      "Resistance": {
+        "Bludgeoning": 2,
+        "Piercing": 2,
+        "Slashing": 2
+      },
+      "DefensiveActions": [
+        {
+          "$type": "Block, Assembly-CSharp",
+          "BlockableTypes": [
+            "Slashing",
+            "Bludgeoning",
+            "Piercing"
+          ],
+          "Defense": 3,
+          "Name": "block",
+          "ActivationTIme": 0.5
+        }
+      ],
+      "BuffActions": [],
+      "HP": 8,
+      "Max": 8,
+      "Name": "Arm 4",
+      "OffensiveActions": [
+        {
+          "$type": "Strike, Assembly-CSharp",
+          "DiceSize": 2,
+          "DamageType": "Slashing",
+          "Range": 1,
+          "Name": "strike",
+          "ActivationTime": 1.0,
+          "Progress": 0.0
+        }
+      ],
+      "Vital": false
+    }
+
+
+  ]
 }
