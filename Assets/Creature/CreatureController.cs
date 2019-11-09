@@ -89,36 +89,6 @@ public class CreatureController : MonoBehaviour
         creature.Data.GetBehaviourTask = Behaviours.GetBehaviourFor(creature.Data.BehaviourName);
 
         creature.MainRenderer.material = Game.MaterialController.DefaultMaterial;
-
-        creature.Data.ManaPool = new ManaPool(creature.Data);
-
-        if (creatureData.BehaviourName == "Person")
-        {
-            creature.Data.ManaPool.InitColor(ManaColor.White, 10, 10, 10);
-            creature.Data.ManaPool.InitColor(ManaColor.Red, 3, 10, 5);
-            creature.Data.ManaPool.InitColor(ManaColor.Green, 3, 10, 5);
-            creature.Data.ManaPool.InitColor(ManaColor.Blue, 0, 10, 0);
-            creature.Data.ManaPool.InitColor(ManaColor.Black, 0, 10, 0);
-
-            creature.EnableLight();
-        }
-        else if (creatureData.Name == "QueenWraith")
-        {
-            creature.Data.ManaPool.InitColor(ManaColor.White, 15, 15, 15);
-            creature.Data.ManaPool.InitColor(ManaColor.Red, 3, 10, 5);
-            creature.Data.ManaPool.InitColor(ManaColor.Green, 3, 10, 5);
-            creature.Data.ManaPool.InitColor(ManaColor.Blue, 0, 10, 0);
-            creature.Data.ManaPool.InitColor(ManaColor.Black, 0, 10, 0);
-        }
-        else
-        {
-            creature.Data.ManaPool.InitColor(ManaColor.White, 10, 10, 10);
-            creature.Data.ManaPool.InitColor(ManaColor.Red, 0, 10, 0);
-            creature.Data.ManaPool.InitColor(ManaColor.Green, 0, 10, 0);
-            creature.Data.ManaPool.InitColor(ManaColor.Blue, 0, 10, 0);
-            creature.Data.ManaPool.InitColor(ManaColor.Black, 0, 10, 0);
-        }
-
         faction.AddCreature(creatureData);
         return creature;
     }

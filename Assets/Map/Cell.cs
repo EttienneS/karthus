@@ -489,6 +489,7 @@ public class Cell : IEquatable<Cell>
     {
         Liquid = color;
         LiquidLevel += volume;
+        Game.PhysicsController.Track(this);
     }
 
     internal void Bind(IEntity entity)

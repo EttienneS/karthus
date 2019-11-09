@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Limb
@@ -119,6 +120,42 @@ public class Limb
             {
                 Owner.Log($"{Owner.Name} collapses!");
                 Owner.Dead = true;
+
+                var cells = new List<Cell>
+                {
+                    Owner.Cell
+                };
+                cells.AddRange(Owner.Cell.Neighbors.Where(n => n != null));
+
+                var orderedCells = cells.OrderByDescending(c => c.LiquidLevel).ToList(); ;
+
+                foreach (var mana in Owner.ManaPool.OrderBy(m => m.Value.Total))
+                {
+                    if (mana.Value.Total > 0)
+                    {
+                        var matching = orderedCells.FirstOrDefault(c => c.Liquid.HasValue && c.Liquid.Value == mana.Key);
+                        if (matching != null)
+                        {
+                            matching.LiquidLevel += mana.Value.Total;
+                        }
+                        else
+                        {
+                            var cell = orderedCells[0];
+                            orderedCells.Remove(cell);
+
+                            var amount = mana.Value.Total - cell.LiquidLevel;
+
+                            if (amount > 0)
+                            {
+                                cell.AddLiquid(mana.Key, amount);
+                            }
+                            else
+                            {
+                                cell.LiquidLevel -= amount;
+                            }
+                        }
+                    }
+                }
 
                 Game.VisualEffectController.SpawnSpriteEffect(null, Owner.Vector, OrderSelectionController.AttackIcon, 1f);
                 Game.VisualEffectController.SpawnLightEffect(null, Owner.Vector, Color.red, 1f, 1f, 1f);

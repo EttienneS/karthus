@@ -48,7 +48,8 @@ public class PhysicsController : MonoBehaviour
     internal void Track(Cell cell)
     {
         if (!VolatileCells.Contains(cell))
-
+        {
             VolatileCells.Enqueue(cell);
+        }
     }
 }

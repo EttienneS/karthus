@@ -195,5 +195,37 @@
       "Vital": false,
       "Percentage": 1.0
     }
-  ]
+  ],
+  "ManaPool": {
+	"White": {
+	  "Color": "White",
+	  "Desired": 10,
+	  "Max": 10,
+	  "Total": 10
+	},
+	"Red": {
+	  "Color": "Red",
+	  "Desired": 0,
+	  "Max": 10,
+	  "Total": 10
+	},
+	"Green": {
+	  "Color": "Green",
+	  "Desired": 0,
+	  "Max": 10,
+	  "Total": 10
+	},
+	"Blue": {
+	  "Color": "Blue",
+	  "Desired": 0,
+	  "Max": 10,
+	  "Total": 10
+	},
+	"Black": {
+	  "Color": "Black",
+	  "Desired": 0,
+	  "Max": 10,
+	  "Total": 10
+	}
+  }
 }
