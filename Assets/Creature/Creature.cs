@@ -130,6 +130,8 @@ public class Creature : IEntity
         {
             limb.Link(this);
         }
+
+        ManaPool.EntityId = Id;
     }
 
     public List<Skill> Skills { get; set; }

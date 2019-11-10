@@ -40,3 +40,4 @@ sysinfo.txt
 *.unitypackage
 /stdout.log
 
+/Assets/Scenes/Main_Profiles.meta

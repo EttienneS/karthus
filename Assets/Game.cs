@@ -228,13 +228,17 @@ public partial class Game : MonoBehaviour
 
         if (Input.GetKeyDown("1"))
         {
-            TimeManager.TimeStep = TimeStep.Normal;
+            TimeManager.TimeStep = TimeStep.Slow;
         }
         if (Input.GetKeyDown("2"))
         {
-            TimeManager.TimeStep = TimeStep.Fast;
+            TimeManager.TimeStep = TimeStep.Normal;
         }
         if (Input.GetKeyDown("3"))
+        {
+            TimeManager.TimeStep = TimeStep.Fast;
+        }
+        if (Input.GetKeyDown("4"))
         {
             TimeManager.TimeStep = TimeStep.Hyper;
         }

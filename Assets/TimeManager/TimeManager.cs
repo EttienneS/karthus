@@ -6,9 +6,10 @@ using UnityEngine.UI;
 public enum TimeStep
 {
     Paused = 0,
-    Normal = 1,
-    Fast = 6,
-    Hyper = 16
+    Slow = 1,
+    Normal = 4,
+    Fast = 12,
+    Hyper = 50
 }
 
 public class TimeData
@@ -25,11 +26,13 @@ public class TimeManager : MonoBehaviour
         Minute = 0
     };
 
+    public float MagicInterval = 0.01f;
     internal Dictionary<TimeStep, Button> AllButtons;
     internal Button FastButton;
     internal Button FasterButton;
     internal Button NormalButton;
     internal Button PauseButton;
+    internal Button SlowButton;
     internal float TickInterval = 0.5f;
     internal Text TimeDisplay;
     internal float WorkInterval = 0.1f;
@@ -63,7 +66,7 @@ public class TimeManager : MonoBehaviour
             }
             else
             {
-                Time.timeScale = ((int)_timeStep) * 0.5f;
+                Time.timeScale = ((int)_timeStep) * 0.25f;
                 Time.fixedDeltaTime = 0.02f * Time.timeScale;
             }
 
@@ -73,8 +76,6 @@ public class TimeManager : MonoBehaviour
             }
         }
     }
-
-    public float MagicInterval = 0.01f;
 
     internal bool Paused
     {
@@ -90,7 +91,7 @@ public class TimeManager : MonoBehaviour
         var buttons = GetComponentsInChildren<Button>();
 
         PauseButton = buttons.First(b => b.name == "PauseButton");
-        //SlowButton = buttons.First(b => b.name == "SlowButton");
+        SlowButton = buttons.First(b => b.name == "SlowButton");
         NormalButton = buttons.First(b => b.name == "NormalButton");
         FastButton = buttons.First(b => b.name == "FastButton");
         FasterButton = buttons.First(b => b.name == "FasterButton");
@@ -103,7 +104,7 @@ public class TimeManager : MonoBehaviour
         AllButtons = new Dictionary<TimeStep, Button>
         {
             { TimeStep.Paused,PauseButton},
-            //{ TimeStep.Slow, SlowButton },
+            { TimeStep.Slow, SlowButton },
             { TimeStep.Normal, NormalButton},
             { TimeStep.Fast, FastButton },
             { TimeStep.Hyper, FasterButton }
