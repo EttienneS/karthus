@@ -91,7 +91,7 @@ public abstract class OffensiveActionBase
         if (damage > 0)
         {
             Owner.Log($"{Owner.Name}'s {Name} hits {TargetLimb.Owner.Name}'s {TargetLimb.Name}");
-            TargetLimb.Damage(DamageType, damage);
+            TargetLimb.Damage($"{Owner.Name}'s {Name}", DamageType, damage);
         }
         else
         {

@@ -25,11 +25,13 @@ public class Limb
         OffensiveActions = new List<OffensiveActionBase>();
         DefensiveActions = new List<DefensiveActionBase>();
         BuffActions = new List<BuffBase>();
+        Wounds = new List<Wound>();
+        DamageThreshold = new DamageThreshold();
     }
 
     public List<BuffBase> BuffActions { get; set; }
-
     public bool Busy { get; set; }
+    public DamageThreshold DamageThreshold { get; set; }
     public List<DefensiveActionBase> DefensiveActions { get; set; }
 
     [JsonIgnore]
@@ -42,8 +44,11 @@ public class Limb
     }
 
     public int HP { get; set; }
+
     public int Max { get; set; }
+
     public string Name { get; set; }
+
     public List<OffensiveActionBase> OffensiveActions { get; set; }
 
     [JsonIgnore]
@@ -59,7 +64,10 @@ public class Limb
     }
 
     public Dictionary<DamageType, int> Resistance { get; set; }
+
     public bool Vital { get; set; }
+
+    public List<Wound> Wounds { get; set; }
 
     public int GetDamageAfterResistance(DamageType type, int damage)
     {
@@ -71,9 +79,17 @@ public class Limb
         return damage;
     }
 
+
+
     public override string ToString()
     {
-        return $"{Name} [{HP}/{Max}]";
+        var msg = $"{Name} [{HP}/{Max}]\n";
+
+        foreach (var wound in Wounds.GroupBy(w => w.ToString()).Select(w => new { Text = w.Key, Count = w.Count() }))
+        {
+            msg += $"\t\t{wound.Count}x {wound.Text}\n";
+        }
+        return msg;
     }
 
     internal void AddBoostAction(BuffBase boostAction)
@@ -94,7 +110,7 @@ public class Limb
         OffensiveActions.Add(offensiveAction);
     }
 
-    internal void Damage(DamageType type, int inputDamage)
+    internal void Damage(string source, DamageType type, int inputDamage)
     {
         var damage = GetDamageAfterResistance(type, inputDamage);
 
@@ -107,6 +123,8 @@ public class Limb
         {
             Owner.Log($"-- {Owner.Name}'s {Name} resists some [{inputDamage - damage}] of the {inputDamage} incoming damage --");
         }
+
+        Wounds.Add(new Wound(this, source, type, DamageThreshold.GetSeverity(type, damage)));
 
         HP -= damage;
         Owner.Log($"*{Owner.Name}'s {Name} takes [{damage}] damage ({Math.Floor(Percentage * 100)}%)*");
@@ -170,13 +188,15 @@ public class Limb
 
         OffensiveActions.ForEach(a => a.Limb = this);
         DefensiveActions.ForEach(a => a.Limb = this);
-        BuffActions.ForEach(a =>
-        {
-            a.Limb = this;
-        });
+        BuffActions.ForEach(a => a.Limb = this);
+        Wounds.ForEach(w => w.Limb = this);
     }
 
     internal void Update(float timeDelta)
     {
+        foreach (var wound in Wounds)
+        {
+            wound.Update(timeDelta);
+        }
     }
 }

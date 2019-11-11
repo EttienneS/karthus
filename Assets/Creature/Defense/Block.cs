@@ -22,7 +22,7 @@ public class Block : DefensiveActionBase
             var damageAfterBlock = Math.Max(0, incomingDamage - Defense);
             LogBlock(attackName, incomingDamage, damageAfterBlock);
 
-            Limb.Damage(damageType, Defense / 2);
+            Limb.Damage($"Blocking {attackName}", damageType, Defense / 2);
             return damageAfterBlock;
         }
         else
@@ -31,7 +31,7 @@ public class Block : DefensiveActionBase
             LogBlock(attackName, incomingDamage, damageAfterBlock);
 
             Limb.Owner.Log($"{Limb.Name} is damaged greatly by the {attackName}");
-            Limb.Damage(damageType, Defense * 2);
+            Limb.Damage($"Weak blocking {attackName}", damageType, Defense * 2);
 
             return damageAfterBlock;
         }
