@@ -30,11 +30,11 @@ public class Creature : IEntity
     [JsonIgnore] internal Cell LastPercievedCoordinate;
     internal float WorkTick = float.MaxValue;
     private List<Cell> _awareness;
-    private Cell _cell;
     private Faction _faction;
     private bool _firstRun = true;
     private CreatureTask _task;
     public float Aggression { get; set; }
+
     [JsonIgnore]
     public List<Cell> Awareness
     {
@@ -50,6 +50,7 @@ public class Creature : IEntity
     }
 
     public string BehaviourName { get; set; }
+
     [JsonIgnore]
     public Cell Cell
     {
@@ -70,6 +71,7 @@ public class Creature : IEntity
     public CreatureRenderer CreatureRenderer { get; set; }
 
     public bool Dead { get; internal set; }
+
     public int DEX
     {
         get
@@ -79,6 +81,7 @@ public class Creature : IEntity
     }
 
     public int Dexterity { get; set; }
+
     [JsonIgnore]
     public Faction Faction
     {
@@ -95,6 +98,7 @@ public class Creature : IEntity
 
     public string FactionName { get; set; }
     public string Id { get; set; }
+
     [JsonIgnore]
     public bool InCombat
     {
@@ -106,10 +110,12 @@ public class Creature : IEntity
 
     public List<Limb> Limbs { get; set; }
     public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
+    public List<string> LogHistory { get; set; }
     public ManaPool ManaPool { get; set; }
     public string Name { get; set; }
     public int Perception { get; set; }
     public Dictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
+
     [JsonIgnore]
     public Memory Self
     {
@@ -124,18 +130,10 @@ public class Creature : IEntity
         }
     }
 
-    internal void Start()
-    {
-        foreach (var limb in Limbs)
-        {
-            limb.Link(this);
-        }
-
-        ManaPool.EntityId = Id;
-    }
-
     public List<Skill> Skills { get; set; }
+
     public float Speed { get; set; }
+
     public string Sprite { get; set; }
 
     public int STR
@@ -184,7 +182,6 @@ public class Creature : IEntity
         limb.Owner = this;
         Limbs.Add(limb);
     }
-
 
     public void Face(Cell cell)
     {
@@ -302,6 +299,7 @@ public class Creature : IEntity
     public void Log(string message = "")
     {
         Debug.Log(Name + ":" + message);
+        LogHistory.Add(message);
         CreatureRenderer.ShowText(message, 0.5f);
     }
 
@@ -328,7 +326,6 @@ public class Creature : IEntity
         var maxY = Mathf.Max(targetY, Y);
         var minY = Mathf.Min(targetY, Y);
 
-
         var yspeed = Mathf.Min(Speed + Random.Range(0f, 0.01f), maxY - minY);
         var xspeed = Mathf.Min(Speed + Random.Range(0f, 0.01f), maxX - minX);
 
@@ -350,7 +347,6 @@ public class Creature : IEntity
             if (Facing == Direction.N)
             {
                 Facing = Direction.NE;
-
             }
             else if (Facing == Direction.S)
             {
@@ -367,7 +363,6 @@ public class Creature : IEntity
             if (Facing == Direction.N)
             {
                 Facing = Direction.NW;
-
             }
             else if (Facing == Direction.S)
             {
@@ -427,10 +422,46 @@ public class Creature : IEntity
         return text;
     }
 
+    public void UpdateSprite()
+    {
+        bool flip = Facing == Direction.W || Facing == Direction.NE || Facing == Direction.SW;
+        if (!Sprite.Contains("_"))
+        {
+            CreatureRenderer.MainRenderer.flipX = flip;
+            CreatureRenderer.MainRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite, ref Index);
+        }
+        else
+        {
+            var facingKey = Game.SpriteStore.FacingUp(Facing) ? "b_" : "f_";
+
+            CreatureRenderer.FaceRenderer.flipX = flip;
+            CreatureRenderer.BodyRenderer.flipX = flip;
+            CreatureRenderer.TopRenderer.flipX = flip;
+            CreatureRenderer.BottomRenderer.flipX = flip;
+            CreatureRenderer.HairRenderer.flipX = flip;
+
+            SetColors();
+
+            if (facingKey == "f_")
+            {
+                CreatureRenderer.FaceRenderer.sprite = Game.SpriteStore.GetBodySprite(Sprite + "face");
+            }
+            else
+            {
+                CreatureRenderer.FaceRenderer.sprite = null;
+            }
+            CreatureRenderer.BodyRenderer.sprite = Game.SpriteStore.GetBodySprite(Sprite + facingKey + "body");
+            CreatureRenderer.TopRenderer.sprite = Game.SpriteStore.GetBodySprite(Sprite + facingKey + "top");
+            CreatureRenderer.BottomRenderer.sprite = Game.SpriteStore.GetBodySprite(Sprite + facingKey + "bottom");
+            CreatureRenderer.HairRenderer.sprite = Game.SpriteStore.GetBodySprite(Sprite + facingKey + "hair_" + HairStyle);
+        }
+    }
+
     internal void CancelTask()
     {
         if (Task != null)
         {
+            Log($"Canceled {Task} task");
             Faction.RemoveTask(Task);
             Task.Destroy();
             Task = null;
@@ -508,6 +539,7 @@ public class Creature : IEntity
         ValueProperties[Prop.Hunger] += Random.value;
         ValueProperties[Prop.Energy] -= Random.Range(0.1f, 0.25f);
     }
+
     internal void Perceive()
     {
         if (LastPercievedCoordinate != Cell)
@@ -516,6 +548,17 @@ public class Creature : IEntity
             LastPercievedCoordinate = Cell;
         }
     }
+
+    internal void Start()
+    {
+        foreach (var limb in Limbs)
+        {
+            limb.Link(this);
+        }
+        LogHistory = new List<string>();
+        ManaPool.EntityId = Id;
+    }
+
     internal bool Update(float timeDelta)
     {
         if (Game.TimeManager.Paused)
@@ -541,7 +584,6 @@ public class Creature : IEntity
             Combatants.RemoveAll(c => c.Dead);
         }
 
-
         if (InternalTick >= Game.TimeManager.TickInterval)
         {
             InternalTick = 0;
@@ -565,6 +607,7 @@ public class Creature : IEntity
     {
         UpdateMemory(SelfKey, memoryType, info);
     }
+
     private OffensiveActionBase GetBestAttack(Creature target)
     {
         var most = int.MinValue;
@@ -700,6 +743,7 @@ public class Creature : IEntity
 
         return (outgoingDamage, bestAttack);
     }
+
     private void ProcessCombat()
     {
         try
@@ -756,8 +800,6 @@ public class Creature : IEntity
         {
             Debug.LogError(ex.ToString());
         }
-
-
     }
 
     private void ProcessTask()
@@ -782,6 +824,11 @@ public class Creature : IEntity
             {
                 if (Task.Done(this))
                 {
+                    if (!(Task is Idle))
+                    {
+                        Log($"Completed {Task} task");
+                    }
+
                     Task.ShowDoneEmote(this);
                     FreeResources(Task.Context);
                     Forget(Task.Context);
@@ -828,41 +875,6 @@ public class Creature : IEntity
         foreach (var limb in Limbs)
         {
             limb.Update(timeDelta);
-        }
-    }
-
-    public void UpdateSprite()
-    {
-        bool flip = Facing == Direction.W || Facing == Direction.NE || Facing == Direction.SW;
-        if (!Sprite.Contains("_"))
-        {
-            CreatureRenderer.MainRenderer.flipX = flip;
-            CreatureRenderer.MainRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite, ref Index);
-        }
-        else
-        {
-            var facingKey = Game.SpriteStore.FacingUp(Facing) ? "b_" : "f_";
-
-            CreatureRenderer.FaceRenderer.flipX = flip;
-            CreatureRenderer.BodyRenderer.flipX = flip;
-            CreatureRenderer.TopRenderer.flipX = flip;
-            CreatureRenderer.BottomRenderer.flipX = flip;
-            CreatureRenderer.HairRenderer.flipX = flip;
-
-            SetColors();
-
-            if (facingKey == "f_")
-            {
-                CreatureRenderer.FaceRenderer.sprite = Game.SpriteStore.GetBodySprite(Sprite + "face");
-            }
-            else
-            {
-                CreatureRenderer.FaceRenderer.sprite = null;
-            }
-            CreatureRenderer.BodyRenderer.sprite = Game.SpriteStore.GetBodySprite(Sprite + facingKey + "body");
-            CreatureRenderer.TopRenderer.sprite = Game.SpriteStore.GetBodySprite(Sprite + facingKey + "top");
-            CreatureRenderer.BottomRenderer.sprite = Game.SpriteStore.GetBodySprite(Sprite + facingKey + "bottom");
-            CreatureRenderer.HairRenderer.sprite = Game.SpriteStore.GetBodySprite(Sprite + facingKey + "hair_" + HairStyle);
         }
     }
 }

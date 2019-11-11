@@ -180,6 +180,8 @@ public class Structure : IEntity
         }
     }
 
+    public List<string> LogHistory { get; set; } = new List<string>();
+
     public static Structure GetFromJson(string json, string name)
     {
         if (name == "Pipe")
@@ -216,6 +218,12 @@ public class Structure : IEntity
     public bool IsWall()
     {
         return IsType("Wall");
+    }
+
+    public void Log(string message = "")
+    {
+        Debug.Log(Name + ":" + message);
+        LogHistory.Add(message);
     }
 
     public void Refresh()

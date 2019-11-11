@@ -12,9 +12,14 @@ public class EntityInfoPanel : MonoBehaviour
     public List<IEntity> CurrentEntities;
     public Text GreenLabel;
     public ImageButton ImageButtonPrefab;
+    public Text Log;
     public Text PropertiesPanel;
     public Text RedLabel;
     public Text WhiteLabel;
+    public Text HealthText;
+    public Text MagicText;
+
+    public Toggle FirstPanelToggle;
     private List<ImageButton> _contextButtons = new List<ImageButton>();
 
     public ImageButton AddButton(string title, string spriteName)
@@ -36,6 +41,10 @@ public class EntityInfoPanel : MonoBehaviour
     public void Show(IEnumerable<IEntity> entities)
     {
         gameObject.SetActive(true);
+
+        // switch to overview panel
+        FirstPanelToggle.isOn = true;
+
         CurrentEntities = entities.ToList();
 
         _contextButtons.Clear();
@@ -54,7 +63,6 @@ public class EntityInfoPanel : MonoBehaviour
             var creatures = entities.OfType<Creature>();
             AddMoveButton(creatures);
             AddAttackButton(creatures);
-            //AddWorkButton(creatures);
         }
         else
         {
@@ -73,9 +81,18 @@ public class EntityInfoPanel : MonoBehaviour
             {
                 var currentEntity = CurrentEntities[0];
 
+                Log.text = string.Empty;
+
+                foreach (var line in currentEntity.LogHistory)
+                {
+                    Log.text += $"{line}\n";
+                }
+
+                var rt = Log.GetComponent(typeof(RectTransform)) as RectTransform;
+                rt.sizeDelta = new Vector2(280, currentEntity.LogHistory.Count * 15);
+
                 CreatureName.text = currentEntity.Name;
 
-                PropertiesPanel.text += $"\nLocation:\t{currentEntity.Cell}\n\n";
 
                 foreach (var property in currentEntity.ValueProperties)
                 {
@@ -89,41 +106,13 @@ public class EntityInfoPanel : MonoBehaviour
 
                 if (currentEntity is Creature creature)
                 {
-                    PropertiesPanel.text += "\nBody: \n\n";
-
-                    foreach (var limb in creature.Limbs)
-                    {
-                        PropertiesPanel.text += $"\t{limb}\n";
-                    }
-                    PropertiesPanel.text += "\n";
-
-
-                    PropertiesPanel.text += "\nSkills: \n\n";
-
-                    foreach (var skill in creature.Skills)
-                    {
-                        PropertiesPanel.text += $"\t{skill}\n";
-                    }
-                    PropertiesPanel.text += "\n";
-
-                    if (creature.Task != null)
-                    {
-                        if (string.IsNullOrWhiteSpace(creature.Task.Message))
-                        {
-                            PropertiesPanel.text += $"Task: \t{creature.Task}\n";
-                        }
-                        else
-                        {
-                            PropertiesPanel.text += $"Task: \t{creature.Task.Message}\n";
-                        }
-                    }
-                    else
-                    {
-                        PropertiesPanel.text += "Finding Task\n";
-                    }
+                    PropertiesPanel.text += $"\nLocation:\t{creature.X:F1}:{creature.Y:F1}\n\n";
+                    LogHealth(creature);
+                    LogTask(creature);
                 }
                 else
                 {
+                    PropertiesPanel.text += $"\nLocation:\t{currentEntity.Cell}\n\n";
                     var structure = currentEntity as Structure;
 
                     PropertiesPanel.text += $"Rotation:\t {structure.Rotation}\n";
@@ -166,83 +155,48 @@ public class EntityInfoPanel : MonoBehaviour
         }
     }
 
+    private void LogTask(Creature creature)
+    {
+        if (creature.Task != null)
+        {
+            if (string.IsNullOrWhiteSpace(creature.Task.Message))
+            {
+                PropertiesPanel.text += $"Task: \t{creature.Task}\n";
+            }
+            else
+            {
+                PropertiesPanel.text += $"Task: \t{creature.Task.Message}\n";
+            }
+        }
+        else
+        {
+            PropertiesPanel.text += "Finding Task\n";
+        }
+    }
+
+    private void LogHealth(Creature creature)
+    {
+        HealthText.text = "\nBody: \n\n";
+
+        foreach (var limb in creature.Limbs)
+        {
+            HealthText.text += $"\t{limb}\n";
+        }
+        HealthText.text += "\n";
+
+        HealthText.text += "\nSkills: \n\n";
+
+        foreach (var skill in creature.Skills)
+        {
+            HealthText.text += $"\t{skill}\n";
+        }
+        HealthText.text += "\n";
+    }
+
     private void AddAttackButton(IEnumerable<Creature> creatures)
     {
         var btn = AddButton(OrderSelectionController.AttackText, OrderSelectionController.AttackIcon);
-        btn.SetOnClick(() =>
-        {
-            SetActiveButton(btn);
-
-            Game.Controller.SelectionPreference = SelectionPreference.Cell;
-            Game.Controller.SetMouseSprite(OrderSelectionController.AttackIcon,
-                                            (c) => c.GetEnemyCreaturesOf(FactionConstants.Player).Any());
-
-            Game.OrderSelectionController.CellClickOrder = cells =>
-            {
-                foreach (var creature in creatures)
-                {
-                    foreach (var cell in cells)
-                    {
-                        foreach (var enemy in cell.GetEnemyCreaturesOf(creature.FactionName))
-                        {
-                            creature.CancelTask();
-                            creature.Combatants.Add(enemy);
-                            break;
-                        }
-                    }
-                }
-            };
-        });
-    }
-
-    private void AddMoveButton(IEnumerable<Creature> creatures)
-    {
-        var btn = AddButton(OrderSelectionController.MoveText, OrderSelectionController.MoveIcon);
-        btn.SetOnClick(() =>
-        {
-            SetActiveButton(btn);
-            Game.Controller.SelectionPreference = SelectionPreference.Cell;
-            Game.Controller.SetMouseSprite(OrderSelectionController.MoveIcon, (c) => c.TravelCost > 0);
-
-            Game.OrderSelectionController.CellClickOrder = cells =>
-            {
-                foreach (var creature in creatures)
-                {
-                    var cell = cells[0];
-
-                    var faction = creature.GetFaction();
-                    var task = new Move(cell);
-                    task.AddCellBadge(cell, OrderSelectionController.MoveIcon);
-                    creature.CancelTask();
-                    creature.Task = task;
-                }
-            };
-        });
-    }
-
-    private void AddWorkButton(IEnumerable<Creature> creatures)
-    {
-        var btn = AddButton("Work at", "anvil_t");
-        btn.SetOnClick(() =>
-        {
-            SetActiveButton(btn);
-            Game.Controller.SelectionPreference = SelectionPreference.Cell;
-            Game.Controller.SetMouseSprite("anvil_t", (c) => c.Structure?.ActivatedInteractions?.Count > 0);
-
-            Game.OrderSelectionController.CellClickOrder = cells =>
-            {
-                foreach (var creature in creatures)
-                {
-                    var cell = cells[0];
-
-                    if (cell.Structure?.ActivatedInteractions?.Count > 0)
-                    {
-                        creature.CancelTask();
-                        creature.Task = new Interact(cell.Structure.ActivatedInteractions[0], creature, cell.Structure.Id);
-                    }
-                }
-            };
-        });
+        btn.SetOnClick(() => AttackClicked(creatures, btn));
     }
 
     private void AddCycleModeButton(IEnumerable<Structure> structures)
@@ -278,6 +232,12 @@ public class EntityInfoPanel : MonoBehaviour
         }
     }
 
+    private void AddMoveButton(IEnumerable<Creature> creatures)
+    {
+        var btn = AddButton(OrderSelectionController.MoveText, OrderSelectionController.MoveIcon);
+        btn.SetOnClick(() => MoveClicked(creatures, btn));
+    }
+
     private void AddRemoveStructureButton(IEnumerable<Structure> structures)
     {
         var btn = AddButton(OrderSelectionController.DefaultRemoveText, OrderSelectionController.DefaultRemoveImage);
@@ -307,6 +267,52 @@ public class EntityInfoPanel : MonoBehaviour
                 }
             }
         });
+    }
+
+    private void AttackClicked(IEnumerable<Creature> creatures, ImageButton btn)
+    {
+        SetActiveButton(btn);
+
+        Game.Controller.SelectionPreference = SelectionPreference.Cell;
+        Game.Controller.SetMouseSprite(OrderSelectionController.AttackIcon,
+                                        (c) => c.GetEnemyCreaturesOf(FactionConstants.Player).Any());
+
+        Game.OrderSelectionController.CellClickOrder = cells =>
+        {
+            foreach (var creature in creatures)
+            {
+                foreach (var cell in cells)
+                {
+                    foreach (var enemy in cell.GetEnemyCreaturesOf(creature.FactionName))
+                    {
+                        creature.CancelTask();
+                        creature.Combatants.Add(enemy);
+                        break;
+                    }
+                }
+            }
+        };
+    }
+
+    private void MoveClicked(IEnumerable<Creature> creatures, ImageButton btn)
+    {
+        SetActiveButton(btn);
+        Game.Controller.SelectionPreference = SelectionPreference.Cell;
+        Game.Controller.SetMouseSprite(OrderSelectionController.MoveIcon, (c) => c.TravelCost > 0);
+
+        Game.OrderSelectionController.CellClickOrder = cells =>
+        {
+            foreach (var creature in creatures)
+            {
+                var cell = cells[0];
+
+                var faction = creature.GetFaction();
+                var task = new Move(cell);
+                task.AddCellBadge(cell, OrderSelectionController.MoveIcon);
+                creature.CancelTask();
+                creature.Task = task;
+            }
+        };
     }
 
     private void SetActiveButton(ImageButton btn)
@@ -346,5 +352,7 @@ public class EntityInfoPanel : MonoBehaviour
         SetManaLabel(BlueLabel, ManaColor.Blue);
         SetManaLabel(BlackLabel, ManaColor.Black);
         SetManaLabel(WhiteLabel, ManaColor.White);
+
+        MagicText.text = "";
     }
 }
