@@ -128,7 +128,7 @@ public static class Pathfinder
                 {
                     var neighbor = current.GetNeighbor(d);
 
-                    if (neighbor == null)
+                    if (neighbor == null || !neighbor.Pathable(mobility))
                     {
                         continue;
                     }

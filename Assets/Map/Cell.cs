@@ -193,16 +193,19 @@ public class Cell : IEquatable<Cell>
     [JsonIgnore]
     public Cell NextWithSamePriority { get; set; }
 
-    //        return height;
-    //    }
-    //}
-    [JsonIgnore]
-    public bool Pathable
+    public bool Pathable(Mobility mobility)
     {
-        get
+        switch (mobility)
         {
-            return Bound && TravelCost > 0;
+            case Mobility.Walk:
+                return Bound && TravelCost > 0;
+            case Mobility.Fly:
+                return Bound;
+            case Mobility.AbyssWalk:
+                return true;
         }
+
+        return false;
     }
 
     //[JsonIgnore]
@@ -298,7 +301,7 @@ public class Cell : IEquatable<Cell>
                     return -1;
             }
 
-            return Structure != null && !Structure.IsBluePrint ? Structure.TravelCost : 1.5f;
+            return Structure?.IsBluePrint == false ? Structure.TravelCost : 1.5f;
         }
     }
 

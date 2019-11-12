@@ -847,7 +847,17 @@ public class Creature : IEntity
             catch (Exception ex)
             {
                 Debug.LogWarning($"Task failed: {ex}");
-                CancelTask();
+
+                if (!Cell.Pathable(Mobility))
+                {
+                    // unstuck
+                    Debug.LogError("Unstuck!");
+                    Cell = Game.Map.GetNearestPathableCell(Cell, Mobility, 10);
+                }
+                else
+                {
+                    CancelTask();
+                }
             }
         }
     }

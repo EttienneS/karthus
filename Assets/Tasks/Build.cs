@@ -20,6 +20,8 @@
         Message = $"Building {structure.Name} at {structure.Cell}";
     }
 
+    private int _waitCount = 0;
+
     public override bool Done(Creature creature)
     {
         if (TargetStructure == null)
@@ -29,6 +31,18 @@
 
         if (SubTasksComplete(creature))
         {
+            if (TargetStructure.Cell.Creatures.Count > 0)
+            {
+                _waitCount++;
+
+                if (_waitCount > 10)
+                {
+                    throw new TaskFailedException("Cannot build, cell occupied");
+                }
+                AddSubTask(new Wait(0.5f, "Cell occupied"));
+                return false;
+            }
+
             TargetStructure.SetBluePrintState(false);
 
             if (TargetStructure.IsInterlocking())

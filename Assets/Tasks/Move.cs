@@ -43,12 +43,27 @@ public class Move : CreatureTask
 
         var currentCell = creature.Cell;
 
+        if (!TargetCell.Pathable(creature.Mobility))
+        {
+            Debug.LogError("Target path unreachable");
+            throw new TaskFailedException("Unable to find path");
+        }
+
         if (_path == null || _path.Count == 0)
         {
             if (currentCell != TargetCell)
             {
                 _path = Pathfinder.FindPath(currentCell, TargetCell, creature.Mobility);
-                _nextCell = _path[_path.IndexOf(currentCell) - 1];
+
+                if (_path == null)
+                {
+                    Debug.LogError("Path failed");
+                    throw new TaskFailedException("Unable to find path");
+                }
+                else
+                {
+                    _nextCell = _path[_path.IndexOf(currentCell) - 1];
+                }
             }
             else
             {
@@ -56,12 +71,6 @@ public class Move : CreatureTask
                 _path = new List<Cell> { TargetCell };
                 _nextCell = TargetCell;
             }
-        }
-
-        if (_path == null)
-        {
-            Debug.Log("Path failed");
-            throw new TaskFailedException("Unable to find path");
         }
 
         if (currentCell == _nextCell)
@@ -81,11 +90,12 @@ public class Move : CreatureTask
                 }
             }
         }
-        else if (!_nextCell.Pathable)
+        else if (!_nextCell.Pathable(creature.Mobility))
         {
             // something changed the path making it unusable
             // reset path to null to allow the pathfinder to search again
             _path = null;
+            Debug.LogWarning("Invalid path");
             return false;
         }
 

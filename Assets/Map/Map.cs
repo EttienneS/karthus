@@ -498,12 +498,15 @@ public class Map : MonoBehaviour
                     .First();
     }
 
-    internal Cell GetNearestPathableCell(Cell centerPoint, int radius)
+    internal Cell GetNearestPathableCell(Cell centerPoint, Mobility mobility, int radius)
     {
-        return GetCircle(centerPoint, radius)
-                    .Where(c => c?.Bound == true && c.TravelCost > 0)
-                    .OrderBy(c => c.DistanceTo(centerPoint))
-                    .First();
+        var circle = GetCircle(centerPoint, radius);
+
+        var result = circle.Where(c => c != centerPoint && c.Pathable(mobility))
+                           .OrderBy(c => c.DistanceTo(centerPoint))
+                           .First();
+
+        return result;
     }
 
     internal Cell GetPathableNeighbour(Cell coordinates)

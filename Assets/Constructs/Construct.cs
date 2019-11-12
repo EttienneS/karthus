@@ -205,9 +205,9 @@ public class Construct
                 }
                 var cell = Game.Map.GetCellAtCoordinate(cellData.X + x, cellData.Y + y);
 
-                if (cell.Pathable)
+                if (cell.Bound && cell.TravelCost > 0)
                 {
-                    if (cell.Structure != null && !cell.Structure.Name.Equals(GetStructure(character)))
+                    if (cell.Structure?.Name.Equals(GetStructure(character)) == false)
                     {
                         return false;
                     }
@@ -242,7 +242,7 @@ public class Construct
 
                 var cell = Game.Map.GetCellAtCoordinate(origin.X + x, origin.Y + y);
 
-                if (cell.Pathable && cell.Structure == null)
+                if (cell.Bound && cell.TravelCost > 0 && cell.Structure == null)
                 {
                     var structure = Game.StructureController.GetStructureBluePrint(GetStructure(character), faction);
                     cell.SetStructure(structure);
