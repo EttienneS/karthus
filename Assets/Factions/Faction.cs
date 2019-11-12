@@ -49,14 +49,6 @@ public class Faction
                 if (creature.Cell == null)
                 {
                     creature.Cell = Game.Map.Center;
-                    continue;
-                }
-
-                // stuck
-                if (creature.Mobility == Mobility.Walk && creature.Cell.TravelCost < 0)
-                {
-                    creature.Cell = Game.Map.GetCircle(creature.Cell, 4).Where(c => c.TravelCost > 0).GetRandomItem();
-                    creature.CancelTask();
                 }
             }
         }

@@ -493,7 +493,15 @@ public class Map : MonoBehaviour
     internal Cell GetNearestCellOfType(Cell centerPoint, CellType cellType, int radius)
     {
         return GetCircle(centerPoint, radius)
-                    .Where(c => c.Bound && c.CellType == cellType)
+                    .Where(c => c?.Bound == true && c.CellType == cellType)
+                    .OrderBy(c => c.DistanceTo(centerPoint))
+                    .First();
+    }
+
+    internal Cell GetNearestPathableCell(Cell centerPoint, int radius)
+    {
+        return GetCircle(centerPoint, radius)
+                    .Where(c => c?.Bound == true && c.TravelCost > 0)
                     .OrderBy(c => c.DistanceTo(centerPoint))
                     .First();
     }
@@ -501,7 +509,7 @@ public class Map : MonoBehaviour
     internal Cell GetPathableNeighbour(Cell coordinates)
     {
         return coordinates.Neighbors
-                          .Where(c => c.Bound && c.TravelCost > 0)
+                          .Where(c => c?.Bound == true && c.TravelCost > 0)
                           .ToList()
                           .GetRandomItem();
     }

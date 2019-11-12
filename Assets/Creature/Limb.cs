@@ -79,8 +79,6 @@ public class Limb
         return damage;
     }
 
-
-
     public override string ToString()
     {
         var msg = $"{Name} [{HP}/{Max}]\n";

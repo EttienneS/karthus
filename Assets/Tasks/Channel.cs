@@ -34,30 +34,22 @@ public class Channel : CreatureTask
 
     public static Channel GetChannelFrom(ManaColor color, int amount, IEntity source)
     {
-        var task = new Channel
+        return new Channel
         {
             ManaColor = color,
             AmountToChannel = amount,
             SourceId = source.Id
         };
-
-        task.AddSubTask(new Move(Game.Map.GetPathableNeighbour(source.Cell)));
-
-        return task;
     }
 
     public static Channel GetChannelTo(ManaColor color, int amount, IEntity target)
     {
-        var task = new Channel
+        return new Channel
         {
             ManaColor = color,
             AmountToChannel = amount,
             TargetId = target.Id
         };
-
-        task.AddSubTask(new Move(Game.Map.GetPathableNeighbour(target.Cell)));
-
-        return task;
     }
 
     public override bool Done(Creature creature)
@@ -71,17 +63,21 @@ public class Channel : CreatureTask
             TargetId = creature.Id;
         }
 
-        (Source as Creature)?.Face(Target.Cell);
-        (Target as Creature)?.Face(Source.Cell);
-
         if (SubTasksComplete(creature))
         {
-            if (AmountToChannel <= 0)
+            if (Source.Cell.DistanceTo(Target.Cell) > 2)
+            {
+                AddSubTask(new Move(Game.Map.GetPathableNeighbour(creature == Source ? Target.Cell : Source.Cell)));
+            }
+            else if (AmountToChannel <= 0)
             {
                 return true;
             }
             else
             {
+                (Source as Creature)?.Face(Target.Cell);
+                (Target as Creature)?.Face(Source.Cell);
+
                 Source.ManaPool.BurnMana(ManaColor, 1);
                 Target.ManaPool.GainMana(ManaColor, 1);
 

@@ -26,7 +26,7 @@ public class Move : CreatureTask
     public int MaxSpeed { get; set; }
 
     [JsonIgnore]
-    public Cell TargetCoordinateCell
+    public Cell TargetCell
     {
         get
         {
@@ -41,50 +41,70 @@ public class Move : CreatureTask
             return false;
         }
 
-        if (creature.Cell == TargetCoordinateCell)
+        var currentCell = creature.Cell;
+
+        if (_path == null || _path.Count == 0)
         {
-            // close final little gap
-            if (TargetX != creature.X || TargetY != creature.Y)
+            if (currentCell != TargetCell)
             {
-                creature.MoveTo(TargetX, TargetY);
-                return false;
+                _path = Pathfinder.FindPath(currentCell, TargetCell, creature.Mobility);
+                _nextCell = _path[_path.IndexOf(currentCell) - 1];
             }
-            return true;
-        }
-
-        if (_nextCell == null)
-        {
-            var currentCreatureCell = creature.Cell;
-
-            if (_path == null || _path.Count == 0)
+            else
             {
-                _path = Pathfinder.FindPath(currentCreatureCell, TargetCoordinateCell, creature.Mobility);
-            }
-
-            if (_path == null)
-            {
-                throw new TaskFailedException("Unable to find path");
-            }
-
-            _nextCell = _path[_path.IndexOf(currentCreatureCell) - 1];
-            if (_nextCell.TravelCost < 0)
-            {
-                // something changed the path making it unusable
-                _path = null;
+                // ensure we move to the center of the cell
+                _path = new List<Cell> { TargetCell };
+                _nextCell = TargetCell;
             }
         }
 
-        if (creature.Cell == _nextCell)
+        if (_path == null)
         {
-            _nextCell = null;
+            Debug.Log("Path failed");
+            throw new TaskFailedException("Unable to find path");
+        }
+
+        if (currentCell == _nextCell)
+        {
+            // ensure we are right in the middle of the next cell
+            if (GapClosed(creature, _nextCell))
+            {
+                if (currentCell == TargetCell)
+                {
+                    // final cell reached, done!
+                    return true;
+                }
+                else
+                {
+                    // next cell reached, move path on to the next one
+                    _nextCell = _path[_path.IndexOf(currentCell) - 1];
+                }
+            }
+        }
+        else if (!_nextCell.Pathable)
+        {
+            // something changed the path making it unusable
+            // reset path to null to allow the pathfinder to search again
             _path = null;
-        }
-        else
-        {
-            creature.MoveTo(_nextCell.Vector);
+            return false;
         }
 
+        creature.MoveTo(_nextCell.Vector);
 
         return false;
+    }
+
+    private bool GapClosed(Creature creature, Cell target)
+    {
+        var vx = target.Vector.x;
+        var vy = target.Vector.y;
+
+        // close final little gap
+        if (vx != creature.X || vy != creature.Y)
+        {
+            creature.MoveTo(vx, vy);
+            return false;
+        }
+        return true;
     }
 }
