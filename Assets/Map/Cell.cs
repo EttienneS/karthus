@@ -581,10 +581,11 @@ public class Cell : IEquatable<Cell>
             return;
         }
 
-        var clash = Array.Find(Neighbors, n => n?.Liquid.HasValue == true && n.Liquid.Value != Liquid.Value);
+        var clashes = Neighbors.Where(n => n?.Liquid.HasValue == true && n.Liquid.Value != Liquid.Value);
         const float max = 0.02f;
-        if (clash != null)
+        if (clashes.Any())
         {
+            var clash = clashes.GetRandomItem();
             var winner = LiquidLevel > clash.LiquidLevel ? this : clash;
             var loser = winner == this ? clash : this;
 

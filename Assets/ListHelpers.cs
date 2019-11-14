@@ -6,7 +6,7 @@ public static class ListHelpers
 {
     public static T GetRandomItem<T>(this IEnumerable<T> list)
     {
-        return list.ElementAt(Random.Range(0, list.Count() - 1));
+        return list.ElementAt(Random.Range(0, list.Count()));
     }
 
     public static void Shuffle<T>(this IList<T> list)
