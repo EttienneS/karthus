@@ -9,6 +9,8 @@ public class Dodge : DefensiveActionBase
 
     public override int Defend(string attackName, int incomingDamage, DamageType damageType)
     {
+        Game.VisualEffectController.SpawnSpriteEffect(Owner, Owner.Vector, "lightning_t", 1f).Fades();
+
         var roll = Owner.RollDex();
 
         var message = $"{Owner.Name} {Name} to dodge the {attackName}";

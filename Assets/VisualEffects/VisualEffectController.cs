@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [Flags]
@@ -11,6 +12,29 @@ public class VisualEffectController : MonoBehaviour
 {
     public Badge BadgePrefab;
     public VisualEffect EffectPrefab;
+
+    private List<Badge> _activeBadges = new List<Badge>();
+    private List<VisualEffect> _activeVisualEffects = new List<VisualEffect>();
+
+
+    public void Update()
+    {
+        //foreach (var badge in _activeBadges)
+        //{
+        //    if (badge.Entity == null)
+        //    {
+        //        Destroy(badge.gameObject);
+        //    }
+        //}
+
+        //foreach (var visualEffect in _activeVisualEffects)
+        //{
+        //    if (visualEffect.Entity == null)
+        //    {
+        //        Destroy(visualEffect.gameObject);
+        //    }
+        //}
+    }
 
     public VisualEffect GetBase(EffectType effectType, IEntity holder)
     {
