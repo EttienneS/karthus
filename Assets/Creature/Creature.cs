@@ -21,7 +21,7 @@ public class Creature : IEntity
     [JsonIgnore] public Color HairColor;
     public int HairStyle;
     public List<OffensiveActionBase> IncomingAttacks = new List<OffensiveActionBase>();
-    public int Index = 1;
+    public int Index;
     public Dictionary<string, Memory> Mind = new Dictionary<string, Memory>();
     public Mobility Mobility;
     [JsonIgnore] public Color SkinColor;
@@ -404,6 +404,7 @@ public class Creature : IEntity
             _firstRun = false;
         }
 
+        CreatureRenderer.MainRenderer.color = Color.white;
         CreatureRenderer.BodyRenderer.color = SkinColor;
         CreatureRenderer.TopRenderer.color = TopColor;
         CreatureRenderer.BottomRenderer.color = BottomColor;

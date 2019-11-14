@@ -99,9 +99,10 @@ public class CreatureRenderer : MonoBehaviour
 
     internal void UpdatePosition()
     {
-        Data.UpdateSprite();
         transform.position = new Vector2(Data.X, Data.Y);
         MainRenderer.SetBoundMaterial(Data.Cell);
+
+        Data.UpdateSprite();
     }
 
 
