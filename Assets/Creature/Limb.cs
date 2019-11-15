@@ -3,14 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Limb
 {
-    public Limb(string name, int hp, params (DamageType damageType, int amount)[] resistances)
+    public Limb(string name, params (DamageType damageType, int amount)[] resistances)
     {
         Name = name;
-        HP = hp;
-        Max = hp;
 
         Resistance = new Dictionary<DamageType, int>();
 
@@ -34,16 +33,7 @@ public class Limb
     public DamageThreshold DamageThreshold { get; set; }
     public List<DefensiveActionBase> DefensiveActions { get; set; }
 
-    [JsonIgnore]
-    public bool Enabled
-    {
-        get
-        {
-            return HP > 0;
-        }
-    }
-
-    public int HP { get; set; }
+    public bool Disabled { get; set; }
 
     public int Max { get; set; }
 
@@ -54,20 +44,36 @@ public class Limb
     [JsonIgnore]
     public Creature Owner { get; set; }
 
-    [JsonIgnore]
-    public float Percentage
-    {
-        get
-        {
-            return Math.Max(0, HP / (float)Max);
-        }
-    }
-
     public Dictionary<DamageType, int> Resistance { get; set; }
 
     public bool Vital { get; set; }
 
     public List<Wound> Wounds { get; set; }
+
+    public void CheckDeath()
+    {
+        if (Disabled)
+            return;
+
+        var chance = GetChanceOfDeath();
+
+        if (Random.value < chance)
+        {
+            Owner.Log($"-- {Owner.Name}'s {Name} has been disabled!! --");
+
+            if (Vital)
+            {
+                Owner.Log($"{Owner.Name} succumbs to its damage!");
+                Owner.Dead = true;
+
+                Owner.ManaPool.Release();
+
+                Game.VisualEffectController.SpawnSpriteEffect(null, Owner.Vector, "skull_02_t", 3f);
+                Game.VisualEffectController.SpawnLightEffect(null, Owner.Vector, Color.red, 1f, 1f, 3f);
+                Game.CreatureController.DestroyCreature(Owner.CreatureRenderer);
+            }
+        }
+    }
 
     public int GetDamageAfterResistance(DamageType type, int damage)
     {
@@ -79,9 +85,40 @@ public class Limb
         return damage;
     }
 
+    public string GetState()
+    {
+        if (Disabled)
+        {
+            return "- Disabled -";
+        }
+
+        var chance = GetChanceOfDeath();
+
+        if (chance > 0.1f)
+        {
+            return "Critical";
+        }
+        else if (chance > 0.07f)
+        {
+            return "Severe";
+        }
+        else if (chance > 0.03f)
+        {
+            return "Wounded";
+        }
+        else if (chance > 0.01f)
+        {
+            return "Hurt";
+        }
+        else
+        {
+            return "Fine";
+        }
+    }
+
     public override string ToString()
     {
-        var msg = $"{Name} [{HP}/{Max}]\n";
+        var msg = $"{Name} [{GetState()}]\n";
 
         foreach (var wound in Wounds.GroupBy(w => w.ToString()).Select(w => new { Text = w.Key, Count = w.Count() }))
         {
@@ -124,60 +161,9 @@ public class Limb
 
         Wounds.Add(new Wound(this, source, type, DamageThreshold.GetSeverity(type, damage)));
 
-        HP -= damage;
-        Owner.Log($"*{Owner.Name}'s {Name} takes [{damage}] damage ({Math.Floor(Percentage * 100)}%)*");
+        Owner.Log($"*{Owner.Name}'s {Name} takes [{damage}] damage*");
 
         Owner.Aggression += (damage / 20.0f);
-        if (HP <= 0)
-        {
-            Owner.Log($"-- {Owner.Name}'s {Name} has been disabled!! --");
-
-            if (Vital)
-            {
-                Owner.Log($"{Owner.Name} collapses!");
-                Owner.Dead = true;
-
-                var cells = new List<Cell>
-                {
-                    Owner.Cell
-                };
-                cells.AddRange(Owner.Cell.Neighbors.Where(n => n != null));
-
-                var orderedCells = cells.OrderByDescending(c => c.LiquidLevel).ToList(); ;
-
-                foreach (var mana in Owner.ManaPool.OrderBy(m => m.Value.Total))
-                {
-                    if (mana.Value.Total > 0)
-                    {
-                        var matching = orderedCells.FirstOrDefault(c => c.Liquid.HasValue && c.Liquid.Value == mana.Key);
-                        if (matching != null)
-                        {
-                            matching.LiquidLevel += mana.Value.Total;
-                        }
-                        else
-                        {
-                            var cell = orderedCells[0];
-                            orderedCells.Remove(cell);
-
-                            var amount = mana.Value.Total - cell.LiquidLevel;
-
-                            if (amount > 0)
-                            {
-                                cell.AddLiquid(mana.Key, amount);
-                            }
-                            else
-                            {
-                                cell.LiquidLevel -= amount;
-                            }
-                        }
-                    }
-                }
-
-                Game.VisualEffectController.SpawnSpriteEffect(null, Owner.Vector, "skull_02_t", 3f);
-                Game.VisualEffectController.SpawnLightEffect(null, Owner.Vector, Color.red, 1f, 1f, 3f);
-                Game.CreatureController.DestroyCreature(Owner.CreatureRenderer);
-            }
-        }
     }
 
     internal void Link(Creature owner)
@@ -192,9 +178,39 @@ public class Limb
 
     internal void Update(float timeDelta)
     {
+        foreach (var wound in Wounds.ToList())
+        {
+            if (wound.Healed())
+            {
+                Owner.Log($"{wound.GetName()} healed completely");
+                Wounds.Remove(wound);
+            }
+            else
+            {
+                wound.Update(timeDelta);
+            }
+        }
+
+        CheckDeath();
+    }
+
+    private float GetChanceOfDeath()
+    {
+        var total = 0f;
+
         foreach (var wound in Wounds)
         {
-            wound.Update(timeDelta);
+            total += wound.Danger;
         }
+
+        total -= Owner.Vitality;
+
+        var chance = 0f;
+        if (total > 0)
+        {
+            chance = total * 0.005f;
+        }
+
+        return chance;
     }
 }

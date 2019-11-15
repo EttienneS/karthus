@@ -15,7 +15,7 @@ public class Strike : OffensiveActionBase
     {
         get
         {
-            return Random.Range(1, DiceSize) + Owner.STR;
+            return (int)(Random.Range(1, DiceSize) + (Owner.Strenght / 3f));
         }
     }
 }

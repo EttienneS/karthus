@@ -5,10 +5,12 @@
     "Hunger": "200"
   },
   "Speed": 0.3,
+  "Aggression": 1,
+
   "Strenght": 10,
   "Perception": 3,
   "Dexterity": 10,
-  "Aggression": 1,
+  "Vitality": 10,
 
   "Sprite": "HGhost-X",
   "BehaviourName": "Monster",
@@ -28,8 +30,6 @@
         }
       ],
       "BuffActions": [],
-      "HP": 20,
-      "Max": 20,
       "Name": "Head",
       "OffensiveActions": [
         {
@@ -66,8 +66,6 @@
         }
       ],
       "BuffActions": [],
-      "HP": 8,
-      "Max": 8,
       "Name": "Arm 1",
       "OffensiveActions": [
         {
@@ -102,8 +100,6 @@
         }
       ],
       "BuffActions": [],
-      "HP": 8,
-      "Max": 8,
       "Name": "Arm 1",
       "OffensiveActions": [
         {
@@ -138,8 +134,6 @@
         }
       ],
       "BuffActions": [],
-      "HP": 8,
-      "Max": 8,
       "Name": "Arm 2",
       "OffensiveActions": [
         {
@@ -174,8 +168,6 @@
         }
       ],
       "BuffActions": [],
-      "HP": 8,
-      "Max": 8,
       "Name": "Arm 3",
       "OffensiveActions": [
         {
@@ -210,8 +202,6 @@
         }
       ],
       "BuffActions": [],
-      "HP": 8,
-      "Max": 8,
       "Name": "Arm 4",
       "OffensiveActions": [
         {
@@ -228,11 +218,11 @@
     }
   ],
   "ManaPool": {
-	"Blue": {
-	  "Color": "Blue",
-	  "Desired": 0,
-	  "Max": 10,
-	  "Total": 10
-	}
+    "Blue": {
+      "Color": "Blue",
+      "Desired": 0,
+      "Max": 10,
+      "Total": 10
+    }
   }
 }

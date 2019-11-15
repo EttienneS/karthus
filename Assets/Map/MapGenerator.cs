@@ -347,7 +347,7 @@ public class MapGenerator
         {
             if (monster.Key == "Person")
             {
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < 1; i++)
                 {
                     Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("Person"),
                                                  Game.Map.Center.GetNeighbor(Helpers.RandomEnumValue<Direction>()),
@@ -356,7 +356,7 @@ public class MapGenerator
                 continue;
             }
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 1; i++)
             {
                 Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType(monster.Key),
                                                  Game.Map.GetRandomCell(),

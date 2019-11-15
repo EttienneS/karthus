@@ -72,14 +72,6 @@ public class Creature : IEntity
 
     public bool Dead { get; internal set; }
 
-    public int DEX
-    {
-        get
-        {
-            return (Dexterity - 10) / 2;
-        }
-    }
-
     public int Dexterity { get; set; }
 
     [JsonIgnore]
@@ -136,14 +128,6 @@ public class Creature : IEntity
 
     public string Sprite { get; set; }
 
-    public int STR
-    {
-        get
-        {
-            return (Strenght - 10) / 2;
-        }
-    }
-
     public int Strenght { get; set; }
 
     public CreatureTask Task
@@ -173,6 +157,7 @@ public class Creature : IEntity
         }
     }
 
+    public int Vitality { get; set; }
     public float X { get; set; }
 
     public float Y { get; set; }
@@ -224,7 +209,7 @@ public class Creature : IEntity
     public List<OffensiveActionBase> GetAvailableOffensiveOptions()
     {
         return Limbs
-                    .Where(l => l.Enabled && !l.Busy)
+                    .Where(l => !l.Disabled && !l.Busy)
                     .SelectMany(l => l.OffensiveActions)
                     .ToList();
     }
@@ -237,7 +222,7 @@ public class Creature : IEntity
     public List<DefensiveActionBase> GetDefensiveOptions()
     {
         return Limbs
-                .Where(l => l.Enabled && !l.Busy)
+                .Where(l => !l.Disabled && !l.Busy)
                 .SelectMany(l => l.DefensiveActions)
                 .ToList();
     }
@@ -382,16 +367,6 @@ public class Creature : IEntity
         MoveTo(vector.x, vector.y);
     }
 
-    public int RollDex()
-    {
-        return Random.Range(1, 20) + DEX;
-    }
-
-    public int RollStr()
-    {
-        return Random.Range(1, 20) + STR;
-    }
-
     public void SetColors()
     {
         if (_firstRun)
@@ -417,7 +392,7 @@ public class Creature : IEntity
 
         foreach (var limb in Limbs)
         {
-            text += $"\t{limb.Name} [{limb.HP}/{limb.Max}]\n";
+            text += $"\t{limb}\n";
         }
 
         return text;
@@ -581,13 +556,15 @@ public class Creature : IEntity
             }
 
             ResolveIncomingAttacks(timeDelta);
-            UpdateLimbs(timeDelta);
             Combatants.RemoveAll(c => c.Dead);
         }
 
         if (InternalTick >= Game.TimeManager.TickInterval)
         {
             InternalTick = 0;
+
+            UpdateLimbs(timeDelta);
+
             Perceive();
             Live();
             UpdateSprite();
@@ -619,7 +596,7 @@ public class Creature : IEntity
         {
             foreach (var limb in target.Limbs)
             {
-                if (!limb.Enabled)
+                if (limb.Disabled)
                     continue;
 
                 offensiveAction.TargetLimb = limb;
@@ -672,7 +649,7 @@ public class Creature : IEntity
     private List<BuffBase> GetBuffOptions()
     {
         return Limbs
-             .Where(l => l.Enabled && !l.Busy)
+             .Where(l => !l.Disabled && !l.Busy)
              .SelectMany(l => l.BuffActions)
              .ToList();
     }
@@ -869,7 +846,12 @@ public class Creature : IEntity
     {
         foreach (var attack in IncomingAttacks.ToList())
         {
-            if (attack.Done(timeDelta))
+            if (attack.Owner.Dead)
+            {
+                attack.Reset();
+                IncomingAttacks.Remove(attack);
+            }
+            else if (attack.Done(timeDelta))
             {
                 attack.Resolve();
                 attack.Reset();

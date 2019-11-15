@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Debug = UnityEngine.Debug;
+using Random = UnityEngine.Random;
 
 public enum SelectionPreference
 {
@@ -170,7 +171,16 @@ public partial class Game : MonoBehaviour
         if (Input.GetKey("c"))
         {
             SpawnLiquid(ManaColor.Green);
-        } 
+        }
+
+        if (Input.GetKeyUp("v"))
+        {
+            foreach (var creature in Game.EntityInfoPanel.CurrentEntities.OfType<Creature>())
+            {
+                creature.Limbs.GetRandomItem().Damage("THE UNIVERSE", Helpers.RandomEnumValue<DamageType>(), Random.Range(5, 10));
+                VisualEffectController.SpawnLightEffect(null, creature.Vector, Color.yellow, 1, 1, 0.5f).Fades();
+            }
+        }
 
         if (Input.GetKeyDown("g"))
         {

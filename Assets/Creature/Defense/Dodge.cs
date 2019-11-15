@@ -11,7 +11,7 @@ public class Dodge : DefensiveActionBase
     {
         Game.VisualEffectController.SpawnSpriteEffect(Owner, Owner.Vector, "lightning_t", 1f).Fades();
 
-        var roll = Owner.RollDex();
+        var roll = Randomf.Roll(20) + (Owner.Dexterity / 2);
 
         var message = $"{Owner.Name} {Name} to dodge the {attackName}";
 
@@ -41,7 +41,7 @@ public class Dodge : DefensiveActionBase
 
     public override int EstimateDefense(OffensiveActionBase offensiveActionBase)
     {
-        var roll = 10 + Owner.DEX;
+        var roll = 10 + (Owner.Dexterity / 2);
         return (int)(offensiveActionBase.PredictDamage(Owner) * RollDef(roll, 10).mod);
     }
 
@@ -56,7 +56,7 @@ public class Dodge : DefensiveActionBase
                 break;
 
             case OutcomeLevel.Success:
-                mod = Math.Max(0, 1f - Owner.DEX / 10f - 0.3f);
+                mod = 0.5f;
                 break;
 
             case OutcomeLevel.Catastrophe:
