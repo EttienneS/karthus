@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
-using Random = UnityEngine.Random;
 
 [JsonConverter(typeof(StringEnumConverter))]
 public enum Severity
@@ -30,24 +29,35 @@ public class Wound
     {
         get
         {
+            var danger = 2;
             switch (Severity)
             {
                 case Severity.Low:
-                    return 2;
+                    danger = 2;
+                    break;
 
                 case Severity.Medium:
-                    return 4;
-
+                    danger = 4;
+                    break;
                 case Severity.High:
-                    return 10;
-
+                    danger = 10;
+                    break;
                 case Severity.Critical:
-                    return 30;
+                    danger = 30;
+                    break;
             }
 
-            throw new NotImplementedException($"Unknown type {Severity}");
+            if (Treated)
+            {
+                danger /= 2;
+            }
+
+            return danger;
+
         }
     }
+
+    public float HealRate { get; set; } = 5;
 
     [JsonIgnore]
     public Limb Limb { get; set; }
@@ -141,43 +151,29 @@ public class Wound
 
     public bool Healed()
     {
-        var roll = Random.value;
         var healed = false;
         var name = GetName();
 
-        switch (Severity)
+        var target = HealRate * Danger;
+
+
+        if (Age > target)
         {
-            case Severity.Low:
-                healed = Age > 5f && roll > 0.2f;
-                break;
+            Age = 0;
 
-            case Severity.Medium:
-                if (Age > 30f && roll > 0.5f)
-                {
-                    Severity = Severity.Low;
-                    Owner.Log($"{name} healed to a {GetName()}");
-                    Age = 0;
-                }
-                break;
-
-            case Severity.High:
-                if (Age > 60f && roll > 0.8f)
-                {
-                    Severity = Severity.Medium;
-                    Owner.Log($"{name} healed to a {GetName()}");
-                    Age = 0;
-                }
-                break;
-
-            case Severity.Critical:
-                if (Age > 120f && roll > 0.9f)
-                {
-                    Severity = Severity.High;
-                    Owner.Log($"{name} healed to a {GetName()}");
-                    Age = 0;
-                }
-                break;
+            if (Severity == Severity.Low)
+            {
+                Owner.Log($"{name} healed completely.");
+                // leave a scar?
+                return true;
+            }
+            else
+            {
+                Severity--;
+                Owner.Log($"{name} healed to a {GetName()}");
+            }
         }
+
 
         return healed;
     }
