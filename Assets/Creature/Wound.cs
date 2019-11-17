@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
-using UnityEngine;
 using Random = UnityEngine.Random;
 
 [JsonConverter(typeof(StringEnumConverter))]
@@ -16,18 +15,17 @@ public class Wound
     public Severity Severity;
     public string Source;
 
-    [JsonIgnore]
-    public Limb Limb { get; set; }
-
-    [JsonIgnore]
-    public Creature Owner
+    public Wound(Limb limb, string source, DamageType damageType, Severity severity)
     {
-        get
-        {
-            return Limb.Owner;
-        }
+        Limb = limb;
+        Source = source;
+        DamageType = damageType;
+        Severity = severity;
     }
 
+    public float Age { get; set; }
+
+    [JsonIgnore]
     public int Danger
     {
         get
@@ -50,6 +48,20 @@ public class Wound
             throw new NotImplementedException($"Unknown type {Severity}");
         }
     }
+
+    [JsonIgnore]
+    public Limb Limb { get; set; }
+
+    [JsonIgnore]
+    public Creature Owner
+    {
+        get
+        {
+            return Limb.Owner;
+        }
+    }
+
+    public bool Treated { get; set; }
 
     public string GetName()
     {
@@ -127,18 +139,6 @@ public class Wound
         return $"?? {DamageType.Energy} ??";
     }
 
-    public override string ToString()
-    {
-        return $"{GetName()} from {Source}";
-    }
-
-    public void Update(float delta)
-    {
-        Age += delta;
-    }
-
-    public float Age { get; set; }
-
     public bool Healed()
     {
         var roll = Random.value;
@@ -150,6 +150,7 @@ public class Wound
             case Severity.Low:
                 healed = Age > 5f && roll > 0.2f;
                 break;
+
             case Severity.Medium:
                 if (Age > 30f && roll > 0.5f)
                 {
@@ -158,6 +159,7 @@ public class Wound
                     Age = 0;
                 }
                 break;
+
             case Severity.High:
                 if (Age > 60f && roll > 0.8f)
                 {
@@ -180,11 +182,14 @@ public class Wound
         return healed;
     }
 
-    public Wound(Limb limb, string source, DamageType damageType, Severity severity)
+    public override string ToString()
     {
-        Limb = limb;
-        Source = source;
-        DamageType = damageType;
-        Severity = severity;
+        var status = Treated ? "Treated" : "Not Treated";
+        return $"{GetName()} from {Source} [{status}]";
+    }
+
+    public void Update(float delta)
+    {
+        Age += delta;
     }
 }
