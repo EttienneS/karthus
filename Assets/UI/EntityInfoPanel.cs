@@ -5,19 +5,14 @@ using UnityEngine.UI;
 
 public class EntityInfoPanel : MonoBehaviour
 {
-    public Text BlackLabel;
-    public Text BlueLabel;
     public GameObject ButtonPanel;
     public Text CreatureName;
     public List<IEntity> CurrentEntities;
-    public Text GreenLabel;
     public ImageButton ImageButtonPrefab;
     public Text Log;
     public Text PropertiesPanel;
-    public Text RedLabel;
-    public Text WhiteLabel;
     public Text HealthText;
-    public Text MagicText;
+    public ManaPanel ManaPanel;
 
     public Toggle FirstPanelToggle;
     private List<ImageButton> _contextButtons = new List<ImageButton>();
@@ -63,6 +58,8 @@ public class EntityInfoPanel : MonoBehaviour
             var creatures = entities.OfType<Creature>();
             AddMoveButton(creatures);
             AddAttackButton(creatures);
+
+            ManaPanel.SetPool(entities.First().ManaPool);
         }
         else
         {
@@ -150,8 +147,6 @@ public class EntityInfoPanel : MonoBehaviour
                     PropertiesPanel.text += $"- {entity.Name}\n";
                 }
             }
-
-            SetManaLabels();
         }
     }
 
@@ -324,35 +319,5 @@ public class EntityInfoPanel : MonoBehaviour
         btn.Button.image.color = Color.red;
     }
 
-    private void SetManaLabel(Text text, ManaColor col)
-    {
-        var total = 0;
-        foreach (var entity in CurrentEntities)
-        {
-            if (entity.ManaPool.ContainsKey(col))
-            {
-                total += entity.ManaPool[col].Total;
-            }
-        }
-
-        if (total > 0)
-        {
-            text.text = total.ToString();
-        }
-        else
-        {
-            text.text = "--";
-        }
-    }
-
-    private void SetManaLabels()
-    {
-        SetManaLabel(RedLabel, ManaColor.Red);
-        SetManaLabel(GreenLabel, ManaColor.Green);
-        SetManaLabel(BlueLabel, ManaColor.Blue);
-        SetManaLabel(BlackLabel, ManaColor.Black);
-        SetManaLabel(WhiteLabel, ManaColor.White);
-
-        MagicText.text = "";
-    }
+  
 }

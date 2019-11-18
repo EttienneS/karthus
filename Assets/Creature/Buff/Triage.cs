@@ -24,8 +24,6 @@ public class Triage : BuffBase
         return (int)(wound.Danger * Owner.Aggression);
     }
 
-
-
     internal override void EndBuff()
     {
         Owner.Log($"{Owner.Name}'s triage spell takes effect");

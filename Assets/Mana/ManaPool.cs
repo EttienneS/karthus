@@ -183,7 +183,7 @@ public class ManaPool : Dictionary<ManaColor, Mana>
     internal void InitColor(ManaColor color, int start, int max, int desired)
     {
         GainMana(color, start);
-        this[color].Max = max;
+        this[color].Attunement = max;
         this[color].Desired = desired;
     }
 

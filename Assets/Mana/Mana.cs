@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using UnityEngine.UI;
 
 public class Mana
 {
@@ -19,8 +20,8 @@ public class Mana
     [JsonIgnore]
     public Action<int> GainAction { get; set; }
 
-    public int Max { get; set; }
     public int Total { get; set; }
+    public int Attunement { get; set; }
 
     public void Burn(int amount)
     {

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 public static class Behaviours
@@ -66,15 +67,22 @@ public static class Behaviours
         {
             task = new Heal();
         }
-        else if (creature.ManaPool.Any(m => m.Value.Total > m.Value.Max && m.Value.Total > m.Value.Max))
+        else if (creature.ManaPool.Any(m => m.Value.Total > m.Value.Attunement || m.Value.Total > m.Value.Desired || m.Value.Total < m.Value.Desired))
         {
             foreach (var mana in creature.ManaPool)
             {
-                if (mana.Value.Total - mana.Value.Desired > mana.Value.Max)
+                if (mana.Value.Total > mana.Value.Attunement || mana.Value.Total > mana.Value.Desired)
                 {
-                    task = Channel.GetChannelTo(mana.Key, mana.Value.Total - mana.Value.Desired, creature.GetClosestBattery());
+                    var min = Mathf.Min(mana.Value.Desired, mana.Value.Attunement);
+                    task = Channel.GetChannelTo(mana.Key, mana.Value.Total - min, creature.GetClosestBattery());
                     break;
                 }
+                else if (mana.Value.Total < mana.Value.Desired)
+                {
+                    task = Channel.GetChannelFrom(mana.Key, mana.Value.Desired - mana.Value.Total, creature.GetClosestBattery());
+                    break;
+                }
+
             }
         }
         else if (creature.Cell.Creatures.Count > 1)

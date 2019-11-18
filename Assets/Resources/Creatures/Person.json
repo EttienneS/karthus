@@ -195,33 +195,38 @@
   "ManaPool": {
     "White": {
       "Color": "White",
+      "Attunement": 10,
       "Desired": 10,
       "Max": 10,
       "Total": 10
     },
     "Red": {
       "Color": "Red",
-      "Desired": 0,
+      "Attunement": 10,
+      "Desired": 5,
       "Max": 10,
-      "Total": 10
+      "Total": 5
     },
     "Green": {
       "Color": "Green",
-      "Desired": 0,
+      "Attunement": 10,
+      "Desired": 5,
       "Max": 10,
-      "Total": 10
+      "Total": 5
     },
     "Blue": {
       "Color": "Blue",
-      "Desired": 0,
+      "Attunement": 10,
+      "Desired": 5,
       "Max": 10,
-      "Total": 10
+      "Total": 5
     },
     "Black": {
       "Color": "Black",
-      "Desired": 0,
+      "Attunement": 10,
+      "Desired": 5,
       "Max": 10,
-      "Total": 10
+      "Total": 5
     }
   }
 }
