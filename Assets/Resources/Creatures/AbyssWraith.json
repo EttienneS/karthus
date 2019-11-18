@@ -220,9 +220,7 @@
   "ManaPool": {
     "Blue": {
       "Color": "Blue",
-      "Desired": 0,
-      "Max": 10,
-      "Total": 10
+      "Total": 1
     }
   }
 }

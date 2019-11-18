@@ -159,6 +159,10 @@ public class Wound
                     Bleeding = false;
                 }
             }
+            else if (_treated && !value)
+            {
+                Limb.Owner.Log($"Treatment expired on {Source}!");
+            }
             _treated = value;
         }
 
@@ -258,6 +262,7 @@ public class Wound
             else
             {
                 Severity--;
+                Treated = false;
                 Owner.Log($"{name} healed to a {GetName()}");
             }
         }

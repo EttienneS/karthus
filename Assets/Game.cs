@@ -182,6 +182,20 @@ public partial class Game : MonoBehaviour
             }
         }
 
+        if (Input.GetKeyUp(","))
+        {
+            CreatureController.SpawnCreature(CreatureController.GetCreatureOfType("AbyssWraith"),
+                                             Map.GetCellAtPoint(Camera.main.ScreenToWorldPoint(Input.mousePosition)),
+                                             FactionController.MonsterFaction);
+        }
+
+        if (Input.GetKeyUp("."))
+        {
+            CreatureController.SpawnCreature(CreatureController.GetCreatureOfType("Person"),
+                                             Map.GetCellAtPoint(Camera.main.ScreenToWorldPoint(Input.mousePosition)),
+                                             FactionController.PlayerFaction);
+        }
+
         if (Input.GetKeyDown("g"))
         {
             var point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
