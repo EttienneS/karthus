@@ -595,7 +595,7 @@ public class Cell : IEquatable<Cell>
 
             loser.Liquid = null;
             Game.VisualEffectController.SpawnLightEffect(null, loser.Vector, winner.Liquid.Value.GetActualColor(),
-                                        1 + diff, 1 + diff, 2).Fades();
+                                        1 + (diff * 10f), 1 + (diff * 10f), 2).Fades();
 
             winner.UpdateLiquid();
             loser.UpdateLiquid();
