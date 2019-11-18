@@ -58,7 +58,14 @@
           "ActivationTIme": 0.3
         }
       ],
-      "BuffActions": [],
+      "BuffActions": [
+        {
+          "$type": "Triage, Assembly-CSharp",
+          "Name": "triage",
+          "CooldownMax": 1.0,
+          "DurationMax": 0.5
+        }
+      ],
       "Name": "Head",
       "OffensiveActions": [
         {
@@ -93,7 +100,6 @@
         {
           "$type": "SummonShield, Assembly-CSharp",
           "Name": "shield",
-          "OnCoolDown": false,
           "CooldownMax": 2.0,
           "DurationMax": 10.0
         }
@@ -132,7 +138,6 @@
         {
           "$type": "SummonSword, Assembly-CSharp",
           "Name": "sword",
-          "OnCoolDown": false,
           "CooldownMax": 2.0,
           "DurationMax": 10.0
         }

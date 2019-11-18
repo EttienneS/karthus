@@ -57,9 +57,14 @@ public static class Behaviours
 
         var enemy = FindEnemy(creature);
 
+        var wound = creature.GetWorstWound();
         if (enemy != null)
         {
             creature.Combatants.Add(enemy);
+        }
+        else if (wound != null)
+        {
+            task = new Heal();
         }
         else if (creature.ManaPool.Any(m => m.Value.Total > m.Value.Max && m.Value.Total > m.Value.Max))
         {

@@ -22,17 +22,29 @@ public class Creature : IEntity
     public int HairStyle;
     public List<OffensiveActionBase> IncomingAttacks = new List<OffensiveActionBase>();
     public int Index;
+
     public Dictionary<string, Memory> Mind = new Dictionary<string, Memory>();
+
     public Mobility Mobility;
+
     [JsonIgnore] public Color SkinColor;
+
     [JsonIgnore] public Color TopColor;
+
     internal float InternalTick = float.MaxValue;
+
     [JsonIgnore] internal Cell LastPercievedCoordinate;
+
     internal float WorkTick = float.MaxValue;
+
     private List<Cell> _awareness;
+
     private Faction _faction;
+
     private bool _firstRun = true;
+
     private CreatureTask _task;
+
     public float Aggression { get; set; }
 
     [JsonIgnore]
@@ -89,6 +101,7 @@ public class Creature : IEntity
     }
 
     public string FactionName { get; set; }
+
     public string Id { get; set; }
 
     [JsonIgnore]
@@ -101,11 +114,17 @@ public class Creature : IEntity
     }
 
     public List<Limb> Limbs { get; set; }
+
     public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
+
     public List<string> LogHistory { get; set; }
+
     public ManaPool ManaPool { get; set; }
+
     public string Name { get; set; }
+
     public int Perception { get; set; }
+
     public Dictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
 
     [JsonIgnore]
@@ -158,6 +177,7 @@ public class Creature : IEntity
     }
 
     public int Vitality { get; set; }
+
     public float X { get; set; }
 
     public float Y { get; set; }
@@ -269,6 +289,14 @@ public class Creature : IEntity
         }
 
         return skill.Level;
+    }
+
+    public Wound GetWorstWound()
+    {
+        return Limbs.SelectMany(l => l.Wounds)
+                    .Where(w => !w.Treated)
+                    .OrderByDescending(w => w.Danger)
+                    .FirstOrDefault();
     }
 
     public bool HasSkill(string skillName)
@@ -548,6 +576,10 @@ public class Creature : IEntity
             WorkTick = 0;
             if (InCombat)
             {
+                if (Task != null)
+                {
+                    CancelTask();
+                }
                 ProcessCombat();
             }
             else
@@ -636,6 +668,11 @@ public class Creature : IEntity
         foreach (var buff in GetBuffOptions())
         {
             var effect = buff.EstimateBuffEffect();
+            if (effect == int.MinValue)
+            {
+                continue;
+            }
+
             if (effect > most || (effect == most && Random.value > 0.5f))
             {
                 most = effect;
