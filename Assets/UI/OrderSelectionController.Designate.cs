@@ -8,7 +8,7 @@ public partial class OrderSelectionController //.Designate
     internal const string DefaultDesignateText = "Designate";
 
     internal const string MoveIcon = "location_t";
-    internal const string MoveText = "Move Here";
+    internal const string MoveText = "Move";
 
     internal const string DefaultRemoveImage = "cancel";
     internal const string DefaultRemoveText = "Remove Building";

@@ -140,7 +140,7 @@ public class CreatureRenderer : MonoBehaviour
         }
     }
 
-    public Light2D Light;
+    public UnityEngine.Experimental.Rendering.Universal.Light2D Light;
 
     internal void EnableHighlight(Color color)
     {
