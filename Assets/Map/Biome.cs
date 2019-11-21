@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class Biome
 {
@@ -27,13 +28,10 @@ public class Biome
         {
             if (_noiseMap == null)
             {
-                _noiseMap = Noise.GenerateNoiseMap(Game.Map.Width, Game.Map.Height,
-                                                   Game.Map.Seed,
-                                                   Game.Map.Scale,
-                                                   Game.Map.Octaves,
-                                                   Game.Map.Persistance,
-                                                   Game.Map.Lancunarity,
-                                                   Game.Map.Offset);
+                _noiseMap = Noise.GenerateNoiseMap(Game.Map.Width * 2, Game.Map.Height * 2,
+                                                   Random.Range(1, 10000),
+                                                   Random.Range(25, 40),
+                                                   4, 0.4f, 4, new Vector2(0, 0));
             }
             return _noiseMap;
         }

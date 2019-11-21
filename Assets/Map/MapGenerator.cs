@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
 
@@ -158,11 +159,6 @@ public class MapGenerator
 
         LinkNeighbours();
 
-        if (Game.Map.Seed == 0)
-        {
-            Game.Map.Seed = Random.Range(1, 10000);
-        }
-
         GenerateMapCells();
 
         ResetSearchPriorities();
@@ -287,9 +283,7 @@ public class MapGenerator
     {
         var map = Noise.GenerateNoiseMap(Game.Map.Width, Game.Map.Height,
                                          Random.Range(1, 100000),
-                                         50, 4, 0.4f,
-                                         Game.Map.Lancunarity,
-                                         Game.Map.Offset);
+                                         50, 4, 0.4f, 4, new Vector2(0, 0));
 
         foreach (var cell in Game.Map.Cells)
         {

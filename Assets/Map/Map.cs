@@ -15,13 +15,6 @@ public class Map : MonoBehaviour
 {
     public const int PixelsPerCell = 64;
     [Range(5, 2000)] public int Height = 100;
-    [Range(0f, 1f)] public float JitterProbability = 0.8f;
-    public float Lancunarity = 2;
-    public int Octaves = 4;
-    public Vector2 Offset;
-    [Range(0f, 1f)] public float Persistance = 0.5f;
-    [Range(0.5f, 100f)] public float Scale = 10;
-    public int Seed;
     [Range(5, 2000)] public int Width = 100;
     internal SpriteRenderer Background;
 
@@ -319,7 +312,7 @@ public class Map : MonoBehaviour
                 {
                     neighbor.SearchPhase = _searchFrontierPhase;
                     neighbor.Distance = neighbor.DistanceTo(center);
-                    neighbor.SearchHeuristic = Random.value < Game.Map.JitterProbability ? 1 : 0;
+                    neighbor.SearchHeuristic = Random.value < 0.6f ? 1 : 0;
                     _searchFrontier.Enqueue(neighbor);
                 }
             }
@@ -529,16 +522,5 @@ public class Map : MonoBehaviour
         Game.StructureController.DrawAllStructures(cells);
     }
 
-    private void OnValidate()
-    {
-        if (Lancunarity < 1)
-        {
-            Lancunarity = 1;
-        }
-
-        if (Octaves < 1)
-        {
-            Octaves = 1;
-        }
-    }
+  
 }
