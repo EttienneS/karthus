@@ -1,41 +1,57 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Linq;
 
 public class Biome
 {
-    private SortedDictionary<float, CellType> _mapKey = new SortedDictionary<float, CellType>();
+    public SortedDictionary<float, CellType> Map = new SortedDictionary<float, CellType>();
 
     private float[,] _noiseMap;
 
+    public Biome()
+    {
+    }
+
     public Biome(params (float min, CellType type)[] param)
     {
-        _noiseMap = Noise.GenerateNoiseMap(Game.Map.Width, Game.Map.Height,
-            Game.Map.Seed,
-            Game.Map.Scale,
-            Game.Map.Octaves,
-            Game.Map.Persistance,
-            Game.Map.Lancunarity,
-            Game.Map.Offset);
-
         foreach (var p in param)
         {
             Add(p.min, p.type);
         }
     }
 
+    [JsonIgnore]
+    public float[,] NoiseMap
+    {
+        get
+        {
+            if (_noiseMap == null)
+            {
+                _noiseMap = Noise.GenerateNoiseMap(Game.Map.Width, Game.Map.Height,
+                                                   Game.Map.Seed,
+                                                   Game.Map.Scale,
+                                                   Game.Map.Octaves,
+                                                   Game.Map.Persistance,
+                                                   Game.Map.Lancunarity,
+                                                   Game.Map.Offset);
+            }
+            return _noiseMap;
+        }
+    }
+
     public void Add(float min, CellType cell)
     {
-        _mapKey.Add(min, cell);
+        Map.Add(min, cell);
     }
 
     public float GetCellHeight(int x, int y)
     {
-        return _noiseMap[x, y];
+        return NoiseMap[x, y];
     }
 
     public CellType GetCellType(float value)
     {
-        var reversedMap = _mapKey.Reverse();
+        var reversedMap = Map.Reverse();
         foreach (var kvp in reversedMap)
         {
             if (value > kvp.Key)
@@ -49,9 +65,9 @@ public class Biome
 
     internal (float, float) GetCellTypeRange(CellType cellType)
     {
-        if (_mapKey.Count > 1)
+        if (Map.Count > 1)
         {
-            var reversedMap = _mapKey.Reverse();
+            var reversedMap = Map.Reverse();
             var last = 0f;
 
             foreach (var kvp in reversedMap)
@@ -62,7 +78,6 @@ public class Biome
                 }
                 last = kvp.Key;
             }
-
         }
         return (0f, 1f);
     }

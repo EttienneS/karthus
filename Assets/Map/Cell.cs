@@ -21,6 +21,9 @@ public class Cell : IEquatable<Cell>
 
     public Direction Rotation;
 
+    [JsonIgnore]
+    public AutomataState State;
+
     public string StructureId;
 
     public int X;
@@ -35,9 +38,13 @@ public class Cell : IEquatable<Cell>
 
     private float _fluidLevel;
 
-    private float _height;
 
     private Structure _structure;
+
+    public enum AutomataState
+    {
+        ImmutableDead, MutableDead, ImmutableAlive, MutableAlive
+    }
 
     [JsonIgnore]
     public IEntity Binding
@@ -97,7 +104,7 @@ public class Cell : IEquatable<Cell>
     {
         get
         {
-            return Game.MapGenerator.Biomes[BiomeId].GetCellType(_height);
+            return Game.MapGenerator.Biomes[BiomeId].GetCellType(Height);
         }
     }
     [JsonIgnore]
@@ -140,17 +147,7 @@ public class Cell : IEquatable<Cell>
         }
     }
 
-    public float Height
-    {
-        get
-        {
-            return _height;
-        }
-        set
-        {
-            _height = value;
-        }
-    }
+    public float Height { get; set; }
 
     public float LiquidLevel
     {
@@ -192,21 +189,6 @@ public class Cell : IEquatable<Cell>
 
     [JsonIgnore]
     public Cell NextWithSamePriority { get; set; }
-
-    public bool Pathable(Mobility mobility)
-    {
-        switch (mobility)
-        {
-            case Mobility.Walk:
-                return Bound && TravelCost > 0;
-            case Mobility.Fly:
-                return Bound;
-            case Mobility.AbyssWalk:
-                return true;
-        }
-
-        return false;
-    }
 
     //[JsonIgnore]
     //public float Level
@@ -296,6 +278,7 @@ public class Cell : IEquatable<Cell>
         {
             switch (CellType)
             {
+                case CellType.Void:
                 case CellType.Water:
                 case CellType.Mountain:
                     return -1;
@@ -403,6 +386,20 @@ public class Cell : IEquatable<Cell>
         return neighbor.Structure.IsWall() || neighbor.Structure.IsPipe() || neighbor.Structure.IsPipeEnd();
     }
 
+    public bool Pathable(Mobility mobility)
+    {
+        switch (mobility)
+        {
+            case Mobility.Walk:
+                return Bound && TravelCost > 0;
+            case Mobility.Fly:
+                return Bound;
+            case Mobility.AbyssWalk:
+                return true;
+        }
+
+        return false;
+    }
     public void RefreshColor()
     {
         const float totalShade = 1f;
@@ -425,6 +422,45 @@ public class Cell : IEquatable<Cell>
     {
         Rotation = Rotation.Rotate90CW();
         UpdateTile();
+    }
+
+    public void RunAutomata()
+    {
+        if (State == AutomataState.ImmutableAlive || State == AutomataState.ImmutableDead)
+        {
+            return;
+        }
+
+        var neigbours = Neighbors.Where(n => n != null);
+
+        var alive = neigbours.Count(n => n.State == AutomataState.ImmutableAlive || n.State == AutomataState.MutableAlive);
+
+        if (alive > 5)
+        {
+            State = AutomataState.MutableAlive;
+        }
+        else if (alive < 4)
+        {
+            State = AutomataState.MutableDead;
+        }
+    }
+
+    [JsonIgnore]
+    public bool Alive
+    {
+        get
+        {
+            return State == AutomataState.ImmutableAlive || State == AutomataState.MutableAlive;
+        }
+    }
+
+    [JsonIgnore]
+    public List<Cell> LivingNeighbours
+    {
+        get
+        {
+            return Neighbors.Where(n => n?.Alive == true).ToList();
+        }
     }
 
     public void SetNeighbor(Direction direction, Cell cell)
@@ -616,7 +652,6 @@ public class Cell : IEquatable<Cell>
             }
         }
     }
-
     private bool BlocksFluid()
     {
         if (!Bound)

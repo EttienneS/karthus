@@ -173,6 +173,7 @@ public partial class Game : MonoBehaviour
             SpawnLiquid(ManaColor.Green);
         }
 
+
         if (Input.GetKeyUp("v"))
         {
             foreach (var creature in Game.EntityInfoPanel.CurrentEntities.OfType<Creature>())

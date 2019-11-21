@@ -31,7 +31,7 @@ public class Voidshift : MonoBehaviour
 
     private void Update()
     {
-        transform.Rotate(new Vector3(0f, 0f, 0.1f));
+        transform.Rotate(new Vector3(0f, 0f, 0.01f));
 
         if (TimeLeft <= Time.deltaTime)
         {

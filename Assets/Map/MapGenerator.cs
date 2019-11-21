@@ -7,6 +7,8 @@ using Random = UnityEngine.Random;
 
 public class MapGenerator
 {
+    public Dictionary<int, Biome> Biomes = new Dictionary<int, Biome>();
+
     public Cell CreateCell(int x, int y)
     {
         var cell = new Cell
@@ -197,35 +199,20 @@ public class MapGenerator
         }
     }
 
-    public Dictionary<int, Biome> Biomes = new Dictionary<int, Biome>();
-
     internal void Make()
     {
         var sw = new Stopwatch();
-
         sw.Start();
 
         Biomes.Add(0, new Biome((0.0f, CellType.Void)));
-        Biomes.Add(1, new Biome((0.80f, CellType.Mountain),
-                                (0.7f, CellType.Stone),
-                                (0.5f, CellType.Forest),
-                                (0.3f, CellType.Grass),
-                                (0.2f, CellType.Dirt),
-                                (0.0f, CellType.Water)));
-        Biomes.Add(2, new Biome((0.30f, CellType.Water),
-                                (0.0f, CellType.Dirt)));
-        Biomes.Add(3, new Biome((0.4f, CellType.Mountain),
-                                (0.0f, CellType.Stone)));
-        Biomes.Add(4, new Biome((0.8f, CellType.Grass),
-                               (0.0f, CellType.Dirt)));
 
         GenerateBaseMap();
         Debug.Log($"Generated base map in {sw.Elapsed}");
         sw.Restart();
 
-        //MakeBiomes();
-        //Debug.Log($"Made biomes in {sw.Elapsed}");
-        //sw.Restart();
+        MakeBiomes();
+        Debug.Log($"Made biomes in {sw.Elapsed}");
+        sw.Restart();
 
         //CreateTown();
         //Debug.Log($"Generated towns in {sw.Elapsed}");
@@ -235,7 +222,7 @@ public class MapGenerator
         //Debug.Log($"Created ley lines in {sw.Elapsed}");
         //sw.Restart();
 
-        MakeFactionBootStrap(Game.Map.Center, Game.FactionController.PlayerFaction);
+        MakeFactionBootStrap(Game.FactionController.PlayerFaction);
         Debug.Log($"Made bootstrap in {sw.Elapsed}");
         sw.Restart();
 
@@ -243,54 +230,6 @@ public class MapGenerator
         Debug.Log($"Spawned creatures in {sw.Elapsed}");
         sw.Restart();
 
-        Game.CameraController.JumpToCell(Game.Map.Center);
-    }
-
-    private void MakeBiomes()
-    {
-        foreach (var biome in Biomes)
-        {
-            foreach (var cell in GrowBiome(Game.Map.GetRandomChunk(Random.Range(250, 300), Game.Map.GetRandomCell())))
-            {
-                cell.BiomeId = biome.Key;
-            }
-        }
-    }
-
-    private static List<Cell> GrowBiome(List<Cell> cells = null, float momentum = 1f)
-    {
-        if (momentum < 0.1)
-        {
-            return cells;
-        }
-
-        if (Random.value < momentum)
-        {
-            var edge = Game.Map.GetEdge(cells);
-            var count = Random.Range(1, 5);
-            for (int i = 0; i < count; i++)
-            {
-                cells.AddRange(Game.Map.GetRandomChunk(Random.Range(100, 150), edge.GetRandomItem()));
-            }
-
-            momentum -= Random.value / 3;
-        }
-        return GrowBiome(cells.Distinct().ToList(), momentum);
-    }
-
-    private void MakeFactionBootStrap(Cell center, Faction faction)
-    {
-        var core = center.CreateStructure("Battery", true, faction.FactionName);
-        core.ManaPool.GainMana(ManaColor.Green, 100);
-        core.ManaPool.GainMana(ManaColor.Red, 100);
-        core.ManaPool.GainMana(ManaColor.Blue, 100);
-        core.ManaPool.GainMana(ManaColor.White, 100);
-        core.ManaPool.GainMana(ManaColor.Black, 100);
-
-        foreach (var cell in Game.Map.GetCircle(center, 25))
-        {
-            cell.Binding = core;
-        }
     }
 
     internal void PopulateCell(Cell cell)
@@ -341,18 +280,53 @@ public class MapGenerator
         }
     }
 
+    private static void RunMapAutomata()
+    {
+        var map = Noise.GenerateNoiseMap(Game.Map.Width, Game.Map.Height,
+                                         Game.Map.Seed * 2,
+                                         50,
+                                         4,
+                                         0.4f,
+                                         Game.Map.Lancunarity,
+                                         Game.Map.Offset);
+
+        foreach (var cell in Game.Map.Cells)
+        {
+            var state = map[cell.X, cell.Y];
+
+            if (state > 0.8)
+            {
+                cell.State = Cell.AutomataState.ImmutableAlive;
+            }
+            else if (state > 0.4)
+            {
+                cell.State = Cell.AutomataState.MutableAlive;
+            }
+            else if (state > 0.2)
+            {
+                cell.State = Cell.AutomataState.MutableDead;
+            }
+            else
+            {
+                cell.State = Cell.AutomataState.ImmutableDead;
+            }
+        }
+
+        for (int i = 0; i < 2; i++)
+        {
+            foreach (var cell in Game.Map.Cells)
+            {
+                cell.RunAutomata();
+            }
+        }
+    }
+
     private static void SpawnCreatures()
     {
         foreach (var monster in Game.CreatureController.Beastiary)
         {
             if (monster.Key == "Person")
             {
-                for (int i = 0; i < 1; i++)
-                {
-                    Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("Person"),
-                                                 Game.Map.Center.GetNeighbor(Helpers.RandomEnumValue<Direction>()),
-                                                 Game.FactionController.PlayerFaction);
-                }
                 continue;
             }
 
@@ -511,6 +485,108 @@ public class MapGenerator
                 cell.Height = cell.Biome.GetCellHeight(cell.X, cell.Y);
             }
         }
+    }
+
+    private void MakeBiomes()
+    {
+        var biomeTemplates = new List<Biome>
+        {
+            new Biome((0.90f, CellType.Mountain),
+                      (0.7f, CellType.Stone),
+                      (0.5f, CellType.Forest),
+                      (0.3f, CellType.Grass),
+                      (0.0f, CellType.Dirt)),
+
+            new Biome((0.30f, CellType.Grass),
+                      (0.0f, CellType.Dirt)),
+
+            new Biome((0.7f, CellType.Mountain),
+                      (0.45f, CellType.Stone),
+                      (0.25f, CellType.Dirt),
+                      (0.0f, CellType.Grass)),
+
+            new Biome((0.8f, CellType.Forest),
+                      (0.5f, CellType.Grass),
+                      (0.0f, CellType.Dirt))
+        };
+
+        RunMapAutomata();
+
+        var unprocessedCells = Game.Map.Cells.Where(c => c.Alive).ToList();
+        while (unprocessedCells.Count > 0)
+        {
+            var id = Biomes.Count;
+            Biomes.Add(id, biomeTemplates.GetRandomItem().CloneJson());
+
+            var candidateCells = new List<Cell> { unprocessedCells[0] };
+            unprocessedCells.RemoveAt(0);
+
+            while (candidateCells.Count > 0)
+            {
+                var candidate = candidateCells[0];
+                candidateCells.Remove(candidate);
+
+                if (candidate.BiomeId != 0)
+                {
+                    continue;
+                }
+
+                candidate.BiomeId = id;
+                unprocessedCells.Remove(candidate);
+
+                foreach (var subFrontier in candidate.LivingNeighbours)
+                {
+                    if (subFrontier.BiomeId == 0)
+                    {
+                        candidateCells.Add(subFrontier);
+                    }
+                }
+            }
+        }
+    }
+
+    private void MakeFactionBootStrap(Faction faction)
+    {
+        var biomes = Game.Map.Cells.GroupBy(c => c.BiomeId)
+                                   .ToDictionary(c => c.Key, c => c.ToList());
+
+        var biggest = int.MinValue;
+        var biggestBiome = new List<Cell>();
+        foreach (var biome in biomes)
+        {
+            if (biome.Key == 0)
+            {
+                continue;
+            }
+
+            if (biome.Value.Count > biggest)
+            {
+                biggest = biome.Value.Count;
+                biggestBiome = biome.Value;
+            }
+        }
+
+        var center = biggestBiome.GetRandomItem();
+        var core = center.CreateStructure("Battery", true, faction.FactionName);
+        core.ManaPool.GainMana(ManaColor.Green, 100);
+        core.ManaPool.GainMana(ManaColor.Red, 100);
+        core.ManaPool.GainMana(ManaColor.Blue, 100);
+        core.ManaPool.GainMana(ManaColor.White, 100);
+        core.ManaPool.GainMana(ManaColor.Black, 100);
+
+        foreach (var cell in Game.Map.GetCircle(center, 25))
+        {
+            cell.Binding = core;
+        }
+
+        for (int i = 0; i < 1; i++)
+        {
+            Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("Person"),
+                                                  Game.Map.GetNearestPathableCell(center, Mobility.Walk,5),                                                  
+                                                  Game.FactionController.PlayerFaction);
+        }
+
+        Game.CameraController.JumpToCell(center);
     }
 
     private void MakeStreet(Cell crossingPoint, int length, bool vertical, double momentum, int color, List<List<Cell>> streets)
