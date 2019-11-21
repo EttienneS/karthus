@@ -288,7 +288,7 @@ public partial class Game : MonoBehaviour
 
     private bool MouseOverUi()
     {
-        var overUI = EventSystem.current.IsPointerOverGameObject() && EventSystem.current.currentSelectedGameObject != null;
+        var overUI = Minimap.MouseInMinimapArea() || (EventSystem.current.IsPointerOverGameObject() && EventSystem.current.currentSelectedGameObject != null);
 
         if (overUI)
         {
@@ -395,23 +395,7 @@ public partial class Game : MonoBehaviour
                 {
                     return;
                 }
-
-                var point = Camera.main.ScreenToWorldPoint(mousePosition);
-                //if (DoubleClick())
-                //{
-                //    var cell = Map.GetCellAtPoint(point);
-
-                //    if (cell.Creatures.Count == 0)
-                //    {
-                //        SelectedCreatures.AddRange(cell.Creatures
-                //                                       .FirstOrDefault()?.GetFaction()
-                //                                       .Creatures.Select(c => c.CreatureRenderer));
-                //    }
-                //}
-                //else
-                //{
-                SelectionStart = point;
-                //}
+                SelectionStart = Camera.main.ScreenToWorldPoint(mousePosition);
             }
 
             if (Input.GetMouseButtonUp(0))

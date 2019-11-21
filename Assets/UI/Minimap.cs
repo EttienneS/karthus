@@ -14,14 +14,45 @@ public class Minimap : MonoBehaviour, IPointerClickHandler, IDragHandler
         OnPointerClick(eventData);
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    public int MinX
     {
-        var x = (Game.Map.Width * ((Input.mousePosition.x - Screen.width + ThisRect.rect.width) / ThisRect.sizeDelta.x)) + 5;
-        var y = (Game.Map.Height * ((Input.mousePosition.y - Screen.height + ThisRect.rect.height) / ThisRect.sizeDelta.y)) + 5;
+        get
+        {
+            return (int)(Screen.width - ThisRect.sizeDelta.x - 15);
+        }
+    }
+   
+
+    public int MinY
+    {
+        get
+        {
+            return (int)(Screen.height - ThisRect.sizeDelta.y - 15);
+        }
+    }
+   
+
+    public bool MouseInMinimapArea()
+    {
+        var mouseX = Input.mousePosition.x;
+        var mouseY = Input.mousePosition.y;
+        return mouseX >= MinX && mouseX <= Screen.width &&
+               mouseY >= MinY && mouseY <= Screen.height;
+    }
+
+    public void Click()
+    {
+        var x = (Game.Map.Width * ((Input.mousePosition.x - Screen.width + ThisRect.rect.width) / ThisRect.sizeDelta.x)) + 14;
+        var y = (Game.Map.Height * ((Input.mousePosition.y - Screen.height + ThisRect.rect.height) / ThisRect.sizeDelta.y)) + 10;
 
         Game.CameraController.transform.position = new Vector3(x, y, Game.CameraController.Camera.transform.position.z);
 
         Game.CameraController.UpdateCellsBasedOnCamera();
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        Click();
     }
 
     private void Start()

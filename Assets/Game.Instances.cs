@@ -13,6 +13,7 @@ public partial class Game //.Instances
     private static FileController _fileController;
     private static Game _gameInstance;
     private static MagicController _magicController;
+    private static Minimap _minimap;
     private static ManaDisplay _manaDisplay;
     private static Map _map;
     private static MaterialController _materialController;
@@ -34,6 +35,19 @@ public partial class Game //.Instances
             }
 
             return _factionController;
+        }
+    }
+
+    public static Minimap Minimap
+    {
+        get
+        {
+            if (_minimap == null)
+            {
+                _minimap = GameObject.Find("Minimap").GetComponent<Minimap>();
+            }
+
+            return _minimap;
         }
     }
 
