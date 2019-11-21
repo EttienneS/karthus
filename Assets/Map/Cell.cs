@@ -17,6 +17,15 @@ public class Cell : IEquatable<Cell>
     [JsonIgnore]
     public Cell[] Neighbors = new Cell[8];
 
+    [JsonIgnore]
+    public IEnumerable<Cell> NonNullNeighbors
+    {
+        get
+        {
+            return Neighbors.Where(n => n != null);
+        }
+    }
+
     public Direction Rotation;
 
     [JsonIgnore]
@@ -36,14 +45,12 @@ public class Cell : IEquatable<Cell>
 
     private float _fluidLevel;
 
-
     private Structure _structure;
 
     public enum AutomataState
     {
         ImmutableDead, MutableDead, ImmutableAlive, MutableAlive
     }
-
 
     [JsonIgnore]
     public Biome Biome
@@ -53,8 +60,6 @@ public class Cell : IEquatable<Cell>
             return Game.MapGenerator.Biomes[BiomeId];
         }
     }
-
-
 
     [JsonIgnore]
     public bool Buildable
@@ -73,6 +78,7 @@ public class Cell : IEquatable<Cell>
             return Game.MapGenerator.Biomes[BiomeId].GetCellType(Height);
         }
     }
+
     [JsonIgnore]
     public List<Creature> Creatures
     {
@@ -136,7 +142,7 @@ public class Cell : IEquatable<Cell>
         get
         {
             var tile = ScriptableObject.CreateInstance<Tile>();
-            tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(CellType.Void);
+            tile.sprite = Game.SpriteStore.GetSprite("Liquid");
 
             if (Liquid.HasValue && LiquidLevel > 0)
             {
@@ -355,12 +361,14 @@ public class Cell : IEquatable<Cell>
         {
             case Mobility.Walk:
                 return TravelCost > 0;
+
             case Mobility.Fly:
                 return true;
         }
 
         return false;
     }
+
     public void RefreshColor()
     {
         const float totalShade = 1f;
@@ -492,8 +500,6 @@ public class Cell : IEquatable<Cell>
         Game.PhysicsController.Track(this);
     }
 
-   
-
     internal void Clear()
     {
         if (Structure != null)
@@ -521,7 +527,6 @@ public class Cell : IEquatable<Cell>
     {
         var structure = Game.StructureController.GetStructure(structureName, Game.FactionController.Factions[faction]);
         SetStructure(structure);
-
 
         if (structure.AutoInteractions.Count > 0)
         {
@@ -552,10 +557,56 @@ public class Cell : IEquatable<Cell>
         return new Vector3Int(X, Y, 0);
     }
 
-    
     internal void UpdatePhysics()
     {
         const float minLevel = 0.1f;
+
+        if (LiquidLevel > 0 && IsVoid)
+        {
+            var level = Random.Range(0.1f, LiquidLevel);
+
+            if (Random.value < level)
+            {
+                var nonVoid = NonNullNeighbors.Where(n => !n.IsVoid).ToList();
+                if (nonVoid.Count > 0)
+                {
+                    var disintegrated = nonVoid.GetRandomItem();
+                    var flow = nonVoid.FirstOrDefault(n => n.Liquid.HasValue && n.Liquid == Liquid);
+                    if (flow != null)
+                    {
+                        disintegrated = flow;
+                    }
+
+                    disintegrated.BiomeId = 0;
+
+                    Game.StructureController.DestroyStructure(disintegrated.Structure);
+                    Game.StructureController.DestroyStructure(disintegrated.Floor);
+
+                    foreach (var creature in disintegrated.Creatures)
+                    {
+                        foreach (var limb in creature.Limbs)
+                        {
+                            for (int i = 0; i < 10; i++)
+                            {
+                                limb.Wounds.Add(new Wound(limb, "Mana explosion", DamageType.Energy, Severity.Critical));
+                            }
+                        }
+                        creature.Log("AAAHAahhaahhahhaaaaaa!!");
+                    }
+                    disintegrated.UpdateTile();
+                    Game.PhysicsController.Track(disintegrated);
+                    Game.VisualEffectController.SpawnLightEffect(null, disintegrated.Vector, Color.magenta, 3, 4, 3).Fades();
+                }
+            }
+            else
+            {
+                Game.VisualEffectController.SpawnLightEffect(null, Vector, Liquid.Value.GetActualColor(), 2, 1, 2).Fades();
+            }
+
+            LiquidLevel -= level;
+            return;
+        }
+
         if (LiquidLevel <= minLevel || !Liquid.HasValue)
         {
             UpdateLiquid();
@@ -597,14 +648,23 @@ public class Cell : IEquatable<Cell>
             }
         }
     }
+
     private bool BlocksFluid()
     {
-      
         if (Structure == null)
         {
             return false;
         }
 
         return Structure.IsWall();
+    }
+
+    [JsonIgnore]
+    public bool IsVoid
+    {
+        get
+        {
+            return BiomeId == 0;
+        }
     }
 }
