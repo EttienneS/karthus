@@ -76,8 +76,6 @@ public class StructureController : MonoBehaviour
     {
         if (structure != null)
         {
-            Game.Map.Unbind(structure);
-
             if (structure.Cell != null)
             {
                 if (structure.Cell.Floor == structure)

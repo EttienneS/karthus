@@ -17,8 +17,6 @@ public class CreatureRenderer : MonoBehaviour
     internal SpriteRenderer TopRenderer;
     internal SpriteRenderer BottomRenderer;
     internal SpriteRenderer BodyRenderer;
-    internal float TempMaterialDelta;
-    internal float TempMaterialDuration;
     internal TextMeshPro Text;
 
     public void Awake()
@@ -100,7 +98,6 @@ public class CreatureRenderer : MonoBehaviour
     internal void UpdatePosition()
     {
         transform.position = new Vector2(Data.X, Data.Y);
-        MainRenderer.SetBoundMaterial(Data.Cell);
 
         Data.UpdateSprite();
     }
@@ -113,7 +110,7 @@ public class CreatureRenderer : MonoBehaviour
         if (Data.Update(Time.deltaTime))
         {
         }
-        UpdateMaterial();
+        UpdateLight();
     }
 
     internal void DisableHightlight()
@@ -128,8 +125,6 @@ public class CreatureRenderer : MonoBehaviour
     {
         var col = color.GetActualColor();
         MainRenderer.material = Game.MaterialController.GetChannelingMaterial(col);
-        TempMaterialDuration = duration;
-        TempMaterialDelta = 0;
     }
 
     internal void EnableLight()
@@ -168,7 +163,7 @@ public class CreatureRenderer : MonoBehaviour
         }
     }
 
-    private void UpdateMaterial()
+    private void UpdateLight()
     {
         var totalMana = Data.ManaPool.Sum(t => t.Value.Total);
         Light.pointLightOuterRadius = 1 + Mathf.PingPong(Time.time, 0.1f);
@@ -177,14 +172,6 @@ public class CreatureRenderer : MonoBehaviour
 
         Light.color = Data.ManaPool.GetManaWithMost().GetActualColor();
 
-        if (TempMaterialDuration <= 0)
-            return;
-
-        TempMaterialDelta += Time.deltaTime;
-        if (TempMaterialDelta >= TempMaterialDuration)
-        {
-            TempMaterialDuration = 0;
-            MainRenderer.SetBoundMaterial(Data.Cell);
-        }
+      
     }
 }

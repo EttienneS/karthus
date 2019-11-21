@@ -41,13 +41,6 @@ public class SaveManager : MonoBehaviour
             }
         }
 
-        foreach (var cell in Game.Map.Cells.Where(c => c.Bound))
-        {
-            if (cell.DrawnOnce)
-            {
-                cell.UpdateTile();
-            }
-        }
 
         save.CameraData.Load(Game.CameraController.Camera);
     }

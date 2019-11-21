@@ -135,11 +135,6 @@ public static class Pathfinder
 
                     var neighborTravelCost = 1f;
 
-                    if (!neighbor.Bound && mobility != Mobility.AbyssWalk)
-                    {
-                        neighborTravelCost *= 25;
-                    }
-
                     if (mobility != Mobility.Fly)
                     {
                         neighborTravelCost = neighbor.TravelCost;

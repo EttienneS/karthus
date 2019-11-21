@@ -326,11 +326,6 @@ public partial class Game : MonoBehaviour
         foreach (var structure in SelectedStructures)
         {
             structure.ShowOutline();
-            var id = structure.Id;
-            foreach (var boundCell in Map.Cells.Where(c => c.Binding == structure))
-            {
-                AddLine(structure.Cell, boundCell);
-            }
         }
 
         EntityInfoPanel.Show(SelectedStructures.ToList());

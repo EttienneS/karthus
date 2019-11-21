@@ -230,6 +230,9 @@ public class MapGenerator
         Debug.Log($"Spawned creatures in {sw.Elapsed}");
         sw.Restart();
 
+        Game.Map.Refresh();
+        Debug.Log($"Initial map draw completed in {sw.Elapsed}");
+        sw.Restart();
     }
 
     internal void PopulateCell(Cell cell)
@@ -283,10 +286,8 @@ public class MapGenerator
     private static void RunMapAutomata()
     {
         var map = Noise.GenerateNoiseMap(Game.Map.Width, Game.Map.Height,
-                                         Game.Map.Seed * 2,
-                                         50,
-                                         4,
-                                         0.4f,
+                                         Random.Range(1, 100000),
+                                         50, 4, 0.4f,
                                          Game.Map.Lancunarity,
                                          Game.Map.Offset);
 
@@ -298,11 +299,11 @@ public class MapGenerator
             {
                 cell.State = Cell.AutomataState.ImmutableAlive;
             }
-            else if (state > 0.4)
+            else if (state > 0.5)
             {
                 cell.State = Cell.AutomataState.MutableAlive;
             }
-            else if (state > 0.2)
+            else if (state > 0.25)
             {
                 cell.State = Cell.AutomataState.MutableDead;
             }
@@ -430,32 +431,6 @@ public class MapGenerator
         return buildings;
     }
 
-    private void CreateLeyLines()
-    {
-        var nexusPoints = new List<Cell>();
-        for (int i = 0; i < Game.Map.Width / 10; i++)
-        {
-            var point = Game.Map.GetRandomEmptyCell();
-            nexusPoints.Add(point);
-            point.CreateStructure("LeySpring", true, Game.FactionController.WorldFaction.FactionName);
-        }
-
-        var v = Enum.GetValues(typeof(ManaColor));
-        var counter = 0;
-        foreach (var cell in nexusPoints)
-        {
-            var target = nexusPoints[(int)(Random.value * (nexusPoints.Count - 1))];
-            Game.LeyLineController.MakeLine(Game.Map.GetLine(cell, target), (ManaColor)v.GetValue(counter));
-
-            counter++;
-
-            if (counter >= v.Length)
-            {
-                counter = 0;
-            }
-        }
-    }
-
     private List<List<Cell>> CreateStreets(Cell center, float momentum)
     {
         var streets = new List<List<Cell>>();
@@ -491,23 +466,25 @@ public class MapGenerator
     {
         var biomeTemplates = new List<Biome>
         {
-            new Biome((0.90f, CellType.Mountain),
+            new Biome((0.90f, CellType.Mountain), 
                       (0.7f, CellType.Stone),
                       (0.5f, CellType.Forest),
                       (0.3f, CellType.Grass),
-                      (0.0f, CellType.Dirt)),
+                      (0.2f, CellType.Dirt),
+                      (0.0f, CellType.Water)),
 
-            new Biome((0.30f, CellType.Grass),
-                      (0.0f, CellType.Dirt)),
+            new Biome((0.50f, CellType.Grass),
+                      (0.25f, CellType.Dirt),
+                      (0.0f, CellType.Water)),
 
             new Biome((0.7f, CellType.Mountain),
-                      (0.45f, CellType.Stone),
-                      (0.25f, CellType.Dirt),
-                      (0.0f, CellType.Grass)),
+                      (0.3f, CellType.Stone),
+                      (0.0f, CellType.Water)),
 
             new Biome((0.8f, CellType.Forest),
                       (0.5f, CellType.Grass),
-                      (0.0f, CellType.Dirt))
+                      (0.25f, CellType.Dirt),
+                      (0.0f, CellType.Water))
         };
 
         RunMapAutomata();
@@ -567,22 +544,19 @@ public class MapGenerator
         }
 
         var center = biggestBiome.GetRandomItem();
-        var core = center.CreateStructure("Battery", true, faction.FactionName);
+        var core = center.CreateStructure("Battery", faction.FactionName);
         core.ManaPool.GainMana(ManaColor.Green, 100);
         core.ManaPool.GainMana(ManaColor.Red, 100);
         core.ManaPool.GainMana(ManaColor.Blue, 100);
         core.ManaPool.GainMana(ManaColor.White, 100);
         core.ManaPool.GainMana(ManaColor.Black, 100);
 
-        foreach (var cell in Game.Map.GetCircle(center, 25))
-        {
-            cell.Binding = core;
-        }
+
 
         for (int i = 0; i < 1; i++)
         {
             Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("Person"),
-                                                  Game.Map.GetNearestPathableCell(center, Mobility.Walk,5),                                                  
+                                                  Game.Map.GetNearestPathableCell(center, Mobility.Walk, 5),
                                                   Game.FactionController.PlayerFaction);
         }
 

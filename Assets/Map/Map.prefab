@@ -46,14 +46,16 @@ MonoBehaviour:
   m_LightType: 4
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.5
-  m_Color: {r: 0.7, g: 0.7, b: 1, a: 1}
-  m_Intensity: 0.6
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: 0.7
   m_LightVolumeOpacity: 0
   m_ApplyToSortingLayers: 00000000098c6d677349ad24656c353427a42189b9325fe8f59bf2228b4e4f75313eaac84def3569df5853e3
   m_LightCookieSprite: {fileID: 0}
   m_UseNormalMap: 0
   m_LightOrder: 0
   m_AlphaBlendOnOverlap: 0
+  m_ShadowIntensity: 0
+  m_ShadowVolumeIntensity: 0
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
@@ -116,6 +118,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -163,7 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e72c69495c4f4614a960b15ede8423a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Cycle: 30
+  Cycle: 60
 --- !u!1 &5952559972800760937
 GameObject:
   m_ObjectHideFlags: 0
@@ -224,15 +227,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a2e50b14c390774ea0feb5aaa8185b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Height: 1000
+  Height: 300
   JitterProbability: 0.8
   Lancunarity: 4
   Octaves: 4
   Offset: {x: 0, y: 0}
-  Persistance: 0.5
-  Scale: 51
+  Persistance: 0.4
+  Scale: 30
   Seed: 0
-  Width: 1000
+  Width: 300
 --- !u!1 &5952559973161452216
 GameObject:
   m_ObjectHideFlags: 0
@@ -279,6 +282,7 @@ Tilemap:
   m_TileSpriteArray: []
   m_TileMatrixArray: []
   m_TileColorArray: []
+  m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Origin: {x: 0, y: 0, z: 0}
@@ -316,6 +320,7 @@ TilemapRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -394,6 +399,7 @@ Tilemap:
   m_TileSpriteArray: []
   m_TileMatrixArray: []
   m_TileColorArray: []
+  m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Origin: {x: 0, y: 0, z: 0}
@@ -431,6 +437,7 @@ TilemapRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:

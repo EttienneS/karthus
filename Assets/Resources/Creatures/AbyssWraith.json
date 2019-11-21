@@ -14,7 +14,7 @@
 
   "Sprite": "HGhost-X",
   "BehaviourName": "Monster",
-  "Mobility": "AbyssWalk",
+  "Mobility": "Fly",
   "Limbs": [
     {
       "Resistance": {

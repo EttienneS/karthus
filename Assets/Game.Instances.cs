@@ -12,7 +12,6 @@ public partial class Game //.Instances
     private static VisualEffectController _visualEffectController;
     private static FileController _fileController;
     private static Game _gameInstance;
-    private static LeyLineController _leyLineController;
     private static MagicController _magicController;
     private static ManaDisplay _manaDisplay;
     private static Map _map;
@@ -117,18 +116,7 @@ public partial class Game //.Instances
         }
     }
 
-    public static LeyLineController LeyLineController
-    {
-        get
-        {
-            if (_leyLineController == null)
-            {
-                _leyLineController = GameObject.Find(ControllerConstants.LeyLineController).GetComponent<LeyLineController>();
-            }
-
-            return _leyLineController;
-        }
-    }
+  
 
     public static MagicController MagicController
     {

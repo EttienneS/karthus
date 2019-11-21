@@ -81,7 +81,7 @@ public class Channel : CreatureTask
                 Source.ManaPool.BurnMana(ManaColor, 1);
                 Target.ManaPool.GainMana(ManaColor, 1);
 
-                Game.LeyLineController.MakeChannellingLine(Source, Target, 5, GameConstants.ChannelDuration, ManaColor);
+                Game.VisualEffectController.MakeChannellingLine(Source, Target, 5, GameConstants.ChannelDuration, ManaColor);
                 creature.CreatureRenderer.DisplayChannel(ManaColor, GameConstants.ChannelDuration);
                 AmountToChannel--;
                 AddSubTask(new Wait(GameConstants.ChannelDuration, $"{ManaColor}!!"));

@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 
 public enum Mobility
 {
-    Walk, AbyssWalk, Fly
+    Walk, Fly
 }
 
 public class Creature : IEntity

@@ -131,13 +131,13 @@ public class CameraController : MonoBehaviour
 
     public void UpdateCellsBasedOnCamera()
     {
-        var width = Mathf.CeilToInt(Camera.orthographicSize * RenderWidth);
-        var height = Mathf.CeilToInt(Camera.orthographicSize * RenderHeight);
-        Game.Map.Refresh(new RectInt(
-                             Mathf.CeilToInt(transform.position.x - (width / 2)),
-                             Mathf.CeilToInt(transform.position.y - (height / 2)),
-                             width,
-                             height));
+        //var width = Mathf.CeilToInt(Camera.orthographicSize * RenderWidth);
+        //var height = Mathf.CeilToInt(Camera.orthographicSize * RenderHeight);
+        //Game.Map.Refresh(new RectInt(
+        //                     Mathf.CeilToInt(transform.position.x - (width / 2)),
+        //                     Mathf.CeilToInt(transform.position.y - (height / 2)),
+        //                     width,
+        //                     height));
     }
 
     internal void JumpToCell(Cell cell)

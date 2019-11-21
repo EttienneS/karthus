@@ -11,31 +11,11 @@ public enum EffectType
 public class VisualEffectController : MonoBehaviour
 {
     public Badge BadgePrefab;
+    public ChannelLine ChannelLinePrefab;
     public VisualEffect EffectPrefab;
 
     private List<Badge> _activeBadges = new List<Badge>();
     private List<VisualEffect> _activeVisualEffects = new List<VisualEffect>();
-
-
-    public void Update()
-    {
-        //foreach (var badge in _activeBadges)
-        //{
-        //    if (badge.Entity == null)
-        //    {
-        //        Destroy(badge.gameObject);
-        //    }
-        //}
-
-        //foreach (var visualEffect in _activeVisualEffects)
-        //{
-        //    if (visualEffect.Entity == null)
-        //    {
-        //        Destroy(visualEffect.gameObject);
-        //    }
-        //}
-    }
-
     public VisualEffect GetBase(EffectType effectType, IEntity holder)
     {
         var effect = Instantiate(EffectPrefab, transform);
@@ -50,6 +30,15 @@ public class VisualEffectController : MonoBehaviour
             holder.LinkedVisualEffects.Add(effect.Data);
         }
         return effect;
+    }
+
+    public ChannelLine MakeChannellingLine(IEntity source, IEntity target, int intensity, float duration, ManaColor manaColor)
+    {
+        var line = Instantiate(ChannelLinePrefab, transform);
+        line.name = $"Channel: {manaColor}";
+        line.SetProperties(source, target, intensity, duration, manaColor);
+
+        return line;
     }
 
     public Badge Spawn()
@@ -94,6 +83,24 @@ public class VisualEffectController : MonoBehaviour
         return effect;
     }
 
+    public void Update()
+    {
+        //foreach (var badge in _activeBadges)
+        //{
+        //    if (badge.Entity == null)
+        //    {
+        //        Destroy(badge.gameObject);
+        //    }
+        //}
+
+        //foreach (var visualEffect in _activeVisualEffects)
+        //{
+        //    if (visualEffect.Entity == null)
+        //    {
+        //        Destroy(visualEffect.gameObject);
+        //    }
+        //}
+    }
     internal Badge AddBadge(IEntity entity, string iconName)
     {
         var badge = Spawn();

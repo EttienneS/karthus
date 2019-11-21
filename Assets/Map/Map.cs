@@ -59,6 +59,7 @@ public class Map : MonoBehaviour
         }
     }
 
+
     internal List<Cell> Cells { get; set; }
 
     public void AddCellIfValid(int x, int y, List<Cell> cells)
@@ -77,14 +78,6 @@ public class Map : MonoBehaviour
 
         Background.transform.position = new Vector3(Game.Map.Width / 2, Game.Map.Height / 2, 0);
         Background.transform.localScale = new Vector3(Game.Map.Width + 2, Game.Map.Height + 2, 1);
-    }
-
-    internal void Unbind(Structure structure)
-    {
-        foreach (var cell in Cells.Where(c => c.Binding == structure))
-        {
-            cell.Unbind();
-        }
     }
 
     public List<Cell> BleedGroup(List<Cell> group, int count, float percentage = 0.7f)
@@ -493,7 +486,7 @@ public class Map : MonoBehaviour
     internal Cell GetNearestCellOfType(Cell centerPoint, CellType cellType, int radius)
     {
         return GetCircle(centerPoint, radius)
-                    .Where(c => c?.Bound == true && c.CellType == cellType)
+                    .Where(c => c.CellType == cellType)
                     .OrderBy(c => c.DistanceTo(centerPoint))
                     .First();
     }
@@ -512,7 +505,7 @@ public class Map : MonoBehaviour
     internal Cell GetPathableNeighbour(Cell coordinates)
     {
         return coordinates.Neighbors
-                          .Where(c => c?.Bound == true && c.TravelCost > 0)
+                          .Where(c => c.TravelCost > 0)
                           .ToList()
                           .GetRandomItem();
     }
@@ -526,21 +519,14 @@ public class Map : MonoBehaviour
         return GetCellAtCoordinate(mineX, mineY);
     }
 
-    internal void Refresh(RectInt rect)
+    internal void Refresh()
     {
-        var cells = Game.Map.GetRectangle(rect.x,
-                                              rect.y,
-                                              rect.width,
-                                              rect.height).Where(c => !c.DrawnOnce).ToList();
-
-        if (cells.Count > 0)
-        {
-            cells.ForEach(c => Game.MapGenerator.PopulateCell(c));
-            var tiles = cells.Select(c => c.Tile).ToArray();
-            var coords = cells.Select(c => c.ToVector3Int()).ToArray();
-            Game.Map.Tilemap.SetTiles(coords, tiles);
-            Game.StructureController.DrawAllStructures(cells);
-        }
+        var cells = Game.Map.Cells;
+        cells.ForEach(c => Game.MapGenerator.PopulateCell(c));
+        var tiles = cells.Select(c => c.Tile).ToArray();
+        var coords = cells.Select(c => c.ToVector3Int()).ToArray();
+        Game.Map.Tilemap.SetTiles(coords, tiles);
+        Game.StructureController.DrawAllStructures(cells);
     }
 
     private void OnValidate()

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class Bind : EffectBase
 {
@@ -29,10 +30,13 @@ public class Bind : EffectBase
                                        .ToList();
         }
 
-        var cellToBind = _affectAbleCells.Find(c => !c.Bound);
+        var cellToBind = _affectAbleCells.Find(c => c.BiomeId == 0);
         if (cellToBind != null)
         {
-            cellToBind.Bind(AssignedEntity);
+            cellToBind.BiomeId = AssignedEntity.Cell.BiomeId;
+            Game.VisualEffectController.SpawnLightEffect(AssignedEntity, cellToBind.Vector, Color.magenta, 1 + Random.value * 2, 1 + Random.value * 2, 3);
+
+            cellToBind.UpdateTile();
         }
 
         return true;

@@ -21,9 +21,9 @@
     }
   ],
   "ManaValue": {
-    "Blue": "5",
-    "Red": "5",
-    "Green": "5"
+    "Blue": "10",
+    "Red": "10",
+    "Green": "10"
   },
   "Buildable": true,
   "SpriteName": "pylon",

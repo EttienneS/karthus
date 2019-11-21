@@ -8,9 +8,7 @@ using Random = UnityEngine.Random;
 
 public class Cell : IEquatable<Cell>
 {
-    public string Binder;
-
-    public int BiomeId = 0;
+    public int BiomeId;
 
     public string FloorId;
 
@@ -46,31 +44,6 @@ public class Cell : IEquatable<Cell>
         ImmutableDead, MutableDead, ImmutableAlive, MutableAlive
     }
 
-    [JsonIgnore]
-    public IEntity Binding
-    {
-        get
-        {
-            if (_binding == null && !string.IsNullOrEmpty(Binder))
-            {
-                _binding = Binder.GetEntity();
-            }
-
-            return _binding;
-        }
-        set
-        {
-            _binding = value;
-            if (_binding == null)
-            {
-                Binder = string.Empty;
-            }
-            else
-            {
-                Binder = _binding.Id;
-            }
-        }
-    }
 
     [JsonIgnore]
     public Biome Biome
@@ -81,21 +54,14 @@ public class Cell : IEquatable<Cell>
         }
     }
 
-    [JsonIgnore]
-    public bool Bound
-    {
-        get
-        {
-            return Binding != null;
-        }
-    }
+
 
     [JsonIgnore]
     public bool Buildable
     {
         get
         {
-            return Bound && TravelCost > 0 && Structure == null;
+            return TravelCost > 0 && Structure == null;
         }
     }
 
@@ -118,8 +84,6 @@ public class Cell : IEquatable<Cell>
 
     [JsonIgnore]
     public float Distance { get; set; }
-
-    public bool DrawnOnce { get; set; }
 
     [JsonIgnore]
     public Structure Floor
@@ -244,7 +208,6 @@ public class Cell : IEquatable<Cell>
     {
         get
         {
-            DrawnOnce = true;
             var tile = ScriptableObject.CreateInstance<Tile>();
             RefreshColor();
 
@@ -391,10 +354,8 @@ public class Cell : IEquatable<Cell>
         switch (mobility)
         {
             case Mobility.Walk:
-                return Bound && TravelCost > 0;
+                return TravelCost > 0;
             case Mobility.Fly:
-                return Bound;
-            case Mobility.AbyssWalk:
                 return true;
         }
 
@@ -404,7 +365,7 @@ public class Cell : IEquatable<Cell>
     {
         const float totalShade = 1f;
         const float maxShade = 0.4f;
-        var baseColor = new Color(totalShade, Bound ? totalShade : 0.6f, totalShade, Bound ? 1f : 0.6f);
+        var baseColor = new Color(totalShade, totalShade, totalShade, 1f);
 
         var range = Game.MapGenerator.Biomes[BiomeId].GetCellTypeRange(CellType);
         var scaled = Helpers.Scale(range.Item1, range.Item2, 0f, maxShade, Height);
@@ -531,13 +492,7 @@ public class Cell : IEquatable<Cell>
         Game.PhysicsController.Track(this);
     }
 
-    internal void Bind(IEntity entity)
-    {
-        Binding = entity;
-        UpdateTile();
-        Game.VisualEffectController.SpawnLightEffect(null, Vector, Color.magenta, 2, 4, 5)
-                                   .Fades();
-    }
+   
 
     internal void Clear()
     {
@@ -562,15 +517,11 @@ public class Cell : IEquatable<Cell>
         return Neighbors.Count(n => n != null && n.CellType == cellType.Value);
     }
 
-    internal Structure CreateStructure(string structureName, bool bind = false, string faction = FactionConstants.World)
+    internal Structure CreateStructure(string structureName, string faction = FactionConstants.World)
     {
         var structure = Game.StructureController.GetStructure(structureName, Game.FactionController.Factions[faction]);
         SetStructure(structure);
 
-        if (bind)
-        {
-            Bind(structure);
-        }
 
         if (structure.AutoInteractions.Count > 0)
         {
@@ -601,13 +552,7 @@ public class Cell : IEquatable<Cell>
         return new Vector3Int(X, Y, 0);
     }
 
-    internal void Unbind()
-    {
-        Binding = null;
-        UpdateTile();
-        Game.VisualEffectController.SpawnLightEffect(null, Vector, Color.magenta, 1.5f, 8, 8)
-                                   .Fades();
-    }
+    
     internal void UpdatePhysics()
     {
         const float minLevel = 0.1f;
@@ -654,11 +599,7 @@ public class Cell : IEquatable<Cell>
     }
     private bool BlocksFluid()
     {
-        if (!Bound)
-        {
-            return true;
-        }
-
+      
         if (Structure == null)
         {
             return false;
