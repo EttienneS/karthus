@@ -217,6 +217,14 @@ public class SpriteStore : MonoBehaviour
 
     internal Sprite GetSpriteForTerrainType(CellType cellType)
     {
-        return MapSpriteTypeDictionary[cellType.ToString()];
+        var typeString = cellType.ToString();
+        if (MapSpriteTypeDictionary.ContainsKey(typeString))
+        {
+            return MapSpriteTypeDictionary[typeString];
+        }
+        else
+        {
+            return MapSpriteTypeDictionary[MapSpriteTypeDictionary.Keys.Where(k => k.StartsWith(typeString)).GetRandomItem()];
+        }
     }
 }

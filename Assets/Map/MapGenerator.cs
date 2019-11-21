@@ -254,6 +254,13 @@ public class MapGenerator
                 }
                 break;
 
+            case CellType.Stone:
+                if (value > 0.95)
+                {
+                    cell.SetStructure(Game.StructureController.GetStructure($"{Helpers.RandomEnumValue<ManaColor>()} Mana Crystals", world));
+                }
+                break;
+
             case CellType.Forest:
                 if (value > 0.95)
                 {
@@ -460,11 +467,12 @@ public class MapGenerator
     {
         var biomeTemplates = new List<Biome>
         {
-            new Biome((0.90f, CellType.Mountain), 
+            new Biome((0.90f, CellType.Mountain),
                       (0.7f, CellType.Stone),
                       (0.5f, CellType.Forest),
                       (0.3f, CellType.Grass),
                       (0.2f, CellType.Dirt),
+                      (0.1f, CellType.Sand),
                       (0.0f, CellType.Water)),
 
             new Biome((0.50f, CellType.Grass),
@@ -475,9 +483,14 @@ public class MapGenerator
                       (0.3f, CellType.Stone),
                       (0.0f, CellType.Water)),
 
+            new Biome((0.9f, CellType.Grass),
+                      (0.6f, CellType.Dirt),
+                      (0.3f, CellType.Sand),
+                      (0.0f, CellType.Water)),
+
             new Biome((0.8f, CellType.Forest),
                       (0.5f, CellType.Grass),
-                      (0.25f, CellType.Dirt),
+                      (0.25f, CellType.Sand),
                       (0.0f, CellType.Water))
         };
 

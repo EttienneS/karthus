@@ -7,8 +7,7 @@ using Random = UnityEngine.Random;
 
 public enum CellType
 {
-    Dirt, Forest, Grass, Mountain, Stone, Water,
-    Void
+    Dirt, Forest, Grass, Mountain, Stone, Water, Sand, Void
 }
 
 public class Map : MonoBehaviour
@@ -522,5 +521,5 @@ public class Map : MonoBehaviour
         Game.StructureController.DrawAllStructures(cells);
     }
 
-  
+
 }
