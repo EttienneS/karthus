@@ -43,3 +43,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a52b5d3d5408d6e4c8023c6422a4688f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UpdatesPerFrame: 500
+  PhysicsRate: 0.1

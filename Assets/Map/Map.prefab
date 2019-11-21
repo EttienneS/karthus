@@ -227,15 +227,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a2e50b14c390774ea0feb5aaa8185b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Height: 300
-  JitterProbability: 0.8
-  Lancunarity: 4
-  Octaves: 4
-  Offset: {x: 0, y: 0}
-  Persistance: 0.4
-  Scale: 30
-  Seed: 0
-  Width: 300
+  Height: 250
+  Width: 250
 --- !u!1 &5952559973161452216
 GameObject:
   m_ObjectHideFlags: 0
