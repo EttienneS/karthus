@@ -2,7 +2,6 @@
   "Name": "Blower",
   "SpriteName": "Blower",
   "TravelCost": "-1",
-  "Scatter": "False",
   "ManaValue": {
     "Blue": "1"
   },

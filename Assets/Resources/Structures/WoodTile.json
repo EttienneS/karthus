@@ -2,7 +2,6 @@
   "Name": "Wood Tile",
   "SpriteName": "WoodTile",
   "TravelCost": "0.5",
-  "Scatter": "False",
   "ManaValue": {
     "Green": "1"
   },

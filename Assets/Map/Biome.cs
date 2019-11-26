@@ -56,9 +56,9 @@ public class Biome
         return regions.GetRandomItem();
     }
 
-    internal (float, float) GetCellTypeRange(CellType cellType)
+    internal (float, float) GetCellTypeRange(string cellType)
     {
-        var region = BiomeRegions.First(r => r.Type == cellType);
+        var region = BiomeRegions.First(r => r.SpriteName == cellType);
         return (region.Min, region.Max);
     }
 }
@@ -69,10 +69,11 @@ public class BiomeRegion
     {
     }
 
-    public BiomeRegion(float min, float max, CellType type, params (string structure, float probablity)[] contents)
+    public BiomeRegion(float min, float max, string spriteName, float travelCost, params (string structure, float probablity)[] contents)
     {
         Min = min;
         Max = max;
+        TravelCost = travelCost;
 
         Content = new Dictionary<string, float>();
         foreach (var (structure, probablity) in contents)
@@ -80,13 +81,14 @@ public class BiomeRegion
             Content.Add(structure, probablity);
         }
 
-        Type = type;
+        SpriteName = spriteName;
     }
 
     public Dictionary<string, float> Content { get; set; }
     public float Max { get; set; }
     public float Min { get; set; }
-    public CellType Type { get; set; }
+    public string SpriteName { get; set; }
+    public float TravelCost { get; set; } = 1f;
 
     internal string GetContent()
     {

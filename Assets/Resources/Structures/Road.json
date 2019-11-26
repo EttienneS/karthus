@@ -2,7 +2,6 @@
   "Name": "Road",
   "SpriteName": "Road",
   "TravelCost": "0.1",
-  "Scatter": "False",
   "ManaValue": {
     "Red": "1"
   },

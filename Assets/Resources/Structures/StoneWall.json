@@ -2,7 +2,6 @@
   "Name": "Stone Wall",
   "SpriteName": "StoneWall",
   "TravelCost": "-1",
-  "Scatter": "False",
   "ManaValue": {
     "Red": "1"
   },

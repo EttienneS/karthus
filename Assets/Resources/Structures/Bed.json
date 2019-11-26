@@ -6,7 +6,6 @@
     "Green": "1",
     "Red": "1"
   },
-  "Scatter": "False",
   "Buildable": "True",
   "Properties": {
     "Type": "Bed"

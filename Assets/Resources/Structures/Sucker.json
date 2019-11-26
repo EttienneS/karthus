@@ -2,7 +2,6 @@
   "Name": "Sucker",
   "SpriteName": "Sucker",
   "TravelCost": "-1",
-  "Scatter": "False",
   "ManaValue": {
     "Blue": "1"
   },

@@ -7,11 +7,6 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
-[JsonConverter(typeof(StringEnumConverter))]
-public enum CellType
-{
-    Dirt, Forest, Grass, Mountain, Stone, Water, Sand, Void
-}
 
 public class Map : MonoBehaviour
 {
@@ -475,14 +470,6 @@ public class Map : MonoBehaviour
         }
 
         return cell;
-    }
-
-    internal Cell GetNearestCellOfType(Cell centerPoint, CellType cellType, int radius)
-    {
-        return GetCircle(centerPoint, radius)
-                    .Where(c => c.CellType == cellType)
-                    .OrderBy(c => c.DistanceTo(centerPoint))
-                    .First();
     }
 
     internal Cell GetNearestPathableCell(Cell centerPoint, Mobility mobility, int radius)

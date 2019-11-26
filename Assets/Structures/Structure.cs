@@ -23,10 +23,6 @@ public class Structure : IEntity
 
     public Direction Rotation;
 
-    public string ShiftX;
-
-    public string ShiftY;
-
     public string Size;
 
     public string SpriteName;

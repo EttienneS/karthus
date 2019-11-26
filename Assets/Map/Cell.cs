@@ -97,14 +97,6 @@ public class Cell : IEquatable<Cell>
         }
     }
 
-    [JsonIgnore]
-    public CellType CellType
-    {
-        get
-        {
-            return BiomeRegion.Type;
-        }
-    }
 
     [JsonIgnore]
     public List<Creature> Creatures
@@ -246,7 +238,7 @@ public class Cell : IEquatable<Cell>
 
             if (Floor == null)
             {
-                tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(CellType);
+                tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(BiomeRegion.SpriteName);
                 tile.color = Color;
             }
             else
@@ -272,15 +264,7 @@ public class Cell : IEquatable<Cell>
     {
         get
         {
-            switch (CellType)
-            {
-                case CellType.Void:
-                case CellType.Water:
-                case CellType.Mountain:
-                    return -1;
-            }
-
-            return Structure?.IsBluePrint == false ? Structure.TravelCost : 1.5f;
+            return Structure?.IsBluePrint == false ? Structure.TravelCost : BiomeRegion.TravelCost;
         }
     }
 
@@ -398,9 +382,15 @@ public class Cell : IEquatable<Cell>
 
         if (!string.IsNullOrEmpty(content))
         {
-            SetStructure(Game.StructureController.GetStructure(content, Game.FactionController.Factions[FactionConstants.World]));
-        }
+            var structure = Game.StructureController.GetStructure(content, Game.FactionController.Factions[FactionConstants.World]);
+            SetStructure(structure);
 
+            if (structure.AutoInteractions.Count > 0)
+            {
+                Game.MagicController.AddEffector(structure);
+            }
+        }
+       
     }
 
     public bool Pathable(Mobility mobility)
@@ -423,8 +413,7 @@ public class Cell : IEquatable<Cell>
         const float maxShade = 0.4f;
         var baseColor = new Color(totalShade, totalShade, totalShade, 1f);
 
-        var range = Game.MapGenerator.Biomes[BiomeId].GetCellTypeRange(CellType);
-        var scaled = Helpers.Scale(range.Item1, range.Item2, 0f, maxShade, Height);
+        var scaled = Helpers.Scale(BiomeRegion.Min, BiomeRegion.Max, 0f, maxShade, Height);
 
         Color = new Color(baseColor.r - scaled, baseColor.g - scaled, baseColor.b - scaled, baseColor.a);
     }
@@ -561,15 +550,6 @@ public class Cell : IEquatable<Cell>
         }
     }
 
-    internal int CountNeighborsOfType(CellType? cellType)
-    {
-        if (!cellType.HasValue)
-        {
-            return Neighbors.Count(n => n == null);
-        }
-
-        return Neighbors.Count(n => n != null && n.CellType == cellType.Value);
-    }
 
     internal Structure CreateStructure(string structureName, string faction = FactionConstants.World)
     {

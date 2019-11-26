@@ -6,52 +6,64 @@
       },
       "Max": 0.1,
       "Min": 0.0,
-      "Type": "Water"
+      "TravelCost": -1,
+      "SpriteName": "Water"
     },
     {
       "Content": {
-        "Red Mana Crystals": 0.01
+        "Red Mana Crystals": 0.01,
+        "Small Rock": 0.04
       },
       "Max": 0.2,
       "Min": 0.1,
-      "Type": "Sand"
+      "SpriteName": "Sand"
     },
     {
-      "Content": {},
+      "Content": {
+        "Small Rock": 0.05,
+        "Medium Rock": 0.01
+      },
       "Max": 0.3,
       "Min": 0.2,
-      "Type": "Dirt"
+      "SpriteName": "Dirt"
     },
     {
       "Content": {
         "Bush": 0.2,
-        "Green Mana Crystals": 0.01
+        "Green Mana Crystals": 0.01,
+        "Small Rock": 0.01
       },
       "Max": 0.5,
       "Min": 0.3,
-      "Type": "Grass"
+      "SpriteName": "Grass"
     },
     {
       "Content": {
-        "Tree": 0.05
+        "Tree": 0.15,
+        "Bush": 0.25,
+        "Green Mana Crystals": 0.02
       },
       "Max": 0.7,
       "Min": 0.5,
-      "Type": "Forest"
+      "SpriteName": "Forest"
     },
     {
       "Content": {
-        "Red Mana Crystals": 0.05
+        "Red Mana Crystals": 0.05,
+        "Small Rock": 0.25,
+        "Medium Rock": 0.15,
+        "Big Rock": 0.10
       },
       "Max": 0.9,
       "Min": 0.7,
-      "Type": "Stone"
+      "SpriteName": "Stone"
     },
     {
       "Content": {},
       "Max": 1.0,
       "Min": 0.9,
-      "Type": "Mountain"
+      "TravelCost": -1,
+      "SpriteName": "Mountain"
     }
   ],
   "Name": "Default"

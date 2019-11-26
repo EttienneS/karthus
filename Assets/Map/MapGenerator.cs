@@ -219,7 +219,7 @@ public class MapGenerator
         var sw = new Stopwatch();
         sw.Start();
 
-        Biomes.Add(0, new Biome("Void", new BiomeRegion(0.0f, 1.0f, CellType.Void)));
+        Biomes.Add(0, new Biome("Void", new BiomeRegion(0.0f, 1.0f, "Void", -1f)));
 
         GenerateBaseMap();
         Debug.Log($"Generated base map in {sw.Elapsed}");

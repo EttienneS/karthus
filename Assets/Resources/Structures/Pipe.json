@@ -2,7 +2,6 @@
   "Name": "Pipe",
   "SpriteName": "Pipe",
   "TravelCost": "5",
-  "Scatter": "False",
   "ManaValue": {
     "Red": "1"
   },

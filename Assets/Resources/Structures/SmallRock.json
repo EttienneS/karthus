@@ -1,0 +1,9 @@
+{
+  "Name": "Small Rock",
+  "SpriteName": "smallrock",
+  "TravelCost": "3",
+  "Buildable": "False",
+  "ManaValue": {
+    "Red": "2"
+  }
+}
