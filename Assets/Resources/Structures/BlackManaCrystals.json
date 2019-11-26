@@ -6,14 +6,14 @@
   "ManaValue": {
     "Black": "20"
   },
-  "AutoInteractions": [
-    {
-      "$type": "MaintainVisualEffect, Assembly-CSharp",
-      "ActivationTime": "0.1",
-      "Radius": "2",
-      "Intensity": "2",
-      "Color": "#361636",
-      "Duration": "10"
-    }
-  ]
+  //"AutoInteractions": [
+  //  {
+  //    "$type": "MaintainVisualEffect, Assembly-CSharp",
+  //    "ActivationTime": "0.1",
+  //    "Radius": "1",
+  //    "Intensity": "2",
+  //    "Color": "#7F7F7F",
+  //    "Duration": "10"
+  //  }
+  //]
 }

@@ -5,5 +5,15 @@
   "Buildable": "False",
   "ManaValue": {
     "Blue": "20"
-  }
+  },
+  //"AutoInteractions": [
+  //  {
+  //    "$type": "MaintainVisualEffect, Assembly-CSharp",
+  //    "ActivationTime": "0.1",
+  //    "Radius": "1",
+  //    "Intensity": "2",
+  //    "Color": "#0000FF",
+  //    "Duration": "10"
+  //  }
+  //]
 }
