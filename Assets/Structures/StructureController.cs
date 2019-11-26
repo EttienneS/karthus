@@ -56,6 +56,11 @@ public class StructureController : MonoBehaviour
 
     public Structure GetStructure(string name, Faction faction)
     {
+        //if (!StructureTypeFileMap.ContainsKey(name))
+        //{
+        //    Debug.LogError($"Structure not found: {name}");
+        //}
+
         string structureData = StructureTypeFileMap[name];
 
         Structure structure = Structure.GetFromJson(structureData, name);

@@ -1,0 +1,58 @@
+{
+  "BiomeRegions": [
+    {
+      "Content": {
+        "Blue Mana Crystals": 0.01
+      },
+      "Max": 0.1,
+      "Min": 0.0,
+      "Type": "Water"
+    },
+    {
+      "Content": {
+        "Red Mana Crystals": 0.01
+      },
+      "Max": 0.2,
+      "Min": 0.1,
+      "Type": "Sand"
+    },
+    {
+      "Content": {},
+      "Max": 0.3,
+      "Min": 0.2,
+      "Type": "Dirt"
+    },
+    {
+      "Content": {
+        "Bush": 0.2,
+        "Green Mana Crystals": 0.01
+      },
+      "Max": 0.5,
+      "Min": 0.3,
+      "Type": "Grass"
+    },
+    {
+      "Content": {
+        "Tree": 0.05
+      },
+      "Max": 0.7,
+      "Min": 0.5,
+      "Type": "Forest"
+    },
+    {
+      "Content": {
+        "Red Mana Crystals": 0.05
+      },
+      "Max": 0.9,
+      "Min": 0.7,
+      "Type": "Stone"
+    },
+    {
+      "Content": {},
+      "Max": 1.0,
+      "Min": 0.9,
+      "Type": "Mountain"
+    }
+  ],
+  "Name": "Default"
+}

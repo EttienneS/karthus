@@ -8,7 +8,19 @@ using Random = UnityEngine.Random;
 
 public class Cell : IEquatable<Cell>
 {
-    public int BiomeId;
+    private int _biomeId;
+    public int BiomeId
+    {
+        get
+        {
+            return _biomeId;
+        }
+        set
+        {
+            _biomeId = value;
+            _biomeRegion = null;
+        }
+    }
 
     public string FloorId;
 
@@ -61,6 +73,21 @@ public class Cell : IEquatable<Cell>
         }
     }
 
+    private BiomeRegion _biomeRegion;
+
+    [JsonIgnore]
+    public BiomeRegion BiomeRegion
+    {
+        get
+        {
+            if (_biomeRegion == null)
+            {
+                _biomeRegion = Biome.GetRegion(Height);
+            }
+            return _biomeRegion;
+        }
+    }
+
     [JsonIgnore]
     public bool Buildable
     {
@@ -75,7 +102,7 @@ public class Cell : IEquatable<Cell>
     {
         get
         {
-            return Game.MapGenerator.Biomes[BiomeId].GetCellType(Height);
+            return BiomeRegion.Type;
         }
     }
 
@@ -353,6 +380,27 @@ public class Cell : IEquatable<Cell>
         }
 
         return neighbor.Structure.IsWall() || neighbor.Structure.IsPipe() || neighbor.Structure.IsPipeEnd();
+    }
+
+    internal void Populate()
+    {
+        if (Structure?.Name == "Reserved")
+        {
+            Game.StructureController.DestroyStructure(Structure);
+        }
+
+        if (!Empty())
+        {
+            return;
+        }
+
+        var content = BiomeRegion.GetContent();
+
+        if (!string.IsNullOrEmpty(content))
+        {
+            SetStructure(Game.StructureController.GetStructure(content, Game.FactionController.Factions[FactionConstants.World]));
+        }
+
     }
 
     public bool Pathable(Mobility mobility)

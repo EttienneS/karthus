@@ -1,10 +1,13 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
+[JsonConverter(typeof(StringEnumConverter))]
 public enum CellType
 {
     Dirt, Forest, Grass, Mountain, Stone, Water, Sand, Void
@@ -50,7 +53,6 @@ public class Map : MonoBehaviour
             return CellLookup[(Game.Map.Width / 2, Game.Map.Height / 2)];
         }
     }
-
 
     internal List<Cell> Cells { get; set; }
 
@@ -514,12 +516,10 @@ public class Map : MonoBehaviour
     internal void Refresh()
     {
         var cells = Game.Map.Cells;
-        cells.ForEach(c => Game.MapGenerator.PopulateCell(c));
+        cells.ForEach(c => c.Populate());
         var tiles = cells.Select(c => c.Tile).ToArray();
         var coords = cells.Select(c => c.ToVector3Int()).ToArray();
         Game.Map.Tilemap.SetTiles(coords, tiles);
         Game.StructureController.DrawAllStructures(cells);
     }
-
-
 }

@@ -10,6 +10,25 @@ public class MapGenerator
 {
     public Dictionary<int, Biome> Biomes = new Dictionary<int, Biome>();
 
+    private List<Biome> _biomeTemplates;
+
+    public List<Biome> BiomeTemplates
+    {
+        get
+        {
+            if (_biomeTemplates == null)
+            {
+                _biomeTemplates = new List<Biome>();
+                foreach (var biomeFile in Game.FileController.BiomeFiles)
+                {
+                    _biomeTemplates.Add(biomeFile.text.LoadJson<Biome>());
+                }
+            }
+
+            return _biomeTemplates;
+        }
+    }
+
     public Cell CreateCell(int x, int y)
     {
         var cell = new Cell
@@ -200,7 +219,7 @@ public class MapGenerator
         var sw = new Stopwatch();
         sw.Start();
 
-        Biomes.Add(0, new Biome((0.0f, CellType.Void)));
+        Biomes.Add(0, new Biome("Void", new BiomeRegion(0.0f, 1.0f, CellType.Void)));
 
         GenerateBaseMap();
         Debug.Log($"Generated base map in {sw.Elapsed}");
@@ -229,49 +248,6 @@ public class MapGenerator
         Game.Map.Refresh();
         Debug.Log($"Initial map draw completed in {sw.Elapsed}");
         sw.Restart();
-    }
-
-    internal void PopulateCell(Cell cell)
-    {
-        if (cell.Structure?.Name == "Reserved")
-        {
-            Game.StructureController.DestroyStructure(cell.Structure);
-        }
-
-        if (!cell.Empty())
-        {
-            return;
-        }
-
-        var value = Random.value;
-        var world = Game.FactionController.Factions[FactionConstants.World];
-        switch (cell.CellType)
-        {
-            case CellType.Grass:
-                if (value > 0.85)
-                {
-                    cell.SetStructure(Game.StructureController.GetStructure("Bush", world));
-                }
-                break;
-
-            case CellType.Stone:
-                if (value > 0.95)
-                {
-                    cell.SetStructure(Game.StructureController.GetStructure($"{Helpers.RandomEnumValue<ManaColor>()} Mana Crystals", world));
-                }
-                break;
-
-            case CellType.Forest:
-                if (value > 0.95)
-                {
-                    cell.SetStructure(Game.StructureController.GetStructure("Tree", world));
-                }
-                else if (value > 0.8)
-                {
-                    cell.SetStructure(Game.StructureController.GetStructure("Bush", world));
-                }
-                break;
-        }
     }
 
     internal void ResetSearchPriorities()
@@ -465,42 +441,13 @@ public class MapGenerator
 
     private void MakeBiomes()
     {
-        var biomeTemplates = new List<Biome>
-        {
-            new Biome((0.90f, CellType.Mountain),
-                      (0.7f, CellType.Stone),
-                      (0.5f, CellType.Forest),
-                      (0.3f, CellType.Grass),
-                      (0.2f, CellType.Dirt),
-                      (0.1f, CellType.Sand),
-                      (0.0f, CellType.Water)),
-
-            new Biome((0.50f, CellType.Grass),
-                      (0.25f, CellType.Dirt),
-                      (0.0f, CellType.Water)),
-
-            new Biome((0.7f, CellType.Mountain),
-                      (0.3f, CellType.Stone),
-                      (0.0f, CellType.Water)),
-
-            new Biome((0.9f, CellType.Grass),
-                      (0.6f, CellType.Dirt),
-                      (0.3f, CellType.Sand),
-                      (0.0f, CellType.Water)),
-
-            new Biome((0.8f, CellType.Forest),
-                      (0.5f, CellType.Grass),
-                      (0.25f, CellType.Sand),
-                      (0.0f, CellType.Water))
-        };
-
         RunMapAutomata();
 
         var unprocessedCells = Game.Map.Cells.Where(c => c.Alive).ToList();
         while (unprocessedCells.Count > 0)
         {
             var id = Biomes.Count;
-            Biomes.Add(id, biomeTemplates.GetRandomItem().CloneJson());
+            Biomes.Add(id, BiomeTemplates.GetRandomItem().CloneJson());
 
             var candidateCells = new List<Cell> { unprocessedCells[0] };
             unprocessedCells.RemoveAt(0);
@@ -557,8 +504,6 @@ public class MapGenerator
         core.ManaPool.GainMana(ManaColor.Blue, 100);
         core.ManaPool.GainMana(ManaColor.White, 100);
         core.ManaPool.GainMana(ManaColor.Black, 100);
-
-
 
         for (int i = 0; i < 1; i++)
         {

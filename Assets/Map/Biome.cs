@@ -2,24 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Biome
 {
-    public SortedDictionary<float, CellType> Map = new SortedDictionary<float, CellType>();
-
     private float[,] _noiseMap;
 
     public Biome()
     {
     }
 
-    public Biome(params (float min, CellType type)[] param)
+    public Biome(string name, params BiomeRegion[] regions)
     {
-        foreach (var p in param)
-        {
-            Add(p.min, p.type);
-        }
+        Name = name;
+        BiomeRegions = regions.ToList();
     }
+
+    public List<BiomeRegion> BiomeRegions { get; set; }
+    public string Name { get; set; }
 
     [JsonIgnore]
     public float[,] NoiseMap
@@ -37,46 +37,71 @@ public class Biome
         }
     }
 
-    public void Add(float min, CellType cell)
-    {
-        Map.Add(min, cell);
-    }
-
     public float GetCellHeight(int x, int y)
     {
         return NoiseMap[x, y];
     }
 
-    public CellType GetCellType(float value)
+    public BiomeRegion GetRegion(float value)
     {
-        var reversedMap = Map.Reverse();
-        foreach (var kvp in reversedMap)
+        var regions = new List<BiomeRegion>();
+        foreach (var region in BiomeRegions)
         {
-            if (value > kvp.Key)
+            if (value >= region.Min && value <= region.Max)
             {
-                return kvp.Value;
+                regions.Add(region);
             }
         }
 
-        return reversedMap.Last().Value;
+        return regions.GetRandomItem();
     }
 
     internal (float, float) GetCellTypeRange(CellType cellType)
     {
-        if (Map.Count > 1)
-        {
-            var reversedMap = Map.Reverse();
-            var last = 0f;
+        var region = BiomeRegions.First(r => r.Type == cellType);
+        return (region.Min, region.Max);
+    }
+}
 
-            foreach (var kvp in reversedMap)
-            {
-                if (cellType == kvp.Value)
-                {
-                    return (kvp.Key, last);
-                }
-                last = kvp.Key;
-            }
+public class BiomeRegion
+{
+    public BiomeRegion()
+    {
+    }
+
+    public BiomeRegion(float min, float max, CellType type, params (string structure, float probablity)[] contents)
+    {
+        Min = min;
+        Max = max;
+
+        Content = new Dictionary<string, float>();
+        foreach (var (structure, probablity) in contents)
+        {
+            Content.Add(structure, probablity);
         }
-        return (0f, 1f);
+
+        Type = type;
+    }
+
+    public Dictionary<string, float> Content { get; set; }
+    public float Max { get; set; }
+    public float Min { get; set; }
+    public CellType Type { get; set; }
+
+    internal string GetContent()
+    {
+        if (Content.Count == 0)
+        {
+            return string.Empty;
+        }
+
+        var random = Random.value;
+        var options = Content.Where(c => random <= c.Value).Select(o => o.Key).ToList();
+        if (options.Count > 0)
+        {
+            return options.GetRandomItem();
+        }
+
+        return string.Empty;
     }
 }
