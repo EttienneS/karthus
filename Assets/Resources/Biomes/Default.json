@@ -64,7 +64,6 @@
       },
       "Max": 1.0,
       "Min": 0.9,
-      "TravelCost": -1,
       "SpriteName": "Stone"
     }
   ],
