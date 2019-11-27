@@ -38,7 +38,6 @@ public class Cell : IEquatable<Cell>
         }
     }
 
-    public Direction Rotation;
 
     [JsonIgnore]
     public AutomataState State;
@@ -234,6 +233,8 @@ public class Cell : IEquatable<Cell>
         get
         {
             var tile = ScriptableObject.CreateInstance<Tile>();
+            tile.RotateRandom90();
+
             RefreshColor();
 
             if (Floor == null)
@@ -418,17 +419,7 @@ public class Cell : IEquatable<Cell>
         Color = new Color(baseColor.r - scaled, baseColor.g - scaled, baseColor.b - scaled, baseColor.a);
     }
 
-    public void RotateCCW()
-    {
-        Rotation = Rotation.Rotate90CCW();
-        UpdateTile();
-    }
-
-    public void RotateCW()
-    {
-        Rotation = Rotation.Rotate90CW();
-        UpdateTile();
-    }
+  
 
     public void RunAutomata()
     {

@@ -124,6 +124,12 @@ public class Structure : IEntity
         {
             var tile = ScriptableObject.CreateInstance<Tile>();
             tile.RotateTile(Rotation);
+
+            if (!Buildable)
+            {
+                tile.ShiftTile(new Vector2(Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f)));
+            }
+
             if (IsWall() || IsPipe())
             {
                 tile.sprite = Game.SpriteStore.GetInterlockingSprite(this);
