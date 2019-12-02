@@ -308,11 +308,16 @@ public class MapGenerator
                 continue;
             }
 
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < 10; i++)
             {
-                Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType(monster.Key),
-                                                 Game.Map.GetRandomCell(),
-                                                 Game.FactionController.MonsterFaction);
+                var creature = Game.CreatureController.GetCreatureOfType(monster.Key);
+
+                var spot = Game.Map.GetRandomCell();
+                if (creature.Mobility != Mobility.Fly)
+                {
+                    spot = Game.Map.Cells.Where(c => c.TravelCost > 0).GetRandomItem();
+                }
+                Game.CreatureController.SpawnCreature(creature, spot,Game.FactionController.MonsterFaction);
             }
         }
     }
