@@ -99,8 +99,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Camera: {fileID: 5246461426590746731}
-  Speed: 0.8
-  SpeedMin: 8
+  SpeedMin: 0.1
+  SpeedMax: 1.5
   ZoomMax: 20
   ZoomMin: 3
   ZoomStep: 10
