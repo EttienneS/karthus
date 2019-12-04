@@ -3,9 +3,10 @@
 public class CameraController : MonoBehaviour
 {
     public Camera Camera;
-    public float Speed = 1;
+    internal float Speed;
 
     public float SpeedMin = 0.1f;
+    public float SpeedMax = 2f;
     public int ZoomMax = 15;
     public int ZoomMin = 2;
     public float ZoomStep = 5;
@@ -116,7 +117,7 @@ public class CameraController : MonoBehaviour
                 Camera.orthographicSize = Mathf.Clamp(Camera.orthographicSize - (mouseWheel * ZoomStep),
                     ZoomMin, ZoomMax);
 
-                // Speed = Helpers.ScaleValueInRange(SpeedMin, SpeedMax, ZoomMin, ZoomMax, Camera.orthographicSize);
+                Speed = Helpers.ScaleValueInRange(SpeedMin, SpeedMax, ZoomMin, ZoomMax, Camera.orthographicSize) ;
                 ZoomStep = Mathf.Max(2f, Camera.orthographicSize / 2f);
                 moved = true;
             }
