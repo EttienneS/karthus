@@ -24,6 +24,8 @@ public class Faction
 
     public void Update()
     {
+        if (!Game.Ready)
+            return;
         if (Game.TimeManager.Paused)
         {
             return;

@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SceneLoader : MonoBehaviour
@@ -6,66 +9,87 @@ public class SceneLoader : MonoBehaviour
     public static SceneLoader Instance;
 
     public RectTransform barFillRectTransform;
+    public Image BarImage;
     public Text LoadingTextBox;
-
-    private bool _loading;
-    private AsyncOperation _loadingOperation;
+    internal List<Color> Colors = new List<Color>();
+    internal Color CurrentColor;
+    internal float Cycle = 3f;
+    internal Color IntermColor;
+    internal Color TargetColor;
+    internal float TimeLeft = 3f;
+    private bool _done;
     private Vector3 barFillLocalScale = Vector3.one;
 
     public void Hide()
     {
-        // Disable the loading screen:
         gameObject.SetActive(false);
-        _loadingOperation = null;
-        _loading = false;
     }
 
-    public void Show(AsyncOperation loadingOperation)
+    public IEnumerator LoadNewScene()
     {
-        // Enable the loading screen:
-        gameObject.SetActive(true);
-        // Store the reference:
-        _loadingOperation = loadingOperation;
-        // Reset the UI:
-        SetProgress(0f);
-        _loading = true;
-    }
+        var async = SceneManager.LoadSceneAsync("Main", LoadSceneMode.Additive);
 
-    private void Awake()
-    {
-        if (Instance == null)
+        while (!async.isDone)
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
+            SetProgress("Loading scene", 0.05f);
+            yield return null;
         }
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Hide();
+         
+        _done = true;
     }
 
-    // Updates the UI based on the progress:
-    private void SetProgress(float progress)
+    public void Start()
     {
-        LoadingTextBox.text = Mathf.CeilToInt(progress * 100).ToString() + "%";
-        barFillLocalScale.x = progress;
-        barFillRectTransform.localScale = barFillLocalScale;
+        Colors.Add(ManaColor.Blue.GetActualColor());
+        Colors.Add(ManaColor.Red.GetActualColor());
+        Colors.Add(ManaColor.Green.GetActualColor());
+        Colors.Add(ManaColor.White.GetActualColor());
+        Colors.Add(ManaColor.Black.GetActualColor());
+
+        CurrentColor = Colors.GetRandomItem();
+        TargetColor = Colors.GetRandomItem();
+        Colors.Remove(CurrentColor);
+        Colors.Remove(TargetColor);
+
+        StartCoroutine(LoadNewScene());
     }
 
-    private void Update()
+    public void Update()
     {
-        if (_loading)
+        if (_done)
         {
-            if (_loadingOperation.isDone)
+            if (!Game.Ready)
             {
-                Hide();
+                SetProgress(Game.LoadStatus, Game.LoadProgress);
             }
             else
             {
-                SetProgress(_loadingOperation.progress);
+                Hide();
             }
         }
+
+        if (TimeLeft <= Time.deltaTime)
+        {
+            BarImage.color = TargetColor;
+
+            Colors.Add(CurrentColor);
+            CurrentColor = TargetColor;
+            TargetColor = Colors.GetRandomItem();
+            TimeLeft = Cycle;
+        }
+        else
+        {
+            IntermColor = Color.Lerp(IntermColor, TargetColor, Time.deltaTime / TimeLeft);
+            BarImage.color = IntermColor;
+
+            TimeLeft -= Time.deltaTime;
+        }
+    }
+
+    private void SetProgress(string message, float progress)
+    {
+        LoadingTextBox.text = message;
+        barFillLocalScale.x = progress;
+        barFillRectTransform.localScale = barFillLocalScale;
     }
 }

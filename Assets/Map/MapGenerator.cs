@@ -1,9 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
 
 public class MapGenerator
@@ -28,6 +27,10 @@ public class MapGenerator
             return _biomeTemplates;
         }
     }
+
+    public bool Busy;
+
+    public bool Done;
 
     public Cell CreateCell(int x, int y)
     {
@@ -166,21 +169,6 @@ public class MapGenerator
 
     internal void GenerateBaseMap()
     {
-        Game.Map.Cells = new List<Cell>();
-
-        for (var y = 0; y < Game.Map.Height; y++)
-        {
-            for (var x = 0; x < Game.Map.Width; x++)
-            {
-                CreateCell(x, y);
-            }
-        }
-
-        LinkNeighbours();
-
-        GenerateMapCells();
-
-        ResetSearchPriorities();
     }
 
     internal void LinkNeighbours()
@@ -214,40 +202,110 @@ public class MapGenerator
         }
     }
 
-    internal void Make()
-    {
-        var sw = new Stopwatch();
-        sw.Start();
+    public string Status;
 
+    public IEnumerator Work()
+    {
         Biomes.Add(0, new Biome("Void", new BiomeRegion(0.0f, 1.0f, "Void", -1f)));
 
-        GenerateBaseMap();
-        Debug.Log($"Generated base map in {sw.Elapsed}");
-        sw.Restart();
+        Game.Map.Cells = new List<Cell>();
+        Game.SetLoadStatus("Create cells", 0.08f);
+        for (var y = 0; y < Game.Map.Height; y++)
+        {
+            for (var x = 0; x < Game.Map.Width; x++)
+            {
+                CreateCell(x, y);
+            }
+        }
+        yield return null;
 
+        Game.SetLoadStatus("Link cells", 0.12f);
+        LinkNeighbours();
+        yield return null;
+
+        Game.SetLoadStatus("Set cell heights", 0.15f);
+        SetInitialCellHeights();
+        yield return null;
+
+        Game.SetLoadStatus("Reset search priorities", 0.20f);
+        ResetSearchPriorities();
+        yield return null;
+
+        Game.SetLoadStatus("Run map automata", 0.25f);
+        RunMapAutomata();
+        yield return null;
+
+        Game.SetLoadStatus("Make biomes", 0.30f);
         MakeBiomes();
-        Debug.Log($"Made biomes in {sw.Elapsed}");
-        sw.Restart();
+        yield return null;
 
-        //CreateTown();
-        //Debug.Log($"Generated towns in {sw.Elapsed}");
-        //sw.Restart();
-
-        //CreateLeyLines();
-        //Debug.Log($"Created ley lines in {sw.Elapsed}");
-        //sw.Restart();
-
+        Game.SetLoadStatus("Bootstrap factions", 0.35f);
         MakeFactionBootStrap(Game.FactionController.PlayerFaction);
-        Debug.Log($"Made bootstrap in {sw.Elapsed}");
-        sw.Restart();
+        yield return null;
 
+        Game.SetLoadStatus("Spawn creatures", 0.40f);
         SpawnCreatures();
-        Debug.Log($"Spawned creatures in {sw.Elapsed}");
-        sw.Restart();
+        yield return null;
 
-        Game.Map.Refresh();
-        Debug.Log($"Initial map draw completed in {sw.Elapsed}");
-        sw.Restart();
+        Game.SetLoadStatus("Build render chunks", 0.45f);
+        var chunks = GetRenderChunks();
+        yield return null;
+
+        Game.SetLoadStatus("Render chunks", 0.5f);
+        var i = 0f;
+        var totalProgress = 0.3f;
+        var totalChunks = chunks.Count;
+        foreach (var chunk in chunks)
+        {
+            i++;
+            Game.SetLoadStatus($"Draw {i}/{totalChunks}", 0.5f + (i / totalChunks) * totalProgress);
+
+            DrawChunk(chunk);
+            yield return null;
+        }
+
+        Done = true;
+    }
+
+    private static void DrawChunk(List<Cell> chunk)
+    {
+        chunk.ForEach(c => c.Populate());
+        var tiles = chunk.Select(c => c.Tile).ToArray();
+        var coords = chunk.Select(c => c.ToVector3Int()).ToArray();
+        Game.Map.Tilemap.SetTiles(coords, tiles);
+        Game.StructureController.DrawAllStructures(chunk);
+    }
+
+    private static List<List<Cell>> GetRenderChunks()
+    {
+        var chunks = new List<List<Cell>>();
+
+        const int chunkSize = 50;
+        var wchunks = Game.Map.Width / chunkSize;
+        var hchunks = Game.Map.Height / chunkSize;
+
+        for (int w = 0; w < wchunks; w++)
+        {
+            for (int h = 0; h < hchunks; h++)
+            {
+                var chunk = new List<Cell>();
+
+                for (int x = 0; x < chunkSize; x++)
+                {
+                    for (int y = 0; y < chunkSize; y++)
+                    {
+                        var cell = Game.Map.GetCellAtCoordinate(x + (w * chunkSize), y + (h * chunkSize));
+                        if (!cell.IsVoid)
+                        {
+                            chunk.Add(cell);
+                        }
+                    }
+                }
+
+                chunks.Add(chunk);
+            }
+        }
+        return chunks;
     }
 
     internal void ResetSearchPriorities()
@@ -317,7 +375,7 @@ public class MapGenerator
                 {
                     spot = Game.Map.Cells.Where(c => c.TravelCost > 0).GetRandomItem();
                 }
-                Game.CreatureController.SpawnCreature(creature, spot,Game.FactionController.MonsterFaction);
+                Game.CreatureController.SpawnCreature(creature, spot, Game.FactionController.MonsterFaction);
             }
         }
     }
@@ -432,7 +490,7 @@ public class MapGenerator
         return streets;
     }
 
-    private void GenerateMapCells()
+    private void SetInitialCellHeights()
     {
         for (int x = 0; x < Game.Map.Width; x++)
         {
@@ -446,8 +504,7 @@ public class MapGenerator
 
     private void MakeBiomes()
     {
-        RunMapAutomata();
-
+        var cutoff = Game.Map.Cells.Count / 10;
         var unprocessedCells = Game.Map.Cells.Where(c => c.Alive).ToList();
         while (unprocessedCells.Count > 0)
         {
@@ -456,9 +513,15 @@ public class MapGenerator
 
             var candidateCells = new List<Cell> { unprocessedCells[0] };
             unprocessedCells.RemoveAt(0);
-
+            var counter = 0;
             while (candidateCells.Count > 0)
             {
+                counter++;
+                if (counter > cutoff)
+                {
+                    unprocessedCells.AddRange(candidateCells);
+                    break;
+                }
                 var candidate = candidateCells[0];
                 candidateCells.Remove(candidate);
 
@@ -516,8 +579,6 @@ public class MapGenerator
                                                   Game.Map.GetNearestPathableCell(center, Mobility.Walk, 5),
                                                   Game.FactionController.PlayerFaction);
         }
-
-        Game.CameraController.JumpToCell(center);
     }
 
     private void MakeStreet(Cell crossingPoint, int length, bool vertical, double momentum, int color, List<List<Cell>> streets)

@@ -24,6 +24,21 @@ public partial class Game //.Instances
     private static StructureController _structureController;
     private static TimeManager _timeManager;
     private static FactionController _factionController;
+    private static UIController _uiController;
+
+
+    public static UIController UIController
+    {
+        get
+        {
+            if (_uiController == null)
+            {
+                _uiController = GameObject.Find("UI").GetComponent<UIController>();
+            }
+
+            return _uiController;
+        }
+    }
 
     public static FactionController FactionController
     {

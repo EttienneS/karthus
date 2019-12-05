@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -14,18 +13,26 @@ public enum SelectionPreference
 
 public partial class Game : MonoBehaviour
 {
+    public static float LoadProgress;
+    public static bool Ready;
+    public Vector3 SelectionEnd;
     public SelectionPreference SelectionPreference = SelectionPreference.CreatureOrStructure;
+    public Vector3 SelectionStart;
     public RectTransform selectSquareImage;
 
+    internal static string LoadStatus;
     internal LineRenderer LineRenderer;
     internal List<Cell> SelectedCells = new List<Cell>();
     internal List<CreatureRenderer> SelectedCreatures = new List<CreatureRenderer>();
     internal List<Structure> SelectedStructures = new List<Structure>();
 
     private List<GameObject> _destroyCache = new List<GameObject>();
+    private float _maxCurrentTime;
+    private float _minCurrentTime;
     private TimeStep _oldTimeStep = TimeStep.Normal;
-    public Vector3 SelectionEnd;
-    public Vector3 SelectionStart;
+    public float MaxTimeToClick { get; set; } = 0.60f;
+
+    public float MinTimeToClick { get; set; } = 0.05f;
 
     public void AddItemToDestroy(GameObject gameObject)
     {
@@ -115,6 +122,36 @@ public partial class Game : MonoBehaviour
         }
     }
 
+    public bool DoubleClick()
+    {
+        if (Time.time >= _minCurrentTime && Time.time <= _maxCurrentTime)
+        {
+            _minCurrentTime = 0;
+            _maxCurrentTime = 0;
+            return true;
+        }
+        _minCurrentTime = Time.time + MinTimeToClick; _maxCurrentTime = Time.time + MaxTimeToClick;
+        return false;
+    }
+
+    public static void SetLoadStatus(string message, float progress)
+    {
+        LoadStatus = message;
+        Debug.Log(LoadStatus);
+        LoadProgress = progress;
+    }
+
+    private static void SpawnLiquid(ManaColor color)
+    {
+        var point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        var cell = Map.GetCellAtPoint(point);
+
+        VisualEffectController.SpawnLightEffect(null, cell.Vector, color.GetActualColor(), 1, 1, 0.5f)
+                              .Fades();
+
+        cell.AddLiquid(color, 0.5f);
+    }
+
     private void HandleHotkeys()
     {
         if (Input.GetKeyDown("b"))
@@ -173,7 +210,6 @@ public partial class Game : MonoBehaviour
             SpawnLiquid(ManaColor.Green);
         }
 
-
         if (Input.GetKeyUp("v"))
         {
             foreach (var creature in Game.EntityInfoPanel.CurrentEntities.OfType<Creature>())
@@ -223,17 +259,6 @@ public partial class Game : MonoBehaviour
         {
             SaveManager.Load();
         }
-    }
-
-    private static void SpawnLiquid(ManaColor color)
-    {
-        var point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        var cell = Map.GetCellAtPoint(point);
-
-        VisualEffectController.SpawnLightEffect(null, cell.Vector, color.GetActualColor(), 1, 1, 0.5f)
-                              .Fades();
-
-        cell.AddLiquid(color, 0.5f);
     }
 
     private void HandleTimeControls()
@@ -333,9 +358,7 @@ public partial class Game : MonoBehaviour
 
     private void Start()
     {
-        var sw = new Stopwatch();
-        sw.Start();
-        Debug.Log("Start mapgen");
+        UIController.Hide();
 
         LineRenderer = GetComponent<LineRenderer>();
 
@@ -345,33 +368,34 @@ public partial class Game : MonoBehaviour
         InitFactions();
 
         MapGenerator = new MapGenerator();
-        MapGenerator.Make();
-
-        TimeManager.TimeStep = TimeStep.Paused;
-
-        Debug.Log($"Map gen complete in: {sw.Elapsed}");
+        
     }
 
-    public float MaxTimeToClick { get; set; } = 0.60f;
-    public float MinTimeToClick { get; set; } = 0.05f;
-
-    private float _minCurrentTime;
-    private float _maxCurrentTime;
-
-    public bool DoubleClick()
-    {
-        if (Time.time >= _minCurrentTime && Time.time <= _maxCurrentTime)
-        {
-            _minCurrentTime = 0;
-            _maxCurrentTime = 0;
-            return true;
-        }
-        _minCurrentTime = Time.time + MinTimeToClick; _maxCurrentTime = Time.time + MaxTimeToClick;
-        return false;
-    }
+    private bool _shownOnce;
 
     private void Update()
     {
+        if (!Ready)
+        {
+            if (MapGenerator.Done)
+            {
+                Ready = true;
+            }
+            else if (!MapGenerator.Busy)
+            {
+                MapGenerator.Busy = true;
+                StartCoroutine(MapGenerator.Work());
+            }
+            return;
+        }
+        else if (!_shownOnce)
+        {
+            _shownOnce = true;
+
+            CameraController.MoveToCell(FactionController.PlayerFaction.Creatures[0].Cell);
+            UIController.Show();
+        }
+
         var mousePosition = Input.mousePosition;
 
         HandleHotkeys();

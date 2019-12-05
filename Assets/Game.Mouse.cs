@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public partial class Game // .Mouse
 {
@@ -43,6 +44,7 @@ public partial class Game // .Mouse
     }
 
     private bool _constructMode;
+   
 
     private void MoveMouseSprite(Vector3 mousePosition)
     {
@@ -73,4 +75,6 @@ public partial class Game // .Mouse
             }
         }
     }
+
+    
 }

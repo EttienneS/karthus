@@ -500,14 +500,4 @@ public class Map : MonoBehaviour
         return GetCellAtCoordinate(mineX, mineY); 
     }
 
-    internal void Refresh()
-    {
-        var cells = Game.Map.Cells.Where(c => !c.IsVoid).ToList();
-
-        cells.ForEach(c => c.Populate());
-        var tiles = cells.Select(c => c.Tile).ToArray();
-        var coords = cells.Select(c => c.ToVector3Int()).ToArray();
-        Game.Map.Tilemap.SetTiles(coords, tiles);
-        Game.StructureController.DrawAllStructures(cells);
-    }
 }

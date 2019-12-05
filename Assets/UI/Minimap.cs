@@ -21,7 +21,6 @@ public class Minimap : MonoBehaviour, IPointerClickHandler, IDragHandler
             return (int)(Screen.width - ThisRect.sizeDelta.x - 15);
         }
     }
-   
 
     public int MinY
     {
@@ -30,7 +29,6 @@ public class Minimap : MonoBehaviour, IPointerClickHandler, IDragHandler
             return (int)(Screen.height - ThisRect.sizeDelta.y - 15);
         }
     }
-   
 
     public bool MouseInMinimapArea()
     {
@@ -65,6 +63,10 @@ public class Minimap : MonoBehaviour, IPointerClickHandler, IDragHandler
     // Update is called once per frame
     private void Update()
     {
+        if (!Game.Ready)
+        {
+            return;
+        }
         MinimapCamera.orthographicSize = Game.Map.Width / 2;
         MinimapCamera.transform.position = new Vector3(Game.Map.Center.X, Game.Map.Center.Y, -10);
 
