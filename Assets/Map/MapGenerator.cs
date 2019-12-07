@@ -232,19 +232,17 @@ public class MapGenerator
         yield return null;
 
         Game.SetLoadStatus("Run map automata", 0.25f);
-        RunMapAutomata();
+        foreach (var run in RunMapAutomata(2))
+        {
+            yield return null;
+        }
         yield return null;
 
-        Game.SetLoadStatus("Make biomes", 0.30f);
-        MakeBiomes();
-        yield return null;
-
-        Game.SetLoadStatus("Bootstrap factions", 0.35f);
-        MakeFactionBootStrap(Game.FactionController.PlayerFaction);
-        yield return null;
-
-        Game.SetLoadStatus("Spawn creatures", 0.40f);
-        SpawnCreatures();
+        Game.SetLoadStatus("Make biomes", 0.35f);
+        foreach (var run in MakeBiomes())
+        {
+            yield return null;
+        }
         yield return null;
 
         Game.SetLoadStatus("Build render chunks", 0.45f);
@@ -264,6 +262,14 @@ public class MapGenerator
             yield return null;
         }
 
+        Game.SetLoadStatus("Bootstrap factions", 0.35f);
+        MakeFactionBootStrap(Game.FactionController.PlayerFaction);
+        yield return null;
+
+        Game.SetLoadStatus("Spawn creatures", 0.40f);
+        SpawnCreatures();
+        yield return null;
+
         Done = true;
     }
 
@@ -280,7 +286,7 @@ public class MapGenerator
     {
         var chunks = new List<List<Cell>>();
 
-        const int chunkSize = 50;
+        const int chunkSize = 25;
         var wchunks = Game.Map.Width / chunkSize;
         var hchunks = Game.Map.Height / chunkSize;
 
@@ -320,12 +326,13 @@ public class MapGenerator
         }
     }
 
-    private static void RunMapAutomata()
+    private static IEnumerable RunMapAutomata(int passes)
     {
         var map = Noise.GenerateNoiseMap(Game.Map.Width, Game.Map.Height,
                                          Random.Range(1, 100000),
                                          50, 4, 0.4f, 4, new Vector2(0, 0));
 
+        Game.SetLoadStatus("Set initial state", 0.30f);
         foreach (var cell in Game.Map.Cells)
         {
             var state = map[cell.X, cell.Y];
@@ -348,12 +355,16 @@ public class MapGenerator
             }
         }
 
-        for (int i = 0; i < 2; i++)
+        yield return null;
+
+        for (int i = 0; i < passes; i++)
         {
+            Game.SetLoadStatus($"Pass {i} of {passes}", 0.30f + ((i + 1f) * 0.05f));
             foreach (var cell in Game.Map.Cells)
             {
                 cell.RunAutomata();
             }
+            yield return null;
         }
     }
 
@@ -502,18 +513,22 @@ public class MapGenerator
         }
     }
 
-    private void MakeBiomes()
+    private IEnumerable MakeBiomes()
     {
         var cutoff = Game.Map.Cells.Count / 10;
         var unprocessedCells = Game.Map.Cells.Where(c => c.Alive).ToList();
+
+        var biomeCount = 0f;
         while (unprocessedCells.Count > 0)
         {
             var id = Biomes.Count;
             Biomes.Add(id, BiomeTemplates.GetRandomItem().CloneJson());
+            biomeCount += 0.01f;
 
             var candidateCells = new List<Cell> { unprocessedCells[0] };
             unprocessedCells.RemoveAt(0);
             var counter = 0;
+
             while (candidateCells.Count > 0)
             {
                 counter++;
@@ -541,6 +556,9 @@ public class MapGenerator
                     }
                 }
             }
+
+            Game.SetLoadStatus($"Made biome {id}: {counter}", 0.40f);
+            yield return null;
         }
     }
 

@@ -30,9 +30,17 @@ public partial class Game : MonoBehaviour
     private float _maxCurrentTime;
     private float _minCurrentTime;
     private TimeStep _oldTimeStep = TimeStep.Normal;
+    private bool _shownOnce;
     public float MaxTimeToClick { get; set; } = 0.60f;
 
     public float MinTimeToClick { get; set; } = 0.05f;
+
+    public static void SetLoadStatus(string message, float progress)
+    {
+        LoadStatus = message;
+        Debug.Log(LoadStatus);
+        LoadProgress = progress;
+    }
 
     public void AddItemToDestroy(GameObject gameObject)
     {
@@ -132,13 +140,6 @@ public partial class Game : MonoBehaviour
         }
         _minCurrentTime = Time.time + MinTimeToClick; _maxCurrentTime = Time.time + MaxTimeToClick;
         return false;
-    }
-
-    public static void SetLoadStatus(string message, float progress)
-    {
-        LoadStatus = message;
-        Debug.Log(LoadStatus);
-        LoadProgress = progress;
     }
 
     private static void SpawnLiquid(ManaColor color)
@@ -358,7 +359,10 @@ public partial class Game : MonoBehaviour
 
     private void Start()
     {
+        LoadingPanel.LoadingTextBox.text = "Initializing...";
+
         UIController.Hide();
+        LoadingPanel.Show();
 
         LineRenderer = GetComponent<LineRenderer>();
 
@@ -368,10 +372,7 @@ public partial class Game : MonoBehaviour
         InitFactions();
 
         MapGenerator = new MapGenerator();
-        
     }
-
-    private bool _shownOnce;
 
     private void Update()
     {
@@ -383,6 +384,8 @@ public partial class Game : MonoBehaviour
             }
             else if (!MapGenerator.Busy)
             {
+                CameraController.Camera.transform.position = new Vector3(Map.Width / 2, Map.Height / 2, -1);
+                CameraController.Camera.orthographicSize = Map.Width / 2;
                 MapGenerator.Busy = true;
                 StartCoroutine(MapGenerator.Work());
             }
@@ -390,10 +393,12 @@ public partial class Game : MonoBehaviour
         }
         else if (!_shownOnce)
         {
-            _shownOnce = true;
-
-            CameraController.MoveToCell(FactionController.PlayerFaction.Creatures[0].Cell);
             UIController.Show();
+            LoadingPanel.Hide();
+
+            _shownOnce = true;
+            CameraController.Camera.orthographicSize = 10;
+            CameraController.MoveToCell(FactionController.PlayerFaction.Creatures[0].Cell);
         }
 
         var mousePosition = Input.mousePosition;

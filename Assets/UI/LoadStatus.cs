@@ -1,13 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class SceneLoader : MonoBehaviour
+public class LoadStatus : MonoBehaviour
 {
-    public static SceneLoader Instance;
-
     public RectTransform barFillRectTransform;
     public Image BarImage;
     public Text LoadingTextBox;
@@ -17,7 +13,6 @@ public class SceneLoader : MonoBehaviour
     internal Color IntermColor;
     internal Color TargetColor;
     internal float TimeLeft = 3f;
-    private bool _done;
     private Vector3 barFillLocalScale = Vector3.one;
 
     public void Hide()
@@ -25,17 +20,9 @@ public class SceneLoader : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public IEnumerator LoadNewScene()
+    public void Show()
     {
-        var async = SceneManager.LoadSceneAsync("Main", LoadSceneMode.Additive);
-
-        while (!async.isDone)
-        {
-            SetProgress("Loading scene", 0.05f);
-            yield return null;
-        }
-         
-        _done = true;
+        gameObject.SetActive(true);
     }
 
     public void Start()
@@ -50,22 +37,17 @@ public class SceneLoader : MonoBehaviour
         TargetColor = Colors.GetRandomItem();
         Colors.Remove(CurrentColor);
         Colors.Remove(TargetColor);
-
-        StartCoroutine(LoadNewScene());
     }
 
     public void Update()
     {
-        if (_done)
+        if (!Game.Ready)
         {
-            if (!Game.Ready)
-            {
-                SetProgress(Game.LoadStatus, Game.LoadProgress);
-            }
-            else
-            {
-                Hide();
-            }
+            SetProgress(Game.LoadStatus, Game.LoadProgress);
+        }
+        else
+        {
+            Hide();
         }
 
         if (TimeLeft <= Time.deltaTime)

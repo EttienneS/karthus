@@ -25,6 +25,20 @@ public partial class Game //.Instances
     private static TimeManager _timeManager;
     private static FactionController _factionController;
     private static UIController _uiController;
+    private static LoadStatus _loadingPanel;
+
+    public static LoadStatus LoadingPanel
+    {
+        get
+        {
+            if (_loadingPanel == null)
+            {
+                _loadingPanel = GameObject.Find("LoadingPanel").GetComponent<LoadStatus>();
+            }
+
+            return _loadingPanel;
+        }
+    }
 
 
     public static UIController UIController

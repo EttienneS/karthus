@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -121,24 +121,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &611298403 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 990388310288843808, guid: 21216dc22b576ec4785cf4c518463eaa,
-    type: 3}
-  m_PrefabInstance: {fileID: 6943260559078519373}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &611298404
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 611298403}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d6d7f33e58d6f5047a36d6badc3d0036, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &686708297
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -857,20 +839,25 @@ PrefabInstance:
       propertyPath: m_Name
       value: Main Camera
       objectReference: {fileID: 0}
+    - target: {fileID: 5246461426590746731, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
+        type: 3}
+      propertyPath: orthographic size
+      value: 170
+      objectReference: {fileID: 0}
     - target: {fileID: 5246461426590746772, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 250
+      value: 170
       objectReference: {fileID: 0}
     - target: {fileID: 5246461426590746772, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 250
+      value: 170
       objectReference: {fileID: 0}
     - target: {fileID: 5246461426590746772, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -10
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 5246461426590746772, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
         type: 3}
@@ -1323,6 +1310,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1603956339164243495, guid: 21216dc22b576ec4785cf4c518463eaa,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1974849549147761304, guid: 21216dc22b576ec4785cf4c518463eaa,
         type: 3}
