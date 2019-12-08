@@ -245,8 +245,16 @@ public class MapGenerator
         }
         yield return null;
 
+        Game.SetLoadStatus("Bootstrap factions", 0.35f);
+        MakeFactionBootStrap(Game.FactionController.PlayerFaction);
+        yield return null;
+
+        Game.SetLoadStatus("Spawn creatures", 0.40f);
+        SpawnCreatures();
+        yield return null;
+
         Game.SetLoadStatus("Build render chunks", 0.45f);
-        var chunks = GetRenderChunks();
+        var chunks = GetRenderChunks(100);
         yield return null;
 
         Game.SetLoadStatus("Render chunks", 0.5f);
@@ -256,19 +264,13 @@ public class MapGenerator
         foreach (var chunk in chunks)
         {
             i++;
-            Game.SetLoadStatus($"Draw {i}/{totalChunks}", 0.5f + (i / totalChunks) * totalProgress);
+            Game.SetLoadStatus($"Draw {i + 1}/{totalChunks}", 0.5f + i / totalChunks * totalProgress);
 
             DrawChunk(chunk);
             yield return null;
         }
 
-        Game.SetLoadStatus("Bootstrap factions", 0.35f);
-        MakeFactionBootStrap(Game.FactionController.PlayerFaction);
-        yield return null;
 
-        Game.SetLoadStatus("Spawn creatures", 0.40f);
-        SpawnCreatures();
-        yield return null;
 
         Done = true;
     }
@@ -282,11 +284,10 @@ public class MapGenerator
         Game.StructureController.DrawAllStructures(chunk);
     }
 
-    private static List<List<Cell>> GetRenderChunks()
+    private static List<List<Cell>> GetRenderChunks(int chunkSize)
     {
         var chunks = new List<List<Cell>>();
 
-        const int chunkSize = 25;
         var wchunks = Game.Map.Width / chunkSize;
         var hchunks = Game.Map.Height / chunkSize;
 
@@ -341,7 +342,7 @@ public class MapGenerator
             {
                 cell.State = Cell.AutomataState.ImmutableAlive;
             }
-            else if (state > 0.5)
+            else if (state > 0.4)
             {
                 cell.State = Cell.AutomataState.MutableAlive;
             }
@@ -528,7 +529,7 @@ public class MapGenerator
             var candidateCells = new List<Cell> { unprocessedCells[0] };
             unprocessedCells.RemoveAt(0);
             var counter = 0;
-
+            var currentBiome = new List<Cell> { candidateCells[0] };
             while (candidateCells.Count > 0)
             {
                 counter++;
@@ -544,7 +545,7 @@ public class MapGenerator
                 {
                     continue;
                 }
-
+                currentBiome.Add(candidate);
                 candidate.BiomeId = id;
                 unprocessedCells.Remove(candidate);
 
@@ -557,8 +558,16 @@ public class MapGenerator
                 }
             }
 
-            Game.SetLoadStatus($"Made biome {id}: {counter}", 0.40f);
-            yield return null;
+            if (counter < 10)
+            {
+                currentBiome.ForEach(b => b.BiomeId = 0);
+                Biomes.Remove(id);
+            }
+            else
+            {
+                Game.SetLoadStatus($"Made biome {id}. {unprocessedCells.Count} left.", 0.40f);
+                yield return null;
+            }
         }
     }
 
