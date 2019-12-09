@@ -14,6 +14,8 @@ public class EntityInfoPanel : MonoBehaviour
     public Text HealthText;
     public ManaPanel ManaPanel;
 
+    public GameObject TabPanel;
+
     public Toggle FirstPanelToggle;
     private List<ImageButton> _contextButtons = new List<ImageButton>();
 
@@ -76,6 +78,7 @@ public class EntityInfoPanel : MonoBehaviour
 
             if (CurrentEntities.Count == 1)
             {
+                TabPanel.SetActive(true);
                 var currentEntity = CurrentEntities[0];
 
                 Log.text = string.Empty;
@@ -141,11 +144,26 @@ public class EntityInfoPanel : MonoBehaviour
             }
             else
             {
+                TabPanel.SetActive(false);
+
                 CreatureName.text = $"{CurrentEntities.Count} entities";
-                foreach (var entity in CurrentEntities)
+
+                var entityData = CurrentEntities.GroupBy(e => e.Name).Select(e => new
                 {
-                    PropertiesPanel.text += $"- {entity.Name}\n";
+                    Text = e.Key,
+                    Count = e.Count(),
+                    Green = e.Sum(g => g.ManaPool.GetTotal(ManaColor.Green)),
+                    Red = e.Sum(r => r.ManaPool.GetTotal(ManaColor.Red)),
+                    Blue = e.Sum(u => u.ManaPool.GetTotal(ManaColor.Blue)),
+                    Black = e.Sum(b => b.ManaPool.GetTotal(ManaColor.Black)),
+                    White = e.Sum(w => w.ManaPool.GetTotal(ManaColor.White))
+                });
+
+                foreach (var entity in entityData)
+                {
+                    PropertiesPanel.text += $"- {entity.Text} x{entity.Count} (R:{entity.Red}, G:{entity.Green}, U:{entity.Blue}, B:{entity.Black}, W:{entity.White})\n";
                 }
+
             }
         }
     }
@@ -319,5 +337,5 @@ public class EntityInfoPanel : MonoBehaviour
         btn.Button.image.color = Color.red;
     }
 
-  
+
 }

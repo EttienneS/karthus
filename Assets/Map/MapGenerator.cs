@@ -270,8 +270,6 @@ public class MapGenerator
             yield return null;
         }
 
-
-
         Done = true;
     }
 
@@ -360,7 +358,7 @@ public class MapGenerator
 
         for (int i = 0; i < passes; i++)
         {
-            Game.SetLoadStatus($"Pass {i} of {passes}", 0.30f + ((i + 1f) * 0.05f));
+            Game.SetLoadStatus($"Automata pass {i} of {passes}", 0.30f + ((i + 1f) * 0.05f));
             foreach (var cell in Game.Map.Cells)
             {
                 cell.RunAutomata();
@@ -516,10 +514,13 @@ public class MapGenerator
 
     private IEnumerable MakeBiomes()
     {
+        const int yieldCounter = 1000;
+        const int minBiome = 10;
         var cutoff = Game.Map.Cells.Count / 10;
         var unprocessedCells = Game.Map.Cells.Where(c => c.Alive).ToList();
 
         var biomeCount = 0f;
+        var yield = 0;
         while (unprocessedCells.Count > 0)
         {
             var id = Biomes.Count;
@@ -558,15 +559,20 @@ public class MapGenerator
                 }
             }
 
-            if (counter < 10)
+            yield += counter;
+            if (counter < minBiome)
             {
                 currentBiome.ForEach(b => b.BiomeId = 0);
                 Biomes.Remove(id);
             }
             else
             {
-                Game.SetLoadStatus($"Made biome {id}. {unprocessedCells.Count} left.", 0.40f);
-                yield return null;
+                if (yield > yieldCounter)
+                {
+                    yield = 0;
+                    Game.SetLoadStatus($"Making biomes: {unprocessedCells.Count} cells left.", 0.40f);
+                    yield return null;
+                }
             }
         }
     }

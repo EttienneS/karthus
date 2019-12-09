@@ -381,7 +381,7 @@ public partial class Game : MonoBehaviour
             if (MapGenerator.Done)
             {
                 Ready = true;
-            }
+            } 
             else if (!MapGenerator.Busy)
             {
                 CameraController.Camera.transform.position = new Vector3(Map.Width / 2, Map.Height / 2, -1);
@@ -394,6 +394,8 @@ public partial class Game : MonoBehaviour
         else if (!_shownOnce)
         {
             UIController.Show();
+            EntityInfoPanel.Hide();
+            OrderSelectionController.DisableAndReset();
             LoadingPanel.Hide();
 
             _shownOnce = true;

@@ -32,6 +32,7 @@ public class ManaPool : Dictionary<ManaColor, Mana>
             return _entity;
         }
     }
+
     public void BurnMana(ManaColor color, int amount)
     {
         if (Entity?.Cell != null)
@@ -166,10 +167,12 @@ public class ManaPool : Dictionary<ManaColor, Mana>
 
         return true;
     }
+
     internal bool HasMana(ManaColor value)
     {
         return ContainsKey(value) && this[value].Total > 0;
     }
+
     internal bool HasMana(ManaColor color, int amount)
     {
         if (!ContainsKey(color))
@@ -220,6 +223,15 @@ public class ManaPool : Dictionary<ManaColor, Mana>
                 }
             }
         }
+    }
+
+    internal int GetTotal(ManaColor color)
+    {
+        if (!ContainsKey(color))
+        {
+            return 0;
+        }
+        return this[color].Total;
     }
 
     internal void Transfer(ManaPool target, ManaColor manaColor, int amount)
