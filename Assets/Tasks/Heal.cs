@@ -6,6 +6,8 @@ public class Heal : CreatureTask
 {
     public Heal()
     {
+        RequiredSkill = "Heal";
+        RequiredSkillLevel = 1;
     }
 
     public override bool Done(Creature creature)

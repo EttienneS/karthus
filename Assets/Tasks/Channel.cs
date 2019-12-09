@@ -12,6 +12,8 @@ public class Channel : CreatureTask
 
     public Channel()
     {
+        RequiredSkill = "Arcana";
+        RequiredSkillLevel = 1;
     }
 
     [JsonIgnore]

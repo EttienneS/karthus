@@ -474,12 +474,23 @@ public class Creature : IEntity
 
     internal bool CanDo(CreatureTask t)
     {
-        if (HasSkill(t.RequiredSkill))
+        if (string.IsNullOrEmpty(t.RequiredSkill))
         {
-            return GetSkillLevel(t.RequiredSkill) >= t.RequiredSkillLevel;
+            return true;
+        }
+        if (HasSkill(t.RequiredSkill) && GetSkillLevel(t.RequiredSkill) >= t.RequiredSkillLevel)
+        {
+            foreach (var subTask in t.SubTasks)
+            {
+                if (!CanDo(subTask))
+                {
+                    Debug.LogError($"{Name} cant do: {subTask.GetType().Name}");
+                    return false;
+                }
+            }
         }
 
-        return false;
+        return true;
     }
 
     internal void Forget(string context)
@@ -842,6 +853,11 @@ public class Creature : IEntity
         {
             try
             {
+                if (!CanDo(Task))
+                {
+                    throw new Exception("Unable to do assigned task!");
+                }
+
                 if (Task.Done(this))
                 {
                     if (!(Task is Idle))
@@ -866,7 +882,7 @@ public class Creature : IEntity
             }
             catch (Exception ex)
             {
-                Debug.LogWarning($"Task failed: {ex}");
+                Debug.LogError($"Task failed: {ex}");
 
                 if (!Cell.Pathable(Mobility))
                 {

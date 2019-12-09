@@ -20,7 +20,7 @@
       "Content": {
         "Small Rock": 0.05
       },
-      "Max": 0.1,
+      "Max": 1.0,
       "Min": 0.9,
       "SpriteName": "Dirt"
     },

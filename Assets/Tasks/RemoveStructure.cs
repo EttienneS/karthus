@@ -4,6 +4,8 @@
 
     public RemoveStructure()
     {
+        RequiredSkill = "Build";
+        RequiredSkillLevel = 1;
     }
 
     public RemoveStructure(Structure structure)

@@ -18,6 +18,24 @@
       "Intensity": "3",
       "Color": "#ff00ff",
       "Duration": "100"
+    },
+    {
+      "$type": "Job, Assembly-CSharp",
+      "ActivationTime": 0.5,
+      "DisplayName": "Recharge",
+      "Task": [
+        "{",
+        " \"$type\": \"Interact, Assembly-CSharp\",",
+        " \"Effect\": {",
+        "   \"$type\": \"TransferMana, Assembly-CSharp\",",
+        "   \"Amount\": \"1\",",
+        "   \"Colors\": [ \"Red\", \"Blue\", \"Green\" ]",
+        " },",
+        " \"TargetID\": \"[THIS]\",",
+        " \"RequiredSkill\": \"Arcana\",",
+        " \"RequiredSkillLevel\": \"1\"",
+        "}"
+      ]
     }
   ],
   "ManaValue": {
@@ -26,7 +44,7 @@
     "Green": "10"
   },
   "Buildable": true,
-  "SpriteName": "pylon",
+  "SpriteName": "pylon", 
   "Layer": "Tree",
-  "TravelCost": "10"
+  "TravelCost": "10" 
 }

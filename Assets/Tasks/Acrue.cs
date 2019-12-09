@@ -4,6 +4,8 @@ public class Acrue : CreatureTask
 {
     public Acrue()
     {
+        RequiredSkill = "Arcana";
+        RequiredSkillLevel = 1;
     }
 
     public Dictionary<ManaColor, int> TargetManaLevel;

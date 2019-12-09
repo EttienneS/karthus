@@ -379,7 +379,7 @@ public class MapGenerator
                 continue;
             }
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < Game.Map.Width / 50; i++)
             {
                 var creature = Game.CreatureController.GetCreatureOfType(monster.Key);
 

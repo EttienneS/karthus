@@ -20,7 +20,7 @@ public class Interact : CreatureTask
     {
         get
         {
-            return IdService.GetEntity(TargetID); ;
+            return IdService.GetEntity(TargetID);
         }
     }
 

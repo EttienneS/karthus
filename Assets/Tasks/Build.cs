@@ -5,6 +5,7 @@
     public Build()
     {
         RequiredSkill = "Build";
+        RequiredSkillLevel = 1;
     }
 
     public Build(Structure structure) : this()
