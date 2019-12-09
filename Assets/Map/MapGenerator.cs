@@ -540,25 +540,11 @@ public class MapGenerator
 
             cells.Distinct();
 
-            for (int i = 0; i < 2; i++)
-            {
-                foreach (var cell in cells.ToList())
-                {
-                    if (cell.NonNullNeighbors.Any(n => !cells.Contains(n)))
-                    {
-                        //edge
-                        if (Random.value > 0.7f)
-                        {
-                            cells.Remove(cell);
-                        }
-                    }
-                }
-            }
-
-
+            var min = Random.Range(0.1f, 0.45f);
+            var max = Random.Range(0.55f, 0.9f);
             foreach (var cell in cells)
             {
-                if (cell.Alive)
+                if (cell.Alive && (cell.Height < max || cell.Height > min))
                 {
                     cell.BiomeId = id;
                 }
@@ -597,7 +583,7 @@ public class MapGenerator
         core.ManaPool.GainMana(ManaColor.White, 20);
         core.ManaPool.GainMana(ManaColor.Black, 20);
 
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < 3; i++)
         {
             Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("Person"),
                                                   Game.Map.GetNearestPathableCell(center, Mobility.Walk, 5),

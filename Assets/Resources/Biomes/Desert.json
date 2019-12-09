@@ -12,7 +12,7 @@
       "Content": {
         "Small Rock": 0.05
       },
-      "Max": 0.82,
+      "Max": 0.80,
       "Min": 0.65,
       "SpriteName": "Dirt"
     },
@@ -38,7 +38,7 @@
         "Small Rock": 0.25,
         "Medium Rock": 0.15
       },
-      "Max": 0.92,
+      "Max": 0.9,
       "Min": 0.8,
       "SpriteName": "Stone"
     },
@@ -46,7 +46,7 @@
       "Content": {
         "Small Rock": 0.04
       },
-      "Max": 0.95,
+      "Max": 0.9,
       "Min": 0.8,
       "SpriteName": "Sand"
     }

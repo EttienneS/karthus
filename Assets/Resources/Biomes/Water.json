@@ -14,14 +14,14 @@
         "Small Rock": 0.04
       },
       "Max": 1.0,
-      "Min": 0.7,
+      "Min": 0.75,
       "SpriteName": "Sand"
     },
     {
       "Content": {
         "Small Rock": 0.04
       },
-      "Max": 0.3,
+      "Max": 0.25,
       "Min": 0.0,
       "SpriteName": "Sand"
     }
