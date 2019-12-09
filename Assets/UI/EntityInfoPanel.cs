@@ -148,7 +148,7 @@ public class EntityInfoPanel : MonoBehaviour
 
                 CreatureName.text = $"{CurrentEntities.Count} entities";
 
-                var entityData = CurrentEntities.GroupBy(e => e.Name).Select(e => new
+                var entityGroups = CurrentEntities.GroupBy(e => e.Name).Select(e => new
                 {
                     Text = e.Key,
                     Count = e.Count(),
@@ -159,9 +159,9 @@ public class EntityInfoPanel : MonoBehaviour
                     White = e.Sum(w => w.ManaPool.GetTotal(ManaColor.White))
                 });
 
-                foreach (var entity in entityData)
+                foreach (var group in entityGroups)
                 {
-                    PropertiesPanel.text += $"- {entity.Text} x{entity.Count} (R:{entity.Red}, G:{entity.Green}, U:{entity.Blue}, B:{entity.Black}, W:{entity.White})\n";
+                    PropertiesPanel.text += $"- {group.Text} x{group.Count} (R:{group.Red}, G:{group.Green}, U:{group.Blue}, B:{group.Black}, W:{group.White})\n";
                 }
 
             }

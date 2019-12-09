@@ -6,7 +6,6 @@ using Random = UnityEngine.Random;
 
 public class Biome
 {
-    private float[,] _noiseMap;
 
     public Biome()
     {
@@ -20,27 +19,9 @@ public class Biome
 
     public List<BiomeRegion> BiomeRegions { get; set; }
     public string Name { get; set; }
+    public float Rarity { get; set; }
 
-    [JsonIgnore]
-    public float[,] NoiseMap
-    {
-        get
-        {
-            if (_noiseMap == null)
-            {
-                _noiseMap = Noise.GenerateNoiseMap(Game.Map.Width * 2, Game.Map.Height * 2,
-                                                   Random.Range(1, 10000),
-                                                   Random.Range(25, 40),
-                                                   4, 0.4f, 4, new Vector2(0, 0));
-            }
-            return _noiseMap;
-        }
-    }
-
-    public float GetCellHeight(int x, int y)
-    {
-        return NoiseMap[x, y];
-    }
+   
 
     public BiomeRegion GetRegion(float value)
     {
@@ -51,6 +32,12 @@ public class Biome
             {
                 regions.Add(region);
             }
+        }
+
+        if (regions.Count == 0)
+        {
+            Debug.LogWarning($"{Name} biome does not contain an entry for {value}");
+            return BiomeRegions[0];
         }
 
         return regions.GetRandomItem();

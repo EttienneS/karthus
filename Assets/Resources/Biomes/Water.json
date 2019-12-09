@@ -1,0 +1,31 @@
+{
+  "BiomeRegions": [
+    {
+      "Content": {
+        "Blue Mana Crystals": 0.01
+      },
+      "Max": 0.8,
+      "Min": 0.2,
+      "TravelCost": -1,
+      "SpriteName": "Water"
+    },
+    {
+      "Content": {
+        "Small Rock": 0.04
+      },
+      "Max": 1.0,
+      "Min": 0.7,
+      "SpriteName": "Sand"
+    },
+    {
+      "Content": {
+        "Small Rock": 0.04
+      },
+      "Max": 0.3,
+      "Min": 0.0,
+      "SpriteName": "Sand"
+    }
+  ],
+  "Name": "Water",
+  "Rarity":  0.2
+}

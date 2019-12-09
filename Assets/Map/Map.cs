@@ -24,6 +24,28 @@ public class Map : MonoBehaviour
 
     private int _searchFrontierPhase;
 
+    [JsonIgnore]
+    public float[,] NoiseMap
+    {
+        get
+        {
+            if (_noiseMap == null)
+            {
+                _noiseMap = Noise.GenerateNoiseMap(Game.Map.Width * 2, Game.Map.Height * 2,
+                                                   Random.Range(1, 10000),
+                                                   Random.Range(25, 40),
+                                                   4, 0.4f, 4, new Vector2(0, 0));
+            }
+            return _noiseMap;
+        }
+    }
+
+    public float GetCellHeight(int x, int y)
+    {
+        return NoiseMap[x, y];
+    }
+    private float[,] _noiseMap;
+
     public Dictionary<(int x, int y), Cell> CellLookup
     {
         get
@@ -485,7 +507,7 @@ public class Map : MonoBehaviour
 
     internal Cell GetPathableNeighbour(Cell coordinates)
     {
-        return coordinates.Neighbors
+        return coordinates.NonNullNeighbors
                           .Where(c => c.TravelCost > 0)
                           .ToList()
                           .GetRandomItem();

@@ -1,0 +1,56 @@
+{
+  "BiomeRegions": [
+    {
+      "Content": {
+        "Small Rock": 0.04
+      },
+      "Max": 0.7,
+      "Min": 0.1,
+      "SpriteName": "Sand"
+    },
+    {
+      "Content": {
+        "Small Rock": 0.05
+      },
+      "Max": 0.82,
+      "Min": 0.65,
+      "SpriteName": "Dirt"
+    },
+    {
+      "Content": {
+        "Small Rock": 0.05
+      },
+      "Max": 0.1,
+      "Min": 0.9,
+      "SpriteName": "Dirt"
+    },
+    {
+      "Content": {
+        "Small Rock": 0.05
+      },
+      "Max": 0.1,
+      "Min": 0.0,
+      "SpriteName": "Dirt"
+    },
+    {
+      "Content": {
+        "Red Mana Crystals": 0.05,
+        "Small Rock": 0.25,
+        "Medium Rock": 0.15
+      },
+      "Max": 0.92,
+      "Min": 0.8,
+      "SpriteName": "Stone"
+    },
+    {
+      "Content": {
+        "Small Rock": 0.04
+      },
+      "Max": 0.95,
+      "Min": 0.8,
+      "SpriteName": "Sand"
+    }
+  ],
+  "Name": "Desert",
+  "Rarity": 0.3
+}

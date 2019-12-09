@@ -11,6 +11,7 @@
     {
         TargetStructure = structure;
 
+        
         AddSubTask(new Acrue(structure.ManaValue));
         foreach (var mana in structure.ManaValue)
         {
