@@ -29,26 +29,25 @@ public class GatherMana : CreatureTask
         if (SubTasksComplete(creature))
         {
             var target = TargetCell;
-            if (creature.Cell != target)
+            var color = target.Liquid.Value;
+            if (target.LiquidLevel > 0)
             {
-                AddSubTask(new Move(target));
-            }
-            else
-            {
-                var color = target.Liquid.Value;
-                if (target.LiquidLevel > 0)
+                if (creature.Cell != target)
+                {
+                    AddSubTask(new Move(target));
+                }
+                else
                 {
                     var amount = Mathf.Min(target.LiquidLevel, 1f);
-
                     Game.VisualEffectController.SpawnLightEffect(null, creature.Vector, color.GetActualColor(), amount, amount, 3).Fades();
                     creature.ManaPool.GainMana(target.Liquid.Value, amount);
                     target.LiquidLevel -= amount;
                     target.UpdateLiquid();
                 }
-                else
-                {
-                    return true;
-                }
+            }
+            else
+            {
+                return true;
             }
         }
 
