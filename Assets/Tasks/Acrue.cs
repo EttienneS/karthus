@@ -10,7 +10,7 @@ public class Acrue : CreatureTask
 
     public Dictionary<ManaColor, int> TargetManaLevel;
 
-    public Acrue(Dictionary<ManaColor, int> targetManaLevel)
+    public Acrue(Dictionary<ManaColor, int> targetManaLevel) : this()
     {
         TargetManaLevel = targetManaLevel;
     }

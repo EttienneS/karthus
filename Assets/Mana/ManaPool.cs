@@ -33,7 +33,7 @@ public class ManaPool : Dictionary<ManaColor, Mana>
         }
     }
 
-    public void BurnMana(ManaColor color, int amount)
+    public void BurnMana(ManaColor color, float amount)
     {
         if (Entity?.Cell != null)
         {
@@ -64,7 +64,7 @@ public class ManaPool : Dictionary<ManaColor, Mana>
         //}
     }
 
-    public void GainMana(ManaColor color, int amount)
+    public void GainMana(ManaColor color, float amount)
     {
         if (Entity?.Cell != null)
         {
@@ -85,7 +85,7 @@ public class ManaPool : Dictionary<ManaColor, Mana>
         }
     }
 
-    public Mana GetBaseMana(ManaColor color, int startAmount)
+    public Mana GetBaseMana(ManaColor color, float startAmount)
     {
         switch (color)
         {
@@ -115,9 +115,9 @@ public class ManaPool : Dictionary<ManaColor, Mana>
         return tmp[Mathf.FloorToInt(Random.value * tmp.Count)];
     }
 
-    public int ManaCount()
+    public float ManaCount()
     {
-        var count = 0;
+        var count = 0f;
         foreach (var kvp in this)
         {
             count += kvp.Value.Total;
@@ -142,7 +142,7 @@ public class ManaPool : Dictionary<ManaColor, Mana>
     internal ManaColor GetManaWithMost()
     {
         var most = ManaColor.Blue;
-        var max = int.MinValue;
+        var max = float.MinValue;
 
         foreach (var kvp in this)
         {
@@ -225,7 +225,7 @@ public class ManaPool : Dictionary<ManaColor, Mana>
         }
     }
 
-    internal int GetTotal(ManaColor color)
+    internal float GetTotal(ManaColor color)
     {
         if (!ContainsKey(color))
         {
@@ -234,7 +234,7 @@ public class ManaPool : Dictionary<ManaColor, Mana>
         return this[color].Total;
     }
 
-    internal void Transfer(ManaPool target, ManaColor manaColor, int amount)
+    internal void Transfer(ManaPool target, ManaColor manaColor, float amount)
     {
         if (amount > 0)
         {

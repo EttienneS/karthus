@@ -7,7 +7,7 @@ public class Idle : CreatureTask
     {
     }
 
-    public Idle(Creature creature)
+    public Idle(Creature creature) : this()
     {
         if (Random.value > 0.6)
         {

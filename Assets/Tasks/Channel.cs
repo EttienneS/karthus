@@ -2,7 +2,7 @@
 
 public class Channel : CreatureTask
 {
-    public int AmountToChannel;
+    public float AmountToChannel;
 
     public ManaColor ManaColor;
 
@@ -34,7 +34,7 @@ public class Channel : CreatureTask
         }
     }
 
-    public static Channel GetChannelFrom(ManaColor color, int amount, IEntity source)
+    public static Channel GetChannelFrom(ManaColor color, float amount, IEntity source)
     {
         return new Channel
         {
@@ -44,7 +44,7 @@ public class Channel : CreatureTask
         };
     }
 
-    public static Channel GetChannelTo(ManaColor color, int amount, IEntity target)
+    public static Channel GetChannelTo(ManaColor color, float amount, IEntity target)
     {
         return new Channel
         {

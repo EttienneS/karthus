@@ -14,7 +14,7 @@ public class Move : CreatureTask
     {
     }
 
-    public Move(Cell targetCoordinates, int maxSpeed = int.MaxValue)
+    public Move(Cell targetCoordinates, int maxSpeed = int.MaxValue) : this()
     {
         TargetX = targetCoordinates.Vector.x;
         TargetY = targetCoordinates.Vector.y;

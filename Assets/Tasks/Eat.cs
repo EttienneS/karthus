@@ -8,7 +8,7 @@ public class Eat : CreatureTask
 
     public ManaColor FoodColor;
 
-    public Eat(ManaColor foodColor)
+    public Eat(ManaColor foodColor) : this()
     {
         FoodColor = foodColor;
         var food = new Dictionary<ManaColor, int> { { FoodColor, 1 } };

@@ -30,7 +30,7 @@ public class Interact : CreatureTask
     {
     }
 
-    public Interact(EffectBase effect, IEntity interactor, string targetID)
+    public Interact(EffectBase effect, IEntity interactor, string targetID) : this()
     {
         Effect = effect;
         TargetID = targetID;

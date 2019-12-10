@@ -10,7 +10,7 @@ public class Wait : CreatureTask
     {
     }
 
-    public Wait(float duration, string reason)
+    public Wait(float duration, string reason) : this()
     {
         Duration = duration;
         Reason = reason;

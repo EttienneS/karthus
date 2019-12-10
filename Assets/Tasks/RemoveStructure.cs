@@ -8,7 +8,7 @@
         RequiredSkillLevel = 1;
     }
 
-    public RemoveStructure(Structure structure)
+    public RemoveStructure(Structure structure) : this()
     {
         StructureToRemove = structure;
 

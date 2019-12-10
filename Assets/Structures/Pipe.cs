@@ -44,7 +44,7 @@ public class Pipe : Structure
         }
 
         var color = Attunement.Value;
-        int count = int.MaxValue;
+        var count = float.MaxValue;
         Pipe target = null;
 
         var pipes = LinkedPipes.ToList();

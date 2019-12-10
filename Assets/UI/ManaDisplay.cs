@@ -34,8 +34,8 @@ public class ManaDisplay : MonoBehaviour
         {
             var mana = kvp.Key;
             var label = kvp.Value;
-            var floatingMana = 0;
-            var stored = 0;
+            var floatingMana = 0f;
+            var stored = 0f;
 
             foreach (var creature in Game.FactionController.PlayerFaction.Creatures)
             {

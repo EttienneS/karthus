@@ -109,8 +109,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -1.4424896, y: 30}
-  m_SizeDelta: {x: -32.884975, y: 30}
+  m_AnchoredPosition: {x: 1.9899979, y: 24.7}
+  m_SizeDelta: {x: -16.83, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1191250107182344916
 CanvasRenderer:
@@ -183,8 +183,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1.925, y: -9.305}
-  m_SizeDelta: {x: 366.15, y: 93.01}
+  m_AnchoredPosition: {x: 1.99, y: -2.3725}
+  m_SizeDelta: {x: 233.17, y: 63.005}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1191250108025236075
 CanvasRenderer:
@@ -214,7 +214,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 0779b6384fecfe045980a212f8515238, type: 3}
-    m_FontSize: 18
+    m_FontSize: 15
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 1
@@ -225,8 +225,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Lorum ipsum dolor sit amet. Lorum ipsum dolor sit amet. Lorum ipsum dolor
-    sit amet. Lorum ipsum dolor sit amet. '
+  m_Text: Lorum ipsum dolor sit amet.
 --- !u!1 &1191250108340527582
 GameObject:
   m_ObjectHideFlags: 0
@@ -261,8 +260,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 69.4}
-  m_SizeDelta: {x: 364.23, y: 64.4}
+  m_AnchoredPosition: {x: 0.000012219, y: 50.6}
+  m_SizeDelta: {x: 239.28, y: 42.94}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1191250108340527581
 CanvasRenderer:
@@ -292,10 +291,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 0779b6384fecfe045980a212f8515238, type: 3}
-    m_FontSize: 30
+    m_FontSize: 20
     m_FontStyle: 1
     m_BestFit: 0
-    m_MinSize: 5
+    m_MinSize: 2
     m_MaxSize: 50
     m_Alignment: 4
     m_AlignByGeometry: 0
@@ -303,7 +302,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Loading... '
+  m_Text: Loading
 --- !u!1 &1890820462635457803
 GameObject:
   m_ObjectHideFlags: 0
@@ -342,8 +341,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 41.05}
-  m_SizeDelta: {x: 400, y: 217.89}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 250, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7054947601115284453
 CanvasRenderer:
