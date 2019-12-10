@@ -247,4 +247,10 @@ public class ManaPool : Dictionary<ManaColor, Mana>
             GainMana(manaColor, amount);
         }
     }
+
+    public override string ToString()
+    {
+        return $"R:{GetTotal(ManaColor.Red)}, G:{GetTotal(ManaColor.Green)}, U:{GetTotal(ManaColor.Blue)}, B:{GetTotal(ManaColor.Black)}, W:{GetTotal(ManaColor.White)}";
+
+    }
 }

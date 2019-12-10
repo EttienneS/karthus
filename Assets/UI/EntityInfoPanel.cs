@@ -75,10 +75,10 @@ public class EntityInfoPanel : MonoBehaviour
         if (CurrentEntities != null)
         {
             PropertiesPanel.text = string.Empty;
+            TabPanel.SetActive(false);
 
             if (CurrentEntities.Count == 1)
             {
-                TabPanel.SetActive(true);
                 var currentEntity = CurrentEntities[0];
 
                 Log.text = string.Empty;
@@ -93,7 +93,6 @@ public class EntityInfoPanel : MonoBehaviour
 
                 CreatureName.text = currentEntity.Name;
 
-
                 foreach (var property in currentEntity.ValueProperties)
                 {
                     PropertiesPanel.text += $"{property.Key}:\t{property.Value.ToString("N0")}\n";
@@ -106,6 +105,8 @@ public class EntityInfoPanel : MonoBehaviour
 
                 if (currentEntity is Creature creature)
                 {
+                    TabPanel.SetActive(true);
+
                     PropertiesPanel.text += $"\nLocation:\t{creature.X:F1}:{creature.Y:F1}\n\n";
                     LogHealth(creature);
                     LogTask(creature);
@@ -113,6 +114,7 @@ public class EntityInfoPanel : MonoBehaviour
                 else
                 {
                     PropertiesPanel.text += $"\nLocation:\t{currentEntity.Cell}\n\n";
+                    PropertiesPanel.text += $"\nMana:\t{currentEntity.ManaPool}\n\n";
                     var structure = currentEntity as Structure;
 
                     PropertiesPanel.text += $"Rotation:\t {structure.Rotation}\n";
@@ -144,7 +146,6 @@ public class EntityInfoPanel : MonoBehaviour
             }
             else
             {
-                TabPanel.SetActive(false);
 
                 CreatureName.text = $"{CurrentEntities.Count} entities";
 
@@ -163,7 +164,6 @@ public class EntityInfoPanel : MonoBehaviour
                 {
                     PropertiesPanel.text += $"- {group.Text} x{group.Count} (R:{group.Red}, G:{group.Green}, U:{group.Blue}, B:{group.Black}, W:{group.White})\n";
                 }
-
             }
         }
     }
@@ -336,6 +336,4 @@ public class EntityInfoPanel : MonoBehaviour
         }
         btn.Button.image.color = Color.red;
     }
-
-
 }
