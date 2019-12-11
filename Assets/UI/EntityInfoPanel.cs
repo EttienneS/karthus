@@ -138,10 +138,16 @@ public class EntityInfoPanel : MonoBehaviour
                                 PropertiesPanel.text += $"In use by:\t{structure.InUseBy.Name}\n";
                             }
                         }
+
+                        foreach (var interaction in structure.AutoInteractions)
+                        {
+                            PropertiesPanel.text += $"{interaction}: {interaction.Elapsed}/{interaction.ActivationTime}\n";
+                        }
                     }
                     else if (currentEntity is Item item)
                     {
                         PropertiesPanel.text += $"Amount:\t {item.Amount}\n";
+                        PropertiesPanel.text += $"In use by:\t{item.InUseBy.Name}\n";
                     }
                 }
             }

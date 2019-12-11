@@ -138,8 +138,16 @@ public class Cell : IEquatable<Cell>
         }
     }
 
+    public List<string> ItemIds { get; set; } = new List<string>();
+
     [JsonIgnore]
-    public List<Item> Items { get; set; } = new List<Item>();
+    public List<Item> Items
+    {
+        get
+        {
+            return ItemIds.Select(i => i.GetItem()).ToList();
+        }
+    }
 
     public float LiquidLevel
     {
@@ -327,7 +335,7 @@ public class Cell : IEquatable<Cell>
 
     public void AddItem(Item item)
     {
-        Items.Add(item);
+        ItemIds.Add(item.Id);
         item.Cell = this;
 
         item.Coords = (Vector.x, Vector.y);
@@ -465,9 +473,9 @@ public class Cell : IEquatable<Cell>
 
     public void TakeItem(Item item)
     {
-        if (Items.Contains(item))
+        if (ItemIds.Contains(item.Id))
         {
-            Items.Remove(item);
+            ItemIds.Remove(item.Id);
         }
     }
 

@@ -11,10 +11,9 @@
   },
   "AutoInteractions": [
     {
-      "$type": "Bind, Assembly-CSharp",
-      "Size": "10",
-      "ActivationTime": "1"
-      
+      "$type": "SpawnItem, Assembly-CSharp",
+      "ItemName": "Blue Mana Crystals",
+      "ActivationTime": "50"
     }
   ]
 }

@@ -15,7 +15,24 @@ public class Structure : IEntity
     // rather than serialzing the cell object we keep this lazy link for load
     public (int X, int Y) Coords = (-1, -1);
 
-    public IEntity InUseBy;
+    [JsonIgnore]
+    public IEntity InUseBy
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(InUseById))
+            {
+                return null;
+            }
+            return InUseById.GetEntity();
+        }
+        set
+        {
+            InUseById = value.Id;
+        }
+    }
+
+    public string InUseById { get; set; }
 
     public string Layer;
 

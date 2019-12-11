@@ -56,6 +56,7 @@ public class ItemController : MonoBehaviour
             {
                 Game.FactionController.Factions[item.FactionName].Items.Remove(item);
             }
+            item.Cell.ItemIds.Remove(item.Id);
             IdService.RemoveEntity(item);
             Game.Controller.AddItemToDestroy(item.Renderer.gameObject);
         }

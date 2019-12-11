@@ -7,6 +7,7 @@ public class Item : IEntity
     private (float X, float Y) _coords;
 
     private VisualEffect _outline;
+
     public int Amount { get; set; }
 
     [JsonIgnore]
@@ -27,10 +28,28 @@ public class Item : IEntity
     }
 
     public string FactionName { get; set; }
+
     public string Id { get; set; }
 
-    public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
+    [JsonIgnore]
+    public IEntity InUseBy
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(InUseById))
+            {
+                return null;
+            }
+            return InUseById.GetEntity();
+        }
+        set
+        {
+            InUseById = value.Id;
+        }
+    }
 
+    public string InUseById { get; set; }
+    public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
 
     public Dictionary<ManaColor, float> ManaValue { get; set; } = new Dictionary<ManaColor, float>();
 
