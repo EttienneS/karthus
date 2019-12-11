@@ -49,7 +49,7 @@ public class ManaDisplay : MonoBehaviour
             {
                 if (structure.IsType("Battery"))
                 {
-                    stored += structure.ManaPool[mana].Total;
+                    stored += structure.ManaValue[mana];
                 }
             }
 

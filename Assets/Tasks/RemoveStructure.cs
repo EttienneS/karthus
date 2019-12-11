@@ -14,11 +14,11 @@
 
         AddSubTask(new Move(Game.Map.GetPathableNeighbour(StructureToRemove.Cell)));
 
-        foreach (var mana in structure.ManaPool)
+        foreach (var mana in structure.ManaValue)
         {
-            if (mana.Value.Total > 0)
+            if (mana.Value > 0)
             {
-                AddSubTask(Channel.GetChannelFrom(mana.Key, mana.Value.Total, structure));
+                AddSubTask(Channel.GetChannelFrom(mana.Key, mana.Value, structure));
             }
         }
 

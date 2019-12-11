@@ -7,7 +7,7 @@ using Debug = UnityEngine.Debug;
 
 public enum SelectionPreference
 {
-    Entity, Cell
+    Entity, Cell, Item, Structure, Creature
 }
 
 public partial class Game : MonoBehaviour
@@ -23,9 +23,8 @@ public partial class Game : MonoBehaviour
     internal LineRenderer LineRenderer;
     internal List<Cell> SelectedCells = new List<Cell>();
     internal List<CreatureRenderer> SelectedCreatures = new List<CreatureRenderer>();
-    internal List<Structure> SelectedStructures = new List<Structure>();
     internal List<Item> SelectedItems = new List<Item>();
-
+    internal List<Structure> SelectedStructures = new List<Structure>();
     private List<GameObject> _destroyCache = new List<GameObject>();
     private float _maxCurrentTime;
     private float _minCurrentTime;
@@ -75,6 +74,7 @@ public partial class Game : MonoBehaviour
         DeselectCreature();
         DeselectCell();
         DeselectStructure(true);
+        DeselectItem();
     }
 
     public void DeselectCell()
@@ -92,6 +92,16 @@ public partial class Game : MonoBehaviour
         SelectedCreatures.Clear();
     }
 
+    public void DeselectItem()
+    {
+        ClearLine();
+        foreach (var item in SelectedItems)
+        {
+            item.HideOutline();
+        }
+        SelectedItems.Clear();
+    }
+
     public void DeselectStructure(bool stopGhost)
     {
         if (stopGhost)
@@ -106,17 +116,6 @@ public partial class Game : MonoBehaviour
         }
         SelectedStructures.Clear();
     }
-
-    public void DeselectItem()
-    {
-        ClearLine();
-        foreach (var item in SelectedItems)
-        {
-            item.HideOutline();
-        }
-        SelectedItems.Clear();
-    }
-
     public void DestroyItemsInCache()
     {
         try
@@ -471,7 +470,26 @@ public partial class Game : MonoBehaviour
                         }
                         break;
 
-                   
+                    case SelectionPreference.Item:
+                        if (SelectedCells.Count > 0)
+                        {
+                            SelectItem();
+                        }
+                        break;
+
+                    case SelectionPreference.Structure:
+                        if (SelectedCells.Count > 0)
+                        {
+                            SelectStructure();
+                        }
+                        break;
+
+                    case SelectionPreference.Creature:
+                        if (SelectedCells.Count > 0)
+                        {
+                            SelectCreature();
+                        }
+                        break;
 
                     case SelectionPreference.Entity:
                         if (SelectedCreatures.Count > 0)

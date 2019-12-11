@@ -7,12 +7,19 @@ public partial class OrderSelectionController //.Designate
 
     internal const string DefaultDesignateText = "Designate";
 
-    internal const string DefaultRemoveImage = "cancel";
+    internal const string DefaultRemoveIcon = "cancel";
     internal const string DefaultRemoveText = "Remove Building";
-    internal const string GatherManaImage = "curs_01_t";
+
+    internal const string GatherManaIcon = "curs_01_t";
     internal const string GatherManaText = "Gather Mana";
+
     internal const string MoveIcon = "location_t";
     internal const string MoveText = "Move";
+
+    internal const string EssenceShatterIcon = "portal_t";
+    internal const string EssenceShatterText = "Essence Shatter";
+    
+
     internal OrderButton TaskButton;
 
     public void DesignateTypeClicked()
@@ -27,21 +34,37 @@ public partial class OrderSelectionController //.Designate
             EnableAndClear();
 
             CreateOrderButton(MoveText, MoveClicked, MoveIcon);
-            CreateOrderButton(GatherManaText, GatherClicked, GatherManaImage);
-            CreateOrderButton(DefaultRemoveText, RemoveStructureClicked, DefaultRemoveImage);
+            CreateOrderButton(GatherManaText, GatherClicked, GatherManaIcon);
+            CreateOrderButton(EssenceShatterText, EssenceShatterClicked, EssenceShatterIcon);
+            CreateOrderButton(DefaultRemoveText, RemoveStructureClicked, DefaultRemoveIcon);
         }
     }
-
-    private void GatherClicked()
+    private void EssenceShatterClicked()
     {
         Game.Controller.SelectionPreference = SelectionPreference.Cell;
-        Game.Controller.SetMouseSprite(GatherManaImage, (_) => true);
+        Game.Controller.SetMouseSprite(EssenceShatterIcon, (_) => true);
 
         CellClickOrder = cells =>
         {
             foreach (var cell in cells)
             {
-                Game.FactionController.PlayerFaction.AddTask(new GatherMana(cell)).AddCellBadge(cell, GatherManaImage);
+                foreach (var item in cell.Items)
+                {
+                    Game.FactionController.PlayerFaction.AddTask(new EssenceShatter(item)).AddCellBadge(cell, EssenceShatterIcon);
+                }
+            }
+        };
+    }
+    private void GatherClicked()
+    {
+        Game.Controller.SelectionPreference = SelectionPreference.Cell;
+        Game.Controller.SetMouseSprite(GatherManaIcon, (_) => true);
+
+        CellClickOrder = cells =>
+        {
+            foreach (var cell in cells)
+            {
+                Game.FactionController.PlayerFaction.AddTask(new GatherMana(cell)).AddCellBadge(cell, GatherManaIcon);
             }
         };
     }
@@ -83,7 +106,7 @@ public partial class OrderSelectionController //.Designate
                         }
                         Game.FactionController.PlayerFaction
                                          .AddTask(new RemoveStructure(structure))
-                                         .AddCellBadge(structure.Cell, DefaultRemoveImage);
+                                         .AddCellBadge(structure.Cell, DefaultRemoveIcon);
                     }
                 }
             }

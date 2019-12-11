@@ -57,6 +57,7 @@ public class EntityInfoPanel : MonoBehaviour
 
         if (entities.First() is Creature creature)
         {
+            // creatures
             var creatures = entities.OfType<Creature>();
             AddMoveButton(creatures);
             AddAttackButton(creatures);
@@ -65,12 +66,14 @@ public class EntityInfoPanel : MonoBehaviour
         }
         else if (entities.First() is Structure)
         {
+            // structures
             AddRemoveStructureButton(entities.OfType<Structure>());
             AddCycleModeButton(entities.OfType<Structure>());
         }
         else
         {
             // items
+            AddEssenseShatterButton(entities.OfType<Item>());
         }
     }
 
@@ -134,7 +137,6 @@ public class EntityInfoPanel : MonoBehaviour
                             {
                                 PropertiesPanel.text += $"In use by:\t{structure.InUseBy.Name}\n";
                             }
-
                         }
                     }
                     else if (currentEntity is Item item)
@@ -249,9 +251,25 @@ public class EntityInfoPanel : MonoBehaviour
         btn.SetOnClick(() => MoveClicked(creatures, btn));
     }
 
+    private void AddEssenseShatterButton(IEnumerable<Item> items)
+    {
+        var btn = AddButton(OrderSelectionController.EssenceShatterText, OrderSelectionController.EssenceShatterIcon);
+        btn.SetOnClick(() =>
+        {
+            SetActiveButton(btn);
+
+            foreach (var item in items)
+            {
+                Game.FactionController.PlayerFaction
+                                        .AddTask(new EssenceShatter(item))
+                                        .AddCellBadge(item.Cell, OrderSelectionController.EssenceShatterIcon);
+            }
+        });
+    }
+
     private void AddRemoveStructureButton(IEnumerable<Structure> structures)
     {
-        var btn = AddButton(OrderSelectionController.DefaultRemoveText, OrderSelectionController.DefaultRemoveImage);
+        var btn = AddButton(OrderSelectionController.DefaultRemoveText, OrderSelectionController.DefaultRemoveIcon);
         btn.SetOnClick(() =>
         {
             SetActiveButton(btn);
@@ -273,7 +291,7 @@ public class EntityInfoPanel : MonoBehaviour
                         Game.FactionController.PlayerFaction
                                          .AddTask(new RemoveStructure(structure))
                                          .AddCellBadge(structure.Cell,
-                                                       OrderSelectionController.DefaultRemoveImage);
+                                                       OrderSelectionController.DefaultRemoveIcon);
                     }
                 }
             }

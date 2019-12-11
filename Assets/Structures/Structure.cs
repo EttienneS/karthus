@@ -111,7 +111,6 @@ public class Structure : IEntity
 
     public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
 
-    public ManaPool ManaPool { get; set; }
 
     public string Name { get; set; }
 
@@ -178,13 +177,7 @@ public class Structure : IEntity
         return json.LoadJson<Structure>();
     }
 
-    public void Awake()
-    {
-        if (ManaPool == null)
-        {
-            ManaPool = new ManaPool(this);
-        }
-    }
+    
 
     public bool IsType(string name)
     {

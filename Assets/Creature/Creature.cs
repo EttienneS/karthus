@@ -140,8 +140,7 @@ public class Creature : IEntity
         }
         set
         {
-            // should only be used on initial creation
-            ManaPool = value.ToManaPool(this);
+            // do nothing should only be used on initial creation
         }
     }
 

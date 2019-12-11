@@ -31,7 +31,6 @@ public class Item : IEntity
 
     public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
 
-    public ManaPool ManaPool { get; set; }
 
     public Dictionary<ManaColor, float> ManaValue { get; set; } = new Dictionary<ManaColor, float>();
 

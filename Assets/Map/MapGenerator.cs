@@ -577,11 +577,11 @@ public class MapGenerator
 
         var center = Game.Map.GetNearestPathableCell(biggestBiome.GetRandomItem(), Mobility.Walk, 5);
         var core = center.CreateStructure("Battery", faction.FactionName);
-        core.ManaPool.GainMana(ManaColor.Green, 20);
-        core.ManaPool.GainMana(ManaColor.Red, 20);
-        core.ManaPool.GainMana(ManaColor.Blue, 20);
-        core.ManaPool.GainMana(ManaColor.White, 20);
-        core.ManaPool.GainMana(ManaColor.Black, 20);
+        core.ManaValue.GainMana(ManaColor.Green, 20);
+        core.ManaValue.GainMana(ManaColor.Red, 20);
+        core.ManaValue.GainMana(ManaColor.Blue, 20);
+        core.ManaValue.GainMana(ManaColor.White, 20);
+        core.ManaValue.GainMana(ManaColor.Black, 20);
 
         for (int i = 0; i < 3; i++)
         {
