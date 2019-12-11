@@ -170,7 +170,7 @@ public class CreatureRenderer : MonoBehaviour
         Light.intensity = (totalMana / 15.0f) * (1 + Mathf.PingPong(Time.time, 0.1f));
         Light.pointLightInnerAngle = Mathf.Min(totalMana * 5.0f, 360.0f);
 
-        Light.color = Data.ManaPool.GetManaWithMost().GetActualColor();
+        Light.color = Data.ManaValue.GetManaWithMost().GetActualColor();
 
       
     }

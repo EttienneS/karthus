@@ -8,9 +8,9 @@ public class Acrue : CreatureTask
         RequiredSkillLevel = 1;
     }
 
-    public Dictionary<ManaColor, int> TargetManaLevel;
+    public Dictionary<ManaColor, float> TargetManaLevel;
 
-    public Acrue(Dictionary<ManaColor, int> targetManaLevel) : this()
+    public Acrue(Dictionary<ManaColor, float> targetManaLevel) : this()
     {
         TargetManaLevel = targetManaLevel;
     }

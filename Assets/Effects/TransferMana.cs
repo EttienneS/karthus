@@ -11,7 +11,7 @@
     {
         foreach (var color in Colors)
         {
-            AssignedEntity.ManaPool.Transfer(Target.ManaPool, color, Amount);
+            AssignedEntity.ManaValue.Transfer(Target.ManaValue, color, Amount);
         }
         return true;
     }

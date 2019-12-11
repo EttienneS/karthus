@@ -4,11 +4,10 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Debug = UnityEngine.Debug;
-using Random = UnityEngine.Random;
 
 public enum SelectionPreference
 {
-    CreatureOrStructure, Cell
+    Entity, Cell
 }
 
 public partial class Game : MonoBehaviour
@@ -16,7 +15,7 @@ public partial class Game : MonoBehaviour
     public static float LoadProgress;
     public static bool Ready;
     public Vector3 SelectionEnd;
-    public SelectionPreference SelectionPreference = SelectionPreference.CreatureOrStructure;
+    public SelectionPreference SelectionPreference = SelectionPreference.Entity;
     public Vector3 SelectionStart;
     public RectTransform selectSquareImage;
 
@@ -25,6 +24,7 @@ public partial class Game : MonoBehaviour
     internal List<Cell> SelectedCells = new List<Cell>();
     internal List<CreatureRenderer> SelectedCreatures = new List<CreatureRenderer>();
     internal List<Structure> SelectedStructures = new List<Structure>();
+    internal List<Item> SelectedItems = new List<Item>();
 
     private List<GameObject> _destroyCache = new List<GameObject>();
     private float _maxCurrentTime;
@@ -107,6 +107,16 @@ public partial class Game : MonoBehaviour
         SelectedStructures.Clear();
     }
 
+    public void DeselectItem()
+    {
+        ClearLine();
+        foreach (var item in SelectedItems)
+        {
+            item.HideOutline();
+        }
+        SelectedItems.Clear();
+    }
+
     public void DestroyItemsInCache()
     {
         try
@@ -175,27 +185,6 @@ public partial class Game : MonoBehaviour
             RotateMouseLeft?.Invoke();
         }
 
-        if (Input.GetKeyDown("r"))
-        {
-            var point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            var cell = Map.GetCellAtPoint(point);
-
-            if (cell.Structure != null)
-            {
-                cell.Structure.RotateCW();
-            }
-        }
-        if (Input.GetKeyDown("t"))
-        {
-            var point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            var cell = Map.GetCellAtPoint(point);
-
-            if (cell.Structure != null)
-            {
-                cell.Structure.RotateCCW();
-            }
-        }
-
         if (Input.GetKey("z"))
         {
             SpawnLiquid(ManaColor.Blue);
@@ -209,47 +198,6 @@ public partial class Game : MonoBehaviour
         if (Input.GetKey("c"))
         {
             SpawnLiquid(ManaColor.Green);
-        }
-
-        if (Input.GetKeyUp("v"))
-        {
-            foreach (var creature in Game.EntityInfoPanel.CurrentEntities.OfType<Creature>())
-            {
-                creature.Limbs.GetRandomItem().Damage("THE UNIVERSE", Helpers.RandomEnumValue<DamageType>(), Random.Range(5, 10));
-                VisualEffectController.SpawnLightEffect(null, creature.Vector, Color.yellow, 1, 1, 0.5f).Fades();
-            }
-        }
-
-        if (Input.GetKeyUp(","))
-        {
-            CreatureController.SpawnCreature(CreatureController.GetCreatureOfType("AbyssWraith"),
-                                             Map.GetCellAtPoint(Camera.main.ScreenToWorldPoint(Input.mousePosition)),
-                                             FactionController.MonsterFaction);
-        }
-
-        if (Input.GetKeyUp("."))
-        {
-            CreatureController.SpawnCreature(CreatureController.GetCreatureOfType("Person"),
-                                             Map.GetCellAtPoint(Camera.main.ScreenToWorldPoint(Input.mousePosition)),
-                                             FactionController.PlayerFaction);
-        }
-
-        if (Input.GetKeyDown("g"))
-        {
-            var point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            var cell = Map.GetCellAtPoint(point);
-
-            cell.Height -= 0.5f;
-            cell.UpdateTile();
-        }
-
-        if (Input.GetKeyDown("h"))
-        {
-            var point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            var cell = Map.GetCellAtPoint(point);
-
-            cell.Height += 0.5f;
-            cell.UpdateTile();
         }
 
         if (Input.GetKeyDown("p"))
@@ -338,6 +286,7 @@ public partial class Game : MonoBehaviour
     {
         DeselectCell();
         DeselectStructure(true);
+        DeselectItem();
 
         foreach (var creature in SelectedCreatures)
         {
@@ -345,6 +294,20 @@ public partial class Game : MonoBehaviour
         }
 
         EntityInfoPanel.Show(SelectedCreatures.Select(c => c.Data).ToList());
+    }
+
+    private void SelectItem()
+    {
+        DeselectCell();
+        DeselectStructure(true);
+        DeselectCreature();
+
+        foreach (var item in SelectedItems)
+        {
+            item.ShowOutline();
+        }
+
+        EntityInfoPanel.Show(SelectedItems);
     }
 
     private void SelectStructure()
@@ -381,7 +344,7 @@ public partial class Game : MonoBehaviour
             if (MapGenerator.Done)
             {
                 Ready = true;
-            } 
+            }
             else if (!MapGenerator.Busy)
             {
                 CameraController.Camera.transform.position = new Vector3(Map.Width / 2, Map.Height / 2, -1);
@@ -463,6 +426,8 @@ public partial class Game : MonoBehaviour
                         {
                             SelectedStructures.Add(clickedCell.Structure);
                         }
+
+                        SelectedItems.AddRange(clickedCell.Items);
                     }
 
                     var clickedCreature = CreatureController.GetCreatureAtPoint(point);
@@ -487,6 +452,7 @@ public partial class Game : MonoBehaviour
                                 {
                                     SelectedStructures.Add(clickedCell.Structure);
                                 }
+                                SelectedItems.AddRange(clickedCell.Items);
                             }
 
                             var clickedCreature = CreatureController.GetCreatureAtPoint(point);
@@ -505,7 +471,9 @@ public partial class Game : MonoBehaviour
                         }
                         break;
 
-                    case SelectionPreference.CreatureOrStructure:
+                   
+
+                    case SelectionPreference.Entity:
                         if (SelectedCreatures.Count > 0)
                         {
                             SelectCreature();
@@ -513,6 +481,10 @@ public partial class Game : MonoBehaviour
                         if (SelectedStructures.Count > 0)
                         {
                             SelectStructure();
+                        }
+                        if (SelectedItems.Count > 0)
+                        {
+                            SelectItem();
                         }
                         break;
                 }

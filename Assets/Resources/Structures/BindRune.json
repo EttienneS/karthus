@@ -35,7 +35,12 @@
         " \"RequiredSkill\": \"Arcana\",",
         " \"RequiredSkillLevel\": \"1\"",
         "}"
-      ]
+      ],
+      "Cost": {
+        "Blue": "1",
+        "Red": "1",
+        "Green": "1"
+      }
     }
   ],
   "ManaValue": {

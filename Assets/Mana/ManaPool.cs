@@ -56,12 +56,6 @@ public class ManaPool : Dictionary<ManaColor, Mana>
             }
             this[color].Burn(amount);
         }
-
-        //if (Empty())
-        //{
-        //    Debug.Log("No mana, destroy!");
-        //    IdService.DestroyEntity(Entity);
-        //}
     }
 
     public void GainMana(ManaColor color, float amount)
@@ -126,7 +120,12 @@ public class ManaPool : Dictionary<ManaColor, Mana>
         return count;
     }
 
-    internal void BurnMana(Dictionary<ManaColor, int> manaCost)
+    public override string ToString()
+    {
+        return $"R:{GetTotal(ManaColor.Red)}, G:{GetTotal(ManaColor.Green)}, U:{GetTotal(ManaColor.Blue)}, B:{GetTotal(ManaColor.Black)}, W:{GetTotal(ManaColor.White)}";
+    }
+
+    internal void BurnMana(Dictionary<ManaColor, float> manaCost)
     {
         foreach (var kvp in manaCost)
         {
@@ -139,48 +138,13 @@ public class ManaPool : Dictionary<ManaColor, Mana>
         return Values.All(v => v.Total <= 0);
     }
 
-    internal ManaColor GetManaWithMost()
-    {
-        var most = ManaColor.Blue;
-        var max = float.MinValue;
-
-        foreach (var kvp in this)
-        {
-            if (kvp.Value.Total > max)
-            {
-                most = kvp.Key;
-                max = kvp.Value.Total;
-            }
-        }
-        return most;
-    }
-
-    internal bool HasMana(Dictionary<ManaColor, int> manaCost)
-    {
-        foreach (var kvp in manaCost)
-        {
-            if (!HasMana(kvp.Key, kvp.Value))
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    internal bool HasMana(ManaColor value)
-    {
-        return ContainsKey(value) && this[value].Total > 0;
-    }
-
-    internal bool HasMana(ManaColor color, int amount)
+    internal float GetTotal(ManaColor color)
     {
         if (!ContainsKey(color))
         {
-            return false;
+            return 0;
         }
-
-        return this[color].Total >= amount;
+        return this[color].Total;
     }
 
     internal void InitColor(ManaColor color, int start, int max, int desired)
@@ -223,34 +187,5 @@ public class ManaPool : Dictionary<ManaColor, Mana>
                 }
             }
         }
-    }
-
-    internal float GetTotal(ManaColor color)
-    {
-        if (!ContainsKey(color))
-        {
-            return 0;
-        }
-        return this[color].Total;
-    }
-
-    internal void Transfer(ManaPool target, ManaColor manaColor, float amount)
-    {
-        if (amount > 0)
-        {
-            BurnMana(manaColor, amount);
-            target.GainMana(manaColor, amount);
-        }
-        else
-        {
-            target.BurnMana(manaColor, amount);
-            GainMana(manaColor, amount);
-        }
-    }
-
-    public override string ToString()
-    {
-        return $"R:{GetTotal(ManaColor.Red)}, G:{GetTotal(ManaColor.Green)}, U:{GetTotal(ManaColor.Blue)}, B:{GetTotal(ManaColor.Black)}, W:{GetTotal(ManaColor.White)}";
-
     }
 }

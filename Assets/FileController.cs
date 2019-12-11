@@ -7,6 +7,7 @@ public class FileController : MonoBehaviour
     internal TextAsset[] ConstructFiles;
     internal TextAsset[] CreatureFiles;
     internal TextAsset[] BiomeFiles;
+    internal TextAsset[] ItemFiles;
 
     public Dictionary<string, TextAsset> ItemLookup;
 
@@ -14,6 +15,7 @@ public class FileController : MonoBehaviour
     public string ConstructFolder = "Constructs";
     public string CreatureFolder = "Creatures";
     public string BiomeFolder = "Biomes";
+    public string ItemFolder = "Items";
 
     public void Load()
     {
@@ -21,5 +23,6 @@ public class FileController : MonoBehaviour
         ConstructFiles = Resources.LoadAll<TextAsset>(ConstructFolder);
         CreatureFiles = Resources.LoadAll<TextAsset>(CreatureFolder);
         BiomeFiles = Resources.LoadAll<TextAsset>(BiomeFolder);
+        ItemFiles = Resources.LoadAll<TextAsset>(ItemFolder);
     }
 }

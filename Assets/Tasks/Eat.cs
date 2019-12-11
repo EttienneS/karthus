@@ -11,7 +11,7 @@ public class Eat : CreatureTask
     public Eat(ManaColor foodColor) : this()
     {
         FoodColor = foodColor;
-        var food = new Dictionary<ManaColor, int> { { FoodColor, 1 } };
+        var food = new Dictionary<ManaColor, float> { { FoodColor, 1 } };
         AddSubTask(new Acrue(food));
     }
 

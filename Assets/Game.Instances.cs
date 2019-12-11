@@ -2,83 +2,29 @@
 
 public partial class Game //.Instances
 {
-    internal static PhysicsController _physicsController;
-    internal static MapGenerator MapGenerator;
     private static CameraController _cameraController;
-
     private static CreatureController _creatureController;
-
     private static EntityInfoPanel _creatureInfoPanel;
-    private static VisualEffectController _visualEffectController;
+    private static FactionController _factionController;
     private static FileController _fileController;
     private static Game _gameInstance;
+    private static ItemController _itemController;
+    private static LoadStatus _loadingPanel;
     private static MagicController _magicController;
-    private static Minimap _minimap;
     private static ManaDisplay _manaDisplay;
     private static Map _map;
     private static MaterialController _materialController;
+    private static Minimap _minimap;
     private static OrderSelectionController _orderSelectionController;
     private static OrderTrayController _orderTrayController;
+    private static PhysicsController _physicsController;
     private static SaveManager _saveManager;
     private static SpriteStore _spriteStore;
     private static StructureController _structureController;
     private static TimeManager _timeManager;
-    private static FactionController _factionController;
     private static UIController _uiController;
-    private static LoadStatus _loadingPanel;
-
-    public static LoadStatus LoadingPanel
-    {
-        get
-        {
-            if (_loadingPanel == null)
-            {
-                _loadingPanel = GameObject.Find("LoadingPanel").GetComponent<LoadStatus>();
-            }
-
-            return _loadingPanel;
-        }
-    }
-
-
-    public static UIController UIController
-    {
-        get
-        {
-            if (_uiController == null)
-            {
-                _uiController = GameObject.Find("UI").GetComponent<UIController>();
-            }
-
-            return _uiController;
-        }
-    }
-
-    public static FactionController FactionController
-    {
-        get
-        {
-            if (_factionController == null)
-            {
-                _factionController = GameObject.Find("FactionController").GetComponent<FactionController>();
-            }
-
-            return _factionController;
-        }
-    }
-
-    public static Minimap Minimap
-    {
-        get
-        {
-            if (_minimap == null)
-            {
-                _minimap = GameObject.Find("Minimap").GetComponent<Minimap>();
-            }
-
-            return _minimap;
-        }
-    }
+    private static VisualEffectController _visualEffectController;
+    public static MapGenerator MapGenerator;
 
     public static CameraController CameraController
     {
@@ -119,19 +65,6 @@ public partial class Game //.Instances
         }
     }
 
-    public static VisualEffectController VisualEffectController
-    {
-        get
-        {
-            if (_visualEffectController == null)
-            {
-                _visualEffectController = GameObject.Find(ControllerConstants.VisualEffectController).GetComponent<VisualEffectController>();
-            }
-
-            return _visualEffectController;
-        }
-    }
-
     public static EntityInfoPanel EntityInfoPanel
     {
         get
@@ -142,6 +75,19 @@ public partial class Game //.Instances
             }
 
             return _creatureInfoPanel;
+        }
+    }
+
+    public static FactionController FactionController
+    {
+        get
+        {
+            if (_factionController == null)
+            {
+                _factionController = GameObject.Find("FactionController").GetComponent<FactionController>();
+            }
+
+            return _factionController;
         }
     }
 
@@ -159,7 +105,31 @@ public partial class Game //.Instances
         }
     }
 
-  
+    public static ItemController ItemController
+    {
+        get
+        {
+            if (_itemController == null)
+            {
+                _itemController = GameObject.Find("ItemController").GetComponent<ItemController>();
+            }
+
+            return _itemController;
+        }
+    }
+
+    public static LoadStatus LoadingPanel
+    {
+        get
+        {
+            if (_loadingPanel == null)
+            {
+                _loadingPanel = GameObject.Find("LoadingPanel").GetComponent<LoadStatus>();
+            }
+
+            return _loadingPanel;
+        }
+    }
 
     public static MagicController MagicController
     {
@@ -210,6 +180,19 @@ public partial class Game //.Instances
             }
 
             return _materialController;
+        }
+    }
+
+    public static Minimap Minimap
+    {
+        get
+        {
+            if (_minimap == null)
+            {
+                _minimap = GameObject.Find("Minimap").GetComponent<Minimap>();
+            }
+
+            return _minimap;
         }
     }
 
@@ -301,6 +284,32 @@ public partial class Game //.Instances
             }
 
             return _timeManager;
+        }
+    }
+
+    public static UIController UIController
+    {
+        get
+        {
+            if (_uiController == null)
+            {
+                _uiController = GameObject.Find("UI").GetComponent<UIController>();
+            }
+
+            return _uiController;
+        }
+    }
+
+    public static VisualEffectController VisualEffectController
+    {
+        get
+        {
+            if (_visualEffectController == null)
+            {
+                _visualEffectController = GameObject.Find(ControllerConstants.VisualEffectController).GetComponent<VisualEffectController>();
+            }
+
+            return _visualEffectController;
         }
     }
 }

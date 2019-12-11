@@ -20,7 +20,7 @@ public class StructureController : MonoBehaviour
                 _structureTypeFileMap = new Dictionary<string, string>();
                 foreach (var structureFile in Game.FileController.StructureJson)
                 {
-                    var data = Structure.GetFromJson(structureFile.text, structureFile.name);
+                    var data = Structure.GetFromJson(structureFile.text);
                     StructureTypeFileMap.Add(data.Name, structureFile.text);
                     StructureDataReference.Add(data.Name, data);
                 }
@@ -63,7 +63,7 @@ public class StructureController : MonoBehaviour
 
         string structureData = StructureTypeFileMap[name];
 
-        Structure structure = Structure.GetFromJson(structureData, name);
+        Structure structure = Structure.GetFromJson(structureData);
         IndexStructure(structure);
 
         structure.SetBluePrintState(false);

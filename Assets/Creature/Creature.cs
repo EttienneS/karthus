@@ -13,12 +13,20 @@ public enum Mobility
 public class Creature : IEntity
 {
     public const string SelfKey = "Self";
-    [JsonIgnore] public Color BottomColor;
+
+    [JsonIgnore]
+    public Color BottomColor;
+
     public List<Creature> Combatants = new List<Creature>();
 
     public Direction Facing = Direction.S;
-    [JsonIgnore] public Behaviours.GetBehaviourTaskDelegate GetBehaviourTask;
-    [JsonIgnore] public Color HairColor;
+
+    [JsonIgnore]
+    public Behaviours.GetBehaviourTaskDelegate GetBehaviourTask;
+
+    [JsonIgnore]
+    public Color HairColor;
+
     public int HairStyle;
     public List<OffensiveActionBase> IncomingAttacks = new List<OffensiveActionBase>();
     public int Index;
@@ -27,13 +35,16 @@ public class Creature : IEntity
 
     public Mobility Mobility;
 
-    [JsonIgnore] public Color SkinColor;
+    [JsonIgnore]
+    public Color SkinColor;
 
-    [JsonIgnore] public Color TopColor;
+    [JsonIgnore]
+    public Color TopColor;
 
     internal float InternalTick = float.MaxValue;
 
-    [JsonIgnore] internal Cell LastPercievedCoordinate;
+    [JsonIgnore]
+    internal Cell LastPercievedCoordinate;
 
     internal float WorkTick = float.MaxValue;
 
@@ -120,6 +131,19 @@ public class Creature : IEntity
     public List<string> LogHistory { get; set; }
 
     public ManaPool ManaPool { get; set; }
+
+    public Dictionary<ManaColor, float> ManaValue
+    {
+        get
+        {
+            return ManaPool.ToManaValue();
+        }
+        set
+        {
+            // should only be used on initial creation
+            ManaPool = value.ToManaPool(this);
+        }
+    }
 
     public string Name { get; set; }
 

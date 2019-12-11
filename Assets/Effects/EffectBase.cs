@@ -38,7 +38,7 @@ public abstract class EffectBase
 
     public string TargetId;
 
-    public Dictionary<ManaColor, int> Cost;
+    public Dictionary<ManaColor, float> Cost;
     public float ActivationTime = 0.5f;
     public float Elapsed;
 
@@ -57,7 +57,7 @@ public abstract class EffectBase
         }
         Elapsed = 0f;
 
-        if (Cost != null && !AssignedEntity.ManaPool.HasMana(Cost))
+        if (Cost != null && !AssignedEntity.ManaValue.HasMana(Cost))
         {
             if (AssignedEntity is Creature creature)
             {
@@ -80,7 +80,10 @@ public abstract class EffectBase
         {
             if (Cost != null)
             {
-                AssignedEntity.ManaPool.BurnMana(Cost);
+                foreach (var kvp in Cost)
+                {
+                    AssignedEntity.ManaValue.BurnMana(kvp.Key, kvp.Value);
+                }
             }
             return true;
         }

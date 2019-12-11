@@ -55,18 +55,22 @@ public class EntityInfoPanel : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        if (entities.First() is Creature)
+        if (entities.First() is Creature creature)
         {
             var creatures = entities.OfType<Creature>();
             AddMoveButton(creatures);
             AddAttackButton(creatures);
 
-            ManaPanel.SetPool(entities.First().ManaPool);
+            ManaPanel.SetPool(creature.ManaPool);
         }
-        else
+        else if (entities.First() is Structure)
         {
             AddRemoveStructureButton(entities.OfType<Structure>());
             AddCycleModeButton(entities.OfType<Structure>());
+        }
+        else
+        {
+            // items
         }
     }
 
@@ -82,14 +86,6 @@ public class EntityInfoPanel : MonoBehaviour
                 var currentEntity = CurrentEntities[0];
 
                 Log.text = string.Empty;
-
-                foreach (var line in currentEntity.LogHistory)
-                {
-                    Log.text += $"{line}\n";
-                }
-
-                var rt = Log.GetComponent(typeof(RectTransform)) as RectTransform;
-                rt.sizeDelta = new Vector2(395, currentEntity.LogHistory.Count * 20);
 
                 CreatureName.text = currentEntity.Name;
 
@@ -107,6 +103,14 @@ public class EntityInfoPanel : MonoBehaviour
                 {
                     TabPanel.SetActive(true);
 
+                    foreach (var line in creature.LogHistory)
+                    {
+                        Log.text += $"{line}\n";
+                    }
+
+                    var rt = Log.GetComponent(typeof(RectTransform)) as RectTransform;
+                    rt.sizeDelta = new Vector2(395, creature.LogHistory.Count * 20);
+
                     PropertiesPanel.text += $"\nLocation:\t{creature.X:F1}:{creature.Y:F1}\n\n";
                     LogHealth(creature);
                     LogTask(creature);
@@ -114,50 +118,44 @@ public class EntityInfoPanel : MonoBehaviour
                 else
                 {
                     PropertiesPanel.text += $"\nLocation:\t{currentEntity.Cell}\n\n";
-                    PropertiesPanel.text += $"\nMana:\t{currentEntity.ManaPool}\n\n";
-                    var structure = currentEntity as Structure;
+                    PropertiesPanel.text += $"\nMana:\t{currentEntity.ManaValue.GetString()}\n\n";
 
-                    PropertiesPanel.text += $"Rotation:\t {structure.Rotation}\n";
-
-                    if (structure.IsBluePrint)
+                    if (currentEntity is Structure structure)
                     {
-                        PropertiesPanel.text += "\n*Blueprint, waiting for construction...*\n";
+                        PropertiesPanel.text += $"Rotation:\t {structure.Rotation}\n";
+
+                        if (structure.IsBluePrint)
+                        {
+                            PropertiesPanel.text += "\n*Blueprint, waiting for construction...*\n";
+                        }
+                        else
+                        {
+                            if (structure.InUseByAnyone)
+                            {
+                                PropertiesPanel.text += $"In use by:\t{structure.InUseBy.Name}\n";
+                            }
+
+                        }
                     }
-                    else
+                    else if (currentEntity is Item item)
                     {
-                        if (structure.InUseByAnyone)
-                        {
-                            PropertiesPanel.text += $"In use by:\t{structure.InUseBy.Name}\n";
-                        }
-
-                        if (structure is Pipe pipe)
-                        {
-                            if (pipe.Attunement.HasValue)
-                            {
-                                PropertiesPanel.text += $"Attunment:\t{pipe.Attunement.Value}\n";
-                            }
-                            else
-                            {
-                                PropertiesPanel.text += $"Attunment:\tNone\n";
-                            }
-                        }
+                        PropertiesPanel.text += $"Amount:\t {item.Amount}\n";
                     }
                 }
             }
             else
             {
-
                 CreatureName.text = $"{CurrentEntities.Count} entities";
 
                 var entityGroups = CurrentEntities.GroupBy(e => e.Name).Select(e => new
                 {
                     Text = e.Key,
                     Count = e.Count(),
-                    Green = e.Sum(g => g.ManaPool.GetTotal(ManaColor.Green)),
-                    Red = e.Sum(r => r.ManaPool.GetTotal(ManaColor.Red)),
-                    Blue = e.Sum(u => u.ManaPool.GetTotal(ManaColor.Blue)),
-                    Black = e.Sum(b => b.ManaPool.GetTotal(ManaColor.Black)),
-                    White = e.Sum(w => w.ManaPool.GetTotal(ManaColor.White))
+                    Green = e.Sum(g => g.ManaValue.GetTotal(ManaColor.Green)),
+                    Red = e.Sum(r => r.ManaValue.GetTotal(ManaColor.Red)),
+                    Blue = e.Sum(u => u.ManaValue.GetTotal(ManaColor.Blue)),
+                    Black = e.Sum(b => b.ManaValue.GetTotal(ManaColor.Black)),
+                    White = e.Sum(w => w.ManaValue.GetTotal(ManaColor.White))
                 });
 
                 foreach (var group in entityGroups)

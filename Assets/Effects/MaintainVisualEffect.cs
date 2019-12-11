@@ -22,7 +22,7 @@ public class MaintainVisualEffect : EffectBase
             }
 
             var color = string.IsNullOrEmpty(Color) ?
-                                    AssignedEntity.ManaPool.GetManaWithMost().GetActualColor() :
+                                    AssignedEntity.ManaValue.GetManaWithMost().GetActualColor() :
                                     Color.GetColorFromHex();
 
             VisualEffect = Game.VisualEffectController

@@ -6,14 +6,11 @@ public static class IdService
 {
     public static Dictionary<string, Creature> CreatureIdLookup = new Dictionary<string, Creature>();
     public static Dictionary<IEntity, Creature> CreatureLookup = new Dictionary<IEntity, Creature>();
+    public static Dictionary<string, Item> ItemIdLookup = new Dictionary<string, Item>();
+    public static Dictionary<IEntity, Item> ItemLookup = new Dictionary<IEntity, Item>();
     public static Dictionary<string, Structure> StructureIdLookup = new Dictionary<string, Structure>();
     public static Dictionary<IEntity, Structure> StructureLookup = new Dictionary<IEntity, Structure>();
     private static int _idCounter = 0;
-
-    public enum ObjectType
-    {
-        Creature, Structure
-    }
 
     public static void EnrollEntity(IEntity entity)
     {
@@ -33,22 +30,14 @@ public static class IdService
             CreatureLookup.Add(entity, creature);
             CreatureIdLookup.Add(entity.Id, creature);
         }
+        else if (entity is Item item)
+        {
+            ItemLookup.Add(entity, item);
+            ItemIdLookup.Add(entity.Id, item);
+        }
         else
         {
             throw new NotImplementedException("Unknown entity type!");
-        }
-    }
-
-    internal static void DestroyEntity(IEntity entity)
-    {
-        if (StructureLookup.ContainsKey(entity))
-        {
-            Game.StructureController.DestroyStructure(entity as Structure);
-        }
-
-        if (CreatureLookup.ContainsKey(entity))
-        {
-            Game.CreatureController.DestroyCreature((entity as Creature).CreatureRenderer);
         }
     }
 
@@ -61,6 +50,14 @@ public static class IdService
         return creature;
     }
 
+    public static Item GetItem(this string id)
+    {
+        if (!ItemIdLookup.TryGetValue(id, out var item))
+        {
+            return null;
+        }
+        return item;
+    }
     public static Structure GetStructure(this string id)
     {
         if (StructureIdLookup.TryGetValue(id, out var structure))
@@ -75,6 +72,11 @@ public static class IdService
         return CreatureIdLookup.ContainsKey(id);
     }
 
+    public static bool IsItem(string id)
+    {
+        return ItemIdLookup.ContainsKey(id);
+    }
+
     public static bool IsStructure(string id)
     {
         return StructureIdLookup.ContainsKey(id);
@@ -84,9 +86,32 @@ public static class IdService
     {
         StructureLookup.Clear();
         StructureIdLookup.Clear();
+
         CreatureLookup.Clear();
         CreatureIdLookup.Clear();
+
+        ItemLookup.Clear();
+        ItemIdLookup.Clear();
     }
+
+    internal static void DestroyEntity(IEntity entity)
+    {
+        if (StructureLookup.ContainsKey(entity))
+        {
+            Game.StructureController.DestroyStructure(entity as Structure);
+        }
+
+        if (CreatureLookup.ContainsKey(entity))
+        {
+            Game.CreatureController.DestroyCreature((entity as Creature).CreatureRenderer);
+        }
+
+        if (ItemLookup.ContainsKey(entity))
+        {
+            Game.ItemController.DestroyItem(entity as Item);
+        }
+    }
+
 
     internal static IEntity GetEntity(this string id)
     {
@@ -97,6 +122,10 @@ public static class IdService
         if (IsStructure(id))
         {
             return GetStructure(id);
+        }
+        if (IsItem(id))
+        {
+            return GetItem(id);
         }
 
         Debug.LogWarning("Unknown entity type!");
@@ -115,6 +144,12 @@ public static class IdService
         {
             CreatureLookup.Remove(entity);
             CreatureIdLookup.Remove(entity.Id);
+        }
+
+        if (ItemLookup.ContainsKey(entity))
+        {
+            ItemLookup.Remove(entity);
+            ItemIdLookup.Remove(entity.Id);
         }
     }
 }

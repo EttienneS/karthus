@@ -2,7 +2,8 @@
   "BiomeRegions": [
     {
       "Content": {
-        "Small Rock": 0.04
+        "Small Rock": 0.04,
+        "Red Mana Crystals": 0.05
       },
       "Max": 0.7,
       "Min": 0.1,
@@ -44,6 +45,7 @@
     },
     {
       "Content": {
+        "Red Mana Crystals": 0.05,
         "Small Rock": 0.04
       },
       "Max": 0.9,

@@ -12,7 +12,7 @@ public partial class OrderSelectionController : MonoBehaviour
 
     public void DisableAndReset()
     {
-        Game.Controller.SelectionPreference = SelectionPreference.CreatureOrStructure;
+        Game.Controller.SelectionPreference = SelectionPreference.Entity;
 
         Game.OrderTrayController.gameObject.SetActive(false);
         CellClickOrder = null;

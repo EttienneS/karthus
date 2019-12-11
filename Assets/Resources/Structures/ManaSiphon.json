@@ -1,0 +1,20 @@
+{
+  "Name": "ManaSiphon",
+  "SpriteName": "Siphon",
+  "TravelCost": "4",
+  "ManaValue": {
+    "Blue": "1"
+  },
+  "Buildable": "True",
+  "Properties": {
+    "Type": "Siphon"
+  },
+  "AutoInteractions": [
+    {
+      "$type": "Bind, Assembly-CSharp",
+      "Size": "10",
+      "ActivationTime": "1"
+      
+    }
+  ]
+}

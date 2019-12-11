@@ -19,7 +19,7 @@ public class Structure : IEntity
 
     public string Layer;
 
-    public Dictionary<ManaColor, int> ManaValue;
+    public Dictionary<ManaColor, float> ManaValue { get; set; }
 
     public Direction Rotation;
 
@@ -130,7 +130,7 @@ public class Structure : IEntity
                 tile.ShiftTile(new Vector2(Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f)));
             }
 
-            if (IsWall() || IsPipe())
+            if (IsWall())
             {
                 tile.sprite = Game.SpriteStore.GetInterlockingSprite(this);
             }
@@ -146,16 +146,6 @@ public class Structure : IEntity
             else
             {
                 tile.color = Cell.Color;
-
-                if (IsPipe())
-                {
-                    var pipe = this as Pipe;
-                    if (pipe.Attunement.HasValue)
-                    {
-                        var alpha = ((float)pipe.ManaPool[pipe.Attunement.Value].Total) / 10f;
-                        tile.color = pipe.Attunement.Value.GetActualColor(alpha);
-                    }
-                }
             }
 
             return tile;
@@ -172,6 +162,7 @@ public class Structure : IEntity
             return Cell.Vector;
         }
     }
+
     [JsonIgnore]
     public int Width
     {
@@ -182,15 +173,8 @@ public class Structure : IEntity
         }
     }
 
-    public List<string> LogHistory { get; set; } = new List<string>();
-
-    public static Structure GetFromJson(string json, string name)
+    public static Structure GetFromJson(string json)
     {
-        if (name == "Pipe")
-        {
-            return json.LoadJson<Pipe>();
-        }
-
         return json.LoadJson<Structure>();
     }
 
@@ -202,16 +186,6 @@ public class Structure : IEntity
         }
     }
 
-    public bool IsPipe()
-    {
-        return IsType("Pipe");
-    }
-
-    public bool IsPipeEnd()
-    {
-        return IsType("PipeEnd");
-    }
-
     public bool IsType(string name)
     {
         return Properties.ContainsKey("Type") && Properties["Type"].Split(',').Contains(name);
@@ -220,12 +194,6 @@ public class Structure : IEntity
     public bool IsWall()
     {
         return IsType("Wall");
-    }
-
-    public void Log(string message = "")
-    {
-        Debug.Log(Name + ":" + message);
-        LogHistory.Add(message);
     }
 
     public void Refresh()
@@ -293,7 +261,7 @@ public class Structure : IEntity
 
     internal bool IsInterlocking()
     {
-        return IsWall() || IsPipe() || IsPipeEnd();
+        return IsWall();
     }
 
     internal void Reserve(IEntity reservedBy)

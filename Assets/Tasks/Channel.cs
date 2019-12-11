@@ -77,11 +77,25 @@ public class Channel : CreatureTask
             }
             else
             {
-                (Source as Creature)?.Face(Target.Cell);
-                (Target as Creature)?.Face(Source.Cell);
+                if (Source is Creature sourceCreature)
+                {
+                    sourceCreature.Face(Target.Cell);
+                    sourceCreature.ManaPool.BurnMana(ManaColor, 1);
+                }
+                else
+                {
+                    Source.ManaValue.BurnMana(ManaColor, 1);
+                }
 
-                Source.ManaPool.BurnMana(ManaColor, 1);
-                Target.ManaPool.GainMana(ManaColor, 1);
+                if (Target is Creature targetCreature)
+                {
+                    targetCreature.Face(Source.Cell);
+                    targetCreature.ManaPool.GainMana(ManaColor, 1);
+                }
+                else
+                {
+                    Target.ManaValue.GainMana(ManaColor, 1);
+                }
 
                 Game.VisualEffectController.MakeChannellingLine(Source, Target, 5, GameConstants.ChannelDuration, ManaColor);
                 creature.CreatureRenderer.DisplayChannel(ManaColor, GameConstants.ChannelDuration);

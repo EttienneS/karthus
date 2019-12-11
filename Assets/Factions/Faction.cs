@@ -10,8 +10,12 @@ public class Faction
 
     public List<Creature> Creatures = new List<Creature>();
     public string FactionName;
+    public List<Item> Items = new List<Item>();
     public int LastRecyle;
+    public float LastUpdate;
     public List<Structure> Structures = new List<Structure>();
+
+    public float UpdateTick = 1;
 
     public CreatureTask AddTask(CreatureTask task)
     {
@@ -19,8 +23,54 @@ public class Faction
         return task;
     }
 
-    public float LastUpdate;
-    public float UpdateTick = 1;
+    public IEnumerable<Structure> GetBatteries()
+    {
+        return Structures.Where(s => s.IsType("Battery") && !s.IsBluePrint);
+    }
+
+    public Structure GetClosestBattery(Creature creature)
+    {
+        var cost = float.MaxValue;
+        Structure closest = null;
+        foreach (var battery in GetBatteries())
+        {
+            var distance = Pathfinder.GetPathCost(battery.Cell, creature.Cell, creature.Mobility);
+
+            if (distance < cost)
+            {
+                closest = battery;
+                cost = distance;
+            }
+        }
+
+        return closest;
+    }
+
+    public CreatureTask TakeTask(Creature creature)
+    {
+        var task = creature.GetBehaviourTask?.Invoke(creature);
+        if (task == null)
+        {
+            var highestPriority = int.MinValue;
+            foreach (var availableTask in AvailableTasks.Where(t => creature.CanDo(t)))
+            {
+                var priority = creature.GetPriority(availableTask);
+                if (priority > highestPriority)
+                {
+                    task = availableTask;
+                    highestPriority = priority;
+                }
+            }
+        }
+
+        if (task != null)
+        {
+            AvailableTasks.Remove(task);
+            return task;
+        }
+
+        return new Idle(creature);
+    }
 
     public void Update()
     {
@@ -56,32 +106,6 @@ public class Faction
         }
     }
 
-    public CreatureTask TakeTask(Creature creature)
-    {
-        var task = creature.GetBehaviourTask?.Invoke(creature);
-        if (task == null)
-        {
-            var highestPriority = int.MinValue;
-            foreach (var availableTask in AvailableTasks.Where(t => creature.CanDo(t)))
-            {
-                var priority = creature.GetPriority(availableTask);
-                if (priority > highestPriority)
-                {
-                    task = availableTask;
-                    highestPriority = priority;
-                }
-            }
-        }
-
-        if (task != null)
-        {
-            AvailableTasks.Remove(task);
-            return task;
-        }
-
-        return new Idle(creature);
-    }
-
     internal void AddCreature(Creature data)
     {
         if (!Creatures.Contains(data))
@@ -111,28 +135,5 @@ public class Faction
 
             task.Destroy();
         }
-    }
-
-    public IEnumerable<Structure> GetBatteries()
-    {
-        return Structures.Where(s => s.IsType("Battery") && !s.IsBluePrint);
-    }
-
-    public Structure GetClosestBattery(Creature creature)
-    {
-        var cost = float.MaxValue;
-        Structure closest = null;
-        foreach (var battery in GetBatteries())
-        {
-            var distance = Pathfinder.GetPathCost(battery.Cell, creature.Cell, creature.Mobility);
-
-            if (distance < cost)
-            {
-                closest = battery;
-                cost = distance;
-            }
-        }
-
-        return closest;
     }
 }

@@ -8,49 +8,22 @@ using Random = UnityEngine.Random;
 
 public class Cell : IEquatable<Cell>
 {
-    private int _biomeId;
-    public int BiomeId
-    {
-        get
-        {
-            return _biomeId;
-        }
-        set
-        {
-            _biomeId = value;
-            _biomeRegion = null;
-        }
-    }
-
     public string FloorId;
-
     public ManaColor? Liquid;
 
     [JsonIgnore]
     public Cell[] Neighbors = new Cell[8];
 
     [JsonIgnore]
-    public IEnumerable<Cell> NonNullNeighbors
-    {
-        get
-        {
-            return Neighbors.Where(n => n != null);
-        }
-    }
-
-
-    [JsonIgnore]
     public AutomataState State;
 
     public string StructureId;
-
     public int X;
-
     public int Y;
-
     internal Color Color;
+    private int _biomeId;
 
-    private IEntity _binding;
+    private BiomeRegion _biomeRegion;
 
     private Structure _floor;
 
@@ -64,6 +37,15 @@ public class Cell : IEquatable<Cell>
     }
 
     [JsonIgnore]
+    public bool Alive
+    {
+        get
+        {
+            return State == AutomataState.ImmutableAlive || State == AutomataState.MutableAlive;
+        }
+    }
+
+    [JsonIgnore]
     public Biome Biome
     {
         get
@@ -72,7 +54,18 @@ public class Cell : IEquatable<Cell>
         }
     }
 
-    private BiomeRegion _biomeRegion;
+    public int BiomeId
+    {
+        get
+        {
+            return _biomeId;
+        }
+        set
+        {
+            _biomeId = value;
+            _biomeRegion = null;
+        }
+    }
 
     [JsonIgnore]
     public BiomeRegion BiomeRegion
@@ -95,7 +88,6 @@ public class Cell : IEquatable<Cell>
             return TravelCost > 0 && Structure == null;
         }
     }
-
 
     [JsonIgnore]
     public List<Creature> Creatures
@@ -137,6 +129,18 @@ public class Cell : IEquatable<Cell>
 
     public float Height { get; set; }
 
+    [JsonIgnore]
+    public bool IsVoid
+    {
+        get
+        {
+            return BiomeId == 0;
+        }
+    }
+
+    [JsonIgnore]
+    public List<Item> Items { get; set; } = new List<Item>();
+
     public float LiquidLevel
     {
         get
@@ -176,18 +180,26 @@ public class Cell : IEquatable<Cell>
     }
 
     [JsonIgnore]
+    public List<Cell> LivingNeighbours
+    {
+        get
+        {
+            return Neighbors.Where(n => n?.Alive == true).ToList();
+        }
+    }
+
+    [JsonIgnore]
     public Cell NextWithSamePriority { get; set; }
 
-    //[JsonIgnore]
-    //public float Level
-    //{
-    //    get
-    //    {
-    //        var height = Height + FluidLevel;
-    //        if (Structure?.IsWall() == true)
-    //        {
-    //            height += 2;
-    //        }
+    [JsonIgnore]
+    public IEnumerable<Cell> NonNullNeighbors
+    {
+        get
+        {
+            return Neighbors.Where(n => n != null);
+        }
+    }
+
     [JsonIgnore]
     public Cell PathFrom { get; set; }
 
@@ -313,6 +325,14 @@ public class Cell : IEquatable<Cell>
         return obj1.Equals(obj2);
     }
 
+    public void AddItem(Item item)
+    {
+        Items.Add(item);
+        item.Cell = this;
+
+        item.Coords = (Vector.x, Vector.y);
+    }
+
     public int DistanceTo(Cell other)
     {
         return (X < other.X ? other.X - X : X - other.X)
@@ -364,34 +384,7 @@ public class Cell : IEquatable<Cell>
             return false;
         }
 
-        return neighbor.Structure.IsWall() || neighbor.Structure.IsPipe() || neighbor.Structure.IsPipeEnd();
-    }
-
-    internal void Populate()
-    {
-        if (Structure?.Name == "Reserved")
-        {
-            Game.StructureController.DestroyStructure(Structure);
-        }
-
-        if (!Empty())
-        {
-            return;
-        }
-
-        var content = BiomeRegion.GetContent();
-
-        if (!string.IsNullOrEmpty(content))
-        {
-            var structure = Game.StructureController.GetStructure(content, Game.FactionController.Factions[FactionConstants.World]);
-            SetStructure(structure);
-
-            if (structure.AutoInteractions.Count > 0)
-            {
-                Game.MagicController.AddEffector(structure);
-            }
-        }
-       
+        return neighbor.Structure.IsWall();
     }
 
     public bool Pathable(Mobility mobility)
@@ -419,8 +412,6 @@ public class Cell : IEquatable<Cell>
         Color = new Color(baseColor.r - scaled, baseColor.g - scaled, baseColor.b - scaled, baseColor.a);
     }
 
-  
-
     public void RunAutomata()
     {
         if (State == AutomataState.ImmutableAlive || State == AutomataState.ImmutableDead)
@@ -439,24 +430,6 @@ public class Cell : IEquatable<Cell>
         else if (alive < 4)
         {
             State = AutomataState.MutableDead;
-        }
-    }
-
-    [JsonIgnore]
-    public bool Alive
-    {
-        get
-        {
-            return State == AutomataState.ImmutableAlive || State == AutomataState.MutableAlive;
-        }
-    }
-
-    [JsonIgnore]
-    public List<Cell> LivingNeighbours
-    {
-        get
-        {
-            return Neighbors.Where(n => n?.Alive == true).ToList();
         }
     }
 
@@ -487,6 +460,14 @@ public class Cell : IEquatable<Cell>
 
             structure.Cell = this;
             Structure = structure;
+        }
+    }
+
+    public void TakeItem(Item item)
+    {
+        if (Items.Contains(item))
+        {
+            Items.Remove(item);
         }
     }
 
@@ -541,7 +522,6 @@ public class Cell : IEquatable<Cell>
         }
     }
 
-
     internal Structure CreateStructure(string structureName, string faction = FactionConstants.World)
     {
         var structure = Game.StructureController.GetStructure(structureName, Game.FactionController.Factions[faction]);
@@ -569,6 +549,39 @@ public class Cell : IEquatable<Cell>
     {
         var neighbors = Neighbors.Where(n => n != null).ToList();
         return neighbors[Random.Range(0, neighbors.Count - 1)];
+    }
+
+    internal void Populate()
+    {
+        if (Structure?.Name == "Reserved")
+        {
+            Game.StructureController.DestroyStructure(Structure);
+        }
+
+        if (!Empty())
+        {
+            return;
+        }
+
+        var content = BiomeRegion.GetContent();
+
+        if (!string.IsNullOrEmpty(content))
+        {
+            if (Game.StructureController.StructureDataReference.ContainsKey(content))
+            {
+                var structure = Game.StructureController.GetStructure(content, Game.FactionController.Factions[FactionConstants.World]);
+                SetStructure(structure);
+
+                if (structure.AutoInteractions.Count > 0)
+                {
+                    Game.MagicController.AddEffector(structure);
+                }
+            }
+            else
+            {
+                Game.ItemController.SpawnItem(content, this);
+            }
+        }
     }
 
     internal Vector3Int ToVector3Int()
@@ -676,14 +689,5 @@ public class Cell : IEquatable<Cell>
         }
 
         return Structure.IsWall();
-    }
-
-    [JsonIgnore]
-    public bool IsVoid
-    {
-        get
-        {
-            return BiomeId == 0;
-        }
     }
 }

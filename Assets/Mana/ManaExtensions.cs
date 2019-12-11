@@ -90,7 +90,7 @@ public static class ManaExtensions
         return flat;
     }
 
-    public static ManaPool ToManaPool(this Dictionary<ManaColor, int> manaCost, IEntity entity)
+    public static ManaPool ToManaPool(this Dictionary<ManaColor, float> manaCost, IEntity entity)
     {
         var pool = new ManaPool(entity);
 
@@ -100,5 +100,132 @@ public static class ManaExtensions
         }
 
         return pool;
+    }
+
+    public static Dictionary<ManaColor, float> ToManaValue(this ManaPool manaPool)
+    {
+        var dict = new Dictionary<ManaColor, float>();
+        foreach (var kvp in manaPool)
+        {
+            dict.Add(kvp.Key, kvp.Value.Total);
+        }
+
+        return dict;
+    }
+
+    public static float GetTotal(this Dictionary<ManaColor, float> manaCost, ManaColor color)
+    {
+        if (manaCost.ContainsKey(color))
+        {
+            return manaCost[color];
+        }
+        return 0;
+    }
+
+    public static void GainMana(this Dictionary<ManaColor, float> manaCost, ManaColor color, float amount)
+    {
+        if (!manaCost.ContainsKey(color))
+        {
+            manaCost.Add(color, 0);
+        }
+        manaCost[color] += amount;
+    }
+
+    public static void BurnMana(this Dictionary<ManaColor, float> manaCost, ManaColor color, float amount)
+    {
+        if (!manaCost.ContainsKey(color) || manaCost[color] < amount)
+        {
+            throw new System.Exception("Cannot burn what you do not have");
+        }
+
+        manaCost[color] -= amount;
+    }
+
+    public static string GetString(this Dictionary<ManaColor, float> manaCost)
+    {
+        var str = "";
+        foreach (var kvp in manaCost)
+        {
+            switch (kvp.Key)
+            {
+                case ManaColor.Black:
+                    str += "B:";
+                    break;
+
+                case ManaColor.Blue:
+                    str += "U:";
+                    break;
+
+                case ManaColor.Red:
+                    str += "R:";
+                    break;
+
+                case ManaColor.White:
+                    str += "W:";
+                    break;
+
+                case ManaColor.Green:
+                    str += "G:";
+                    break;
+            }
+            str += kvp.Value + ", ";
+        }
+
+        return str;
+    }
+
+    internal static ManaColor GetManaWithMost(this Dictionary<ManaColor, float> manaCost)
+    {
+        var most = ManaColor.Blue;
+        var max = float.MinValue;
+
+        foreach (var kvp in manaCost)
+        {
+            if (kvp.Value > max)
+            {
+                most = kvp.Key;
+                max = kvp.Value;
+            }
+        }
+        return most;
+    }
+
+    internal static void Transfer(this Dictionary<ManaColor, float> source, Dictionary<ManaColor, float> target, ManaColor manaColor, float amount)
+    {
+        if (amount > 0)
+        {
+            source.BurnMana(manaColor, amount);
+            target.GainMana(manaColor, amount);
+        }
+        else
+        {
+            target.BurnMana(manaColor, amount);
+            source.GainMana(manaColor, amount);
+        }
+    }
+
+
+    internal static bool HasMana(this Dictionary<ManaColor, float> source, Dictionary<ManaColor, float> manaCost)
+    {
+        foreach (var kvp in manaCost)
+        {
+            if (!source.HasMana(kvp.Key, kvp.Value))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
+    internal static bool HasMana(this Dictionary<ManaColor, float> source, ManaColor color, float amount)
+    {
+        if (!source.ContainsKey(color))
+        {
+            return false;
+        }
+
+        return source[color] >= amount;
     }
 }
