@@ -16,7 +16,7 @@ public partial class Game // .Mouse
     public void DisableMouseSprite()
     {
         MouseSpriteRenderer.gameObject.SetActive(false);
-        ValidateMouse =  null;
+        ValidateMouse = null;
         RotateMouseRight = null;
     }
 
@@ -44,7 +44,8 @@ public partial class Game // .Mouse
     }
 
     private bool _constructMode;
-   
+
+    public static bool Paused { get; set; }
 
     private void MoveMouseSprite(Vector3 mousePosition)
     {
@@ -76,5 +77,5 @@ public partial class Game // .Mouse
         }
     }
 
-    
+
 }

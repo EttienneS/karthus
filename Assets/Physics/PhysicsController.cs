@@ -10,6 +10,38 @@ public class PhysicsController : MonoBehaviour
     [Range(0f, 0.2f)] public float PhysicsRate = 0.05f;
     internal float WorkTick;
 
+    //private EntityManager _entityManager;
+
+    // public Entity ManaTiles;
+
+    public void Start()
+    {
+        //_entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+
+        //var entities = new NativeArray<Entity>(Game.Map.Width * Game.Map.Height, Allocator.Temp);
+        //var archetype = _entityManager.CreateArchetype(typeof(ManaTile));
+
+        //_entityManager.CreateEntity(archetype, entities);
+
+        //var i = 0;
+        //for (int x = 0; x < Game.Map.Width; x++)
+        //{
+        //    for (int y = 0; y < Game.Map.Height; y++)
+        //    {
+        //        var e = entities[i];
+        //        _entityManager.SetComponentData(e, new ManaTile
+        //        {
+        //            Amount = 0,
+        //            Color = ManaColor.Black,
+        //            Coords = new int2(x, y)
+        //        });
+        //        i++;
+        //    }
+        //}
+
+        //ManaTiles = entities[0];
+    }
+
     // Update is called once per frame
     private void Update()
     {

@@ -2,12 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class MapGenerator
 {
-    public Dictionary<int, Biome> Biomes = new Dictionary<int, Biome>();
+    public Biome Biome;
 
     public bool Busy;
     public bool Done;
@@ -153,8 +152,7 @@ public class MapGenerator
 
     public IEnumerator Work()
     {
-        Biomes.Add(0, new Biome("Void", new BiomeRegion(0.0f, 1.0f, "Void", -1f)));
-        Biomes.Add(1, BiomeTemplates.First(b => b.Name == "Default"));
+        Biome = BiomeTemplates.First(b => b.Name == "Default");
 
         Game.Map.Cells = new List<Cell>();
         Game.SetLoadStatus("Create cells", 0.08f);
@@ -177,20 +175,6 @@ public class MapGenerator
 
         Game.SetLoadStatus("Reset search priorities", 0.20f);
         ResetSearchPriorities();
-        yield return null;
-
-        Game.SetLoadStatus("Run map automata", 0.25f);
-        foreach (var run in RunMapAutomata(2))
-        {
-            yield return null;
-        }
-        yield return null;
-
-        Game.SetLoadStatus("Make biomes", 0.35f);
-        foreach (var run in MakeBiomes())
-        {
-            yield return null;
-        }
         yield return null;
 
         Game.SetLoadStatus("Bootstrap factions", 0.35f);
@@ -314,11 +298,7 @@ public class MapGenerator
                 {
                     for (int y = 0; y < chunkSize; y++)
                     {
-                        var cell = Game.Map.GetCellAtCoordinate(x + (w * chunkSize), y + (h * chunkSize));
-                        if (!cell.IsVoid)
-                        {
-                            chunk.Add(cell);
-                        }
+                        chunk.Add(Game.Map.GetCellAtCoordinate(x + (w * chunkSize), y + (h * chunkSize)));
                     }
                 }
 
@@ -326,48 +306,6 @@ public class MapGenerator
             }
         }
         return chunks;
-    }
-
-    private static IEnumerable RunMapAutomata(int passes)
-    {
-        var map = Noise.GenerateNoiseMap(Game.Map.Width, Game.Map.Height,
-                                         Random.Range(1, 100000),
-                                         50, 4, 0.4f, 4, new Vector2(0, 0));
-
-        Game.SetLoadStatus("Set initial state", 0.30f);
-        foreach (var cell in Game.Map.Cells)
-        {
-            var state = map[cell.X, cell.Y];
-
-            if (state > 0.8)
-            {
-                cell.State = Cell.AutomataState.ImmutableAlive;
-            }
-            else if (state > 0.4)
-            {
-                cell.State = Cell.AutomataState.MutableAlive;
-            }
-            else if (state > 0.25)
-            {
-                cell.State = Cell.AutomataState.MutableDead;
-            }
-            else
-            {
-                cell.State = Cell.AutomataState.ImmutableDead;
-            }
-        }
-
-        yield return null;
-
-        for (int i = 0; i < passes; i++)
-        {
-            Game.SetLoadStatus($"Automata pass {i + 1} of {passes}", 0.30f + ((i + 1f) * 0.05f));
-            foreach (var cell in Game.Map.Cells)
-            {
-                cell.RunAutomata();
-            }
-            yield return null;
-        }
     }
 
     private static void SpawnCreatures()
@@ -503,79 +441,9 @@ public class MapGenerator
         return streets;
     }
 
-    private IEnumerable MakeBiomes()
-    {
-        var alive = Game.Map.Cells.Where(c => c.Alive).ToList();
-        foreach (var cell in alive)
-        {
-            // default
-            cell.BiomeId = 1;
-        }
-        Game.SetLoadStatus("Initialize Biomes", 0.40f);
-        yield return null;
-
-        var seeds = new List<Cell>();
-        var biomes = Random.Range(3, Mathf.Max(Game.Map.Width / 50, 5));
-        for (int i = 0; i < biomes; i++)
-        {
-            seeds.Add(alive.GetRandomItem());
-        }
-
-        var counter = 0;
-        foreach (var seed in seeds)
-        {
-            counter++;
-            Game.SetLoadStatus($"Create Biome {counter} of {seeds.Count}", 0.42f);
-            yield return null;
-
-            var id = Biomes.Count;
-            Biomes.Add(id, GetRandomBiome());
-            var cells = new List<Cell>();
-            cells.AddRange(Game.Map.GetCircle(seed, Random.Range(10, 30)));
-
-            for (int i = 0; i < Random.Range(3, 6); i++)
-            {
-                cells.AddRange(Game.Map.GetCircle(cells.GetRandomItem(), Random.Range(5, 20)));
-            }
-
-            cells.Distinct();
-
-            var min = Random.Range(0.1f, 0.45f);
-            var max = Random.Range(0.55f, 0.9f);
-            foreach (var cell in cells)
-            {
-                if (cell.Alive && (cell.Height < max || cell.Height > min))
-                {
-                    cell.BiomeId = id;
-                }
-            }
-        }
-
-        yield return null;
-    }
-
     private void MakeFactionBootStrap(Faction faction)
     {
-        var biomes = Game.Map.Cells.GroupBy(c => c.BiomeId)
-                                   .ToDictionary(c => c.Key, c => c.ToList());
-
-        var biggest = int.MinValue;
-        var biggestBiome = new List<Cell>();
-        foreach (var biome in biomes)
-        {
-            if (biome.Key == 0)
-            {
-                continue;
-            }
-
-            if (biome.Value.Count > biggest)
-            {
-                biggest = biome.Value.Count;
-                biggestBiome = biome.Value;
-            }
-        }
-
-        var center = Game.Map.GetNearestPathableCell(biggestBiome.GetRandomItem(), Mobility.Walk, 5);
+        var center = Game.Map.GetNearestPathableCell(Game.Map.Center, Mobility.Walk, 25);
         var core = center.CreateStructure("Battery", faction.FactionName);
         core.ManaValue.GainMana(ManaColor.Green, 20);
         core.ManaValue.GainMana(ManaColor.Red, 20);
@@ -586,7 +454,7 @@ public class MapGenerator
         for (int i = 0; i < 3; i++)
         {
             Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("Person"),
-                                                  Game.Map.GetNearestPathableCell(center, Mobility.Walk, 5),
+                                                  Game.Map.GetNearestPathableCell(center, Mobility.Walk, 25),
                                                   Game.FactionController.PlayerFaction);
         }
     }

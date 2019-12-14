@@ -14,9 +14,6 @@ public class Cell : IEquatable<Cell>
     [JsonIgnore]
     public Cell[] Neighbors = new Cell[8];
 
-    [JsonIgnore]
-    public AutomataState State;
-
     public string StructureId;
     public int X;
     public int Y;
@@ -31,41 +28,7 @@ public class Cell : IEquatable<Cell>
 
     private Structure _structure;
 
-    public enum AutomataState
-    {
-        ImmutableDead, MutableDead, ImmutableAlive, MutableAlive
-    }
 
-    [JsonIgnore]
-    public bool Alive
-    {
-        get
-        {
-            return State == AutomataState.ImmutableAlive || State == AutomataState.MutableAlive;
-        }
-    }
-
-    [JsonIgnore]
-    public Biome Biome
-    {
-        get
-        {
-            return Game.MapGenerator.Biomes[BiomeId];
-        }
-    }
-
-    public int BiomeId
-    {
-        get
-        {
-            return _biomeId;
-        }
-        set
-        {
-            _biomeId = value;
-            _biomeRegion = null;
-        }
-    }
 
     [JsonIgnore]
     public BiomeRegion BiomeRegion
@@ -74,7 +37,7 @@ public class Cell : IEquatable<Cell>
         {
             if (_biomeRegion == null)
             {
-                _biomeRegion = Biome.GetRegion(Height);
+                _biomeRegion = Game.MapGenerator.Biome.GetRegion(Height);
             }
             return _biomeRegion;
         }
@@ -129,14 +92,6 @@ public class Cell : IEquatable<Cell>
 
     public float Height { get; set; }
 
-    [JsonIgnore]
-    public bool IsVoid
-    {
-        get
-        {
-            return BiomeId == 0;
-        }
-    }
 
     public List<string> ItemIds { get; set; } = new List<string>();
 
@@ -187,14 +142,6 @@ public class Cell : IEquatable<Cell>
         }
     }
 
-    [JsonIgnore]
-    public List<Cell> LivingNeighbours
-    {
-        get
-        {
-            return Neighbors.Where(n => n?.Alive == true).ToList();
-        }
-    }
 
     [JsonIgnore]
     public Cell NextWithSamePriority { get; set; }
@@ -420,26 +367,7 @@ public class Cell : IEquatable<Cell>
         Color = new Color(baseColor.r - scaled, baseColor.g - scaled, baseColor.b - scaled, baseColor.a);
     }
 
-    public void RunAutomata()
-    {
-        if (State == AutomataState.ImmutableAlive || State == AutomataState.ImmutableDead)
-        {
-            return;
-        }
-
-        var neigbours = Neighbors.Where(n => n != null);
-
-        var alive = neigbours.Count(n => n.State == AutomataState.ImmutableAlive || n.State == AutomataState.MutableAlive);
-
-        if (alive > 5)
-        {
-            State = AutomataState.MutableAlive;
-        }
-        else if (alive < 4)
-        {
-            State = AutomataState.MutableDead;
-        }
-    }
+   
 
     public void SetNeighbor(Direction direction, Cell cell)
     {
@@ -601,52 +529,6 @@ public class Cell : IEquatable<Cell>
     {
         const float minLevel = 0.1f;
 
-        if (LiquidLevel > 0 && IsVoid)
-        {
-            var level = Random.Range(0.1f, LiquidLevel);
-
-            if (Random.value < level)
-            {
-                var nonVoid = NonNullNeighbors.Where(n => !n.IsVoid).ToList();
-                if (nonVoid.Count > 0)
-                {
-                    var disintegrated = nonVoid.GetRandomItem();
-                    var flow = nonVoid.FirstOrDefault(n => n.Liquid.HasValue && n.Liquid == Liquid);
-                    if (flow != null)
-                    {
-                        disintegrated = flow;
-                    }
-
-                    disintegrated.BiomeId = 0;
-
-                    Game.StructureController.DestroyStructure(disintegrated.Structure);
-                    Game.StructureController.DestroyStructure(disintegrated.Floor);
-
-                    foreach (var creature in disintegrated.Creatures)
-                    {
-                        foreach (var limb in creature.Limbs)
-                        {
-                            for (int i = 0; i < 10; i++)
-                            {
-                                limb.Wounds.Add(new Wound(limb, "Mana explosion", DamageType.Energy, Severity.Critical));
-                            }
-                        }
-                        creature.Log("AAAHAahhaahhahhaaaaaa!!");
-                    }
-                    disintegrated.UpdateTile();
-                    Game.PhysicsController.Track(disintegrated);
-                    Game.VisualEffectController.SpawnLightEffect(null, disintegrated.Vector, Color.magenta, 3, 4, 3).Fades();
-                }
-            }
-            else
-            {
-                Game.VisualEffectController.SpawnLightEffect(null, Vector, Liquid.Value.GetActualColor(), 2, 1, 2).Fades();
-            }
-
-            LiquidLevel -= level;
-            return;
-        }
-
         if (LiquidLevel <= minLevel || !Liquid.HasValue)
         {
             UpdateLiquid();
@@ -668,6 +550,18 @@ public class Cell : IEquatable<Cell>
             loser.Liquid = null;
             Game.VisualEffectController.SpawnLightEffect(null, loser.Vector, winner.Liquid.Value.GetActualColor(),
                                         1 + (diff * 10f), 1 + (diff * 10f), 2).Fades();
+
+            foreach (var creature in Creatures)
+            {
+                foreach (var limb in creature.Limbs)
+                {
+                    for (int i = 0; i < 10; i++)
+                    {
+                        limb.Wounds.Add(new Wound(limb, "Mana explosion", DamageType.Energy, Severity.Critical));
+                    }
+                }
+                creature.Log("AAAHAahhaahhahhaaaaaa!!");
+            }
 
             winner.UpdateLiquid();
             loser.UpdateLiquid();

@@ -1,19 +1,15 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
-
 public class Map : MonoBehaviour
 {
     public const int PixelsPerCell = 64;
     [Range(5, 2000)] public int Height = 100;
     [Range(5, 2000)] public int Width = 100;
-    internal SpriteRenderer Background;
 
     internal Tilemap Tilemap;
     internal Tilemap LiquidMap;
@@ -24,27 +20,16 @@ public class Map : MonoBehaviour
 
     private int _searchFrontierPhase;
 
-    [JsonIgnore]
-    public float[,] NoiseMap
-    {
-        get
-        {
-            if (_noiseMap == null)
-            {
-                _noiseMap = Noise.GenerateNoiseMap(Game.Map.Width * 2, Game.Map.Height * 2,
-                                                   Random.Range(1, 10000),
-                                                   Random.Range(25, 40),
-                                                   4, 0.4f, 4, new Vector2(0, 0));
-            }
-            return _noiseMap;
-        }
-    }
+    [Range(0.001f,0.2f)]
+    public float Scaler = 0.1f;
 
-    public float GetCellHeight(int x, int y)
+    [Range(float.MinValue,float.MaxValue)]
+    public float Seed = 1f;
+
+    public float GetCellHeight(float x, float y)
     {
-        return NoiseMap[x, y];
+        return Mathf.PerlinNoise((Seed + x) * Scaler, (Seed + y) * Scaler);
     }
-    private float[,] _noiseMap;
 
     public Dictionary<(int x, int y), Cell> CellLookup
     {
@@ -85,10 +70,7 @@ public class Map : MonoBehaviour
     {
         Tilemap = transform.Find("Tilemap").gameObject.GetComponent<Tilemap>();
         LiquidMap = transform.Find("Liquid Map").gameObject.GetComponent<Tilemap>();
-        Background = GetComponentInChildren<SpriteRenderer>();
 
-        Background.transform.position = new Vector3(Game.Map.Width / 2, Game.Map.Height / 2, 0);
-        Background.transform.localScale = new Vector3(Game.Map.Width + 2, Game.Map.Height + 2, 1);
     }
 
     public List<Cell> BleedGroup(List<Cell> group, int count, float percentage = 0.7f)
@@ -519,7 +501,6 @@ public class Map : MonoBehaviour
         var mineX = Mathf.Clamp(Mathf.FloorToInt(center.X + (radius * Mathf.Cos(angle))), 0, Game.Map.Width);
         var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Y + (radius * Mathf.Sin(angle))), 0, Game.Map.Height);
 
-        return GetCellAtCoordinate(mineX, mineY); 
+        return GetCellAtCoordinate(mineX, mineY);
     }
-
 }
