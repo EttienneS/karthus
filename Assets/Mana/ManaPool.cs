@@ -156,35 +156,15 @@ public class ManaPool : Dictionary<ManaColor, Mana>
 
     internal void Release()
     {
-        var cells = new List<Cell> { Entity.Cell };
-        cells.AddRange(Entity.Cell.Neighbors.Where(n => n != null));
-
-        var orderedCells = cells.OrderByDescending(c => c.LiquidLevel).ToList(); ;
         foreach (var mana in this.OrderBy(m => m.Value.Total))
         {
-            if (mana.Value.Total > 0)
+            var amount = Mathf.FloorToInt(mana.Value.Total);
+
+            if (amount > 0)
             {
-                var matching = orderedCells.Find(c => c.Liquid.HasValue && c.Liquid.Value == mana.Key);
-                if (matching != null)
-                {
-                    matching.LiquidLevel += mana.Value.Total;
-                }
-                else
-                {
-                    var cell = orderedCells[0];
-                    orderedCells.Remove(cell);
-
-                    var amount = mana.Value.Total - cell.LiquidLevel;
-
-                    if (amount > 0)
-                    {
-                        cell.AddLiquid(mana.Key, amount);
-                    }
-                    else
-                    {
-                        cell.LiquidLevel -= amount;
-                    }
-                }
+                var crystal = Game.ItemController.SpawnItem($"{mana.Key.ToString()} Mana Crystals", Entity.Cell);
+                crystal.Amount = amount;
+                Game.VisualEffectController.SpawnLightEffect(null, Entity.Vector, mana.Key.GetActualColor(), amount, amount * 2, 5);
             }
         }
     }

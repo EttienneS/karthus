@@ -151,16 +151,6 @@ public partial class Game : MonoBehaviour
         return false;
     }
 
-    private static void SpawnLiquid(ManaColor color)
-    {
-        var point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        var cell = Map.GetCellAtPoint(point);
-
-        VisualEffectController.SpawnLightEffect(null, cell.Vector, color.GetActualColor(), 1, 1, 0.5f)
-                              .Fades();
-
-        cell.AddLiquid(color, 0.5f);
-    }
 
     private void HandleHotkeys()
     {
@@ -184,20 +174,7 @@ public partial class Game : MonoBehaviour
             RotateMouseLeft?.Invoke();
         }
 
-        if (Input.GetKey("z"))
-        {
-            SpawnLiquid(ManaColor.Blue);
-        }
-
-        if (Input.GetKey("x"))
-        {
-            SpawnLiquid(ManaColor.Red);
-        }
-
-        if (Input.GetKey("c"))
-        {
-            SpawnLiquid(ManaColor.Green);
-        }
+       
 
         if (Input.GetKeyDown("p"))
         {

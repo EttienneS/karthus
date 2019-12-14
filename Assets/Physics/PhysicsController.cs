@@ -50,33 +50,33 @@ public class PhysicsController : MonoBehaviour
         if (Game.TimeManager.Paused)
             return;
 
-        WorkTick += Time.deltaTime;
-        if (WorkTick < PhysicsRate)
-        {
-            return;
-        }
+        //WorkTick += Time.deltaTime;
+        //if (WorkTick < PhysicsRate)
+        //{
+        //    return;
+        //}
 
-        WorkTick = 0;
+        //WorkTick = 0;
 
-        if (VolatileCells.Count == 0)
-        {
-            return;
-        }
+        //if (VolatileCells.Count == 0)
+        //{
+        //    return;
+        //}
 
-        var batch = new List<Cell>();
-        for (int i = 0; i < UpdatesPerFrame; i++)
-        {
-            if (VolatileCells.Count == 0 || VolatileCells.Peek() == null)
-            {
-                break;
-            }
-            batch.Add(VolatileCells.Dequeue());
-        }
+        //var batch = new List<Cell>();
+        //for (int i = 0; i < UpdatesPerFrame; i++)
+        //{
+        //    if (VolatileCells.Count == 0 || VolatileCells.Peek() == null)
+        //    {
+        //        break;
+        //    }
+        //    batch.Add(VolatileCells.Dequeue());
+        //}
 
-        foreach (var cell in batch)
-        {
-            cell.UpdatePhysics();
-        }
+        //foreach (var cell in batch)
+        //{
+        //    //cell.UpdatePhysics();
+        //}
     }
 
     internal void Track(Cell cell)

@@ -2,7 +2,7 @@
   "BiomeRegions": [
     {
       "Content": {},
-      "Max": 0.22,
+      "Max": 0.3,
       "Min": 0.0,
       "TravelCost": -1,
       "SpriteName": "Water"
@@ -12,8 +12,8 @@
         "Blue Mana Crystals": 0.01,
         "Small Rock": 0.04
       },
-      "Max": 0.25,
-      "Min": 0.2,
+      "Max": 0.35,
+      "Min": 0.3,
       "SpriteName": "Sand"
     },
     {
@@ -21,8 +21,8 @@
         "Small Rock": 0.05,
         "Medium Rock": 0.01
       },
-      "Max": 0.30,
-      "Min": 0.24,
+      "Max": 0.4,
+      "Min": 0.35,
       "SpriteName": "Dirt"
     },
     {
@@ -31,8 +31,8 @@
         "Green Mana Crystals": 0.01,
         "Small Rock": 0.01
       },
-      "Max": 0.52,
-      "Min": 0.28,
+      "Max": 0.6,
+      "Min": 0.4,
       "SpriteName": "Grass"
     },
     {
@@ -41,9 +41,17 @@
         "Bush": 0.25,
         "Green Mana Crystals": 0.03
       },
-      "Max": 0.72,
-      "Min": 0.48,
+      "Max": 0.75,
+      "Min": 0.6,
       "SpriteName": "Forest"
+    },
+    {
+      "Content": {
+        "Small Rock": 0.65
+      },
+      "Max": 0.8,
+      "Min": 0.75,
+      "SpriteName": "Dirt"
     },
     {
       "Content": {
@@ -52,8 +60,8 @@
         "Medium Rock": 0.15,
         "Big Rock": 0.10
       },
-      "Max": 0.92,
-      "Min": 0.68,
+      "Max": 0.9,
+      "Min": 0.8,
       "SpriteName": "Stone"
     },
     {
@@ -63,7 +71,7 @@
         "Big Rock": 0.9
       },
       "Max": 1.0,
-      "Min": 0.88,
+      "Min": 0.9,
       "SpriteName": "Stone"
     }
   ],

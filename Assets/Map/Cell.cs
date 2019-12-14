@@ -8,27 +8,24 @@ using Random = UnityEngine.Random;
 
 public class Cell : IEquatable<Cell>
 {
+    [JsonIgnore]
     public string FloorId;
-    public ManaColor? Liquid;
 
     [JsonIgnore]
     public Cell[] Neighbors = new Cell[8];
 
+    [JsonIgnore]
     public string StructureId;
+
     public int X;
     public int Y;
     internal Color Color;
-    private int _biomeId;
 
     private BiomeRegion _biomeRegion;
 
     private Structure _floor;
 
-    private float _fluidLevel;
-
     private Structure _structure;
-
-
 
     [JsonIgnore]
     public BiomeRegion BiomeRegion
@@ -90,9 +87,10 @@ public class Cell : IEquatable<Cell>
         }
     }
 
+    [JsonIgnore]
     public float Height { get; set; }
 
-
+    [JsonIgnore]
     public List<string> ItemIds { get; set; } = new List<string>();
 
     [JsonIgnore]
@@ -101,44 +99,6 @@ public class Cell : IEquatable<Cell>
         get
         {
             return ItemIds.Select(i => i.GetItem()).ToList();
-        }
-    }
-
-    public float LiquidLevel
-    {
-        get
-        {
-            return _fluidLevel;
-        }
-        set
-        {
-            _fluidLevel = value;
-            if (_fluidLevel < 0)
-            {
-                _fluidLevel = 0;
-            }
-            Game.PhysicsController.Track(this);
-        }
-    }
-
-    [JsonIgnore]
-    public Tile LiquidTile
-    {
-        get
-        {
-            var tile = ScriptableObject.CreateInstance<Tile>();
-            tile.sprite = Game.SpriteStore.GetSprite("Liquid");
-
-            if (Liquid.HasValue && LiquidLevel > 0)
-            {
-                tile.color = Liquid.Value.GetActualColor(Mathf.Max(LiquidLevel, 0.2f));
-            }
-            else
-            {
-                tile.color = new Color(0, 0, 0, 0);
-            }
-
-            return tile;
         }
     }
 
@@ -367,8 +327,6 @@ public class Cell : IEquatable<Cell>
         Color = new Color(baseColor.r - scaled, baseColor.g - scaled, baseColor.b - scaled, baseColor.a);
     }
 
-   
-
     public void SetNeighbor(Direction direction, Cell cell)
     {
         Neighbors[(int)direction] = cell;
@@ -409,7 +367,7 @@ public class Cell : IEquatable<Cell>
 
     public override string ToString()
     {
-        return "Cell: (" + X + ", " + Y + ")";
+        return $"X: {X}, Y: {Y}";
     }
 
     public string ToStringOnSeparateLines()
@@ -417,15 +375,6 @@ public class Cell : IEquatable<Cell>
         return $"X: {X}\nY: {Y}";
     }
 
-    public void UpdateLiquid()
-    {
-        Game.Map.LiquidMap.SetTile(new Vector3Int(X, Y, 0), null);
-
-        if (Liquid.HasValue)
-        {
-            Game.Map.LiquidMap.SetTile(new Vector3Int(X, Y, 0), LiquidTile);
-        }
-    }
 
     public void UpdateTile()
     {
@@ -438,13 +387,7 @@ public class Cell : IEquatable<Cell>
         }
     }
 
-    internal void AddLiquid(ManaColor color, float volume)
-    {
-        Liquid = color;
-        LiquidLevel += volume;
-        Game.PhysicsController.Track(this);
-    }
-
+    
     internal void Clear()
     {
         if (Structure != null)
@@ -525,71 +468,4 @@ public class Cell : IEquatable<Cell>
         return new Vector3Int(X, Y, 0);
     }
 
-    internal void UpdatePhysics()
-    {
-        const float minLevel = 0.1f;
-
-        if (LiquidLevel <= minLevel || !Liquid.HasValue)
-        {
-            UpdateLiquid();
-            return;
-        }
-
-        var clashes = Neighbors.Where(n => n?.Liquid.HasValue == true && n.Liquid.Value != Liquid.Value);
-        const float max = 0.02f;
-        if (clashes.Any())
-        {
-            var clash = clashes.GetRandomItem();
-            var winner = LiquidLevel > clash.LiquidLevel ? this : clash;
-            var loser = winner == this ? clash : this;
-
-            var diff = Mathf.Min(winner.LiquidLevel - loser.LiquidLevel, max);
-            winner.LiquidLevel -= diff;
-            loser.LiquidLevel -= diff;
-
-            loser.Liquid = null;
-            Game.VisualEffectController.SpawnLightEffect(null, loser.Vector, winner.Liquid.Value.GetActualColor(),
-                                        1 + (diff * 10f), 1 + (diff * 10f), 2).Fades();
-
-            foreach (var creature in Creatures)
-            {
-                foreach (var limb in creature.Limbs)
-                {
-                    for (int i = 0; i < 10; i++)
-                    {
-                        limb.Wounds.Add(new Wound(limb, "Mana explosion", DamageType.Energy, Severity.Critical));
-                    }
-                }
-                creature.Log("AAAHAahhaahhahhaaaaaa!!");
-            }
-
-            winner.UpdateLiquid();
-            loser.UpdateLiquid();
-        }
-        else
-        {
-            var drop = Mathf.Max(minLevel, LiquidLevel / 2);
-            var options = Neighbors.Where(n => n?.BlocksFluid() == false
-                                               && n.LiquidLevel < LiquidLevel).ToList();
-
-            if (options.Count > 0)
-            {
-                var lower = options.GetRandomItem();
-                lower.LiquidLevel += drop;
-                lower.Liquid = Liquid;
-                LiquidLevel -= drop;
-                UpdateLiquid();
-            }
-        }
-    }
-
-    private bool BlocksFluid()
-    {
-        if (Structure == null)
-        {
-            return false;
-        }
-
-        return Structure.IsWall();
-    }
 }

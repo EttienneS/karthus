@@ -45,7 +45,7 @@ public class Move : CreatureTask
 
         if (!TargetCell.Pathable(creature.Mobility))
         {
-            Debug.LogError("Target path unreachable");
+            Debug.LogError($"{creature.Name} Target path unreachable {creature.Cell}>>{TargetX}:{TargetY}");
             throw new TaskFailedException("Unable to find path");
         }
 

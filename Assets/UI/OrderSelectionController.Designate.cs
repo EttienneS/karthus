@@ -10,9 +10,6 @@ public partial class OrderSelectionController //.Designate
     internal const string DefaultRemoveIcon = "cancel";
     internal const string DefaultRemoveText = "Remove Building";
 
-    internal const string GatherManaIcon = "curs_01_t";
-    internal const string GatherManaText = "Gather Mana";
-
     internal const string MoveIcon = "location_t";
     internal const string MoveText = "Move";
 
@@ -34,7 +31,6 @@ public partial class OrderSelectionController //.Designate
             EnableAndClear();
 
             CreateOrderButton(MoveText, MoveClicked, MoveIcon);
-            CreateOrderButton(GatherManaText, GatherClicked, GatherManaIcon);
             CreateOrderButton(EssenceShatterText, EssenceShatterClicked, EssenceShatterIcon);
             CreateOrderButton(DefaultRemoveText, RemoveStructureClicked, DefaultRemoveIcon);
         }
@@ -55,20 +51,7 @@ public partial class OrderSelectionController //.Designate
             }
         };
     }
-    private void GatherClicked()
-    {
-        Game.Controller.SelectionPreference = SelectionPreference.Cell;
-        Game.Controller.SetMouseSprite(GatherManaIcon, (_) => true);
-
-        CellClickOrder = cells =>
-        {
-            foreach (var cell in cells)
-            {
-                Game.FactionController.PlayerFaction.AddTask(new GatherMana(cell)).AddCellBadge(cell, GatherManaIcon);
-            }
-        };
-    }
-
+    
     private void MoveClicked()
     {
         Game.Controller.SelectionPreference = SelectionPreference.Cell;
