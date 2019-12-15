@@ -19,9 +19,7 @@
             {
                 if (structure.ValidateCellLocationForStructure(cell))
                 {
-                    var blueprint = Game.StructureController.GetStructureBluePrint(structureName, Game.FactionController.PlayerFaction);
-                    blueprint.Cell = cell;
-                    cell.UpdateTile();
+                    var blueprint = Game.StructureController.GetStructureBluePrint(structureName, cell, Game.FactionController.PlayerFaction);
                     Game.FactionController.PlayerFaction.AddTask(new Build(blueprint));
                 }
             }

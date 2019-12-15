@@ -244,14 +244,7 @@ public class Construct
 
                 if (cell.TravelCost > 0 && cell.Structure == null)
                 {
-                    var structure = Game.StructureController.GetStructureBluePrint(GetStructure(character), faction);
-                    structure.Cell = cell;
-
-                    if (!structure.IsFloor() && !structure.IsWall() && !string.IsNullOrEmpty(Floor))
-                    {
-                        structure.Cell = cell;
-                    }
-                    cell.UpdateTile();
+                    Game.StructureController.GetStructureBluePrint(GetStructure(character), cell, faction);
                 }
 
                 x++;

@@ -53,11 +53,12 @@ public class StructureController : MonoBehaviour
         Game.StructureController.DefaultStructureMap.SetTiles(coords, tiles);
     }
 
-    public Structure GetStructure(string name, Faction faction)
+    public Structure GetStructure(string name, Cell cell, Faction faction)
     {
         string structureData = StructureTypeFileMap[name];
 
         Structure structure = Structure.GetFromJson(structureData);
+        structure.Cell = cell;
         IndexStructure(structure);
 
         structure.SetBluePrintState(false);
@@ -88,6 +89,7 @@ public class StructureController : MonoBehaviour
             DefaultStructureMap.SetTile(coords, structure.Tile);
         }
     }
+
     internal void DestroyStructure(Structure structure)
     {
         if (structure != null)
@@ -110,9 +112,9 @@ public class StructureController : MonoBehaviour
         }
     }
 
-    internal Structure GetStructureBluePrint(string name, Faction faction)
+    internal Structure GetStructureBluePrint(string name, Cell cell, Faction faction)
     {
-        var structure = GetStructure(name, faction);
+        var structure = GetStructure(name, cell, faction);
         structure.SetBluePrintState(true);
         return structure;
     }
