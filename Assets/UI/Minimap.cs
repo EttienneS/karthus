@@ -44,8 +44,6 @@ public class Minimap : MonoBehaviour, IPointerClickHandler, IDragHandler
         var y = (Game.Map.Height * ((Input.mousePosition.y - Screen.height + ThisRect.rect.height) / ThisRect.sizeDelta.y)) + 10;
 
         Game.CameraController.transform.position = new Vector3(x, y, Game.CameraController.Camera.transform.position.z);
-
-        Game.CameraController.UpdateCellsBasedOnCamera();
     }
 
     public void OnPointerClick(PointerEventData eventData)

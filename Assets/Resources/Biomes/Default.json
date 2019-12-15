@@ -12,7 +12,7 @@
         "Blue Mana Crystals": 0.01,
         "Small Rock": 0.04
       },
-      "Max": 0.35,
+      "Max": 0.33,
       "Min": 0.3,
       "SpriteName": "Sand"
     },
@@ -21,8 +21,8 @@
         "Small Rock": 0.05,
         "Medium Rock": 0.01
       },
-      "Max": 0.4,
-      "Min": 0.35,
+      "Max": 0.35,
+      "Min": 0.33,
       "SpriteName": "Dirt"
     },
     {
@@ -32,8 +32,18 @@
         "Small Rock": 0.01
       },
       "Max": 0.6,
-      "Min": 0.4,
+      "Min": 0.35,
       "SpriteName": "Grass"
+    },
+    {
+      "Content": {
+        "Tree": 0.75,
+        "Bush": 0.25,
+        "Green Mana Crystals": 0.03
+      },
+      "Max": 0.8,
+      "Min": 0.7,
+      "SpriteName": "Forest"
     },
     {
       "Content": {
@@ -41,17 +51,9 @@
         "Bush": 0.25,
         "Green Mana Crystals": 0.03
       },
-      "Max": 0.75,
+      "Max": 0.7,
       "Min": 0.6,
       "SpriteName": "Forest"
-    },
-    {
-      "Content": {
-        "Small Rock": 0.65
-      },
-      "Max": 0.8,
-      "Min": 0.75,
-      "SpriteName": "Dirt"
     },
     {
       "Content": {

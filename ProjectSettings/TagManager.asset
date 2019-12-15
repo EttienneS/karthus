@@ -44,6 +44,9 @@ TagManager:
   - name: Ground
     uniqueID: 1735232521
     locked: 0
+  - name: Floor
+    uniqueID: 3394519155
+    locked: 0
   - name: Structure
     uniqueID: 615336307
     locked: 0

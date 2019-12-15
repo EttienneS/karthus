@@ -44,7 +44,6 @@ public class CameraController : MonoBehaviour
 
     public void Update()
     {
-        bool moved = false;
         if (_panning)
         {
             var distCovered = (Time.time - _startTime) * 1000;
@@ -59,7 +58,6 @@ public class CameraController : MonoBehaviour
             {
                 _panning = false;
             }
-            moved = true;
         }
         else
         {
@@ -117,34 +115,10 @@ public class CameraController : MonoBehaviour
                 Camera.orthographicSize = Mathf.Clamp(Camera.orthographicSize - (mouseWheel * ZoomStep),
                     ZoomMin, ZoomMax);
 
-                Speed = Helpers.ScaleValueInRange(SpeedMin, SpeedMax, ZoomMin, ZoomMax, Camera.orthographicSize) ;
+                Speed = Helpers.ScaleValueInRange(SpeedMin, SpeedMax, ZoomMin, ZoomMax, Camera.orthographicSize);
                 ZoomStep = Mathf.Max(2f, Camera.orthographicSize / 2f);
-                moved = true;
             }
 #endif
         }
-
-        if (moved)
-        {
-            UpdateCellsBasedOnCamera();
-        }
-    }
-
-    public void UpdateCellsBasedOnCamera()
-    {
-        //var width = Mathf.CeilToInt(Camera.orthographicSize * RenderWidth);
-        //var height = Mathf.CeilToInt(Camera.orthographicSize * RenderHeight);
-        //Game.Map.Refresh(new RectInt(
-        //                     Mathf.CeilToInt(transform.position.x - (width / 2)),
-        //                     Mathf.CeilToInt(transform.position.y - (height / 2)),
-        //                     width,
-        //                     height));
-    }
-
-    internal void JumpToCell(Cell cell)
-    {
-        var point = cell.Vector;
-        transform.position = new Vector3(point.x, point.y, transform.position.z);
-        UpdateCellsBasedOnCamera();
     }
 }

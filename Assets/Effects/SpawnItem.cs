@@ -1,10 +1,12 @@
-﻿public class SpawnItem : EffectBase
+﻿using System.Linq;
+
+public class SpawnItem : EffectBase
 {
     public string ItemName;
 
     public override bool DoEffect()
     {
-        var existing = AssignedEntity.Cell.Items.Find(i => i.Name == ItemName);
+        var existing = AssignedEntity.Cell.Items.FirstOrDefault(i => i.Name == ItemName);
 
         if (existing != null)
         {

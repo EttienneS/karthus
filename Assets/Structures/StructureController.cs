@@ -5,10 +5,9 @@ using UnityEngine.Tilemaps;
 
 public class StructureController : MonoBehaviour
 {
-    internal Dictionary<string, Structure> StructureDataReference = new Dictionary<string, Structure>();
-
+    public Tilemap DefaultFloorMap;
     public Tilemap DefaultStructureMap;
-
+    internal Dictionary<string, Structure> StructureDataReference = new Dictionary<string, Structure>();
     private Dictionary<string, string> _structureTypeFileMap;
 
     internal Dictionary<string, string> StructureTypeFileMap
@@ -29,38 +28,33 @@ public class StructureController : MonoBehaviour
         }
     }
 
-    public void RefreshStructure(Structure structure)
+    public void ClearStructure(Structure structure)
     {
-        if (structure.Cell == null)
-        {
-            return;
-        }
+        var tile = ScriptableObject.CreateInstance<Tile>();
 
         if (structure.IsFloor())
         {
-            structure.Cell.UpdateTile();
+            DefaultFloorMap.SetTile(new Vector3Int(structure.Cell.X, structure.Cell.Y, 0), tile);
         }
         else
         {
-            var coords = new Vector3Int(structure.Cell.X, structure.Cell.Y, 0);
-            DefaultStructureMap.SetTile(coords, null);
-            DefaultStructureMap.SetTile(coords, structure.Tile);
+            DefaultStructureMap.SetTile(new Vector3Int(structure.Cell.X, structure.Cell.Y, 0), tile);
         }
     }
 
-    public void ClearStructure(Cell cell)
+    public void DrawAllStructures(IEnumerable<Cell> cells)
     {
-        var tile = ScriptableObject.CreateInstance<Tile>();
-        DefaultStructureMap.SetTile(new Vector3Int(cell.X, cell.Y, 0), tile);
+        var structures = cells.Where(c => c.Structure != null)
+                              .Select(c => c.Structure)
+                              .Where(c => c.Cell != null);
+
+        var tiles = structures.Select(c => c.Tile).ToArray();
+        var coords = structures.Select(c => c.Cell.ToVector3Int()).ToArray();
+        Game.StructureController.DefaultStructureMap.SetTiles(coords, tiles);
     }
 
     public Structure GetStructure(string name, Faction faction)
     {
-        //if (!StructureTypeFileMap.ContainsKey(name))
-        //{
-        //    Debug.LogError($"Structure not found: {name}");
-        //}
-
         string structureData = StructureTypeFileMap[name];
 
         Structure structure = Structure.GetFromJson(structureData);
@@ -76,22 +70,31 @@ public class StructureController : MonoBehaviour
         return structure;
     }
 
+    public void RefreshStructure(Structure structure)
+    {
+        if (structure.Cell == null)
+        {
+            return;
+        }
+        var coords = new Vector3Int(structure.Cell.X, structure.Cell.Y, 0);
+        if (structure.IsFloor())
+        {
+            DefaultFloorMap.SetTile(coords, null);
+            DefaultFloorMap.SetTile(coords, structure.Tile);
+        }
+        else
+        {
+            DefaultStructureMap.SetTile(coords, null);
+            DefaultStructureMap.SetTile(coords, structure.Tile);
+        }
+    }
     internal void DestroyStructure(Structure structure)
     {
         if (structure != null)
         {
             if (structure.Cell != null)
             {
-                if (structure.Cell.Floor == structure)
-                {
-                    structure.Cell.Floor = null;
-                }
-                else
-                {
-                    structure.Cell.Structure = null;
-                }
-
-                ClearStructure(structure.Cell);
+                ClearStructure(structure);
             }
             else
             {
@@ -117,16 +120,5 @@ public class StructureController : MonoBehaviour
     private void IndexStructure(Structure structure)
     {
         IdService.EnrollEntity(structure);
-    }
-
-    public void DrawAllStructures(IEnumerable<Cell> cells)
-    {
-        var structures = cells.Where(c => c.Structure != null)
-                              .Select(c => c.Structure)
-                              .Where(c => c.Cell != null);
-
-        var tiles = structures.Select(c => c.Tile).ToArray();
-        var coords = structures.Select(c => c.Cell.ToVector3Int()).ToArray();
-        Game.StructureController.DefaultStructureMap.SetTiles(coords, tiles);
     }
 }

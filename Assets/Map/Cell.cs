@@ -9,23 +9,13 @@ using Random = UnityEngine.Random;
 public class Cell : IEquatable<Cell>
 {
     [JsonIgnore]
-    public string FloorId;
-
-    [JsonIgnore]
     public Cell[] Neighbors = new Cell[8];
-
-    [JsonIgnore]
-    public string StructureId;
 
     public int X;
     public int Y;
     internal Color Color;
 
     private BiomeRegion _biomeRegion;
-
-    private Structure _floor;
-
-    private Structure _structure;
 
     [JsonIgnore]
     public BiomeRegion BiomeRegion
@@ -66,42 +56,27 @@ public class Cell : IEquatable<Cell>
     {
         get
         {
-            if (_floor == null && !string.IsNullOrEmpty(FloorId))
-            {
-                _floor = FloorId.GetStructure();
-            }
-            return _floor;
-        }
-        set
-        {
-            _floor = value;
-
-            if (_floor == null)
-            {
-                FloorId = string.Empty;
-            }
-            else
-            {
-                FloorId = _floor.Id;
-            }
+            return IdService.StructureCellLookup.ContainsKey(this) ? IdService.StructureCellLookup[this].Find(s => s.IsFloor()) : null;
         }
     }
 
     [JsonIgnore]
-    public float Height { get; set; }
-
-    [JsonIgnore]
-    public List<string> ItemIds { get; set; } = new List<string>();
-
-    [JsonIgnore]
-    public List<Item> Items
+    public float Height
     {
         get
         {
-            return ItemIds.Select(i => i.GetItem()).ToList();
+            return Game.Map.GetCellHeight(X, Y);
         }
     }
 
+    [JsonIgnore]
+    public IEnumerable<Item> Items
+    {
+        get
+        {
+            return IdService.ItemLookup.Values.Where(i => i.Cell == this);
+        }
+    }
 
     [JsonIgnore]
     public Cell NextWithSamePriority { get; set; }
@@ -132,25 +107,7 @@ public class Cell : IEquatable<Cell>
     {
         get
         {
-            if (_structure == null && !string.IsNullOrEmpty(StructureId))
-            {
-                _structure = StructureId.GetStructure();
-            }
-
-            return _structure;
-        }
-        set
-        {
-            _structure = value;
-
-            if (_structure == null)
-            {
-                StructureId = string.Empty;
-            }
-            else
-            {
-                StructureId = _structure.Id;
-            }
+            return IdService.StructureCellLookup.ContainsKey(this) ? IdService.StructureCellLookup[this].Find(s => !s.IsFloor()) : null;
         }
     }
 
@@ -205,14 +162,6 @@ public class Cell : IEquatable<Cell>
         }
     }
 
-    internal bool HasBuilding
-    {
-        get
-        {
-            return Structure != null || Floor != null;
-        }
-    }
-
     public static Cell FromPosition(Vector2 position)
     {
         // add half a unit to each position to account for offset (cells are at point 0,0 in the very center)
@@ -238,14 +187,6 @@ public class Cell : IEquatable<Cell>
         }
 
         return obj1.Equals(obj2);
-    }
-
-    public void AddItem(Item item)
-    {
-        ItemIds.Add(item.Id);
-        item.Cell = this;
-
-        item.Coords = (Vector.x, Vector.y);
     }
 
     public int DistanceTo(Cell other)
@@ -333,38 +274,6 @@ public class Cell : IEquatable<Cell>
         cell.Neighbors[(int)direction.Opposite()] = this;
     }
 
-    public void SetStructure(Structure structure)
-    {
-        if (structure.IsFloor())
-        {
-            if (Floor != null)
-            {
-                Game.StructureController.DestroyStructure(Floor);
-            }
-            structure.Cell = this;
-            Floor = structure;
-            UpdateTile();
-        }
-        else
-        {
-            if (Structure != null)
-            {
-                Game.StructureController.DestroyStructure(Structure);
-            }
-
-            structure.Cell = this;
-            Structure = structure;
-        }
-    }
-
-    public void TakeItem(Item item)
-    {
-        if (ItemIds.Contains(item.Id))
-        {
-            ItemIds.Remove(item.Id);
-        }
-    }
-
     public override string ToString()
     {
         return $"X: {X}, Y: {Y}";
@@ -374,7 +283,6 @@ public class Cell : IEquatable<Cell>
     {
         return $"X: {X}\nY: {Y}";
     }
-
 
     public void UpdateTile()
     {
@@ -387,7 +295,6 @@ public class Cell : IEquatable<Cell>
         }
     }
 
-    
     internal void Clear()
     {
         if (Structure != null)
@@ -404,7 +311,7 @@ public class Cell : IEquatable<Cell>
     internal Structure CreateStructure(string structureName, string faction = FactionConstants.World)
     {
         var structure = Game.StructureController.GetStructure(structureName, Game.FactionController.Factions[faction]);
-        SetStructure(structure);
+        structure.Cell = this;
 
         if (structure.AutoInteractions.Count > 0)
         {
@@ -449,7 +356,7 @@ public class Cell : IEquatable<Cell>
             if (Game.StructureController.StructureDataReference.ContainsKey(content))
             {
                 var structure = Game.StructureController.GetStructure(content, Game.FactionController.Factions[FactionConstants.World]);
-                SetStructure(structure);
+                structure.Cell = this;
 
                 if (structure.AutoInteractions.Count > 0)
                 {
@@ -467,5 +374,4 @@ public class Cell : IEquatable<Cell>
     {
         return new Vector3Int(X, Y, 0);
     }
-
 }

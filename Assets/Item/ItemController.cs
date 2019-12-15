@@ -37,7 +37,7 @@ public class ItemController : MonoBehaviour
         renderer.SpriteRenderer.sprite = Game.SpriteStore.GetSprite(data.SpriteName);
         IndexItem(data);
 
-        cell.AddItem(data);
+        data.Cell = cell;
         return data;
     }
 
@@ -56,7 +56,6 @@ public class ItemController : MonoBehaviour
             {
                 Game.FactionController.Factions[item.FactionName].Items.Remove(item);
             }
-            item.Cell.ItemIds.Remove(item.Id);
             IdService.RemoveEntity(item);
             Game.Controller.AddItemToDestroy(item.Renderer.gameObject);
         }

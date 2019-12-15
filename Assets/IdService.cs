@@ -10,7 +10,8 @@ public static class IdService
     public static Dictionary<IEntity, Item> ItemLookup = new Dictionary<IEntity, Item>();
     public static Dictionary<string, Structure> StructureIdLookup = new Dictionary<string, Structure>();
     public static Dictionary<IEntity, Structure> StructureLookup = new Dictionary<IEntity, Structure>();
-    private static int _idCounter = 0;
+    public static Dictionary<Cell, List<Structure>> StructureCellLookup = new Dictionary<Cell, List<Structure>>();
+    private static int _idCounter;
 
     public static void EnrollEntity(IEntity entity)
     {
@@ -24,6 +25,12 @@ public static class IdService
         {
             StructureLookup.Add(entity, structure);
             StructureIdLookup.Add(entity.Id, structure);
+
+            if (!StructureCellLookup.ContainsKey(structure.Cell))
+            {
+                StructureCellLookup.Add(structure.Cell, new List<Structure>());
+            }
+            StructureCellLookup[structure.Cell].Add(structure);
         }
         else if (entity is Creature creature)
         {
@@ -58,6 +65,7 @@ public static class IdService
         }
         return item;
     }
+
     public static Structure GetStructure(this string id)
     {
         if (StructureIdLookup.TryGetValue(id, out var structure))
@@ -112,7 +120,6 @@ public static class IdService
         }
     }
 
-
     internal static IEntity GetEntity(this string id)
     {
         if (IsCreature(id))
@@ -138,6 +145,8 @@ public static class IdService
         {
             StructureLookup.Remove(entity);
             StructureIdLookup.Remove(entity.Id);
+
+            StructureCellLookup[entity.Cell].Remove(entity as Structure);
         }
 
         if (CreatureLookup.ContainsKey(entity))

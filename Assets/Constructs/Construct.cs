@@ -245,12 +245,11 @@ public class Construct
                 if (cell.TravelCost > 0 && cell.Structure == null)
                 {
                     var structure = Game.StructureController.GetStructureBluePrint(GetStructure(character), faction);
-                    cell.SetStructure(structure);
+                    structure.Cell = cell;
 
                     if (!structure.IsFloor() && !structure.IsWall() && !string.IsNullOrEmpty(Floor))
                     {
-                        // if not floor or wall, add default floor
-                        cell.SetStructure(Game.StructureController.GetStructureBluePrint(Floor, faction));
+                        structure.Cell = cell;
                     }
                     cell.UpdateTile();
                 }
