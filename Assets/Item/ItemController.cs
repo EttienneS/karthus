@@ -37,13 +37,9 @@ public class ItemController : MonoBehaviour
         renderer.SpriteRenderer.sprite = Game.SpriteStore.GetSprite(data.SpriteName);
         IndexItem(data);
 
+        data.Coords = (cell.Vector.x + Random.Range(-0.5f, 0.5f), cell.Vector.y + Random.Range(-0.5f, 0.5f));
         data.Cell = cell;
         return data;
-    }
-
-    private void IndexItem(Item item)
-    {
-        IdService.EnrollEntity(item);
     }
 
     internal void DestroyItem(Item item)
@@ -59,5 +55,10 @@ public class ItemController : MonoBehaviour
             IdService.RemoveEntity(item);
             Game.Controller.AddItemToDestroy(item.Renderer.gameObject);
         }
+    }
+
+    private void IndexItem(Item item)
+    {
+        IdService.EnrollEntity(item);
     }
 }

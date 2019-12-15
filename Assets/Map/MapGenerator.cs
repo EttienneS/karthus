@@ -262,7 +262,7 @@ public class MapGenerator
         var tiles = chunk.Select(c => c.Tile).ToArray();
         var coords = chunk.Select(c => c.ToVector3Int()).ToArray();
         Game.Map.Tilemap.SetTiles(coords, tiles);
-        Game.StructureController.DrawAllStructures(chunk);
+        Game.StructureController.DrawStructures(chunk);
     }
 
     private static List<List<Cell>> GetRenderChunks(int chunkSize)

@@ -141,7 +141,7 @@ public static class ManaExtensions
         manaCost[color] -= amount;
     }
 
-    public static string GetString(this Dictionary<ManaColor, float> manaCost)
+    public static string GetString(this Dictionary<ManaColor, float> manaCost, int count)
     {
         var str = "";
         foreach (var kvp in manaCost)
@@ -168,7 +168,7 @@ public static class ManaExtensions
                     str += "G:";
                     break;
             }
-            str += kvp.Value + ", ";
+            str += kvp.Value * count + ", ";
         }
 
         return str;
@@ -204,7 +204,6 @@ public static class ManaExtensions
         }
     }
 
-
     internal static bool HasMana(this Dictionary<ManaColor, float> source, Dictionary<ManaColor, float> manaCost)
     {
         foreach (var kvp in manaCost)
@@ -217,7 +216,6 @@ public static class ManaExtensions
 
         return true;
     }
-
 
     internal static bool HasMana(this Dictionary<ManaColor, float> source, ManaColor color, float amount)
     {

@@ -48,6 +48,15 @@ public class Item : IEntity
         }
     }
 
+    [JsonIgnore]
+    public bool InUseByAnyone
+    {
+        get
+        {
+            return InUseBy != null;
+        }
+    }
+
     public string InUseById { get; set; }
     public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
 

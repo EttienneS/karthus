@@ -42,15 +42,35 @@ public class StructureController : MonoBehaviour
         }
     }
 
-    public void DrawAllStructures(IEnumerable<Cell> cells)
+    public void DrawStructures(IEnumerable<Cell> cells)
     {
-        var structures = cells.Where(c => c.Structure != null)
-                              .Select(c => c.Structure)
-                              .Where(c => c.Cell != null);
+        var structures = new List<Structure>();
+        var floors = new List<Structure>();
+        foreach (var cell in cells)
+        {
+            if (IdService.StructureCellLookup.ContainsKey(cell))
+            {
+                foreach (var s in IdService.StructureCellLookup[cell])
+                {
+                    if (s.IsFloor())
+                    {
+                        floors.Add(s);
+                    }
+                    else
+                    {
+                        structures.Add(s);
+                    }
+                }
+            }
+        }
 
         var tiles = structures.Select(c => c.Tile).ToArray();
         var coords = structures.Select(c => c.Cell.ToVector3Int()).ToArray();
         Game.StructureController.DefaultStructureMap.SetTiles(coords, tiles);
+
+        var floorTiles = floors.Select(c => c.Tile).ToArray();
+        var floorCoords = floors.Select(c => c.Cell.ToVector3Int()).ToArray();
+        Game.StructureController.DefaultFloorMap.SetTiles(floorCoords, floorTiles);
     }
 
     public Structure GetStructure(string name, Cell cell, Faction faction)
