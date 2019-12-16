@@ -45,12 +45,9 @@ public class ManaDisplay : MonoBehaviour
                 }
             }
 
-            foreach (var structure in Game.FactionController.PlayerFaction.Structures)
+            foreach (var structure in Game.FactionController.PlayerFaction.GetBatteries())
             {
-                if (structure.IsType("Battery"))
-                {
-                    stored += structure.ManaValue[mana];
-                }
+                stored += structure.ManaValue[mana];
             }
 
             label.text = $"{stored} ({floatingMana})";

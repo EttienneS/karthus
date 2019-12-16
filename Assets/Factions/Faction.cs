@@ -28,6 +28,18 @@ public class Faction
         return Structures.Where(s => s.IsType("Battery") && !s.IsBluePrint);
     }
 
+    public Dictionary<ManaColor, float> GetStoredMana()
+    {
+        var stored = new Dictionary<ManaColor, float>();
+
+        foreach (var battery in GetBatteries())
+        {
+            stored = ManaExtensions.AddPools(stored, battery.ManaValue);
+        }
+
+        return stored;
+    }
+
     public Structure GetClosestBattery(Creature creature)
     {
         var cost = float.MaxValue;
@@ -51,25 +63,32 @@ public class Faction
         var task = creature.GetBehaviourTask?.Invoke(creature);
         if (task == null)
         {
+            var availableMana = ManaExtensions.AddPools(creature.ManaValue, GetStoredMana());
             var highestPriority = int.MinValue;
             foreach (var availableTask in AvailableTasks.Where(t => creature.CanDo(t)))
             {
-                var priority = creature.GetPriority(availableTask);
-                if (priority > highestPriority)
+                if (creature.CanDo(availableTask))
                 {
-                    task = availableTask;
-                    highestPriority = priority;
+                    if (!availableMana.HasMana(availableTask.TotalCost))
+                    {
+                        Debug.Log($"Not enough mana available for task: {availableTask}");
+                        continue;
+                    }
+                    var priority = creature.GetPriority(availableTask);
+                    if (priority > highestPriority)
+                    {
+                        task = availableTask;
+                        highestPriority = priority;
+                    }
                 }
+            }
+            if (task != null)
+            {
+                AvailableTasks.Remove(task);
             }
         }
 
-        if (task != null)
-        {
-            AvailableTasks.Remove(task);
-            return task;
-        }
-
-        return new Idle(creature);
+        return task ?? new Idle(creature);
     }
 
     public void Update()

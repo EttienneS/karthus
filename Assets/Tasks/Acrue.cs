@@ -2,6 +2,8 @@
 
 public class Acrue : CreatureTask
 {
+    public override Dictionary<ManaColor, float> Cost => new Dictionary<ManaColor, float>();
+
     public Acrue()
     {
         RequiredSkill = "Arcana";
@@ -23,7 +25,7 @@ public class Acrue : CreatureTask
             {
                 if (!creature.ManaPool.ContainsKey(targetLevel.Key))
                 {
-                    AddSubTask(Channel.GetChannelFrom(targetLevel.Key, targetLevel.Value, creature.GetClosestBattery()));
+                    AddSubTask(Channel.GetChannelFrom(targetLevel.Key, targetLevel.Value, creature.GetSource()));
                     return false;
                 }
                 else
@@ -31,7 +33,7 @@ public class Acrue : CreatureTask
                     var currentLevel = creature.ManaPool[targetLevel.Key].Total;
                     if (currentLevel < targetLevel.Value)
                     {
-                        AddSubTask(Channel.GetChannelFrom(targetLevel.Key, targetLevel.Value - currentLevel, creature.GetClosestBattery()));
+                        AddSubTask(Channel.GetChannelFrom(targetLevel.Key, targetLevel.Value - currentLevel, creature.GetSource()));
                         return false;
                     }
                 }

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 public class Channel : CreatureTask
 {
@@ -33,6 +34,8 @@ public class Channel : CreatureTask
             return IdService.GetEntity(TargetId);
         }
     }
+
+    public override Dictionary<ManaColor, float> Cost => new Dictionary<ManaColor, float> { { ManaColor, AmountToChannel } };
 
     public static Channel GetChannelFrom(ManaColor color, float amount, IEntity source)
     {

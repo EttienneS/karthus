@@ -69,17 +69,22 @@ public static class Behaviours
         }
         else if (creature.ManaPool.Any(m => m.Value.Unbalanced()))
         {
+            var factionMana = creature.Faction.GetStoredMana();
             foreach (var mana in creature.ManaPool)
             {
                 if (mana.Value.OverAttuned() || mana.Value.OverDesired())
                 {
                     var min = Mathf.Min(mana.Value.Desired, mana.Value.Attunement);
-                    task = Channel.GetChannelTo(mana.Key, mana.Value.Total - min, creature.GetClosestBattery());
+                    task = Channel.GetChannelTo(mana.Key, mana.Value.Total - min, creature.Faction.GetClosestBattery(creature));
                     break;
                 }
                 else if (mana.Value.UnderDesired())
                 {
-                    task = Channel.GetChannelFrom(mana.Key, mana.Value.Desired - mana.Value.Total, creature.GetClosestBattery());
+                    var want = mana.Value.Desired - mana.Value.Total;
+                    if (factionMana.HasMana(mana.Key, want))
+                    {
+                        task = Channel.GetChannelFrom(mana.Key, want, creature.GetSource());
+                    }
                     break;
                 }
             }

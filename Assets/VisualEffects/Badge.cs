@@ -25,7 +25,10 @@ public class Badge : MonoBehaviour
 
     internal void Destroy()
     {
-        Destroy(gameObject);
+        if (gameObject != null)
+        {
+            Game.Controller.AddItemToDestroy(gameObject);
+        }
     }
 
     internal void Follow(IEntity entity)

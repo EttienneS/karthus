@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Move : CreatureTask
 {
+    public override Dictionary<ManaColor, float> Cost => new Dictionary<ManaColor, float>();
+
     public float TargetX;
     public float TargetY;
 

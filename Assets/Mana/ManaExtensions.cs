@@ -44,6 +44,25 @@ public static class ManaExtensions
         return pool;
     }
 
+    public static Dictionary<ManaColor, float> AddPools(params Dictionary<ManaColor, float>[] pools)
+    {
+        var total = new Dictionary<ManaColor, float>();
+
+        foreach (var pool in pools)
+        {
+            foreach (var kvp in pool)
+            {
+                if (!total.ContainsKey(kvp.Key))
+                {
+                    total.Add(kvp.Key, 0);
+                }
+                total[kvp.Key] += kvp.Value;
+            }
+        }
+
+        return total;
+    }
+
     public static Color GetActualColor(this ManaColor manaColor, float alpha = 1f)
     {
         var color = new Color(0, 0, 0, alpha);

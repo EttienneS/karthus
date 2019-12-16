@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Heal : CreatureTask
 {
+    public override Dictionary<ManaColor, float> Cost => new Dictionary<ManaColor, float> { { ManaColor.White, 2 } };
     public Heal()
     {
         RequiredSkill = "Heal";

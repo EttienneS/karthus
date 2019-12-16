@@ -546,7 +546,7 @@ public class Creature : IEntity
         }
     }
 
-    internal IEntity GetClosestBattery()
+    internal IEntity GetSource()
     {
         return Faction.GetClosestBattery(this);
     }
@@ -568,8 +568,10 @@ public class Creature : IEntity
 
     internal void Know(string context)
     {
-        // Debug.Log($"Add context: {context}");
-        Mind.Add(context, new Memory());
+        if (!Mind.ContainsKey(context))
+        {
+            Mind.Add(context, new Memory());
+        }
     }
 
     internal void Live()

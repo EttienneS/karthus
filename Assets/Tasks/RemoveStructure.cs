@@ -1,7 +1,8 @@
-﻿public class RemoveStructure : CreatureTask
+﻿using System.Collections.Generic;
+
+public class RemoveStructure : CreatureTask
 {
     public Structure StructureToRemove;
-
     public RemoveStructure()
     {
         RequiredSkill = "Build";
@@ -25,6 +26,7 @@
         Message = $"Removing {StructureToRemove.Name} at {StructureToRemove.Cell}";
     }
 
+    public override Dictionary<ManaColor, float> Cost => new Dictionary<ManaColor, float>();
     public override bool Done(Creature creature)
     {
         if (SubTasksComplete(creature))

@@ -1,4 +1,6 @@
-﻿public class Build : CreatureTask
+﻿using System.Collections.Generic;
+
+public class Build : CreatureTask
 {
     public Structure TargetStructure;
 
@@ -7,6 +9,9 @@
         RequiredSkill = "Build";
         RequiredSkillLevel = 1;
     }
+
+    public override Dictionary<ManaColor, float> Cost => TargetStructure.ManaValue;
+
 
     public Build(Structure structure) : this()
     {

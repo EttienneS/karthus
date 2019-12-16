@@ -10,6 +10,24 @@ public abstract class CreatureTask
     public string DoneEmote;
     public string Message;
 
+    public abstract Dictionary<ManaColor, float> Cost { get; }
+
+    [JsonIgnore]
+    public Dictionary<ManaColor, float> TotalCost
+    {
+        get
+        {
+            var total = Cost;
+
+            foreach (var subTask in SubTasks)
+            {
+                total = ManaExtensions.AddPools(total, subTask.TotalCost);
+            }
+
+            return total;
+        }
+    }
+
     [JsonIgnore]
     public CreatureTask Parent;
 
