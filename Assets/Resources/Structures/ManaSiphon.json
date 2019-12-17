@@ -2,7 +2,7 @@
   "Name": "ManaSiphon",
   "SpriteName": "Siphon",
   "TravelCost": "4",
-  "Description": "Structure that crystalizes ambient mana and generates mana crystals.",
+  "Description": "Structure that crystallizes ambient mana and generates mana crystals.",
   "ManaValue": {
     "Blue": "10"
   },

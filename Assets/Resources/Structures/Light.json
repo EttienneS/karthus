@@ -3,7 +3,7 @@
   "SpriteName": "Gem",
   "Layer": "Structure",
   "Buildable": "True",
-  "Description": "Crystalized red and blue mana, gives of light that improves surroundings.",
+  "Description": "Crystallized red and blue mana, gives of light that improves surroundings.",
   "ManaValue": {
     "Red": "3",
     "Blue": "3"
