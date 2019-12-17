@@ -16,6 +16,9 @@ public partial class OrderSelectionController : MonoBehaviour
 
         Game.OrderTrayController.gameObject.SetActive(false);
         CellClickOrder = null;
+
+        Game.OrderInfoPanel.Hide();
+
     }
 
     private static void EnableAndClear()
@@ -47,6 +50,7 @@ public partial class OrderSelectionController : MonoBehaviour
     {
         Game.OrderTrayController.gameObject.SetActive(false);
         Game.EntityInfoPanel.gameObject.SetActive(false);
+        Game.OrderInfoPanel.Hide();
 
         BuildButton = CreateOrderButton(DefaultBuildText, BuildTypeClicked, "hammer", false);
         TaskButton = CreateOrderButton(DefaultDesignateText, DesignateTypeClicked, "designate", false);

@@ -14,7 +14,9 @@ public class SpawnItem : EffectBase
         }
         else
         {
-            Game.ItemController.SpawnItem(ItemName, AssignedEntity.Cell);
+            var item = Game.ItemController.SpawnItem(ItemName, AssignedEntity.Cell);
+            // center item in spawner cell
+            item.Coords = (AssignedEntity.Cell.Vector.x, AssignedEntity.Cell.Vector.y);
         }
         return true;
     }

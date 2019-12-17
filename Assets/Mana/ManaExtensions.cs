@@ -160,7 +160,7 @@ public static class ManaExtensions
         manaCost[color] -= amount;
     }
 
-    public static string GetString(this Dictionary<ManaColor, float> manaCost, int count)
+    public static string GetString(this Dictionary<ManaColor, float> manaCost, int count = 1)
     {
         var str = "";
         foreach (var kvp in manaCost)
@@ -190,7 +190,7 @@ public static class ManaExtensions
             str += kvp.Value * count + ", ";
         }
 
-        return str;
+        return str.Trim(',');
     }
 
     internal static ManaColor GetManaWithMost(this Dictionary<ManaColor, float> manaCost)

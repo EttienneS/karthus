@@ -17,6 +17,7 @@ public class Creature : IEntity
     [JsonIgnore]
     public Color BottomColor;
 
+    [JsonIgnore]
     public List<Creature> Combatants = new List<Creature>();
 
     public Direction Facing = Direction.S;
@@ -48,6 +49,7 @@ public class Creature : IEntity
 
     internal float WorkTick = float.MaxValue;
 
+    [JsonIgnore]
     private List<Cell> _awareness;
 
     private Faction _faction;
@@ -55,6 +57,17 @@ public class Creature : IEntity
     private bool _firstRun = true;
 
     private CreatureTask _task;
+
+    public List<string> CarriedItemIds { get; set; }
+
+    [JsonIgnore]
+    public List<Item> CarriedItems
+    {
+        get
+        {
+            return CarriedItemIds.Select(i => i.GetItem()).ToList();
+        }
+    }
 
     public float Aggression { get; set; }
 

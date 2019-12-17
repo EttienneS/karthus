@@ -1,9 +1,16 @@
 ﻿using Newtonsoft.Json;
+using TMPro;
 using UnityEngine;
 
 public class ItemRenderer : MonoBehaviour
 {
     internal Item Data = new Item();
+    internal TextMeshPro Text;
+
+    public void Start()
+    {
+        Text = GetComponentInChildren<TextMeshPro>();
+    }
 
     [JsonIgnore]
     private SpriteRenderer _spriteRenderer;
@@ -27,5 +34,10 @@ public class ItemRenderer : MonoBehaviour
         transform.position = Data.Vector;
 
         //Data.UpdateSprite();
+    }
+
+    public void Update()
+    {
+        Text.text = Data.Amount.ToString();
     }
 }

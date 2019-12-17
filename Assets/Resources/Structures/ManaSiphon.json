@@ -2,8 +2,9 @@
   "Name": "ManaSiphon",
   "SpriteName": "Siphon",
   "TravelCost": "4",
+  "Description": "Structure that crystalizes ambient mana and generates mana crystals.",
   "ManaValue": {
-    "Blue": "1"
+    "Blue": "10"
   },
   "Buildable": "True",
   "Properties": {
@@ -13,7 +14,7 @@
     {
       "$type": "SpawnItem, Assembly-CSharp",
       "ItemName": "Blue Mana Crystals",
-      "ActivationTime": "50"
+      "ActivationTime": "300"
     }
   ]
 }

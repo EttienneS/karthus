@@ -17,6 +17,7 @@ public partial class Game //.Instances
     private static Minimap _minimap;
     private static OrderSelectionController _orderSelectionController;
     private static OrderTrayController _orderTrayController;
+    private static OrderInfoPanel _orderInfoPanel;
     private static PhysicsController _physicsController;
     private static SaveManager _saveManager;
     private static SpriteStore _spriteStore;
@@ -36,6 +37,19 @@ public partial class Game //.Instances
             }
 
             return _cameraController;
+        }
+    }
+
+    public static OrderInfoPanel OrderInfoPanel
+    {
+        get
+        {
+            if (_orderInfoPanel == null)
+            {
+                _orderInfoPanel = GameObject.Find("OrderInfoPanel").GetComponent<OrderInfoPanel>();
+            }
+
+            return _orderInfoPanel;
         }
     }
 

@@ -6,12 +6,16 @@
 
     public void BuildClicked(string structureName)
     {
-        BuildButton.Text = "Build " + structureName;
-
         var structure = Game.StructureController.StructureDataReference[structureName];
         Game.Controller.SelectionPreference = SelectionPreference.Cell;
         Game.Controller.SetMouseSprite(structure.SpriteName,
                                        (CellData) => structure.ValidateCellLocationForStructure(CellData));
+
+        Game.OrderInfoPanel.Title = "Build " + structureName;
+        Game.OrderInfoPanel.Description = "Select a location to build.  A person with the Build skill will gather the required cost of material and then make the structure.";
+        Game.OrderInfoPanel.Detail = structure.Description;
+        Game.OrderInfoPanel.Cost = $"{structure.ManaValue.GetString()}";
+        Game.OrderInfoPanel.Show();
 
         CellClickOrder = cells =>
         {
@@ -31,8 +35,6 @@
         if (Game.OrderTrayController.gameObject.activeInHierarchy)
         {
             DisableAndReset();
-
-            BuildButton.Text = DefaultBuildText;
         }
         else
         {

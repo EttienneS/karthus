@@ -2,6 +2,7 @@
   "Name": "Table",
   "SpriteName": "Table",
   "TravelCost": "4",
+  "Description": "A general purpose table, creatures can eat of of them or it can be used as a workbench.",
   "ManaValue": {
     "Red": "1",
     "Green": "1"

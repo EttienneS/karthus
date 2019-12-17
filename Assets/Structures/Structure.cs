@@ -189,6 +189,8 @@ public class Structure : IEntity
         }
     }
 
+    public string Description { get;  set; }
+
     public static Structure GetFromJson(string json)
     {
         return json.LoadJson<Structure>();
