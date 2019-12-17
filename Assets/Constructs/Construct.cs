@@ -130,6 +130,33 @@ public class Construct
         }
     }
 
+    public string Description { get; set; }
+
+    [JsonIgnore]
+    public Dictionary<ManaColor, float> TotalCost
+    {
+        get
+        {
+            var cost = new Dictionary<ManaColor, float>();
+
+            foreach (var line in FlippedPlan)
+            {
+                foreach (var character in line)
+                {
+                    if (character == '.')
+                    {
+                        continue;
+                    }
+
+                    var structure = Game.StructureController.StructureDataReference[GetStructure(character)];
+                    cost = ManaExtensions.AddPools(cost, structure.ManaValue);
+                }
+            }
+
+            return cost;
+        }
+    }
+
     internal Texture2D GetTexture()
     {
         var texture = new Texture2D(Width * Map.PixelsPerCell, Height * Map.PixelsPerCell);

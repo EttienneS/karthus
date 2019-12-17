@@ -11,8 +11,8 @@
         Game.Controller.SetMouseSprite(structure.SpriteName,
                                        (CellData) => structure.ValidateCellLocationForStructure(CellData));
 
-        Game.OrderInfoPanel.Title = "Build " + structureName;
-        Game.OrderInfoPanel.Description = "Select a location to build.  A person with the Build skill will gather the required cost of material and then make the structure.";
+        Game.OrderInfoPanel.Title = $"Build {structureName}";
+        Game.OrderInfoPanel.Description = "Select a location to place the structure.  A creature with the build skill will gather the required cost of material and then make the structure.";
         Game.OrderInfoPanel.Detail = structure.Description;
         Game.OrderInfoPanel.Cost = $"{structure.ManaValue.GetString()}";
         Game.OrderInfoPanel.Show();
