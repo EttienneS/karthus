@@ -38,7 +38,6 @@ public abstract class EffectBase
 
     public string TargetId;
 
-    public Dictionary<ManaColor, float> Cost;
     public float ActivationTime = 0.5f;
     public float Elapsed;
 
@@ -55,16 +54,8 @@ public abstract class EffectBase
             Elapsed += Time.deltaTime;
             return false;
         }
-        Elapsed = 0f;
+        Elapsed = 0f; 
 
-        if (Cost != null && !AssignedEntity.ManaValue.HasMana(Cost))
-        {
-            if (AssignedEntity is Creature creature)
-            {
-                creature.Task.AddSubTask(new Acrue(Cost));
-            }
-            return false;
-        }
 
         if (!Ready())
         {
@@ -78,13 +69,6 @@ public abstract class EffectBase
 
         if (DoEffect())
         {
-            if (Cost != null)
-            {
-                foreach (var kvp in Cost)
-                {
-                    AssignedEntity.ManaValue.BurnMana(kvp.Key, kvp.Value);
-                }
-            }
             return true;
         }
 

@@ -3,7 +3,9 @@
   "SpriteName": "bigrock",
   "TravelCost": "3",
   "Buildable": "False",
-  "ManaValue": {
-    "Red": "6"
+  "Cost": {
+    "Mana": {
+      "Red": "6"
+    }
   }
 }

@@ -212,7 +212,7 @@ public class MapGenerator
         FinishBuildings(buildings);
     }
 
-   
+
     internal void LinkNeighbours()
     {
         for (var y = 0; y < Game.Map.Height; y++)
@@ -428,11 +428,11 @@ public class MapGenerator
     {
         var center = Game.Map.GetNearestPathableCell(Game.Map.Center, Mobility.Walk, 25);
         var core = center.CreateStructure("Battery", faction.FactionName);
-        core.ManaValue.GainMana(ManaColor.Green, 20);
-        core.ManaValue.GainMana(ManaColor.Red, 20);
-        core.ManaValue.GainMana(ManaColor.Blue, 20);
-        core.ManaValue.GainMana(ManaColor.White, 20);
-        core.ManaValue.GainMana(ManaColor.Black, 20);
+        core.Cost.Mana.GainMana(ManaColor.Green, 20);
+        core.Cost.Mana.GainMana(ManaColor.Red, 20);
+        core.Cost.Mana.GainMana(ManaColor.Blue, 20);
+        core.Cost.Mana.GainMana(ManaColor.White, 20);
+        core.Cost.Mana.GainMana(ManaColor.Black, 20);
 
         for (int i = 0; i < 3; i++)
         {
@@ -476,5 +476,5 @@ public class MapGenerator
         }
     }
 
-   
+
 }

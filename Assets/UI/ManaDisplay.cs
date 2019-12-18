@@ -47,7 +47,7 @@ public class ManaDisplay : MonoBehaviour
 
             foreach (var structure in Game.FactionController.PlayerFaction.GetBatteries())
             {
-                stored += structure.ManaValue[mana];
+                stored += structure.Cost.Mana[mana];
             }
 
             label.text = $"{stored} ({floatingMana})";

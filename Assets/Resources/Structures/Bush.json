@@ -3,8 +3,10 @@
   "SpriteName": "Bush2",
   "TravelCost": "3",
   "Buildable": "False",
-  "ManaValue": {
-    "Green": "2",
-    "Black": "1"
+  "Cost": {
+    "Mana": {
+      "Green": "2",
+      "Black": "1"
+    }
   }
 }

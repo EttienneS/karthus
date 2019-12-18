@@ -35,7 +35,6 @@ public class Channel : CreatureTask
         }
     }
 
-    public override Dictionary<ManaColor, float> Cost => new Dictionary<ManaColor, float> { { ManaColor, AmountToChannel } };
 
     public static Channel GetChannelFrom(ManaColor color, float amount, IEntity source)
     {
@@ -87,7 +86,7 @@ public class Channel : CreatureTask
                 }
                 else
                 {
-                    Source.ManaValue.BurnMana(ManaColor, 1);
+                    //Source.ManaValue.BurnMana(ManaColor, 1);
                 }
 
                 if (Target is Creature targetCreature)
@@ -97,7 +96,7 @@ public class Channel : CreatureTask
                 }
                 else
                 {
-                    Target.ManaValue.GainMana(ManaColor, 1);
+                   // Target.ManaValue.GainMana(ManaColor, 1);
                 }
 
                 Game.VisualEffectController.MakeChannellingLine(Source, Target, 5, GameConstants.ChannelDuration, ManaColor);

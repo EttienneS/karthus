@@ -26,7 +26,6 @@ public class Idle : CreatureTask
         Message = "Idle...";
     }
 
-    public override Dictionary<ManaColor, float> Cost => new Dictionary<ManaColor, float>();
 
     public override bool Done(Creature Creature)
     {

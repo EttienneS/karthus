@@ -36,11 +36,10 @@ public class Structure : IEntity
 
     public string Layer;
 
-    public Dictionary<ManaColor, float> ManaValue { get; set; }
-
     public Direction Rotation;
 
     public string Size;
+    public Cost Cost { get; set; } = new Cost();
 
     public string SpriteName;
 
@@ -128,7 +127,6 @@ public class Structure : IEntity
 
     public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
 
-
     public string Name { get; set; }
 
     public Dictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
@@ -189,14 +187,12 @@ public class Structure : IEntity
         }
     }
 
-    public string Description { get;  set; }
+    public string Description { get; set; }
 
     public static Structure GetFromJson(string json)
     {
         return json.LoadJson<Structure>();
     }
-
-    
 
     public bool IsType(string name)
     {

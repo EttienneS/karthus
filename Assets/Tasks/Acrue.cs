@@ -2,7 +2,6 @@
 
 public class Acrue : CreatureTask
 {
-    public override Dictionary<ManaColor, float> Cost => new Dictionary<ManaColor, float>();
 
     public Acrue()
     {

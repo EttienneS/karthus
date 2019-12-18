@@ -4,7 +4,6 @@ using System.Collections.Generic;
 public class Interact : CreatureTask
 {
     public EffectBase Effect;
-    public override Dictionary<ManaColor, float> Cost => new Dictionary<ManaColor, float>();
 
     [JsonIgnore]
     public IEntity Interactor

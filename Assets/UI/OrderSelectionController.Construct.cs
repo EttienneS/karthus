@@ -18,7 +18,7 @@ public partial class OrderSelectionController //.Construct
         Game.OrderInfoPanel.Title = $"Place {constuct.Name}";
         Game.OrderInfoPanel.Description = "Select a location to place the construct, rotate with E or Q.  A construct is a predefined collection of structures and is built by a creature with the build skill.";
         Game.OrderInfoPanel.Detail = constuct.Description;
-        Game.OrderInfoPanel.Cost = $"{constuct.TotalCost.GetString()}";
+        Game.OrderInfoPanel.Cost = $"{constuct.TotalCost}";
         Game.OrderInfoPanel.Show();
 
 

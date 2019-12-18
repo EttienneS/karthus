@@ -3,7 +3,9 @@
   "SpriteName": "mediumrock",
   "TravelCost": "3",
   "Buildable": "False",
-  "ManaValue": {
-    "Red": "4"
+  "Cost": {
+    "Mana": {
+      "Red": "4"
+    }
   }
 }

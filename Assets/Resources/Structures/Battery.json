@@ -5,12 +5,14 @@
   "Layer": "Structure",
   "Buildable": "True",
   "Description": "A structure where Mana can be stored and retrieved.  Without a battery creatures will not be able to get more Mana and will be unable to get rid of excess mana.",
-  "ManaValue": {
-    "Red": "5",
-    "Green": "5",
-    "Blue": "5",
-    "Black": "5",
-    "White": "5"
+  "Cost": {
+    "Mana": {
+      "Red": "5",
+      "Green": "5",
+      "Blue": "5",
+      "Black": "5",
+      "White": "5"
+    }
   },
   "Properties": {
     "Type": "Battery"

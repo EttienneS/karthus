@@ -133,11 +133,11 @@ public class Construct
     public string Description { get; set; }
 
     [JsonIgnore]
-    public Dictionary<ManaColor, float> TotalCost
+    public Cost TotalCost
     {
         get
         {
-            var cost = new Dictionary<ManaColor, float>();
+            var cost = new Cost();
 
             foreach (var line in FlippedPlan)
             {
@@ -149,7 +149,7 @@ public class Construct
                     }
 
                     var structure = Game.StructureController.StructureDataReference[GetStructure(character)];
-                    cost = ManaExtensions.AddPools(cost, structure.ManaValue);
+                    cost = Cost.AddCost(cost, structure.Cost);
                 }
             }
 

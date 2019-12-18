@@ -10,6 +10,8 @@ public class Item : IEntity
 
     public int Amount { get; set; }
 
+    public Cost Cost { get; set; } = new Cost();
+
     [JsonIgnore]
     public Cell Cell { get; set; }
 
@@ -59,8 +61,6 @@ public class Item : IEntity
 
     public string InUseById { get; set; }
     public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
-
-    public Dictionary<ManaColor, float> ManaValue { get; set; } = new Dictionary<ManaColor, float>();
 
     public string Name { get; set; }
 

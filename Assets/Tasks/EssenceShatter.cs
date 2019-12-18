@@ -1,10 +1,7 @@
 ﻿using Newtonsoft.Json;
-using System.Collections.Generic;
 
 public class EssenceShatter : CreatureTask
 {
-    public override Dictionary<ManaColor, float> Cost => new Dictionary<ManaColor, float>();
-
     public EssenceShatter()
     {
         RequiredSkill = "Arcana";
@@ -38,7 +35,7 @@ public class EssenceShatter : CreatureTask
     {
         if (SubTasksComplete(creature))
         {
-            foreach (var kvp in Item.ManaValue)
+            foreach (var kvp in Item.Cost.Mana)
             {
                 for (int i = 0; i < Item.Amount; i++)
                 {

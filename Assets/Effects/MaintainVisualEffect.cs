@@ -16,26 +16,26 @@ public class MaintainVisualEffect : EffectBase
     {
         if (VisualEffect?.Destroyed != false)
         {
-            if (VisualEffect != null)
-            {
-                VisualEffect.LinkedGameObject.DestroySelf();
-            }
+            //if (VisualEffect != null)
+            //{
+            //    VisualEffect.LinkedGameObject.DestroySelf();
+            //}
 
-            var color = string.IsNullOrEmpty(Color) ?
-                                    AssignedEntity.ManaValue.GetManaWithMost().GetActualColor() :
-                                    Color.GetColorFromHex();
+            //var color = string.IsNullOrEmpty(Color) ?
+            //                        AssignedEntity.ManaValue.GetManaWithMost().GetActualColor() :
+            //                        Color.GetColorFromHex();
 
-            VisualEffect = Game.VisualEffectController
-                               .SpawnLightEffect(AssignedEntity,
-                                                 AssignedEntity.Cell.Vector,
-                                                 color,
-                                                 Radius, Intensity, Duration)
-                               .Data;
+            //VisualEffect = Game.VisualEffectController
+            //                   .SpawnLightEffect(AssignedEntity,
+            //                                     AssignedEntity.Cell.Vector,
+            //                                     color,
+            //                                     Radius, Intensity, Duration)
+            //                   .Data;
 
-            if (Fades)
-            {
-                VisualEffect.LinkedGameObject.Fades();
-            }
+            //if (Fades)
+            //{
+            //    VisualEffect.LinkedGameObject.Fades();
+            //}
         }
 
         return true;

@@ -3,8 +3,10 @@
   "SpriteName": "Road",
   "TravelCost": "0.1",
   "Description": "Cheap structure generally used outdoors to connect larger constructs.  Move speed is much faster on roads and floors than other surfaces.",
-  "ManaValue": {
-    "Red": "1"
+  "Cost": {
+    "Mana": {
+      "Red": "1"
+    }
   },
   "Buildable": "True",
   "Properties": {

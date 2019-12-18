@@ -3,7 +3,9 @@
   "SpriteName": "smallrock",
   "TravelCost": "3",
   "Buildable": "False",
-  "ManaValue": {
-    "Red": "2"
+  "Cost": {
+    "Mana": {
+      "Red": "2"
+    }
   }
 }

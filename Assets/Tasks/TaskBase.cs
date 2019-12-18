@@ -3,6 +3,51 @@ using System.Collections.Generic;
 
 public delegate void TaskComplete();
 
+public class Cost
+{
+    public Dictionary<ManaColor, float> Mana = new Dictionary<ManaColor, float>();
+    public Dictionary<string, int> Items = new Dictionary<string, int>();
+
+    public static Cost AddCost(Cost cost1, Cost cost2)
+    {
+       
+        var totalCost = new Cost()
+        {
+            Mana = ManaExtensions.AddPools(cost1.Mana, cost2.Mana),
+            Items = cost1.Items
+        };
+        foreach (var kvp in cost2.Items)
+        {
+            if (!totalCost.Items.ContainsKey(kvp.Key))
+            {
+                totalCost.Items.Add(kvp.Key, 0);
+            }
+
+            totalCost.Items[kvp.Key] += kvp.Value;
+        }
+
+        return totalCost;
+    }
+
+    public override string ToString()
+    {
+        var costString = "Cost:\n";
+
+        if (Mana.Keys.Count > 0)
+        {
+            costString += $"{Mana.GetString()}\n";
+        }
+        if (Items.Keys.Count > 0)
+        {
+            foreach (var item in Items)
+            {
+                costString += $"{item.Key}: x{item.Value}\n";
+            }
+        }
+        return costString;
+    }
+}
+
 public abstract class CreatureTask
 {
     public string BusyEmote;
@@ -10,10 +55,10 @@ public abstract class CreatureTask
     public string DoneEmote;
     public string Message;
 
-    public abstract Dictionary<ManaColor, float> Cost { get; }
+    public Cost Cost { get; set; } = new Cost();
 
     [JsonIgnore]
-    public Dictionary<ManaColor, float> TotalCost
+    public Cost TotalCost
     {
         get
         {
@@ -21,7 +66,7 @@ public abstract class CreatureTask
 
             foreach (var subTask in SubTasks)
             {
-                total = ManaExtensions.AddPools(total, subTask.TotalCost);
+                total = Cost.AddCost(total, subTask.TotalCost);
             }
 
             return total;

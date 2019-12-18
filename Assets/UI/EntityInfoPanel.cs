@@ -123,7 +123,7 @@ public class EntityInfoPanel : MonoBehaviour
 
                     if (currentEntity is Structure structure)
                     {
-                        PropertiesPanel.text += $"\nMana:\t{currentEntity.ManaValue.GetString(1)}\n\n";
+                        PropertiesPanel.text += $"\nMana:\t{structure.Cost.Mana.GetString(1)}\n\n";
 
                         PropertiesPanel.text += $"Rotation:\t {structure.Rotation}\n";
 
@@ -146,7 +146,7 @@ public class EntityInfoPanel : MonoBehaviour
                     }
                     else if (currentEntity is Item item)
                     {
-                        PropertiesPanel.text += $"\nMana:\t{currentEntity.ManaValue.GetString(item.Amount)}\n\n";
+                        PropertiesPanel.text += $"\nMana:\t{item.Cost.Mana.GetString(item.Amount)}\n\n";
 
                         PropertiesPanel.text += $"Amount:\t {item.Amount}\n";
                         if (item.InUseByAnyone)
@@ -160,21 +160,21 @@ public class EntityInfoPanel : MonoBehaviour
             {
                 CreatureName.text = $"{CurrentEntities.Count} entities";
 
-                var entityGroups = CurrentEntities.GroupBy(e => e.Name).Select(e => new
-                {
-                    Text = e.Key,
-                    Count = e.Count(),
-                    Green = e.Sum(g => g.ManaValue.GetTotal(ManaColor.Green)),
-                    Red = e.Sum(r => r.ManaValue.GetTotal(ManaColor.Red)),
-                    Blue = e.Sum(u => u.ManaValue.GetTotal(ManaColor.Blue)),
-                    Black = e.Sum(b => b.ManaValue.GetTotal(ManaColor.Black)),
-                    White = e.Sum(w => w.ManaValue.GetTotal(ManaColor.White))
-                });
+                //var entityGroups = CurrentEntities.GroupBy(e => e.Name).Select(e => new
+                //{
+                //    Text = e.Key,
+                //    Count = e.Count(),
+                //    Green = e.Sum(g => g.ManaValue.GetTotal(ManaColor.Green)),
+                //    Red = e.Sum(r => r.ManaValue.GetTotal(ManaColor.Red)),
+                //    Blue = e.Sum(u => u.ManaValue.GetTotal(ManaColor.Blue)),
+                //    Black = e.Sum(b => b.ManaValue.GetTotal(ManaColor.Black)),
+                //    White = e.Sum(w => w.ManaValue.GetTotal(ManaColor.White))
+                //});
 
-                foreach (var group in entityGroups)
-                {
-                    PropertiesPanel.text += $"- {group.Text} x{group.Count} (R:{group.Red}, G:{group.Green}, U:{group.Blue}, B:{group.Black}, W:{group.White})\n";
-                }
+                //foreach (var group in entityGroups)
+                //{
+                //    PropertiesPanel.text += $"- {group.Text} x{group.Count} (R:{group.Red}, G:{group.Green}, U:{group.Blue}, B:{group.Black}, W:{group.White})\n";
+                //}
             }
         }
     }

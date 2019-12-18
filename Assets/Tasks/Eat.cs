@@ -2,7 +2,6 @@
 
 public class Eat : CreatureTask
 {
-    public override Dictionary<ManaColor, float> Cost => new Dictionary<ManaColor, float> { { FoodColor, 1 } };
 
     public Eat()
     {

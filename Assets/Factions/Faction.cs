@@ -34,7 +34,7 @@ public class Faction
 
         foreach (var battery in GetBatteries())
         {
-            stored = ManaExtensions.AddPools(stored, battery.ManaValue);
+            stored = ManaExtensions.AddPools(stored, battery.Cost.Mana);
         }
 
         return stored;
@@ -69,7 +69,7 @@ public class Faction
             {
                 if (creature.CanDo(availableTask))
                 {
-                    if (!availableMana.HasMana(availableTask.TotalCost))
+                    if (!availableMana.HasMana(availableTask.TotalCost.Mana))
                     {
                         Debug.Log($"Not enough mana available for task: {availableTask}");
                         continue;

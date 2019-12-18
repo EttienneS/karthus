@@ -15,7 +15,7 @@ public class RemoveStructure : CreatureTask
 
         AddSubTask(new Move(Game.Map.GetPathableNeighbour(StructureToRemove.Cell)));
 
-        foreach (var mana in structure.ManaValue)
+        foreach (var mana in structure.Cost.Mana)
         {
             if (mana.Value > 0)
             {
@@ -26,7 +26,6 @@ public class RemoveStructure : CreatureTask
         Message = $"Removing {StructureToRemove.Name} at {StructureToRemove.Cell}";
     }
 
-    public override Dictionary<ManaColor, float> Cost => new Dictionary<ManaColor, float>();
     public override bool Done(Creature creature)
     {
         if (SubTasksComplete(creature))
