@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -31,6 +32,11 @@ public class ManaPool : Dictionary<ManaColor, Mana>
             }
             return _entity;
         }
+    }
+
+    internal bool HasMana(KeyValuePair<ManaColor, float> mana)
+    {
+        return HasMana(new Dictionary<ManaColor, float> { { mana.Key, mana.Value } });
     }
 
     public void BurnMana(ManaColor color, float amount)
@@ -168,4 +174,77 @@ public class ManaPool : Dictionary<ManaColor, Mana>
             }
         }
     }
+
+    internal bool HasMana(Dictionary<ManaColor, float> manaCost)
+    {
+        foreach (var kvp in manaCost)
+        {
+            if (!HasMana(kvp.Key, kvp.Value))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    internal bool HasMana(ManaColor color, float amount)
+    {
+        if (!ContainsKey(color))
+        {
+            return false;
+        }
+
+        return this[color].Total >= amount;
+    }
+
+    public string GetString()
+    {
+        var str = "";
+        foreach (var kvp in this)
+        {
+            switch (kvp.Key)
+            {
+                case ManaColor.Black:
+                    str += "B:";
+                    break;
+
+                case ManaColor.Blue:
+                    str += "U:";
+                    break;
+
+                case ManaColor.Red:
+                    str += "R:";
+                    break;
+
+                case ManaColor.White:
+                    str += "W:";
+                    break;
+
+                case ManaColor.Green:
+                    str += "G:";
+                    break;
+            }
+            str += kvp.Value.Total + ", ";
+        }
+
+        return str.Trim().Trim(',');
+    }
+
+    internal ManaColor GetManaWithMost()
+    {
+        var most = ManaColor.Blue;
+        var max = float.MinValue;
+
+        foreach (var kvp in this)
+        {
+            if (kvp.Value.Total > max)
+            {
+                most = kvp.Key;
+                max = kvp.Value.Total;
+            }
+        }
+        return most;
+    }
+
 }

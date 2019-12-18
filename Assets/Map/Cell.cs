@@ -352,7 +352,7 @@ public class Cell : IEquatable<Cell>
 
         if (!string.IsNullOrEmpty(content))
         {
-            if (Game.StructureController.StructureDataReference.ContainsKey(content))
+            if (Game.StructureController.StructureTypeFileMap.ContainsKey(content))
             {
                 var structure = Game.StructureController.GetStructure(content, this, Game.FactionController.Factions[FactionConstants.World]);
 

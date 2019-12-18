@@ -17,7 +17,7 @@ public class Heal : CreatureTask
             var white = creature.ManaPool[ManaColor.White].Total;
             if (white < 2)
             {
-                AddSubTask(new Acrue(new Dictionary<ManaColor, float> { { ManaColor.White, 2 } }));
+                AddSubTask(new Attune(new Dictionary<ManaColor, float> { { ManaColor.White, 2 } }));
                 return false;
             }
 

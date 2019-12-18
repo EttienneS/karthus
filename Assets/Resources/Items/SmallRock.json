@@ -1,8 +1,6 @@
 {
   "Name": "Small Rock",
   "SpriteName": "smallrock",
-  "TravelCost": "3",
-  "Buildable": "False",
   "Cost": {
     "Mana": {
       "Red": "2"

@@ -12,7 +12,7 @@ public class Structure : IEntity
 
     public bool Buildable;
 
-    // rather than serialzing the cell object we keep this lazy link for load
+    // rather than serializing the cell object we keep this lazy link for load
     public (int X, int Y) Coords = (-1, -1);
 
     [JsonIgnore]

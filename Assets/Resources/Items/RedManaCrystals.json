@@ -1,8 +1,9 @@
 {
   "Name": "Red Mana Crystals",
   "SpriteName": "redcrystals",
-  "Amount": "1",
-  "ManaValue": {
-    "Red": "10"
+  "Cost": {
+    "Mana": {
+      "Red": "10"
+    }
   }
 }

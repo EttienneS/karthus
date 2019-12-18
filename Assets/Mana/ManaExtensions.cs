@@ -32,17 +32,6 @@ public static class ManaExtensions
         return color;
     }
 
-    internal static Dictionary<ManaColor, int> GetCostPool(params (ManaColor, int)[] requiredPool)
-    {
-        var pool = new Dictionary<ManaColor, int>();
-
-        foreach (var v in requiredPool)
-        {
-            pool.Add(v.Item1, v.Item2);
-        }
-
-        return pool;
-    }
 
     public static Dictionary<ManaColor, float> AddPools(params Dictionary<ManaColor, float>[] pools)
     {
@@ -93,73 +82,6 @@ public static class ManaExtensions
 
         return color;
     }
-
-    public static List<ManaColor> ToFlatArray(this Dictionary<ManaColor, int> manaPool)
-    {
-        var flat = new List<ManaColor>();
-
-        foreach (var kvp in manaPool)
-        {
-            for (var i = 0; i < kvp.Value; i++)
-            {
-                flat.Add(kvp.Key);
-            }
-        }
-
-        return flat;
-    }
-
-    public static ManaPool ToManaPool(this Dictionary<ManaColor, float> manaCost, IEntity entity)
-    {
-        var pool = new ManaPool(entity);
-
-        foreach (var kvp in manaCost)
-        {
-            pool.GainMana(kvp.Key, kvp.Value);
-        }
-
-        return pool;
-    }
-
-    public static Dictionary<ManaColor, float> ToManaValue(this ManaPool manaPool)
-    {
-        var dict = new Dictionary<ManaColor, float>();
-        foreach (var kvp in manaPool)
-        {
-            dict.Add(kvp.Key, kvp.Value.Total);
-        }
-
-        return dict;
-    }
-
-    public static float GetTotal(this Dictionary<ManaColor, float> manaCost, ManaColor color)
-    {
-        if (manaCost.ContainsKey(color))
-        {
-            return manaCost[color];
-        }
-        return 0;
-    }
-
-    public static void GainMana(this Dictionary<ManaColor, float> manaCost, ManaColor color, float amount)
-    {
-        if (!manaCost.ContainsKey(color))
-        {
-            manaCost.Add(color, 0);
-        }
-        manaCost[color] += amount;
-    }
-
-    public static void BurnMana(this Dictionary<ManaColor, float> manaCost, ManaColor color, float amount)
-    {
-        if (!manaCost.ContainsKey(color) || manaCost[color] < amount)
-        {
-            throw new System.Exception("Cannot burn what you do not have");
-        }
-
-        manaCost[color] -= amount;
-    }
-
     public static string GetString(this Dictionary<ManaColor, float> manaCost, int count = 1)
     {
         var str = "";
@@ -191,58 +113,5 @@ public static class ManaExtensions
         }
 
         return str.Trim(',');
-    }
-
-    internal static ManaColor GetManaWithMost(this Dictionary<ManaColor, float> manaCost)
-    {
-        var most = ManaColor.Blue;
-        var max = float.MinValue;
-
-        foreach (var kvp in manaCost)
-        {
-            if (kvp.Value > max)
-            {
-                most = kvp.Key;
-                max = kvp.Value;
-            }
-        }
-        return most;
-    }
-
-    internal static void Transfer(this Dictionary<ManaColor, float> source, Dictionary<ManaColor, float> target, ManaColor manaColor, float amount)
-    {
-        if (amount > 0)
-        {
-            source.BurnMana(manaColor, amount);
-            target.GainMana(manaColor, amount);
-        }
-        else
-        {
-            target.BurnMana(manaColor, amount);
-            source.GainMana(manaColor, amount);
-        }
-    }
-
-    internal static bool HasMana(this Dictionary<ManaColor, float> source, Dictionary<ManaColor, float> manaCost)
-    {
-        foreach (var kvp in manaCost)
-        {
-            if (!source.HasMana(kvp.Key, kvp.Value))
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    internal static bool HasMana(this Dictionary<ManaColor, float> source, ManaColor color, float amount)
-    {
-        if (!source.ContainsKey(color))
-        {
-            return false;
-        }
-
-        return source[color] >= amount;
     }
 }

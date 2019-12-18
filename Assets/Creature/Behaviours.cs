@@ -69,22 +69,16 @@ public static class Behaviours
         }
         else if (creature.ManaPool.Any(m => m.Value.Unbalanced()))
         {
-            var factionMana = creature.Faction.GetStoredMana();
             foreach (var mana in creature.ManaPool)
             {
                 if (mana.Value.OverAttuned() || mana.Value.OverDesired())
                 {
-                    var min = Mathf.Min(mana.Value.Desired, mana.Value.Attunement);
-                    task = Channel.GetChannelTo(mana.Key, mana.Value.Total - min, creature.Faction.GetClosestBattery(creature));
+                    task = new Vent(mana.Key, mana.Value.Total - Mathf.Min(mana.Value.Desired, mana.Value.Attunement));
                     break;
                 }
                 else if (mana.Value.UnderDesired())
                 {
-                    var want = mana.Value.Desired - mana.Value.Total;
-                    if (factionMana.HasMana(mana.Key, want))
-                    {
-                        task = Channel.GetChannelFrom(mana.Key, want, creature.GetSource());
-                    }
+                    task = new Attune(mana.Key, mana.Value.Desired);
                     break;
                 }
             }
@@ -93,10 +87,6 @@ public static class Behaviours
         {
             // split up
             task = new Move(Game.Map.GetPathableNeighbour(creature.Cell));
-        }
-        else if (creature.ValueProperties[Prop.Hunger] > 50)
-        {
-            task = new Eat(ManaColor.Green);
         }
         else if (creature.ValueProperties[Prop.Energy] < 15)
         {

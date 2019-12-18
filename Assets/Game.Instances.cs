@@ -2,6 +2,7 @@
 
 public partial class Game //.Instances
 {
+    public static MapGenerator MapGenerator;
     private static CameraController _cameraController;
     private static CreatureController _creatureController;
     private static EntityInfoPanel _creatureInfoPanel;
@@ -11,13 +12,12 @@ public partial class Game //.Instances
     private static ItemController _itemController;
     private static LoadStatus _loadingPanel;
     private static MagicController _magicController;
-    private static ManaDisplay _manaDisplay;
     private static Map _map;
     private static MaterialController _materialController;
     private static Minimap _minimap;
+    private static OrderInfoPanel _orderInfoPanel;
     private static OrderSelectionController _orderSelectionController;
     private static OrderTrayController _orderTrayController;
-    private static OrderInfoPanel _orderInfoPanel;
     private static PhysicsController _physicsController;
     private static SaveManager _saveManager;
     private static SpriteStore _spriteStore;
@@ -25,31 +25,12 @@ public partial class Game //.Instances
     private static TimeManager _timeManager;
     private static UIController _uiController;
     private static VisualEffectController _visualEffectController;
-    public static MapGenerator MapGenerator;
 
     public static CameraController CameraController
     {
         get
         {
-            if (_cameraController == null)
-            {
-                _cameraController = GameObject.Find(ControllerConstants.CameraController).GetComponent<CameraController>();
-            }
-
-            return _cameraController;
-        }
-    }
-
-    public static OrderInfoPanel OrderInfoPanel
-    {
-        get
-        {
-            if (_orderInfoPanel == null)
-            {
-                _orderInfoPanel = GameObject.Find("OrderInfoPanel").GetComponent<OrderInfoPanel>();
-            }
-
-            return _orderInfoPanel;
+            return _cameraController ?? (_cameraController = GameObject.Find(ControllerConstants.CameraController).GetComponent<CameraController>());
         }
     }
 
@@ -57,12 +38,7 @@ public partial class Game //.Instances
     {
         get
         {
-            if (_gameInstance == null)
-            {
-                _gameInstance = GameObject.Find(ControllerConstants.GameController).GetComponent<Game>();
-            }
-
-            return _gameInstance;
+            return _gameInstance ?? (_gameInstance = GameObject.Find(ControllerConstants.GameController).GetComponent<Game>());
         }
     }
 
@@ -70,12 +46,7 @@ public partial class Game //.Instances
     {
         get
         {
-            if (_creatureController == null)
-            {
-                _creatureController = GameObject.Find(ControllerConstants.CreatureController).GetComponent<CreatureController>();
-            }
-
-            return _creatureController;
+            return _creatureController ?? (_creatureController = GameObject.Find(ControllerConstants.CreatureController).GetComponent<CreatureController>());
         }
     }
 
@@ -83,12 +54,7 @@ public partial class Game //.Instances
     {
         get
         {
-            if (_creatureInfoPanel == null)
-            {
-                _creatureInfoPanel = GameObject.Find("EntityInfoPanel").GetComponent<EntityInfoPanel>();
-            }
-
-            return _creatureInfoPanel;
+            return _creatureInfoPanel ?? (_creatureInfoPanel = GameObject.Find("EntityInfoPanel").GetComponent<EntityInfoPanel>());
         }
     }
 
@@ -96,12 +62,7 @@ public partial class Game //.Instances
     {
         get
         {
-            if (_factionController == null)
-            {
-                _factionController = GameObject.Find("FactionController").GetComponent<FactionController>();
-            }
-
-            return _factionController;
+            return _factionController ?? (_factionController = GameObject.Find("FactionController").GetComponent<FactionController>());
         }
     }
 
@@ -123,12 +84,7 @@ public partial class Game //.Instances
     {
         get
         {
-            if (_itemController == null)
-            {
-                _itemController = GameObject.Find("ItemController").GetComponent<ItemController>();
-            }
-
-            return _itemController;
+            return _itemController ?? (_itemController = GameObject.Find("ItemController").GetComponent<ItemController>());
         }
     }
 
@@ -136,12 +92,7 @@ public partial class Game //.Instances
     {
         get
         {
-            if (_loadingPanel == null)
-            {
-                _loadingPanel = GameObject.Find("LoadingPanel").GetComponent<LoadStatus>();
-            }
-
-            return _loadingPanel;
+            return _loadingPanel ?? (_loadingPanel = GameObject.Find("LoadingPanel").GetComponent<LoadStatus>());
         }
     }
 
@@ -149,25 +100,7 @@ public partial class Game //.Instances
     {
         get
         {
-            if (_magicController == null)
-            {
-                _magicController = GameObject.Find(ControllerConstants.MagicController).GetComponent<MagicController>();
-            }
-
-            return _magicController;
-        }
-    }
-
-    public static ManaDisplay ManaDisplay
-    {
-        get
-        {
-            if (_manaDisplay == null)
-            {
-                _manaDisplay = GameObject.Find(ControllerConstants.ManaDisplay).GetComponent<ManaDisplay>();
-            }
-
-            return _manaDisplay;
+            return _magicController ?? (_magicController = GameObject.Find(ControllerConstants.MagicController).GetComponent<MagicController>());
         }
     }
 
@@ -175,12 +108,7 @@ public partial class Game //.Instances
     {
         get
         {
-            if (_map == null)
-            {
-                _map = GameObject.Find(ControllerConstants.MapController).GetComponent<Map>();
-            }
-
-            return _map;
+            return _map ?? (_map = GameObject.Find(ControllerConstants.MapController).GetComponent<Map>());
         }
     }
 
@@ -188,12 +116,7 @@ public partial class Game //.Instances
     {
         get
         {
-            if (_materialController == null)
-            {
-                _materialController = GameObject.Find(ControllerConstants.MaterialController).GetComponent<MaterialController>();
-            }
-
-            return _materialController;
+            return _materialController ?? (_materialController = GameObject.Find(ControllerConstants.MaterialController).GetComponent<MaterialController>());
         }
     }
 
@@ -201,12 +124,15 @@ public partial class Game //.Instances
     {
         get
         {
-            if (_minimap == null)
-            {
-                _minimap = GameObject.Find("Minimap").GetComponent<Minimap>();
-            }
+            return _minimap ?? (_minimap = GameObject.Find("Minimap").GetComponent<Minimap>());
+        }
+    }
 
-            return _minimap;
+    public static OrderInfoPanel OrderInfoPanel
+    {
+        get
+        {
+            return _orderInfoPanel ?? (_orderInfoPanel = GameObject.Find("OrderInfoPanel").GetComponent<OrderInfoPanel>());
         }
     }
 
@@ -214,12 +140,7 @@ public partial class Game //.Instances
     {
         get
         {
-            if (_orderSelectionController == null)
-            {
-                _orderSelectionController = GameObject.Find(ControllerConstants.OrderSelectionController).GetComponent<OrderSelectionController>();
-            }
-
-            return _orderSelectionController;
+            return _orderSelectionController ?? (_orderSelectionController = GameObject.Find(ControllerConstants.OrderSelectionController).GetComponent<OrderSelectionController>());
         }
     }
 
@@ -227,12 +148,7 @@ public partial class Game //.Instances
     {
         get
         {
-            if (_orderTrayController == null)
-            {
-                _orderTrayController = GameObject.Find("OrderTray").GetComponent<OrderTrayController>();
-            }
-
-            return _orderTrayController;
+            return _orderTrayController ?? (_orderTrayController = GameObject.Find("OrderTray").GetComponent<OrderTrayController>());
         }
     }
 
@@ -240,12 +156,7 @@ public partial class Game //.Instances
     {
         get
         {
-            if (_physicsController == null)
-            {
-                _physicsController = GameObject.Find(ControllerConstants.PhysicsController).GetComponent<PhysicsController>();
-            }
-
-            return _physicsController;
+            return _physicsController ?? (_physicsController = GameObject.Find(ControllerConstants.PhysicsController).GetComponent<PhysicsController>());
         }
     }
 
@@ -253,12 +164,7 @@ public partial class Game //.Instances
     {
         get
         {
-            if (_saveManager == null)
-            {
-                _saveManager = GameObject.Find("SaveManager").GetComponent<SaveManager>();
-            }
-
-            return _saveManager;
+            return _saveManager ?? (_saveManager = GameObject.Find("SaveManager").GetComponent<SaveManager>());
         }
     }
 
@@ -266,12 +172,7 @@ public partial class Game //.Instances
     {
         get
         {
-            if (_spriteStore == null)
-            {
-                _spriteStore = GameObject.Find(ControllerConstants.SpriteController).GetComponent<SpriteStore>();
-            }
-
-            return _spriteStore;
+            return _spriteStore ?? (_spriteStore = GameObject.Find(ControllerConstants.SpriteController).GetComponent<SpriteStore>());
         }
     }
 
@@ -279,12 +180,7 @@ public partial class Game //.Instances
     {
         get
         {
-            if (_structureController == null)
-            {
-                _structureController = GameObject.Find(ControllerConstants.StructureController).GetComponent<StructureController>();
-            }
-
-            return _structureController;
+            return _structureController ?? (_structureController = GameObject.Find(ControllerConstants.StructureController).GetComponent<StructureController>());
         }
     }
 
@@ -292,12 +188,7 @@ public partial class Game //.Instances
     {
         get
         {
-            if (_timeManager == null)
-            {
-                _timeManager = GameObject.Find(ControllerConstants.TimeController).GetComponent<TimeManager>();
-            }
-
-            return _timeManager;
+            return _timeManager ?? (_timeManager = GameObject.Find(ControllerConstants.TimeController).GetComponent<TimeManager>());
         }
     }
 
@@ -305,12 +196,7 @@ public partial class Game //.Instances
     {
         get
         {
-            if (_uiController == null)
-            {
-                _uiController = GameObject.Find("UI").GetComponent<UIController>();
-            }
-
-            return _uiController;
+            return _uiController ?? (_uiController = GameObject.Find("UI").GetComponent<UIController>());
         }
     }
 
@@ -318,12 +204,7 @@ public partial class Game //.Instances
     {
         get
         {
-            if (_visualEffectController == null)
-            {
-                _visualEffectController = GameObject.Find(ControllerConstants.VisualEffectController).GetComponent<VisualEffectController>();
-            }
-
-            return _visualEffectController;
+            return _visualEffectController ?? (_visualEffectController = GameObject.Find(ControllerConstants.VisualEffectController).GetComponent<VisualEffectController>());
         }
     }
 }

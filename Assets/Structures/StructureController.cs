@@ -83,10 +83,7 @@ public class StructureController : MonoBehaviour
 
         structure.SetBluePrintState(false);
 
-        if (faction != null)
-        {
-            faction.AddStructure(structure);
-        }
+        faction?.AddStructure(structure);
 
         return structure;
     }

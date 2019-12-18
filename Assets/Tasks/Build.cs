@@ -16,12 +16,11 @@ public class Build : CreatureTask
     {
         TargetStructure = structure;
 
-        
-        AddSubTask(new Acrue(structure.Cost.Mana));
-        foreach (var mana in structure.Cost.Mana)
-        {
-            AddSubTask(Channel.GetChannelTo(mana.Key, mana.Value, structure));
-        }
+        //AddSubTask(new Acrue(structure.Cost.Mana));
+        //foreach (var mana in structure.Cost.Mana)
+        //{
+        //    AddSubTask(Channel.GetChannelTo(mana.Key, mana.Value, structure));
+        //}
 
         Message = $"Building {structure.Name} at {structure.Cell}";
     }

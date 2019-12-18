@@ -23,53 +23,19 @@ public class Faction
         return task;
     }
 
-    public IEnumerable<Structure> GetBatteries()
-    {
-        return Structures.Where(s => s.IsType("Battery") && !s.IsBluePrint);
-    }
 
-    public Dictionary<ManaColor, float> GetStoredMana()
-    {
-        var stored = new Dictionary<ManaColor, float>();
-
-        foreach (var battery in GetBatteries())
-        {
-            stored = ManaExtensions.AddPools(stored, battery.Cost.Mana);
-        }
-
-        return stored;
-    }
-
-    public Structure GetClosestBattery(Creature creature)
-    {
-        var cost = float.MaxValue;
-        Structure closest = null;
-        foreach (var battery in GetBatteries())
-        {
-            var distance = Pathfinder.GetPathCost(battery.Cell, creature.Cell, creature.Mobility);
-
-            if (distance < cost)
-            {
-                closest = battery;
-                cost = distance;
-            }
-        }
-
-        return closest;
-    }
 
     public CreatureTask TakeTask(Creature creature)
     {
         var task = creature.GetBehaviourTask?.Invoke(creature);
         if (task == null)
         {
-            var availableMana = ManaExtensions.AddPools(creature.ManaValue, GetStoredMana());
             var highestPriority = int.MinValue;
             foreach (var availableTask in AvailableTasks.Where(t => creature.CanDo(t)))
             {
                 if (creature.CanDo(availableTask))
                 {
-                    if (!availableMana.HasMana(availableTask.TotalCost.Mana))
+                    if (!creature.ManaPool.HasMana(availableTask.TotalCost.Mana))
                     {
                         Debug.Log($"Not enough mana available for task: {availableTask}");
                         continue;

@@ -427,13 +427,6 @@ public class MapGenerator
     private void MakeFactionBootStrap(Faction faction)
     {
         var center = Game.Map.GetNearestPathableCell(Game.Map.Center, Mobility.Walk, 25);
-        var core = center.CreateStructure("Battery", faction.FactionName);
-        core.Cost.Mana.GainMana(ManaColor.Green, 20);
-        core.Cost.Mana.GainMana(ManaColor.Red, 20);
-        core.Cost.Mana.GainMana(ManaColor.Blue, 20);
-        core.Cost.Mana.GainMana(ManaColor.White, 20);
-        core.Cost.Mana.GainMana(ManaColor.Black, 20);
-
         for (int i = 0; i < 3; i++)
         {
             Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("Person"),

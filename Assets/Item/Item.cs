@@ -8,7 +8,7 @@ public class Item : IEntity
 
     private VisualEffect _outline;
 
-    public int Amount { get; set; }
+    public int Amount { get; set; } = 1;
 
     public Cost Cost { get; set; } = new Cost();
 

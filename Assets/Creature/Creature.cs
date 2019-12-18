@@ -145,18 +145,6 @@ public class Creature : IEntity
 
     public ManaPool ManaPool { get; set; }
 
-    public Dictionary<ManaColor, float> ManaValue
-    {
-        get
-        {
-            return ManaPool.ToManaValue();
-        }
-        set
-        {
-            // do nothing should only be used on initial creation
-        }
-    }
-
     public string Name { get; set; }
 
     public int Perception { get; set; }
@@ -193,10 +181,7 @@ public class Creature : IEntity
         }
         set
         {
-            if (_task != null)
-            {
-                _task.Destroy();
-            }
+            _task?.Destroy();
             _task = value;
         }
     }
@@ -557,11 +542,6 @@ public class Creature : IEntity
                 }
             }
         }
-    }
-
-    internal IEntity GetSource()
-    {
-        return Faction.GetClosestBattery(this);
     }
 
     internal int GetPriority(CreatureTask t)

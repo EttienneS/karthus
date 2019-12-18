@@ -15,13 +15,13 @@ public class RemoveStructure : CreatureTask
 
         AddSubTask(new Move(Game.Map.GetPathableNeighbour(StructureToRemove.Cell)));
 
-        foreach (var mana in structure.Cost.Mana)
-        {
-            if (mana.Value > 0)
-            {
-                AddSubTask(Channel.GetChannelFrom(mana.Key, mana.Value, structure));
-            }
-        }
+        //foreach (var mana in structure.Cost.Mana)
+        //{
+        //    if (mana.Value > 0)
+        //    {
+        //        AddSubTask(Channel.GetChannelFrom(mana.Key, mana.Value, structure));
+        //    }
+        //}
 
         Message = $"Removing {StructureToRemove.Name} at {StructureToRemove.Cell}";
     }
