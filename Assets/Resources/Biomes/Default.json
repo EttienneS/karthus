@@ -10,7 +10,6 @@
     {
       "Content": {
         "Blue Mana Crystals": 0.01,
-        "Small Rock": 0.04
       },
       "Max": 0.33,
       "Min": 0.3,
@@ -18,7 +17,6 @@
     },
     {
       "Content": {
-        "Small Rock": 0.05,
         "Medium Rock": 0.01
       },
       "Max": 0.35,
@@ -29,7 +27,6 @@
       "Content": {
         "Bush": 0.05,
         "Green Mana Crystals": 0.01,
-        "Small Rock": 0.01
       },
       "Max": 0.6,
       "Min": 0.35,
@@ -58,8 +55,7 @@
     {
       "Content": {
         "Red Mana Crystals": 0.05,
-        "Small Rock": 0.25,
-        "Medium Rock": 0.15,
+        "Medium Rock": 0.25,
         "Big Rock": 0.10
       },
       "Max": 0.9,

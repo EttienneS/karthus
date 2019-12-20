@@ -4,8 +4,8 @@
   "TravelCost": "0.1",
   "Description": "Cheap structure generally used outdoors to connect larger constructs.  Move speed is much faster on roads and floors than other surfaces.",
   "Cost": {
-    "Mana": {
-      "Red": "1"
+    "Items": {
+      "Stone": "1"
     }
   },
   "Buildable": "True",

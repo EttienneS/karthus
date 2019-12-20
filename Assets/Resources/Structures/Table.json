@@ -4,9 +4,8 @@
   "TravelCost": "4",
   "Description": "A general purpose table, can be used as a place to eat or a workbench.",
   "Cost": {
-    "Mana": {
-      "Red": "1",
-      "Green": "1"
+    "Items": {
+      "Wood": "3"
     }
   },
   "Buildable": "True",

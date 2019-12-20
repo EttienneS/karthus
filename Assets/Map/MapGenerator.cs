@@ -427,11 +427,15 @@ public class MapGenerator
     private void MakeFactionBootStrap(Faction faction)
     {
         var center = Game.Map.GetNearestPathableCell(Game.Map.Center, Mobility.Walk, 25);
+
+        Game.ItemController.SpawnItem("Wood", center.GetNeighbor(Direction.N)).Amount = 25;
+        Game.ItemController.SpawnItem("Stone", center.GetNeighbor(Direction.S)).Amount = 25;
+
         for (int i = 0; i < 3; i++)
         {
             Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("Person"),
                                                   Game.Map.GetNearestPathableCell(center, Mobility.Walk, 25),
-                                                  Game.FactionController.PlayerFaction);
+                                                  faction);
         }
     }
 

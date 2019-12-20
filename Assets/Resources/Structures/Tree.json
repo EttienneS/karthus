@@ -7,9 +7,8 @@
   "ShiftY": "0.7~1",
   "ShiftX": "-0.2~0.2",
   "Cost": {
-    "Mana": {
-      "Green": "3",
-      "Black": "2"
+    "Items": {
+      "Wood": "15"
     }
   }
 }

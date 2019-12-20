@@ -1,9 +1,0 @@
-{
-  "Name": "Small Rock",
-  "SpriteName": "smallrock",
-  "Cost": {
-    "Mana": {
-      "Red": "2"
-    }
-  }
-}

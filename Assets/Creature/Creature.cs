@@ -58,7 +58,7 @@ public class Creature : IEntity
 
     private CreatureTask _task;
 
-    public List<string> CarriedItemIds { get; set; }
+    public List<string> CarriedItemIds { get; set; } = new List<string>();
 
     [JsonIgnore]
     public List<Item> CarriedItems
@@ -621,6 +621,11 @@ public class Creature : IEntity
 
             ResolveIncomingAttacks(timeDelta);
             Combatants.RemoveAll(c => c.Dead);
+
+            foreach (var item in CarriedItems)
+            {
+                item.Coords = (X, Y);
+            }
         }
 
         if (InternalTick >= Game.TimeManager.TickInterval)

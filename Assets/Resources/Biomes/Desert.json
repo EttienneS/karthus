@@ -2,7 +2,7 @@
   "BiomeRegions": [
     {
       "Content": {
-        "Small Rock": 0.04,
+        "Medium Rock": 0.04,
         "Red Mana Crystals": 0.05
       },
       "Max": 0.7,
@@ -11,7 +11,7 @@
     },
     {
       "Content": {
-        "Small Rock": 0.05
+        "Medium Rock": 0.05
       },
       "Max": 0.80,
       "Min": 0.65,
@@ -19,7 +19,7 @@
     },
     {
       "Content": {
-        "Small Rock": 0.05
+        "Medium Rock": 0.05
       },
       "Max": 1.0,
       "Min": 0.9,
@@ -27,7 +27,7 @@
     },
     {
       "Content": {
-        "Small Rock": 0.05
+        "Medium Rock": 0.05
       },
       "Max": 0.1,
       "Min": 0.0,
@@ -36,7 +36,6 @@
     {
       "Content": {
         "Red Mana Crystals": 0.05,
-        "Small Rock": 0.25,
         "Medium Rock": 0.15
       },
       "Max": 0.9,
@@ -46,7 +45,7 @@
     {
       "Content": {
         "Red Mana Crystals": 0.05,
-        "Small Rock": 0.04
+        "Medium Rock": 0.04
       },
       "Max": 0.9,
       "Min": 0.8,

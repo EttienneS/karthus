@@ -4,8 +4,8 @@
   "Description": "Wall made from stone blocks, not much to look at but keeps the bad things out (or in..)",
   "TravelCost": "-1",
   "Cost": {
-    "Mana": {
-      "Red": "1"
+    "Items": {
+      "Stone": "1"
     }
   },
   "Buildable": "True",

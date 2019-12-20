@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 public class RemoveStructure : CreatureTask
 {
@@ -14,14 +15,7 @@ public class RemoveStructure : CreatureTask
         StructureToRemove = structure;
 
         AddSubTask(new Move(Game.Map.GetPathableNeighbour(StructureToRemove.Cell)));
-
-        //foreach (var mana in structure.Cost.Mana)
-        //{
-        //    if (mana.Value > 0)
-        //    {
-        //        AddSubTask(Channel.GetChannelFrom(mana.Key, mana.Value, structure));
-        //    }
-        //}
+        AddSubTask(new Wait(structure.Cost.Items.Sum(c => c.Value) + structure.Cost.Mana.Sum(c => c.Value), "De-constructing..."));
 
         Message = $"Removing {StructureToRemove.Name} at {StructureToRemove.Cell}";
     }
@@ -30,6 +24,11 @@ public class RemoveStructure : CreatureTask
     {
         if (SubTasksComplete(creature))
         {
+            foreach (var item in StructureToRemove.Cost.Items)
+            {
+                Game.ItemController.SpawnItem(item.Key, StructureToRemove.Cell).Amount = item.Value;
+            }
+
             Game.StructureController.DestroyStructure(StructureToRemove);
 
             return true;

@@ -1,0 +1,9 @@
+{
+  "Name": "Stone",
+  "SpriteName": "smallrock",
+  "Cost": {
+    "Items": {
+      "Stone": "1"
+    }
+  }
+}
