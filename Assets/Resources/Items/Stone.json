@@ -1,6 +1,6 @@
 {
   "Name": "Stone",
-  "SpriteName": "smallrock",
+  "SpriteName": "Stone",
   "Cost": {
     "Items": {
       "Stone": "1"
