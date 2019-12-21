@@ -29,7 +29,9 @@ public class Creature : IEntity
     public Color HairColor;
 
     public int HairStyle;
+
     public List<OffensiveActionBase> IncomingAttacks = new List<OffensiveActionBase>();
+
     public int Index;
 
     public Dictionary<string, Memory> Mind = new Dictionary<string, Memory>();
@@ -58,17 +60,6 @@ public class Creature : IEntity
 
     private CreatureTask _task;
 
-    public List<string> CarriedItemIds { get; set; } = new List<string>();
-
-    [JsonIgnore]
-    public List<Item> CarriedItems
-    {
-        get
-        {
-            return CarriedItemIds.Select(i => i.GetItem()).ToList();
-        }
-    }
-
     public float Aggression { get; set; }
 
     [JsonIgnore]
@@ -86,6 +77,17 @@ public class Creature : IEntity
     }
 
     public string BehaviourName { get; set; }
+
+    public List<string> CarriedItemIds { get; set; } = new List<string>();
+
+    [JsonIgnore]
+    public List<Item> CarriedItems
+    {
+        get
+        {
+            return CarriedItemIds.Select(i => i.GetItem()).ToList();
+        }
+    }
 
     [JsonIgnore]
     public Cell Cell
@@ -209,6 +211,35 @@ public class Creature : IEntity
         Limbs.Add(limb);
     }
 
+    public Item DropItem(Cell cell, string item, int amount)
+    {
+        var heldItem = GetItemOfType(item);
+        if (heldItem == null)
+        {
+            throw new Exception("Cannot drop what you do not have!");
+        }
+        else
+        {
+            if (amount >= heldItem.Amount)
+            {
+                CarriedItemIds.Remove(heldItem.Id);
+                heldItem.Coords = (cell.Vector.x, cell.Vector.y);
+                heldItem.InUseById = null;
+
+                heldItem.Renderer.SpriteRenderer.sortingLayerName = LayerConstants.Item;
+
+                return heldItem;
+            }
+            else
+            {
+                var newItem = Game.ItemController.SpawnItem(item, cell);
+                newItem.Amount = amount;
+                heldItem.Amount -= amount;
+                return newItem;
+            }
+        }
+    }
+
     public void Face(Cell cell)
     {
         if (cell.Y < Cell.Y)
@@ -273,6 +304,11 @@ public class Creature : IEntity
         var offensiveActions = GetAvailableOffensiveOptions();
         var distance = Cell.DistanceTo(target.Cell);
         return offensiveActions.Where(o => o.Range >= distance).ToList();
+    }
+
+    public Item GetItemOfType(string itemType)
+    {
+        return CarriedItems.FirstOrDefault(i => i.Name.Equals(itemType, StringComparison.InvariantCultureIgnoreCase));
     }
 
     public int GetMinRange()
@@ -416,6 +452,33 @@ public class Creature : IEntity
         MoveTo(vector.x, vector.y);
     }
 
+    public void PickUpItem(Item item, int amount)
+    {
+        var heldItem = GetItemOfType(item.Name);
+
+        if (heldItem == null)
+        {
+            if (item.Amount > amount)
+            {
+                var newItem = Game.ItemController.SpawnItem(item.Name, Cell);
+                newItem.Amount = amount;
+                item.Amount -= amount;
+
+                CarriedItemIds.Add(newItem.Id);
+            }
+            else
+            {
+                CarriedItemIds.Add(item.Id);
+                item.InUseBy = this;
+            }
+        }
+        else
+        {
+            heldItem.Amount += amount;
+            item.Amount -= amount;
+        }
+    }
+
     public void SetColors()
     {
         if (_firstRun)
@@ -514,6 +577,16 @@ public class Creature : IEntity
         return true;
     }
 
+    internal int CurrentItemCount(string itemType)
+    {
+        var item = GetItemOfType(itemType);
+        if (item == null)
+        {
+            return 0;
+        }
+        return item.Amount;
+    }
+
     internal void Forget(string context)
     {
         // Debug.Log($"Forget context: {context}");
@@ -557,6 +630,16 @@ public class Creature : IEntity
         }
 
         return 0;
+    }
+
+    internal bool HasItem(string itemType, int amount)
+    {
+        var item = GetItemOfType(itemType);
+        if (item != null)
+        {
+            return item.Amount >= amount;
+        }
+        return false;
     }
 
     internal void Know(string context)
@@ -624,8 +707,15 @@ public class Creature : IEntity
 
             foreach (var item in CarriedItems)
             {
+                if (item == null)
+                {
+                    continue;
+                }
+                item.Renderer.SpriteRenderer.sortingLayerName = LayerConstants.CarriedItem;
                 item.Coords = (X, Y);
             }
+
+            CarriedItems.RemoveAll(i => i == null);
         }
 
         if (InternalTick >= Game.TimeManager.TickInterval)

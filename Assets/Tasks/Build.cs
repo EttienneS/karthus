@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 public class Build : CreatureTask
 {
     public Structure TargetStructure;
+
+    private int _waitCount = 0;
 
     public Build()
     {
@@ -10,22 +14,30 @@ public class Build : CreatureTask
         RequiredSkillLevel = 1;
     }
 
-
-
     public Build(Structure structure) : this()
     {
         TargetStructure = structure;
 
-        //AddSubTask(new Acrue(structure.Cost.Mana));
-        //foreach (var mana in structure.Cost.Mana)
-        //{
-        //    AddSubTask(Channel.GetChannelTo(mana.Key, mana.Value, structure));
-        //}
+        var cellItems = structure.Cell.Items.ToList();
+        cellItems.AddRange(GetContainedItems());
+
+        foreach (var item in cellItems)
+        {
+            item.InUseById = null;
+            AddSubTask(new Pickup(item));
+            AddSubTask(new Drop(structure.Cell.NonNullNeighbors.Where(n => n.TravelCost > 0).GetRandomItem(), item, item.Amount));
+        }
+
+        foreach (var item in structure.Cost.Items)
+        {
+            AddSubTask(new Haul(item.Key, item.Value, structure.Cell, structure));
+        }
+        AddSubTask(new Move(structure.Cell.NonNullNeighbors.Where(n => n.TravelCost > 0).GetRandomItem()));
 
         Message = $"Building {structure.Name} at {structure.Cell}";
     }
 
-    private int _waitCount = 0;
+    public bool Built = false;
 
     public override bool Done(Creature creature)
     {
@@ -36,6 +48,7 @@ public class Build : CreatureTask
 
         if (SubTasksComplete(creature))
         {
+            creature.Face(TargetStructure.Cell);
             if (TargetStructure.Cell.Creatures.Count > 0)
             {
                 _waitCount++;
@@ -48,15 +61,25 @@ public class Build : CreatureTask
                 return false;
             }
 
+            if (!Built)
+            {
+                var time = TargetStructure.Cost.Items.Sum(i => i.Value);
+                AddSubTask(new Wait(time, "Building"));
+                Built = true;
+                Game.VisualEffectController.SpawnSpriteEffect(TargetStructure, TargetStructure.Vector, "construct", time * 2).Fades();
+                Game.VisualEffectController.SpawnSpriteEffect(creature, creature.Vector, "construct", time * 2).Fades();
+                return false;
+            }
+
             TargetStructure.SetBluePrintState(false);
 
             if (TargetStructure.IsInterlocking())
             {
                 foreach (var neighbour in TargetStructure.Cell.Neighbors)
                 {
-                    if (neighbour != null)
+                    if (neighbour.Structure != null)
                     {
-                        neighbour.UpdateTile();
+                        neighbour.Structure.Refresh();
                     }
                 }
             }
@@ -69,8 +92,25 @@ public class Build : CreatureTask
                 Game.MagicController.AddEffector(TargetStructure);
             }
 
+            foreach (var item in GetContainedItems())
+            {
+                Game.ItemController.DestroyItem(item);
+            }
+
             return true;
         }
         return false;
+    }
+
+    private List<Item> GetContainedItems()
+    {
+        if (TargetStructure.Properties.ContainsKey(NamedProperties.ContainedItemIds))
+        {
+            return TargetStructure.Properties[NamedProperties.ContainedItemIds]
+                                  .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                  .Select(i => i.GetItem()).ToList();
+        }
+
+        return new List<Item>();
     }
 }

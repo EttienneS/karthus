@@ -38,6 +38,13 @@ public class ItemRenderer : MonoBehaviour
 
     public void Update()
     {
-        Text.text = Data.Amount.ToString();
+        if (Data.Amount <= 0)
+        {
+            Game.ItemController.DestroyItem(Data);
+        }
+        else
+        {
+            Text.text = Data.Amount.ToString();
+        }
     }
 }

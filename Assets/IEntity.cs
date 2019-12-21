@@ -12,3 +12,8 @@ public interface IEntity
     Dictionary<string, float> ValueProperties { get; set; }
     Vector2 Vector { get; }
 }
+
+public static class NamedProperties
+{
+    public const string ContainedItemIds = "ContainedItemIds";
+}
