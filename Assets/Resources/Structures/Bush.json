@@ -4,9 +4,8 @@
   "TravelCost": "3",
   "Buildable": "False",
   "Cost": {
-    "Mana": {
-      "Green": "2",
-      "Black": "1"
+    "Items": {
+      "Berries": "5"
     }
   }
 }
