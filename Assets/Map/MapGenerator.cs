@@ -428,6 +428,7 @@ public class MapGenerator
     {
         var center = Game.Map.GetNearestPathableCell(Game.Map.Center, Mobility.Walk, 25);
 
+        Game.ItemController.SpawnItem("Berries", center.GetNeighbor(Direction.N)).Amount = 100;
         Game.ItemController.SpawnItem("Wood", center.GetNeighbor(Direction.N)).Amount = 25;
         Game.ItemController.SpawnItem("Stone", center.GetNeighbor(Direction.S)).Amount = 25;
 
