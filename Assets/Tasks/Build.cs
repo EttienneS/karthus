@@ -18,10 +18,7 @@ public class Build : CreatureTask
     {
         TargetStructure = structure;
 
-        var cellItems = structure.Cell.Items.ToList();
-        cellItems.AddRange(GetContainedItems());
-
-        foreach (var item in cellItems)
+        foreach (var item in structure.Cell.Items)
         {
             item.InUseById = null;
             AddSubTask(new Pickup(item));

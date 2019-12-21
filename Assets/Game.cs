@@ -116,6 +116,7 @@ public partial class Game : MonoBehaviour
         }
         SelectedStructures.Clear();
     }
+
     public void DestroyItemsInCache()
     {
         try
@@ -139,19 +140,6 @@ public partial class Game : MonoBehaviour
         }
     }
 
-    public bool DoubleClick()
-    {
-        if (Time.time >= _minCurrentTime && Time.time <= _maxCurrentTime)
-        {
-            _minCurrentTime = 0;
-            _maxCurrentTime = 0;
-            return true;
-        }
-        _minCurrentTime = Time.time + MinTimeToClick; _maxCurrentTime = Time.time + MaxTimeToClick;
-        return false;
-    }
-
-
     private void HandleHotkeys()
     {
         if (Input.GetKeyDown("b"))
@@ -173,8 +161,6 @@ public partial class Game : MonoBehaviour
         {
             RotateMouseLeft?.Invoke();
         }
-
-       
 
         if (Input.GetKeyDown("p"))
         {
@@ -232,7 +218,7 @@ public partial class Game : MonoBehaviour
             {
                 FactionName = factionName
             };
-            Game.FactionController.Factions.Add(factionName, faction);
+            FactionController.Factions.Add(factionName, faction);
         }
     }
 

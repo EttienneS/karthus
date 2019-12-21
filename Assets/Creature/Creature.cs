@@ -308,7 +308,7 @@ public class Creature : IEntity
 
     public Item GetItemOfType(string itemType)
     {
-        return CarriedItems.FirstOrDefault(i => i.Name.Equals(itemType, StringComparison.InvariantCultureIgnoreCase));
+        return CarriedItems.Find(i => i != null && i.Name.Equals(itemType, StringComparison.InvariantCultureIgnoreCase));
     }
 
     public int GetMinRange()
