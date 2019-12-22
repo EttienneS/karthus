@@ -121,24 +121,8 @@ public class Cell : IEquatable<Cell>
 
             RefreshColor();
 
-            if (Floor == null)
-            {
-                tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(BiomeRegion.SpriteName);
-                tile.color = Color;
-            }
-            else
-            {
-                tile.sprite = Game.SpriteStore.GetSprite(Floor.SpriteName);
-                var col = Color;
-
-                if (Floor.IsBluePrint)
-                {
-                    col = ColorConstants.BluePrintColor;
-                    col.a = 1;
-                }
-
-                tile.color = col;
-            }
+            tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(BiomeRegion.SpriteName);
+            tile.color = Color;
 
             return tile;
         }
