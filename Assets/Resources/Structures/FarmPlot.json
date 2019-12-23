@@ -1,0 +1,19 @@
+{
+  "Name": "FarmPlot",
+  "SpriteName": "FarmPlot",
+  "TravelCost": "10",
+  "Description": "A structure where a plant can be grown and tended to by a farmer.",
+  "Cost": {
+    "Items": {
+      "Stone": "1"
+    }
+  },
+  "Buildable": "True",
+  //"AutoInteractions": [
+  //  {
+  //    "$type": "SpawnItem, Assembly-CSharp",
+  //    "ItemName": "Sprout",
+  //    "ActivationTime": "5"
+  //  }
+  //]
+}

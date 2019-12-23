@@ -72,7 +72,6 @@ public class EntityInfoPanel : MonoBehaviour
         else
         {
             // items
-            AddEssenseShatterButton(entities.OfType<Item>());
         }
     }
 
@@ -218,22 +217,7 @@ public class EntityInfoPanel : MonoBehaviour
         }
     }
 
-    private void AddEssenseShatterButton(IEnumerable<Item> items)
-    {
-        var btn = AddButton(OrderSelectionController.EssenceShatterText, OrderSelectionController.EssenceShatterIcon);
-        btn.SetOnClick(() =>
-        {
-            SetActiveButton(btn);
-
-            foreach (var item in items)
-            {
-                Game.FactionController.PlayerFaction
-                                        .AddTask(new EssenceShatter(item))
-                                        .AddCellBadge(item.Cell, OrderSelectionController.EssenceShatterIcon);
-            }
-        });
-    }
-
+   
     private void AddMoveButton(IEnumerable<Creature> creatures)
     {
         var btn = AddButton(OrderSelectionController.MoveText, OrderSelectionController.MoveIcon);

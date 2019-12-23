@@ -13,10 +13,6 @@ public partial class OrderSelectionController //.Designate
     internal const string MoveIcon = "location_t";
     internal const string MoveText = "Move";
 
-    internal const string EssenceShatterIcon = "portal_t";
-    internal const string EssenceShatterText = "Essence Shatter";
-    
-
     internal OrderButton TaskButton;
 
     public void DesignateTypeClicked()
@@ -31,26 +27,10 @@ public partial class OrderSelectionController //.Designate
             EnableAndClear();
 
             CreateOrderButton(MoveText, MoveClicked, MoveIcon);
-            CreateOrderButton(EssenceShatterText, EssenceShatterClicked, EssenceShatterIcon);
             CreateOrderButton(DefaultRemoveText, RemoveStructureClicked, DefaultRemoveIcon);
         }
     }
-    private void EssenceShatterClicked()
-    {
-        Game.Controller.SelectionPreference = SelectionPreference.Cell;
-        Game.Controller.SetMouseSprite(EssenceShatterIcon, (_) => true);
-
-        CellClickOrder = cells =>
-        {
-            foreach (var cell in cells)
-            {
-                foreach (var item in cell.Items)
-                {
-                    Game.FactionController.PlayerFaction.AddTask(new EssenceShatter(item)).AddCellBadge(cell, EssenceShatterIcon);
-                }
-            }
-        };
-    }
+    
     
     private void MoveClicked()
     {
