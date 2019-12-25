@@ -3,7 +3,7 @@ public class BurnManaTask : CreatureTask
 {
     public BurnManaTask()
     {
-        RequiredSkill = "Arcana";
+        RequiredSkill = SkillConstants.Arcana;
         RequiredSkillLevel = 1;
     }
 

@@ -7,7 +7,7 @@ public class GainManaTask : CreatureTask
 
     public GainManaTask()
     {
-        RequiredSkill = "Arcana";
+        RequiredSkill = SkillConstants.Arcana;
         RequiredSkillLevel = 1;
     }
 

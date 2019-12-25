@@ -9,11 +9,28 @@
     }
   },
   "Buildable": "True",
-  //"AutoInteractions": [
-  //  {
-  //    "$type": "SpawnItem, Assembly-CSharp",
-  //    "ItemName": "Sprout",
-  //    "ActivationTime": "5"
-  //  }
-  //]
+  "AutoInteractions": [
+    {
+      "$type": "Job, Assembly-CSharp",
+      "ActivationTime": 60,
+      "DisplayName": "Tend",
+      "Task": [
+        "{",
+        " \"$type\": \"Tend, Assembly-CSharp\",",
+        " \"StructureId\": \"[THIS]\",",
+        " \"TendTime\": \"10\"",
+        "}"
+      ]
+    },
+    {
+      "$type": "Grow, Assembly-CSharp",
+      "ActivationTime": 0.5,
+      "TotalStages": "5",
+      "AgePerStage": "10",
+      "PlantName": "BerryBush"
+    }
+  ],
+  "Properties": {
+    "Type": "Floor"
+  }
 }

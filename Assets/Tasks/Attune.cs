@@ -4,7 +4,7 @@ public class Attune : CreatureTask
 {
     public Attune()
     {
-        RequiredSkill = "Arcana";
+        RequiredSkill = SkillConstants.Arcana;
         RequiredSkillLevel = 1;
     }
 

@@ -6,7 +6,7 @@ public class RemoveStructure : CreatureTask
     public Structure StructureToRemove;
     public RemoveStructure()
     {
-        RequiredSkill = "Build";
+        RequiredSkill = SkillConstants.Build;
         RequiredSkillLevel = 1;
     }
 

@@ -4,7 +4,7 @@ public class Vent : CreatureTask
 {
     public Vent()
     {
-        RequiredSkill = "Arcana";
+        RequiredSkill = SkillConstants.Arcana;
         RequiredSkillLevel = 1;
     }
 

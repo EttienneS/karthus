@@ -18,19 +18,26 @@
   "Skills": [
     {
       "Name": "Build",
-      "Enabled": "True",
       "Level": 1,
       "Priority": 5
     },
     {
       "Name": "Arcana",
-      "Enabled": "True",
       "Level": 1,
       "Priority": 5
     },
     {
-      "Name": "Heal",
-      "Enabled": "True",
+      "Name": "Healing",
+      "Level": 1,
+      "Priority": 5
+    },
+    {
+      "Name": "Haul",
+      "Level": 1,
+      "Priority": 5
+    },
+    {
+      "Name": "Farming",
       "Level": 1,
       "Priority": 5
     }

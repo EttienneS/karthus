@@ -1,0 +1,11 @@
+{
+  "Name": "BerryBush",
+  "SpriteName": "BerryBush",
+  "TravelCost": "3",
+  "Buildable": "False",
+  "Cost": {
+    "Items": {
+      "Berries": "10"
+    }
+  }
+}

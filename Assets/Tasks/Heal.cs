@@ -6,7 +6,7 @@ public class Heal : CreatureTask
 {
     public Heal()
     {
-        RequiredSkill = "Heal";
+        RequiredSkill = SkillConstants.Healing;
         RequiredSkillLevel = 1;
     }
 

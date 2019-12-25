@@ -14,7 +14,7 @@ public class Haul : CreatureTask
 
     public Haul()
     {
-        RequiredSkill = "Haul";
+        RequiredSkill = SkillConstants.Haul;
         RequiredSkillLevel = 1;
     }
 

@@ -30,6 +30,11 @@ public class Cell : IEquatable<Cell>
         }
     }
 
+    internal Cell GetPathableNeighbour()
+    {
+        return NonNullNeighbors.Where(n => n.TravelCost > 0).GetRandomItem();
+    }
+
     [JsonIgnore]
     public bool Buildable
     {

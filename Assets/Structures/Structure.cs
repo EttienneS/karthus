@@ -1,8 +1,10 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Random = UnityEngine.Random;
 
 public class Structure : IEntity
 {
@@ -30,6 +32,42 @@ public class Structure : IEntity
         {
             InUseById = value.Id;
         }
+    }
+
+    internal float GetValue(string valueName)
+    {
+        if (ValueProperties.ContainsKey(valueName))
+        {
+            return ValueProperties[valueName];
+        }
+        return 0f;
+    }
+
+    internal void SetValue(string valueName, float value)
+    {
+        if (!ValueProperties.ContainsKey(valueName))
+        {
+            ValueProperties.Add(valueName, 0f);
+        }
+        ValueProperties[valueName] = value;
+    }
+
+    internal string GetProperty(string propertyName)
+    {
+        if (Properties.ContainsKey(propertyName))
+        {
+            return Properties[propertyName];
+        }
+        return string.Empty;
+    }
+
+    internal void SetProperty(string propertyName, string value)
+    {
+        if (!Properties.ContainsKey(propertyName))
+        {
+            Properties.Add(propertyName, string.Empty);
+        }
+        Properties[propertyName] = value;
     }
 
     public string InUseById { get; set; }

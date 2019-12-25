@@ -2,13 +2,5 @@
   "Name": "Bush",
   "SpriteName": "Bush2",
   "TravelCost": "3",
-  "Buildable": "False",
-  "Cost": {
-    "Items": {
-      "Berries": "5"
-    }
-  },
-  "ValueProperties": {
-    "Nutrition": "50"
-  }
+  "Buildable": "False"
 }

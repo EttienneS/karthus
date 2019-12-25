@@ -10,7 +10,7 @@ public class Build : CreatureTask
 
     public Build()
     {
-        RequiredSkill = "Build";
+        RequiredSkill = SkillConstants.Build;
         RequiredSkillLevel = 1;
     }
 
@@ -22,14 +22,14 @@ public class Build : CreatureTask
         {
             item.InUseById = null;
             AddSubTask(new Pickup(item));
-            AddSubTask(new Drop(structure.Cell.NonNullNeighbors.Where(n => n.TravelCost > 0).GetRandomItem(), item, item.Amount));
+            AddSubTask(new Drop(structure.Cell.GetPathableNeighbour(), item, item.Amount));
         }
 
         foreach (var item in structure.Cost.Items)
         {
             AddSubTask(new Haul(item.Key, item.Value, structure.Cell, structure));
         }
-        AddSubTask(new Move(structure.Cell.NonNullNeighbors.Where(n => n.TravelCost > 0).GetRandomItem()));
+        AddSubTask(new Move(structure.Cell.GetPathableNeighbour()));
 
         Message = $"Building {structure.Name} at {structure.Cell}";
     }

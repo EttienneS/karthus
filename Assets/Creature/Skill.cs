@@ -12,7 +12,7 @@ public class Skill
         Priority = 5;
     }
 
-    public bool Enabled { get; set; }
+    public bool Enabled { get; set; } = true;
     public float Level { get; set; }
     public string Name { get; set; }
 
