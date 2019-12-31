@@ -30,7 +30,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 602403959117484798}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1839735485 &489635414
 Tilemap:
@@ -106,9 +106,9 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -900448141
+  m_SortingLayerID: 615336307
   m_SortingLayer: 2
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -146,8 +146,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 4875737682100346678}
   - {fileID: 489635416}
+  - {fileID: 4875737682100346678}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -175,8 +175,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c5a86dcb943a6841ae0b8335a93a087, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DefaultStructureMap: {fileID: 4875737682100346672}
   DefaultFloorMap: {fileID: 489635414}
+  DefaultStructureMap: {fileID: 4875737682100346672}
 --- !u!1 &4875737682100346677
 GameObject:
   m_ObjectHideFlags: 0
@@ -207,7 +207,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 602403959117484798}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1839735485 &4875737682100346672
 Tilemap:
@@ -284,7 +284,7 @@ TilemapRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 615336307
-  m_SortingLayer: 3
+  m_SortingLayer: 2
   m_SortingOrder: 1
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}

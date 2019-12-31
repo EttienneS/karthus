@@ -34,6 +34,7 @@ public class Grow : EffectBase
             if (Stage >= TotalStages)
             {
                 var structure = Game.StructureController.SpawnStructure(PlantName, AssignedEntity.Cell, AssignedEntity.GetFaction());
+                structure.Refresh();
                 Stage = 0;
                 return true;
             }
