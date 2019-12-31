@@ -73,7 +73,7 @@ public class StructureController : MonoBehaviour
         Game.StructureController.DefaultFloorMap.SetTiles(floorCoords, floorTiles);
     }
 
-    public Structure GetStructure(string name, Cell cell, Faction faction)
+    public Structure SpawnStructure(string name, Cell cell, Faction faction)
     {
         string structureData = StructureTypeFileMap[name];
 
@@ -131,7 +131,7 @@ public class StructureController : MonoBehaviour
 
     internal Structure GetStructureBluePrint(string name, Cell cell, Faction faction)
     {
-        var structure = GetStructure(name, cell, faction);
+        var structure = SpawnStructure(name, cell, faction);
         structure.SetBluePrintState(true);
         return structure;
     }

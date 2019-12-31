@@ -19,7 +19,7 @@ public class Grow : EffectBase
 
         Age += Time.deltaTime;
 
-        
+
         if (_visualEffect == null)
         {
             _visualEffect = Game.VisualEffectController.SpawnSpriteEffect(AssignedEntity, AssignedEntity.Cell.Vector, $"{PlantName}_{Stage}", float.MaxValue);
@@ -33,7 +33,7 @@ public class Grow : EffectBase
             _visualEffect.DestroySelf();
             if (Stage >= TotalStages)
             {
-                Game.StructureController.GetStructure(PlantName, AssignedEntity.Cell, AssignedEntity.GetFaction());
+                var structure = Game.StructureController.SpawnStructure(PlantName, AssignedEntity.Cell, AssignedEntity.GetFaction());
                 Stage = 0;
                 return true;
             }

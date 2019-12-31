@@ -269,7 +269,7 @@ public class Creature : IEntity
     {
         var skill = GetSkill(skillName);
 
-        if (skill != null)
+        if (skill == null)
         {
             skill = new Skill(skillName);
             Skills.Add(skill);

@@ -18,8 +18,10 @@
         "{",
         " \"$type\": \"Work, Assembly-CSharp\",",
         " \"StructureId\": \"[THIS]\",",
+        " \"WorkTime\": \"5\",",
         " \"RequiredSkill\": \"Farming\",",
-        " \"RequiredSkillLevel\": \"1\"",
+        " \"BusySprite\": \"leaf_t\",",
+        " \"RequiredSkillLevel\": 1",
         "}"
       ]
     },

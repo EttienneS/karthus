@@ -299,7 +299,7 @@ public class Cell : IEquatable<Cell>
 
     internal Structure CreateStructure(string structureName, string faction = FactionConstants.World)
     {
-        var structure = Game.StructureController.GetStructure(structureName, this, Game.FactionController.Factions[faction]);
+        var structure = Game.StructureController.SpawnStructure(structureName, this, Game.FactionController.Factions[faction]);
 
         if (structure.AutoInteractions.Count > 0)
         {
@@ -343,7 +343,7 @@ public class Cell : IEquatable<Cell>
         {
             if (Game.StructureController.StructureTypeFileMap.ContainsKey(content))
             {
-                var structure = Game.StructureController.GetStructure(content, this, Game.FactionController.Factions[FactionConstants.World]);
+                var structure = Game.StructureController.SpawnStructure(content, this, Game.FactionController.Factions[FactionConstants.World]);
 
                 if (structure.AutoInteractions.Count > 0)
                 {

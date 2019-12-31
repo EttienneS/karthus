@@ -388,6 +388,10 @@ public partial class Game : MonoBehaviour
                         {
                             SelectedStructures.Add(clickedCell.Structure);
                         }
+                        else if (clickedCell.Floor != null)
+                        {
+                            SelectedStructures.Add(clickedCell.Floor);
+                        }
 
                         SelectedItems.AddRange(clickedCell.Items);
                     }
