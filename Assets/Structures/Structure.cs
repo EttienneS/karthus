@@ -8,8 +8,6 @@ using Random = UnityEngine.Random;
 
 public class Structure : IEntity
 {
-    public List<EffectBase> ActivatedInteractions = new List<EffectBase>();
-
     public List<EffectBase> AutoInteractions = new List<EffectBase>();
 
     public bool Buildable;

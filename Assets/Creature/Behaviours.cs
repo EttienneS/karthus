@@ -101,10 +101,10 @@ public static class Behaviours
                                                 && s.Name == "Bed");
             }
 
-            if (bed != null)
-            {
-                task = new Interact(bed.ActivatedInteractions[0], creature, bed.Id);
-            }
+            //if (bed != null)
+            //{
+            //    task = new Interact(bed.ActivatedInteractions[0], creature, bed.Id);
+            //}
         }
 
         return task;

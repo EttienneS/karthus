@@ -11,15 +11,5 @@
   "Buildable": "True",
   "Properties": {
     "Type": "Bed"
-  },
-  "ActivatedInteractions": [
-    {
-      "$type": "ChangeEntityProperty, Assembly-CSharp",
-      "PropertyName": "Energy",
-      "FloatOperation": "Add",
-      "PropertyValueFloat": "50",
-      "ActivationTime": "1",
-      "Range": "0"
-    }
-  ]
+  }
 }

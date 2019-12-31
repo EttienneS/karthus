@@ -112,7 +112,17 @@ public class EntityInfoPanel : MonoBehaviour
                     var rt = Log.GetComponent(typeof(RectTransform)) as RectTransform;
                     rt.sizeDelta = new Vector2(395, creature.LogHistory.Count * 20);
 
+                    PropertiesPanel.text += "\nSkills: \n\n";
+
+                    foreach (var skill in creature.Skills)
+                    {
+                        PropertiesPanel.text += $"\t{skill}\n";
+                    }
+                    PropertiesPanel.text += "\n";
                     PropertiesPanel.text += $"\nLocation:\t{creature.X:F1}:{creature.Y:F1}\n\n";
+
+                    
+
                     LogHealth(creature);
                     LogTask(creature);
                 }
@@ -315,13 +325,7 @@ public class EntityInfoPanel : MonoBehaviour
         }
         HealthText.text += "\n";
 
-        HealthText.text += "\nSkills: \n\n";
-
-        foreach (var skill in creature.Skills)
-        {
-            HealthText.text += $"\t{skill}\n";
-        }
-        HealthText.text += "\n";
+      
     }
 
     private void LogTask(Creature creature)

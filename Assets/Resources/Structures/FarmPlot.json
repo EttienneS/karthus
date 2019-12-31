@@ -16,9 +16,10 @@
       "DisplayName": "Tend",
       "Task": [
         "{",
-        " \"$type\": \"Tend, Assembly-CSharp\",",
+        " \"$type\": \"Work, Assembly-CSharp\",",
         " \"StructureId\": \"[THIS]\",",
-        " \"TendTime\": \"10\"",
+        " \"RequiredSkill\": \"Farming\",",
+        " \"RequiredSkillLevel\": \"1\"",
         "}"
       ]
     },

@@ -28,6 +28,11 @@ public class Skill
         }
     }
 
+    public int RollSkill()
+    {
+        return Randomf.Roll(20) + Mathf.FloorToInt(Level);
+    }
+
     public override string ToString()
     {
         var skill = $"{Name}: {Level.ToString("N2")} [{Priority}]";
