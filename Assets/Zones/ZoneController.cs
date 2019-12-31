@@ -11,7 +11,7 @@ public class ZoneController : MonoBehaviour
 
     internal List<Zone> Zones { get; set; } = new List<Zone>();
 
-    public Zone Create()
+    public Zone Create(params Cell[] cells)
     {
         throw new NotImplementedException();
     }

@@ -46,7 +46,6 @@ public static class ControllerConstants
     public const string MapController = "Map";
     public const string OrderSelectionController = "OrderPanel";
     public const string SpriteController = "SpriteStore";
-    public const string StockpileController = "StockpileController";
     public const string StructureController = "StructureController";
     public const string TimeController = "TimeManager";
     public const string ManaDisplay = "ManaDisplay";
@@ -64,7 +63,7 @@ public static class LayerConstants
     public const string Creature = "Creature";
     public const string Fog = "Fog";
     public const string Item = "Item";
-    public const string Stockpile = "Stockpile";
+    public const string Zone = "Zone";
     public const string Structure = "Structure";
     public const string Tree = "Tree";
 }
