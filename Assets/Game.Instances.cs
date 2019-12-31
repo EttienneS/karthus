@@ -25,6 +25,7 @@ public partial class Game //.Instances
     private static TimeManager _timeManager;
     private static UIController _uiController;
     private static VisualEffectController _visualEffectController;
+    private static ZoneController _zoneController;
 
     public static CameraController CameraController
     {
@@ -205,6 +206,14 @@ public partial class Game //.Instances
         get
         {
             return _visualEffectController ?? (_visualEffectController = GameObject.Find(ControllerConstants.VisualEffectController).GetComponent<VisualEffectController>());
+        }
+    }
+
+    public static ZoneController ZoneController
+    {
+        get
+        {
+            return _zoneController ?? (_zoneController = GameObject.Find("ZoneController").GetComponent<ZoneController>());
         }
     }
 }

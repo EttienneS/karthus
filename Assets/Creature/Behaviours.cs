@@ -18,7 +18,7 @@ public static class Behaviours
 
     public delegate CreatureTask GetBehaviourTaskDelegate(Creature creature);
 
-    public const int WraithRange = 10;
+    public const int WanderRange = 10;
 
     public static CreatureTask Monster(Creature creature)
     {
@@ -26,28 +26,23 @@ public static class Behaviours
 
         var rand = Random.value;
 
-        if (rand > 0.999f)
+        //if (rand > 0.999f)
+        //{
+        //    if (Game.FactionController.PlayerFaction.Creatures.Count > 0)
+        //    {
+        //        creature.Combatants.Add(Game.FactionController.PlayerFaction.Creatures.GetRandomItem());
+        //    }
+        //}
+        //else 
+        if (rand > 0.8f)
         {
-            if (Game.FactionController.PlayerFaction.Creatures.Count > 0)
-            {
-                creature.Combatants.Add(Game.FactionController.PlayerFaction.Creatures.GetRandomItem());
-            }
-        }
-        else if (rand > 0.8f)
-        {
-            task = new Move(Game.Map.GetRectangle(creature.Cell.X - (WraithRange / 2),
-                creature.Cell.Y - (WraithRange / 2), WraithRange, WraithRange).GetRandomItem());
+            task = new Move(Game.Map.GetCircle(creature.Cell, WanderRange).GetRandomItem());
         }
         else
         {
             task = new Wait(Random.value * 2f, "Lingering..");
         }
-        if (Game.FactionController.PlayerFaction.Creatures.Count > 0)
-        {
-        }
-        else
-        {
-        }
+       
 
         return task;
     }
