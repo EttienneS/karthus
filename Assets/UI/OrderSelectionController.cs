@@ -53,6 +53,7 @@ public partial class OrderSelectionController : MonoBehaviour
         Game.OrderInfoPanel.Hide();
 
         BuildButton = CreateOrderButton(DefaultBuildText, BuildTypeClicked, "hammer", false);
+        ZonesButton = CreateOrderButton(DefaultZoneText, ZoneTypeClicked, "plus_t", false);
         TaskButton = CreateOrderButton(DefaultDesignateText, DesignateTypeClicked, "designate", false);
         ConstructButton = CreateOrderButton(DefaultConstructText, ConstructTypeClicked, "construct", false);
     }
