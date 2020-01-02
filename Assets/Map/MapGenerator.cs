@@ -427,18 +427,14 @@ public class MapGenerator
     {
         var center = Game.Map.GetNearestPathableCell(Game.Map.Center, Mobility.Walk, 25);
 
-        var boxN = Game.StructureController.SpawnStructure("Box", center.GetNeighbor(Direction.N), Game.FactionController.PlayerFaction);
-        var boxE = Game.StructureController.SpawnStructure("Box", center.GetNeighbor(Direction.E), Game.FactionController.PlayerFaction);
-        var boxS = Game.StructureController.SpawnStructure("Box", center.GetNeighbor(Direction.S), Game.FactionController.PlayerFaction);
+        var berryBox = Game.StructureController.SpawnStructure("Box", center.GetNeighbor(Direction.N), Game.FactionController.PlayerFaction);
+        var woodBox = Game.StructureController.SpawnStructure("Box", center.GetNeighbor(Direction.E), Game.FactionController.PlayerFaction);
+        var stoneBox = Game.StructureController.SpawnStructure("Box", center.GetNeighbor(Direction.S), Game.FactionController.PlayerFaction);
         var boxW = Game.StructureController.SpawnStructure("Box", center.GetNeighbor(Direction.W), Game.FactionController.PlayerFaction);
 
-        var berries = Game.ItemController.SpawnItem("Berries", center.GetNeighbor(Direction.N), 100);
-        var wood = Game.ItemController.SpawnItem("Wood", center.GetNeighbor(Direction.N), 25);
-        var stone = Game.ItemController.SpawnItem("Stone", center.GetNeighbor(Direction.S), 25);
-
-        boxN.AddItem(berries);
-        boxE.AddItem(wood);
-        boxS.AddItem(stone);
+        berryBox.AddItem(Game.ItemController.SpawnItem("Berries", center.GetNeighbor(Direction.N), 100));
+        woodBox.AddItem(Game.ItemController.SpawnItem("Wood", center.GetNeighbor(Direction.N), 25));
+        stoneBox.AddItem(Game.ItemController.SpawnItem("Stone", center.GetNeighbor(Direction.S), 25));
         //boxW.AddItem(stone);
 
         for (int i = 0; i < 3; i++)
