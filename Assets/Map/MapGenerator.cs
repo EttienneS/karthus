@@ -212,7 +212,6 @@ public class MapGenerator
         FinishBuildings(buildings);
     }
 
-
     internal void LinkNeighbours()
     {
         for (var y = 0; y < Game.Map.Height; y++)
@@ -428,9 +427,19 @@ public class MapGenerator
     {
         var center = Game.Map.GetNearestPathableCell(Game.Map.Center, Mobility.Walk, 25);
 
-        Game.ItemController.SpawnItem("Berries", center.GetNeighbor(Direction.N)).Amount = 100;
-        Game.ItemController.SpawnItem("Wood", center.GetNeighbor(Direction.N)).Amount = 25;
-        Game.ItemController.SpawnItem("Stone", center.GetNeighbor(Direction.S)).Amount = 25;
+        var boxN = Game.StructureController.SpawnStructure("Box", center.GetNeighbor(Direction.N), Game.FactionController.PlayerFaction);
+        var boxE = Game.StructureController.SpawnStructure("Box", center.GetNeighbor(Direction.E), Game.FactionController.PlayerFaction);
+        var boxS = Game.StructureController.SpawnStructure("Box", center.GetNeighbor(Direction.S), Game.FactionController.PlayerFaction);
+        var boxW = Game.StructureController.SpawnStructure("Box", center.GetNeighbor(Direction.W), Game.FactionController.PlayerFaction);
+
+        var berries = Game.ItemController.SpawnItem("Berries", center.GetNeighbor(Direction.N), 100);
+        var wood = Game.ItemController.SpawnItem("Wood", center.GetNeighbor(Direction.N), 25);
+        var stone = Game.ItemController.SpawnItem("Stone", center.GetNeighbor(Direction.S), 25);
+
+        boxN.AddItem(berries);
+        boxE.AddItem(wood);
+        boxS.AddItem(stone);
+        //boxW.AddItem(stone);
 
         for (int i = 0; i < 3; i++)
         {
@@ -473,6 +482,4 @@ public class MapGenerator
             }
         }
     }
-
-
 }

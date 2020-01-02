@@ -1,0 +1,21 @@
+{
+  "Name": "Box",
+  "SpriteName": "Box",
+  "TravelCost": "8",
+  "Description": "A structure that can store items, set the filter and priority to determine item type.",
+  "Cost": {
+    "Items": {
+      "Wood": "2"
+    }
+  },
+  "Buildable": "True",
+  "ValueProperties": {
+    "Capacity": 100,
+    "Priority": 5
+  },
+  "Properties": {
+    "Type": "Container",
+    "Filter": "Food",
+    "ContainedItemIds": ""
+  }
+}

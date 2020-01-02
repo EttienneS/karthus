@@ -1,10 +1,8 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using Random = UnityEngine.Random;
 
 public class Structure : IEntity
 {
@@ -336,5 +334,47 @@ public class Structure : IEntity
                 _height = 1;
             }
         }
+    }
+
+    internal bool AddItem(Item item)
+    {
+        item.Coords = (Cell.Vector.x, Cell.Vector.y);
+
+        if (IsContainer())
+        {
+            var capacity = Mathf.FloorToInt(GetValue(NamedProperties.Capacity));
+            var currentItemId = GetProperty(NamedProperties.ContainedItemIds);
+            if (string.IsNullOrEmpty(currentItemId))
+            {
+                currentItemId = item.Id;
+                SetProperty(NamedProperties.ContainedItemIds, currentItemId);
+
+                item.ContainerId = Id;
+            }
+            else
+            {
+                var currentItem = currentItemId.GetItem();
+                var remainingCapacity = capacity - currentItem.Amount;
+                if (item.Amount < remainingCapacity)
+                {
+                    currentItem.Amount += item.Amount;
+                    Game.ItemController.DestroyItem(item);
+                    return true;
+                }
+                else
+                {
+                    currentItem.Amount = capacity;
+                    item.Amount -= remainingCapacity;
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public bool IsContainer()
+    {
+        return IsType(NamedProperties.Container);
     }
 }

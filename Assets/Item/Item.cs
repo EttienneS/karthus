@@ -82,6 +82,31 @@ public class Item : IEntity
         }
     }
 
+    public string ContainerId { get;  set; }
+
+    [JsonIgnore]
+    public bool InContainer
+    {
+        get
+        {
+            return !string.IsNullOrEmpty(ContainerId);
+        }
+    }
+
+    [JsonIgnore]
+    public Structure Container
+    {
+        get
+        {
+            if (!InContainer)
+            {
+                return null;
+            }
+
+            return ContainerId.GetStructure();
+        }
+    }
+
     public static Item GetFromJson(string json)
     {
         return json.LoadJson<Item>();

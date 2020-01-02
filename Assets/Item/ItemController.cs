@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -29,15 +28,7 @@ public class ItemController : MonoBehaviour
         }
     }
 
-    internal Item SpawnManaCrystal(ManaColor color, int amount, Cell cell)
-    {
-        var item = SpawnItem($"{color} Mana Crystals", cell);
-        item.Amount = amount;
-
-        return item;
-    }
-
-    public Item SpawnItem(string name, Cell cell)
+    public Item SpawnItem(string name, Cell cell, int amount = 1)
     {
         if (!ItemTypeFileMap.ContainsKey(name))
         {
@@ -45,7 +36,6 @@ public class ItemController : MonoBehaviour
         }
 
         var renderer = Instantiate(ItemPrefab, transform);
-
 
         var data = Item.GetFromJson(ItemTypeFileMap[name]);
         renderer.Data = data;
@@ -56,6 +46,7 @@ public class ItemController : MonoBehaviour
 
         data.Coords = (cell.Vector.x + Random.Range(-0.5f, 0.5f), cell.Vector.y + Random.Range(-0.5f, 0.5f));
         data.Cell = cell;
+        data.Amount = amount;
         return data;
     }
 
