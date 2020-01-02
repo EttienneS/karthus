@@ -15,7 +15,7 @@
   },
   "Properties": {
     "Type": "Container",
-    "Filter": "Food",
-    "ContainedItemIds": ""
+    "Filter": "*",
+    "ContainedItemType": ""
   }
 }

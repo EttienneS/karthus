@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -158,6 +159,23 @@ public class Structure : IEntity
     }
 
     public bool IsBluePrint { get; private set; }
+
+    internal bool CanHold(Item item)
+    {
+        var capacity = Mathf.FloorToInt(GetValue(NamedProperties.Capacity));
+        var containedItemType = GetProperty(NamedProperties.ContainedItemType);
+        var containedItemCount = GetValue(NamedProperties.ContainedItemCount);
+
+        if (!string.IsNullOrEmpty(containedItemType) && containedItemType == item.Name)
+        {
+            return containedItemCount + item.Amount <= capacity;
+        }
+        else
+        {
+            var filter = Helpers.WildcardToRegex(GetProperty(NamedProperties.Filter));
+            return Regex.IsMatch(item.Name, filter);
+        }
+    }
 
     public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
 
@@ -336,6 +354,36 @@ public class Structure : IEntity
         }
     }
 
+    internal Item GetItem(string itemType, int amount)
+    {
+        var containedType = GetProperty(NamedProperties.ContainedItemType);
+        var currentCount = GetValue(NamedProperties.ContainedItemCount);
+
+        if (containedType != itemType || currentCount <= amount)
+        {
+            return null;
+        }
+
+        var item = Game.ItemController.SpawnItem(itemType, Cell, amount);
+        currentCount -= amount;
+
+        if (currentCount > 0)
+        {
+            SetValue(NamedProperties.ContainedItemCount, currentCount);
+        }
+        else
+        {
+            ContainedItemEffect?.DestroySelf();
+            SetValue(NamedProperties.ContainedItemCount, 0);
+            SetProperty(NamedProperties.ContainedItemType, string.Empty);
+        }
+
+        return item;
+    }
+
+    [JsonIgnore]
+    public VisualEffect ContainedItemEffect;
+
     internal bool AddItem(Item item)
     {
         item.Coords = (Cell.Vector.x, Cell.Vector.y);
@@ -343,27 +391,33 @@ public class Structure : IEntity
         if (IsContainer())
         {
             var capacity = Mathf.FloorToInt(GetValue(NamedProperties.Capacity));
-            var currentItemId = GetProperty(NamedProperties.ContainedItemIds);
-            if (string.IsNullOrEmpty(currentItemId))
+            var containedType = GetProperty(NamedProperties.ContainedItemType);
+            var currentCount = GetValue(NamedProperties.ContainedItemCount);
+            if (string.IsNullOrEmpty(containedType))
             {
-                currentItemId = item.Id;
-                SetProperty(NamedProperties.ContainedItemIds, currentItemId);
-
-                item.ContainerId = Id;
+                SetProperty(NamedProperties.ContainedItemType, item.Name);
+                SetValue(NamedProperties.ContainedItemCount, currentCount + item.Amount);
+                Game.ItemController.DestroyItem(item);
+                ContainedItemEffect = Game.VisualEffectController.SpawnSpriteEffect(this, Vector, item.SpriteName, float.MaxValue);
+                return true;
             }
             else
             {
-                var currentItem = currentItemId.GetItem();
-                var remainingCapacity = capacity - currentItem.Amount;
+                if (containedType != item.Name)
+                {
+                    return false;
+                }
+
+                var remainingCapacity = Mathf.FloorToInt(capacity - currentCount);
                 if (item.Amount < remainingCapacity)
                 {
-                    currentItem.Amount += item.Amount;
+                    SetValue(NamedProperties.ContainedItemCount, currentCount + item.Amount);
                     Game.ItemController.DestroyItem(item);
                     return true;
                 }
                 else
                 {
-                    currentItem.Amount = capacity;
+                    SetValue(NamedProperties.ContainedItemCount, capacity);
                     item.Amount -= remainingCapacity;
                     return false;
                 }
@@ -376,5 +430,10 @@ public class Structure : IEntity
     public bool IsContainer()
     {
         return IsType(NamedProperties.Container);
+    }
+
+    public override string ToString()
+    {
+        return $"{Name}";
     }
 }

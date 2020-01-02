@@ -1,19 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class Faction
 {
-    public const int RecyleCount = 5;
-    public const int RecyleTime = 3;
     public List<CreatureTask> AvailableTasks = new List<CreatureTask>();
 
     public List<Creature> Creatures = new List<Creature>();
     public string FactionName;
     public List<Item> Items = new List<Item>();
-    public int LastRecyle;
     public float LastUpdate;
     public List<Structure> Structures = new List<Structure>();
+
+    [JsonIgnore]
+    public List<Cell> HomeCells = new List<Cell>();
 
     public float UpdateTick = 1;
 
@@ -22,8 +23,6 @@ public class Faction
         AvailableTasks.Add(task);
         return task;
     }
-
-
 
     public CreatureTask TakeTask(Creature creature)
     {
@@ -71,14 +70,38 @@ public class Faction
         {
             LastUpdate = 0;
 
-            foreach (var structure in Structures.Where(s => s.IsBluePrint))
+            if (FactionName == FactionConstants.Player)
             {
-                if (!AvailableTasks.OfType<Build>().Any(t => t.TargetStructure == structure) &&
-                    !Creatures.Any(t => t.Task is Build task && task.TargetStructure == structure))
+                foreach (var structure in Structures.Where(s => s.IsBluePrint))
                 {
-                    AddTask(new Build(structure));
+                    if (!AvailableTasks.OfType<Build>().Any(t => t.TargetStructure == structure) &&
+                        !Creatures.Any(t => t.Task is Build task && task.TargetStructure == structure))
+                    {
+                        AddTask(new Build(structure));
+                    }
+                }
+
+                var storageTasks = AvailableTasks.OfType<StoreItem>().ToList();
+
+                if (storageTasks.Count < 10)
+                {
+                    foreach (var cell in HomeCells)
+                    {
+                        foreach (var item in cell.Items)
+                        {
+                            if (!item.InUseByAnyone && !item.InContainer && !storageTasks.Any(t => t.ItemToStoreId == item.Id))
+                            {
+                                var storage = GetStorageFor(item);
+                                if (storage != null)
+                                {
+                                    AddTask(new StoreItem(item, storage));
+                                }
+                            }
+                        }
+                    }
                 }
             }
+            
 
             foreach (var creature in Creatures)
             {
@@ -89,6 +112,32 @@ public class Faction
                 }
             }
         }
+    }
+
+    public Structure GetStorageFor(Item item)
+    {
+        var pendingStorage = AvailableTasks.OfType<StoreItem>().ToList();
+        var options = new List<Structure>();
+        foreach (var structure in Structures.Where(s => !s.IsBluePrint && s.IsContainer()))
+        {
+            if (pendingStorage.Any(p => p.StorageStructureId == structure.Id))
+            {
+                // already allocated skip structure
+                continue;
+            }
+
+            if (structure.CanHold(item))
+            {
+                options.Add(structure);
+            }
+        }
+
+        if (options.Count > 0)
+        {
+            return options.OrderBy(n => n.Cell.DistanceTo(item.Cell)).First();
+        }
+
+        return null;
     }
 
     internal void AddCreature(Creature data)
@@ -107,6 +156,9 @@ public class Faction
             Structures.Add(structure);
         }
         structure.FactionName = FactionName;
+
+        HomeCells.AddRange(Game.Map.GetCircle(structure.Cell, 5));
+        HomeCells = HomeCells.Distinct().ToList();
     }
 
     internal void RemoveTask(CreatureTask task)

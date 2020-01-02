@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -21,6 +22,10 @@ public static class Helpers
         return scale;
     }
 
+    public static string WildcardToRegex(string pattern)
+    {
+        return Regex.Escape(pattern).Replace("*", ".*").Replace("?", ".");
+    }
     public static string GlobalizeFloatString(string input)
     {
         return input.Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);

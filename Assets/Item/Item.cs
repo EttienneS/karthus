@@ -82,7 +82,7 @@ public class Item : IEntity
         }
     }
 
-    public string ContainerId { get;  set; }
+    public string ContainerId { get; set; }
 
     [JsonIgnore]
     public bool InContainer
@@ -125,5 +125,10 @@ public class Item : IEntity
         _outline = Game.VisualEffectController
                        .SpawnSpriteEffect(this, Vector, "CellOutline", float.MaxValue);
         _outline.Regular();
+    }
+
+    public override string ToString()
+    {
+        return $"{Name} ({Amount}) - {Id}";
     }
 }

@@ -430,9 +430,8 @@ public class MapGenerator
         var berryBox = Game.StructureController.SpawnStructure("Box", center.GetNeighbor(Direction.N), Game.FactionController.PlayerFaction);
         var woodBox = Game.StructureController.SpawnStructure("Box", center.GetNeighbor(Direction.E), Game.FactionController.PlayerFaction);
         var stoneBox = Game.StructureController.SpawnStructure("Box", center.GetNeighbor(Direction.S), Game.FactionController.PlayerFaction);
-        var boxW = Game.StructureController.SpawnStructure("Box", center.GetNeighbor(Direction.W), Game.FactionController.PlayerFaction);
 
-        berryBox.AddItem(Game.ItemController.SpawnItem("Berries", center.GetNeighbor(Direction.N), 100));
+        Game.ItemController.SpawnItem("Berries", center.GetNeighbor(Direction.N), 100));
         woodBox.AddItem(Game.ItemController.SpawnItem("Wood", center.GetNeighbor(Direction.N), 25));
         stoneBox.AddItem(Game.ItemController.SpawnItem("Stone", center.GetNeighbor(Direction.S), 25));
         //boxW.AddItem(stone);

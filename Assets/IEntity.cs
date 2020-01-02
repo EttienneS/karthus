@@ -16,7 +16,10 @@ public interface IEntity
 public static class NamedProperties
 {
     public const string ContainedItemIds = "ContainedItemIds";
+    public const string ContainedItemType = "ContainedItemType";
+    public const string ContainedItemCount = "ContainedItemCount";
     public const string Capacity = "Capacity";
+    public const string Filter = "Filter";
     public const string Priority = "Priority";
     public const string Container = "Container";
 }

@@ -632,6 +632,11 @@ public class Creature : IEntity
         return 0;
     }
 
+    internal bool HasItem(string itemId)
+    {
+       return CarriedItems.Find(i => i?.Id.Equals(itemId, StringComparison.InvariantCultureIgnoreCase) == true) != null;
+    }
+
     internal bool HasItem(string itemType, int amount)
     {
         var item = GetItemOfType(itemType);
