@@ -166,15 +166,18 @@ public class Structure : IEntity
         var containedItemType = GetProperty(NamedProperties.ContainedItemType);
         var containedItemCount = GetValue(NamedProperties.ContainedItemCount);
 
-        if (!string.IsNullOrEmpty(containedItemType) && containedItemType == item.Name)
+        if (string.IsNullOrEmpty(containedItemType) || containedItemType == item.Name)
         {
             return containedItemCount + item.Amount <= capacity;
         }
-        else
+
+        if (!string.IsNullOrEmpty(containedItemType) && containedItemType != item.Name)
         {
-            var filter = Helpers.WildcardToRegex(GetProperty(NamedProperties.Filter));
-            return Regex.IsMatch(item.Name, filter);
+            return false;
         }
+
+        var filter = Helpers.WildcardToRegex(GetProperty(NamedProperties.Filter));
+        return Regex.IsMatch(item.Name, filter);
     }
 
     public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();

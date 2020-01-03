@@ -15,6 +15,10 @@
         if (SubTasksComplete(creature))
         {
             var item = ItemId.GetItem();
+            if (item == null)
+            {
+                throw new TaskFailedException("Cannot pick up, item does not exist!");
+            }
             creature.PickUpItem(item, Amount < 0 ? item.Amount : Amount);
             return true;
         }
