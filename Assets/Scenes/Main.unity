@@ -979,23 +979,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5952559972800760938, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
         type: 3}
-      propertyPath: Height
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 5952559972800760938, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
-        type: 3}
-      propertyPath: Width
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 5952559972800760938, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
-        type: 3}
-      propertyPath: Scaler
-      value: 0.07
-      objectReference: {fileID: 0}
-    - target: {fileID: 5952559972800760938, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
-        type: 3}
       propertyPath: Seed
-      value: 123
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5952559972800760939, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
         type: 3}
