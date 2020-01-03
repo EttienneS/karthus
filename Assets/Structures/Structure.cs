@@ -357,14 +357,28 @@ public class Structure : IEntity
         }
     }
 
+    public int GetItemCount(string itemType)
+    {
+        if (GetProperty(NamedProperties.ContainedItemType) == itemType)
+        {
+            return Mathf.FloorToInt(GetValue(NamedProperties.ContainedItemCount));
+        }
+        return 0;
+    }
+
     internal Item GetItem(string itemType, int amount)
     {
         var containedType = GetProperty(NamedProperties.ContainedItemType);
-        var currentCount = GetValue(NamedProperties.ContainedItemCount);
+        var currentCount = Mathf.FloorToInt(GetValue(NamedProperties.ContainedItemCount));
 
-        if (containedType != itemType || currentCount <= amount)
+        if (containedType != itemType)
         {
             return null;
+        }
+
+        if (currentCount <= amount)
+        {
+            amount = currentCount;
         }
 
         var item = Game.ItemController.SpawnItem(itemType, Cell, amount);

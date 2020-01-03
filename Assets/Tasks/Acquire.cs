@@ -26,42 +26,77 @@ public class Acquire : CreatureTask
                 if (string.IsNullOrEmpty(TargetId))
                 {
                     var distance = float.MaxValue;
-                    Item closest = null;
-                    foreach (var item in IdService.ItemLookup.Where(i => i.Value.Name.Equals(ItemType, StringComparison.OrdinalIgnoreCase) && !i.Value.InUseByAnyone))
-                    {
-                        var dist = Pathfinder.Distance(creature.Cell, item.Value.Cell, creature.Mobility);
+                    Structure container = null;
+                    Item closestItem = null;
 
-                        if (dist < distance)
+                    foreach (var structure in creature.Faction.Structures.Where(s => s.IsContainer()))
+                    {
+                        if (structure.GetItemCount(ItemType) > 0)
                         {
-                            distance = dist;
-                            closest = item.Value;
-                            if (dist < 10)
+                            var dist = Pathfinder.Distance(creature.Cell, structure.Cell, creature.Mobility);
+                            if (dist < distance)
                             {
-                                // close enough stop searching
-                                break;
+                                distance = dist;
+                                container = structure;
                             }
                         }
                     }
 
-                    if (closest == null)
+                    if (container == null)
+                    {
+                        foreach (var item in IdService.ItemLookup.Where(i => i.Value.Name.Equals(ItemType, StringComparison.OrdinalIgnoreCase) && !i.Value.InUseByAnyone))
+                        {
+                            var dist = Pathfinder.Distance(creature.Cell, item.Value.Cell, creature.Mobility);
+
+                            if (dist < distance)
+                            {
+                                distance = dist;
+                                closestItem = item.Value;
+                                if (dist < 10)
+                                {
+                                    // close enough stop searching
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (closestItem == null && container == null)
                     {
                         throw new TaskFailedException($"No items of required type ({ItemType}) can be found");
                     }
                     else
                     {
-                        TargetId = closest.Id;
-                        AddSubTask(new Move(closest.Cell));
+                        if (container != null)
+                        {
+                            TargetId = container.Id;
+                            AddSubTask(new Move(container.Cell));
+                        }
+                        else
+                        {
+                            TargetId = closestItem.Id;
+                            AddSubTask(new Move(closestItem.Cell));
+                        }
                     }
                 }
                 else
                 {
-                    var target = TargetId.GetItem();
-
-                    if (target.Cell == creature.Cell)
+                    var targetItem = TargetId.GetItem();
+                    var requiredAmount = Amount - creature.CurrentItemCount(ItemType);
+                    if (targetItem != null)
                     {
-                        creature.PickUpItem(target, Amount - creature.CurrentItemCount(ItemType));
-                        TargetId = null;
+                        creature.PickUpItem(targetItem, requiredAmount);
                     }
+                    else
+                    {
+                        var item = TargetId.GetStructure().GetItem(ItemType, requiredAmount);
+                        if (item != null)
+                        {
+                            creature.PickUpItem(item, requiredAmount);
+                        }
+                    }
+
+                    TargetId = null;
                 }
             }
         }
