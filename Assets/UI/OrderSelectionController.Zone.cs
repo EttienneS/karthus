@@ -1,4 +1,6 @@
-﻿public partial class OrderSelectionController //.Zone
+﻿using System.Linq;
+
+public partial class OrderSelectionController //.Zone
 {
     internal const string DefaultZoneText = "Zones";
 
@@ -6,7 +8,14 @@
 
     public void AddZoneClicked()
     {
-       
+        Game.Controller.CurrentDragMode = DragMode.RepeatMouseSprite;
+        Game.Controller.SetMouseSprite(Game.ZoneController.ZoneSprite,
+                                       (cells) => cells.All(CanAddZone));
+    }
+
+    public bool CanAddZone(Cell cell)
+    {
+        return true;
     }
 
     public void ZoneTypeClicked()
@@ -18,13 +27,8 @@
         else
         {
             EnableAndClear();
+            var button = CreateOrderButton("Add Zone", () => AddZoneClicked(), Game.ZoneController.ZoneSprite);
 
-            //foreach (var structureData in Game.StructureController.StructureDataReference.Values)
-            //{
-            //    if (!structureData.Buildable) continue;
-
-            //    var button = CreateOrderButton(structureData.Name, () => BuildClicked(structureData.Name), structureData.SpriteName);
-            //}
         }
     }
 }

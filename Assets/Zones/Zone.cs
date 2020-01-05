@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class Zone
 {
     public string Name { get; set; }
+    public Color Color { get; set; } = ColorExtensions.GetRandomColor();
 
     public List<Cell> Cells { get; set; } = new List<Cell>();
 

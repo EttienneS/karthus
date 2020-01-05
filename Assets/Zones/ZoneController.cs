@@ -8,6 +8,7 @@ public class ZoneController : MonoBehaviour
 {
     public Tilemap ZoneTilemap;
     public ZoneLabel ZoneLabelPrefab;
+    public string ZoneSprite = "Zone";
 
     internal List<Zone> Zones { get; set; } = new List<Zone>();
 

@@ -20,10 +20,10 @@ public class Map : MonoBehaviour
 
     private int _searchFrontierPhase;
 
-    [Range(0.001f,0.2f)]
+    [Range(0.001f, 0.2f)]
     public float Scaler = 0.1f;
 
-    [Range(float.MinValue,float.MaxValue)]
+    [Range(float.MinValue, float.MaxValue)]
     public float Seed = 1f;
 
     public float GetCellHeight(float x, float y)
@@ -70,7 +70,6 @@ public class Map : MonoBehaviour
     {
         Tilemap = transform.Find("Tilemap").gameObject.GetComponent<Tilemap>();
         LiquidMap = transform.Find("Liquid Map").gameObject.GetComponent<Tilemap>();
-
     }
 
     public List<Cell> BleedGroup(List<Cell> group, int count, float percentage = 0.7f)
@@ -323,6 +322,16 @@ public class Map : MonoBehaviour
         return chunk;
     }
 
+    internal Cell GetCellAtCoordinate(Vector3 pos)
+    {
+        return GetCellAtCoordinate(pos.x, pos.y);
+    }
+
+    internal Cell GetCellAtCoordinate(Vector2 pos)
+    {
+        return GetCellAtCoordinate(pos.x, pos.y);
+    }
+
     internal List<Cell> GetEdge(List<Cell> cells)
     {
         return cells.Where(c => c.Neighbors.Any(n => n != null && !cells.Contains(n))).ToList();
@@ -353,6 +362,16 @@ public class Map : MonoBehaviour
         }
 
         return cells;
+    }
+
+    public List<Cell> GetRectangle(Cell cell1, Cell cell2)
+    {
+        var x = Mathf.Min(cell1.X, cell2.X);
+        var y = Mathf.Min(cell1.Y, cell2.Y);
+        var w = Mathf.Max(cell1.Y, cell2.Y) - x;
+        var h = Mathf.Max(cell1.Y, cell2.Y) - y;
+
+        return GetRectangle(x, y, w, h);
     }
 
     public List<Cell> GetRectangle(Cell cell, int width, int height)

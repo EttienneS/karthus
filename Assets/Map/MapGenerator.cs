@@ -182,7 +182,7 @@ public class MapGenerator
         yield return null;
 
         Game.SetLoadStatus("Build render chunks", 0.45f);
-        var chunks = GetRenderChunks(100);
+        var chunks = GetRenderChunks(50);
         yield return null;
 
         Game.SetLoadStatus("Render chunks", 0.5f);

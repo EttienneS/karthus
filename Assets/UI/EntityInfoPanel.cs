@@ -296,7 +296,7 @@ public class EntityInfoPanel : MonoBehaviour
 
         Game.Controller.SelectionPreference = SelectionPreference.Cell;
         Game.Controller.SetMouseSprite(OrderSelectionController.AttackIcon,
-                                        (c) => c.GetEnemyCreaturesOf(FactionConstants.Player).Any());
+                                        (cells) => cells.Any(cell => cell.GetEnemyCreaturesOf(FactionConstants.Player).Any()));
 
         Game.OrderSelectionController.CellClickOrder = cells =>
         {
@@ -351,7 +351,7 @@ public class EntityInfoPanel : MonoBehaviour
     {
         SetActiveButton(btn);
         Game.Controller.SelectionPreference = SelectionPreference.Cell;
-        Game.Controller.SetMouseSprite(OrderSelectionController.MoveIcon, (c) => c.TravelCost > 0);
+        Game.Controller.SetMouseSprite(OrderSelectionController.MoveIcon, (cells) => cells.All(cell => cell.TravelCost > 0));
 
         Game.OrderSelectionController.CellClickOrder = cells =>
         {

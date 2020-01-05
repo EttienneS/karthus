@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 public partial class OrderSelectionController //.Construct
 {
@@ -12,8 +13,7 @@ public partial class OrderSelectionController //.Construct
         ConstructButton.Text = DefaultConstructText;
 
         Game.Controller.SetConstructSprite(constuct.Texture, constuct.Width, constuct.Height,
-                                       CellData => constuct.ValidateStartPos(CellData));
-
+                                       Cells => Cells.All(cell => constuct.ValidateStartPos(cell)));
 
         Game.OrderInfoPanel.Title = $"Place {constuct.Name}";
         Game.OrderInfoPanel.Description = "Select a location to place the construct, rotate with E or Q.  A construct is a predefined collection of structures and is built by a creature with the build skill.";
@@ -21,19 +21,18 @@ public partial class OrderSelectionController //.Construct
         Game.OrderInfoPanel.Cost = $"{constuct.TotalCost}";
         Game.OrderInfoPanel.Show();
 
-
         Game.Controller.RotateMouseRight += () =>
         {
             constuct.RotateRight();
             Game.Controller.SetConstructSprite(constuct.GetTexture(), constuct.Width, constuct.Height,
-                                           CellData => constuct.ValidateStartPos(CellData));
+                                           cells => cells.All(cell => constuct.ValidateStartPos(cell)));
         };
 
         Game.Controller.RotateMouseLeft += () =>
         {
             constuct.RotateLeft();
             Game.Controller.SetConstructSprite(constuct.GetTexture(), constuct.Width, constuct.Height,
-                                           CellData => constuct.ValidateStartPos(CellData));
+                                           cells => cells.All(cell => constuct.ValidateStartPos(cell)));
         };
 
         CellClickOrder = cells =>

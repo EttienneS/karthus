@@ -35,7 +35,7 @@ public partial class OrderSelectionController //.Designate
     private void MoveClicked()
     {
         Game.Controller.SelectionPreference = SelectionPreference.Cell;
-        Game.Controller.SetMouseSprite(MoveIcon, (c) => c.TravelCost > 0);
+        Game.Controller.SetMouseSprite(MoveIcon, (cells) => cells.All(cell => cell.TravelCost > 0));
 
         CellClickOrder = cells =>
         {

@@ -5,6 +5,11 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using Debug = UnityEngine.Debug;
 
+public enum DragMode
+{
+    SelectionRectangle, RepeatMouseSprite
+}
+
 public enum SelectionPreference
 {
     Entity, Cell, Item, Structure, Creature
@@ -14,22 +19,34 @@ public partial class Game : MonoBehaviour
 {
     public static float LoadProgress;
     public static bool Ready;
-    public Vector3 SelectionEnd;
+    public DragMode CurrentDragMode = DragMode.SelectionRectangle;
+    public SpriteRenderer MouseSpriteRenderer;
+    public Rotate RotateMouseLeft;
+    public Rotate RotateMouseRight;
+    public Vector3 SelectionEndScreen;
     public SelectionPreference SelectionPreference = SelectionPreference.Entity;
-    public Vector3 SelectionStart;
+    public Vector3 SelectionStartWorld;
     public RectTransform selectSquareImage;
 
+    public ValidateMouseSpriteDelegate ValidateMouse;
     internal static string LoadStatus;
     internal LineRenderer LineRenderer;
     internal List<Cell> SelectedCells = new List<Cell>();
     internal List<CreatureRenderer> SelectedCreatures = new List<CreatureRenderer>();
     internal List<Item> SelectedItems = new List<Item>();
     internal List<Structure> SelectedStructures = new List<Structure>();
+    private bool _constructMode;
     private List<GameObject> _destroyCache = new List<GameObject>();
     private float _maxCurrentTime;
     private float _minCurrentTime;
     private TimeStep _oldTimeStep = TimeStep.Normal;
     private bool _shownOnce;
+
+    public delegate void Rotate();
+
+    public delegate bool ValidateMouseSpriteDelegate(IEnumerable<Cell> cells);
+
+    public static bool Paused { get; set; }
     public float MaxTimeToClick { get; set; } = 0.60f;
 
     public float MinTimeToClick { get; set; } = 0.05f;
@@ -140,6 +157,36 @@ public partial class Game : MonoBehaviour
         }
     }
 
+    public void DisableMouseSprite()
+    {
+        MouseSpriteRenderer.gameObject.SetActive(false);
+        ValidateMouse = null;
+        RotateMouseRight = null;
+    }
+
+    public void SetConstructSprite(Texture2D texture, int width, int height, ValidateMouseSpriteDelegate validation)
+    {
+        _constructMode = true;
+        var mouseTex = texture.Clone();
+        mouseTex.ScaleToGridSize(width, height);
+
+        MouseSpriteRenderer.gameObject.SetActive(true);
+        MouseSpriteRenderer.sprite = Sprite.Create(mouseTex,
+                                                   new Rect(0, 0, width * Map.PixelsPerCell, height * Map.PixelsPerCell),
+                                                   new Vector2(0, 0), Map.PixelsPerCell);
+
+        ValidateMouse = validation;
+    }
+
+    public void SetMouseSprite(string spriteName, ValidateMouseSpriteDelegate validation)
+    {
+        _constructMode = false;
+        MouseSpriteRenderer.gameObject.SetActive(true);
+        MouseSpriteRenderer.sprite = SpriteStore.GetSprite(spriteName);
+
+        ValidateMouse = validation;
+    }
+
     private void HandleHotkeys()
     {
         if (Input.GetKeyDown("b"))
@@ -232,6 +279,50 @@ public partial class Game : MonoBehaviour
         }
 
         return overUI;
+    }
+
+    private void MoveMouseSprite(Vector3 mousePosition)
+    {
+        if (MouseSpriteRenderer.gameObject.activeInHierarchy)
+        {
+            if (CurrentDragMode == DragMode.SelectionRectangle)
+            {
+                var cell = Map.GetCellAtPoint(Camera.main.ScreenToWorldPoint(mousePosition));
+
+                MouseSpriteRenderer.transform.position = cell.Vector;
+
+                float x = cell.X;
+                float y = cell.Y;
+
+                if (!_constructMode)
+                {
+                    x += 0.5f;
+                    y += 0.5f;
+                }
+                MouseSpriteRenderer.transform.position = new Vector2(x, y);
+            }
+            else
+            {
+                //var end = Camera.main.ScreenToWorldPoint(mousePosition);
+
+                var start = new Vector3(SelectionStartWorld.x - (MouseSpriteRenderer.size.x / 2), SelectionStartWorld.y - (MouseSpriteRenderer.size.y / 2));
+                MouseSpriteRenderer.transform.position = start;
+            }
+
+
+            var cells = Map.GetRectangle(Map.GetCellAtCoordinate(Camera.main.ScreenToWorldPoint(SelectionEndScreen)), Map.GetCellAtCoordinate(SelectionStartWorld));
+            if (ValidateMouse != null)
+            {
+                if (!ValidateMouse(cells))
+                {
+                    MouseSpriteRenderer.color = ColorConstants.InvalidColor;
+                }
+                else
+                {
+                    MouseSpriteRenderer.color = ColorConstants.BluePrintColor;
+                }
+            }
+        }
     }
 
     private void SelectCell()
@@ -351,7 +442,7 @@ public partial class Game : MonoBehaviour
                 {
                     return;
                 }
-                SelectionStart = Camera.main.ScreenToWorldPoint(mousePosition);
+                SelectionStartWorld = Camera.main.ScreenToWorldPoint(mousePosition);
             }
 
             if (Input.GetMouseButtonUp(0))
@@ -369,12 +460,12 @@ public partial class Game : MonoBehaviour
 
                 selectSquareImage.gameObject.SetActive(false);
 
-                var endPoint = Camera.main.ScreenToWorldPoint(SelectionEnd);
+                var endPoint = Camera.main.ScreenToWorldPoint(SelectionEndScreen);
 
-                var startX = Mathf.Clamp(Mathf.Min(SelectionStart.x, endPoint.x), 0, Map.Width);
-                var startY = Mathf.Clamp(Mathf.Min(SelectionStart.y, endPoint.y), 0, Map.Height);
-                var endX = Mathf.Clamp(Mathf.Max(SelectionStart.x, endPoint.x), 0, Map.Width);
-                var endY = Mathf.Clamp(Mathf.Max(SelectionStart.y, endPoint.y), 0, Map.Height);
+                var startX = Mathf.Clamp(Mathf.Min(SelectionStartWorld.x, endPoint.x), 0, Map.Width);
+                var startY = Mathf.Clamp(Mathf.Min(SelectionStartWorld.y, endPoint.y), 0, Map.Height);
+                var endX = Mathf.Clamp(Mathf.Max(SelectionStartWorld.x, endPoint.x), 0, Map.Width);
+                var endY = Mathf.Clamp(Mathf.Max(SelectionStartWorld.y, endPoint.y), 0, Map.Height);
 
                 if (startX == endX && startY == endY)
                 {
@@ -482,22 +573,41 @@ public partial class Game : MonoBehaviour
                     return;
                 }
 
-                if (!selectSquareImage.gameObject.activeInHierarchy)
+                switch (CurrentDragMode)
                 {
-                    selectSquareImage.gameObject.SetActive(true);
+                    case DragMode.SelectionRectangle:
+                        if (!selectSquareImage.gameObject.activeInHierarchy)
+                        {
+                            selectSquareImage.gameObject.SetActive(true);
+                        }
+
+                        SelectionEndScreen = mousePosition;
+
+                        var start = Camera.main.WorldToScreenPoint(SelectionStartWorld);
+                        start.z = 0f;
+
+                        selectSquareImage.position = (start + SelectionEndScreen) / 2;
+
+                        var sizeX = Mathf.Abs(start.x - SelectionEndScreen.x);
+                        var sizeY = Mathf.Abs(start.y - SelectionEndScreen.y);
+
+                        selectSquareImage.sizeDelta = new Vector2(sizeX, sizeY);
+                        break;
+
+                    case DragMode.RepeatMouseSprite:
+
+                        SelectionEndScreen = mousePosition;
+
+                        var worldEnd = Camera.main.ScreenToWorldPoint(SelectionEndScreen);
+
+                        //var minX = Mathf.Min(worldStart.x, worldEnd.x);
+                        //var maxX = Mathf.Max(worldStart.x, worldEnd.x);
+                        //var minY = Mathf.Min(worldStart.y, worldEnd.y);
+                        //var maxY = Mathf.Max(worldStart.y, worldEnd.y);
+                        MouseSpriteRenderer.size = new Vector2(SelectionStartWorld.x - worldEnd.x, SelectionStartWorld.y - worldEnd.y);
+
+                        break;
                 }
-
-                SelectionEnd = mousePosition;
-
-                var start = Camera.main.WorldToScreenPoint(SelectionStart);
-                start.z = 0f;
-
-                selectSquareImage.position = (start + SelectionEnd) / 2;
-
-                var sizeX = Mathf.Abs(start.x - SelectionEnd.x);
-                var sizeY = Mathf.Abs(start.y - SelectionEnd.y);
-
-                selectSquareImage.sizeDelta = new Vector2(sizeX, sizeY);
             }
         }
         DestroyItemsInCache();

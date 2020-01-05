@@ -45,7 +45,7 @@ public class StructureController : MonoBehaviour
     public void DrawStructures(IEnumerable<Cell> cells)
     {
         var structures = new List<Structure>();
-        var floors = new List<Structure>();
+        var floors = new List<Structure>(); 
         foreach (var cell in cells)
         {
             if (IdService.StructureCellLookup.ContainsKey(cell))
@@ -55,7 +55,7 @@ public class StructureController : MonoBehaviour
                     if (s.IsFloor())
                     {
                         floors.Add(s);
-                    }
+                    } 
                     else
                     {
                         structures.Add(s);
