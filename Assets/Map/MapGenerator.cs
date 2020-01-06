@@ -82,30 +82,21 @@ public class MapGenerator
         }
     }
 
-    public List<Cell> GetCorners(List<Cell> square)
+    public (Cell bottomLeft, Cell bottomRight, Cell topLeft, Cell topRight) GetCorners(List<Cell> square)
     {
         var minMax = Game.Map.GetMinMax(square);
 
-        return new List<Cell>
-            {
-                Game.Map.GetCellAtCoordinate(minMax.minx, minMax.miny),
-                Game.Map.GetCellAtCoordinate(minMax.minx, minMax.maxy),
+        return (Game.Map.GetCellAtCoordinate(minMax.minx, minMax.miny),
                 Game.Map.GetCellAtCoordinate(minMax.maxx, minMax.miny),
-                Game.Map.GetCellAtCoordinate(minMax.maxx, minMax.maxy)
-            };
+                Game.Map.GetCellAtCoordinate(minMax.minx, minMax.maxy),
+                Game.Map.GetCellAtCoordinate(minMax.maxx, minMax.maxy));
     }
 
     public List<Cell> GetPossibleDoors(List<Cell> building)
     {
         var doors = new List<Cell>();
-        var corners = GetCorners(building);
         foreach (var cell in Game.Map.GetBorder(building))
         {
-            if (corners.Any(c => c.X == cell.X && c.Y == cell.Y))
-            {
-                continue;
-            }
-
             var neighbours = cell.Neighbors.Count(c => c?.Floor?.Name == "Road");
             if (neighbours > 1)
             {
