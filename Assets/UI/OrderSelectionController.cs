@@ -13,7 +13,6 @@ public partial class OrderSelectionController : MonoBehaviour
     public void DisableAndReset()
     {
         Game.Controller.SelectionStartWorld = Vector3.zero;
-        Game.Controller.CurrentDragMode = DragMode.SelectionRectangle;
         Game.Controller.MouseSpriteRenderer.size = new Vector2(1, 1);
 
         Game.Controller.SelectionPreference = SelectionPreference.Entity;

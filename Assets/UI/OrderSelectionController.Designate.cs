@@ -35,13 +35,13 @@ public partial class OrderSelectionController //.Designate
     private void MoveClicked()
     {
         Game.Controller.SelectionPreference = SelectionPreference.Cell;
-        Game.Controller.SetMouseSprite(MoveIcon, (cells) => cells.All(cell => cell.TravelCost > 0));
+        Game.Controller.SetMouseSprite(MoveIcon, (cell) => cell.TravelCost > 0);
 
         CellClickOrder = cells =>
         {
-            var cell = cells.First();
+            var cell = cells[0];
             Game.FactionController.PlayerFaction.AddTask(new Move(cell))
-                                           .AddCellBadge(cell, MoveIcon);
+                                                .AddCellBadge(cell, MoveIcon);
         };
     }
 

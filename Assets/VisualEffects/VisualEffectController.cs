@@ -73,14 +73,20 @@ public class VisualEffectController : MonoBehaviour
         return effect;
     }
 
-    public VisualEffect SpawnSpriteEffect(IEntity holder, Vector2 vector, string sprite, float lifeSpan)
+    public VisualEffect SpawnSpriteEffect(IEntity holder, Vector2 vector, string sprite, float lifeSpan, Color color)
     {
         var effect = GetBase(EffectType.Sprite, holder);
         effect.Sprite.sprite = Game.SpriteStore.GetSprite(sprite);
+        effect.Sprite.color = color;
         effect.Data.LifeSpan = lifeSpan;
         effect.transform.position = vector;
 
         return effect;
+    }
+
+    public VisualEffect SpawnSpriteEffect(IEntity holder, Vector2 vector, string sprite, float lifeSpan)
+    {
+        return SpawnSpriteEffect(holder, vector, sprite, lifeSpan, Color.white);
     }
 
     public void Update()

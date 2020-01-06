@@ -330,6 +330,7 @@ public class MapGenerator
                         Game.Map.GetCellAtCoordinate(cell.X, cell.Y + 1),
                         Game.Map.GetCellAtCoordinate(cell.X, cell.Y - 1),
                     };
+
             foreach (var neighbour in neighbours)
             {
                 bool found = false;
@@ -337,7 +338,7 @@ public class MapGenerator
                 {
                     for (int height = -maxHeight; height < maxHeight; height++)
                     {
-                        var structure = Game.Map.GetRectangle(neighbour, width, height);
+                        var structure = Game.Map.GetRectangle(neighbour.X, neighbour.Y, width, height);
                         var measure = Game.Map.GetWidthAndHeight(structure);
 
                         if (measure.Item1 < minWidth)

@@ -5,11 +5,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using Debug = UnityEngine.Debug;
 
-public enum DragMode
-{
-    SelectionRectangle, RepeatMouseSprite
-}
-
 public enum SelectionPreference
 {
     Entity, Cell, Item, Structure, Creature
@@ -19,7 +14,6 @@ public partial class Game : MonoBehaviour
 {
     public static float LoadProgress;
     public static bool Ready;
-    public DragMode CurrentDragMode = DragMode.SelectionRectangle;
     public SpriteRenderer MouseSpriteRenderer;
     public Rotate RotateMouseLeft;
     public Rotate RotateMouseRight;
@@ -44,7 +38,7 @@ public partial class Game : MonoBehaviour
 
     public delegate void Rotate();
 
-    public delegate bool ValidateMouseSpriteDelegate(IEnumerable<Cell> cells);
+    public delegate bool ValidateMouseSpriteDelegate(Cell cell);
 
     public static bool Paused { get; set; }
     public float MaxTimeToClick { get; set; } = 0.60f;
@@ -160,6 +154,7 @@ public partial class Game : MonoBehaviour
     public void DisableMouseSprite()
     {
         MouseSpriteRenderer.gameObject.SetActive(false);
+        MouseSpriteRenderer.size = Vector2.one;
         ValidateMouse = null;
         RotateMouseRight = null;
     }
@@ -183,9 +178,11 @@ public partial class Game : MonoBehaviour
         _constructMode = false;
         MouseSpriteRenderer.gameObject.SetActive(true);
         MouseSpriteRenderer.sprite = SpriteStore.GetSprite(spriteName);
-
+        MouseSpriteName = spriteName;
         ValidateMouse = validation;
     }
+
+    public string MouseSpriteName;
 
     private void HandleHotkeys()
     {
@@ -285,35 +282,22 @@ public partial class Game : MonoBehaviour
     {
         if (MouseSpriteRenderer.gameObject.activeInHierarchy)
         {
-            if (CurrentDragMode == DragMode.SelectionRectangle)
+            var cell = Map.GetCellAtPoint(Camera.main.ScreenToWorldPoint(mousePosition));
+
+            float x = cell.X;
+            float y = cell.Y;
+
+            if (!_constructMode)
             {
-                var cell = Map.GetCellAtPoint(Camera.main.ScreenToWorldPoint(mousePosition));
-
-                MouseSpriteRenderer.transform.position = cell.Vector;
-
-                float x = cell.X;
-                float y = cell.Y;
-
-                if (!_constructMode)
-                {
-                    x += 0.5f;
-                    y += 0.5f;
-                }
-                MouseSpriteRenderer.transform.position = new Vector2(x, y);
-            }
-            else
-            {
-                //var end = Camera.main.ScreenToWorldPoint(mousePosition);
-
-                var start = new Vector3(SelectionStartWorld.x - (MouseSpriteRenderer.size.x / 2), SelectionStartWorld.y - (MouseSpriteRenderer.size.y / 2));
-                MouseSpriteRenderer.transform.position = start;
+                x += 0.5f;
+                y += 0.5f;
             }
 
+            MouseSpriteRenderer.transform.position = new Vector2(x, y);
 
-            var cells = Map.GetRectangle(Map.GetCellAtCoordinate(Camera.main.ScreenToWorldPoint(SelectionEndScreen)), Map.GetCellAtCoordinate(SelectionStartWorld));
             if (ValidateMouse != null)
             {
-                if (!ValidateMouse(cells))
+                if (!ValidateMouse(cell))
                 {
                     MouseSpriteRenderer.color = ColorConstants.InvalidColor;
                 }
@@ -322,8 +306,36 @@ public partial class Game : MonoBehaviour
                     MouseSpriteRenderer.color = ColorConstants.BluePrintColor;
                 }
             }
+
+            if (SelectionStartWorld != Vector3.zero && !_constructMode)
+            {
+                MouseSpriteRenderer.color = new Color(0, 0, 0, 0);
+                ClearGhostEffects();
+                foreach (var c in GetSelectedCells(SelectionStartWorld, Camera.main.ScreenToWorldPoint(mousePosition)))
+                {
+                    var color = ColorConstants.BluePrintColor;
+                    if (ValidateMouse != null && !ValidateMouse(c))
+                    {
+                        color = ColorConstants.InvalidColor;
+                    }
+
+                    _ghostEffects.Add(VisualEffectController.SpawnSpriteEffect(null, c.Vector, MouseSpriteName, float.MaxValue, color));
+                }
+            }
+
         }
     }
+
+    public void ClearGhostEffects()
+    {
+        foreach (var effect in _ghostEffects)
+        {
+            effect.DestroySelf();
+        }
+        _ghostEffects.Clear();
+    }
+
+    private List<VisualEffect> _ghostEffects = new List<VisualEffect>();
 
     private void SelectCell()
     {
@@ -381,13 +393,50 @@ public partial class Game : MonoBehaviour
         LoadingPanel.Show();
 
         LineRenderer = GetComponent<LineRenderer>();
-
+        MouseSpriteRenderer.size = Vector2.one;
         selectSquareImage.gameObject.SetActive(false);
         MouseSpriteRenderer.gameObject.SetActive(false);
 
         InitFactions();
 
         MapGenerator = new MapGenerator();
+    }
+
+    public List<Cell> GetSelectedCells(Vector3 worldStartPoint, Vector3 worldEndPoint)
+    {
+        var cells = new List<Cell>();
+
+        var startX = Mathf.Clamp(Mathf.Min(worldStartPoint.x, worldEndPoint.x), 0, Map.Width);
+        var startY = Mathf.Clamp(Mathf.Min(worldStartPoint.y, worldEndPoint.y), 0, Map.Height);
+        var endX = Mathf.Clamp(Mathf.Max(worldStartPoint.x, worldEndPoint.x), 0, Map.Width);
+        var endY = Mathf.Clamp(Mathf.Max(worldStartPoint.y, worldEndPoint.y), 0, Map.Height);
+
+        if (startX == endX && startY == endY)
+        {
+            var point = new Vector3(startX, endY);
+
+            var clickedCell = Map.GetCellAtPoint(point);
+            if (clickedCell != null)
+            {
+                cells.Add(clickedCell);
+            }
+        }
+        else
+        {
+            var pollStep = 1f;
+
+            for (var selX = startX; selX < endX; selX += pollStep)
+            {
+                for (var selY = startY; selY < endY; selY += pollStep)
+                {
+                    var point = new Vector3(selX, selY);
+
+                    cells.Add(Map.GetCellAtPoint(point));
+                }
+            }
+        }
+
+        return cells.Distinct().ToList();
     }
 
     private void Update()
@@ -460,63 +509,16 @@ public partial class Game : MonoBehaviour
 
                 selectSquareImage.gameObject.SetActive(false);
 
-                var endPoint = Camera.main.ScreenToWorldPoint(SelectionEndScreen);
+                SelectedCells = GetSelectedCells(SelectionStartWorld, Camera.main.ScreenToWorldPoint(mousePosition));
 
-                var startX = Mathf.Clamp(Mathf.Min(SelectionStartWorld.x, endPoint.x), 0, Map.Width);
-                var startY = Mathf.Clamp(Mathf.Min(SelectionStartWorld.y, endPoint.y), 0, Map.Height);
-                var endX = Mathf.Clamp(Mathf.Max(SelectionStartWorld.x, endPoint.x), 0, Map.Width);
-                var endY = Mathf.Clamp(Mathf.Max(SelectionStartWorld.y, endPoint.y), 0, Map.Height);
-
-                if (startX == endX && startY == endY)
+                foreach (var cell in SelectedCells)
                 {
-                    var point = new Vector3(startX, endY);
-
-                    var clickedCell = Map.GetCellAtPoint(point);
-                    if (clickedCell != null)
+                    if (cell.Structure != null)
                     {
-                        SelectedCells.Add(clickedCell);
-                        if (clickedCell.Structure != null)
-                        {
-                            SelectedStructures.Add(clickedCell.Structure);
-                        }
-                        else if (clickedCell.Floor != null)
-                        {
-                            SelectedStructures.Add(clickedCell.Floor);
-                        }
-
-                        SelectedItems.AddRange(clickedCell.Items);
+                        SelectedStructures.Add(cell.Structure);
                     }
-
-                    var clickedCreature = CreatureController.GetCreatureAtPoint(point);
-                    if (clickedCreature != null)
-                        SelectedCreatures.Add(clickedCreature);
-                }
-                else
-                {
-                    var pollStep = 1f;
-
-                    for (var selX = startX; selX < endX; selX += pollStep)
-                    {
-                        for (var selY = startY; selY < endY; selY += pollStep)
-                        {
-                            var point = new Vector3(selX, selY);
-
-                            var clickedCell = Map.GetCellAtPoint(point);
-                            if (clickedCell != null && !SelectedCells.Contains(clickedCell))
-                            {
-                                SelectedCells.Add(clickedCell);
-                                if (clickedCell.Structure != null)
-                                {
-                                    SelectedStructures.Add(clickedCell.Structure);
-                                }
-                                SelectedItems.AddRange(clickedCell.Items);
-                            }
-
-                            var clickedCreature = CreatureController.GetCreatureAtPoint(point);
-                            if (clickedCreature != null && !SelectedCreatures.Contains(clickedCreature))
-                                SelectedCreatures.Add(clickedCreature);
-                        }
-                    }
+                    SelectedItems.AddRange(cell.Items);
+                    SelectedCreatures.AddRange(cell.Creatures.Select(c => c.CreatureRenderer));
                 }
 
                 switch (SelectionPreference)
@@ -564,6 +566,9 @@ public partial class Game : MonoBehaviour
                         }
                         break;
                 }
+
+                SelectionStartWorld = Vector3.zero;
+                ClearGhostEffects();
             }
 
             if (Input.GetMouseButton(0))
@@ -573,41 +578,22 @@ public partial class Game : MonoBehaviour
                     return;
                 }
 
-                switch (CurrentDragMode)
+                if (!selectSquareImage.gameObject.activeInHierarchy)
                 {
-                    case DragMode.SelectionRectangle:
-                        if (!selectSquareImage.gameObject.activeInHierarchy)
-                        {
-                            selectSquareImage.gameObject.SetActive(true);
-                        }
-
-                        SelectionEndScreen = mousePosition;
-
-                        var start = Camera.main.WorldToScreenPoint(SelectionStartWorld);
-                        start.z = 0f;
-
-                        selectSquareImage.position = (start + SelectionEndScreen) / 2;
-
-                        var sizeX = Mathf.Abs(start.x - SelectionEndScreen.x);
-                        var sizeY = Mathf.Abs(start.y - SelectionEndScreen.y);
-
-                        selectSquareImage.sizeDelta = new Vector2(sizeX, sizeY);
-                        break;
-
-                    case DragMode.RepeatMouseSprite:
-
-                        SelectionEndScreen = mousePosition;
-
-                        var worldEnd = Camera.main.ScreenToWorldPoint(SelectionEndScreen);
-
-                        //var minX = Mathf.Min(worldStart.x, worldEnd.x);
-                        //var maxX = Mathf.Max(worldStart.x, worldEnd.x);
-                        //var minY = Mathf.Min(worldStart.y, worldEnd.y);
-                        //var maxY = Mathf.Max(worldStart.y, worldEnd.y);
-                        MouseSpriteRenderer.size = new Vector2(SelectionStartWorld.x - worldEnd.x, SelectionStartWorld.y - worldEnd.y);
-
-                        break;
+                    selectSquareImage.gameObject.SetActive(true);
                 }
+
+                SelectionEndScreen = mousePosition;
+
+                var start = Camera.main.WorldToScreenPoint(SelectionStartWorld);
+                start.z = 0f;
+
+                selectSquareImage.position = (start + SelectionEndScreen) / 2;
+
+                var sizeX = Mathf.Abs(start.x - SelectionEndScreen.x);
+                var sizeY = Mathf.Abs(start.y - SelectionEndScreen.y);
+
+                selectSquareImage.sizeDelta = new Vector2(sizeX, sizeY);
             }
         }
         DestroyItemsInCache();

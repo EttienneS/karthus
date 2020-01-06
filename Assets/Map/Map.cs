@@ -349,40 +349,24 @@ public class Map : MonoBehaviour
         return cell;
     }
 
-    public List<Cell> GetRectangle(int x, int y, int width, int height)
-    {
-        var cells = new List<Cell>();
-
-        for (var i = x; i < x + width; i++)
-        {
-            for (var k = y; k < y + height; k++)
-            {
-                AddCellIfValid(i, k, cells);
-            }
-        }
-
-        return cells;
-    }
-
     public List<Cell> GetRectangle(Cell cell1, Cell cell2)
     {
-        var x = Mathf.Min(cell1.X, cell2.X);
-        var y = Mathf.Min(cell1.Y, cell2.Y);
-        var w = Mathf.Max(cell1.Y, cell2.Y) - x;
-        var h = Mathf.Max(cell1.Y, cell2.Y) - y;
+        var x = cell1.X;
+        var y = cell1.Y;
+        var w = x - cell2.X;
+        var h = y - cell2.Y;
 
         return GetRectangle(x, y, w, h);
     }
 
-    public List<Cell> GetRectangle(Cell cell, int width, int height)
+    public List<Cell> GetRectangle(int inX, int inY, int width, int height)
     {
         var cells = new List<Cell>();
 
-        var fromX = Math.Min(cell.X, cell.X + width);
-        var toX = Math.Max(cell.X, cell.X + width);
-
-        var fromY = Math.Min(cell.Y, cell.Y + height);
-        var toY = Math.Max(cell.Y, cell.Y + height);
+        var fromX = Math.Min(inX, inX + width);
+        var toX = Math.Max(inX, inX + width);
+        var fromY = Math.Min(inY, inY + height);
+        var toY = Math.Max(inY, inY + height);
 
         for (var x = fromX; x < toX; x++)
         {
@@ -405,7 +389,7 @@ public class Map : MonoBehaviour
     {
         var minMax = GetMinMax(square);
         var src = Game.Map.GetCellAtCoordinate(minMax.minx + 1, minMax.miny + 1);
-        return GetRectangle(src,
+        return GetRectangle(src.X,src.Y,
                             minMax.maxx - minMax.minx - 1,
                             minMax.maxy - minMax.miny - 1);
     }

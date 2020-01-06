@@ -8,9 +8,8 @@ public partial class OrderSelectionController //.Zone
 
     public void AddZoneClicked()
     {
-        Game.Controller.CurrentDragMode = DragMode.RepeatMouseSprite;
         Game.Controller.SetMouseSprite(Game.ZoneController.ZoneSprite,
-                                       (cells) => cells.All(CanAddZone));
+                                       (cell) => CanAddZone(cell));
     }
 
     public bool CanAddZone(Cell cell)

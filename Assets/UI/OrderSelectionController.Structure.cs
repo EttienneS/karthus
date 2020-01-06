@@ -11,7 +11,7 @@ public partial class OrderSelectionController //.Structure
         var structure = Game.StructureController.StructureDataReference[structureName];
         Game.Controller.SelectionPreference = SelectionPreference.Cell;
         Game.Controller.SetMouseSprite(structure.SpriteName,
-                                       (cells) => cells.All(cell => structure.ValidateCellLocationForStructure(cell)));
+                                      (cell) => structure.ValidateCellLocationForStructure(cell));
 
         Game.OrderInfoPanel.Title = $"Build {structureName}";
         Game.OrderInfoPanel.Description = "Select a location to place the structure.  A creature with the build skill will gather the required cost of material and then make the structure.";
