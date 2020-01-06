@@ -7,18 +7,19 @@ using Debug = UnityEngine.Debug;
 
 public enum SelectionPreference
 {
-    Entity, Cell, Item, Structure, Creature
+    Anything, Cell, Item, Structure, Creature, Zone
 }
 
 public partial class Game : MonoBehaviour
 {
     public static float LoadProgress;
     public static bool Ready;
+    public string MouseSpriteName;
     public SpriteRenderer MouseSpriteRenderer;
     public Rotate RotateMouseLeft;
     public Rotate RotateMouseRight;
     public Vector3 SelectionEndScreen;
-    public SelectionPreference SelectionPreference = SelectionPreference.Entity;
+    public SelectionPreference SelectionPreference = SelectionPreference.Anything;
     public Vector3 SelectionStartWorld;
     public RectTransform selectSquareImage;
 
@@ -31,6 +32,7 @@ public partial class Game : MonoBehaviour
     internal List<Structure> SelectedStructures = new List<Structure>();
     private bool _constructMode;
     private List<GameObject> _destroyCache = new List<GameObject>();
+    private List<VisualEffect> _ghostEffects = new List<VisualEffect>();
     private float _maxCurrentTime;
     private float _minCurrentTime;
     private TimeStep _oldTimeStep = TimeStep.Normal;
@@ -44,6 +46,7 @@ public partial class Game : MonoBehaviour
     public float MaxTimeToClick { get; set; } = 0.60f;
 
     public float MinTimeToClick { get; set; } = 0.05f;
+    public bool Typing { get; set; }
 
     public static void SetLoadStatus(string message, float progress)
     {
@@ -75,6 +78,15 @@ public partial class Game : MonoBehaviour
         LineRenderer.endWidth = 0.1f;
     }
 
+    public void ClearGhostEffects()
+    {
+        foreach (var effect in _ghostEffects)
+        {
+            effect.DestroySelf();
+        }
+        _ghostEffects.Clear();
+    }
+
     public void ClearLine()
     {
         LineRenderer.positionCount = 0;
@@ -86,6 +98,7 @@ public partial class Game : MonoBehaviour
         DeselectCell();
         DeselectStructure(true);
         DeselectItem();
+        DeselectZone();
     }
 
     public void DeselectCell()
@@ -128,6 +141,11 @@ public partial class Game : MonoBehaviour
         SelectedStructures.Clear();
     }
 
+    public void DeselectZone()
+    {
+        ZoneInfoPanel.Hide();
+    }
+
     public void DestroyItemsInCache()
     {
         try
@@ -159,6 +177,43 @@ public partial class Game : MonoBehaviour
         RotateMouseRight = null;
     }
 
+    public List<Cell> GetSelectedCells(Vector3 worldStartPoint, Vector3 worldEndPoint)
+    {
+        var cells = new List<Cell>();
+
+        var startX = Mathf.Clamp(Mathf.Min(worldStartPoint.x, worldEndPoint.x), 0, Map.Width);
+        var startY = Mathf.Clamp(Mathf.Min(worldStartPoint.y, worldEndPoint.y), 0, Map.Height);
+        var endX = Mathf.Clamp(Mathf.Max(worldStartPoint.x, worldEndPoint.x), 0, Map.Width);
+        var endY = Mathf.Clamp(Mathf.Max(worldStartPoint.y, worldEndPoint.y), 0, Map.Height);
+
+        if (startX == endX && startY == endY)
+        {
+            var point = new Vector3(startX, endY);
+
+            var clickedCell = Map.GetCellAtPoint(point);
+            if (clickedCell != null)
+            {
+                cells.Add(clickedCell);
+            }
+        }
+        else
+        {
+            var pollStep = 1f;
+
+            for (var selX = startX; selX < endX; selX += pollStep)
+            {
+                for (var selY = startY; selY < endY; selY += pollStep)
+                {
+                    var point = new Vector3(selX, selY);
+
+                    cells.Add(Map.GetCellAtPoint(point));
+                }
+            }
+        }
+
+        return cells.Distinct().ToList();
+    }
+
     public void SetConstructSprite(Texture2D texture, int width, int height, ValidateMouseSpriteDelegate validation)
     {
         _constructMode = true;
@@ -182,42 +237,13 @@ public partial class Game : MonoBehaviour
         ValidateMouse = validation;
     }
 
-    public string MouseSpriteName;
-
     private void HandleHotkeys()
     {
-        if (Input.GetKeyDown("b"))
+        if (Typing)
         {
-            OrderSelectionController.BuildTypeClicked();
+            return;
         }
 
-        if (Input.GetKeyDown("n"))
-        {
-            OrderSelectionController.DesignateTypeClicked();
-        }
-
-        if (Input.GetKeyDown("e"))
-        {
-            RotateMouseRight?.Invoke();
-        }
-
-        if (Input.GetKeyDown("q"))
-        {
-            RotateMouseLeft?.Invoke();
-        }
-
-        if (Input.GetKeyDown("p"))
-        {
-            SaveManager.Save();
-        }
-        if (Input.GetKeyDown("["))
-        {
-            SaveManager.Load();
-        }
-    }
-
-    private void HandleTimeControls()
-    {
         if (Input.GetKeyDown("space"))
         {
             if (TimeManager.TimeStep == TimeStep.Paused)
@@ -235,17 +261,45 @@ public partial class Game : MonoBehaviour
         {
             TimeManager.TimeStep = TimeStep.Slow;
         }
-        if (Input.GetKeyDown("2"))
+        else if (Input.GetKeyDown("2"))
         {
             TimeManager.TimeStep = TimeStep.Normal;
         }
-        if (Input.GetKeyDown("3"))
+        else if (Input.GetKeyDown("3"))
         {
             TimeManager.TimeStep = TimeStep.Fast;
         }
-        if (Input.GetKeyDown("4"))
+        else if (Input.GetKeyDown("4"))
         {
             TimeManager.TimeStep = TimeStep.Hyper;
+        }
+        else if (Input.GetKeyDown("b"))
+        {
+            OrderSelectionController.BuildTypeClicked();
+        }
+        else if (Input.GetKeyDown("n"))
+        {
+            OrderSelectionController.DesignateTypeClicked();
+        }
+        else if (Input.GetKeyDown("z"))
+        {
+            OrderSelectionController.ZoneTypeClicked();
+        }
+        else if (Input.GetKeyDown("e"))
+        {
+            RotateMouseRight?.Invoke();
+        }
+        else if (Input.GetKeyDown("q"))
+        {
+            RotateMouseLeft?.Invoke();
+        }
+        else if (Input.GetKeyDown("p"))
+        {
+            SaveManager.Save();
+        }
+        else if (Input.GetKeyDown("["))
+        {
+            SaveManager.Load();
         }
     }
 
@@ -322,20 +376,8 @@ public partial class Game : MonoBehaviour
                     _ghostEffects.Add(VisualEffectController.SpawnSpriteEffect(null, c.Vector, MouseSpriteName, float.MaxValue, color));
                 }
             }
-
         }
     }
-
-    public void ClearGhostEffects()
-    {
-        foreach (var effect in _ghostEffects)
-        {
-            effect.DestroySelf();
-        }
-        _ghostEffects.Clear();
-    }
-
-    private List<VisualEffect> _ghostEffects = new List<VisualEffect>();
 
     private void SelectCell()
     {
@@ -352,6 +394,7 @@ public partial class Game : MonoBehaviour
         DeselectCell();
         DeselectStructure(true);
         DeselectItem();
+        DeselectZone();
 
         foreach (var creature in SelectedCreatures)
         {
@@ -366,6 +409,7 @@ public partial class Game : MonoBehaviour
         DeselectCell();
         DeselectStructure(true);
         DeselectCreature();
+        DeselectZone();
 
         foreach (var item in SelectedItems)
         {
@@ -385,6 +429,16 @@ public partial class Game : MonoBehaviour
         EntityInfoPanel.Show(SelectedStructures.ToList());
     }
 
+    internal void SelectZone(Zone zone)
+    {
+        DeselectCell();
+        DeselectCreature();
+        DeselectStructure(true);
+        DeselectItem();
+
+        ZoneInfoPanel.Show(zone);
+    }
+
     private void Start()
     {
         LoadingPanel.LoadingTextBox.text = "Initializing...";
@@ -400,43 +454,6 @@ public partial class Game : MonoBehaviour
         InitFactions();
 
         MapGenerator = new MapGenerator();
-    }
-
-    public List<Cell> GetSelectedCells(Vector3 worldStartPoint, Vector3 worldEndPoint)
-    {
-        var cells = new List<Cell>();
-
-        var startX = Mathf.Clamp(Mathf.Min(worldStartPoint.x, worldEndPoint.x), 0, Map.Width);
-        var startY = Mathf.Clamp(Mathf.Min(worldStartPoint.y, worldEndPoint.y), 0, Map.Height);
-        var endX = Mathf.Clamp(Mathf.Max(worldStartPoint.x, worldEndPoint.x), 0, Map.Width);
-        var endY = Mathf.Clamp(Mathf.Max(worldStartPoint.y, worldEndPoint.y), 0, Map.Height);
-
-        if (startX == endX && startY == endY)
-        {
-            var point = new Vector3(startX, endY);
-
-            var clickedCell = Map.GetCellAtPoint(point);
-            if (clickedCell != null)
-            {
-                cells.Add(clickedCell);
-            }
-        }
-        else
-        {
-            var pollStep = 1f;
-
-            for (var selX = startX; selX < endX; selX += pollStep)
-            {
-                for (var selY = startY; selY < endY; selY += pollStep)
-                {
-                    var point = new Vector3(selX, selY);
-
-                    cells.Add(Map.GetCellAtPoint(point));
-                }
-            }
-        }
-
-        return cells.Distinct().ToList();
     }
 
     private void Update()
@@ -460,6 +477,7 @@ public partial class Game : MonoBehaviour
         {
             UIController.Show();
             EntityInfoPanel.Hide();
+            ZoneInfoPanel.Hide();
             OrderSelectionController.DisableAndReset();
             LoadingPanel.Hide();
 
@@ -471,7 +489,6 @@ public partial class Game : MonoBehaviour
         var mousePosition = Input.mousePosition;
 
         HandleHotkeys();
-        HandleTimeControls();
         MoveMouseSprite(mousePosition);
 
         if (Input.GetMouseButton(1))
@@ -480,6 +497,7 @@ public partial class Game : MonoBehaviour
             DeselectAll();
 
             EntityInfoPanel.Hide();
+            ZoneInfoPanel.Hide();
             DisableMouseSprite();
             OrderSelectionController.DisableAndReset();
         }
@@ -511,6 +529,7 @@ public partial class Game : MonoBehaviour
 
                 SelectedCells = GetSelectedCells(SelectionStartWorld, Camera.main.ScreenToWorldPoint(mousePosition));
 
+                Zone selectedZone = null;
                 foreach (var cell in SelectedCells)
                 {
                     if (cell.Structure != null)
@@ -519,6 +538,12 @@ public partial class Game : MonoBehaviour
                     }
                     SelectedItems.AddRange(cell.Items);
                     SelectedCreatures.AddRange(cell.Creatures.Select(c => c.CreatureRenderer));
+
+                    var zone = Game.ZoneController.GetZoneForCell(cell);
+                    if (zone != null)
+                    {
+                        selectedZone = zone;
+                    }
                 }
 
                 switch (SelectionPreference)
@@ -551,7 +576,15 @@ public partial class Game : MonoBehaviour
                         }
                         break;
 
-                    case SelectionPreference.Entity:
+                    case SelectionPreference.Zone:
+                        if (selectedZone != null)
+                        {
+                            SelectZone(selectedZone);
+                        }
+
+                        break;
+
+                    case SelectionPreference.Anything:
                         if (SelectedCreatures.Count > 0)
                         {
                             SelectCreature();
@@ -563,6 +596,10 @@ public partial class Game : MonoBehaviour
                         if (SelectedItems.Count > 0)
                         {
                             SelectItem();
+                        }
+                        if (selectedZone != null)
+                        {
+                            SelectZone(selectedZone);
                         }
                         break;
                 }

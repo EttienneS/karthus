@@ -15,7 +15,7 @@ public partial class OrderSelectionController : MonoBehaviour
         Game.Controller.SelectionStartWorld = Vector3.zero;
         Game.Controller.MouseSpriteRenderer.size = new Vector2(1, 1);
 
-        Game.Controller.SelectionPreference = SelectionPreference.Entity;
+        Game.Controller.SelectionPreference = SelectionPreference.Anything;
 
         Game.OrderTrayController.gameObject.SetActive(false);
         CellClickOrder = null;

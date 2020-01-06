@@ -5,7 +5,8 @@ public partial class Game //.Instances
     public static MapGenerator MapGenerator;
     private static CameraController _cameraController;
     private static CreatureController _creatureController;
-    private static EntityInfoPanel _creatureInfoPanel;
+    private static EntityInfoPanel _entityInfoPanel;
+    private static ZoneInfoPanel _zoneInfoPanel;
     private static FactionController _factionController;
     private static FileController _fileController;
     private static Game _gameInstance;
@@ -55,7 +56,15 @@ public partial class Game //.Instances
     {
         get
         {
-            return _creatureInfoPanel ?? (_creatureInfoPanel = GameObject.Find("EntityInfoPanel").GetComponent<EntityInfoPanel>());
+            return _entityInfoPanel ?? (_entityInfoPanel = GameObject.Find("EntityInfoPanel").GetComponent<EntityInfoPanel>());
+        }
+    }
+
+    public static ZoneInfoPanel ZoneInfoPanel
+    {
+        get
+        {
+            return _zoneInfoPanel ?? (_zoneInfoPanel = GameObject.Find("ZoneInfoPanel").GetComponent<ZoneInfoPanel>());
         }
     }
 

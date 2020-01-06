@@ -10,9 +10,9 @@ public partial class OrderSelectionController //.Zone
     {
         var zone = new Zone();
         Game.Controller.SetMouseSprite(Game.ZoneController.ZoneSprite,
-                                       (cell) => CanAddCellToZone(cell, zone));
-        Game.Controller.SelectionPreference = SelectionPreference.Cell;
+                                      (cell) => CanAddCellToZone(cell, zone));
 
+        Game.Controller.SelectionPreference = SelectionPreference.Cell;
         Game.OrderInfoPanel.Title = "Define Zone";
         Game.OrderInfoPanel.Description = "Select a location to place the zone.";
         // Game.OrderInfoPanel.Detail = structure.Description;
@@ -21,7 +21,8 @@ public partial class OrderSelectionController //.Zone
 
         CellClickOrder = cells =>
         {
-            Game.ZoneController.Create(cells.Where(c => CanAddCellToZone(c, zone)).ToArray());
+            var newZone = Game.ZoneController.Create(cells.Where(c => CanAddCellToZone(c, zone)).ToArray());
+            Game.Controller.SelectZone(newZone);
         };
     }
 
