@@ -62,7 +62,7 @@ public class ZoneInfoPanel : MonoBehaviour
 
         foreach (var item in CurrentZone.Items)
         {
-            ZoneInfo.text = $"{item.Name}\n";
+            ZoneInfo.text += $"{item.Name}: {item.Amount}\n";
         }
     }
 }
