@@ -61,47 +61,11 @@ public class CameraController : MonoBehaviour
         }
         else
         {
-#if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
-
-            var zoomSpeed = 0.4f;
-            var scrollSpeed = 0.05f;
-            if (Input.touchCount > 0)
+            if (Game.Controller.Typing)
             {
-                var touchZero = Input.GetTouch(0);
-
-                if (Input.touchCount == 2)
-                {
-                    var touchOne = Input.GetTouch(1);
-
-                    var touchZeroPrevPos = touchZero.position - touchZero.deltaPosition;
-                    var touchOnePrevPos = touchOne.position - touchOne.deltaPosition;
-
-                    var prevTouchDeltaMag = (touchZeroPrevPos - touchOnePrevPos).magnitude;
-                    var touchDeltaMag = (touchZero.position - touchOne.position).magnitude;
-
-                    var deltaMagnitudeDiff = (prevTouchDeltaMag - touchDeltaMag) * zoomSpeed;
-                }
-                else
-                {
-                    if (touchZero.phase == TouchPhase.Moved)
-                    {
-                        var touchDeltaPosition = touchZero.deltaPosition;
-                        transform.Translate(-touchDeltaPosition.x * scrollSpeed, -touchDeltaPosition.y * scrollSpeed, 0);
-                    }
-                }
+                return;
             }
 
-            //End of mobile platform dependendent compilation section started above with #elif
-            // todo: clamp the camera to stop it from moving off screen
-            //var x = transform.position.x;
-            //var y = transform.position.y;
-
-            //transform.position = new Vector3(x, y, z);
-
-            // move camera to match with change in FOV
-            // RotateAndScale(oldFov);
-
-#else
             float horizontal = Input.GetAxis("Horizontal") / Time.timeScale;
             float vertical = Input.GetAxis("Vertical") / Time.timeScale;
             float mouseWheel = Input.GetAxis("Mouse ScrollWheel");
@@ -118,7 +82,6 @@ public class CameraController : MonoBehaviour
                 Speed = Helpers.ScaleValueInRange(SpeedMin, SpeedMax, ZoomMin, ZoomMax, Camera.orthographicSize);
                 ZoomStep = Mathf.Max(2f, Camera.orthographicSize / 2f);
             }
-#endif
         }
     }
 }
