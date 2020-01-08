@@ -3,30 +3,27 @@ using UnityEngine.UI;
 
 public class ZoneInfoPanel : MonoBehaviour
 {
-    internal Zone CurrentZone;
-
     public InputField Name;
-    public Text ZoneInfo;
+    public RoomPanel RoomPanel;
+    public RestrictionPanel RestrictionPanel;
+    public StoragePanel StoragePanel;
+    internal ZoneBase CurrentZone;
 
-    internal void Show(Zone selectedZone)
+    public void DeleteZone()
     {
-        gameObject.SetActive(true);
+        Game.ZoneController.Delete(CurrentZone);
+        Hide();
+    }
 
-        CurrentZone = selectedZone;
-
-        Name.text = CurrentZone.Name;
+    public void DoneEditing()
+    {
+        Game.Controller.Typing = false;
     }
 
     public void Hide()
     {
         gameObject.SetActive(false);
         Game.Controller.Typing = false;
-    }
-
-    public void DeleteZone()
-    {
-        Game.ZoneController.Delete(CurrentZone);
-        Hide();
     }
 
     public void NameChanged()
@@ -36,33 +33,32 @@ public class ZoneInfoPanel : MonoBehaviour
         Game.ZoneController.Refresh(CurrentZone);
     }
 
-    public void DoneEditing()
-    {
-        Game.Controller.Typing = false;
-    }
+  
 
-    public void Update()
+    internal void Show(ZoneBase selectedZone)
     {
-        ZoneInfo.text = "Zone Info:\n\n";
-        ZoneInfo.text += $"Cells: {CurrentZone.Cells.Count}\n\nStructures:\n\n";
+        gameObject.SetActive(true);
 
-        foreach (var structure in CurrentZone.Structures)
+        CurrentZone = selectedZone;
+
+        RoomPanel.Hide();
+        StoragePanel.Hide();
+        RestrictionPanel.Hide();
+
+        if (CurrentZone is RoomZone rz)
         {
-            ZoneInfo.text += $"{structure.Name}";
+            RoomPanel.Show(rz);
+        }
+        else if (CurrentZone is StorageZone sz)
+        {
+            StoragePanel.Show(sz);
 
-            if (structure.IsContainer())
-            {
-                ZoneInfo.text += $": {structure.GetProperty(NamedProperties.ContainedItemType)} {structure.GetValue(NamedProperties.ContainedItemCount)}/{structure.GetValue(NamedProperties.Capacity)}";
-            }
-
-            ZoneInfo.text += "\n";
+        }
+        else if (CurrentZone is RestrictionZone rez)
+        {
+            RestrictionPanel.Show(rez);
         }
 
-        ZoneInfo.text += $"\nItems:\n\n";
-
-        foreach (var item in CurrentZone.Items)
-        {
-            ZoneInfo.text += $"{item.Name}: {item.Amount}\n";
-        }
+        Name.text = CurrentZone.Name;
     }
 }

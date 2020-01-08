@@ -15,6 +15,8 @@ public class Item : IEntity
     [JsonIgnore]
     public Cell Cell { get; set; }
 
+    public string Category { get; set; }
+
     public (float X, float Y) Coords
     {
         get
@@ -79,31 +81,6 @@ public class Item : IEntity
         get
         {
             return new Vector2(Coords.X, Coords.Y);
-        }
-    }
-
-    public string ContainerId { get; set; }
-
-    [JsonIgnore]
-    public bool InContainer
-    {
-        get
-        {
-            return !string.IsNullOrEmpty(ContainerId);
-        }
-    }
-
-    [JsonIgnore]
-    public Structure Container
-    {
-        get
-        {
-            if (!InContainer)
-            {
-                return null;
-            }
-
-            return ContainerId.GetStructure();
         }
     }
 

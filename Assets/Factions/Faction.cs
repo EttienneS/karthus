@@ -89,7 +89,7 @@ public class Faction
                     {
                         foreach (var item in cell.Items)
                         {
-                            if (!item.InUseByAnyone && !item.InContainer && !storageTasks.Any(t => t.ItemToStoreId == item.Id))
+                            if (!item.InUseByAnyone  && !storageTasks.Any(t => t.ItemToStoreId == item.Id))
                             {
                                 var storage = GetStorageFor(item);
                                 if (storage != null)

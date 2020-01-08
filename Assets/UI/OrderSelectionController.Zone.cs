@@ -6,27 +6,44 @@ public partial class OrderSelectionController //.Zone
 
     internal OrderButton ZonesButton;
 
-    public void AddZoneClicked()
+    public void AddZoneClicked(Purpose purpose)
     {
-        var zone = new Zone();
-        Game.Controller.SetMouseSprite(Game.ZoneController.ZoneSprite,
-                                      (cell) => CanAddCellToZone(cell, zone));
+        var sprite = Game.ZoneController.ZoneSprite;
+
+        switch (purpose)
+        {
+            case Purpose.Room:
+                Game.OrderInfoPanel.Title = "Define Room";
+                sprite = "Room";
+                Game.OrderInfoPanel.Description = "Select a location to place the Room, must be enclosed by walls.";
+                break;
+
+            case Purpose.Restriction:
+                Game.OrderInfoPanel.Title = "Define Zone";
+                Game.OrderInfoPanel.Description = "Select a location to place the zone.  Can be used to limit access to locations.";
+                break;
+
+            case Purpose.Storage:
+                Game.OrderInfoPanel.Title = "Define Storage Area";
+                sprite = "Storage";
+                Game.OrderInfoPanel.Description = "Select a location to place the zone.  Can be used to designate an area for storage of certain items.";
+                break;
+        }
+
+        Game.Controller.SetMouseSprite(sprite, (cell) => CanAddCellToZone(cell));
 
         Game.Controller.SelectionPreference = SelectionPreference.Cell;
-        Game.OrderInfoPanel.Title = "Define Zone";
-        Game.OrderInfoPanel.Description = "Select a location to place the zone.";
-        // Game.OrderInfoPanel.Detail = structure.Description;
-        // Game.OrderInfoPanel.Cost = $"{structure.Cost}";
+
         Game.OrderInfoPanel.Show();
 
         CellClickOrder = cells =>
         {
-            var newZone = Game.ZoneController.Create(cells.Where(c => CanAddCellToZone(c, zone)).ToArray());
+            var newZone = Game.ZoneController.Create(purpose, FactionConstants.Player, cells.Where(c => CanAddCellToZone(c)).ToArray());
             Game.Controller.SelectZone(newZone);
         };
     }
 
-    public bool CanAddCellToZone(Cell cell, Zone zone)
+    public bool CanAddCellToZone(Cell cell)
     {
         return true;
     }
@@ -41,7 +58,9 @@ public partial class OrderSelectionController //.Zone
         {
             EnableAndClear();
 
-            CreateOrderButton("Add Zone", AddZoneClicked, Game.ZoneController.ZoneSprite);
+            CreateOrderButton("Add Room", () => AddZoneClicked(Purpose.Room), "beer_t");
+            CreateOrderButton("Add Storage", () => AddZoneClicked(Purpose.Storage), "box");
+            CreateOrderButton("Add Zone", () => AddZoneClicked(Purpose.Restriction), "plate_t");
         }
     }
 }

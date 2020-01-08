@@ -429,7 +429,7 @@ public partial class Game : MonoBehaviour
         EntityInfoPanel.Show(SelectedStructures.ToList());
     }
 
-    internal void SelectZone(Zone zone)
+    internal void SelectZone(ZoneBase zone)
     {
         DeselectCell();
         DeselectCreature();
@@ -529,7 +529,7 @@ public partial class Game : MonoBehaviour
 
                 SelectedCells = GetSelectedCells(SelectionStartWorld, Camera.main.ScreenToWorldPoint(mousePosition));
 
-                Zone selectedZone = null;
+                ZoneBase selectedZone = null;
                 foreach (var cell in SelectedCells)
                 {
                     if (cell.Structure != null)
