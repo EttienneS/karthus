@@ -1,16 +1,16 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class RestrictionPanel : MonoBehaviour
+public class AreaPanel : MonoBehaviour
 {
-    internal RestrictionZone Zone;
+    internal AreaZone Zone;
 
     public void Hide()
     {
         gameObject.SetActive(false);
     }
 
-    public void Show(RestrictionZone zone)
+    public void Show(AreaZone zone)
     {
         gameObject.SetActive(true);
 

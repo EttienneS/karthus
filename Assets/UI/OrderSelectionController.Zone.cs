@@ -18,15 +18,15 @@ public partial class OrderSelectionController //.Zone
                 Game.OrderInfoPanel.Description = "Select a location to place the Room, must be enclosed by walls.";
                 break;
 
-            case Purpose.Restriction:
-                Game.OrderInfoPanel.Title = "Define Zone";
-                Game.OrderInfoPanel.Description = "Select a location to place the zone.  Can be used to limit access to locations.";
+            case Purpose.Area:
+                Game.OrderInfoPanel.Title = "Define Area";
+                Game.OrderInfoPanel.Description = "Select a location to place the Area.  Can be used to limit access to locations or designate areas for certain uses.";
                 break;
 
             case Purpose.Storage:
-                Game.OrderInfoPanel.Title = "Define Storage Area";
+                Game.OrderInfoPanel.Title = "Define Storage";
                 sprite = "Storage";
-                Game.OrderInfoPanel.Description = "Select a location to place the zone.  Can be used to designate an area for storage of certain items.";
+                Game.OrderInfoPanel.Description = "Select a location to place the store.  Can be used to designate an area for storage of certain items.";
                 break;
         }
 
@@ -60,7 +60,7 @@ public partial class OrderSelectionController //.Zone
 
             CreateOrderButton("Add Room", () => AddZoneClicked(Purpose.Room), "beer_t");
             CreateOrderButton("Add Storage", () => AddZoneClicked(Purpose.Storage), "box");
-            CreateOrderButton("Add Zone", () => AddZoneClicked(Purpose.Restriction), "plate_t");
+            CreateOrderButton("Add Zone", () => AddZoneClicked(Purpose.Area), "plate_t");
         }
     }
 }

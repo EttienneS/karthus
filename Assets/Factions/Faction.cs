@@ -89,7 +89,7 @@ public class Faction
                     {
                         foreach (var item in cell.Items)
                         {
-                            if (!item.InUseByAnyone  && !storageTasks.Any(t => t.ItemToStoreId == item.Id))
+                            if (!item.InUseByAnyone && !storageTasks.Any(t => t.ItemToStoreId == item.Id))
                             {
                                 var storage = GetStorageFor(item);
                                 if (storage != null)
@@ -100,8 +100,24 @@ public class Faction
                         }
                     }
                 }
+
+                var emptyTasks = AvailableTasks.OfType<EmptyContainer>().ToList();
+                foreach (var zone in Game.ZoneController.StorageZones.Where(z => z.FactionName == FactionName))
+                {
+                    foreach (var container in zone.Containers)
+                    {
+                        if (emptyTasks.Any(t => t.ContainerId == container.Id))
+                        {
+                            continue;
+                        }
+                        if (container.FilterValid())
+                        {
+                            AddTask(new EmptyContainer(container));
+                        }
+                    }
+                }
             }
-            
+
 
             foreach (var creature in Creatures)
             {

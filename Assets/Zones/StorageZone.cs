@@ -5,7 +5,9 @@ public class StorageZone : ZoneBase
 {
     public Dictionary<string, int> StorageDefinition = new Dictionary<string, int>();
 
-    public int Capacity
+    public string Filter = "*";
+
+    public int Fill
     {
         get
         {
@@ -13,6 +15,19 @@ public class StorageZone : ZoneBase
             foreach (var container in Containers)
             {
                 total += container.RemainingCapacity();
+            }
+            return total;
+        }
+    }
+
+    public int Capacity
+    {
+        get
+        {
+            var total = 0;
+            foreach (var container in Containers)
+            {
+                total += container.GetCapacity();
             }
             return total;
         }
@@ -29,5 +44,14 @@ public class StorageZone : ZoneBase
     public bool CanStore(string name, string category, int amount)
     {
         return true;
+    }
+
+    public void SetFilter(string filter)
+    {
+        Filter = filter;
+        foreach (var container in Containers)
+        {
+            container.SetProperty(NamedProperties.Filter, filter);
+        }
     }
 }

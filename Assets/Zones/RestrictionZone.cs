@@ -4,6 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class RestrictionZone : ZoneBase
+public class AreaZone : ZoneBase
 {
 }

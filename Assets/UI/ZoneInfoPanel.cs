@@ -5,7 +5,7 @@ public class ZoneInfoPanel : MonoBehaviour
 {
     public InputField Name;
     public RoomPanel RoomPanel;
-    public RestrictionPanel RestrictionPanel;
+    public AreaPanel AreaPanel;
     public StoragePanel StoragePanel;
     internal ZoneBase CurrentZone;
 
@@ -43,7 +43,7 @@ public class ZoneInfoPanel : MonoBehaviour
 
         RoomPanel.Hide();
         StoragePanel.Hide();
-        RestrictionPanel.Hide();
+        AreaPanel.Hide();
 
         if (CurrentZone is RoomZone rz)
         {
@@ -54,9 +54,9 @@ public class ZoneInfoPanel : MonoBehaviour
             StoragePanel.Show(sz);
 
         }
-        else if (CurrentZone is RestrictionZone rez)
+        else if (CurrentZone is AreaZone ar)
         {
-            RestrictionPanel.Show(rez);
+            AreaPanel.Show(ar);
         }
 
         Name.text = CurrentZone.Name;

@@ -31,7 +31,7 @@ public class Acquire : CreatureTask
 
                     foreach (var structure in creature.Faction.Structures.Where(s => s.IsContainer()))
                     {
-                        if (structure.GetItemCount(ItemType) > 0)
+                        if (structure.GetItemCount() > 0)
                         {
                             var dist = Pathfinder.Distance(creature.Cell, structure.Cell, creature.Mobility);
                             if (dist < distance)

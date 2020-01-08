@@ -7,7 +7,7 @@ using UnityEngine;
 [JsonConverter(typeof(StringEnumConverter))]
 public enum Purpose
 {
-    Room, Storage, Restriction
+    Room, Storage, Area
 }
 
 public abstract class ZoneBase

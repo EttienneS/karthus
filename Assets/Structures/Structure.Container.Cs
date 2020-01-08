@@ -12,13 +12,11 @@ public partial class Structure //.Container
     public int GetCapacity()
     {
         return Mathf.FloorToInt(GetValue(NamedProperties.Capacity));
-
     }
 
     public string GetContainedItem()
     {
         return GetProperty(NamedProperties.ContainedItemType);
-
     }
 
     public int GetItemCount()
@@ -38,7 +36,6 @@ public partial class Structure //.Container
     public void SetContainedItem(string itemType)
     {
         SetProperty(NamedProperties.ContainedItemType, itemType);
-
     }
 
     public int SetItemCount(int count)
@@ -106,8 +103,13 @@ public partial class Structure //.Container
             return false;
         }
 
+        return FilterMatch(item.Name);
+    }
+
+    public bool FilterMatch(string name)
+    {
         var filter = Helpers.WildcardToRegex(GetProperty(NamedProperties.Filter));
-        return Regex.IsMatch(item.Name, filter);
+        return Regex.IsMatch(name, filter);
     }
 
     internal Item GetItem(string itemType, int amount)
@@ -144,5 +146,10 @@ public partial class Structure //.Container
     public int RemainingCapacity()
     {
         return Mathf.Max(GetCapacity() - GetItemCount(), 0);
+    }
+
+    public bool FilterValid()
+    {
+        return FilterMatch(GetContainedItem());
     }
 }

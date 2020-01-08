@@ -12,7 +12,7 @@ public class ZoneController : MonoBehaviour
     internal Sprite Sprite;
     internal string StorageSprite = "Storage";
     internal string ZoneSprite = "Zone";
-    internal List<RestrictionZone> RestrictionZones { get; set; } = new List<RestrictionZone>();
+    internal List<AreaZone> AreaZones { get; set; } = new List<AreaZone>();
     internal List<RoomZone> RoomZones { get; set; } = new List<RoomZone>();
     internal List<StorageZone> StorageZones { get; set; } = new List<StorageZone>();
     internal Dictionary<ZoneBase, ZoneLabel> Zones { get; set; } = new Dictionary<ZoneBase, ZoneLabel>();
@@ -25,22 +25,25 @@ public class ZoneController : MonoBehaviour
     public ZoneBase Create(Purpose purpose, string faction, params Cell[] cells)
     {
         ZoneBase newZone;
+        var name = "New Zone";
         switch (purpose)
         {
             case Purpose.Room:
                 newZone = new RoomZone();
                 RoomZones.Add((RoomZone)newZone);
+                name = $"Room {RoomZones.Count}";
                 break;
 
-            case Purpose.Restriction:
-                newZone = new RestrictionZone();
-                RestrictionZones.Add((RestrictionZone)newZone);
+            case Purpose.Area:
+                newZone = new AreaZone();
+                AreaZones.Add((AreaZone)newZone);
+                name = $"Area {AreaZones.Count}";
                 break;
 
             case Purpose.Storage:
                 newZone = new StorageZone();
                 StorageZones.Add((StorageZone)newZone);
-
+                name = $"Store {StorageZones.Count}";
                 break;
 
             default:
@@ -48,7 +51,7 @@ public class ZoneController : MonoBehaviour
         }
 
         newZone.Cells = cells.ToList();
-        newZone.Name = "New Zone";
+        newZone.Name = name;
         newZone.FactionName = faction;
 
         Zones.Add(newZone, DrawZone(newZone));
@@ -73,9 +76,9 @@ public class ZoneController : MonoBehaviour
         {
             StorageZones.Remove(sz);
         }
-        else if (zone is RestrictionZone rez)
+        else if (zone is AreaZone rez)
         {
-            RestrictionZones.Remove(rez);
+            AreaZones.Remove(rez);
         }
     }
 
