@@ -15,7 +15,7 @@ public class Item : IEntity
     [JsonIgnore]
     public Cell Cell { get; set; }
 
-    public string Category { get; set; }
+    public string[] Categories { get; set; }
 
     public (float X, float Y) Coords
     {

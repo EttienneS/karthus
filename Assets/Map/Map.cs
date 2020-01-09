@@ -31,6 +31,27 @@ public class Map : MonoBehaviour
         return Mathf.PerlinNoise((Seed + x) * Scaler, (Seed + y) * Scaler);
     }
 
+    internal Cell GetNearestEmptyCell(Cell cell)
+    {
+        var circle = GetCircle(cell, 1);
+
+        for (int i = 2; i < 15; i++)
+        {
+            var newCircle = GetCircle(cell, i);
+            newCircle.RemoveAll(c => circle.Contains(c));
+            circle = newCircle;
+
+            var empty = circle.Where(c => c.Structure == null);
+
+            if (empty.Count() > 0)
+            {
+                return empty.GetRandomItem();
+            }
+        }
+
+        return null;
+    }
+
     public Dictionary<(int x, int y), Cell> CellLookup
     {
         get
@@ -389,7 +410,7 @@ public class Map : MonoBehaviour
     {
         var minMax = GetMinMax(square);
         var src = Game.Map.GetCellAtCoordinate(minMax.minx + 1, minMax.miny + 1);
-        return GetRectangle(src.X,src.Y,
+        return GetRectangle(src.X, src.Y,
                             minMax.maxx - minMax.minx - 1,
                             minMax.maxy - minMax.miny - 1);
     }

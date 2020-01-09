@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 public partial class Structure //.Container
@@ -9,6 +10,38 @@ public partial class Structure //.Container
         SetContainedItem(string.Empty);
     }
 
+    public bool FilterMatch(string name, string[] categories)
+    {
+        var filter = Helpers.WildcardToRegex(GetFilter());
+
+        if (Regex.IsMatch(name, filter))
+        {
+            return true;
+        }
+        if (categories != null)
+        {
+            foreach (var cat in categories)
+            {
+                if (Regex.IsMatch(cat, filter))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public bool FilterValid()
+    {
+        var itemName = GetContainedItem();
+        if (string.IsNullOrEmpty(itemName))
+        {
+            return true;
+        }
+        return FilterMatch(itemName, Game.ItemController.ItemDataReference[itemName].Categories);
+    }
+
     public int GetCapacity()
     {
         return Mathf.FloorToInt(GetValue(NamedProperties.Capacity));
@@ -17,6 +50,11 @@ public partial class Structure //.Container
     public string GetContainedItem()
     {
         return GetProperty(NamedProperties.ContainedItemType);
+    }
+
+    public string GetFilter()
+    {
+        return GetProperty(NamedProperties.Filter);
     }
 
     public int GetItemCount()
@@ -33,9 +71,19 @@ public partial class Structure //.Container
         return IsType(NamedProperties.Container);
     }
 
+    public int RemainingCapacity()
+    {
+        return Mathf.Max(GetCapacity() - GetItemCount(), 0);
+    }
+
     public void SetContainedItem(string itemType)
     {
         SetProperty(NamedProperties.ContainedItemType, itemType);
+    }
+
+    public void SetFilter(string filter)
+    {
+        SetProperty(NamedProperties.Filter, filter);
     }
 
     public int SetItemCount(int count)
@@ -93,25 +141,20 @@ public partial class Structure //.Container
         var containedItemType = GetContainedItem();
         var containedItemCount = GetItemCount();
 
-        if (string.IsNullOrEmpty(containedItemType) || containedItemType == item.Name)
+        if (!string.IsNullOrEmpty(containedItemType))
         {
-            return containedItemCount + item.Amount <= capacity;
+            if (containedItemType.Equals(item.Name, StringComparison.OrdinalIgnoreCase))
+            {
+                return containedItemCount + item.Amount <= capacity;
+            }
+            else
+            {
+                return false;
+            }
         }
 
-        if (!string.IsNullOrEmpty(containedItemType) && containedItemType != item.Name)
-        {
-            return false;
-        }
-
-        return FilterMatch(item.Name);
+        return FilterMatch(item.Name, item.Categories);
     }
-
-    public bool FilterMatch(string name)
-    {
-        var filter = Helpers.WildcardToRegex(GetProperty(NamedProperties.Filter));
-        return Regex.IsMatch(name, filter);
-    }
-
     internal Item GetItem(string itemType, int amount)
     {
         var containedType = GetContainedItem();
@@ -141,15 +184,5 @@ public partial class Structure //.Container
         }
 
         return item;
-    }
-
-    public int RemainingCapacity()
-    {
-        return Mathf.Max(GetCapacity() - GetItemCount(), 0);
-    }
-
-    public bool FilterValid()
-    {
-        return FilterMatch(GetContainedItem());
     }
 }

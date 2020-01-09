@@ -110,7 +110,7 @@ public class Faction
                         {
                             continue;
                         }
-                        if (container.FilterValid())
+                        if (!container.FilterValid())
                         {
                             AddTask(new EmptyContainer(container));
                         }

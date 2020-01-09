@@ -227,7 +227,7 @@ public class Creature : IEntity
                 heldItem.InUseById = null;
 
                 heldItem.Renderer.SpriteRenderer.sortingLayerName = LayerConstants.Item;
-
+                heldItem.Cell = cell;
                 return heldItem;
             }
             else
@@ -235,6 +235,8 @@ public class Creature : IEntity
                 var newItem = Game.ItemController.SpawnItem(item, cell);
                 newItem.Amount = amount;
                 heldItem.Amount -= amount;
+
+                newItem.Cell = cell;
                 return newItem;
             }
         }

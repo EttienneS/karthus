@@ -85,6 +85,16 @@ public class StructureController : MonoBehaviour
 
         faction?.AddStructure(structure);
 
+        if (structure.IsContainer())
+        {
+            var zone = Game.ZoneController.GetZoneForCell(cell);
+
+            if (zone != null && zone is StorageZone store)
+            {
+                structure.SetFilter(store.Filter);
+            }
+        }
+
         return structure;
     }
 

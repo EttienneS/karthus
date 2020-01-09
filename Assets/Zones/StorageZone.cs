@@ -51,7 +51,7 @@ public class StorageZone : ZoneBase
         Filter = filter;
         foreach (var container in Containers)
         {
-            container.SetProperty(NamedProperties.Filter, filter);
+            container.SetFilter(filter);
         }
     }
 }
