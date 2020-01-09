@@ -29,7 +29,7 @@ public class Acquire : CreatureTask
                     Structure container = null;
                     Item closestItem = null;
 
-                    foreach (var structure in creature.Faction.Structures.Where(s => s.IsContainer()))
+                    foreach (var structure in creature.Faction.Structures.Where(s => s.IsContainer() && s.GetContainedItem() == ItemType))
                     {
                         if (structure.GetItemCount() > 0)
                         {

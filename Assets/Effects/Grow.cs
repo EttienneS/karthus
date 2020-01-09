@@ -1,11 +1,7 @@
-﻿using UnityEngine;
-
-public class Grow : EffectBase
+﻿public class Grow : EffectBase
 {
-    public float Age;
-    public int Stage;
+    public int Stage = -1;
     public int TotalStages;
-    public float AgePerStage;
     public string PlantName;
 
     private VisualEffect _visualEffect;
@@ -17,31 +13,19 @@ public class Grow : EffectBase
             return true;
         }
 
-        Age += Time.deltaTime;
+        Stage++;
 
-
-        if (_visualEffect == null)
+        if (Stage >= TotalStages)
         {
-            _visualEffect = Game.VisualEffectController.SpawnSpriteEffect(AssignedEntity, AssignedEntity.Cell.Vector, $"{PlantName}_{Stage}", float.MaxValue);
+            var structure = Game.StructureController.SpawnStructure(PlantName, AssignedEntity.Cell, AssignedEntity.GetFaction());
+            structure.Refresh();
+            Stage = 0;
+            return true;
         }
-
-        if (Age > AgePerStage)
+        else
         {
-            Age = 0;
-            Stage++;
-
-            _visualEffect.DestroySelf();
-            if (Stage >= TotalStages)
-            {
-                var structure = Game.StructureController.SpawnStructure(PlantName, AssignedEntity.Cell, AssignedEntity.GetFaction());
-                structure.Refresh();
-                Stage = 0;
-                return true;
-            }
-            else
-            {
-                _visualEffect = Game.VisualEffectController.SpawnSpriteEffect(AssignedEntity, AssignedEntity.Cell.Vector, $"{PlantName}_{Stage}", float.MaxValue);
-            }
+            _visualEffect?.DestroySelf();
+            _visualEffect = Game.VisualEffectController.SpawnSpriteEffect(AssignedEntity, AssignedEntity.Cell.Vector, $"{PlantName}_{Stage}", float.MaxValue);
         }
 
         return false;

@@ -12,7 +12,7 @@
   "AutoInteractions": [
     {
       "$type": "Job, Assembly-CSharp",
-      "ActivationTime": 60,
+      "ActivationTime": 300,
       "DisplayName": "Tend",
       "Task": [
         "{",
@@ -27,9 +27,9 @@
     },
     {
       "$type": "Grow, Assembly-CSharp",
-      "ActivationTime": 0.5,
+      "ActivationTime": 300,
+      "Elapsed": 300,
       "TotalStages": "5",
-      "AgePerStage": "10",
       "PlantName": "BerryBush"
     }
   ],
