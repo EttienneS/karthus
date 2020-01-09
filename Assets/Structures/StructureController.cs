@@ -44,33 +44,29 @@ public class StructureController : MonoBehaviour
 
     public void DrawStructures(IEnumerable<Cell> cells)
     {
-        var structures = new List<Structure>();
-        var floors = new List<Structure>(); 
-        foreach (var cell in cells)
+        var structures = cells
+                            .Where(c => c.Structure != null)
+                            .Select(c => c.Structure)
+                            .ToList();
+
+        var floors = cells
+                            .Where(c => c.Floor != null)
+                            .Select(c => c.Floor)
+                            .ToList();
+
+        if (structures.Count > 0)
         {
-            if (IdService.StructureCellLookup.ContainsKey(cell))
-            {
-                foreach (var s in IdService.StructureCellLookup[cell])
-                {
-                    if (s.IsFloor())
-                    {
-                        floors.Add(s);
-                    } 
-                    else
-                    {
-                        structures.Add(s);
-                    }
-                }
-            }
+            var tiles = structures.Select(c => c.Tile).ToArray();
+            var coords = structures.Select(c => c.Cell.ToVector3Int()).ToArray();
+            Game.StructureController.DefaultStructureMap.SetTiles(coords, tiles);
         }
 
-        var tiles = structures.Select(c => c.Tile).ToArray();
-        var coords = structures.Select(c => c.Cell.ToVector3Int()).ToArray();
-        Game.StructureController.DefaultStructureMap.SetTiles(coords, tiles);
-
-        var floorTiles = floors.Select(c => c.Tile).ToArray();
-        var floorCoords = floors.Select(c => c.Cell.ToVector3Int()).ToArray();
-        Game.StructureController.DefaultFloorMap.SetTiles(floorCoords, floorTiles);
+        if (floors.Count > 0)
+        {
+            var floorTiles = floors.Select(c => c.Tile).ToArray();
+            var floorCoords = floors.Select(c => c.Cell.ToVector3Int()).ToArray();
+            Game.StructureController.DefaultFloorMap.SetTiles(floorCoords, floorTiles);
+        }
     }
 
     public Structure SpawnStructure(string name, Cell cell, Faction faction)

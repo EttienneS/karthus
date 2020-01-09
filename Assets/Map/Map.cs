@@ -23,8 +23,7 @@ public class Map : MonoBehaviour
     [Range(0.001f, 0.2f)]
     public float Scaler = 0.1f;
 
-    [Range(float.MinValue, float.MaxValue)]
-    public float Seed = 1f;
+    internal float Seed;
 
     public float GetCellHeight(float x, float y)
     {
@@ -91,6 +90,8 @@ public class Map : MonoBehaviour
     {
         Tilemap = transform.Find("Tilemap").gameObject.GetComponent<Tilemap>();
         LiquidMap = transform.Find("Liquid Map").gameObject.GetComponent<Tilemap>();
+
+        Seed = Random.Range(-1000000, 1000000);
     }
 
     public List<Cell> BleedGroup(List<Cell> group, int count, float percentage = 0.7f)

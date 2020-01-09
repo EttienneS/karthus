@@ -284,25 +284,32 @@ public class MapGenerator
 
     private static void SpawnCreatures()
     {
-        foreach (var monster in Game.CreatureController.Beastiary)
+        try
         {
-            if (monster.Key == "Person")
+            foreach (var monster in Game.CreatureController.Beastiary)
             {
-                continue;
-            }
-
-            for (int i = 0; i < Game.Map.Width / 50; i++)
-            {
-                var creature = Game.CreatureController.GetCreatureOfType(monster.Key);
-
-                var spot = Game.Map.GetRandomCell();
-                if (spot.TravelCost <= 0 && creature.Mobility != Mobility.Fly)
+                if (monster.Key == "Person")
                 {
-                    spot = Game.Map.Cells.Where(c => c.TravelCost > 0).GetRandomItem();
+                    continue;
                 }
-                Game.CreatureController.SpawnCreature(creature, spot, Game.FactionController.MonsterFaction);
+
+                for (int i = 0; i < Game.Map.Width / 50; i++)
+                {
+                    var creature = Game.CreatureController.GetCreatureOfType(monster.Key);
+
+                    var spot = Game.Map.GetRandomCell();
+                    if (spot.TravelCost <= 0 && creature.Mobility != Mobility.Fly)
+                    {
+                        spot = Game.Map.Cells.Where(c => c.TravelCost > 0).GetRandomItem();
+                    }
+                    Game.CreatureController.SpawnCreature(creature, spot, Game.FactionController.MonsterFaction);
+                }
             }
         }
+        catch (Exception)
+        {
+        }
+       
     }
 
     private List<List<Cell>> CreateBuildings(int maxWidth, int maxHeight, int minWidth, int minHeight, List<Cell> street)
@@ -417,23 +424,31 @@ public class MapGenerator
 
     private void MakeFactionBootStrap(Faction faction)
     {
-        var center = Game.Map.GetNearestPathableCell(Game.Map.Center, Mobility.Walk, 25);
-
-        var berryBox = Game.StructureController.SpawnStructure("Box", center.GetNeighbor(Direction.N), Game.FactionController.PlayerFaction);
-        var woodBox = Game.StructureController.SpawnStructure("Box", center.GetNeighbor(Direction.E), Game.FactionController.PlayerFaction);
-        var stoneBox = Game.StructureController.SpawnStructure("Box", center.GetNeighbor(Direction.S), Game.FactionController.PlayerFaction);
-
-        berryBox.AddItem(Game.ItemController.SpawnItem("Berries", center.GetNeighbor(Direction.N), 100));
-        woodBox.AddItem(Game.ItemController.SpawnItem("Wood", center.GetNeighbor(Direction.N), 25));
-        stoneBox.AddItem(Game.ItemController.SpawnItem("Stone", center.GetNeighbor(Direction.S), 25));
-        //boxW.AddItem(stone);
-
-        for (int i = 0; i < 3; i++)
+        try
         {
-            Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("Person"),
-                                                  Game.Map.GetNearestPathableCell(center, Mobility.Walk, 25),
-                                                  faction);
+            var center = Game.Map.GetNearestPathableCell(Game.Map.Center, Mobility.Walk, 25);
+
+            var berryBox = Game.StructureController.SpawnStructure("Box", center.GetNeighbor(Direction.N), Game.FactionController.PlayerFaction);
+            var woodBox = Game.StructureController.SpawnStructure("Box", center.GetNeighbor(Direction.E), Game.FactionController.PlayerFaction);
+            var stoneBox = Game.StructureController.SpawnStructure("Box", center.GetNeighbor(Direction.S), Game.FactionController.PlayerFaction);
+
+            berryBox.AddItem(Game.ItemController.SpawnItem("Berries", center.GetNeighbor(Direction.N), 100));
+            woodBox.AddItem(Game.ItemController.SpawnItem("Wood", center.GetNeighbor(Direction.N), 25));
+            stoneBox.AddItem(Game.ItemController.SpawnItem("Stone", center.GetNeighbor(Direction.S), 25));
+            //boxW.AddItem(stone);
+
+            for (int i = 0; i < 3; i++)
+            {
+                Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("Person"),
+                                                      Game.Map.GetNearestPathableCell(center, Mobility.Walk, 25),
+                                                      faction);
+            }
         }
+        catch (Exception)
+        {
+
+        }
+       
     }
 
     private void MakeStreet(Cell crossingPoint, int length, bool vertical, double momentum, int color, List<List<Cell>> streets)
