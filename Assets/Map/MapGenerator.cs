@@ -18,7 +18,7 @@ public class MapGenerator
         get
         {
             if (_biomeTemplates == null)
-            {
+            { 
                 _biomeTemplates = new List<Biome>();
                 foreach (var biomeFile in Game.FileController.BiomeFiles)
                 {
