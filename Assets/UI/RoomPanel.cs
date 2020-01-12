@@ -16,9 +16,9 @@ public class RoomPanel : MonoBehaviour
         {
             RoomInfo.text += $"{structure.Name}";
 
-            if (structure.IsContainer())
+            if (structure is Container container)
             {
-                RoomInfo.text += $": {structure.GetProperty(NamedProperties.ContainedItemType)} {structure.GetValue(NamedProperties.ContainedItemCount)}/{structure.GetValue(NamedProperties.Capacity)}";
+                RoomInfo.text += $": {container.ItemType} {container.Count}/{container.Capacity}";
             }
 
             RoomInfo.text += "\n";

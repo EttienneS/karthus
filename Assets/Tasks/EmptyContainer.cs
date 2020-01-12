@@ -17,15 +17,15 @@
     {
         if (SubTasksComplete(creature))
         {
-            var container = ContainerId.GetStructure();
+            var container = ContainerId.GetContainer();
 
-            if (string.IsNullOrEmpty(container.GetContainedItem()))
+            if (string.IsNullOrEmpty(container.ItemType))
             {
                 return true;
             }
             else
             {
-                var item = container.GetItem(container.GetContainedItem(), container.GetItemCount());
+                var item = container.GetItem(container.ItemType, container.Count);
                 AddSubTask(new Pickup(item));
                 AddSubTask(new Drop(Game.Map.GetNearestEmptyCell(creature.Cell), item));
             }

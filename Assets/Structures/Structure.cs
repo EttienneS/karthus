@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -194,10 +193,16 @@ public partial class Structure : IEntity
 
     public static Structure GetFromJson(string json)
     {
-        return json.LoadJson<Structure>();
+        var structure = json.LoadJson<Structure>();
+
+        if (structure.IsType("Container"))
+        {
+            return json.LoadJson<Container>();
+        }
+
+        return structure;
     }
 
-  
     public bool IsType(string name)
     {
         return Properties.ContainsKey("Type") && Properties["Type"].Split(',').Contains(name);
@@ -232,8 +237,6 @@ public partial class Structure : IEntity
         Game.StructureController.RefreshStructure(this);
     }
 
-
-
     public override string ToString()
     {
         return $"{Name}";
@@ -247,8 +250,6 @@ public partial class Structure : IEntity
         }
         return true;
     }
-
-
 
     internal void Free()
     {
@@ -266,9 +267,6 @@ public partial class Structure : IEntity
 
         return interactions;
     }
-
-
-
 
     internal string GetProperty(string propertyName)
     {

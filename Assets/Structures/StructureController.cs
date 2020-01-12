@@ -71,9 +71,9 @@ public class StructureController : MonoBehaviour
 
     public Structure SpawnStructure(string name, Cell cell, Faction faction)
     {
-        string structureData = StructureTypeFileMap[name];
+        var structureData = StructureTypeFileMap[name];
 
-        Structure structure = Structure.GetFromJson(structureData);
+        var structure = Structure.GetFromJson(structureData);
         structure.Cell = cell;
         IndexStructure(structure);
 
@@ -81,13 +81,13 @@ public class StructureController : MonoBehaviour
 
         faction?.AddStructure(structure);
 
-        if (structure.IsContainer())
+        if (structure is Container container)
         {
             var zone = Game.ZoneController.GetZoneForCell(cell);
 
             if (zone != null && zone is StorageZone store)
             {
-                structure.SetFilter(store.Filter);
+                container.Filter = store.Filter;
             }
         }
 

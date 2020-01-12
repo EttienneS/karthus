@@ -29,9 +29,9 @@ public class Acquire : CreatureTask
                     Structure container = null;
                     Item closestItem = null;
 
-                    foreach (var structure in creature.Faction.Structures.Where(s => s.IsContainer() && s.GetContainedItem() == ItemType))
+                    foreach (var structure in creature.Faction.Containers.Where(s => s.ItemType == ItemType))
                     {
-                        if (structure.GetItemCount() > 0)
+                        if (structure.Count > 0)
                         {
                             var dist = Pathfinder.Distance(creature.Cell, structure.Cell, creature.Mobility);
                             if (dist < distance)
@@ -89,7 +89,8 @@ public class Acquire : CreatureTask
                     }
                     else
                     {
-                        var item = TargetId.GetStructure().GetItem(ItemType, requiredAmount);
+                        var container = TargetId.GetContainer();
+                        var item = container.GetItem(ItemType, requiredAmount);
                         if (item != null)
                         {
                             creature.PickUpItem(item, requiredAmount);

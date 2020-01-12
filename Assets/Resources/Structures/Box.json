@@ -9,13 +9,10 @@
     }
   },
   "Buildable": "True",
-  "ValueProperties": {
-    "Capacity": 100,
-    "Priority": 5
-  },
+  "Capacity": 100,
+  "Priority": 5,
+  "Filter": "*",
   "Properties": {
-    "Type": "Container",
-    "Filter": "*",
-    "ContainedItemType": ""
+    "Type": "Container"
   }
 }

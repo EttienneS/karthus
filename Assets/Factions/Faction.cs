@@ -13,6 +13,15 @@ public class Faction
     public float LastUpdate;
     public List<Structure> Structures = new List<Structure>();
 
+    public IEnumerable<Container> Containers
+    {
+        get
+        {
+            return Structures.OfType<Container>();
+        }
+    }
+
+
     [JsonIgnore]
     public List<Cell> HomeCells = new List<Cell>();
 
@@ -134,17 +143,17 @@ public class Faction
     {
         var pendingStorage = AvailableTasks.OfType<StoreItem>().ToList();
         var options = new List<Structure>();
-        foreach (var structure in Structures.Where(s => !s.IsBluePrint && s.IsContainer()))
+        foreach (var container in Containers.Where(s => !s.IsBluePrint))
         {
-            if (pendingStorage.Any(p => p.StorageStructureId == structure.Id))
+            if (pendingStorage.Any(p => p.StorageStructureId == container.Id))
             {
                 // already allocated skip structure
                 continue;
             }
 
-            if (structure.CanHold(item))
+            if (container.CanHold(item))
             {
-                options.Add(structure);
+                options.Add(container);
             }
         }
 

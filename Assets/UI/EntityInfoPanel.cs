@@ -146,6 +146,23 @@ public class EntityInfoPanel : MonoBehaviour
                             {
                                 PropertiesPanel.text += $"In use by:\t{structure.InUseBy.Name}\n";
                             }
+
+                            if (structure is Container container)
+                            {
+                                PropertiesPanel.text += $"\nContainer:\n";
+
+                                if (container.Empty)
+                                {
+                                    PropertiesPanel.text += $"Contains:\tNothing\n";
+                                }
+                                else
+                                {
+                                    PropertiesPanel.text += $"Contains:\t{container.ItemType}\n";
+                                }
+
+                                PropertiesPanel.text += $"Capacity:\t{container.Count}/{container.Capacity}\n";
+                                PropertiesPanel.text += $"Filter:\t{container.Filter}\n";
+                            }
                         }
 
                         foreach (var interaction in structure.AutoInteractions)

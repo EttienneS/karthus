@@ -14,7 +14,7 @@ public class StorageZone : ZoneBase
             var total = 0;
             foreach (var container in Containers)
             {
-                total += container.RemainingCapacity();
+                total += container.RemainingCapacity;
             }
             return total;
         }
@@ -27,17 +27,17 @@ public class StorageZone : ZoneBase
             var total = 0;
             foreach (var container in Containers)
             {
-                total += container.GetCapacity();
+                total += container.Capacity;
             }
             return total;
         }
     }
 
-    public IEnumerable<Structure> Containers
+    public IEnumerable<Container> Containers
     {
         get
         {
-            return Structures.Where(s => s.IsContainer());
+            return Structures.OfType<Container>();
         }
     }
 
@@ -51,7 +51,7 @@ public class StorageZone : ZoneBase
         Filter = filter;
         foreach (var container in Containers)
         {
-            container.SetFilter(filter);
+            container.Filter = filter;
         }
     }
 }

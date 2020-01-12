@@ -75,6 +75,11 @@ public static class IdService
         return null;
     }
 
+    public static Container GetContainer(this string id)
+    {
+        return GetStructure(id) as Container;
+    }
+
     public static bool IsCreature(string id)
     {
         return CreatureIdLookup.ContainsKey(id);

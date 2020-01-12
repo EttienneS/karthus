@@ -28,7 +28,7 @@
                 throw new TaskFailedException($"Item no longer available {ItemToStoreId}");
             }
 
-            var storage = StorageStructureId.GetStructure();
+            var storage = StorageStructureId.GetContainer();
             if (storage == null)
             {
                 throw new TaskFailedException($"Structure no longer available {StorageStructureId}");

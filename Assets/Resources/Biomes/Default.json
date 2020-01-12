@@ -2,7 +2,7 @@
   "BiomeRegions": [
     {
       "Content": {},
-      "Max": 0.3,
+      "Max": 0.2,
       "Min": 0.0,
       "TravelCost": -1,
       "SpriteName": "Water"
@@ -11,16 +11,16 @@
       "Content": {
         "Blue Mana Crystals": 0.01,
       },
-      "Max": 0.33,
-      "Min": 0.3,
+      "Max": 0.23,
+      "Min": 0.2,
       "SpriteName": "Sand"
     },
     {
       "Content": {
         "Medium Rock": 0.01
       },
-      "Max": 0.35,
-      "Min": 0.33,
+      "Max": 0.28,
+      "Min": 0.23,
       "SpriteName": "Dirt"
     },
     {
@@ -29,7 +29,7 @@
         "Green Mana Crystals": 0.01,
       },
       "Max": 0.6,
-      "Min": 0.35,
+      "Min": 0.28,
       "SpriteName": "Grass"
     },
     {
