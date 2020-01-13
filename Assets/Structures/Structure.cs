@@ -197,7 +197,7 @@ public partial class Structure : IEntity
 
         if (structure.IsType("Container"))
         {
-            return json.LoadJson<Container>();
+            return json.LoadJson<Structure>();
         }
 
         return structure;

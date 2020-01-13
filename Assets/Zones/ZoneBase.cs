@@ -62,14 +62,6 @@ public abstract class ZoneBase
         }
     }
 
-    public IEnumerable<Container> Containers
-    {
-        get
-        {
-            return Structures.OfType<Container>();
-        }
-    }
-
     public bool CanUse(IEntity entity)
     {
         return string.IsNullOrEmpty(OwnerId) || OwnerId.Equals(entity.Id);

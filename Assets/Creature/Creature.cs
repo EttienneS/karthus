@@ -81,11 +81,11 @@ public class Creature : IEntity
     public List<string> CarriedItemIds { get; set; } = new List<string>();
 
     [JsonIgnore]
-    public List<Item> CarriedItems
+    public IEnumerable<Item> CarriedItems
     {
         get
         {
-            return CarriedItemIds.Select(i => i.GetItem()).ToList();
+            return CarriedItemIds.Select(i => i.GetItem());
         }
     }
 
@@ -310,7 +310,7 @@ public class Creature : IEntity
 
     public Item GetItemOfType(string itemType)
     {
-        return CarriedItems.Find(i => i != null && i.Name.Equals(itemType, StringComparison.InvariantCultureIgnoreCase));
+        return CarriedItems.FirstOrDefault(i => i != null && i.IsType(itemType));
     }
 
     public int GetMinRange()
@@ -636,7 +636,7 @@ public class Creature : IEntity
 
     internal bool HasItem(string itemId)
     {
-        return CarriedItems.Find(i => i?.Id.Equals(itemId, StringComparison.InvariantCultureIgnoreCase) == true) != null;
+        return CarriedItems.FirstOrDefault(i => i?.Id.Equals(itemId, StringComparison.InvariantCultureIgnoreCase) == true) != null;
     }
 
     internal bool HasItem(string itemType, int amount)
@@ -725,7 +725,6 @@ public class Creature : IEntity
                 item.Coords = (X, Y);
             }
 
-            CarriedItems.RemoveAll(i => i == null);
         }
 
         if (InternalTick >= Game.TimeManager.TickInterval)

@@ -18,7 +18,7 @@ public class MapGenerator
         get
         {
             if (_biomeTemplates == null)
-            { 
+            {
                 _biomeTemplates = new List<Biome>();
                 foreach (var biomeFile in Game.FileController.BiomeFiles)
                 {
@@ -309,7 +309,6 @@ public class MapGenerator
         catch (Exception)
         {
         }
-       
     }
 
     private List<List<Cell>> CreateBuildings(int maxWidth, int maxHeight, int minWidth, int minHeight, List<Cell> street)
@@ -428,27 +427,22 @@ public class MapGenerator
         {
             var center = Game.Map.GetNearestPathableCell(Game.Map.Center, Mobility.Walk, 25);
 
-            var berryBox =  Game.StructureController.SpawnStructure("Box", center.GetNeighbor(Direction.N), Game.FactionController.PlayerFaction) as Container;
-            var woodBox = Game.StructureController.SpawnStructure("Box", center.GetNeighbor(Direction.E), Game.FactionController.PlayerFaction) as Container;
-            var stoneBox = Game.StructureController.SpawnStructure("Box", center.GetNeighbor(Direction.S), Game.FactionController.PlayerFaction) as Container;
-
-            berryBox.AddItem(Game.ItemController.SpawnItem("Berries", center.GetNeighbor(Direction.N), 100));
-            woodBox.AddItem(Game.ItemController.SpawnItem("Wood", center.GetNeighbor(Direction.N), 25));
-            stoneBox.AddItem(Game.ItemController.SpawnItem("Stone", center.GetNeighbor(Direction.S), 25));
-            //boxW.AddItem(stone);
+            Game.FactionController.PlayerFaction.HomeCells.AddRange(Game.Map.GetCircle(Game.Map.Center, 15));
+            Game.ItemController.SpawnItem("Berries", center.GetNeighbor(Direction.N), 100);
+            Game.ItemController.SpawnItem("Wood", center.GetNeighbor(Direction.N), 25);
+            Game.ItemController.SpawnItem("Stone", center.GetNeighbor(Direction.S), 25);
 
             for (int i = 0; i < 3; i++)
             {
-                Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("Person"),
-                                                      Game.Map.GetNearestPathableCell(center, Mobility.Walk, 25),
-                                                      faction);
+                var c = Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("Person"),
+                                                         Game.Map.GetNearestPathableCell(center, Mobility.Walk, 25),
+                                                         faction);
+                c.Data.Hunger = 100;
             }
         }
         catch (Exception)
         {
-
         }
-       
     }
 
     private void MakeStreet(Cell crossingPoint, int length, bool vertical, double momentum, int color, List<List<Cell>> streets)

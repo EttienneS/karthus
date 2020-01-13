@@ -1,15 +1,12 @@
-﻿using System;
-using System.Linq;
-
-public class FindAndGetItem : CreatureTask
+﻿public class FindAndGetItem : CreatureTask
 {
-    internal string ItemType;
+    internal string ItemCriteria;
     internal int Amount;
     internal string TargetId;
 
     public FindAndGetItem(string itemType, int amount)
     {
-        ItemType = itemType;
+        ItemCriteria = itemType;
         Amount = amount;
     }
 
@@ -17,7 +14,7 @@ public class FindAndGetItem : CreatureTask
     {
         if (SubTasksComplete(creature))
         {
-            if (creature.HasItem(ItemType, Amount))
+            if (creature.HasItem(ItemCriteria, Amount))
             {
                 return true;
             }
@@ -25,64 +22,22 @@ public class FindAndGetItem : CreatureTask
             {
                 if (string.IsNullOrEmpty(TargetId))
                 {
-                    var distance = float.MaxValue;
-                    Structure container = null;
-                    Item closestItem = null;
+                    IEntity targetEntity = creature.Faction.FindItemOrContainer(ItemCriteria, creature);
 
-                    foreach (var structure in creature.Faction.Containers.Where(s => s.ItemType == ItemType))
+                    if (targetEntity == null)
                     {
-                        if (structure.Count > 0)
-                        {
-                            var dist = Pathfinder.Distance(creature.Cell, structure.Cell, creature.Mobility);
-                            if (dist < distance)
-                            {
-                                distance = dist;
-                                container = structure;
-                            }
-                        }
-                    }
-
-                    if (container == null)
-                    {
-                        foreach (var item in IdService.ItemLookup.Where(i => i.Value.Name.Equals(ItemType, StringComparison.OrdinalIgnoreCase) && !i.Value.InUseByAnyone))
-                        {
-                            var dist = Pathfinder.Distance(creature.Cell, item.Value.Cell, creature.Mobility);
-
-                            if (dist < distance)
-                            {
-                                distance = dist;
-                                closestItem = item.Value;
-                                if (dist < 10)
-                                {
-                                    // close enough stop searching
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    if (closestItem == null && container == null)
-                    {
-                        throw new TaskFailedException($"No items of required type ({ItemType}) can be found");
+                        throw new TaskFailedException($"No items of required type ({ItemCriteria}) can be found");
                     }
                     else
                     {
-                        if (container != null)
-                        {
-                            TargetId = container.Id;
-                            AddSubTask(new Move(container.Cell));
-                        }
-                        else
-                        {
-                            TargetId = closestItem.Id;
-                            AddSubTask(new Move(closestItem.Cell));
-                        }
+                        AddSubTask(new Move(targetEntity.Cell));
+                        TargetId = targetEntity.Id;
                     }
                 }
                 else
                 {
                     var targetItem = TargetId.GetItem();
-                    var requiredAmount = Amount - creature.CurrentItemCount(ItemType);
+                    var requiredAmount = Amount - creature.CurrentItemCount(ItemCriteria);
                     if (targetItem != null)
                     {
                         creature.PickUpItem(targetItem, requiredAmount);
@@ -95,6 +50,7 @@ public class FindAndGetItem : CreatureTask
                         {
                             creature.PickUpItem(item, requiredAmount);
                         }
+                        container.Free();
                     }
 
                     TargetId = null;

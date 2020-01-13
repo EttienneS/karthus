@@ -149,10 +149,10 @@ public class Faction
         }
     }
 
-    public Structure GetStorageFor(Item item)
+    public Container GetStorageFor(Item item)
     {
         var pendingStorage = AvailableTasks.OfType<StoreItem>().ToList();
-        var options = new List<Structure>();
+        var options = new List<Container>();
         foreach (var container in Containers.Where(s => !s.IsBluePrint))
         {
             if (pendingStorage.Any(p => p.StorageStructureId == container.Id))
@@ -208,4 +208,81 @@ public class Faction
             task.Destroy();
         }
     }
+
+    public IEntity FindItemOrContainer(string criteria, Creature creature)
+    {
+        IEntity entity = FindContainerWithItem(criteria, creature);
+
+        if (entity == null)
+        {
+            entity = FindItem(criteria, creature);
+        }
+
+        return entity;
+    }
+
+    public Item FindItem(string criteria, Creature creature)
+    {
+        var items = HomeCells.SelectMany(c => c?.Items.Where(item => item.IsType(criteria) && !item.InUseByAnyone));
+
+        Item targetItem = null;
+        var bestDistance = float.MaxValue;
+
+        foreach (var item in items)
+        {
+            var best = false;
+            var cell = item.Cell;
+            var distance = Pathfinder.Distance(creature.Cell, item.Cell, creature.Mobility);
+
+            if (targetItem == null)
+            {
+                best = true;
+            }
+            else
+            {
+                best = distance > bestDistance;
+            }
+
+            if (best)
+            {
+                targetItem = item;
+                bestDistance = distance;
+            }
+        }
+
+        return targetItem;
+    }
+
+    public Structure FindContainerWithItem(string criteria, Creature creature)
+    {
+        var containers = StorageZones.SelectMany(zone => zone.Containers.Where(container => container.HasItemOfType(criteria) && !container.InUseByAnyone));
+
+        Structure targetContainer = null;
+        var bestDistance = float.MaxValue;
+
+        foreach (var container in containers)
+        {
+            var best = false;
+            var cell = container.Cell;
+            var distance = Pathfinder.Distance(creature.Cell, container.Cell, creature.Mobility);
+
+            if (targetContainer == null)
+            {
+                best = true;
+            }
+            else
+            {
+                best = distance > bestDistance;
+            }
+
+            if (best)
+            {
+                targetContainer = container;
+                bestDistance = distance;
+            }
+        }
+
+        return targetContainer;
+    }
+
 }

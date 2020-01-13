@@ -14,6 +14,11 @@
     {
         if (SubTasksComplete(creature))
         {
+            if (creature.HasItem(ItemId))
+            {
+                return true;
+            }
+
             var item = ItemId.GetItem();
             if (item == null)
             {
