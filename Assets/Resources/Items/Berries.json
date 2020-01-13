@@ -6,5 +6,8 @@
       "Berries": "1"
     }
   },
-  "Categories": [ "Food" ]
+  "Categories": [ "Food" ],
+  "ValueProperties": {
+    "Nutrition": 10
+  }
 }

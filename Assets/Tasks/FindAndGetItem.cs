@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
 
-public class Acquire : CreatureTask
+public class FindAndGetItem : CreatureTask
 {
     internal string ItemType;
     internal int Amount;
     internal string TargetId;
 
-    public Acquire(string itemType, int amount)
+    public FindAndGetItem(string itemType, int amount)
     {
         ItemType = itemType;
         Amount = amount;
@@ -90,7 +90,7 @@ public class Acquire : CreatureTask
                     else
                     {
                         var container = TargetId.GetContainer();
-                        var item = container.GetItem(ItemType, requiredAmount);
+                        var item = container.GetItem(requiredAmount);
                         if (item != null)
                         {
                             creature.PickUpItem(item, requiredAmount);

@@ -636,7 +636,7 @@ public class Creature : IEntity
 
     internal bool HasItem(string itemId)
     {
-       return CarriedItems.Find(i => i?.Id.Equals(itemId, StringComparison.InvariantCultureIgnoreCase) == true) != null;
+        return CarriedItems.Find(i => i?.Id.Equals(itemId, StringComparison.InvariantCultureIgnoreCase) == true) != null;
     }
 
     internal bool HasItem(string itemType, int amount)
@@ -659,9 +659,12 @@ public class Creature : IEntity
 
     internal void Live()
     {
-        ValueProperties[Prop.Hunger] += Random.value;
-        ValueProperties[Prop.Energy] -= Random.Range(0.1f, 0.25f);
+        Hunger += Random.value;
+        Energy -= Random.Range(0.1f, 0.25f);
     }
+
+    public float Hunger { get; set; }
+    public float Energy { get; set; }
 
     internal void Perceive()
     {

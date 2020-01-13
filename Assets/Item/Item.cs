@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Item : IEntity
@@ -29,6 +31,16 @@ public class Item : IEntity
 
             Renderer?.UpdatePosition();
         }
+    }
+
+    internal bool IsType(string type)
+    {
+        if (Name.Equals(type, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        return Categories.Contains(type, StringComparer.OrdinalIgnoreCase);
     }
 
     public string FactionName { get; set; }

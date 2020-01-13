@@ -1,9 +1,5 @@
 ﻿{
   "Name": "Person",
-  "ValueProperties": {
-    "Energy": "100",
-    "Hunger": "0"
-  },
   "Speed": 0.2,
 
   "Strenght": 14,

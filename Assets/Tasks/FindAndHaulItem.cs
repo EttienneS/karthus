@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-public class Haul : CreatureTask
+public class FindAndHaulItem : CreatureTask
 {
     internal int Amount;
 
@@ -12,13 +12,13 @@ public class Haul : CreatureTask
 
     internal string DestinationEntityId;
 
-    public Haul()
+    public FindAndHaulItem()
     {
         RequiredSkill = SkillConstants.Haul;
         RequiredSkillLevel = 1;
     }
 
-    public Haul(string itemType, int amount, Cell target, IEntity destinationEntity) : this()
+    public FindAndHaulItem(string itemType, int amount, Cell target, IEntity destinationEntity) : this()
     {
         TargetX = target.Vector.x;
         TargetY = target.Vector.y;
@@ -28,7 +28,7 @@ public class Haul : CreatureTask
         }
         ItemType = itemType;
         Amount = amount;
-        AddSubTask(new Acquire(itemType, amount));
+        AddSubTask(new FindAndGetItem(itemType, amount));
         AddSubTask(new Move(target));
     }
 

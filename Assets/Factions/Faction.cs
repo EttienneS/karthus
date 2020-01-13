@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -26,6 +27,15 @@ public class Faction
     public List<Cell> HomeCells = new List<Cell>();
 
     public float UpdateTick = 1;
+
+    [JsonIgnore]
+    public IEnumerable<StorageZone> StorageZones
+    {
+        get
+        {
+            return Game.ZoneController.StorageZones.Where(z => z.FactionName == FactionName);
+        }
+    }
 
     public CreatureTask AddTask(CreatureTask task)
     {

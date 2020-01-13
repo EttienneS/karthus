@@ -83,7 +83,11 @@ public static class Behaviours
             // split up
             task = new Move(Game.Map.GetPathableNeighbour(creature.Cell));
         }
-        else if (creature.ValueProperties[Prop.Energy] < 15)
+        else if (creature.Hunger > 100)
+        {
+            task = new Eat();
+        }
+        else if (creature.Energy < 15)
         {
             var bed = creature.Self.Structures.FirstOrDefault(s => s.Properties.ContainsKey("RecoveryRate"));
 

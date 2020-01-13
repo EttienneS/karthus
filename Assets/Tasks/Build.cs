@@ -27,7 +27,7 @@ public class Build : CreatureTask
 
         foreach (var item in structure.Cost.Items)
         {
-            AddSubTask(new Haul(item.Key, item.Value, structure.Cell, structure));
+            AddSubTask(new FindAndHaulItem(item.Key, item.Value, structure.Cell, structure));
         }
         AddSubTask(new Move(structure.Cell.GetPathableNeighbour()));
 

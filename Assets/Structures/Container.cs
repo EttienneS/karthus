@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-public class Container : Structure 
+public class Container : Structure
 {
     public int Count { get; set; }
 
@@ -11,6 +11,20 @@ public class Container : Structure
     public int Capacity { get; set; }
     public int Priority { get; set; }
 
+    internal bool HasItemOfType(string type)
+    {
+        return GetContainedItemTemplate().IsType(type);
+    }
+
+    public Item GetContainedItemTemplate()
+    {
+        if (string.IsNullOrEmpty(ItemType))
+        {
+            return null;
+        }
+
+        return Game.ItemController.ItemDataReference[ItemType];
+    }
 
     public void ClearItem()
     {
@@ -42,18 +56,18 @@ public class Container : Structure
 
     public bool FilterValid()
     {
-        
-        return FilterMatch(ItemType, Game.ItemController.ItemDataReference[ItemType].Categories);
+        if (string.IsNullOrEmpty(ItemType))
+        {
+            return true;
+        }
+        return FilterMatch(ItemType, GetContainedItemTemplate().Categories);
     }
-
-   
 
     public int RemainingCapacity
     {
         get
         {
             return Mathf.Max(Capacity - Count, 0);
-
         }
     }
 
@@ -116,19 +130,14 @@ public class Container : Structure
         return FilterMatch(item.Name, item.Categories);
     }
 
-    internal Item GetItem(string itemType, int amount)
+    internal Item GetItem(int amount)
     {
-        if (ItemType != itemType)
-        {
-            return null;
-        }
-
         if (Count <= amount)
         {
             amount = Count;
         }
 
-        var item = Game.ItemController.SpawnItem(itemType, Cell, amount);
+        var item = Game.ItemController.SpawnItem(ItemType, Cell, amount);
         Count -= amount;
 
         if (Count <= 0)
