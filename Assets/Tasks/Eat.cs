@@ -3,7 +3,8 @@ using System.Linq;
 
 public class Eat : CreatureTask
 {
-    public bool DoneEating;
+    public bool Eating;
+    public bool Ate;
 
     public const string FoodCriteria = "Food";
 
@@ -16,18 +17,27 @@ public class Eat : CreatureTask
     {
         if (SubTasksComplete(creature))
         {
-            if (!DoneEating)
+            if (!Eating)
             {
                 AddSubTask(new Wait(2, "Eating...") { BusyEmote = "OMONONOMNOM" });
-                DoneEating = true;
+                Eating = true;
             }
-            else
+            else if (!Ate)
             {
                 var food = creature.CarriedItems.FirstOrDefault(i => i.IsType(FoodCriteria));
                 creature.Hunger -= food.ValueProperties["Nutrition"];
                 creature.CarriedItemIds.Remove(food.Id);
                 IdService.DestroyEntity(food);
-                return true;
+                Ate = true;
+
+                if (creature.Hunger > 10)
+                {
+                    AddSubTask(new Eat());
+                }
+            }
+            else
+            {
+                return creature.Hunger < 10;
             }
         }
         return false;

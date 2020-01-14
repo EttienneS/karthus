@@ -659,8 +659,8 @@ public class Creature : IEntity
 
     internal void Live()
     {
-        Hunger += Random.value;
-        Energy -= Random.Range(0.1f, 0.25f);
+        Hunger += 0.35f;
+        Energy -= 0.1f;
     }
 
     public float Hunger { get; set; }
@@ -724,7 +724,6 @@ public class Creature : IEntity
                 item.Renderer.SpriteRenderer.sortingLayerName = LayerConstants.CarriedItem;
                 item.Coords = (X, Y);
             }
-
         }
 
         if (InternalTick >= Game.TimeManager.TickInterval)

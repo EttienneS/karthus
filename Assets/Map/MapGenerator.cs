@@ -428,16 +428,17 @@ public class MapGenerator
             var center = Game.Map.GetNearestPathableCell(Game.Map.Center, Mobility.Walk, 25);
 
             Game.FactionController.PlayerFaction.HomeCells.AddRange(Game.Map.GetCircle(Game.Map.Center, 15));
-            Game.ItemController.SpawnItem("Berries", center.GetNeighbor(Direction.N), 100);
-            Game.ItemController.SpawnItem("Wood", center.GetNeighbor(Direction.N), 25);
-            Game.ItemController.SpawnItem("Stone", center.GetNeighbor(Direction.S), 25);
+
+            var open = Game.Map.GetCircle(center, 8).Where(c => c.Pathable(Mobility.Walk));
+            Game.ItemController.SpawnItem("Berries", open.GetRandomItem(), 100);
+            Game.ItemController.SpawnItem("Wood", open.GetRandomItem(), 25);
+            Game.ItemController.SpawnItem("Stone", open.GetRandomItem(), 25);
 
             for (int i = 0; i < 3; i++)
             {
                 var c = Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("Person"),
                                                          Game.Map.GetNearestPathableCell(center, Mobility.Walk, 25),
                                                          faction);
-                c.Data.Hunger = 100;
             }
         }
         catch (Exception)
