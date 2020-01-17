@@ -512,8 +512,17 @@ public class Creature : IEntity
         return text;
     }
 
+    bool firstRun = true;
+
     public void UpdateSprite()
     {
+        if (firstRun)
+        {
+            CreatureRenderer.MainRenderer.sprite = Game.SpriteStore.GetRandomSprite();
+            firstRun = false;
+        }
+
+        return;
         bool flip = Facing == Direction.W || Facing == Direction.NE || Facing == Direction.SW;
         if (!Sprite.Contains("_"))
         {

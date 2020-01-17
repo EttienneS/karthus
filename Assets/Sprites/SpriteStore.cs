@@ -1,7 +1,12 @@
-﻿using System;
+﻿using LPC.Spritesheet.Generator;
+using LPC.Spritesheet.Interfaces;
+using LPC.Spritesheet.Renderer;
+using LPC.Spritesheet.ResourceManager;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Animation = LPC.Spritesheet.Interfaces.Animation;
 
 public class SpriteStore : MonoBehaviour
 {
@@ -10,6 +15,10 @@ public class SpriteStore : MonoBehaviour
     private Dictionary<string, Sprite> _itemSprites;
 
     private Dictionary<string, Sprite> _mapSprites;
+
+    public EmbeddedResourceManager ResourceManager { get; set; }
+    public CharacterSpriteGenerator Generator { get; set; }
+    public UnityTexture2dRenderer Renderer { get; set; }
 
     internal Dictionary<string, Sprite> ItemSprites
     {
@@ -59,6 +68,13 @@ public class SpriteStore : MonoBehaviour
 
             return _mapSprites;
         }
+    }
+
+    public void Awake()
+    {
+        ResourceManager = new EmbeddedResourceManager();
+        Generator = new CharacterSpriteGenerator(ResourceManager);
+        Renderer = new UnityTexture2dRenderer(ResourceManager);
     }
 
     public void LoadCreatureSprites()
@@ -177,6 +193,47 @@ public class SpriteStore : MonoBehaviour
         }
 
         return GetPlaceholder();
+    }
+
+    public class CharacterSpriteSheet
+    {
+        public Dictionary<Animation, Dictionary<Orientation, Sprite[]>> AnimationArray = new Dictionary<Animation, Dictionary<Orientation, Sprite[]>>();
+
+        public CharacterSpriteSheet(Texture2D texture)
+        {
+            foreach (var renderConstant in RendererConstants.SpriteSheetAnimationDefinition)
+            {
+                var parts = renderConstant.Key.Split('_');
+                var animation = (Animation)Enum.Parse(typeof(Animation), parts[0]);
+                var orientation = (Orientation)Enum.Parse(typeof(Orientation), parts[1]);
+
+                if (!AnimationArray.ContainsKey(animation))
+                {
+                    AnimationArray.Add(animation, new Dictionary<Orientation, Sprite[]>());
+                }
+
+                var sprites = new Sprite[renderConstant.Value.frames];
+                for (int x = 0; x < renderConstant.Value.frames; x++)
+                {
+                    sprites[x] = Sprite.Create(texture, new Rect(x * RendererConstants.SpriteWidth,
+                                                                 renderConstant.Value.row * RendererConstants.SpriteHeight,
+                                                                 RendererConstants.SpriteWidth,
+                                                                 RendererConstants.SpriteHeight), 
+                                                        new Vector2(0.5f, 0.5f), 
+                                                        RendererConstants.SpriteHeight);
+                }
+                AnimationArray[animation].Add(orientation, sprites);
+            } 
+        }
+
+    }
+
+    public Sprite GetRandomSprite()
+    {
+        var tex = Renderer.GetFullSpriteSheet(Generator.GetRandomCharacterSprite());
+        var cs = new CharacterSpriteSheet(tex);
+
+        return cs.AnimationArray[Animation.Shoot][Orientation.Back][0];
     }
 
     internal Sprite GetBodySprite(string spriteName, int index = 1)
