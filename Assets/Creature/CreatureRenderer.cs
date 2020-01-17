@@ -120,7 +120,7 @@ public class CreatureRenderer : MonoBehaviour
             Highlight.gameObject.SetActive(false);
         }
     }
-
+     
     internal void DisplayChannel(ManaColor color, float duration)
     {
         var col = color.GetActualColor();

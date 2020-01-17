@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using LPC.Spritesheet.Interfaces;
+using Animation = LPC.Spritesheet.Interfaces.Animation;
 
 public enum Mobility
 {
@@ -512,16 +514,19 @@ public class Creature : IEntity
         return text;
     }
 
-    bool firstRun = true;
+    [JsonIgnore]
+    internal CharacterSpriteSheet CharacterSpriteSheet;
+
+    internal int Frame;
 
     public void UpdateSprite()
     {
-        if (firstRun)
+        if (CharacterSpriteSheet == null)
         {
-            CreatureRenderer.MainRenderer.sprite = Game.SpriteStore.GetRandomSprite();
-            firstRun = false;
+            CharacterSpriteSheet = Game.SpriteStore.GetCharacterSpriteSheet();
         }
 
+        CreatureRenderer.MainRenderer.sprite = CharacterSpriteSheet.GetSprite(Animation.Shoot, Orientation.Left, ref Frame);
         return;
         bool flip = Facing == Direction.W || Facing == Direction.NE || Facing == Direction.SW;
         if (!Sprite.Contains("_"))
