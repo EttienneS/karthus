@@ -519,6 +519,31 @@ public class Creature : IEntity
 
     internal int Frame;
 
+    public Orientation GetOrientation()
+    {
+        switch (Facing)
+        {
+            case Direction.N:
+            case Direction.SE:
+            case Direction.NE:
+                return Orientation.Back;
+
+            case Direction.E:
+                return Orientation.Left;
+
+            case Direction.SW:
+            case Direction.NW:
+            case Direction.S:
+                return Orientation.Front;
+            
+            case Direction.W:
+                return Orientation.Right;
+
+            default:
+                return Orientation.Front;
+        }
+    }
+
     public void UpdateSprite()
     {
         if (CharacterSpriteSheet == null)
@@ -526,7 +551,7 @@ public class Creature : IEntity
             CharacterSpriteSheet = Game.SpriteStore.GetCharacterSpriteSheet();
         }
 
-        CreatureRenderer.MainRenderer.sprite = CharacterSpriteSheet.GetSprite(Animation.Shoot, Orientation.Left, ref Frame);
+        CreatureRenderer.MainRenderer.sprite = CharacterSpriteSheet.GetSprite(Animation.Walk, GetOrientation(), ref Frame);
         return;
         bool flip = Facing == Direction.W || Facing == Direction.NE || Facing == Direction.SW;
         if (!Sprite.Contains("_"))
