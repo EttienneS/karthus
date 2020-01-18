@@ -12,11 +12,6 @@ public class CreatureRenderer : MonoBehaviour
     internal LineRenderer LineRenderer;
     internal float RemainingTextDuration;
     internal SpriteRenderer MainRenderer;
-    internal SpriteRenderer HairRenderer;
-    internal SpriteRenderer FaceRenderer;
-    internal SpriteRenderer TopRenderer;
-    internal SpriteRenderer BottomRenderer;
-    internal SpriteRenderer BodyRenderer;
     internal TextMeshPro Text;
 
     public void Awake()
@@ -24,12 +19,6 @@ public class CreatureRenderer : MonoBehaviour
         Highlight = transform.Find("Highlight").GetComponent<SpriteRenderer>();
         var mainSprite = transform.Find("Sprite");
         MainRenderer = mainSprite.GetComponent<SpriteRenderer>();
-
-        FaceRenderer = mainSprite.Find("Face").GetComponent<SpriteRenderer>();
-        HairRenderer = mainSprite.Find("Hair").GetComponent<SpriteRenderer>();
-        TopRenderer = mainSprite.Find("Top").GetComponent<SpriteRenderer>();
-        BottomRenderer = mainSprite.Find("Bottom").GetComponent<SpriteRenderer>();
-        BodyRenderer = mainSprite.Find("Body").GetComponent<SpriteRenderer>();
 
         Text = GetComponentInChildren<TextMeshPro>();
 
@@ -78,20 +67,6 @@ public class CreatureRenderer : MonoBehaviour
 
     public void Start()
     {
-        // disable other sprites
-        if (!Data.Sprite.Contains("_"))
-        {
-            FaceRenderer.sprite = null;
-            BodyRenderer.sprite = null;
-            TopRenderer.sprite = null;
-            BottomRenderer.sprite = null;
-            HairRenderer.sprite = null;
-        }
-        else
-        {
-            MainRenderer.sprite = null;
-        }
-
         Data.Start();
     }
 

@@ -1,11 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using LPC.Spritesheet.Interfaces;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Random = UnityEngine.Random;
-using LPC.Spritesheet.Interfaces;
 using Animation = LPC.Spritesheet.Interfaces.Animation;
+using Random = UnityEngine.Random;
 
 public enum Mobility
 {
@@ -17,20 +17,12 @@ public class Creature : IEntity
     public const string SelfKey = "Self";
 
     [JsonIgnore]
-    public Color BottomColor;
-
-    [JsonIgnore]
     public List<Creature> Combatants = new List<Creature>();
 
     public Direction Facing = Direction.S;
 
     [JsonIgnore]
     public Behaviours.GetBehaviourTaskDelegate GetBehaviourTask;
-
-    [JsonIgnore]
-    public Color HairColor;
-
-    public int HairStyle;
 
     public List<OffensiveActionBase> IncomingAttacks = new List<OffensiveActionBase>();
 
@@ -39,12 +31,6 @@ public class Creature : IEntity
     public Dictionary<string, Memory> Mind = new Dictionary<string, Memory>();
 
     public Mobility Mobility;
-
-    [JsonIgnore]
-    public Color SkinColor;
-
-    [JsonIgnore]
-    public Color TopColor;
 
     internal float InternalTick = float.MaxValue;
 
@@ -57,8 +43,6 @@ public class Creature : IEntity
     private List<Cell> _awareness;
 
     private Faction _faction;
-
-    private bool _firstRun = true;
 
     private CreatureTask _task;
 
@@ -483,25 +467,6 @@ public class Creature : IEntity
         }
     }
 
-    public void SetColors()
-    {
-        if (_firstRun)
-        {
-            SkinColor = ColorExtensions.GetRandomSkinColor();
-            HairColor = ColorExtensions.GetRandomHairColor();
-            TopColor = ColorExtensions.GetRandomColor();
-            BottomColor = ColorExtensions.GetRandomColor();
-            HairStyle = Random.Range(1, 3);
-            _firstRun = false;
-        }
-
-        CreatureRenderer.MainRenderer.color = Color.white;
-        CreatureRenderer.BodyRenderer.color = SkinColor;
-        CreatureRenderer.TopRenderer.color = TopColor;
-        CreatureRenderer.BottomRenderer.color = BottomColor;
-        CreatureRenderer.HairRenderer.color = HairColor;
-    }
-
     public override string ToString()
     {
         var text = $"{Name}\n\n";
@@ -529,15 +494,15 @@ public class Creature : IEntity
                 return Orientation.Back;
 
             case Direction.E:
-                return Orientation.Left;
+                return Orientation.Right;
 
             case Direction.SW:
             case Direction.NW:
             case Direction.S:
                 return Orientation.Front;
-            
+
             case Direction.W:
-                return Orientation.Right;
+                return Orientation.Left;
 
             default:
                 return Orientation.Front;
@@ -550,40 +515,15 @@ public class Creature : IEntity
         {
             CharacterSpriteSheet = Game.SpriteStore.GetCharacterSpriteSheet();
         }
-
         CreatureRenderer.MainRenderer.sprite = CharacterSpriteSheet.GetSprite(Animation.Walk, GetOrientation(), ref Frame);
         return;
-        bool flip = Facing == Direction.W || Facing == Direction.NE || Facing == Direction.SW;
-        if (!Sprite.Contains("_"))
-        {
-            CreatureRenderer.MainRenderer.flipX = flip;
-            CreatureRenderer.MainRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite, ref Index);
-        }
-        else
-        {
-            var facingKey = Game.SpriteStore.FacingUp(Facing) ? "b_" : "f_";
 
-            CreatureRenderer.FaceRenderer.flipX = flip;
-            CreatureRenderer.BodyRenderer.flipX = flip;
-            CreatureRenderer.TopRenderer.flipX = flip;
-            CreatureRenderer.BottomRenderer.flipX = flip;
-            CreatureRenderer.HairRenderer.flipX = flip;
-
-            SetColors();
-
-            if (facingKey == "f_")
-            {
-                CreatureRenderer.FaceRenderer.sprite = Game.SpriteStore.GetBodySprite(Sprite + "face");
-            }
-            else
-            {
-                CreatureRenderer.FaceRenderer.sprite = null;
-            }
-            CreatureRenderer.BodyRenderer.sprite = Game.SpriteStore.GetBodySprite(Sprite + facingKey + "body");
-            CreatureRenderer.TopRenderer.sprite = Game.SpriteStore.GetBodySprite(Sprite + facingKey + "top");
-            CreatureRenderer.BottomRenderer.sprite = Game.SpriteStore.GetBodySprite(Sprite + facingKey + "bottom");
-            CreatureRenderer.HairRenderer.sprite = Game.SpriteStore.GetBodySprite(Sprite + facingKey + "hair_" + HairStyle);
-        }
+        //bool flip = Facing == Direction.W || Facing == Direction.NE || Facing == Direction.SW;
+        //if (!Sprite.Contains("_"))
+        //{
+        //    CreatureRenderer.MainRenderer.flipX = flip;
+        //    CreatureRenderer.MainRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite, ref Index);
+        //}
     }
 
     internal void CancelTask()
@@ -716,6 +656,7 @@ public class Creature : IEntity
 
     internal void Start()
     {
+
         foreach (var limb in Limbs)
         {
             limb.Link(this);

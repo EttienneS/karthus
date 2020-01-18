@@ -35,7 +35,7 @@ public class CharacterSpriteSheet
         var sprites = _animationDictionary[animation][orientation];
         frame++;
 
-        if (frame > sprites.Length)
+        if (frame >= sprites.Length)
         {
             frame = 0;
         }

@@ -1,4 +1,5 @@
 ﻿using LPC.Spritesheet.Generator;
+using LPC.Spritesheet.Interfaces;
 using LPC.Spritesheet.Renderer;
 using LPC.Spritesheet.ResourceManager;
 using System;
@@ -196,8 +197,15 @@ public class SpriteStore : MonoBehaviour
 
     public CharacterSpriteSheet GetCharacterSpriteSheet()
     {
-        var tex = Renderer.GetFullSpriteSheet(Generator.GetRandomCharacterSprite());
-        return new CharacterSpriteSheet(tex);
+        var character = new CharacterSprite(RandomHelper.Random.Next(10) > 5 ? Gender.Male : Gender.Female);
+        character.AddLayer(Generator.GetSprites(SpriteLayer.Body, character.Gender).GetRandomItem());
+        character.AddLayer(Generator.GetSprites(SpriteLayer.Eyes, character.Gender).GetRandomItem());
+        character.AddLayer(Generator.GetSprites(SpriteLayer.Clothes, character.Gender).GetRandomItem());
+        character.AddLayer(Generator.GetSprites(SpriteLayer.Legs, character.Gender).GetRandomItem());
+        character.AddLayer(Generator.GetSprites(SpriteLayer.Shoes, character.Gender).GetRandomItem());
+        character.AddLayer(Generator.GetSprites(SpriteLayer.Hair, character.Gender).GetRandomItem());
+
+        return new CharacterSpriteSheet(Renderer.GetFullSpriteSheet(character));
     }
 
     internal Sprite GetBodySprite(string spriteName, int index = 1)

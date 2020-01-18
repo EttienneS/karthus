@@ -2,7 +2,7 @@
 using LPC.Spritesheet.Interfaces;
 using LPC.Spritesheet.Renderer;
 using LPC.Spritesheet.ResourceManager;
-using System.Threading;
+using System.Collections.Generic;
 using UnityEngine;
 using Animation = LPC.Spritesheet.Interfaces.Animation;
 
@@ -36,36 +36,45 @@ public class SpriteTester : MonoBehaviour
 
 public static class TestSheet
 {
-    private static CharacterSpriteSheet _characterSpriteSheet;
+    private static List<CharacterSpriteSheet> _characterSpriteSheets;
+    private static CharacterSpriteSheet _current;
 
     private static readonly EmbeddedResourceManager ResourceManager = new EmbeddedResourceManager();
     private static readonly CharacterSpriteGenerator Generator = new CharacterSpriteGenerator(ResourceManager);
     private static readonly UnityTexture2dRenderer Renderer = new UnityTexture2dRenderer(ResourceManager);
-    private static int _counter = 0;
+    private static int _counter = 999999;
+
     public static CharacterSpriteSheet CharacterSpriteSheet
     {
         get
         {
             _counter++;
-            if (_characterSpriteSheet == null || _counter > 1000)
+            if (_characterSpriteSheets == null)
+            {
+                _characterSpriteSheets = new List<CharacterSpriteSheet>();
+
+                for (int i = 0; i < 20; i++)
+                {
+                    var character = new CharacterSprite(RandomHelper.Random.Next(10) > 5 ? Gender.Male : Gender.Female);
+                    character.AddLayer(Generator.GetSprites(SpriteLayer.Body, character.Gender).GetRandomItem());
+                    character.AddLayer(Generator.GetSprites(SpriteLayer.Eyes, character.Gender).GetRandomItem());
+                    character.AddLayer(Generator.GetSprites(SpriteLayer.Clothes, character.Gender).GetRandomItem());
+                    character.AddLayer(Generator.GetSprites(SpriteLayer.Legs, character.Gender).GetRandomItem());
+                    character.AddLayer(Generator.GetSprites(SpriteLayer.Shoes, character.Gender).GetRandomItem());
+                    character.AddLayer(Generator.GetSprites(SpriteLayer.Hair, character.Gender).GetRandomItem());
+
+                    //_characterSpriteSheet = new CharacterSpriteSheet(Renderer.GetFullSpriteSheet(Generator.GetRandomCharacterSprite()));
+                    _characterSpriteSheets.Add(new CharacterSpriteSheet(Renderer.GetFullSpriteSheet(character)));
+                }
+            }
+
+            if (_counter > 100)
             {
                 _counter = 0;
-                var character = new CharacterSprite(RandomHelper.Random.Next(10) > 5 ? Gender.Male : Gender.Female);
-                character.AddLayer(Generator.GetSprites(SpriteLayer.Body, character.Gender).GetRandomItem());
-                character.AddLayer(Generator.GetSprites(SpriteLayer.Eyes, character.Gender).GetRandomItem());
-                character.AddLayer(Generator.GetSprites(SpriteLayer.Clothes, character.Gender).GetRandomItem());
-                character.AddLayer(Generator.GetSprites(SpriteLayer.Legs, character.Gender).GetRandomItem());
-                character.AddLayer(Generator.GetSprites(SpriteLayer.Shoes, character.Gender).GetRandomItem());
-                character.AddLayer(Generator.GetSprites(SpriteLayer.Hair, character.Gender).GetRandomItem());
+                _current = _characterSpriteSheets.GetRandomItem();
+            }
 
-                //_characterSpriteSheet = new CharacterSpriteSheet(Renderer.GetFullSpriteSheet(Generator.GetRandomCharacterSprite()));
-                _characterSpriteSheet = new CharacterSpriteSheet(Renderer.GetFullSpriteSheet(character));
-            } 
-
-            return _characterSpriteSheet;
+            return _current;
         }
     }
-     
-   
-
 }
