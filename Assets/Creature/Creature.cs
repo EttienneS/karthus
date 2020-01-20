@@ -1,11 +1,12 @@
-﻿using LPC.Spritesheet.Interfaces;
+﻿using LPC.Spritesheet.Generator;
+using LPC.Spritesheet.Generator.Enums;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Animation = LPC.Spritesheet.Interfaces.Animation;
 using Random = UnityEngine.Random;
+using Animation = LPC.Spritesheet.Generator.Interfaces.Animation;
 
 public enum Mobility
 {
@@ -515,7 +516,7 @@ public class Creature : IEntity
         {
             CharacterSpriteSheet = Game.SpriteStore.GetCharacterSpriteSheet();
         }
-        CreatureRenderer.MainRenderer.sprite = CharacterSpriteSheet.GetSprite(Animation.Walk, GetOrientation(), ref Frame);
+        CreatureRenderer.MainRenderer.sprite = CharacterSpriteSheet.GetFrame(Animation.Walk, GetOrientation(), ref Frame);
         return;
 
         //bool flip = Facing == Direction.W || Facing == Direction.NE || Facing == Direction.SW;
@@ -706,7 +707,7 @@ public class Creature : IEntity
             }
         }
 
-        if (InternalTick >= Game.TimeManager.TickInterval)
+        if (InternalTick >= Game.TimeManager.InternalCreatureTick)
         {
             InternalTick = 0;
 

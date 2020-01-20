@@ -1,10 +1,10 @@
 ﻿using LPC.Spritesheet.Generator;
-using LPC.Spritesheet.Interfaces;
-using LPC.Spritesheet.Renderer;
+using LPC.Spritesheet.Generator.Interfaces;
+using LPC.Spritesheet.Generator.Enums;
 using LPC.Spritesheet.ResourceManager;
 using System.Collections.Generic;
 using UnityEngine;
-using Animation = LPC.Spritesheet.Interfaces.Animation;
+using Animation = LPC.Spritesheet.Generator.Interfaces.Animation;
 
 public class SpriteTester : MonoBehaviour
 {
@@ -29,7 +29,7 @@ public class SpriteTester : MonoBehaviour
         if (Elapsed > 1.0f)
         {
             Elapsed = 0;
-            _renderer.sprite = TestSheet.CharacterSpriteSheet.GetSprite(Animation, Orientation, ref Frame);
+            _renderer.sprite = TestSheet.CharacterSpriteSheet.GetFrame(Animation, Orientation, ref Frame);
         }
     }
 }
@@ -41,7 +41,6 @@ public static class TestSheet
 
     private static readonly EmbeddedResourceManager ResourceManager = new EmbeddedResourceManager();
     private static readonly CharacterSpriteGenerator Generator = new CharacterSpriteGenerator(ResourceManager);
-    private static readonly UnityTexture2dRenderer Renderer = new UnityTexture2dRenderer(ResourceManager);
     private static int _counter = 999999;
 
     public static CharacterSpriteSheet CharacterSpriteSheet
@@ -53,9 +52,9 @@ public static class TestSheet
             {
                 _characterSpriteSheets = new List<CharacterSpriteSheet>();
 
-                for (int i = 0; i < 20; i++)
+                for (int i = 0; i < 5; i++)
                 {
-                    var character = new CharacterSprite(RandomHelper.Random.Next(10) > 5 ? Gender.Male : Gender.Female);
+                    var character = new CharacterSpriteDefinition(RandomHelper.Random.Next(10) > 5 ? Gender.Male : Gender.Female);
                     character.AddLayer(Generator.GetSprites(SpriteLayer.Body, character.Gender).GetRandomItem());
                     character.AddLayer(Generator.GetSprites(SpriteLayer.Eyes, character.Gender).GetRandomItem());
                     character.AddLayer(Generator.GetSprites(SpriteLayer.Clothes, character.Gender).GetRandomItem());
@@ -63,8 +62,7 @@ public static class TestSheet
                     character.AddLayer(Generator.GetSprites(SpriteLayer.Shoes, character.Gender).GetRandomItem());
                     character.AddLayer(Generator.GetSprites(SpriteLayer.Hair, character.Gender).GetRandomItem());
 
-                    //_characterSpriteSheet = new CharacterSpriteSheet(Renderer.GetFullSpriteSheet(Generator.GetRandomCharacterSprite()));
-                    _characterSpriteSheets.Add(new CharacterSpriteSheet(Renderer.GetFullSpriteSheet(character)));
+                    _characterSpriteSheets.Add(new CharacterSpriteSheet(character));
                 }
             }
 

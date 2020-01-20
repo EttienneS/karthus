@@ -1,6 +1,5 @@
 ﻿using LPC.Spritesheet.Generator;
-using LPC.Spritesheet.Interfaces;
-using LPC.Spritesheet.Renderer;
+using LPC.Spritesheet.Generator.Enums;
 using LPC.Spritesheet.ResourceManager;
 using System;
 using System.Collections.Generic;
@@ -16,7 +15,6 @@ public class SpriteStore : MonoBehaviour
 
     public EmbeddedResourceManager ResourceManager { get; set; }
     public CharacterSpriteGenerator Generator { get; set; }
-    public UnityTexture2dRenderer Renderer { get; set; }
 
     internal Dictionary<string, Sprite> ItemSprites
     {
@@ -72,7 +70,6 @@ public class SpriteStore : MonoBehaviour
     {
         ResourceManager = new EmbeddedResourceManager();
         Generator = new CharacterSpriteGenerator(ResourceManager);
-        Renderer = new UnityTexture2dRenderer(ResourceManager);
     }
 
     public void LoadCreatureSprites()
@@ -197,15 +194,15 @@ public class SpriteStore : MonoBehaviour
 
     public CharacterSpriteSheet GetCharacterSpriteSheet()
     {
-        var character = new CharacterSprite(RandomHelper.Random.Next(10) > 5 ? Gender.Male : Gender.Female);
-        character.AddLayer(Generator.GetSprites(SpriteLayer.Body, character.Gender).GetRandomItem());
-        character.AddLayer(Generator.GetSprites(SpriteLayer.Eyes, character.Gender).GetRandomItem());
-        character.AddLayer(Generator.GetSprites(SpriteLayer.Clothes, character.Gender).GetRandomItem());
-        character.AddLayer(Generator.GetSprites(SpriteLayer.Legs, character.Gender).GetRandomItem());
-        character.AddLayer(Generator.GetSprites(SpriteLayer.Shoes, character.Gender).GetRandomItem());
-        character.AddLayer(Generator.GetSprites(SpriteLayer.Hair, character.Gender).GetRandomItem());
+        var chardef = new CharacterSpriteDefinition(RandomHelper.Random.Next(10) > 5 ? Gender.Male : Gender.Female);
+        chardef.AddLayer(Generator.GetSprites(SpriteLayer.Body, chardef.Gender).GetRandomItem());
+        chardef.AddLayer(Generator.GetSprites(SpriteLayer.Eyes, chardef.Gender).GetRandomItem());
+        chardef.AddLayer(Generator.GetSprites(SpriteLayer.Clothes, chardef.Gender).GetRandomItem());
+        chardef.AddLayer(Generator.GetSprites(SpriteLayer.Legs, chardef.Gender).GetRandomItem());
+        chardef.AddLayer(Generator.GetSprites(SpriteLayer.Shoes, chardef.Gender).GetRandomItem());
+        chardef.AddLayer(Generator.GetSprites(SpriteLayer.Hair, chardef.Gender).GetRandomItem());
 
-        return new CharacterSpriteSheet(Renderer.GetFullSpriteSheet(character));
+        return new CharacterSpriteSheet(chardef);
     }
 
     internal Sprite GetBodySprite(string spriteName, int index = 1)
