@@ -54,14 +54,14 @@ public class Build : CreatureTask
                 {
                     throw new TaskFailedException("Cannot build, cell occupied");
                 }
-                AddSubTask(new Wait(0.5f, "Cell occupied"));
+                AddSubTask(new Wait(0.5f, "Cell occupied", LPC.Spritesheet.Generator.Interfaces.Animation.Slash));
                 return false;
             }
 
             if (!Built)
             {
                 var time = TargetStructure.Cost.Items.Sum(i => i.Value);
-                AddSubTask(new Wait(time, "Building"));
+                AddSubTask(new Wait(time, "Building", LPC.Spritesheet.Generator.Interfaces.Animation.Thrust));
                 Built = true;
                 Game.VisualEffectController.SpawnSpriteEffect(TargetStructure, TargetStructure.Vector, "construct", time * 2).Fades();
                 Game.VisualEffectController.SpawnSpriteEffect(creature, creature.Vector, "construct", time * 2).Fades();

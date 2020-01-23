@@ -23,7 +23,7 @@ public class Vent : CreatureTask
     {
         if (_firstRun)
         {
-            AddSubTask(new Wait(Amount, "Venting..."));
+            AddSubTask(new Wait(Amount, "Venting...", LPC.Spritesheet.Generator.Interfaces.Animation.Spellcast));
             _firstRun = false;
             Game.VisualEffectController.SpawnLightEffect(creature, creature.Vector, Color.GetActualColor(), 3, 3, Amount);
             return false;

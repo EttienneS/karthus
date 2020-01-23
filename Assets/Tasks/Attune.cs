@@ -29,7 +29,7 @@ public class Attune : CreatureTask
                 {
                     var diff = mana.Value - creature.ManaPool.GetTotal(mana.Key);
                     Game.VisualEffectController.SpawnLightEffect(creature, creature.Vector, mana.Key.GetActualColor(), 3, 3, diff);
-                    AddSubTask(new Wait(diff, "Attuning..."));
+                    AddSubTask(new Wait(diff, "Attuning...", LPC.Spritesheet.Generator.Interfaces.Animation.Spellcast));
                     AddSubTask(new GainManaTask(mana.Key, diff));
 
                     return false;

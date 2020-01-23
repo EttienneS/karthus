@@ -510,13 +510,22 @@ public class Creature : IEntity
         }
     }
 
+    public Animation Animation = Animation.Walk;
+    public float AnimationDelta = 0f;
+
+    public void SetAnimation(Animation animation, float duration)
+    {
+        Animation = animation;
+        AnimationDelta = duration;
+    }
+
     public void UpdateSprite()
     {
         if (CharacterSpriteSheet == null)
         {
             CharacterSpriteSheet = Game.SpriteStore.GetCharacterSpriteSheet();
         }
-        CreatureRenderer.MainRenderer.sprite = CharacterSpriteSheet.GetFrame(Animation.Walk, GetOrientation(), ref Frame);
+        CreatureRenderer.MainRenderer.sprite = CharacterSpriteSheet.GetFrame(Animation, GetOrientation(), ref Frame);
         return;
 
         //bool flip = Facing == Direction.W || Facing == Direction.NE || Facing == Direction.SW;
@@ -718,6 +727,15 @@ public class Creature : IEntity
             UpdateSprite();
 
             return true;
+        }
+
+        if (AnimationDelta > 0)
+        {
+            AnimationDelta -= Time.deltaTime;            
+        }
+        else
+        {
+            Animation = Animation.Walk;
         }
 
         return false;

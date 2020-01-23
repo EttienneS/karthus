@@ -1,26 +1,36 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using Animation = LPC.Spritesheet.Generator.Interfaces.Animation;
 
 public class Wait : CreatureTask
 {
     public float Duration;
     public float ElapsedTime;
     public string Reason;
+    public Animation Animation;
+
+    private bool _hasRunOnce;
 
     public Wait()
     {
     }
 
-    public Wait(float duration, string reason) : this()
+    public Wait(float duration, string reason, Animation animation = Animation.Walk) : this()
     {
         Duration = duration;
         Reason = reason;
         ElapsedTime = 0;
         Message = $"{Reason} {Duration}";
+        Animation = animation;
     }
 
     public override bool Done(Creature creature)
     {
+        if (!_hasRunOnce)
+        {
+            creature.SetAnimation(Animation, Duration);
+            _hasRunOnce = true;
+        }
+
         ElapsedTime += Time.deltaTime;
 
         if (ElapsedTime >= Duration)

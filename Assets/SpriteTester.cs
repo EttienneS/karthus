@@ -1,78 +1,47 @@
 ﻿using LPC.Spritesheet.Generator;
-using LPC.Spritesheet.Generator.Interfaces;
 using LPC.Spritesheet.Generator.Enums;
 using LPC.Spritesheet.ResourceManager;
-using System.Collections.Generic;
 using UnityEngine;
 using Animation = LPC.Spritesheet.Generator.Interfaces.Animation;
 
 public class SpriteTester : MonoBehaviour
 {
+    // the attached renderer
     private SpriteRenderer _renderer;
+
+    // object to hold the sheet definition
+    private CharacterSpriteSheet _characterSpriteSheet;
 
     public Animation Animation;
     public Orientation Orientation;
-    public int Frame;
 
-    public float Elapsed = 1f;
+    // keep track of the current animation frame
+    private int _frame;
+
+    // keep track of time to only update the frame every second
+    private float _delta;
 
     private void Start()
     {
+        // get the attached renderer
         _renderer = GetComponent<SpriteRenderer>();
+
+        // create a generator (this loads everything in the resource manager into memory, so if you need a few of these keep this as a singleton somewhere)
+        var generator = new CharacterSpriteGenerator(new EmbeddedResourceManager());
+
+        // generate the sprite, this will go over and select random items and all 27 layers and merge them into a single texture (expensive, takes ~200ms)
+        _characterSpriteSheet = new CharacterSpriteSheet(generator.GetRandomCharacterSprite());
     }
 
-    // Update is called once per frame
     private void Update()
     {
-        Elapsed += Time.deltaTime;
+        _delta += Time.deltaTime;
 
-        if (Elapsed > 1.0f)
+        if (_delta > 1f)
         {
-            Elapsed = 0;
-            _renderer.sprite = TestSheet.CharacterSpriteSheet.GetFrame(Animation, Orientation, ref Frame);
-        }
-    }
-}
-
-public static class TestSheet
-{
-    private static List<CharacterSpriteSheet> _characterSpriteSheets;
-    private static CharacterSpriteSheet _current;
-
-    private static readonly EmbeddedResourceManager ResourceManager = new EmbeddedResourceManager();
-    private static readonly CharacterSpriteGenerator Generator = new CharacterSpriteGenerator(ResourceManager);
-    private static int _counter = 999999;
-
-    public static CharacterSpriteSheet CharacterSpriteSheet
-    {
-        get
-        {
-            _counter++;
-            if (_characterSpriteSheets == null)
-            {
-                _characterSpriteSheets = new List<CharacterSpriteSheet>();
-
-                for (int i = 0; i < 5; i++)
-                {
-                    var character = new CharacterSpriteDefinition(RandomHelper.Random.Next(10) > 5 ? Gender.Male : Gender.Female);
-                    character.AddLayer(Generator.GetSprites(SpriteLayer.Body, character.Gender).GetRandomItem());
-                    character.AddLayer(Generator.GetSprites(SpriteLayer.Eyes, character.Gender).GetRandomItem());
-                    character.AddLayer(Generator.GetSprites(SpriteLayer.Clothes, character.Gender).GetRandomItem());
-                    character.AddLayer(Generator.GetSprites(SpriteLayer.Legs, character.Gender).GetRandomItem());
-                    character.AddLayer(Generator.GetSprites(SpriteLayer.Shoes, character.Gender).GetRandomItem());
-                    character.AddLayer(Generator.GetSprites(SpriteLayer.Hair, character.Gender).GetRandomItem());
-
-                    _characterSpriteSheets.Add(new CharacterSpriteSheet(character));
-                }
-            }
-
-            if (_counter > 100)
-            {
-                _counter = 0;
-                _current = _characterSpriteSheets.GetRandomItem();
-            }
-
-            return _current;
+            _delta = 0;
+            // send in a refrence to the frame integer, will increment and go over the items (if it goes over it will reset to 0 to loop the animation)
+            _renderer.sprite = _characterSpriteSheet.GetFrame(Animation, Orientation, ref _frame);
         }
     }
 }
