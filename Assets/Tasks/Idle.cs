@@ -15,7 +15,7 @@ public class Idle : CreatureTask
             var wanderCircle = Game.Map.GetCircle(creature.Cell, 2).Where(c => c.TravelCost == 1).ToList();
             if (wanderCircle.Count > 0)
             {
-                AddSubTask(new Move(wanderCircle[Random.Range(0, wanderCircle.Count - 1)], (int)creature.Speed));
+                AddSubTask(new Move(wanderCircle[Random.Range(0, wanderCircle.Count - 1)]));
             }
         }
         else

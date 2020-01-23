@@ -85,7 +85,8 @@ public class CreatureController : MonoBehaviour
         creature.Data.Y = cell.Vector.y + Random.Range(-0.25f, 0.25f);
         creature.UpdatePosition();
 
-        creature.Data.WorkTick = Random.Range(0, Game.TimeManager.WorkInterval);
+        creature.Data.InternalTick = Random.Range(0, Game.TimeManager.CreatureTick);
+
         creature.Data.GetBehaviourTask = Behaviours.GetBehaviourFor(creature.Data.BehaviourName);
 
         creature.MainRenderer.material = Game.MaterialController.DefaultMaterial;

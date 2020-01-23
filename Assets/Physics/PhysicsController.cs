@@ -8,7 +8,7 @@ public class PhysicsController : MonoBehaviour
     public int UpdatesPerFrame = 200;
 
     [Range(0f, 0.2f)] public float PhysicsRate = 0.05f;
-    internal float WorkTick;
+    //internal float WorkTick;
 
     //private EntityManager _entityManager;
 

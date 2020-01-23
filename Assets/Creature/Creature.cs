@@ -5,8 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Random = UnityEngine.Random;
 using Animation = LPC.Spritesheet.Generator.Interfaces.Animation;
+using Random = UnityEngine.Random;
 
 public enum Mobility
 {
@@ -16,6 +16,10 @@ public enum Mobility
 public class Creature : IEntity
 {
     public const string SelfKey = "Self";
+
+    public Animation Animation = Animation.Walk;
+
+    public float AnimationDelta = 0f;
 
     [JsonIgnore]
     public List<Creature> Combatants = new List<Creature>();
@@ -33,12 +37,16 @@ public class Creature : IEntity
 
     public Mobility Mobility;
 
+    public (float x, float y) TargetCoordinate;
+
+    [JsonIgnore]
+    internal CharacterSpriteSheet CharacterSpriteSheet;
+
+    internal int Frame;
     internal float InternalTick = float.MaxValue;
 
     [JsonIgnore]
     internal Cell LastPercievedCoordinate;
-
-    internal float WorkTick = float.MaxValue;
 
     [JsonIgnore]
     private List<Cell> _awareness;
@@ -99,6 +107,8 @@ public class Creature : IEntity
 
     public int Dexterity { get; set; }
 
+    public float Energy { get; set; }
+
     [JsonIgnore]
     public Faction Faction
     {
@@ -115,6 +125,7 @@ public class Creature : IEntity
 
     public string FactionName { get; set; }
 
+    public float Hunger { get; set; }
     public string Id { get; set; }
 
     [JsonIgnore]
@@ -310,6 +321,31 @@ public class Creature : IEntity
         return options.Max(o => o.Range);
     }
 
+    public Orientation GetOrientation()
+    {
+        switch (Facing)
+        {
+            case Direction.N:
+            case Direction.SE:
+            case Direction.NE:
+                return Orientation.Back;
+
+            case Direction.E:
+                return Orientation.Right;
+
+            case Direction.SW:
+            case Direction.NW:
+            case Direction.S:
+                return Orientation.Front;
+
+            case Direction.W:
+                return Orientation.Left;
+
+            default:
+                return Orientation.Front;
+        }
+    }
+
     public List<DefensiveActionBase> GetPossibleDefensiveActions(OffensiveActionBase action)
     {
         return GetDefensiveOptions().Where(d => d.ActivationTIme <= action.TimeToComplete()).ToList();
@@ -362,85 +398,6 @@ public class Creature : IEntity
         CreatureRenderer.ShowText(message, 0.5f);
     }
 
-    public void MoveTo(Creature creature)
-    {
-        MoveTo(creature.X, creature.Y);
-    }
-
-    public void MoveTo(IEntity entity)
-    {
-        MoveTo(entity.Cell);
-    }
-
-    public void MoveTo(Cell cell)
-    {
-        MoveTo(cell.X, cell.Y);
-    }
-
-    public void MoveTo(float targetX, float targetY)
-    {
-        var maxX = Mathf.Max(targetX, X);
-        var minX = Mathf.Min(targetX, X);
-
-        var maxY = Mathf.Max(targetY, Y);
-        var minY = Mathf.Min(targetY, Y);
-
-        var yspeed = Mathf.Min(Speed + Random.Range(0f, 0.01f), maxY - minY);
-        var xspeed = Mathf.Min(Speed + Random.Range(0f, 0.01f), maxX - minX);
-
-        if (targetY > Y)
-        {
-            Facing = Direction.N;
-            Y += yspeed;
-        }
-        else if (targetY < Y)
-        {
-            Facing = Direction.S;
-            Y -= yspeed;
-        }
-
-        if (targetX > X)
-        {
-            X += xspeed;
-
-            if (Facing == Direction.N)
-            {
-                Facing = Direction.NE;
-            }
-            else if (Facing == Direction.S)
-            {
-                Facing = Direction.SE;
-            }
-            else
-            {
-                Facing = Direction.E;
-            }
-        }
-        else if (targetX < X)
-        {
-            X -= xspeed;
-            if (Facing == Direction.N)
-            {
-                Facing = Direction.NW;
-            }
-            else if (Facing == Direction.S)
-            {
-                Facing = Direction.SW;
-            }
-            else
-            {
-                Facing = Direction.W;
-            }
-        }
-
-        CreatureRenderer.UpdatePosition();
-    }
-
-    public void MoveTo(Vector2 vector)
-    {
-        MoveTo(vector.x, vector.y);
-    }
-
     public void PickUpItem(Item item, int amount)
     {
         var heldItem = GetItemOfType(item.Name);
@@ -468,6 +425,19 @@ public class Creature : IEntity
         }
     }
 
+    public void SetAnimation(Animation animation, float duration)
+    {
+        Animation = animation;
+        AnimationDelta = duration;
+    }
+
+    public void SetTargetCoordinate(float targetX, float targetY)
+    {
+        TargetCoordinate = (targetX, targetY);
+        _path = null;
+        UnableToFindPath = false;
+    }
+
     public override string ToString()
     {
         var text = $"{Name}\n\n";
@@ -478,45 +448,6 @@ public class Creature : IEntity
         }
 
         return text;
-    }
-
-    [JsonIgnore]
-    internal CharacterSpriteSheet CharacterSpriteSheet;
-
-    internal int Frame;
-
-    public Orientation GetOrientation()
-    {
-        switch (Facing)
-        {
-            case Direction.N:
-            case Direction.SE:
-            case Direction.NE:
-                return Orientation.Back;
-
-            case Direction.E:
-                return Orientation.Right;
-
-            case Direction.SW:
-            case Direction.NW:
-            case Direction.S:
-                return Orientation.Front;
-
-            case Direction.W:
-                return Orientation.Left;
-
-            default:
-                return Orientation.Front;
-        }
-    }
-
-    public Animation Animation = Animation.Walk;
-    public float AnimationDelta = 0f;
-
-    public void SetAnimation(Animation animation, float duration)
-    {
-        Animation = animation;
-        AnimationDelta = duration;
     }
 
     public void UpdateSprite()
@@ -652,9 +583,6 @@ public class Creature : IEntity
         Energy -= 0.1f;
     }
 
-    public float Hunger { get; set; }
-    public float Energy { get; set; }
-
     internal void Perceive()
     {
         if (LastPercievedCoordinate != Cell)
@@ -666,13 +594,13 @@ public class Creature : IEntity
 
     internal void Start()
     {
-
         foreach (var limb in Limbs)
         {
             limb.Link(this);
         }
         LogHistory = new List<string>();
         ManaPool.EntityId = Id;
+        TargetCoordinate = (Cell.X, Cell.Y);
     }
 
     internal bool Update(float timeDelta)
@@ -684,11 +612,8 @@ public class Creature : IEntity
             return false;
 
         InternalTick += timeDelta;
-        WorkTick += timeDelta;
-
-        if (WorkTick >= Game.TimeManager.WorkInterval)
+        if (InternalTick >= Game.TimeManager.CreatureTick)
         {
-            WorkTick = 0;
             if (InCombat)
             {
                 if (Task != null)
@@ -714,10 +639,7 @@ public class Creature : IEntity
                 item.Renderer.SpriteRenderer.sortingLayerName = LayerConstants.CarriedItem;
                 item.Coords = (X, Y);
             }
-        }
 
-        if (InternalTick >= Game.TimeManager.InternalCreatureTick)
-        {
             InternalTick = 0;
 
             UpdateLimbs(timeDelta);
@@ -725,13 +647,14 @@ public class Creature : IEntity
             Perceive();
             Live();
             UpdateSprite();
+            Move();
 
             return true;
         }
 
         if (AnimationDelta > 0)
         {
-            AnimationDelta -= Time.deltaTime;            
+            AnimationDelta -= Time.deltaTime;
         }
         else
         {
@@ -893,6 +816,99 @@ public class Creature : IEntity
         return (outgoingDamage, bestAttack);
     }
 
+    private List<Cell> _path = new List<Cell>();
+
+    public bool UnableToFindPath;
+
+    private void Move()
+    {
+        if (X == TargetCoordinate.x && Y == TargetCoordinate.y)
+        {
+            // no need to move
+            return;
+        }
+
+        var targetCell = Game.Map.GetCellAtCoordinate(TargetCoordinate.x, TargetCoordinate.y);
+        if (_path == null || _path.Count == 0)
+        {
+            _path = Pathfinder.FindPath(Game.Map.GetCellAtCoordinate(X, Y), targetCell, Mobility);
+        }
+
+        if (_path == null || _path.Count == 0)
+        {
+            UnableToFindPath = true;
+            Debug.LogWarning("Unable to find path!");
+            return;
+        }
+
+        var nextCell = _path[0];
+        var targetX = nextCell.Vector.x;
+        var targetY = nextCell.Vector.y;
+
+        if (X == targetX && Y == targetY)
+        {
+            // reached the cell
+            _path.RemoveAt(0);
+            return;
+        }
+
+        var maxX = Mathf.Max(targetX, X);
+        var minX = Mathf.Min(targetX, X);
+
+        var maxY = Mathf.Max(targetY, Y);
+        var minY = Mathf.Min(targetY, Y);
+
+        var yspeed = Mathf.Min(Speed + Random.Range(0f, 0.01f), maxY - minY);
+        var xspeed = Mathf.Min(Speed + Random.Range(0f, 0.01f), maxX - minX);
+
+        if (targetY > Y)
+        {
+            Facing = Direction.N;
+            Y += yspeed;
+        }
+        else if (targetY < Y)
+        {
+            Facing = Direction.S;
+            Y -= yspeed;
+        }
+
+        if (targetX > X)
+        {
+            X += xspeed;
+
+            if (Facing == Direction.N)
+            {
+                Facing = Direction.NE;
+            }
+            else if (Facing == Direction.S)
+            {
+                Facing = Direction.SE;
+            }
+            else
+            {
+                Facing = Direction.E;
+            }
+        }
+        else if (targetX < X)
+        {
+            X -= xspeed;
+            if (Facing == Direction.N)
+            {
+                Facing = Direction.NW;
+            }
+            else if (Facing == Direction.S)
+            {
+                Facing = Direction.SW;
+            }
+            else
+            {
+                Facing = Direction.W;
+            }
+        }
+
+        CreatureRenderer.UpdatePosition();
+    }
+
     private void ProcessCombat()
     {
         try
@@ -912,7 +928,7 @@ public class Creature : IEntity
                 {
                     if (Cell.DistanceTo(combatant.Cell) > minRange)
                     {
-                        MoveTo(combatant);
+                        SetTargetCoordinate(combatant.X, combatant.Y);
                         break;
                     }
                 }
