@@ -31,8 +31,6 @@ public class Creature : IEntity
 
     public List<OffensiveActionBase> IncomingAttacks = new List<OffensiveActionBase>();
 
-    public int Index;
-
     public Dictionary<string, Memory> Mind = new Dictionary<string, Memory>();
 
     public Mobility Mobility;
@@ -452,19 +450,28 @@ public class Creature : IEntity
 
     public void UpdateSprite()
     {
-        if (CharacterSpriteSheet == null)
+        if (Sprite == "Creature")
         {
-            CharacterSpriteSheet = Game.SpriteStore.GetCharacterSpriteSheet();
+            if (CharacterSpriteSheet == null)
+            {
+                CharacterSpriteSheet = Game.SpriteStore.GetCharacterSpriteSheet();
+            }
+            CreatureRenderer.MainRenderer.sprite = CharacterSpriteSheet.GetFrame(Animation, GetOrientation(), ref Frame);
+            return;
         }
-        CreatureRenderer.MainRenderer.sprite = CharacterSpriteSheet.GetFrame(Animation, GetOrientation(), ref Frame);
-        return;
-
-        //bool flip = Facing == Direction.W || Facing == Direction.NE || Facing == Direction.SW;
-        //if (!Sprite.Contains("_"))
-        //{
-        //    CreatureRenderer.MainRenderer.flipX = flip;
-        //    CreatureRenderer.MainRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite, ref Index);
-        //}
+        else
+        {
+            bool flip = Facing == Direction.W || Facing == Direction.NE || Facing == Direction.SW;
+            CreatureRenderer.MainRenderer.flipX = flip;
+            if (!Sprite.Contains("_"))
+            {
+                CreatureRenderer.MainRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite, ref Frame);
+            }
+            else
+            {
+                CreatureRenderer.MainRenderer.sprite = Game.SpriteStore.GetSprite(Sprite);
+            }
+        }
     }
 
     internal void CancelTask()

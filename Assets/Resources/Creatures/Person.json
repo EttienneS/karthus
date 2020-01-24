@@ -8,7 +8,7 @@
   "Vitality": 15,
 
   "Aggression": 1,
-  "Sprite": "guy_",
+  "Sprite": "Creature",
   "BehaviourName": "Person",
   "Mobility": "Walk",
   "Skills": [
