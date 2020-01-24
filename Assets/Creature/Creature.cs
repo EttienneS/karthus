@@ -451,7 +451,7 @@ public class Creature : IEntity
     public void UpdateSprite()
     {
         if (Sprite == "Creature")
-        {
+        { 
             if (CharacterSpriteSheet == null)
             {
                 CharacterSpriteSheet = Game.SpriteStore.GetCharacterSpriteSheet();
@@ -586,8 +586,8 @@ public class Creature : IEntity
 
     internal void Live()
     {
-        Hunger += 0.35f;
-        Energy -= 0.1f;
+        Hunger += 0.05f;
+        Energy -= 0.05f;
     }
 
     internal void Perceive()

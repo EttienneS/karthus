@@ -7,6 +7,9 @@
   "Dexterity": 14,
   "Vitality": 15,
 
+  "Hunger": 0,
+  "Energy": 100,
+
   "Aggression": 1,
   "Sprite": "Creature",
   "BehaviourName": "Person",
