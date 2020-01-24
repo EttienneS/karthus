@@ -50,12 +50,9 @@ public abstract class ZoneBase
         {
             var structures = new List<Structure>();
 
-            foreach (var cell in Cells)
+            foreach (var cell in Cells.Where(c => IdService.StructureCellLookup.ContainsKey(c)))
             {
-                if (IdService.StructureCellLookup.ContainsKey(cell))
-                {
-                    structures.AddRange(IdService.StructureCellLookup[cell]);
-                }
+                structures.AddRange(IdService.StructureCellLookup[cell]);
             }
 
             return structures;
