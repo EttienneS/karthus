@@ -53,14 +53,17 @@ public class EntityInfoPanel : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        if (entities.First() is Creature creature)
+        if (entities.First() is Creature creature && creature.IsPlayerControlled())
         {
             // creatures
             var creatures = entities.OfType<Creature>();
             AddMoveButton(creatures);
             AddAttackButton(creatures);
 
-            ManaPanel.SetPool(creature.ManaPool);
+            if (creature.ManaPool != null)
+            {
+                ManaPanel.SetPool(creature.ManaPool);
+            }
         }
         else if (entities.First() is Structure)
         {
@@ -102,33 +105,39 @@ public class EntityInfoPanel : MonoBehaviour
 
                 if (currentEntity is Creature creature)
                 {
-                    TabPanel.SetActive(true);
-
-                    foreach (var line in creature.LogHistory)
+                    if (creature.IsPlayerControlled())
                     {
-                        Log.text += $"{line}\n";
+                        TabPanel.SetActive(true);
+
+                        foreach (var line in creature.LogHistory)
+                        {
+                            Log.text += $"{line}\n";
+                        }
+
+                        var rt = Log.GetComponent(typeof(RectTransform)) as RectTransform;
+                        rt.sizeDelta = new Vector2(395, creature.LogHistory.Count * 20);
+
+                        PropertiesPanel.text += $"\nHunger: {creature.Hunger}\n";
+                        PropertiesPanel.text += $"Energy: {creature.Energy}\n";
+
+                        if (creature.Skills != null)
+                        {
+                            PropertiesPanel.text += "\nSkills: \n\n";
+
+                            foreach (var skill in creature.Skills)
+                            {
+                                PropertiesPanel.text += $"\t{skill}\n";
+                            }
+                            PropertiesPanel.text += "\n";
+                        }
+
+                        LogHealth(creature);
+                        LogTask(creature);
                     }
 
-                    var rt = Log.GetComponent(typeof(RectTransform)) as RectTransform;
-                    rt.sizeDelta = new Vector2(395, creature.LogHistory.Count * 20);
-
-                    PropertiesPanel.text += $"\nHunger: {creature.Hunger}\n";
-                    PropertiesPanel.text += $"Energy: {creature.Energy}\n";
-
-
-                    PropertiesPanel.text += "\nSkills: \n\n";
-
-                    foreach (var skill in creature.Skills)
-                    {
-                        PropertiesPanel.text += $"\t{skill}\n";
-                    }
-                    PropertiesPanel.text += "\n";
                     PropertiesPanel.text += $"\nLocation:\t{creature.X:F1}:{creature.Y:F1}\n\n";
 
                     
-
-                    LogHealth(creature);
-                    LogTask(creature);
                 }
                 else
                 {

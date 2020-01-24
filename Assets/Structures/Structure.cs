@@ -192,6 +192,7 @@ public partial class Structure : IEntity
     }
 
     public static Structure GetFromJson(string json)
+
     {
         var structure = json.LoadJson<Structure>();
 
