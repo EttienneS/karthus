@@ -1,5 +1,6 @@
 ﻿using LPC.Spritesheet.Generator;
 using LPC.Spritesheet.Generator.Enums;
+using LPC.Spritesheet.Generator.Interfaces;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -37,8 +38,27 @@ public class Creature : IEntity
 
     public (float x, float y) TargetCoordinate;
 
+    public Gender Gender;
+    public Race Race;
+
+    private ICharacterSpriteDefinition _spriteDef;
+    private CharacterSpriteSheet _characterSpriteSheet;
+
     [JsonIgnore]
-    internal CharacterSpriteSheet CharacterSpriteSheet;
+    internal CharacterSpriteSheet CharacterSpriteSheet
+    {
+        get
+        {
+            if (_characterSpriteSheet == null)
+            {
+                _spriteDef = Game.SpriteStore.Generator.GetBaseCharacter(Gender, Race);
+                Game.SpriteStore.Generator.AddClothes(_spriteDef);
+
+                _characterSpriteSheet = new CharacterSpriteSheet(_spriteDef);
+            }
+            return _characterSpriteSheet;
+        }
+    }
 
     internal int Frame;
     internal float InternalTick = float.MaxValue;
@@ -452,10 +472,6 @@ public class Creature : IEntity
     {
         if (Sprite == "Creature")
         {
-            if (CharacterSpriteSheet == null)
-            {
-                CharacterSpriteSheet = Game.SpriteStore.GetCharacterSpriteSheet();
-            }
             if (Animation == Animation.Walk && !Moving)
             {
                 // standing still, stay on frame 0
@@ -613,6 +629,8 @@ public class Creature : IEntity
         LogHistory = new List<string>();
         ManaPool.EntityId = Id;
         TargetCoordinate = (Cell.X, Cell.Y);
+
+        
     }
 
     internal bool Update(float timeDelta)

@@ -9,6 +9,7 @@
 
   "Hunger": 0,
   "Energy": 100,
+  "Race": "Human",
 
   "Aggression": 1,
   "Sprite": "Creature",

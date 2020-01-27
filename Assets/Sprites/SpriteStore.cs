@@ -189,15 +189,7 @@ public class SpriteStore : MonoBehaviour
 
         return GetPlaceholder();
     }
-
     
-
-    public CharacterSpriteSheet GetCharacterSpriteSheet()
-    {
-        var chardef = Generator.GetRandomCharacterSprite(Race.Human);
-        return new CharacterSpriteSheet(chardef);
-    }
-
     internal Sprite GetBodySprite(string spriteName, int index = 1)
     {
         if (CreatureSprites.ContainsKey(spriteName))
