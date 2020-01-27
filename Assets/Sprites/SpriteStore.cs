@@ -190,16 +190,6 @@ public class SpriteStore : MonoBehaviour
         return GetPlaceholder();
     }
     
-    internal Sprite GetBodySprite(string spriteName, int index = 1)
-    {
-        if (CreatureSprites.ContainsKey(spriteName))
-        {
-            return CreatureSprites[spriteName];
-        }
-
-        return GetPlaceholder();
-    }
-
     internal Sprite GetPlaceholder()
     {
         return GetSprite("Placeholder");
