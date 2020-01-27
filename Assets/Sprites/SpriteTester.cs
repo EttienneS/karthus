@@ -21,7 +21,7 @@ public static class StatGen
                 // create a generator (this loads everything in the resource manager into memory, so if you need a few of these keep this as a singleton somewhere)
                 _gen = new CharacterSpriteGenerator(new EmbeddedResourceManager());
                 sw.Stop();
-                Debug.LogWarning($"Created generator in {sw.ElapsedMilliseconds}");
+                Debug.Log($"Created generator in {sw.ElapsedMilliseconds}");
             }
             return _gen;
         }
@@ -55,7 +55,7 @@ public class SpriteTester : MonoBehaviour
         // generate the sprite, this will go over and select random items and all 27 layers and merge them into a single texture (expensive, takes ~200ms)
         _characterSpriteSheet = new CharacterSpriteSheet(StatGen.Gen.GetRandomCharacterSprite(Race.Human));
         sw.Stop();
-        Debug.LogWarning($"Created sprite in {sw.ElapsedMilliseconds}");
+        Debug.Log($"Created sprite in {sw.ElapsedMilliseconds}");
     }
 
     private void Update()

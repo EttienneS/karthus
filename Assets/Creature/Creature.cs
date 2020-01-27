@@ -51,13 +51,21 @@ public class Creature : IEntity
         {
             if (_characterSpriteSheet == null)
             {
-                _spriteDef = Game.SpriteStore.Generator.GetBaseCharacter(Gender, Race);
-                Game.SpriteStore.Generator.AddClothes(_spriteDef);
+                if (_spriteDef == null)
+                {
+                    _spriteDef = Game.SpriteStore.Generator.GetBaseCharacter(Gender, Race);
+                    Game.SpriteStore.Generator.AddClothes(_spriteDef);
+                }
 
                 _characterSpriteSheet = new CharacterSpriteSheet(_spriteDef);
             }
             return _characterSpriteSheet;
         }
+    }
+
+    public void RefreshSprite()
+    {
+        _characterSpriteSheet = null;
     }
 
     internal int Frame;
@@ -629,8 +637,6 @@ public class Creature : IEntity
         LogHistory = new List<string>();
         ManaPool.EntityId = Id;
         TargetCoordinate = (Cell.X, Cell.Y);
-
-        
     }
 
     internal bool Update(float timeDelta)
