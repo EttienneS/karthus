@@ -1,6 +1,6 @@
 ﻿{
   "Name": "Person",
-  "Speed": 0.2,
+  "Speed": 0.1,
 
   "Strenght": 14,
   "Perception": 5,

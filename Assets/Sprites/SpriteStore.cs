@@ -194,14 +194,7 @@ public class SpriteStore : MonoBehaviour
 
     public CharacterSpriteSheet GetCharacterSpriteSheet()
     {
-        var chardef = new CharacterSpriteDefinition(RandomHelper.Random.Next(10) > 5 ? Gender.Male : Gender.Female);
-        chardef.AddLayer(Generator.GetSprites(SpriteLayer.Body, chardef.Gender).GetRandomItem());
-        chardef.AddLayer(Generator.GetSprites(SpriteLayer.Eyes, chardef.Gender).GetRandomItem());
-        chardef.AddLayer(Generator.GetSprites(SpriteLayer.Clothes, chardef.Gender).GetRandomItem());
-        chardef.AddLayer(Generator.GetSprites(SpriteLayer.Legs, chardef.Gender).GetRandomItem());
-        chardef.AddLayer(Generator.GetSprites(SpriteLayer.Shoes, chardef.Gender).GetRandomItem());
-        chardef.AddLayer(Generator.GetSprites(SpriteLayer.Hair, chardef.Gender).GetRandomItem());
-
+        var chardef = Generator.GetRandomCharacterSprite(Race.Human);
         return new CharacterSpriteSheet(chardef);
     }
 

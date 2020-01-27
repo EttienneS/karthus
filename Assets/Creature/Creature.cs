@@ -451,10 +451,15 @@ public class Creature : IEntity
     public void UpdateSprite()
     {
         if (Sprite == "Creature")
-        { 
+        {
             if (CharacterSpriteSheet == null)
             {
                 CharacterSpriteSheet = Game.SpriteStore.GetCharacterSpriteSheet();
+            }
+            if (Animation == Animation.Walk && !Moving)
+            {
+                // standing still, stay on frame 0
+                Frame = 0;
             }
             CreatureRenderer.MainRenderer.sprite = CharacterSpriteSheet.GetFrame(Animation, GetOrientation(), ref Frame);
             return;
@@ -827,13 +832,17 @@ public class Creature : IEntity
 
     public bool UnableToFindPath;
 
+    public bool Moving;
+
     private void Move()
     {
         if (X == TargetCoordinate.x && Y == TargetCoordinate.y)
         {
             // no need to move
+            Moving = false;
             return;
         }
+        Moving = true;
 
         var targetCell = Game.Map.GetCellAtCoordinate(TargetCoordinate.x, TargetCoordinate.y);
         if (_path == null || _path.Count == 0)
