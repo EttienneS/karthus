@@ -6,7 +6,7 @@ public class Wait : CreatureTask
     public float Duration;
     public float ElapsedTime;
     public string Reason;
-    public Animation Animation;
+    public Animation? Animation;
 
     private bool _hasRunOnce;
 
@@ -14,7 +14,7 @@ public class Wait : CreatureTask
     {
     }
 
-    public Wait(float duration, string reason, Animation animation = Animation.Walk) : this()
+    public Wait(float duration, string reason, Animation? animation = LPC.Spritesheet.Generator.Interfaces.Animation.Walk) : this()
     {
         Duration = duration;
         Reason = reason;
@@ -23,11 +23,15 @@ public class Wait : CreatureTask
         Animation = animation;
     }
 
+
     public override bool Done(Creature creature)
     {
         if (!_hasRunOnce)
         {
-            creature.SetAnimation(Animation, Duration);
+            if (Animation.HasValue)
+            {
+                creature.SetAnimation(Animation.Value, Duration);
+            }
             _hasRunOnce = true;
         }
 

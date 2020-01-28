@@ -421,7 +421,11 @@ public class Creature : IEntity
     {
         Debug.Log(Name + ":" + message);
         LogHistory.Add(message);
-        CreatureRenderer.ShowText(message, 0.5f);
+
+        if (FactionName == FactionConstants.Player)
+        {
+            CreatureRenderer.ShowText(message, 0.75f);
+        }
     }
 
     public void PickUpItem(Item item, int amount)
@@ -476,16 +480,45 @@ public class Creature : IEntity
         return text;
     }
 
+    public Animation? FixedAnimation = null;
+    public int? FixedFrame;
+
+    public void SetFixedAnimation(Animation animation, int? fixedFrame = null)
+    {
+        FixedAnimation = animation;
+        FixedFrame = fixedFrame;
+    }
+
+    public void ClearFixedAnimation()
+    {
+        FixedAnimation = null;
+        FixedFrame = null;
+    }
+
     public void UpdateSprite()
     {
         if (Sprite == "Creature")
         {
-            if (Animation == Animation.Walk && !Moving)
+            if (FixedAnimation != null)
             {
-                // standing still, stay on frame 0
-                Frame = 0;
+                if (FixedFrame.HasValue)
+                {
+                    Frame = FixedFrame.Value;
+                }
+
+                CreatureRenderer.MainRenderer.sprite = CharacterSpriteSheet.GetFrame(FixedAnimation.Value, GetOrientation(), ref Frame);
             }
-            CreatureRenderer.MainRenderer.sprite = CharacterSpriteSheet.GetFrame(Animation, GetOrientation(), ref Frame);
+            else
+            {
+                if (Animation == Animation.Walk && !Moving)
+                {
+                    // standing still, stay on frame 0
+                    Frame = 0;
+                }
+                CreatureRenderer.MainRenderer.sprite = CharacterSpriteSheet.GetFrame(Animation, GetOrientation(), ref Frame);
+            }
+
+            
             return;
         }
         else
@@ -635,6 +668,7 @@ public class Creature : IEntity
             limb.Link(this);
         }
         LogHistory = new List<string>();
+        
         ManaPool.EntityId = Id;
         TargetCoordinate = (Cell.X, Cell.Y);
     }
@@ -652,6 +686,7 @@ public class Creature : IEntity
         {
             if (InCombat)
             {
+                ClearFixedAnimation();
                 if (Task != null)
                 {
                     CancelTask();

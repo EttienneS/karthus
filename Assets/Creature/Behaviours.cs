@@ -8,7 +8,8 @@ public static class Behaviours
     public static Dictionary<string, GetBehaviourTaskDelegate> BehaviourTypes = new Dictionary<string, GetBehaviourTaskDelegate>
     {
         { "Monster", Monster },
-        { "Person", Person }
+        { "Person", Person },
+        { "Skeleton", Skeleton }
     };
 
     public static GetBehaviourTaskDelegate GetBehaviourFor(string type)
@@ -26,14 +27,6 @@ public static class Behaviours
 
         var rand = Random.value;
 
-        //if (rand > 0.999f)
-        //{
-        //    if (Game.FactionController.PlayerFaction.Creatures.Count > 0)
-        //    {
-        //        creature.Combatants.Add(Game.FactionController.PlayerFaction.Creatures.GetRandomItem());
-        //    }
-        //}
-        //else 
         if (rand > 0.8f)
         {
             task = new Move(Game.Map.GetCircle(creature.Cell, WanderRange).GetRandomItem());
@@ -42,7 +35,28 @@ public static class Behaviours
         {
             task = new Wait(Random.value * 2f, "Lingering..");
         }
-       
+
+        return task;
+    }
+
+    public static CreatureTask Skeleton(Creature creature)
+    {
+        CreatureTask task = null;
+
+        var rand = Random.value;
+        var targets = creature.Awareness.SelectMany(cell => cell.Creatures.Where(c => c.Faction != creature.Faction));
+
+        creature.SetFixedAnimation(LPC.Spritesheet.Generator.Interfaces.Animation.Die, 4);
+
+        if (targets.Any())
+        {
+            creature.ClearFixedAnimation();
+            creature.Combatants.Add(targets.GetRandomItem());
+        }
+        else
+        {
+            task = new Wait(Random.Range(3f, 6f), "Lingering..", null);
+        }
 
         return task;
     }

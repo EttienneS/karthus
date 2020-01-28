@@ -1,21 +1,47 @@
 ﻿{
-  "Name": "Skeleton",
+  "Name": "Person",
   "Speed": 0.1,
 
-  "Strenght": 16,
-  "Perception": 3,
-  "Dexterity": 10,
+  "Strenght": 14,
+  "Perception": 5,
+  "Dexterity": 14,
   "Vitality": 15,
 
   "Hunger": 0,
   "Energy": 100,
-  "Race": "Skeleton",
+  "Race": "Human",
 
-  "Aggression": 2,
+  "Aggression": 1,
   "Sprite": "Creature",
-  "BehaviourName": "Monster",
+  "BehaviourName": "Person",
   "Mobility": "Walk",
-  "Skills": [],
+  "Skills": [
+    {
+      "Name": "Build",
+      "Level": 1,
+      "Priority": 5
+    },
+    {
+      "Name": "Arcana",
+      "Level": 1,
+      "Priority": 5
+    },
+    {
+      "Name": "Healing",
+      "Level": 1,
+      "Priority": 5
+    },
+    {
+      "Name": "Haul",
+      "Level": 1,
+      "Priority": 5
+    },
+    {
+      "Name": "Farming",
+      "Level": 1,
+      "Priority": 5
+    }
+  ],
   "Limbs": [
     {
       "Resistance": {
@@ -43,6 +69,14 @@
           "$type": "Brace, Assembly-CSharp",
           "Name": "brace head",
           "ActivationTIme": 0.3
+        }
+      ],
+      "BuffActions": [
+        {
+          "$type": "Triage, Assembly-CSharp",
+          "Name": "triage",
+          "CooldownMax": 1.0,
+          "DurationMax": 0.5
         }
       ],
       "Name": "Head",
@@ -170,5 +204,42 @@
       "Vital": false,
       "Percentage": 1.0
     }
-  ]  
+  ],
+  "ManaPool": {
+    "White": {
+      "Color": "White",
+      "Attunement": 10,
+      "Desired": 10,
+      "Max": 10,
+      "Total": 10
+    },
+    "Red": {
+      "Color": "Red",
+      "Attunement": 10,
+      "Desired": 5,
+      "Max": 10,
+      "Total": 5
+    },
+    "Green": {
+      "Color": "Green",
+      "Attunement": 10,
+      "Desired": 5,
+      "Max": 10,
+      "Total": 5
+    },
+    "Blue": {
+      "Color": "Blue",
+      "Attunement": 10,
+      "Desired": 5,
+      "Max": 10,
+      "Total": 5
+    },
+    "Black": {
+      "Color": "Black",
+      "Attunement": 10,
+      "Desired": 5,
+      "Max": 10,
+      "Total": 5
+    }
+  }
 }

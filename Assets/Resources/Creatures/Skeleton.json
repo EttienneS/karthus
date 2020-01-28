@@ -1,47 +1,21 @@
 ﻿{
-  "Name": "Person",
+  "Name": "Skeleton",
   "Speed": 0.1,
 
-  "Strenght": 14,
-  "Perception": 5,
-  "Dexterity": 14,
+  "Strenght": 16,
+  "Perception": 3,
+  "Dexterity": 10,
   "Vitality": 15,
 
   "Hunger": 0,
   "Energy": 100,
-  "Race": "Human",
+  "Race": "Skeleton",
 
-  "Aggression": 1,
+  "Aggression": 2,
   "Sprite": "Creature",
-  "BehaviourName": "Person",
+  "BehaviourName": "Skeleton",
   "Mobility": "Walk",
-  "Skills": [
-    {
-      "Name": "Build",
-      "Level": 1,
-      "Priority": 5
-    },
-    {
-      "Name": "Arcana",
-      "Level": 1,
-      "Priority": 5
-    },
-    {
-      "Name": "Healing",
-      "Level": 1,
-      "Priority": 5
-    },
-    {
-      "Name": "Haul",
-      "Level": 1,
-      "Priority": 5
-    },
-    {
-      "Name": "Farming",
-      "Level": 1,
-      "Priority": 5
-    }
-  ],
+  "Skills": [],
   "Limbs": [
     {
       "Resistance": {
@@ -69,14 +43,6 @@
           "$type": "Brace, Assembly-CSharp",
           "Name": "brace head",
           "ActivationTIme": 0.3
-        }
-      ],
-      "BuffActions": [
-        {
-          "$type": "Triage, Assembly-CSharp",
-          "Name": "triage",
-          "CooldownMax": 1.0,
-          "DurationMax": 0.5
         }
       ],
       "Name": "Head",
@@ -207,39 +173,11 @@
   ],
   "ManaPool": {
     "White": {
-      "Color": "White",
+      "Color": "Black",
       "Attunement": 10,
       "Desired": 10,
       "Max": 10,
       "Total": 10
-    },
-    "Red": {
-      "Color": "Red",
-      "Attunement": 10,
-      "Desired": 5,
-      "Max": 10,
-      "Total": 5
-    },
-    "Green": {
-      "Color": "Green",
-      "Attunement": 10,
-      "Desired": 5,
-      "Max": 10,
-      "Total": 5
-    },
-    "Blue": {
-      "Color": "Blue",
-      "Attunement": 10,
-      "Desired": 5,
-      "Max": 10,
-      "Total": 5
-    },
-    "Black": {
-      "Color": "Black",
-      "Attunement": 10,
-      "Desired": 5,
-      "Max": 10,
-      "Total": 5
     }
   }
 }
