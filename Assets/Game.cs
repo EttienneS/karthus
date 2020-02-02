@@ -454,6 +454,7 @@ public partial class Game : MonoBehaviour
         InitFactions();
 
         MapGenerator = new MapGenerator();
+
     }
 
     private void Update()
@@ -484,6 +485,13 @@ public partial class Game : MonoBehaviour
             _shownOnce = true;
             CameraController.Camera.orthographicSize = 10;
             CameraController.MoveToCell(FactionController.PlayerFaction.Creatures[0].Cell);
+
+            TimeManager.Pause();
+        }
+
+        if (MainMenuController.MainMenuActive)
+        {
+            return;
         }
 
         var mousePosition = Input.mousePosition;
