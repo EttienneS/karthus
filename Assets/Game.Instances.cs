@@ -6,13 +6,13 @@ public partial class Game //.Instances
     private static CameraController _cameraController;
     private static CreatureController _creatureController;
     private static EntityInfoPanel _entityInfoPanel;
-    private static ZoneInfoPanel _zoneInfoPanel;
     private static FactionController _factionController;
     private static FileController _fileController;
     private static Game _gameInstance;
     private static ItemController _itemController;
     private static LoadStatus _loadingPanel;
     private static MagicController _magicController;
+    private static MainMenuController _mainMenuController;
     private static Map _map;
     private static MaterialController _materialController;
     private static Minimap _minimap;
@@ -27,6 +27,7 @@ public partial class Game //.Instances
     private static UIController _uiController;
     private static VisualEffectController _visualEffectController;
     private static ZoneController _zoneController;
+    private static ZoneInfoPanel _zoneInfoPanel;
 
     public static CameraController CameraController
     {
@@ -57,14 +58,6 @@ public partial class Game //.Instances
         get
         {
             return _entityInfoPanel ?? (_entityInfoPanel = GameObject.Find("EntityInfoPanel").GetComponent<EntityInfoPanel>());
-        }
-    }
-
-    public static ZoneInfoPanel ZoneInfoPanel
-    {
-        get
-        {
-            return _zoneInfoPanel ?? (_zoneInfoPanel = GameObject.Find("ZoneInfoPanel").GetComponent<ZoneInfoPanel>());
         }
     }
 
@@ -111,6 +104,14 @@ public partial class Game //.Instances
         get
         {
             return _magicController ?? (_magicController = GameObject.Find(ControllerConstants.MagicController).GetComponent<MagicController>());
+        }
+    }
+
+    public static MainMenuController MainMenuController
+    {
+        get
+        {
+            return _mainMenuController ?? (_mainMenuController = GameObject.Find("MainMenu").GetComponent<MainMenuController>());
         }
     }
 
@@ -223,6 +224,14 @@ public partial class Game //.Instances
         get
         {
             return _zoneController ?? (_zoneController = GameObject.Find("ZoneController").GetComponent<ZoneController>());
+        }
+    }
+
+    public static ZoneInfoPanel ZoneInfoPanel
+    {
+        get
+        {
+            return _zoneInfoPanel ?? (_zoneInfoPanel = GameObject.Find("ZoneInfoPanel").GetComponent<ZoneInfoPanel>());
         }
     }
 }
