@@ -32,8 +32,6 @@ public class ItemRenderer : MonoBehaviour
     internal void UpdatePosition()
     {
         transform.position = Data.Vector;
-
-        //Data.UpdateSprite();
     }
 
     public void Update()

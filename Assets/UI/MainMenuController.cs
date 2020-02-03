@@ -4,9 +4,12 @@ public class MainMenuController : MonoBehaviour
 {
     public bool MainMenuActive;
 
-    public void Start()
+    public void Update()
     {
-        Game.MainMenuController.Toggle();
+        if (Input.GetKeyDown("escape"))
+        {
+            Toggle();
+        }
     }
 
     public void Toggle()

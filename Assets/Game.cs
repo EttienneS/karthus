@@ -255,8 +255,11 @@ public partial class Game : MonoBehaviour
                 TimeManager.Pause();
             }
         }
-
-        if (Input.GetKeyDown("1"))
+        else if (Input.GetKeyDown("escape"))
+        {
+            MainMenuController.Toggle();
+        }
+        else if (Input.GetKeyDown("1"))
         {
             TimeManager.TimeStep = TimeStep.Slow;
         }
@@ -487,7 +490,7 @@ public partial class Game : MonoBehaviour
             CameraController.Camera.orthographicSize = 10;
             CameraController.MoveToCell(FactionController.PlayerFaction.Creatures[0].Cell);
 
-            TimeManager.Pause();
+            MainMenuController.Toggle();
         }
 
         if (MainMenuController.MainMenuActive)

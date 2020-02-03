@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -37,12 +36,12 @@ public class ItemController : MonoBehaviour
         }
 
         var data = Item.GetFromJson(ItemTypeFileMap[name]);
-        
+
         data.Coords = (cell.Vector.x + Random.Range(-0.5f, 0.5f), cell.Vector.y + Random.Range(-0.5f, 0.5f));
         data.Cell = cell;
         data.Amount = amount;
-
-        SpawnItem(data);      
+        
+        SpawnItem(data);
         return data;
     }
 
@@ -65,9 +64,11 @@ public class ItemController : MonoBehaviour
     {
         var renderer = Instantiate(ItemPrefab, transform);
 
-        renderer.SpriteRenderer.sprite = Game.SpriteStore.GetSprite(data.SpriteName);
         renderer.Data = data;
         data.Renderer = renderer;
+        
+        renderer.SpriteRenderer.sprite = Game.SpriteStore.GetSprite(data.SpriteName);
+        renderer.UpdatePosition();
 
         IndexItem(data);
     }
