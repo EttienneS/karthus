@@ -20,6 +20,14 @@ public class IdService
             entity.Id = _idCounter.ToString();
             _idCounter++;
         }
+        else
+        {
+            var id = int.Parse(entity.Id);
+            if (id > _idCounter)
+            {
+                _idCounter = id + 1;
+            }
+        }
 
         if (entity is Structure structure)
         {

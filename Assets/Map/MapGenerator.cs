@@ -107,11 +107,6 @@ public class MapGenerator
         return doors;
     }
 
-    public Biome GetRandomBiome()
-    {
-        return BiomeTemplates.Where(t => t.Name != "Default").GetRandomItem().CloneJson();
-    }
-
     public List<Cell> Grow(List<Cell> cells, int size)
     {
         var group = cells.ToList();
@@ -141,6 +136,48 @@ public class MapGenerator
         return group.Distinct().ToList();
     }
 
+    public void MakeFactionBootStrap(Faction faction)
+    {
+        var center = Game.Map.GetNearestPathableCell(Game.Map.Center, Mobility.Walk, 25);
+
+        Game.FactionController.PlayerFaction.HomeCells.AddRange(Game.Map.GetCircle(Game.Map.Center, 15));
+
+        var open = Game.Map.GetCircle(center, 8).Where(c => c.Pathable(Mobility.Walk));
+        Game.ItemController.SpawnItem("Berries", open.GetRandomItem(), 100);
+        Game.ItemController.SpawnItem("Wood", open.GetRandomItem(), 25);
+        Game.ItemController.SpawnItem("Stone", open.GetRandomItem(), 25);
+
+        for (int i = 0; i < 3; i++)
+        {
+            var c = Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("Person"),
+                                                     Game.Map.GetNearestPathableCell(center, Mobility.Walk, 25),
+                                                     faction);
+        }
+    }
+
+    public void SpawnCreatures()
+    {
+        foreach (var monster in Game.CreatureController.Beastiary)
+        {
+            if (monster.Key == "Person")
+            {
+                continue;
+            }
+
+            for (int i = 0; i < Game.Map.Width / 50; i++)
+            {
+                var creature = Game.CreatureController.GetCreatureOfType(monster.Key);
+
+                var spot = Game.Map.GetRandomCell();
+                if (spot.TravelCost <= 0 && creature.Mobility != Mobility.Fly)
+                {
+                    spot = Game.Map.Cells.Where(c => c.TravelCost > 0).GetRandomItem();
+                }
+                Game.CreatureController.SpawnCreature(creature, spot, Game.FactionController.MonsterFaction);
+            }
+        }
+    }
+
     public IEnumerator Work()
     {
         Biome = BiomeTemplates.First(b => b.Name == "Default");
@@ -164,14 +201,6 @@ public class MapGenerator
         ResetSearchPriorities();
         yield return null;
 
-        Game.Instance.SetLoadStatus("Bootstrap factions", 0.35f);
-        MakeFactionBootStrap(Game.FactionController.PlayerFaction);
-        yield return null;
-
-        Game.Instance.SetLoadStatus("Spawn creatures", 0.40f);
-        SpawnCreatures();
-        yield return null;
-
         Game.Instance.SetLoadStatus("Build render chunks", 0.45f);
         var chunks = GetRenderChunks(50);
         yield return null;
@@ -183,7 +212,7 @@ public class MapGenerator
         foreach (var chunk in chunks)
         {
             i++;
-            Game.Instance.SetLoadStatus($"Draw {i + 1}/{totalChunks}", 0.5f + i / totalChunks * totalProgress);
+            Game.Instance.SetLoadStatus($"Draw {i}/{totalChunks}", 0.5f + (i / totalChunks * totalProgress));
 
             DrawChunk(chunk);
             yield return null;
@@ -242,65 +271,6 @@ public class MapGenerator
             for (var x = 0; x < Game.Map.Width; x++)
             {
                 Game.Map.CellLookup[(x, y)].SearchPhase = 0;
-            }
-        }
-    }
-
-    private static void DrawChunk(List<Cell> chunk)
-    {
-        chunk.ForEach(c => c.Populate());
-        var tiles = chunk.Select(c => c.Tile).ToArray();
-        var coords = chunk.Select(c => c.ToVector3Int()).ToArray();
-        Game.Map.Tilemap.SetTiles(coords, tiles);
-        Game.StructureController.DrawStructures(chunk);
-    }
-
-    private static List<List<Cell>> GetRenderChunks(int chunkSize)
-    {
-        var chunks = new List<List<Cell>>();
-
-        var wchunks = Game.Map.Width / chunkSize;
-        var hchunks = Game.Map.Height / chunkSize;
-
-        for (int w = 0; w < wchunks; w++)
-        {
-            for (int h = 0; h < hchunks; h++)
-            {
-                var chunk = new List<Cell>();
-
-                for (int x = 0; x < chunkSize; x++)
-                {
-                    for (int y = 0; y < chunkSize; y++)
-                    {
-                        chunk.Add(Game.Map.GetCellAtCoordinate(x + (w * chunkSize), y + (h * chunkSize)));
-                    }
-                }
-
-                chunks.Add(chunk);
-            }
-        }
-        return chunks;
-    }
-
-    private static void SpawnCreatures()
-    {
-        foreach (var monster in Game.CreatureController.Beastiary)
-        {
-            if (monster.Key == "Person")
-            {
-                continue;
-            }
-
-            for (int i = 0; i < Game.Map.Width / 50; i++)
-            {
-                var creature = Game.CreatureController.GetCreatureOfType(monster.Key);
-
-                var spot = Game.Map.GetRandomCell();
-                if (spot.TravelCost <= 0 && creature.Mobility != Mobility.Fly)
-                {
-                    spot = Game.Map.Cells.Where(c => c.TravelCost > 0).GetRandomItem();
-                }
-                Game.CreatureController.SpawnCreature(creature, spot, Game.FactionController.MonsterFaction);
             }
         }
     }
@@ -415,23 +385,40 @@ public class MapGenerator
         return streets;
     }
 
-    private void MakeFactionBootStrap(Faction faction)
+    private void DrawChunk(List<Cell> chunk)
     {
-        var center = Game.Map.GetNearestPathableCell(Game.Map.Center, Mobility.Walk, 25);
+        chunk.ForEach(c => c.Populate());
+        var tiles = chunk.Select(c => c.Tile).ToArray();
+        var coords = chunk.Select(c => c.ToVector3Int()).ToArray();
+        Game.Map.Tilemap.SetTiles(coords, tiles);
+        Game.StructureController.DrawStructures(chunk);
+    }
 
-        Game.FactionController.PlayerFaction.HomeCells.AddRange(Game.Map.GetCircle(Game.Map.Center, 15));
+    private List<List<Cell>> GetRenderChunks(int chunkSize)
+    {
+        var chunks = new List<List<Cell>>();
 
-        var open = Game.Map.GetCircle(center, 8).Where(c => c.Pathable(Mobility.Walk));
-        Game.ItemController.SpawnItem("Berries", open.GetRandomItem(), 100);
-        Game.ItemController.SpawnItem("Wood", open.GetRandomItem(), 25);
-        Game.ItemController.SpawnItem("Stone", open.GetRandomItem(), 25);
+        var wchunks = Game.Map.Width / chunkSize;
+        var hchunks = Game.Map.Height / chunkSize;
 
-        for (int i = 0; i < 3; i++)
+        for (int w = 0; w < wchunks; w++)
         {
-            var c = Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("Person"),
-                                                     Game.Map.GetNearestPathableCell(center, Mobility.Walk, 25),
-                                                     faction);
+            for (int h = 0; h < hchunks; h++)
+            {
+                var chunk = new List<Cell>();
+
+                for (int x = 0; x < chunkSize; x++)
+                {
+                    for (int y = 0; y < chunkSize; y++)
+                    {
+                        chunk.Add(Game.Map.GetCellAtCoordinate(x + (w * chunkSize), y + (h * chunkSize)));
+                    }
+                }
+
+                chunks.Add(chunk);
+            }
         }
+        return chunks;
     }
 
     private void MakeStreet(Cell crossingPoint, int length, bool vertical, double momentum, int color, List<List<Cell>> streets)

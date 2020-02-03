@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -40,7 +41,7 @@ public partial class Game : MonoBehaviour
 
     public delegate bool ValidateMouseSpriteDelegate(Cell cell);
 
-    public  bool Paused { get; set; }
+    public bool Paused { get; set; }
     public float MaxTimeToClick { get; set; } = 0.60f;
 
     public float MinTimeToClick { get; set; } = 0.05f;
@@ -291,14 +292,6 @@ public partial class Game : MonoBehaviour
         {
             RotateMouseLeft?.Invoke();
         }
-        else if (Input.GetKeyDown("p"))
-        {
-            SaveManager.Save();
-        }
-        else if (Input.GetKeyDown("["))
-        {
-            SaveManager.Load();
-        }
     }
 
     private void InitFactions()
@@ -449,19 +442,29 @@ public partial class Game : MonoBehaviour
         selectSquareImage.gameObject.SetActive(false);
         MouseSpriteRenderer.gameObject.SetActive(false);
 
-        InitFactions();
-
+        if (SaveManager.SaveToLoad != null)
+        {
+            Map.Seed = SaveManager.SaveToLoad.Seed;
+        }
+        else
+        {
+            Map.Seed = UnityEngine.Random.Range(-1000000, 1000000);
+            InitFactions();
+        }
         IdService = new IdService();
         MapGenerator = new MapGenerator();
     }
+
+    private bool _finalizationStarted;
 
     private void Update()
     {
         if (!Ready)
         {
-            if (MapGenerator.Done)
+            if (MapGenerator.Done && !_finalizationStarted)
             {
-                Ready = true;
+                _finalizationStarted = true;
+                StartCoroutine(FinalizeStartup());
             }
             else if (!MapGenerator.Busy)
             {
@@ -640,5 +643,53 @@ public partial class Game : MonoBehaviour
             }
         }
         DestroyItemsInCache();
+    }
+
+    private IEnumerator FinalizeStartup()
+    {
+        if (SaveManager.SaveToLoad == null)
+        {
+            MapGenerator.MakeFactionBootStrap(Game.FactionController.PlayerFaction);
+            MapGenerator.SpawnCreatures();
+        }
+        else
+        {
+            SetLoadStatus("Loading Time", 0.80f);
+
+            TimeManager.Data = SaveManager.SaveToLoad.Time;
+            yield return null;
+
+            SetLoadStatus("Loading Items", 0.85f);
+            foreach (var item in SaveManager.SaveToLoad.Items)
+            {
+                ItemController.SpawnItem(item);
+            }
+            yield return null;
+
+            foreach (var faction in SaveManager.SaveToLoad.Factions)
+            {
+                SetLoadStatus($"Loading Faction: {faction.FactionName}", 0.90f);
+                FactionController.Factions.Add(faction.FactionName, faction);
+
+                foreach (var creature in faction.Creatures.ToList())
+                {
+                    CreatureController.SpawnCreature(creature, creature.Cell, faction);
+                }
+
+                foreach (var structure in faction.Structures.ToList())
+                {
+                    IdService.EnrollEntity(structure);
+                }
+
+                StructureController.DrawStructures(faction.Structures.Select(s => s.Cell));
+                yield return null;
+            }
+
+            SetLoadStatus($"Loading Camera", 0.99f);
+            SaveManager.SaveToLoad.CameraData.Load(CameraController.Camera);
+            SaveManager.SaveToLoad = null;
+            yield return null;
+        }
+        Ready = true;
     }
 }

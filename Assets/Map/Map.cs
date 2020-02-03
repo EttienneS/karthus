@@ -91,7 +91,7 @@ public class Map : MonoBehaviour
         Tilemap = transform.Find("Tilemap").gameObject.GetComponent<Tilemap>();
         LiquidMap = transform.Find("Liquid Map").gameObject.GetComponent<Tilemap>();
 
-        Seed = Random.Range(-1000000, 1000000);
+        
     }
 
     public List<Cell> BleedGroup(List<Cell> group, int count, float percentage = 0.7f)

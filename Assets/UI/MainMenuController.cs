@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class MainMenuController : MonoBehaviour
 {
@@ -22,18 +21,18 @@ public class MainMenuController : MonoBehaviour
     }
 
     public void Restart()
-    {       
-        Game.SaveManager.Restart();
+    {
+        SaveManager.Restart();
     }
 
     public void Load()
     {
-        Game.SaveManager.Load();
+        SaveManager.Load();
     }
 
     public void Save()
     {
-        Game.SaveManager.Save();
+        SaveManager.Save();
     }
 
     public void Quit()

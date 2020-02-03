@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -35,18 +36,13 @@ public class ItemController : MonoBehaviour
             Debug.LogError($"Item not found: {name}");
         }
 
-        var renderer = Instantiate(ItemPrefab, transform);
-
         var data = Item.GetFromJson(ItemTypeFileMap[name]);
-        renderer.Data = data;
-        data.Renderer = renderer;
-
-        renderer.SpriteRenderer.sprite = Game.SpriteStore.GetSprite(data.SpriteName);
-        IndexItem(data);
-
+        
         data.Coords = (cell.Vector.x + Random.Range(-0.5f, 0.5f), cell.Vector.y + Random.Range(-0.5f, 0.5f));
         data.Cell = cell;
         data.Amount = amount;
+
+        SpawnItem(data);      
         return data;
     }
 
@@ -63,5 +59,16 @@ public class ItemController : MonoBehaviour
     private void IndexItem(Item item)
     {
         Game.IdService.EnrollEntity(item);
+    }
+
+    internal void SpawnItem(Item data)
+    {
+        var renderer = Instantiate(ItemPrefab, transform);
+
+        renderer.SpriteRenderer.sprite = Game.SpriteStore.GetSprite(data.SpriteName);
+        renderer.Data = data;
+        data.Renderer = renderer;
+
+        IndexItem(data);
     }
 }

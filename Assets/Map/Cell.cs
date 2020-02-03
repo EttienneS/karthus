@@ -327,6 +327,11 @@ public class Cell : IEquatable<Cell>
 
     internal void Populate()
     {
+        if (SaveManager.SaveToLoad != null)
+        {
+            return;
+        }
+
         if (Structure?.Name == "Reserved")
         {
             Game.StructureController.DestroyStructure(Structure);

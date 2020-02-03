@@ -2,22 +2,23 @@
 using System;
 using System.IO;
 using System.Linq;
-using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SaveManager : MonoBehaviour
+public static class SaveManager
 {
-    public void Restart()
+    public static Save SaveToLoad { get; set; }
+
+    public static void Restart(Save save = null)
     {
         Game.Instance = null;
+        SaveToLoad = save;
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
     }
 
-    public void Load()
+    public static void Load()
     {
         Game.TimeManager.Pause();
-
-        DestroyScene();
 
         var save = JsonConvert.DeserializeObject<Save>(File.ReadAllText("save.json"), new JsonSerializerSettings
         {
@@ -25,33 +26,10 @@ public class SaveManager : MonoBehaviour
             NullValueHandling = NullValueHandling.Ignore,
         });
 
-        Game.TimeManager.Data = save.Time;
-
-        Game.Map.ClearCache();
-        Game.Map.Seed = save.Seed;
-
-        Game.Instance.Ready = false;
-        Game.MapGenerator.Done = false;
-
-        foreach (var faction in save.Factions)
-        {
-            Game.FactionController.Factions.Add(faction.FactionName, faction);
-
-            foreach (var creature in faction.Creatures.ToList())
-            {
-                Game.CreatureController.SpawnCreature(creature, creature.Cell, faction);
-            }
-
-            foreach (var structure in faction.Structures.ToList())
-            {
-                Game.IdService.EnrollEntity(structure);
-            }
-        }
-
-        save.CameraData.Load(Game.CameraController.Camera);
+        Restart(save);
     }
 
-    public void Save()
+    public static void Save()
     {
         try
         {
@@ -75,7 +53,7 @@ public class SaveManager : MonoBehaviour
             using (var sw = new StreamWriter("save.json"))
             using (var writer = new JsonTextWriter(sw))
             {
-                serializer.Serialize(writer, new Save(), typeof(Save));
+                serializer.Serialize(writer, MakeSave(), typeof(Save));
             }
         }
         catch (Exception ex)
@@ -84,36 +62,15 @@ public class SaveManager : MonoBehaviour
         }
     }
 
-    private static void DestroyScene()
+    public static Save MakeSave()
     {
-        var creatures = Game.IdService.CreatureLookup.Values.ToList();
-        foreach (var creature in creatures)
+        return new Save
         {
-            Game.CreatureController.DestroyCreature(creature.CreatureRenderer);
-        }
-        Game.Instance.DestroyItemsInCache();
-
-        var structures = Game.IdService.StructureLookup.Values.ToList();
-        foreach (var structure in structures)
-        {
-            Game.StructureController.DestroyStructure(structure);
-        }
-        Game.Instance.DestroyItemsInCache();
-
-        foreach (var cell in Game.Map.Cells)
-        {
-            Game.Map.DestroyCell(cell);
-        }
-        Game.Instance.DestroyItemsInCache();
-
-        Game.Map.CellLookup.Clear();
-        Game.Map.Cells.Clear();
-
-        Game.Map.Tilemap.ClearAllTiles();
-        Game.StructureController.DefaultStructureMap.ClearAllTiles();
-
-        Game.IdService.Clear();
-
-        Game.FactionController.Factions.Clear();
+            Seed = Game.Map.Seed,
+            Factions = Game.FactionController.Factions.Values.ToList(),
+            Time = Game.TimeManager.Data,
+            Items = Game.IdService.ItemLookup.Values.ToList(),
+            CameraData = new CameraData(Game.CameraController.Camera)
+        };
     }
 }

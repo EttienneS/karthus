@@ -22,7 +22,6 @@ public partial class Game //.Instances
     private OrderSelectionController _orderSelectionController;
     private OrderTrayController _orderTrayController;
     private PhysicsController _physicsController;
-    private SaveManager _saveManager;
     private SpriteStore _spriteStore;
     private StructureController _structureController;
     private TimeManager _timeManager;
@@ -198,14 +197,6 @@ public partial class Game //.Instances
         get
         {
             return Instance._physicsController != null ? Instance._physicsController : (Instance._physicsController = GameObject.Find(ControllerConstants.PhysicsController).GetComponent<PhysicsController>());
-        }
-    }
-
-    public static SaveManager SaveManager
-    {
-        get
-        {
-            return Instance._saveManager != null ? Instance._saveManager : (Instance._saveManager = GameObject.Find("SaveManager").GetComponent<SaveManager>());
         }
     }
 
