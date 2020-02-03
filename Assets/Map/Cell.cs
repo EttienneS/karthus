@@ -49,7 +49,7 @@ public class Cell : IEquatable<Cell>
     {
         get
         {
-            return IdService.CreatureLookup.Values.Where(c => c.Cell == this).ToList();
+            return Game.IdService.CreatureLookup.Values.Where(c => c.Cell == this).ToList();
         }
     }
 
@@ -61,7 +61,7 @@ public class Cell : IEquatable<Cell>
     {
         get
         {
-            return IdService.StructureCellLookup.ContainsKey(this) ? IdService.StructureCellLookup[this].Find(s => s.IsFloor()) : null;
+            return Game.IdService.StructureCellLookup.ContainsKey(this) ? Game.IdService.StructureCellLookup[this].Find(s => s.IsFloor()) : null;
         }
     }
 
@@ -79,7 +79,7 @@ public class Cell : IEquatable<Cell>
     {
         get
         {
-            return IdService.ItemLookup.Values.Where(i => i.Cell == this);
+            return Game.IdService.ItemLookup.Values.Where(i => i.Cell == this);
         }
     }
 
@@ -112,7 +112,7 @@ public class Cell : IEquatable<Cell>
     {
         get
         {
-            return IdService.StructureCellLookup.ContainsKey(this) ? IdService.StructureCellLookup[this].Find(s => !s.IsFloor()) : null;
+            return Game.IdService.StructureCellLookup.ContainsKey(this) ? Game.IdService.StructureCellLookup[this].Find(s => !s.IsFloor()) : null;
         }
     }
 

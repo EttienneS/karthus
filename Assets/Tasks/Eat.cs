@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 
 public class Eat : CreatureTask
 {
@@ -27,7 +26,7 @@ public class Eat : CreatureTask
                 var food = creature.CarriedItems.FirstOrDefault(i => i.IsType(FoodCriteria));
                 creature.Hunger -= food.ValueProperties["Nutrition"];
                 creature.CarriedItemIds.Remove(food.Id);
-                IdService.DestroyEntity(food);
+                Game.IdService.DestroyEntity(food);
                 Ate = true;
 
                 if (creature.Hunger > 10)
@@ -42,6 +41,4 @@ public class Eat : CreatureTask
         }
         return false;
     }
-
-  
 }

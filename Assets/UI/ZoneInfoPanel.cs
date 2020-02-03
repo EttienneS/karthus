@@ -17,23 +17,21 @@ public class ZoneInfoPanel : MonoBehaviour
 
     public void DoneEditing()
     {
-        Game.Controller.Typing = false;
+        Game.Instance.Typing = false;
     }
 
     public void Hide()
     {
         gameObject.SetActive(false);
-        Game.Controller.Typing = false;
+        Game.Instance.Typing = false;
     }
 
     public void NameChanged()
     {
-        Game.Controller.Typing = true;
+        Game.Instance.Typing = true;
         CurrentZone.Name = Name.text;
         Game.ZoneController.Refresh(CurrentZone);
     }
-
-  
 
     internal void Show(ZoneBase selectedZone)
     {
@@ -52,7 +50,6 @@ public class ZoneInfoPanel : MonoBehaviour
         else if (CurrentZone is StorageZone sz)
         {
             StoragePanel.Show(sz);
-
         }
         else if (CurrentZone is AreaZone ar)
         {

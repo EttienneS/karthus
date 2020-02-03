@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-public partial class OrderSelectionController //.Structure
+﻿public partial class OrderSelectionController //.Structure
 {
     internal const string DefaultBuildText = "Select Building";
 
@@ -9,8 +7,8 @@ public partial class OrderSelectionController //.Structure
     public void BuildClicked(string structureName)
     {
         var structure = Game.StructureController.StructureDataReference[structureName];
-        Game.Controller.SelectionPreference = SelectionPreference.Cell;
-        Game.Controller.SetMouseSprite(structure.SpriteName,
+        Game.Instance.SelectionPreference = SelectionPreference.Cell;
+        Game.Instance.SetMouseSprite(structure.SpriteName,
                                       (cell) => structure.ValidateCellLocationForStructure(cell));
 
         Game.OrderInfoPanel.Title = $"Build {structureName}";

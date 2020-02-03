@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -28,7 +27,7 @@ public class ManaPool : Dictionary<ManaColor, Mana>
         {
             if (_entity == null)
             {
-                _entity = IdService.GetEntity(EntityId);
+                _entity = EntityId.GetEntity();
             }
             return _entity;
         }
@@ -246,5 +245,4 @@ public class ManaPool : Dictionary<ManaColor, Mana>
         }
         return most;
     }
-
 }

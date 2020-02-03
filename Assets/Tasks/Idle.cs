@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 
 public class Idle : CreatureTask
@@ -25,7 +24,6 @@ public class Idle : CreatureTask
 
         Message = "Idle...";
     }
-
 
     public override bool Done(Creature Creature)
     {

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-public class BurnManaTask : CreatureTask
+﻿public class BurnManaTask : CreatureTask
 {
     public BurnManaTask()
     {

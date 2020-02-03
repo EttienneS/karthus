@@ -1,12 +1,10 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class Biome
 {
-
     public Biome()
     {
     }
@@ -20,8 +18,6 @@ public class Biome
     public List<BiomeRegion> BiomeRegions { get; set; }
     public string Name { get; set; }
     public float Rarity { get; set; }
-
-   
 
     public BiomeRegion GetRegion(float value)
     {

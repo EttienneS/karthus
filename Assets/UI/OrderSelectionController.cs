@@ -12,16 +12,15 @@ public partial class OrderSelectionController : MonoBehaviour
 
     public void DisableAndReset()
     {
-        Game.Controller.SelectionStartWorld = Vector3.zero;
-        Game.Controller.MouseSpriteRenderer.size = new Vector2(1, 1);
+        Game.Instance.SelectionStartWorld = Vector3.zero;
+        Game.Instance.MouseSpriteRenderer.size = new Vector2(1, 1);
 
-        Game.Controller.SelectionPreference = SelectionPreference.Anything;
+        Game.Instance.SelectionPreference = SelectionPreference.Anything;
 
         Game.OrderTrayController.gameObject.SetActive(false);
         CellClickOrder = null;
 
         Game.OrderInfoPanel.Hide();
-
     }
 
     private static void EnableAndClear()

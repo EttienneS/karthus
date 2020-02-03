@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering.LWRP;
 
 public class VisualEffect : MonoBehaviour
 {
@@ -86,7 +85,7 @@ public class VisualEffect : MonoBehaviour
 
     private void Update()
     {
-        if (!Game.Ready)
+        if (!Game.Instance.Ready)
             return;
         if (Game.TimeManager.Paused)
             return;
@@ -148,7 +147,7 @@ public class VisualEffectData
     {
         get
         {
-            return IdService.GetEntity(HolderId);
+            return HolderId.GetEntity();
         }
     }
 

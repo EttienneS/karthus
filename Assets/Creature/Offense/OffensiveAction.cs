@@ -23,6 +23,7 @@ public abstract class OffensiveActionBase
 
     [JsonIgnore]
     public abstract int Damage { get; }
+
     public int Range { get; }
 
     [JsonIgnore]

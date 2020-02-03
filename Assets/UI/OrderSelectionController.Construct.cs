@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
 public partial class OrderSelectionController //.Construct
 {
@@ -12,7 +11,7 @@ public partial class OrderSelectionController //.Construct
 
         ConstructButton.Text = DefaultConstructText;
 
-        Game.Controller.SetConstructSprite(constuct.Texture, constuct.Width, constuct.Height,
+        Game.Instance.SetConstructSprite(constuct.Texture, constuct.Width, constuct.Height,
                                        cell => constuct.ValidateStartPos(cell));
 
         Game.OrderInfoPanel.Title = $"Place {constuct.Name}";
@@ -21,17 +20,17 @@ public partial class OrderSelectionController //.Construct
         Game.OrderInfoPanel.Cost = $"{constuct.TotalCost}";
         Game.OrderInfoPanel.Show();
 
-        Game.Controller.RotateMouseRight += () =>
+        Game.Instance.RotateMouseRight += () =>
         {
             constuct.RotateRight();
-            Game.Controller.SetConstructSprite(constuct.GetTexture(), constuct.Width, constuct.Height,
+            Game.Instance.SetConstructSprite(constuct.GetTexture(), constuct.Width, constuct.Height,
                                            cell => constuct.ValidateStartPos(cell));
         };
 
-        Game.Controller.RotateMouseLeft += () =>
+        Game.Instance.RotateMouseLeft += () =>
         {
             constuct.RotateLeft();
-            Game.Controller.SetConstructSprite(constuct.GetTexture(), constuct.Width, constuct.Height,
+            Game.Instance.SetConstructSprite(constuct.GetTexture(), constuct.Width, constuct.Height,
                                            cell => constuct.ValidateStartPos(cell));
         };
 
@@ -46,7 +45,7 @@ public partial class OrderSelectionController //.Construct
 
     private void ConstructTypeClicked()
     {
-        Game.Controller.SelectionPreference = SelectionPreference.Cell;
+        Game.Instance.SelectionPreference = SelectionPreference.Cell;
         if (Game.OrderTrayController.gameObject.activeInHierarchy)
         {
             DisableAndReset();

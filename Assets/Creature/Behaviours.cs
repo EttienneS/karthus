@@ -107,7 +107,7 @@ public static class Behaviours
 
             if (bed == null)
             {
-                bed = IdService.StructureIdLookup.Values
+                bed = Game.IdService.StructureIdLookup.Values
                                          .FirstOrDefault(s =>
                                                 !s.InUseByAnyone
                                                 && !s.IsBluePrint
@@ -125,7 +125,7 @@ public static class Behaviours
 
     private static Creature FindEnemy(Creature creature)
     {
-        return IdService.CreatureIdLookup.Values.FirstOrDefault(c => c.FactionName != creature.FactionName
+        return Game.IdService.CreatureIdLookup.Values.FirstOrDefault(c => c.FactionName != creature.FactionName
         && creature.Awareness.Contains(c.Cell));
     }
 }

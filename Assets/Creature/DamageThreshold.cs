@@ -1,8 +1,6 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 public class DamageThreshold
 {
@@ -96,6 +94,7 @@ public class DamageThreshold
 
         return reversedMap.Last().Value;
     }
+
     internal (float, float) GetCellTypeRange(SortedDictionary<float, Severity> type, Severity severity)
     {
         if (type.Count > 1)

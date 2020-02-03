@@ -20,7 +20,7 @@ public class MagicController : MonoBehaviour
 
     private void Update()
     {
-        if (!Game.Ready)
+        if (!Game.Instance.Ready)
             return;
 
         if (Game.TimeManager.Paused)

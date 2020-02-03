@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 
 public class RemoveStructure : CreatureTask
 {
     public Structure StructureToRemove;
+
     public RemoveStructure()
     {
         RequiredSkill = SkillConstants.Build;

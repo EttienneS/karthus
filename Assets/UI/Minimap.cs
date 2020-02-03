@@ -61,7 +61,7 @@ public class Minimap : MonoBehaviour, IPointerClickHandler, IDragHandler
     // Update is called once per frame
     private void Update()
     {
-        if (!Game.Ready)
+        if (!Game.Instance.Ready)
         {
             return;
         }

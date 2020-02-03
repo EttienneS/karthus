@@ -55,18 +55,13 @@ public class ItemController : MonoBehaviour
         if (item != null)
         {
             Debug.Log($"Destroying: {item.Name}");
-
-            if (!string.IsNullOrEmpty(item.FactionName))
-            {
-                Game.FactionController.Factions[item.FactionName].Items.Remove(item);
-            }
-            IdService.RemoveEntity(item);
-            Game.Controller.AddItemToDestroy(item.Renderer.gameObject);
+            Game.IdService.RemoveEntity(item);
+            Game.Instance.AddItemToDestroy(item.Renderer.gameObject);
         }
     }
 
     private void IndexItem(Item item)
     {
-        IdService.EnrollEntity(item);
+        Game.IdService.EnrollEntity(item);
     }
 }

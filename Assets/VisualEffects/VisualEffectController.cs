@@ -16,6 +16,7 @@ public class VisualEffectController : MonoBehaviour
 
     private List<Badge> _activeBadges = new List<Badge>();
     private List<VisualEffect> _activeVisualEffects = new List<VisualEffect>();
+
     public VisualEffect GetBase(EffectType effectType, IEntity holder)
     {
         var effect = Instantiate(EffectPrefab, transform);
@@ -107,6 +108,7 @@ public class VisualEffectController : MonoBehaviour
         //    }
         //}
     }
+
     internal Badge AddBadge(IEntity entity, string iconName)
     {
         var badge = Spawn();

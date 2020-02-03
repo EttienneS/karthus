@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-public static class EntityHelpers
+﻿public static class EntityHelpers
 {
     public static Faction GetFaction(this IEntity entity)
     {

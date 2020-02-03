@@ -30,12 +30,11 @@ public partial class OrderSelectionController //.Designate
             CreateOrderButton(DefaultRemoveText, RemoveStructureClicked, DefaultRemoveIcon);
         }
     }
-    
-    
+
     private void MoveClicked()
     {
-        Game.Controller.SelectionPreference = SelectionPreference.Cell;
-        Game.Controller.SetMouseSprite(MoveIcon, (cell) => cell.TravelCost > 0);
+        Game.Instance.SelectionPreference = SelectionPreference.Cell;
+        Game.Instance.SetMouseSprite(MoveIcon, (cell) => cell.TravelCost > 0);
 
         CellClickOrder = cells =>
         {
@@ -48,7 +47,7 @@ public partial class OrderSelectionController //.Designate
     private void RemoveStructureClicked()
     {
         BuildButton.Text = DefaultRemoveText;
-        Game.Controller.SelectionPreference = SelectionPreference.Cell;
+        Game.Instance.SelectionPreference = SelectionPreference.Cell;
         CellClickOrder = cells =>
         {
             foreach (var cell in cells)

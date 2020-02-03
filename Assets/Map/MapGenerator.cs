@@ -146,7 +146,7 @@ public class MapGenerator
         Biome = BiomeTemplates.First(b => b.Name == "Default");
 
         Game.Map.Cells = new List<Cell>();
-        Game.SetLoadStatus("Create cells", 0.08f);
+        Game.Instance.SetLoadStatus("Create cells", 0.08f);
         for (var y = 0; y < Game.Map.Height; y++)
         {
             for (var x = 0; x < Game.Map.Width; x++)
@@ -156,34 +156,34 @@ public class MapGenerator
         }
         yield return null;
 
-        Game.SetLoadStatus("Link cells", 0.12f);
+        Game.Instance.SetLoadStatus("Link cells", 0.12f);
         LinkNeighbours();
         yield return null;
 
-        Game.SetLoadStatus("Reset search priorities", 0.20f);
+        Game.Instance.SetLoadStatus("Reset search priorities", 0.20f);
         ResetSearchPriorities();
         yield return null;
 
-        Game.SetLoadStatus("Bootstrap factions", 0.35f);
+        Game.Instance.SetLoadStatus("Bootstrap factions", 0.35f);
         MakeFactionBootStrap(Game.FactionController.PlayerFaction);
         yield return null;
 
-        Game.SetLoadStatus("Spawn creatures", 0.40f);
+        Game.Instance.SetLoadStatus("Spawn creatures", 0.40f);
         SpawnCreatures();
         yield return null;
 
-        Game.SetLoadStatus("Build render chunks", 0.45f);
+        Game.Instance.SetLoadStatus("Build render chunks", 0.45f);
         var chunks = GetRenderChunks(50);
         yield return null;
 
-        Game.SetLoadStatus("Render chunks", 0.5f);
+        Game.Instance.SetLoadStatus("Render chunks", 0.5f);
         var i = 0f;
         var totalProgress = 0.3f;
         var totalChunks = chunks.Count;
         foreach (var chunk in chunks)
         {
             i++;
-            Game.SetLoadStatus($"Draw {i + 1}/{totalChunks}", 0.5f + i / totalChunks * totalProgress);
+            Game.Instance.SetLoadStatus($"Draw {i + 1}/{totalChunks}", 0.5f + i / totalChunks * totalProgress);
 
             DrawChunk(chunk);
             yield return null;
@@ -284,30 +284,24 @@ public class MapGenerator
 
     private static void SpawnCreatures()
     {
-        try
+        foreach (var monster in Game.CreatureController.Beastiary)
         {
-            foreach (var monster in Game.CreatureController.Beastiary)
+            if (monster.Key == "Person")
             {
-                if (monster.Key == "Person")
-                {
-                    continue;
-                }
-
-                for (int i = 0; i < Game.Map.Width / 50; i++)
-                {
-                    var creature = Game.CreatureController.GetCreatureOfType(monster.Key);
-
-                    var spot = Game.Map.GetRandomCell();
-                    if (spot.TravelCost <= 0 && creature.Mobility != Mobility.Fly)
-                    {
-                        spot = Game.Map.Cells.Where(c => c.TravelCost > 0).GetRandomItem();
-                    }
-                    Game.CreatureController.SpawnCreature(creature, spot, Game.FactionController.MonsterFaction);
-                }
+                continue;
             }
-        }
-        catch (Exception)
-        {
+
+            for (int i = 0; i < Game.Map.Width / 50; i++)
+            {
+                var creature = Game.CreatureController.GetCreatureOfType(monster.Key);
+
+                var spot = Game.Map.GetRandomCell();
+                if (spot.TravelCost <= 0 && creature.Mobility != Mobility.Fly)
+                {
+                    spot = Game.Map.Cells.Where(c => c.TravelCost > 0).GetRandomItem();
+                }
+                Game.CreatureController.SpawnCreature(creature, spot, Game.FactionController.MonsterFaction);
+            }
         }
     }
 

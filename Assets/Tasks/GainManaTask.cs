@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-public class GainManaTask : CreatureTask
+﻿public class GainManaTask : CreatureTask
 {
     public ManaColor Color { get; set; }
     public float Amount { get; set; }

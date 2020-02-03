@@ -27,7 +27,7 @@ public class Badge : MonoBehaviour
     {
         if (gameObject != null)
         {
-            Game.Controller.AddItemToDestroy(gameObject);
+            Game.Instance.AddItemToDestroy(gameObject);
         }
     }
 

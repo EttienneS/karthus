@@ -3,9 +3,16 @@ using System;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SaveManager : MonoBehaviour
 {
+    public void Restart()
+    {
+        Game.Instance = null;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
+    }
+
     public void Load()
     {
         Game.TimeManager.Pause();
@@ -20,11 +27,11 @@ public class SaveManager : MonoBehaviour
 
         Game.TimeManager.Data = save.Time;
 
-        Game.Map.Cells = save.Cells;
         Game.Map.ClearCache();
+        Game.Map.Seed = save.Seed;
 
-        Game.MapGenerator.LinkNeighbours();
-        Game.MapGenerator.ResetSearchPriorities();
+        Game.Instance.Ready = false;
+        Game.MapGenerator.Done = false;
 
         foreach (var faction in save.Factions)
         {
@@ -37,10 +44,9 @@ public class SaveManager : MonoBehaviour
 
             foreach (var structure in faction.Structures.ToList())
             {
-                IdService.EnrollEntity(structure);
+                Game.IdService.EnrollEntity(structure);
             }
         }
-
 
         save.CameraData.Load(Game.CameraController.Camera);
     }
@@ -51,11 +57,14 @@ public class SaveManager : MonoBehaviour
         {
             Game.TimeManager.Pause();
 
-            var serializer = new JsonSerializer();
+            var serializer = new JsonSerializer
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.Auto,
+                Formatting = Formatting.Indented
+            };
+
             serializer.Converters.Add(new Newtonsoft.Json.Converters.JavaScriptDateTimeConverter());
-            serializer.NullValueHandling = NullValueHandling.Ignore;
-            serializer.TypeNameHandling = TypeNameHandling.Auto;
-            serializer.Formatting = Formatting.Indented;
 
             var serializeSettings = new JsonSerializerSettings
             {
@@ -77,25 +86,25 @@ public class SaveManager : MonoBehaviour
 
     private static void DestroyScene()
     {
-        var creatures = IdService.CreatureLookup.Values.ToList();
+        var creatures = Game.IdService.CreatureLookup.Values.ToList();
         foreach (var creature in creatures)
         {
             Game.CreatureController.DestroyCreature(creature.CreatureRenderer);
         }
-        Game.Controller.DestroyItemsInCache();
+        Game.Instance.DestroyItemsInCache();
 
-        var structures = IdService.StructureLookup.Values.ToList();
+        var structures = Game.IdService.StructureLookup.Values.ToList();
         foreach (var structure in structures)
         {
             Game.StructureController.DestroyStructure(structure);
         }
-        Game.Controller.DestroyItemsInCache();
+        Game.Instance.DestroyItemsInCache();
 
         foreach (var cell in Game.Map.Cells)
         {
             Game.Map.DestroyCell(cell);
         }
-        Game.Controller.DestroyItemsInCache();
+        Game.Instance.DestroyItemsInCache();
 
         Game.Map.CellLookup.Clear();
         Game.Map.Cells.Clear();
@@ -103,7 +112,7 @@ public class SaveManager : MonoBehaviour
         Game.Map.Tilemap.ClearAllTiles();
         Game.StructureController.DefaultStructureMap.ClearAllTiles();
 
-        IdService.Clear();
+        Game.IdService.Clear();
 
         Game.FactionController.Factions.Clear();
     }

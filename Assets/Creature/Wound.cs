@@ -142,6 +142,7 @@ public class Wound
     }
 
     private bool _treated;
+
     public bool Treated
     {
         get
@@ -165,7 +166,6 @@ public class Wound
             }
             _treated = value;
         }
-
     }
 
     public string GetName()
@@ -269,8 +269,6 @@ public class Wound
 
         return healed;
     }
-
-
 
     [JsonIgnore]
     public float StageHealedAge

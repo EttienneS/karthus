@@ -45,7 +45,7 @@ public class PhysicsController : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        if (!Game.Ready)
+        if (!Game.Instance.Ready)
             return;
         if (Game.TimeManager.Paused)
             return;

@@ -518,7 +518,6 @@ public class Creature : IEntity
                 CreatureRenderer.MainRenderer.sprite = CharacterSpriteSheet.GetFrame(Animation, GetOrientation(), ref Frame);
             }
 
-            
             return;
         }
         else
@@ -599,7 +598,7 @@ public class Creature : IEntity
         {
             foreach (var structureId in Mind[context][MemoryType.Structure])
             {
-                var structure = IdService.GetStructure(structureId);
+                var structure = structureId.GetStructure();
                 if (structure != null && structure.InUseBy == this)
                 {
                     structure.Free();
@@ -668,14 +667,14 @@ public class Creature : IEntity
             limb.Link(this);
         }
         LogHistory = new List<string>();
-        
+
         ManaPool.EntityId = Id;
         TargetCoordinate = (Cell.X, Cell.Y);
     }
 
     internal bool Update(float timeDelta)
     {
-        if (!Game.Ready)
+        if (!Game.Instance.Ready)
             return false;
 
         if (Game.TimeManager.Paused)

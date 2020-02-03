@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public class Vent : CreatureTask
+﻿public class Vent : CreatureTask
 {
     public Vent()
     {

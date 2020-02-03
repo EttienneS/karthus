@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -10,7 +9,6 @@ public class Faction
 
     public List<Creature> Creatures = new List<Creature>();
     public string FactionName;
-    public List<Item> Items = new List<Item>();
     public float LastUpdate;
     public List<Structure> Structures = new List<Structure>();
 
@@ -21,7 +19,6 @@ public class Faction
             return Structures.OfType<Container>();
         }
     }
-
 
     [JsonIgnore]
     public List<Cell> HomeCells = new List<Cell>();
@@ -77,7 +74,7 @@ public class Faction
 
     public void Update()
     {
-        if (!Game.Ready)
+        if (!Game.Instance.Ready)
             return;
         if (Game.TimeManager.Paused)
         {
@@ -136,7 +133,6 @@ public class Faction
                     }
                 }
             }
-
 
             foreach (var creature in Creatures)
             {
@@ -284,5 +280,4 @@ public class Faction
 
         return targetContainer;
     }
-
 }

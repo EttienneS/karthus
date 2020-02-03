@@ -18,7 +18,7 @@
   "Limbs": [
     {
       "Resistance": {
-        "Bludgeoning": 1,        
+        "Bludgeoning": 1,
       },
       "DefensiveActions": [
         {
@@ -43,7 +43,7 @@
       "Vital": true,
       "Enabled": true,
       "Percentage": 1.0
-    }    
+    }
   ],
   "ManaPool": {
     "Blue": {

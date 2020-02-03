@@ -30,16 +30,16 @@ public partial class OrderSelectionController //.Zone
                 break;
         }
 
-        Game.Controller.SetMouseSprite(sprite, (cell) => CanAddCellToZone(cell));
+        Game.Instance.SetMouseSprite(sprite, (cell) => CanAddCellToZone(cell));
 
-        Game.Controller.SelectionPreference = SelectionPreference.Cell;
+        Game.Instance.SelectionPreference = SelectionPreference.Cell;
 
         Game.OrderInfoPanel.Show();
 
         CellClickOrder = cells =>
         {
             var newZone = Game.ZoneController.Create(purpose, FactionConstants.Player, cells.Where(c => CanAddCellToZone(c)).ToArray());
-            Game.Controller.SelectZone(newZone);
+            Game.Instance.SelectZone(newZone);
         };
     }
 

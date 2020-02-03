@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 
 public enum TimeStep
 {
@@ -53,16 +52,14 @@ public class TimeManager : MonoBehaviour
                 // camera and other systems run on fixedDeltaTime, ensure they are always set to something
                 Time.timeScale = 0.000000001f;
                 Time.fixedDeltaTime = 0.02f;
-                Game.Paused = true;
+                Game.Instance.Paused = true;
             }
             else
             {
                 Time.timeScale = ((int)_timeStep) * 0.25f;
                 Time.fixedDeltaTime = 0.02f * Time.timeScale;
-                Game.Paused = false;
+                Game.Instance.Paused = false;
             }
-
-            
         }
     }
 
@@ -81,7 +78,7 @@ public class TimeManager : MonoBehaviour
 
     public void Update()
     {
-        if (!Game.Ready)
+        if (!Game.Instance.Ready)
         {
             return;
         }
@@ -104,7 +101,6 @@ public class TimeManager : MonoBehaviour
                 }
             }
         }
-
     }
 
     internal void Pause()

@@ -32,7 +32,6 @@ public static class ManaExtensions
         return color;
     }
 
-
     public static Dictionary<ManaColor, float> AddPools(params Dictionary<ManaColor, float>[] pools)
     {
         var total = new Dictionary<ManaColor, float>();
@@ -82,6 +81,7 @@ public static class ManaExtensions
 
         return color;
     }
+
     public static string GetString(this Dictionary<ManaColor, float> manaCost, int count = 1)
     {
         var str = "";

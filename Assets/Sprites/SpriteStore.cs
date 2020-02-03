@@ -1,10 +1,10 @@
 ﻿using LPC.Spritesheet.Generator;
-using LPC.Spritesheet.Generator.Enums;
 using LPC.Spritesheet.ResourceManager;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+
 public class SpriteStore : MonoBehaviour
 {
     public Dictionary<string, Sprite> CreatureSprites = new Dictionary<string, Sprite>();
@@ -189,7 +189,7 @@ public class SpriteStore : MonoBehaviour
 
         return GetPlaceholder();
     }
-    
+
     internal Sprite GetPlaceholder()
     {
         return GetSprite("Placeholder");

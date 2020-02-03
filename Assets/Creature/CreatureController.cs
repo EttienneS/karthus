@@ -11,7 +11,7 @@ public class CreatureController : MonoBehaviour
 
     public CreatureRenderer GetCreatureAtPoint(Vector2 point)
     {
-        foreach (var creature in IdService.CreatureLookup.Values)
+        foreach (var creature in Game.IdService.CreatureLookup.Values)
         {
             var rect = new Rect(creature.CreatureRenderer.transform.position.x - 0.5f, creature.CreatureRenderer.transform.position.y - 0.5f, 1f, 1f);
             if (rect.Contains(point))
@@ -41,8 +41,8 @@ public class CreatureController : MonoBehaviour
                 creature.Data.CancelTask();
 
             Game.FactionController.Factions[creature.Data.FactionName].Creatures.Remove(creature.Data);
-            IdService.RemoveEntity(creature.Data);
-            Game.Controller.AddItemToDestroy(creature.gameObject);
+            Game.IdService.RemoveEntity(creature.Data);
+            Game.Instance.AddItemToDestroy(creature.gameObject);
         }
     }
 
@@ -78,7 +78,7 @@ public class CreatureController : MonoBehaviour
         var creature = Instantiate(CreaturePrefab, transform);
         creature.Data = creatureData;
         creature.Data.CreatureRenderer = creature;
-        IdService.EnrollEntity(creature.Data);
+        Game.IdService.EnrollEntity(creature.Data);
         creature.name = $"{creature.Data.Name} ({creature.Data.Id})";
 
         creature.Data.Gender = Random.value > 0.5f ? Gender.Male : Gender.Female;

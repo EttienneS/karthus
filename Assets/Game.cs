@@ -12,8 +12,8 @@ public enum SelectionPreference
 
 public partial class Game : MonoBehaviour
 {
-    public static float LoadProgress;
-    public static bool Ready;
+    public float LoadProgress;
+    public bool Ready;
     public string MouseSpriteName;
     public SpriteRenderer MouseSpriteRenderer;
     public Rotate RotateMouseLeft;
@@ -24,7 +24,7 @@ public partial class Game : MonoBehaviour
     public RectTransform selectSquareImage;
 
     public ValidateMouseSpriteDelegate ValidateMouse;
-    internal static string LoadStatus;
+    internal string LoadStatus;
     internal LineRenderer LineRenderer;
     internal List<Cell> SelectedCells = new List<Cell>();
     internal List<CreatureRenderer> SelectedCreatures = new List<CreatureRenderer>();
@@ -33,8 +33,6 @@ public partial class Game : MonoBehaviour
     private bool _constructMode;
     private List<GameObject> _destroyCache = new List<GameObject>();
     private List<VisualEffect> _ghostEffects = new List<VisualEffect>();
-    private float _maxCurrentTime;
-    private float _minCurrentTime;
     private TimeStep _oldTimeStep = TimeStep.Normal;
     private bool _shownOnce;
 
@@ -42,17 +40,17 @@ public partial class Game : MonoBehaviour
 
     public delegate bool ValidateMouseSpriteDelegate(Cell cell);
 
-    public static bool Paused { get; set; }
+    public  bool Paused { get; set; }
     public float MaxTimeToClick { get; set; } = 0.60f;
 
     public float MinTimeToClick { get; set; } = 0.05f;
     public bool Typing { get; set; }
 
-    public static void SetLoadStatus(string message, float progress)
+    public void SetLoadStatus(string message, float progress)
     {
         LoadStatus = message;
         Debug.Log(LoadStatus);
-        LoadProgress = progress;
+        Instance.LoadProgress = progress;
     }
 
     public void AddItemToDestroy(GameObject gameObject)
@@ -453,8 +451,8 @@ public partial class Game : MonoBehaviour
 
         InitFactions();
 
+        IdService = new IdService();
         MapGenerator = new MapGenerator();
-
     }
 
     private void Update()

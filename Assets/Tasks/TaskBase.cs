@@ -10,7 +10,6 @@ public class Cost
 
     public static Cost AddCost(Cost cost1, Cost cost2)
     {
-       
         var totalCost = new Cost()
         {
             Mana = ManaExtensions.AddPools(cost1.Mana, cost2.Mana),

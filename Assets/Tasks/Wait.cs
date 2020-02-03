@@ -23,7 +23,6 @@ public class Wait : CreatureTask
         Animation = animation;
     }
 
-
     public override bool Done(Creature creature)
     {
         if (!_hasRunOnce)

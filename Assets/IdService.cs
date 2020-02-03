@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class IdService
+public class IdService
 {
-    public static Dictionary<string, Creature> CreatureIdLookup = new Dictionary<string, Creature>();
-    public static Dictionary<IEntity, Creature> CreatureLookup = new Dictionary<IEntity, Creature>();
-    public static Dictionary<string, Item> ItemIdLookup = new Dictionary<string, Item>();
-    public static Dictionary<IEntity, Item> ItemLookup = new Dictionary<IEntity, Item>();
-    public static Dictionary<string, Structure> StructureIdLookup = new Dictionary<string, Structure>();
-    public static Dictionary<IEntity, Structure> StructureLookup = new Dictionary<IEntity, Structure>();
-    public static Dictionary<Cell, List<Structure>> StructureCellLookup = new Dictionary<Cell, List<Structure>>();
-    private static int _idCounter;
+    public Dictionary<string, Creature> CreatureIdLookup = new Dictionary<string, Creature>();
+    public Dictionary<IEntity, Creature> CreatureLookup = new Dictionary<IEntity, Creature>();
+    public Dictionary<string, Item> ItemIdLookup = new Dictionary<string, Item>();
+    public Dictionary<IEntity, Item> ItemLookup = new Dictionary<IEntity, Item>();
+    public Dictionary<string, Structure> StructureIdLookup = new Dictionary<string, Structure>();
+    public Dictionary<IEntity, Structure> StructureLookup = new Dictionary<IEntity, Structure>();
+    public Dictionary<Cell, List<Structure>> StructureCellLookup = new Dictionary<Cell, List<Structure>>();
+    private int _idCounter;
 
-    public static void EnrollEntity(IEntity entity)
+    public void EnrollEntity(IEntity entity)
     {
         if (string.IsNullOrEmpty(entity.Id))
         {
@@ -48,54 +48,22 @@ public static class IdService
         }
     }
 
-    public static Creature GetCreature(this string id)
-    {
-        if (!CreatureIdLookup.TryGetValue(id, out var creature))
-        {
-            return null;
-        }
-        return creature;
-    }
-
-    public static Item GetItem(this string id)
-    {
-        if (!ItemIdLookup.TryGetValue(id, out var item))
-        {
-            return null;
-        }
-        return item;
-    }
-
-    public static Structure GetStructure(this string id)
-    {
-        if (StructureIdLookup.TryGetValue(id, out var structure))
-        {
-            return structure;
-        }
-        return null;
-    }
-
-    public static Container GetContainer(this string id)
-    {
-        return GetStructure(id) as Container;
-    }
-
-    public static bool IsCreature(string id)
+    public bool IsCreature(string id)
     {
         return CreatureIdLookup.ContainsKey(id);
     }
 
-    public static bool IsItem(string id)
+    public bool IsItem(string id)
     {
         return ItemIdLookup.ContainsKey(id);
     }
 
-    public static bool IsStructure(string id)
+    public bool IsStructure(string id)
     {
         return StructureIdLookup.ContainsKey(id);
     }
 
-    internal static void Clear()
+    internal void Clear()
     {
         StructureLookup.Clear();
         StructureIdLookup.Clear();
@@ -107,7 +75,7 @@ public static class IdService
         ItemIdLookup.Clear();
     }
 
-    internal static void DestroyEntity(IEntity entity)
+    internal void DestroyEntity(IEntity entity)
     {
         if (StructureLookup.ContainsKey(entity))
         {
@@ -125,26 +93,7 @@ public static class IdService
         }
     }
 
-    internal static IEntity GetEntity(this string id)
-    {
-        if (IsCreature(id))
-        {
-            return GetCreature(id);
-        }
-        if (IsStructure(id))
-        {
-            return GetStructure(id);
-        }
-        if (IsItem(id))
-        {
-            return GetItem(id);
-        }
-
-        Debug.LogWarning("Unknown entity type!");
-        return null;
-    }
-
-    internal static void RemoveEntity(IEntity entity)
+    internal void RemoveEntity(IEntity entity)
     {
         if (StructureLookup.ContainsKey(entity))
         {
@@ -165,5 +114,59 @@ public static class IdService
             ItemLookup.Remove(entity);
             ItemIdLookup.Remove(entity.Id);
         }
+    }
+}
+
+public static class IdExtensions
+{
+    public static Creature GetCreature(this string id)
+    {
+        if (!Game.IdService.CreatureIdLookup.TryGetValue(id, out var creature))
+        {
+            return null;
+        }
+        return creature;
+    }
+
+    public static Item GetItem(this string id)
+    {
+        if (!Game.IdService.ItemIdLookup.TryGetValue(id, out var item))
+        {
+            return null;
+        }
+        return item;
+    }
+
+    public static Structure GetStructure(this string id)
+    {
+        if (Game.IdService.StructureIdLookup.TryGetValue(id, out var structure))
+        {
+            return structure;
+        }
+        return null;
+    }
+
+    public static Container GetContainer(this string id)
+    {
+        return GetStructure(id) as Container;
+    }
+
+    internal static IEntity GetEntity(this string id)
+    {
+        if (Game.IdService.IsCreature(id))
+        {
+            return GetCreature(id);
+        }
+        if (Game.IdService.IsStructure(id))
+        {
+            return GetStructure(id);
+        }
+        if (Game.IdService.IsItem(id))
+        {
+            return GetItem(id);
+        }
+
+        Debug.LogWarning("Unknown entity type!");
+        return null;
     }
 }

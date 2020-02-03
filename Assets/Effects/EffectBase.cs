@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class EffectBase
@@ -13,7 +12,7 @@ public abstract class EffectBase
         {
             if (_assignedEntity == null)
             {
-                _assignedEntity = IdService.GetEntity(AssignedEntityId);
+                _assignedEntity = AssignedEntityId.GetEntity();
             }
             return _assignedEntity;
         }
@@ -30,7 +29,7 @@ public abstract class EffectBase
         {
             if (_target == null)
             {
-                _target = IdService.GetEntity(TargetId);
+                _target = TargetId.GetEntity();
             }
             return _target;
         }
@@ -54,8 +53,7 @@ public abstract class EffectBase
             Elapsed += Time.deltaTime;
             return false;
         }
-        Elapsed = 0f; 
-
+        Elapsed = 0f;
 
         if (!Ready())
         {

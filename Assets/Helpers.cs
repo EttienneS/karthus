@@ -26,6 +26,7 @@ public static class Helpers
     {
         return Regex.Escape(pattern).Replace("*", ".*").Replace("?", ".");
     }
+
     public static string GlobalizeFloatString(string input)
     {
         return input.Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);

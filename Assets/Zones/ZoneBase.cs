@@ -20,7 +20,7 @@ public abstract class ZoneBase
     {
         get
         {
-            return IdService.ItemLookup.Values.Where(i => Cells.Contains(i.Cell)).ToList();
+            return Game.IdService.ItemLookup.Values.Where(i => Cells.Contains(i.Cell)).ToList();
         }
     }
 
@@ -35,7 +35,7 @@ public abstract class ZoneBase
                 return null;
             }
 
-            return IdService.GetEntity(OwnerId);
+            return OwnerId.GetEntity();
         }
     }
 
@@ -50,9 +50,9 @@ public abstract class ZoneBase
         {
             var structures = new List<Structure>();
 
-            foreach (var cell in Cells.Where(c => IdService.StructureCellLookup.ContainsKey(c)))
+            foreach (var cell in Cells.Where(c => Game.IdService.StructureCellLookup.ContainsKey(c)))
             {
-                structures.AddRange(IdService.StructureCellLookup[cell]);
+                structures.AddRange(Game.IdService.StructureCellLookup[cell]);
             }
 
             return structures;

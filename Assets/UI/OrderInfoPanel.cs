@@ -7,6 +7,7 @@ public class OrderInfoPanel : MonoBehaviour
     public Text DescriptionLabel;
     public Text DetailLabel;
     public Text TitleLabel;
+
     public string Cost
     {
         get
@@ -54,6 +55,7 @@ public class OrderInfoPanel : MonoBehaviour
             TitleLabel.text = value;
         }
     }
+
     public void Hide()
     {
         gameObject.SetActive(false);

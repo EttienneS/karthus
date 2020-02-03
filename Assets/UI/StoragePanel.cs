@@ -37,19 +37,17 @@ public class StoragePanel : MonoBehaviour
         {
             ZoneInfoText.text = "No containers in zone.  Build storage containers to use storage zone.";
         }
-
-        
     }
 
     public void FilterChanged()
     {
-        Game.Controller.Typing = true;
+        Game.Instance.Typing = true;
         Game.ZoneController.Refresh(Zone);
     }
 
     public void DoneEditing()
     {
         Zone.SetFilter(FilterInput.text);
-        Game.Controller.Typing = false;
+        Game.Instance.Typing = false;
     }
 }

@@ -61,7 +61,7 @@ public class CameraController : MonoBehaviour
         }
         else
         {
-            if (Game.Controller == null || Game.Controller.Typing)
+            if (Game.Instance == null || Game.Instance.Typing)
             {
                 return;
             }

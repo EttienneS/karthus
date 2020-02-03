@@ -41,9 +41,9 @@ public class LoadStatus : MonoBehaviour
 
     public void Update()
     {
-        if (!Game.Ready)
+        if (!Game.Instance.Ready)
         {
-            SetProgress(Game.LoadStatus, Game.LoadProgress);
+            SetProgress(Game.Instance.LoadStatus, Game.Instance.LoadProgress);
         }
         else
         {

@@ -40,9 +40,9 @@ public class Item : IEntity
             return true;
         }
 
-        if (Categories == null) 
+        if (Categories == null)
             return false;
-        
+
         return Categories.Contains(type, StringComparer.OrdinalIgnoreCase);
     }
 

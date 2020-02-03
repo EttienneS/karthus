@@ -45,6 +45,7 @@ public class SpriteTester : MonoBehaviour
 
     // the attached renderer
     private SpriteRenderer _renderer;
+
     private void Start()
     {
         // get the attached renderer

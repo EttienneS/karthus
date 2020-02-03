@@ -130,7 +130,7 @@ public class StructureController : MonoBehaviour
             {
                 Game.MagicController.RemoveEffector(structure);
             }
-            IdService.RemoveEntity(structure);
+            Game.IdService.RemoveEntity(structure);
             Game.FactionController.Factions[structure.FactionName].Structures.Remove(structure);
         }
     }
@@ -144,6 +144,6 @@ public class StructureController : MonoBehaviour
 
     private void IndexStructure(Structure structure)
     {
-        IdService.EnrollEntity(structure);
+        Game.IdService.EnrollEntity(structure);
     }
 }

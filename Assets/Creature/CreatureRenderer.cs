@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering.LWRP;
 
 public class CreatureRenderer : MonoBehaviour
 {
@@ -77,7 +75,6 @@ public class CreatureRenderer : MonoBehaviour
         Data.UpdateSprite();
     }
 
-
     public void Update()
     {
         UpdateFloatingText();
@@ -95,7 +92,7 @@ public class CreatureRenderer : MonoBehaviour
             Highlight.gameObject.SetActive(false);
         }
     }
-     
+
     internal void DisplayChannel(ManaColor color, float duration)
     {
         var col = color.GetActualColor();

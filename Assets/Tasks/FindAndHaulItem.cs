@@ -59,7 +59,7 @@ public class FindAndHaulItem : CreatureTask
 
                 entity.Properties[NamedProperties.ContainedItemIds] += item.Id + ",";
             }
-            return true; 
+            return true;
         }
         return false;
     }

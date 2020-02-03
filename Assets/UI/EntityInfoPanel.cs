@@ -136,8 +136,6 @@ public class EntityInfoPanel : MonoBehaviour
                     }
 
                     PropertiesPanel.text += $"\nLocation:\t{creature.X:F1}:{creature.Y:F1}\n\n";
-
-                    
                 }
                 else
                 {
@@ -257,7 +255,6 @@ public class EntityInfoPanel : MonoBehaviour
         }
     }
 
-   
     private void AddMoveButton(IEnumerable<Creature> creatures)
     {
         var btn = AddButton(OrderSelectionController.MoveText, OrderSelectionController.MoveIcon);
@@ -324,8 +321,8 @@ public class EntityInfoPanel : MonoBehaviour
     {
         SetActiveButton(btn);
 
-        Game.Controller.SelectionPreference = SelectionPreference.Cell;
-        Game.Controller.SetMouseSprite(OrderSelectionController.AttackIcon,
+        Game.Instance.SelectionPreference = SelectionPreference.Cell;
+        Game.Instance.SetMouseSprite(OrderSelectionController.AttackIcon,
                                         (cell) => cell.GetEnemyCreaturesOf(FactionConstants.Player).Any());
 
         Game.OrderSelectionController.CellClickOrder = cells =>
@@ -354,8 +351,6 @@ public class EntityInfoPanel : MonoBehaviour
             HealthText.text += $"\t{limb}\n";
         }
         HealthText.text += "\n";
-
-      
     }
 
     private void LogTask(Creature creature)
@@ -380,8 +375,8 @@ public class EntityInfoPanel : MonoBehaviour
     private void MoveClicked(IEnumerable<Creature> creatures, ImageButton btn)
     {
         SetActiveButton(btn);
-        Game.Controller.SelectionPreference = SelectionPreference.Cell;
-        Game.Controller.SetMouseSprite(OrderSelectionController.MoveIcon, (cell) => cell.TravelCost > 0);
+        Game.Instance.SelectionPreference = SelectionPreference.Cell;
+        Game.Instance.SetMouseSprite(OrderSelectionController.MoveIcon, (cell) => cell.TravelCost > 0);
 
         Game.OrderSelectionController.CellClickOrder = cells =>
         {
