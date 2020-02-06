@@ -184,12 +184,12 @@ public class MapGenerator
 
         Game.Map.Cells = new List<Cell>();
         Game.Instance.SetLoadStatus("Create cells", 0.08f);
-        MakeCells(0, 0, Game.Map.MaxMapSize, Game.Map.MaxMapSize);
+        MakeCells(Game.Map.MinX, Game.Map.MinY, Game.Map.MaxX, Game.Map.MaxY);
         Game.Instance.SetLoadStatus("Create cells", 0.18f);
         yield return null;
 
         Game.Instance.SetLoadStatus("Build render chunks", 0.45f);
-        var chunks = GetRenderChunks(50);
+        var chunks = GetRenderChunks(Game.Map.ChunkSize);
         Game.Instance.SetLoadStatus("Build render chunks", 0.45f);
         yield return null;
 

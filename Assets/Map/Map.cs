@@ -9,14 +9,14 @@ public class Map : MonoBehaviour
 {
     public const int PixelsPerCell = 64;
 
-    public int ChunkSize = 50;
-    public int MaxMapSize = 250;
+    internal int ChunkSize = 25;
+    internal int MaxMapSize = 250;
 
-    public int MinY => MaxMapSize / 2;
-    public int MinX => MaxMapSize / 2;
+    internal int MinY => MaxMapSize / 2;
+    internal int MinX => MaxMapSize / 2;
 
-    public int MaxY => MinY + ChunkSize;
-    public int MaxX => MinX + ChunkSize;
+    internal int MaxY => MinY + 50;
+    internal int MaxX => MinX + 50;
 
     internal Tilemap Tilemap;
     internal Tilemap LiquidMap;
