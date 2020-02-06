@@ -125,7 +125,7 @@ public class MapGenerator
                         continue;
                     }
 
-                    if (tx >= 0 && tx < Game.Map.Width && ty >= 0 && ty < Game.Map.Height)
+                    if (tx >= Game.Map.MinX && tx < Game.Map.MaxX && ty >= Game.Map.MinY && ty < Game.Map.MaxY)
                     {
                         group.Add(Game.Map.GetCellAtCoordinate(tx, ty));
                     }
@@ -164,7 +164,7 @@ public class MapGenerator
                 continue;
             }
 
-            for (int i = 0; i < Game.Map.Width / 50; i++)
+            for (int i = Game.Map.MinY; i < Game.Map.MaxX / 50; i++)
             {
                 var creature = Game.CreatureController.GetCreatureOfType(monster.Key);
 
@@ -184,25 +184,13 @@ public class MapGenerator
 
         Game.Map.Cells = new List<Cell>();
         Game.Instance.SetLoadStatus("Create cells", 0.08f);
-        for (var y = 0; y < Game.Map.Height; y++)
-        {
-            for (var x = 0; x < Game.Map.Width; x++)
-            {
-                CreateCell(x, y);
-            }
-        }
-        yield return null;
-
-        Game.Instance.SetLoadStatus("Link cells", 0.12f);
-        LinkNeighbours();
-        yield return null;
-
-        Game.Instance.SetLoadStatus("Reset search priorities", 0.20f);
-        ResetSearchPriorities();
+        MakeCells(0, 0, Game.Map.MaxMapSize, Game.Map.MaxMapSize);
+        Game.Instance.SetLoadStatus("Create cells", 0.18f);
         yield return null;
 
         Game.Instance.SetLoadStatus("Build render chunks", 0.45f);
         var chunks = GetRenderChunks(50);
+        Game.Instance.SetLoadStatus("Build render chunks", 0.45f);
         yield return null;
 
         Game.Instance.SetLoadStatus("Render chunks", 0.5f);
@@ -213,7 +201,6 @@ public class MapGenerator
         {
             i++;
             Game.Instance.SetLoadStatus($"Draw {i}/{totalChunks}", 0.5f + (i / totalChunks * totalProgress));
-
             DrawChunk(chunk);
             yield return null;
         }
@@ -232,30 +219,38 @@ public class MapGenerator
         FinishBuildings(buildings);
     }
 
-    internal void LinkNeighbours()
+    internal void MakeCells(int miny, int minx, int maxy, int maxx)
     {
-        for (var y = 0; y < Game.Map.Height; y++)
+        for (var y = miny; y < maxy; y++)
         {
-            for (var x = 0; x < Game.Map.Width; x++)
+            for (var x = minx; x < maxx; x++)
+            {
+                CreateCell(x, y);
+            }
+        }
+
+        for (var y = miny; y < maxy; y++)
+        {
+            for (var x = minx; x < maxx; x++)
             {
                 var cell = Game.Map.CellLookup[(x, y)];
-
-                if (x > 0)
+                cell.SearchPhase = 0;
+                if (x > Game.Map.MinX)
                 {
                     cell.SetNeighbor(Direction.W, Game.Map.CellLookup[(x - 1, y)]);
 
-                    if (y > 0)
+                    if (y > Game.Map.MinY)
                     {
                         cell.SetNeighbor(Direction.SW, Game.Map.CellLookup[(x - 1, y - 1)]);
 
-                        if (x < Game.Map.Width - 1)
+                        if (x < Game.Map.MaxX - 1)
                         {
                             cell.SetNeighbor(Direction.SE, Game.Map.CellLookup[(x + 1, y - 1)]);
                         }
                     }
                 }
 
-                if (y > 0)
+                if (y > Game.Map.MinY)
                 {
                     cell.SetNeighbor(Direction.S, Game.Map.CellLookup[(x, y - 1)]);
                 }
@@ -266,13 +261,6 @@ public class MapGenerator
     internal void ResetSearchPriorities()
     {
         // ensure that all cells have their phases reset
-        for (var y = 0; y < Game.Map.Height; y++)
-        {
-            for (var x = 0; x < Game.Map.Width; x++)
-            {
-                Game.Map.CellLookup[(x, y)].SearchPhase = 0;
-            }
-        }
     }
 
     private List<List<Cell>> CreateBuildings(int maxWidth, int maxHeight, int minWidth, int minHeight, List<Cell> street)
@@ -398,8 +386,8 @@ public class MapGenerator
     {
         var chunks = new List<List<Cell>>();
 
-        var wchunks = Game.Map.Width / chunkSize;
-        var hchunks = Game.Map.Height / chunkSize;
+        var wchunks = (Game.Map.MaxX - Game.Map.MinX) / chunkSize;
+        var hchunks = (Game.Map.MaxY - Game.Map.MinY) / chunkSize;
 
         for (int w = 0; w < wchunks; w++)
         {
@@ -407,9 +395,9 @@ public class MapGenerator
             {
                 var chunk = new List<Cell>();
 
-                for (int x = 0; x < chunkSize; x++)
+                for (int x = Game.Map.MinX; x < chunkSize + Game.Map.MinX; x++)
                 {
-                    for (int y = 0; y < chunkSize; y++)
+                    for (int y = Game.Map.MinY; y < chunkSize + Game.Map.MinY; y++)
                     {
                         chunk.Add(Game.Map.GetCellAtCoordinate(x + (w * chunkSize), y + (h * chunkSize)));
                     }

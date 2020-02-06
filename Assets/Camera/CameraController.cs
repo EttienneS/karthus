@@ -72,8 +72,8 @@ public class CameraController : MonoBehaviour
             if (horizontal != 0 || vertical != 0 || mouseWheel != 0)
             {
                 var step = Mathf.Clamp((int)Game.TimeManager.TimeStep, 1, 8);
-                var x = Mathf.Clamp(transform.position.x + (horizontal * Speed * step), 0, Game.Map.Width);
-                var y = Mathf.Clamp(transform.position.y + (vertical * Speed * step), 0, Game.Map.Height);
+                var x = Mathf.Clamp(transform.position.x + (horizontal * Speed * step), Game.Map.MinX, Game.Map.MaxX);
+                var y = Mathf.Clamp(transform.position.y + (vertical * Speed * step), Game.Map.MinY, Game.Map.MaxY);
                 transform.position = new Vector3(x, y, transform.position.z);
 
                 Camera.orthographicSize = Mathf.Clamp(Camera.orthographicSize - (mouseWheel * ZoomStep),

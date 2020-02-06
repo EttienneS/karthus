@@ -8,8 +8,15 @@ using Random = UnityEngine.Random;
 public class Map : MonoBehaviour
 {
     public const int PixelsPerCell = 64;
-    [Range(5, 2000)] public int Height = 100;
-    [Range(5, 2000)] public int Width = 100;
+
+    public int ChunkSize = 50;
+    public int MaxMapSize = 250;
+
+    public int MinY => MaxMapSize / 2;
+    public int MinX => MaxMapSize / 2;
+
+    public int MaxY => MinY + ChunkSize;
+    public int MaxX => MinX + ChunkSize;
 
     internal Tilemap Tilemap;
     internal Tilemap LiquidMap;
@@ -27,7 +34,6 @@ public class Map : MonoBehaviour
 
     public void Update()
     {
-
     }
 
     public float GetCellHeight(float x, float y)
@@ -77,7 +83,7 @@ public class Map : MonoBehaviour
     {
         get
         {
-            return CellLookup[(Game.Map.Width / 2, Game.Map.Height / 2)];
+            return CellLookup[((MinX + MaxX) / 2, (MinY + MaxY) / 2)];
         }
     }
 
@@ -85,7 +91,7 @@ public class Map : MonoBehaviour
 
     public void AddCellIfValid(int x, int y, List<Cell> cells)
     {
-        if (x >= 0 && x < Game.Map.Width && y >= 0 && y < Game.Map.Height)
+        if (x >= MinX && x < MaxX && y >= MinY && y < MaxY)
         {
             cells.Add(CellLookup[(x, y)]);
         }
@@ -95,8 +101,6 @@ public class Map : MonoBehaviour
     {
         Tilemap = transform.Find("Tilemap").gameObject.GetComponent<Tilemap>();
         LiquidMap = transform.Find("Liquid Map").gameObject.GetComponent<Tilemap>();
-
-        
     }
 
     public List<Cell> BleedGroup(List<Cell> group, int count, float percentage = 0.7f)
@@ -141,7 +145,7 @@ public class Map : MonoBehaviour
         var intx = Mathf.RoundToInt(x - 0.001f);
         var inty = Mathf.RoundToInt(y - 0.001f);
 
-        if (intx < 0 || inty < 0 || intx >= Game.Map.Width || inty >= Game.Map.Height)
+        if (intx < MinX || inty < MinY || intx >= MaxX || inty >= MaxY)
         {
             return null;
         }
@@ -154,8 +158,8 @@ public class Map : MonoBehaviour
         // subtract half a unit to compensate for cell offset
         var cell = Cell.FromPosition(position - new Vector3(0.5f, 0.5f));
 
-        if (cell.X < 0 || cell.Y < 0 ||
-            cell.X >= Game.Map.Width || cell.Y >= Game.Map.Height)
+        if (cell.X < MinX || cell.Y < MinY ||
+            cell.X >= MaxX || cell.Y >= MaxY)
         {
             return null;
         }
@@ -236,7 +240,7 @@ public class Map : MonoBehaviour
         var numerator = longest >> 1;
         for (var i = 0; i <= longest; i++)
         {
-            line.Add(Game.Map.GetCellAtCoordinate(x, y));
+            line.Add(GetCellAtCoordinate(x, y));
             numerator += shortest;
             if (!(numerator < longest))
             {
@@ -304,12 +308,12 @@ public class Map : MonoBehaviour
         }
 
         // add 1 to offset rounding errors
-        return Game.Map.GetCellAtCoordinate(tX, tY);
+        return GetCellAtCoordinate(tX, tY);
     }
 
     public Cell GetRandomCell()
     {
-        return CellLookup[((int)(Random.value * (Game.Map.Width - 1)), (int)(Random.value * (Game.Map.Height - 1)))];
+        return CellLookup[((int)(Random.value * (MaxX - 1)), (int)(Random.value * (MaxY - 1)))];
     }
 
     public List<Cell> GetRandomChunk(int chunkSize, Cell origin)
@@ -399,7 +403,7 @@ public class Map : MonoBehaviour
         {
             for (var y = fromY; y < toY; y++)
             {
-                Game.Map.AddCellIfValid(x, y, cells);
+                AddCellIfValid(x, y, cells);
             }
         }
 
@@ -415,7 +419,7 @@ public class Map : MonoBehaviour
     public List<Cell> HollowSquare(List<Cell> square)
     {
         var minMax = GetMinMax(square);
-        var src = Game.Map.GetCellAtCoordinate(minMax.minx + 1, minMax.miny + 1);
+        var src = GetCellAtCoordinate(minMax.minx + 1, minMax.miny + 1);
         return GetRectangle(src.X, src.Y,
                             minMax.maxx - minMax.minx - 1,
                             minMax.maxy - minMax.miny - 1);
@@ -441,8 +445,8 @@ public class Map : MonoBehaviour
 
     internal Cell GetCellAttRadian(Cell center, int radius, int angle)
     {
-        var mineX = Mathf.Clamp(Mathf.FloorToInt(center.X + (radius * Mathf.Cos(angle))), 0, Game.Map.Width);
-        var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Y + (radius * Mathf.Sin(angle))), 0, Game.Map.Height);
+        var mineX = Mathf.Clamp(Mathf.FloorToInt(center.X + (radius * Mathf.Cos(angle))), 0, MaxX);
+        var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Y + (radius * Mathf.Sin(angle))), 0, MaxY);
 
         return GetCellAtCoordinate(mineX, mineY);
     }
@@ -528,8 +532,8 @@ public class Map : MonoBehaviour
     internal Cell GetRandomRadian(Cell center, int radius)
     {
         var angle = Random.Range(0, 360);
-        var mineX = Mathf.Clamp(Mathf.FloorToInt(center.X + (radius * Mathf.Cos(angle))), 0, Game.Map.Width);
-        var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Y + (radius * Mathf.Sin(angle))), 0, Game.Map.Height);
+        var mineX = Mathf.Clamp(Mathf.FloorToInt(center.X + (radius * Mathf.Cos(angle))), 0, MaxX);
+        var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Y + (radius * Mathf.Sin(angle))), 0, MaxY);
 
         return GetCellAtCoordinate(mineX, mineY);
     }

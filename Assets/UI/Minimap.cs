@@ -40,8 +40,8 @@ public class Minimap : MonoBehaviour, IPointerClickHandler, IDragHandler
 
     public void Click()
     {
-        var x = (Game.Map.Width * ((Input.mousePosition.x - Screen.width + ThisRect.rect.width) / ThisRect.sizeDelta.x)) + 14;
-        var y = (Game.Map.Height * ((Input.mousePosition.y - Screen.height + ThisRect.rect.height) / ThisRect.sizeDelta.y)) + 10;
+        var x = (Game.Map.MaxX * ((Input.mousePosition.x - Screen.width + ThisRect.rect.width) / ThisRect.sizeDelta.x)) + 14;
+        var y = (Game.Map.MaxY * ((Input.mousePosition.y - Screen.height + ThisRect.rect.height) / ThisRect.sizeDelta.y)) + 10;
 
         Game.CameraController.transform.position = new Vector3(x, y, Game.CameraController.Camera.transform.position.z);
     }
@@ -65,11 +65,11 @@ public class Minimap : MonoBehaviour, IPointerClickHandler, IDragHandler
         {
             return;
         }
-        MinimapCamera.orthographicSize = Game.Map.Width / 2;
+        MinimapCamera.orthographicSize = (Game.Map.MaxX - Game.Map.MinX) / 2;
         MinimapCamera.transform.position = new Vector3(Game.Map.Center.X, Game.Map.Center.Y, -10);
 
-        var relativeX = (ThisRect.sizeDelta.x * (Game.CameraController.transform.position.x / Game.Map.Width)) - (ThisRect.sizeDelta.x / 2);
-        var relativeY = (ThisRect.sizeDelta.y * (Game.CameraController.transform.position.y / Game.Map.Height)) - (ThisRect.sizeDelta.y / 2);
+        var relativeX = (ThisRect.sizeDelta.x * (Game.CameraController.transform.position.x / (Game.Map.MaxX - Game.Map.MinX))) - (ThisRect.sizeDelta.x / 2);
+        var relativeY = (ThisRect.sizeDelta.y * (Game.CameraController.transform.position.y / (Game.Map.MaxY - Game.Map.MinY))) - (ThisRect.sizeDelta.y / 2);
 
         MapSquareImage.transform.localPosition = new Vector3(relativeX, relativeY, -10);
 

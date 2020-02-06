@@ -180,10 +180,10 @@ public partial class Game : MonoBehaviour
     {
         var cells = new List<Cell>();
 
-        var startX = Mathf.Clamp(Mathf.Min(worldStartPoint.x, worldEndPoint.x), 0, Map.Width);
-        var startY = Mathf.Clamp(Mathf.Min(worldStartPoint.y, worldEndPoint.y), 0, Map.Height);
-        var endX = Mathf.Clamp(Mathf.Max(worldStartPoint.x, worldEndPoint.x), 0, Map.Width);
-        var endY = Mathf.Clamp(Mathf.Max(worldStartPoint.y, worldEndPoint.y), 0, Map.Height);
+        var startX = Mathf.Clamp(Mathf.Min(worldStartPoint.x, worldEndPoint.x), Map.MinX, Map.MaxX);
+        var startY = Mathf.Clamp(Mathf.Min(worldStartPoint.y, worldEndPoint.y), Map.MinY, Map.MaxY);
+        var endX = Mathf.Clamp(Mathf.Max(worldStartPoint.x, worldEndPoint.x), Map.MinX, Map.MaxX);
+        var endY = Mathf.Clamp(Mathf.Max(worldStartPoint.y, worldEndPoint.y), Map.MinX, Map.MaxY);
 
         if (startX == endX && startY == endY)
         {
@@ -471,8 +471,8 @@ public partial class Game : MonoBehaviour
             }
             else if (!MapGenerator.Busy)
             {
-                CameraController.Camera.transform.position = new Vector3(Map.Width / 2, Map.Height / 2, -1);
-                CameraController.Camera.orthographicSize = Map.Width / 2;
+                CameraController.Camera.transform.position = new Vector3(Map.MaxX / 2, Map.MaxY / 2, -1);
+                CameraController.Camera.orthographicSize = Map.MaxX / 2;
                 MapGenerator.Busy = true;
                 StartCoroutine(MapGenerator.Work());
             }
