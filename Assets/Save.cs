@@ -8,6 +8,8 @@ public class Save
 
     public List<Item> Items;
 
+    public List<ZoneBase> Zones;
+
     public TimeData Time;
 
     public float Seed;

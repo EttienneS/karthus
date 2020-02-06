@@ -53,6 +53,7 @@ public class ZoneController : MonoBehaviour
         newZone.Cells = cells.ToList();
         newZone.Name = name;
         newZone.FactionName = faction;
+        newZone.Purpose = purpose;
 
         Zones.Add(newZone, DrawZone(newZone));
 
@@ -129,8 +130,31 @@ public class ZoneController : MonoBehaviour
     {
         var tile = ScriptableObject.CreateInstance<Tile>();
         tile.sprite = Game.SpriteStore.GetSprite(sprite);
-        tile.color = newZone.Color;
+        tile.color = newZone.Color.ToColor();
 
         ZoneTilemap.SetTile(new Vector3Int(cell.X, cell.Y, 0), tile);
+    }
+
+    internal void Load(ZoneBase zone)
+    {
+        switch (zone.Purpose)
+        {
+            case Purpose.Area:
+                var area = zone as AreaZone;
+                AreaZones.Add(area);
+                Zones.Add(area, DrawZone(area));
+                break;
+            case Purpose.Room:
+                var room = zone as RoomZone;
+                RoomZones.Add(room);
+                Zones.Add(room, DrawZone(room));
+                break;
+            case Purpose.Storage:
+                var storage = zone as StorageZone;
+                StorageZones.Add(storage);
+                Zones.Add(storage, DrawZone(storage));
+                break;
+        }
+
     }
 }

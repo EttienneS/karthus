@@ -688,6 +688,11 @@ public partial class Game : MonoBehaviour
                 yield return null;
             }
 
+            foreach (var zone in SaveManager.SaveToLoad.Zones)
+            {
+                ZoneController.Load(zone);
+            }
+
             SetLoadStatus($"Loading Camera", 0.99f);
             SaveManager.SaveToLoad.CameraData.Load(CameraController.Camera);
             SaveManager.SaveToLoad = null;

@@ -25,6 +25,11 @@ public class Map : MonoBehaviour
 
     internal float Seed;
 
+    public void Update()
+    {
+
+    }
+
     public float GetCellHeight(float x, float y)
     {
         return Mathf.PerlinNoise((Seed + x) * Scaler, (Seed + y) * Scaler);
