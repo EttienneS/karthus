@@ -8,7 +8,9 @@ public class Save
 
     public List<Item> Items;
 
-    public List<ZoneBase> Zones;
+    public List<RoomZone> Rooms;
+    public List<StorageZone> Stores;
+    public List<AreaZone> Areas;
 
     public TimeData Time;
 

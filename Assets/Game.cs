@@ -688,9 +688,32 @@ public partial class Game : MonoBehaviour
                 yield return null;
             }
 
-            foreach (var zone in SaveManager.SaveToLoad.Zones)
+            if (SaveManager.SaveToLoad.Stores != null)
             {
-                ZoneController.Load(zone);
+                SetLoadStatus($"Loading Stores", 0.95f);
+                foreach (var zone in SaveManager.SaveToLoad.Stores)
+                {
+                    ZoneController.Load(zone);
+                }
+                yield return null;
+            }
+            if (SaveManager.SaveToLoad.Rooms != null)
+            {
+                SetLoadStatus($"Loading Rooms", 0.96f);
+                foreach (var zone in SaveManager.SaveToLoad.Rooms)
+                {
+                    ZoneController.Load(zone);
+                }
+                yield return null;
+            }
+            if (SaveManager.SaveToLoad.Areas != null)
+            {
+                SetLoadStatus($"Loading Areas", 0.97f);
+                foreach (var zone in SaveManager.SaveToLoad.Areas)
+                {
+                    ZoneController.Load(zone);
+                }
+                yield return null;
             }
 
             SetLoadStatus($"Loading Camera", 0.99f);

@@ -70,7 +70,10 @@ public static class SaveManager
             Factions = Game.FactionController.Factions.Values.ToList(),
             Time = Game.TimeManager.Data,
             Items = Game.IdService.ItemLookup.Values.ToList(),
-            CameraData = new CameraData(Game.CameraController.Camera)
+            CameraData = new CameraData(Game.CameraController.Camera),
+            Rooms = Game.ZoneController.RoomZones,
+            Stores = Game.ZoneController.StorageZones,
+            Areas = Game.ZoneController.AreaZones,
         };
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Linq;
 
 public class StorageZone : ZoneBase
@@ -7,6 +8,7 @@ public class StorageZone : ZoneBase
 
     public string Filter = "*";
 
+    [JsonIgnore]
     public int Fill
     {
         get
@@ -20,6 +22,7 @@ public class StorageZone : ZoneBase
         }
     }
 
+    [JsonIgnore]
     public int Capacity
     {
         get
@@ -33,6 +36,7 @@ public class StorageZone : ZoneBase
         }
     }
 
+    [JsonIgnore]
     public IEnumerable<Container> Containers
     {
         get
