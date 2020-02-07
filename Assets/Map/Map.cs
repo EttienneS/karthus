@@ -8,99 +8,54 @@ using Random = UnityEngine.Random;
 public class Map : MonoBehaviour
 {
     public const int PixelsPerCell = 64;
-
-    internal int ChunkSize = 25;
-    internal int MaxMapSize = 250;
-
-    internal int MinY => MaxMapSize / 2;
-    internal int MinX => MaxMapSize / 2;
-
-    internal int MaxY => MinY + 50;
-    internal int MaxX => MinX + 50;
-
-    internal Tilemap Tilemap;
-    internal Tilemap LiquidMap;
-
-    private Dictionary<(int x, int y), Cell> _cellLookup;
-
-    private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
-
-    private int _searchFrontierPhase;
-
+    public Dictionary<(int x, int y), Cell> CellLookup = new Dictionary<(int x, int y), Cell>();
     [Range(0.001f, 0.2f)]
     public float Scaler = 0.1f;
 
+    public Chunk ChunkPrefab;
+    internal Dictionary<(int x, int y), Chunk> Chunks;
+    internal int ChunkSize = 5;
+    internal int MaxMapSize = 25;
+
     internal float Seed;
+    private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
+    private int _searchFrontierPhase;
 
-    public void Update()
+    public enum TileLayer
     {
+        Ground, Floor, Structure
     }
-
-    public float GetCellHeight(float x, float y)
-    {
-        return Mathf.PerlinNoise((Seed + x) * Scaler, (Seed + y) * Scaler);
-    }
-
-    internal Cell GetNearestEmptyCell(Cell cell)
-    {
-        var circle = GetCircle(cell, 1);
-
-        for (int i = 2; i < 15; i++)
-        {
-            var newCircle = GetCircle(cell, i);
-            newCircle.RemoveAll(c => circle.Contains(c));
-            circle = newCircle;
-
-            var empty = circle.Where(c => c.Structure == null);
-
-            if (empty.Count() > 0)
-            {
-                return empty.GetRandomItem();
-            }
-        }
-
-        return null;
-    }
-
-    public Dictionary<(int x, int y), Cell> CellLookup
-    {
-        get
-        {
-            if (_cellLookup == null)
-            {
-                _cellLookup = new Dictionary<(int x, int y), Cell>();
-
-                foreach (var cell in Cells)
-                {
-                    _cellLookup.Add((cell.X, cell.Y), cell);
-                }
-            }
-            return _cellLookup;
-        }
-    }
-
     public Cell Center
     {
         get
         {
-            return CellLookup[((MinX + MaxX) / 2, (MinY + MaxY) / 2)];
+            return CellLookup[((MinX + ((MaxX - MinX) / 2)) - 2, (MinY + ((MaxY - MinY) / 2)) - 2)];
         }
     }
 
-    internal List<Cell> Cells { get; set; }
+    internal int MaxX => 25;
+    internal int MaxY => 25;
+    internal int MinX => 0;
+    internal int MinY => 0;
 
     public void AddCellIfValid(int x, int y, List<Cell> cells)
     {
-        if (x >= MinX && x < MaxX && y >= MinY && y < MaxY)
+        if (CellLookup.ContainsKey((x, y)))
         {
             cells.Add(CellLookup[(x, y)]);
         }
     }
 
-    public void Awake()
+    public Chunk MakeChunk(int x, int y)
     {
-        Tilemap = transform.Find("Tilemap").gameObject.GetComponent<Tilemap>();
-        LiquidMap = transform.Find("Liquid Map").gameObject.GetComponent<Tilemap>();
+        var chunk = Instantiate(ChunkPrefab, transform);
+
+        chunk.name = $"Chunk: {x}_{y}";
+
+        chunk.X = x;
+        chunk.Y = y;
+
+        return chunk;
     }
 
     public List<Cell> BleedGroup(List<Cell> group, int count, float percentage = 0.7f)
@@ -164,6 +119,11 @@ public class Map : MonoBehaviour
             return null;
         }
         return CellLookup[(cell.X, cell.Y)];
+    }
+
+    public float GetCellHeight(float x, float y)
+    {
+        return Mathf.PerlinNoise((Seed + x) * Scaler, (Seed + y) * Scaler);
     }
 
     public List<Cell> GetCircle(Cell center, int radius)
@@ -353,21 +313,6 @@ public class Map : MonoBehaviour
         return chunk;
     }
 
-    internal Cell GetCellAtCoordinate(Vector3 pos)
-    {
-        return GetCellAtCoordinate(pos.x, pos.y);
-    }
-
-    internal Cell GetCellAtCoordinate(Vector2 pos)
-    {
-        return GetCellAtCoordinate(pos.x, pos.y);
-    }
-
-    internal List<Cell> GetEdge(List<Cell> cells)
-    {
-        return cells.Where(c => c.Neighbors.Any(n => n != null && !cells.Contains(n))).ToList();
-    }
-
     public Cell GetRandomPathableCell()
     {
         var cell = GetRandomCell();
@@ -408,7 +353,7 @@ public class Map : MonoBehaviour
         }
 
         return cells;
-    }
+    }  
 
     public (int, int) GetWidthAndHeight(List<Cell> cells)
     {
@@ -425,9 +370,8 @@ public class Map : MonoBehaviour
                             minMax.maxy - minMax.miny - 1);
     }
 
-    internal void ClearCache()
+    public void Update()
     {
-        _cellLookup = null;
     }
 
     internal void DestroyCell(Cell cell)
@@ -441,6 +385,16 @@ public class Map : MonoBehaviour
     internal float GetAngle(Cell c1, Cell c2)
     {
         return Mathf.Atan2(c2.X - c1.X, c2.Y - c1.Y) * 180.0f / Mathf.PI;
+    }
+
+    internal Cell GetCellAtCoordinate(Vector3 pos)
+    {
+        return GetCellAtCoordinate(pos.x, pos.y);
+    }
+
+    internal Cell GetCellAtCoordinate(Vector2 pos)
+    {
+        return GetCellAtCoordinate(pos.x, pos.y);
     }
 
     internal Cell GetCellAttRadian(Cell center, int radius, int angle)
@@ -493,21 +447,30 @@ public class Map : MonoBehaviour
         return direction;
     }
 
-    internal Cell GetRandomEmptyCell()
+    internal List<Cell> GetEdge(List<Cell> cells)
     {
-        Cell cell = null;
+        return cells.Where(c => c.Neighbors.Any(n => n != null && !cells.Contains(n))).ToList();
+    }
 
-        while (cell == null)
+    internal Cell GetNearestEmptyCell(Cell cell)
+    {
+        var circle = GetCircle(cell, 1);
+
+        for (int i = 2; i < 15; i++)
         {
-            cell = GetRandomCell();
+            var newCircle = GetCircle(cell, i);
+            newCircle.RemoveAll(c => circle.Contains(c));
+            circle = newCircle;
 
-            if (cell.Floor != null || cell.Structure != null)
+            var empty = circle.Where(c => c.Structure == null);
+
+            if (empty.Count() > 0)
             {
-                cell = null;
+                return empty.GetRandomItem();
             }
         }
 
-        return cell;
+        return null;
     }
 
     internal Cell GetNearestPathableCell(Cell centerPoint, Mobility mobility, int radius)
@@ -529,6 +492,23 @@ public class Map : MonoBehaviour
                           .GetRandomItem();
     }
 
+    internal Cell GetRandomEmptyCell()
+    {
+        Cell cell = null;
+
+        while (cell == null)
+        {
+            cell = GetRandomCell();
+
+            if (cell.Floor != null || cell.Structure != null)
+            {
+                cell = null;
+            }
+        }
+
+        return cell;
+    }
+
     internal Cell GetRandomRadian(Cell center, int radius)
     {
         var angle = Random.Range(0, 360);
@@ -536,5 +516,10 @@ public class Map : MonoBehaviour
         var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Y + (radius * Mathf.Sin(angle))), 0, MaxY);
 
         return GetCellAtCoordinate(mineX, mineY);
+    }
+
+    internal void SetTile(Cell cell, Tile tile, TileLayer layer)
+    {
+        Chunks[cell.Chunk].SetTile(cell.X, cell.Y, tile, layer);
     }
 }

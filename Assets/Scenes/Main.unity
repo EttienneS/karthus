@@ -900,6 +900,12 @@ PrefabInstance:
       propertyPath: Width
       value: 25
       objectReference: {fileID: 0}
+    - target: {fileID: 5952559972800760938, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
+        type: 3}
+      propertyPath: TilemapPrefab
+      value: 
+      objectReference: {fileID: 9110896918050871513, guid: 1a4323a521099224fa43bdaf0815b956,
+        type: 3}
     - target: {fileID: 5952559972800760939, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
         type: 3}
       propertyPath: m_LocalPosition.x

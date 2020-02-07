@@ -6,8 +6,6 @@ using UnityEngine.Tilemaps;
 
 public class StructureController : MonoBehaviour
 {
-    public Tilemap DefaultFloorMap;
-    public Tilemap DefaultStructureMap;
     internal Dictionary<string, Structure> StructureDataReference = new Dictionary<string, Structure>();
     private Dictionary<string, string> _structureTypeFileMap;
 
@@ -35,38 +33,11 @@ public class StructureController : MonoBehaviour
 
         if (structure.IsFloor())
         {
-            DefaultFloorMap.SetTile(new Vector3Int(structure.Cell.X, structure.Cell.Y, 0), tile);
+            Game.Map.SetTile(structure.Cell, tile, Map.TileLayer.Floor);
         }
         else
         {
-            DefaultStructureMap.SetTile(new Vector3Int(structure.Cell.X, structure.Cell.Y, 0), tile);
-        }
-    }
-
-    public void DrawStructures(IEnumerable<Cell> cells)
-    {
-        var structures = cells
-                            .Where(c => c.Structure != null)
-                            .Select(c => c.Structure)
-                            .ToList();
-
-        var floors = cells
-                            .Where(c => c.Floor != null)
-                            .Select(c => c.Floor)
-                            .ToList();
-
-        if (structures.Count > 0)
-        {
-            var tiles = structures.Select(c => c.Tile).ToArray();
-            var coords = structures.Select(c => c.Cell.ToVector3Int()).ToArray();
-            Game.StructureController.DefaultStructureMap.SetTiles(coords, tiles);
-        }
-
-        if (floors.Count > 0)
-        {
-            var floorTiles = floors.Select(c => c.Tile).ToArray();
-            var floorCoords = floors.Select(c => c.Cell.ToVector3Int()).ToArray();
-            Game.StructureController.DefaultFloorMap.SetTiles(floorCoords, floorTiles);
+            Game.Map.SetTile(structure.Cell, tile, Map.TileLayer.Structure);
         }
     }
 
@@ -100,16 +71,13 @@ public class StructureController : MonoBehaviour
         {
             return;
         }
-        var coords = new Vector3Int(structure.Cell.X, structure.Cell.Y, 0);
         if (structure.IsFloor())
         {
-            DefaultFloorMap.SetTile(coords, null);
-            DefaultFloorMap.SetTile(coords, structure.Tile);
+            Game.Map.SetTile(structure.Cell, structure.Tile, Map.TileLayer.Floor);
         }
         else
         {
-            DefaultStructureMap.SetTile(coords, null);
-            DefaultStructureMap.SetTile(coords, structure.Tile);
+            Game.Map.SetTile(structure.Cell, structure.Tile, Map.TileLayer.Structure);
         }
     }
 

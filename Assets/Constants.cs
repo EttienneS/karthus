@@ -60,6 +60,7 @@ public static class LayerConstants
 {
     public const string Border = "Border";
     public const string Bottom = "Default";
+    public const string Ground = "Ground";
     public const string CarriedItem = "CarriedItem";
     public const string Creature = "Creature";
     public const string Fog = "Fog";

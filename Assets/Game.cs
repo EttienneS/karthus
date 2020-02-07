@@ -684,7 +684,8 @@ public partial class Game : MonoBehaviour
                     IdService.EnrollEntity(structure);
                 }
 
-                StructureController.DrawStructures(faction.Structures.Select(s => s.Cell));
+                throw new NotImplementedException();
+                //StructureController.DrawStructures(faction.Structures.Select(s => s.Cell));
                 yield return null;
             }
 
