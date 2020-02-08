@@ -9,13 +9,18 @@ public class Map : MonoBehaviour
 {
     public const int PixelsPerCell = 64;
     public Dictionary<(int x, int y), Cell> CellLookup = new Dictionary<(int x, int y), Cell>();
+    public Chunk ChunkPrefab;
+
     [Range(0.001f, 0.2f)]
     public float Scaler = 0.1f;
 
-    public Chunk ChunkPrefab;
     internal Dictionary<(int x, int y), Chunk> Chunks;
-    internal int ChunkSize = 5;
-    internal int MaxMapSize = 25;
+    internal int ChunkSize = 10;
+
+    internal int MaxX = 100;
+    internal int MaxY = 100;
+    internal int MinX = 50;
+    internal int MinY = 50;
 
     internal float Seed;
     private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
@@ -25,6 +30,7 @@ public class Map : MonoBehaviour
     {
         Ground, Floor, Structure
     }
+
     public Cell Center
     {
         get
@@ -33,29 +39,12 @@ public class Map : MonoBehaviour
         }
     }
 
-    internal int MaxX => 25;
-    internal int MaxY => 25;
-    internal int MinX => 0;
-    internal int MinY => 0;
-
     public void AddCellIfValid(int x, int y, List<Cell> cells)
     {
         if (CellLookup.ContainsKey((x, y)))
         {
             cells.Add(CellLookup[(x, y)]);
         }
-    }
-
-    public Chunk MakeChunk(int x, int y)
-    {
-        var chunk = Instantiate(ChunkPrefab, transform);
-
-        chunk.name = $"Chunk: {x}_{y}";
-
-        chunk.X = x;
-        chunk.Y = y;
-
-        return chunk;
     }
 
     public List<Cell> BleedGroup(List<Cell> group, int count, float percentage = 0.7f)
@@ -353,7 +342,7 @@ public class Map : MonoBehaviour
         }
 
         return cells;
-    }  
+    }
 
     public (int, int) GetWidthAndHeight(List<Cell> cells)
     {
@@ -368,6 +357,37 @@ public class Map : MonoBehaviour
         return GetRectangle(src.X, src.Y,
                             minMax.maxx - minMax.minx - 1,
                             minMax.maxy - minMax.miny - 1);
+    }
+
+    public Chunk MakeChunk(int x, int y)
+    {
+        var chunk = Instantiate(ChunkPrefab, transform);
+
+        chunk.name = $"Chunk: {x}_{y}";
+
+        chunk.X = x;
+        chunk.Y = y;
+
+        chunk.MakeCells();
+
+        if (Game.Map.Chunks.ContainsKey((x - 1, y)))
+        {
+            chunk.LinkToChunk(Game.Map.Chunks[(x - 1, y)]);
+        }
+        if (Game.Map.Chunks.ContainsKey((x + 1, y)))
+        {
+            chunk.LinkToChunk(Game.Map.Chunks[(x + 1, y)]);
+        }
+        if (Game.Map.Chunks.ContainsKey((x, y - 1)))
+        {
+            chunk.LinkToChunk(Game.Map.Chunks[(x, y - 1)]);
+        }
+        if (Game.Map.Chunks.ContainsKey((x, y + 1)))
+        {
+            chunk.LinkToChunk(Game.Map.Chunks[(x, y + 1)]);
+        }
+
+        return chunk;
     }
 
     public void Update()

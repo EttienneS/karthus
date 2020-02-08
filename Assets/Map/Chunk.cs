@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -20,9 +21,6 @@ public class Chunk : MonoBehaviour
         GroundMap = maps.FirstOrDefault(m => m.name == "Ground");
         FloorMap = maps.FirstOrDefault(m => m.name == "Floor");
         StructureMap = maps.FirstOrDefault(m => m.name == "Structure");
-
-        Cells = new List<Cell>();
-        MakeCells();
     }
 
     public Vector3Int GetChunkCoordinate(Cell cell)
@@ -33,7 +31,44 @@ public class Chunk : MonoBehaviour
     public void LinkToChunk(Chunk chunk)
     {
         // link edges to the given chunk edges
-        throw new System.NotImplementedException("todo");
+        var size = Game.Map.ChunkSize;
+
+        var firstX = (X * size);
+        var firstY = (Y * size);
+
+        if (chunk.X < X)
+        {
+            // link to chunk on the left
+            foreach (var cell in Cells.Where(c => c.X == firstX))
+            {
+                cell.SetNeighbor(Direction.E, Game.Map.CellLookup[(cell.X - 1, cell.Y)]);
+            }
+        }
+        else if (chunk.X > X)
+        {
+            // link to chunk on the right
+            throw new NotImplementedException();
+        }
+        else if (chunk.Y < Y)
+        {
+            // link to chunk below
+            throw new NotImplementedException();
+
+        }
+        else if (chunk.Y > Y)
+        {
+            // link to chunk above
+            throw new NotImplementedException();
+
+        }
+
+        for (var y = firstY; y < firstY + size; y++)
+        {
+            for (var x = firstX; x < firstX + size; x++)
+            {
+                Cells.Add(CreateCell(x, y));
+            }
+        }
     }
 
     internal void Draw()
@@ -89,8 +124,10 @@ public class Chunk : MonoBehaviour
     {
         var size = Game.Map.ChunkSize;
 
-        var firstX = (X * size) - 1;
-        var firstY = (Y * size) - 1;
+        var firstX = (X * size);
+        var firstY = (Y * size);
+
+        Cells = new List<Cell>();
 
         for (var y = firstY; y < firstY + size; y++)
         {
