@@ -451,6 +451,12 @@ public partial class Game : MonoBehaviour
         }
         else
         {
+            // set initial bound values
+            Map.MinX = Map.Origin.X;
+            Map.MinY = Map.Origin.Y;
+            Map.MaxX = Map.Origin.X + Map.ChunkSize;
+            Map.MaxY = Map.Origin.Y + Map.ChunkSize;
+
             Map.Seed = UnityEngine.Random.Range(-1000000, 1000000);
             InitFactions();
         }

@@ -7,20 +7,16 @@ using UnityEngine.Tilemaps;
 public class Chunk : MonoBehaviour
 {
     public List<Cell> Cells;
-    internal Tilemap FloorMap;
-    internal Tilemap GroundMap;
-    internal Tilemap StructureMap;
+    public Tilemap FloorMap;
+    public Tilemap GroundMap;
+    public Tilemap StructureMap;
     internal int X;
     internal int Y;
 
     public void Start()
     {
         transform.position = new Vector3(X * Game.Map.ChunkSize, Y * Game.Map.ChunkSize);
-
-        var maps = GetComponentsInChildren<Tilemap>();
-        GroundMap = maps.FirstOrDefault(m => m.name == "Ground");
-        FloorMap = maps.FirstOrDefault(m => m.name == "Floor");
-        StructureMap = maps.FirstOrDefault(m => m.name == "Structure");
+        Draw();
     }
 
     public Vector3Int GetChunkCoordinate(Cell cell)
@@ -70,6 +66,8 @@ public class Chunk : MonoBehaviour
             }
         }
     }
+
+    
 
     internal void Draw()
     {

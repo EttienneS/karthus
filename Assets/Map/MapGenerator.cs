@@ -85,50 +85,22 @@ public class MapGenerator
         Biome = BiomeTemplates.First(b => b.Name == "Default");
 
         Game.Instance.SetLoadStatus("Create initial chunks", 0.08f);
-        MakeChunks(Game.Map.MinX, Game.Map.MinY, Game.Map.MaxX, Game.Map.MaxY);
+
+        Game.Map.Chunks = new Dictionary<(int x, int y), Chunk>();
+
+        for (var i = -2; i < 3; i++)
+        {
+            for (var k = -2; k < 3; k++)
+            {
+                Game.Map.MakeChunk((Game.Map.Origin.X / Game.Map.ChunkSize) + i,
+                                   (Game.Map.Origin.Y / Game.Map.ChunkSize) + k);
+            }
+        }
+
+
         Game.Instance.SetLoadStatus("Create cells", 0.18f);
         yield return null;
 
-        var i = 0f;
-        var totalProgress = 0.3f;
-        var totalChunks = Game.Map.Chunks.Keys.Count;
-        foreach (var chunk in Game.Map.Chunks.Values)
-        {
-            i++;
-            Game.Instance.SetLoadStatus($"Draw {i}/{totalChunks}", 0.5f + (i / totalChunks * totalProgress));
-            chunk.Populate();
-            chunk.Draw();
-            yield return null;
-        }
-
         Done = true;
-    }
-
-    private void MakeChunks(int minX, int minY, int maxX, int maxY)
-    {
-        var size = Game.Map.ChunkSize;
-
-        var startX = minX / size;
-        var startY = minY / size;
-
-        var wchunks = (maxX - minX) / size;
-        var hchunks = (maxY - minY) / size;
-
-        var currentX = startX;
-        var currentY = startY;
-
-        Game.Map.Chunks = new Dictionary<(int x, int y), Chunk>();
-        for (int y = 0; y < wchunks; y++)
-        {
-            for (int x = 0; x < hchunks; x++)
-            {
-                var chunk = Game.Map.MakeChunk(currentX, currentY);
-                Game.Map.Chunks.Add((currentX, currentY), chunk);
-
-                currentX++;
-            }
-            currentX = startX;
-            currentY++;
-        }
     }
 }

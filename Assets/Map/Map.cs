@@ -15,16 +15,14 @@ public class Map : MonoBehaviour
     public float Scaler = 0.1f;
 
     internal Dictionary<(int x, int y), Chunk> Chunks;
-    internal int ChunkSize = 25;
+    internal int ChunkSize = 10;
 
-    internal int MaxX = 450;
-    internal int MaxY = 450;
-    internal int MinX = 400;
-    internal int MinY = 400;
-
+    internal (int X, int Y) Origin = (500, 500);
     internal float Seed;
     private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
     private int _searchFrontierPhase;
+
+    private float _temp_delete_delta = 0f;
 
     public enum TileLayer
     {
@@ -35,9 +33,14 @@ public class Map : MonoBehaviour
     {
         get
         {
-            return CellLookup[((MinX + ((MaxX - MinX) / 2)) - 2, (MinY + ((MaxY - MinY) / 2)) - 2)];
+            return CellLookup[(Origin.X + (ChunkSize / 2), Origin.Y + (ChunkSize / 2))];
         }
     }
+
+    internal int MaxX { get; set; }
+    internal int MaxY { get; set; }
+    internal int MinX { get; set; }
+    internal int MinY { get; set; }
 
     public void AddCellIfValid(int x, int y, List<Cell> cells)
     {
@@ -359,7 +362,7 @@ public class Map : MonoBehaviour
                             minMax.maxy - minMax.miny - 1);
     }
 
-    public Chunk MakeChunk(int x, int y)
+    public void MakeChunk(int x, int y)
     {
         var chunk = Instantiate(ChunkPrefab, transform);
 
@@ -387,11 +390,22 @@ public class Map : MonoBehaviour
             chunk.LinkToChunk(Game.Map.Chunks[(x, y + 1)]);
         }
 
-        return chunk;
+        Game.Map.Chunks.Add((x, y), chunk);
+
+        if (Game.Map.Chunks.Count > 1)
+        {
+            MinX = Game.Map.Chunks.Min(c => c.Key.x) * Game.Map.ChunkSize;
+            MinY = Game.Map.Chunks.Min(c => c.Key.y) * Game.Map.ChunkSize;
+            MaxX = (Game.Map.Chunks.Max(c => c.Key.x) * Game.Map.ChunkSize) + Game.Map.ChunkSize;
+            MaxY = (Game.Map.Chunks.Max(c => c.Key.y) * Game.Map.ChunkSize) + Game.Map.ChunkSize;
+        }
+
+        chunk.Populate();
     }
 
     public void Update()
     {
+        
     }
 
     internal void DestroyCell(Cell cell)
