@@ -38,35 +38,35 @@ public class Chunk : MonoBehaviour
 
         if (chunk.X < X)
         {
-            // link to chunk on the left
+            // link to chunk on the left (west)
             foreach (var cell in Cells.Where(c => c.X == firstX))
             {
-                cell.SetNeighbor(Direction.E, Game.Map.CellLookup[(cell.X - 1, cell.Y)]);
+                cell.SetNeighbor(Direction.W, Game.Map.CellLookup[(cell.X - 1, cell.Y)]);
             }
         }
         else if (chunk.X > X)
         {
-            // link to chunk on the right
-            throw new NotImplementedException();
+            // link to chunk on the right (east)
+            foreach (var cell in Cells.Where(c => c.X == firstX + size))
+            {
+                cell.SetNeighbor(Direction.E, Game.Map.CellLookup[(cell.X + 1, cell.Y)]);
+            }
         }
         else if (chunk.Y < Y)
         {
-            // link to chunk below
-            throw new NotImplementedException();
+            // link to chunk below (south)
+            foreach (var cell in Cells.Where(c => c.Y == firstY))
+            {
+                cell.SetNeighbor(Direction.S, Game.Map.CellLookup[(cell.X, cell.Y - 1)]);
+            }
 
         }
         else if (chunk.Y > Y)
         {
-            // link to chunk above
-            throw new NotImplementedException();
-
-        }
-
-        for (var y = firstY; y < firstY + size; y++)
-        {
-            for (var x = firstX; x < firstX + size; x++)
+            // link to chunk above (north)
+            foreach (var cell in Cells.Where(c => c.Y == firstY))
             {
-                Cells.Add(CreateCell(x, y));
+                cell.SetNeighbor(Direction.N, Game.Map.CellLookup[(cell.X, cell.Y + 1)]);
             }
         }
     }

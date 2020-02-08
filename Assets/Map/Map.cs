@@ -15,12 +15,12 @@ public class Map : MonoBehaviour
     public float Scaler = 0.1f;
 
     internal Dictionary<(int x, int y), Chunk> Chunks;
-    internal int ChunkSize = 10;
+    internal int ChunkSize = 25;
 
-    internal int MaxX = 100;
-    internal int MaxY = 100;
-    internal int MinX = 50;
-    internal int MinY = 50;
+    internal int MaxX = 450;
+    internal int MaxY = 450;
+    internal int MinX = 400;
+    internal int MinY = 400;
 
     internal float Seed;
     private CellPriorityQueue _searchFrontier = new CellPriorityQueue();

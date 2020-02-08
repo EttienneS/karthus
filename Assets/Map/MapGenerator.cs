@@ -108,24 +108,27 @@ public class MapGenerator
     {
         var size = Game.Map.ChunkSize;
 
-        var chunkX = minX / size;
-        var chunkY = minY / size;
+        var startX = minX / size;
+        var startY = minY / size;
 
         var wchunks = (maxX - minX) / size;
         var hchunks = (maxY - minY) / size;
+
+        var currentX = startX;
+        var currentY = startY;
 
         Game.Map.Chunks = new Dictionary<(int x, int y), Chunk>();
         for (int y = 0; y < wchunks; y++)
         {
             for (int x = 0; x < hchunks; x++)
             {
-                var chunk = Game.Map.MakeChunk(chunkX, chunkY);
-                Game.Map.Chunks.Add((chunkX, chunkY), chunk);
+                var chunk = Game.Map.MakeChunk(currentX, currentY);
+                Game.Map.Chunks.Add((currentX, currentY), chunk);
 
-                chunkX++;
+                currentX++;
             }
-            chunkX = 0;
-            chunkY++;
+            currentX = startX;
+            currentY++;
         }
     }
 }
