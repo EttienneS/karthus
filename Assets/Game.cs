@@ -564,6 +564,8 @@ public partial class Game : MonoBehaviour
                     }
                 }
 
+                ExpandChunks(SelectedCells.FirstOrDefault());
+
                 switch (SelectionPreference)
                 {
                     case SelectionPreference.Cell:
@@ -652,6 +654,27 @@ public partial class Game : MonoBehaviour
             }
         }
         DestroyItemsInCache();
+    }
+
+    private void ExpandChunks(Cell cell)
+    {
+        if (cell == null)
+        {
+            return;
+        }
+
+        for (var i = -1; i <= 1; i++)
+        {
+            for (var j = -1; j <= 1; j++)
+            {
+                var x = cell.Chunk.x + i;
+                var y = cell.Chunk.y + j;
+                if (!Map.Chunks.ContainsKey((x, y)))
+                {
+                    Map.MakeChunk(x, y);
+                }
+            }
+        }
     }
 
     private IEnumerator FinalizeStartup()

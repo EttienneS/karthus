@@ -15,7 +15,7 @@ public class Map : MonoBehaviour
     public float Scaler = 0.1f;
 
     internal Dictionary<(int x, int y), Chunk> Chunks;
-    internal int ChunkSize = 10;
+    internal int ChunkSize = 15;
 
     internal (int X, int Y) Origin = (500, 500);
     internal float Seed;
@@ -399,13 +399,10 @@ public class Map : MonoBehaviour
             MaxX = (Game.Map.Chunks.Max(c => c.Key.x) * Game.Map.ChunkSize) + Game.Map.ChunkSize;
             MaxY = (Game.Map.Chunks.Max(c => c.Key.y) * Game.Map.ChunkSize) + Game.Map.ChunkSize;
         }
-
-        chunk.Populate();
     }
 
     public void Update()
     {
-        
     }
 
     internal void DestroyCell(Cell cell)
