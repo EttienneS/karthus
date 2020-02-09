@@ -451,6 +451,12 @@ public partial class Game : MonoBehaviour
         }
         else
         {
+            // set initial bound values
+            Map.MinX = Map.Origin.X;
+            Map.MinY = Map.Origin.Y;
+            Map.MaxX = Map.Origin.X + Map.ChunkSize;
+            Map.MaxY = Map.Origin.Y + Map.ChunkSize;
+
             Map.Seed = UnityEngine.Random.Range(-1000000, 1000000);
             InitFactions();
         }
@@ -471,8 +477,8 @@ public partial class Game : MonoBehaviour
             }
             else if (!MapGenerator.Busy)
             {
-                CameraController.Camera.transform.position = new Vector3(Map.MaxX / 2, Map.MaxY / 2, -1);
-                CameraController.Camera.orthographicSize = Map.MaxX / 2;
+                CameraController.Camera.transform.position = new Vector3(Map.Origin.X, Map.Origin.Y, -1);
+                CameraController.Camera.orthographicSize = Map.ChunkSize * 3;
                 MapGenerator.Busy = true;
                 StartCoroutine(MapGenerator.Work());
             }
@@ -557,6 +563,8 @@ public partial class Game : MonoBehaviour
                         selectedZone = zone;
                     }
                 }
+
+                ExpandChunks(SelectedCells.FirstOrDefault());
 
                 switch (SelectionPreference)
                 {
@@ -648,6 +656,27 @@ public partial class Game : MonoBehaviour
         DestroyItemsInCache();
     }
 
+    private void ExpandChunks(Cell cell)
+    {
+        if (cell == null)
+        {
+            return;
+        }
+
+        for (var i = -1; i <= 1; i++)
+        {
+            for (var j = -1; j <= 1; j++)
+            {
+                var x = cell.Chunk.x + i;
+                var y = cell.Chunk.y + j;
+                if (!Map.Chunks.ContainsKey((x, y)))
+                {
+                    Map.MakeChunk(x, y);
+                }
+            }
+        }
+    }
+
     private IEnumerator FinalizeStartup()
     {
         if (SaveManager.SaveToLoad == null)
@@ -684,7 +713,8 @@ public partial class Game : MonoBehaviour
                     IdService.EnrollEntity(structure);
                 }
 
-                StructureController.DrawStructures(faction.Structures.Select(s => s.Cell));
+                throw new NotImplementedException();
+                //StructureController.DrawStructures(faction.Structures.Select(s => s.Cell));
                 yield return null;
             }
 

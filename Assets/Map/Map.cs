@@ -8,99 +8,46 @@ using Random = UnityEngine.Random;
 public class Map : MonoBehaviour
 {
     public const int PixelsPerCell = 64;
-
-    internal int ChunkSize = 25;
-    internal int MaxMapSize = 250;
-
-    internal int MinY => MaxMapSize / 2;
-    internal int MinX => MaxMapSize / 2;
-
-    internal int MaxY => MinY + 50;
-    internal int MaxX => MinX + 50;
-
-    internal Tilemap Tilemap;
-    internal Tilemap LiquidMap;
-
-    private Dictionary<(int x, int y), Cell> _cellLookup;
-
-    private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
-
-    private int _searchFrontierPhase;
+    public Dictionary<(int x, int y), Cell> CellLookup = new Dictionary<(int x, int y), Cell>();
+    public Chunk ChunkPrefab;
 
     [Range(0.001f, 0.2f)]
     public float Scaler = 0.1f;
 
+    internal Dictionary<(int x, int y), Chunk> Chunks;
+    internal int ChunkSize = 15;
+
+    internal (int X, int Y) Origin = (500, 500);
     internal float Seed;
+    private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
+    private int _searchFrontierPhase;
 
-    public void Update()
+    private float _temp_delete_delta = 0f;
+
+    public enum TileLayer
     {
-    }
-
-    public float GetCellHeight(float x, float y)
-    {
-        return Mathf.PerlinNoise((Seed + x) * Scaler, (Seed + y) * Scaler);
-    }
-
-    internal Cell GetNearestEmptyCell(Cell cell)
-    {
-        var circle = GetCircle(cell, 1);
-
-        for (int i = 2; i < 15; i++)
-        {
-            var newCircle = GetCircle(cell, i);
-            newCircle.RemoveAll(c => circle.Contains(c));
-            circle = newCircle;
-
-            var empty = circle.Where(c => c.Structure == null);
-
-            if (empty.Count() > 0)
-            {
-                return empty.GetRandomItem();
-            }
-        }
-
-        return null;
-    }
-
-    public Dictionary<(int x, int y), Cell> CellLookup
-    {
-        get
-        {
-            if (_cellLookup == null)
-            {
-                _cellLookup = new Dictionary<(int x, int y), Cell>();
-
-                foreach (var cell in Cells)
-                {
-                    _cellLookup.Add((cell.X, cell.Y), cell);
-                }
-            }
-            return _cellLookup;
-        }
+        Ground, Floor, Structure
     }
 
     public Cell Center
     {
         get
         {
-            return CellLookup[((MinX + MaxX) / 2, (MinY + MaxY) / 2)];
+            return CellLookup[(Origin.X + (ChunkSize / 2), Origin.Y + (ChunkSize / 2))];
         }
     }
 
-    internal List<Cell> Cells { get; set; }
+    internal int MaxX { get; set; }
+    internal int MaxY { get; set; }
+    internal int MinX { get; set; }
+    internal int MinY { get; set; }
 
     public void AddCellIfValid(int x, int y, List<Cell> cells)
     {
-        if (x >= MinX && x < MaxX && y >= MinY && y < MaxY)
+        if (CellLookup.ContainsKey((x, y)))
         {
             cells.Add(CellLookup[(x, y)]);
         }
-    }
-
-    public void Awake()
-    {
-        Tilemap = transform.Find("Tilemap").gameObject.GetComponent<Tilemap>();
-        LiquidMap = transform.Find("Liquid Map").gameObject.GetComponent<Tilemap>();
     }
 
     public List<Cell> BleedGroup(List<Cell> group, int count, float percentage = 0.7f)
@@ -164,6 +111,11 @@ public class Map : MonoBehaviour
             return null;
         }
         return CellLookup[(cell.X, cell.Y)];
+    }
+
+    public float GetCellHeight(float x, float y)
+    {
+        return Mathf.PerlinNoise((Seed + x) * Scaler, (Seed + y) * Scaler);
     }
 
     public List<Cell> GetCircle(Cell center, int radius)
@@ -353,21 +305,6 @@ public class Map : MonoBehaviour
         return chunk;
     }
 
-    internal Cell GetCellAtCoordinate(Vector3 pos)
-    {
-        return GetCellAtCoordinate(pos.x, pos.y);
-    }
-
-    internal Cell GetCellAtCoordinate(Vector2 pos)
-    {
-        return GetCellAtCoordinate(pos.x, pos.y);
-    }
-
-    internal List<Cell> GetEdge(List<Cell> cells)
-    {
-        return cells.Where(c => c.Neighbors.Any(n => n != null && !cells.Contains(n))).ToList();
-    }
-
     public Cell GetRandomPathableCell()
     {
         var cell = GetRandomCell();
@@ -425,9 +362,47 @@ public class Map : MonoBehaviour
                             minMax.maxy - minMax.miny - 1);
     }
 
-    internal void ClearCache()
+    public void MakeChunk(int x, int y)
     {
-        _cellLookup = null;
+        var chunk = Instantiate(ChunkPrefab, transform);
+
+        chunk.name = $"Chunk: {x}_{y}";
+
+        chunk.X = x;
+        chunk.Y = y;
+
+        chunk.MakeCells();
+
+        if (Game.Map.Chunks.ContainsKey((x - 1, y)))
+        {
+            chunk.LinkToChunk(Game.Map.Chunks[(x - 1, y)]);
+        }
+        if (Game.Map.Chunks.ContainsKey((x + 1, y)))
+        {
+            chunk.LinkToChunk(Game.Map.Chunks[(x + 1, y)]);
+        }
+        if (Game.Map.Chunks.ContainsKey((x, y - 1)))
+        {
+            chunk.LinkToChunk(Game.Map.Chunks[(x, y - 1)]);
+        }
+        if (Game.Map.Chunks.ContainsKey((x, y + 1)))
+        {
+            chunk.LinkToChunk(Game.Map.Chunks[(x, y + 1)]);
+        }
+
+        Game.Map.Chunks.Add((x, y), chunk);
+
+        if (Game.Map.Chunks.Count > 1)
+        {
+            MinX = Game.Map.Chunks.Min(c => c.Key.x) * Game.Map.ChunkSize;
+            MinY = Game.Map.Chunks.Min(c => c.Key.y) * Game.Map.ChunkSize;
+            MaxX = (Game.Map.Chunks.Max(c => c.Key.x) * Game.Map.ChunkSize) + Game.Map.ChunkSize;
+            MaxY = (Game.Map.Chunks.Max(c => c.Key.y) * Game.Map.ChunkSize) + Game.Map.ChunkSize;
+        }
+    }
+
+    public void Update()
+    {
     }
 
     internal void DestroyCell(Cell cell)
@@ -441,6 +416,16 @@ public class Map : MonoBehaviour
     internal float GetAngle(Cell c1, Cell c2)
     {
         return Mathf.Atan2(c2.X - c1.X, c2.Y - c1.Y) * 180.0f / Mathf.PI;
+    }
+
+    internal Cell GetCellAtCoordinate(Vector3 pos)
+    {
+        return GetCellAtCoordinate(pos.x, pos.y);
+    }
+
+    internal Cell GetCellAtCoordinate(Vector2 pos)
+    {
+        return GetCellAtCoordinate(pos.x, pos.y);
     }
 
     internal Cell GetCellAttRadian(Cell center, int radius, int angle)
@@ -493,21 +478,30 @@ public class Map : MonoBehaviour
         return direction;
     }
 
-    internal Cell GetRandomEmptyCell()
+    internal List<Cell> GetEdge(List<Cell> cells)
     {
-        Cell cell = null;
+        return cells.Where(c => c.Neighbors.Any(n => n != null && !cells.Contains(n))).ToList();
+    }
 
-        while (cell == null)
+    internal Cell GetNearestEmptyCell(Cell cell)
+    {
+        var circle = GetCircle(cell, 1);
+
+        for (int i = 2; i < 15; i++)
         {
-            cell = GetRandomCell();
+            var newCircle = GetCircle(cell, i);
+            newCircle.RemoveAll(c => circle.Contains(c));
+            circle = newCircle;
 
-            if (cell.Floor != null || cell.Structure != null)
+            var empty = circle.Where(c => c.Structure == null);
+
+            if (empty.Count() > 0)
             {
-                cell = null;
+                return empty.GetRandomItem();
             }
         }
 
-        return cell;
+        return null;
     }
 
     internal Cell GetNearestPathableCell(Cell centerPoint, Mobility mobility, int radius)
@@ -529,6 +523,23 @@ public class Map : MonoBehaviour
                           .GetRandomItem();
     }
 
+    internal Cell GetRandomEmptyCell()
+    {
+        Cell cell = null;
+
+        while (cell == null)
+        {
+            cell = GetRandomCell();
+
+            if (cell.Floor != null || cell.Structure != null)
+            {
+                cell = null;
+            }
+        }
+
+        return cell;
+    }
+
     internal Cell GetRandomRadian(Cell center, int radius)
     {
         var angle = Random.Range(0, 360);
@@ -536,5 +547,10 @@ public class Map : MonoBehaviour
         var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Y + (radius * Mathf.Sin(angle))), 0, MaxY);
 
         return GetCellAtCoordinate(mineX, mineY);
+    }
+
+    internal void SetTile(Cell cell, Tile tile, TileLayer layer)
+    {
+        Chunks[cell.Chunk].SetTile(cell.X, cell.Y, tile, layer);
     }
 }

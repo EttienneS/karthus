@@ -17,6 +17,8 @@ public class Cell : IEquatable<Cell>
 
     private BiomeRegion _biomeRegion;
 
+    public (int x, int y) Chunk;
+
     [JsonIgnore]
     public BiomeRegion BiomeRegion
     {
@@ -117,7 +119,7 @@ public class Cell : IEquatable<Cell>
     }
 
     [JsonIgnore]
-    public Tile Tile
+    public Tile GroundTile
     {
         get
         {
@@ -273,17 +275,6 @@ public class Cell : IEquatable<Cell>
         return $"X: {X}\nY: {Y}";
     }
 
-    public void UpdateTile()
-    {
-        Game.Map.Tilemap.SetTile(new Vector3Int(X, Y, 0), null);
-        Game.Map.Tilemap.SetTile(new Vector3Int(X, Y, 0), Tile);
-
-        if (Structure != null)
-        {
-            Game.StructureController.RefreshStructure(Structure);
-        }
-    }
-
     internal void Clear()
     {
         if (Structure != null)
@@ -360,10 +351,5 @@ public class Cell : IEquatable<Cell>
                 Game.ItemController.SpawnItem(content, this);
             }
         }
-    }
-
-    internal Vector3Int ToVector3Int()
-    {
-        return new Vector3Int(X, Y, 0);
     }
 }
