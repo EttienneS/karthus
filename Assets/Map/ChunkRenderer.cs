@@ -1,41 +1,36 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class Chunk : MonoBehaviour
+public class ChunkRenderer : MonoBehaviour
 {
     public List<Cell> Cells;
+
+    public Chunk Data;
+
     public Tilemap FloorMap;
     public Tilemap GroundMap;
     public Tilemap StructureMap;
-    internal int X;
-    internal int Y;
 
-    public void Start()
+    public bool FloorDrawn;
+    public bool GroundDrawn;
+    public bool StructureDrawn;
+
+    public Cell CreateCell(int x, int y)
     {
-        transform.position = new Vector3(X * Game.Map.ChunkSize, Y * Game.Map.ChunkSize);
+        var cell = new Cell
+        {
+            X = x,
+            Y = y,
+            SearchPhase = 0,
+            Chunk = Data
+        };
 
-    }
+        Game.Map.CellLookup.Add((x, y), cell);
 
-    public void Update()
-    {
-        if (!_populated)
-        {
-            Populate();
-        }
-        else if (!_groundDrawn)
-        {
-            DrawGround();
-        }
-        else if (!_floorDrawn)
-        {
-            DrawFloors();
-        }
-        else if (!_structureDrawn)
-        {
-            DrawStructures();
-        }
+        return cell;
     }
 
     public Vector3Int GetChunkCoordinate(Cell cell)
@@ -43,15 +38,15 @@ public class Chunk : MonoBehaviour
         return new Vector3Int(cell.X % Game.Map.ChunkSize, cell.Y % Game.Map.ChunkSize, 0);
     }
 
-    public void LinkToChunk(Chunk chunk)
+    public void LinkToChunk(ChunkRenderer chunk)
     {
         // link edges to the given chunk edges
         var size = Game.Map.ChunkSize;
 
-        var firstX = (X * size);
-        var firstY = (Y * size);
+        var firstX = (Data.X * size);
+        var firstY = (Data.Y * size);
 
-        if (chunk.X < X)
+        if (chunk.Data.X < Data.X)
         {
             // link to chunk on the left (west)
             foreach (var cell in Cells.Where(c => c.X == firstX))
@@ -59,7 +54,7 @@ public class Chunk : MonoBehaviour
                 cell.SetNeighbor(Direction.W, Game.Map.CellLookup[(cell.X - 1, cell.Y)]);
             }
         }
-        else if (chunk.X > X)
+        else if (chunk.Data.X > Data.X)
         {
             // link to chunk on the right (east)
             foreach (var cell in Cells.Where(c => c.X == firstX + size))
@@ -67,7 +62,7 @@ public class Chunk : MonoBehaviour
                 cell.SetNeighbor(Direction.E, Game.Map.CellLookup[(cell.X + 1, cell.Y)]);
             }
         }
-        else if (chunk.Y < Y)
+        else if (chunk.Data.Y < Data.Y)
         {
             // link to chunk below (south)
             foreach (var cell in Cells.Where(c => c.Y == firstY))
@@ -75,7 +70,7 @@ public class Chunk : MonoBehaviour
                 cell.SetNeighbor(Direction.S, Game.Map.CellLookup[(cell.X, cell.Y - 1)]);
             }
         }
-        else if (chunk.Y > Y)
+        else if (chunk.Data.Y > Data.Y)
         {
             // link to chunk above (north)
             foreach (var cell in Cells.Where(c => c.Y == firstY))
@@ -85,74 +80,39 @@ public class Chunk : MonoBehaviour
         }
     }
 
-    private bool _populated;
-    private bool _groundDrawn;
-    private bool _floorDrawn;
-    private bool _structureDrawn;
-
-    private void DrawFloors()
+    public void Start()
     {
-        var floors = Cells
-                        .Where(c => c.Floor != null)
-                        .Select(c => c.Floor)
-                        .ToList();
+        transform.position = new Vector3(Data.X * Game.Map.ChunkSize, Data.Y * Game.Map.ChunkSize);
+    }
 
-        if (floors.Count > 0)
+ 
+
+    public void Update()
+    {
+        if (!Data.Populated)
         {
-            var floorTiles = floors.Select(c => c.Tile).ToArray();
-            var floorCoords = floors.Select(c => GetChunkCoordinate(c.Cell)).ToArray();
-            FloorMap.SetTiles(floorCoords, floorTiles);
+            Populate();
         }
-        _floorDrawn = true;
-    }
-
-    private void DrawStructures()
-    {
-        var structures = Cells
-                                 .Where(c => c.Structure != null)
-                                 .Select(c => c.Structure)
-                                 .ToList();
-
-        if (structures.Count > 0)
+        else if (!GroundDrawn)
         {
-            var structureTiles = structures.Select(c => c.Tile).ToArray();
-            var structureCoords = structures.Select(c => GetChunkCoordinate(c.Cell)).ToArray();
-            StructureMap.SetTiles(structureCoords, structureTiles);
+            DrawGround();
         }
-        _structureDrawn = true;
-    }
-
-    private void DrawGround()
-    {
-        var groundTiles = Cells.Select(c => c.GroundTile).ToArray();
-        var groundCoords = Cells.Select(GetChunkCoordinate).ToArray();
-
-        GroundMap.SetTiles(groundCoords, null);
-        GroundMap.SetTiles(groundCoords, groundTiles);
-        _groundDrawn = true;
-    }
-
-    public Cell CreateCell(int x, int y)
-    {
-        var cell = new Cell
+        else if (!FloorDrawn)
         {
-            X = x,
-            Y = y,
-            SearchPhase = 0,
-            Chunk = (X, Y)
-        };
-
-        Game.Map.CellLookup.Add((x, y), cell);
-
-        return cell;
+            DrawFloors();
+        }
+        else if (!StructureDrawn)
+        {
+            DrawStructures();
+        }
     }
 
     internal void MakeCells()
     {
         var size = Game.Map.ChunkSize;
 
-        var firstX = (X * size);
-        var firstY = (Y * size);
+        var firstX = (Data.X * size);
+        var firstY = (Data.Y * size);
 
         Cells = new List<Cell>();
 
@@ -196,7 +156,7 @@ public class Chunk : MonoBehaviour
     internal void Populate()
     {
         Cells.ForEach(c => c.Populate());
-        _populated = true;
+        Data.Populated = true;
     }
 
     internal void SetTile(int x, int y, Tile tile, Map.TileLayer layer)
@@ -219,5 +179,47 @@ public class Chunk : MonoBehaviour
         }
         tilemap.SetTile(pos, null);
         tilemap.SetTile(pos, tile);
+    }
+
+    private void DrawFloors()
+    {
+        var floors = Cells
+                        .Where(c => c.Floor != null)
+                        .Select(c => c.Floor)
+                        .ToList();
+
+        if (floors.Count > 0)
+        {
+            var floorTiles = floors.Select(c => c.Tile).ToArray();
+            var floorCoords = floors.Select(c => GetChunkCoordinate(c.Cell)).ToArray();
+            FloorMap.SetTiles(floorCoords, floorTiles);
+        }
+        FloorDrawn = true;
+    }
+
+    private void DrawGround()
+    {
+        var groundTiles = Cells.Select(c => c.GroundTile).ToArray();
+        var groundCoords = Cells.Select(GetChunkCoordinate).ToArray();
+
+        GroundMap.SetTiles(groundCoords, null);
+        GroundMap.SetTiles(groundCoords, groundTiles);
+        GroundDrawn = true;
+    }
+
+    private void DrawStructures()
+    {
+        var structures = Cells
+                                 .Where(c => c.Structure != null)
+                                 .Select(c => c.Structure)
+                                 .ToList();
+
+        if (structures.Count > 0)
+        {
+            var structureTiles = structures.Select(c => c.Tile).ToArray();
+            var structureCoords = structures.Select(c => GetChunkCoordinate(c.Cell)).ToArray();
+            StructureMap.SetTiles(structureCoords, structureTiles);
+        }
+        StructureDrawn = true;
     }
 }

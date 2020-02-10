@@ -17,7 +17,7 @@ public class Cell : IEquatable<Cell>
 
     private BiomeRegion _biomeRegion;
 
-    public (int x, int y) Chunk;
+    public Chunk Chunk;
 
     [JsonIgnore]
     public BiomeRegion BiomeRegion

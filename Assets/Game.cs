@@ -676,11 +676,11 @@ public partial class Game : MonoBehaviour
         {
             for (var j = -1; j <= 1; j++)
             {
-                var x = cell.Chunk.x + i;
-                var y = cell.Chunk.y + j;
+                var x = cell.Chunk.X + i;
+                var y = cell.Chunk.Y + j;
                 if (!Map.Chunks.ContainsKey((x, y)))
                 {
-                    Map.MakeChunk(x, y);
+                    Map.MakeChunk(new Chunk(x, y));
                 }
             }
         }
@@ -696,7 +696,6 @@ public partial class Game : MonoBehaviour
         else
         {
             SetLoadStatus("Loading Time", 0.80f);
-
             TimeManager.Data = SaveManager.SaveToLoad.Time;
             yield return null;
 
@@ -720,11 +719,17 @@ public partial class Game : MonoBehaviour
                 foreach (var structure in faction.Structures.ToList())
                 {
                     IdService.EnrollEntity(structure);
-                }
 
-                throw new NotImplementedException();
-                //StructureController.DrawStructures(faction.Structures.Select(s => s.Cell));
-                yield return null;
+                    // flag layer where structure is on to be redrawn
+                    if (structure.IsFloor())
+                    {
+                        structure.Cell.Chunk.Renderer.FloorDrawn = false;
+                    }
+                    else
+                    {
+                        structure.Cell.Chunk.Renderer.StructureDrawn = false;
+                    }
+                }
             }
 
             if (SaveManager.SaveToLoad.Stores != null)

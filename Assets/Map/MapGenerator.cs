@@ -84,22 +84,36 @@ public class MapGenerator
     {
         Biome = BiomeTemplates.First(b => b.Name == "Default");
 
-        Game.Instance.SetLoadStatus("Create initial chunks", 0.08f);
+        Game.Map.Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
 
-        Game.Map.Chunks = new Dictionary<(int x, int y), Chunk>();
-
-        for (var i = -2; i <= 2; i++)
+        var counter = 1;
+        Game.Instance.SetLoadStatus("Create Map", 0);
+        if (SaveManager.SaveToLoad == null)
         {
-            for (var k = -2; k <= 2; k++)
+            for (var i = -2; i <= 2; i++)
             {
-                Game.Map.MakeChunk((Game.Map.Origin.X / Game.Map.ChunkSize) + i,
-                                   (Game.Map.Origin.Y / Game.Map.ChunkSize) + k);
+                for (var k = -2; k <= 2; k++)
+                {
+                    Game.Map.MakeChunk(new Chunk((Game.Map.Origin.X / Game.Map.ChunkSize) + i,
+                                                     (Game.Map.Origin.Y / Game.Map.ChunkSize) + k));
+
+                    Game.Instance.SetLoadStatus($"Create Chunk {counter}", counter * 0.03f);
+                    counter++;
+                    yield return null;
+                }
             }
         }
-
-
-        Game.Instance.SetLoadStatus("Create cells", 0.18f);
-        yield return null;
+        else
+        {
+            var step = 1f / SaveManager.SaveToLoad.Chunks.Count;
+            foreach (var chunk in SaveManager.SaveToLoad.Chunks)
+            {
+                counter++;
+                Game.Map.MakeChunk(chunk);
+                Game.Instance.SetLoadStatus($"Load Chunk {counter}", step * counter);
+                yield return null;
+            }
+        }
 
         Done = true;
     }

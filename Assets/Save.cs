@@ -11,6 +11,7 @@ public class Save
     public List<RoomZone> Rooms;
     public List<StorageZone> Stores;
     public List<AreaZone> Areas;
+    public List<Chunk> Chunks;
 
     public TimeData Time;
 

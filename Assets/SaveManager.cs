@@ -16,11 +16,14 @@ public static class SaveManager
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
     }
 
+    public const string SaveDir = "Saves";
+
     public static void Load()
     {
         Game.TimeManager.Pause();
 
-        var save = JsonConvert.DeserializeObject<Save>(File.ReadAllText("save.json"), new JsonSerializerSettings
+        var latest = Directory.EnumerateFiles(SaveDir).Last();
+        var save = JsonConvert.DeserializeObject<Save>(File.ReadAllText(latest), new JsonSerializerSettings
         {
             TypeNameHandling = TypeNameHandling.Auto,
             NullValueHandling = NullValueHandling.Ignore,
@@ -48,8 +51,8 @@ public static class SaveManager
                 DefaultValueHandling = DefaultValueHandling.Ignore,
             };
 
-            Directory.CreateDirectory("Saves");
-            using (var sw = new StreamWriter($"Saves\\Save_{DateTime.Now.ToString("yyyy-mm-dd_HH-MM-ss")}.json"))
+            Directory.CreateDirectory(SaveDir);
+            using (var sw = new StreamWriter($"{SaveDir}\\Save_{DateTime.Now.ToString("yyyy-mm-dd_HH-MM-ss")}.json"))
             using (var writer = new JsonTextWriter(sw))
             {
                 serializer.Serialize(writer, MakeSave(), typeof(Save));
@@ -73,6 +76,7 @@ public static class SaveManager
             Rooms = Game.ZoneController.RoomZones,
             Stores = Game.ZoneController.StorageZones,
             Areas = Game.ZoneController.AreaZones,
+            Chunks = Game.Map.Chunks.Values.Select(s => s.Data).ToList(),
         };
     }
 }

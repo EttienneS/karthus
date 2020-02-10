@@ -9,12 +9,12 @@ public class Map : MonoBehaviour
 {
     public const int PixelsPerCell = 64;
     public Dictionary<(int x, int y), Cell> CellLookup = new Dictionary<(int x, int y), Cell>();
-    public Chunk ChunkPrefab;
+    public ChunkRenderer ChunkPrefab;
 
     [Range(0.001f, 0.2f)]
     public float Scaler = 0.1f;
 
-    internal Dictionary<(int x, int y), Chunk> Chunks;
+    internal Dictionary<(int x, int y), ChunkRenderer> Chunks;
     internal int ChunkSize = 15;
 
     internal (int X, int Y) Origin = (500, 500);
@@ -360,35 +360,31 @@ public class Map : MonoBehaviour
                             minMax.maxy - minMax.miny - 1);
     }
 
-    public void MakeChunk(int x, int y)
+    public void MakeChunk(Chunk data)
     {
         var chunk = Instantiate(ChunkPrefab, transform);
-
-        chunk.name = $"Chunk: {x}_{y}";
-
-        chunk.X = x;
-        chunk.Y = y;
-
+        chunk.name = $"Chunk: {data.X}_{data.Y}";
+        chunk.Data = data;
         chunk.MakeCells();
 
-        if (Game.Map.Chunks.ContainsKey((x - 1, y)))
+        if (Game.Map.Chunks.ContainsKey((data.X - 1, data.Y)))
         {
-            chunk.LinkToChunk(Game.Map.Chunks[(x - 1, y)]);
+            chunk.LinkToChunk(Game.Map.Chunks[(data.X - 1, data.Y)]);
         }
-        if (Game.Map.Chunks.ContainsKey((x + 1, y)))
+        if (Game.Map.Chunks.ContainsKey((data.X + 1, data.Y)))
         {
-            chunk.LinkToChunk(Game.Map.Chunks[(x + 1, y)]);
+            chunk.LinkToChunk(Game.Map.Chunks[(data.X + 1, data.Y)]);
         }
-        if (Game.Map.Chunks.ContainsKey((x, y - 1)))
+        if (Game.Map.Chunks.ContainsKey((data.X, data.Y - 1)))
         {
-            chunk.LinkToChunk(Game.Map.Chunks[(x, y - 1)]);
+            chunk.LinkToChunk(Game.Map.Chunks[(data.X, data.Y - 1)]);
         }
-        if (Game.Map.Chunks.ContainsKey((x, y + 1)))
+        if (Game.Map.Chunks.ContainsKey((data.X, data.Y + 1)))
         {
-            chunk.LinkToChunk(Game.Map.Chunks[(x, y + 1)]);
+            chunk.LinkToChunk(Game.Map.Chunks[(data.X, data.Y + 1)]);
         }
 
-        Game.Map.Chunks.Add((x, y), chunk);
+        Game.Map.Chunks.Add((data.X, data.Y), chunk);
 
         if (Game.Map.Chunks.Count > 1)
         {
@@ -549,6 +545,6 @@ public class Map : MonoBehaviour
 
     internal void SetTile(Cell cell, Tile tile, TileLayer layer)
     {
-        Chunks[cell.Chunk].SetTile(cell.X, cell.Y, tile, layer);
+        Chunks[cell.Chunk.Coords].SetTile(cell.X, cell.Y, tile, layer);
     }
 }
