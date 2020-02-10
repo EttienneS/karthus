@@ -316,7 +316,7 @@ public partial class Game : MonoBehaviour
 
     private bool MouseOverUi()
     {
-        var overUI = Minimap.MouseInMinimapArea() || (EventSystem.current.IsPointerOverGameObject() && EventSystem.current.currentSelectedGameObject != null);
+        var overUI = EventSystem.current.IsPointerOverGameObject() && EventSystem.current.currentSelectedGameObject != null;
 
         if (overUI)
         {

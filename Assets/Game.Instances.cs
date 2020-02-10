@@ -17,7 +17,6 @@ public partial class Game //.Instances
     private Map _map;
     private MapGenerator _mapGenerator;
     private MaterialController _materialController;
-    private Minimap _minimap;
     private OrderInfoPanel _orderInfoPanel;
     private OrderSelectionController _orderSelectionController;
     private OrderTrayController _orderTrayController;
@@ -157,14 +156,6 @@ public partial class Game //.Instances
         get
         {
             return Instance._materialController != null ? Instance._materialController : (Instance._materialController = GameObject.Find(ControllerConstants.MaterialController).GetComponent<MaterialController>());
-        }
-    }
-
-    public static Minimap Minimap
-    {
-        get
-        {
-            return Instance._minimap != null ? Instance._minimap : (Instance._minimap = GameObject.Find("Minimap").GetComponent<Minimap>());
         }
     }
 

@@ -1,9 +1,0 @@
-{
-  "Name": "Blue Mana Crystals",
-  "SpriteName": "bluecrystals",
-  "Cost": {
-    "Mana": {
-      "Blue": "10"
-    }
-  }
-}

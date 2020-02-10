@@ -22,8 +22,6 @@ public class Map : MonoBehaviour
     private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
     private int _searchFrontierPhase;
 
-    private float _temp_delete_delta = 0f;
-
     public enum TileLayer
     {
         Ground, Floor, Structure

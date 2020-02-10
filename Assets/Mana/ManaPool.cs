@@ -167,8 +167,6 @@ public class ManaPool : Dictionary<ManaColor, Mana>
 
             if (amount > 0)
             {
-                var crystal = Game.ItemController.SpawnItem($"{mana.Key.ToString()} Mana Crystals", Entity.Cell);
-                crystal.Amount = amount;
                 Game.VisualEffectController.SpawnLightEffect(null, Entity.Vector, mana.Key.GetActualColor(), amount, amount * 2, 5);
             }
         }
