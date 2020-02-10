@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -10,13 +9,13 @@ public class ChunkRenderer : MonoBehaviour
 
     public Chunk Data;
 
-    public Tilemap FloorMap;
-    public Tilemap GroundMap;
-    public Tilemap StructureMap;
-
     public bool FloorDrawn;
+    public Tilemap FloorMap;
     public bool GroundDrawn;
+    public Tilemap GroundMap;
     public bool StructureDrawn;
+    public Tilemap StructureMap;
+    private List<Cell> _cellsToPopulate;
 
     public Cell CreateCell(int x, int y)
     {
@@ -84,8 +83,6 @@ public class ChunkRenderer : MonoBehaviour
     {
         transform.position = new Vector3(Data.X * Game.Map.ChunkSize, Data.Y * Game.Map.ChunkSize);
     }
-
- 
 
     public void Update()
     {
@@ -155,8 +152,20 @@ public class ChunkRenderer : MonoBehaviour
 
     internal void Populate()
     {
-        Cells.ForEach(c => c.Populate());
-        Data.Populated = true;
+        if (_cellsToPopulate == null)
+        {
+            _cellsToPopulate = Cells.ToList();
+        }
+
+        var range = Mathf.Min(Cells.Count / 5, _cellsToPopulate.Count);
+        var current = _cellsToPopulate.GetRange(0, range);
+        current.ForEach(c => c.Populate());
+        _cellsToPopulate.RemoveRange(0, range);
+
+        if (_cellsToPopulate.Count == 0)
+        {
+            Data.Populated = true;
+        }
     }
 
     internal void SetTile(int x, int y, Tile tile, Map.TileLayer layer)

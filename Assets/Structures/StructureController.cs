@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -41,7 +39,7 @@ public class StructureController : MonoBehaviour
         }
     }
 
-    public Structure SpawnStructure(string name, Cell cell, Faction faction)
+    public Structure SpawnStructure(string name, Cell cell, Faction faction, bool draw = true)
     {
         var structureData = StructureTypeFileMap[name];
 
@@ -50,6 +48,10 @@ public class StructureController : MonoBehaviour
         IndexStructure(structure);
 
         structure.SetBluePrintState(false);
+        if (draw)
+        {
+            structure.Refresh();
+        }
         faction?.AddStructure(structure);
 
         if (structure is Container container)

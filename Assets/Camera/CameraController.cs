@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
@@ -81,6 +82,10 @@ public class CameraController : MonoBehaviour
 
                 Speed = Helpers.ScaleValueInRange(SpeedMin, SpeedMax, ZoomMin, ZoomMax, Camera.orthographicSize);
                 ZoomStep = Mathf.Max(2f, Camera.orthographicSize / 2f);
+
+                // expand the map as the camera reaches the edges
+                //var point = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2));
+                //Game.Map.ExpandChunks(Game.Instance.GetSelectedCells(point, point).First());
             }
         }
     }

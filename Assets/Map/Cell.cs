@@ -339,7 +339,11 @@ public class Cell : IEquatable<Cell>
         {
             if (Game.StructureController.StructureTypeFileMap.ContainsKey(content))
             {
-                var structure = Game.StructureController.SpawnStructure(content, this, Game.FactionController.Factions[FactionConstants.World]);
+                var structure = Game.StructureController
+                                    .SpawnStructure(content, 
+                                                    this, 
+                                                    Game.FactionController.Factions[FactionConstants.World], 
+                                                    false);
 
                 if (structure.AutoInteractions.Count > 0)
                 {

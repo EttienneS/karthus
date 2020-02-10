@@ -235,7 +235,6 @@ public partial class Structure : IEntity
     public void SetBluePrintState(bool state)
     {
         IsBluePrint = state;
-        Game.StructureController.RefreshStructure(this);
     }
 
     public override string ToString()
