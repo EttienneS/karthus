@@ -466,6 +466,8 @@ public partial class Game : MonoBehaviour
 
     private bool _finalizationStarted;
 
+    private DateTime? _lastAutoSave = null;
+
     private void Update()
     {
         if (!Ready)
@@ -502,6 +504,13 @@ public partial class Game : MonoBehaviour
         if (MainMenuController.MainMenuActive)
         {
             return;
+        }
+
+        if (_lastAutoSave == null || (DateTime.Now - _lastAutoSave.Value).TotalSeconds > 120)
+        {
+            // autosave
+            _lastAutoSave = DateTime.Now;
+            SaveManager.Save();
         }
 
         var mousePosition = Input.mousePosition;

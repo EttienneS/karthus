@@ -33,8 +33,6 @@ public static class SaveManager
     {
         try
         {
-            Game.TimeManager.Pause();
-
             var serializer = new JsonSerializer
             {
                 NullValueHandling = NullValueHandling.Ignore,
@@ -50,7 +48,8 @@ public static class SaveManager
                 DefaultValueHandling = DefaultValueHandling.Ignore,
             };
 
-            using (var sw = new StreamWriter("save.json"))
+            Directory.CreateDirectory("Saves");
+            using (var sw = new StreamWriter($"Saves\\Save_{DateTime.Now.ToString("yyyy-mm-dd_HH-MM-ss")}.json"))
             using (var writer = new JsonTextWriter(sw))
             {
                 serializer.Serialize(writer, MakeSave(), typeof(Save));
