@@ -243,7 +243,11 @@ public partial class Game : MonoBehaviour
             return;
         }
 
-        if (Input.GetKeyDown("space"))
+        if (Input.GetKeyDown("`"))
+        {
+            Game.DeveloperConsole.Toggle();
+        }
+        else if (Input.GetKeyDown("space"))
         {
             if (TimeManager.TimeStep == TimeStep.Paused)
             {
@@ -442,6 +446,7 @@ public partial class Game : MonoBehaviour
 
         LineRenderer = GetComponent<LineRenderer>();
         MouseSpriteRenderer.size = Vector2.one;
+
         selectSquareImage.gameObject.SetActive(false);
         MouseSpriteRenderer.gameObject.SetActive(false);
 
@@ -493,6 +498,8 @@ public partial class Game : MonoBehaviour
             ZoneInfoPanel.Hide();
             OrderSelectionController.DisableAndReset();
             LoadingPanel.Hide();
+
+            DeveloperConsole.gameObject.SetActive(false);
 
             _shownOnce = true;
             CameraController.Camera.orthographicSize = 10;

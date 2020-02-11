@@ -28,6 +28,15 @@ public partial class Game //.Instances
     private VisualEffectController _visualEffectController;
     private ZoneController _zoneController;
     private ZoneInfoPanel _zoneInfoPanel;
+    private DeveloperConsole _developerConsole;
+
+    public static DeveloperConsole DeveloperConsole
+    {
+        get
+        {
+            return Instance._developerConsole != null ? Instance._developerConsole : (Instance._developerConsole = GameObject.Find(ControllerConstants.DeveloperConsole).GetComponent<DeveloperConsole>());
+        }
+    }
 
     public static CameraController CameraController
     {
