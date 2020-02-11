@@ -47,7 +47,6 @@ public class StructureController : MonoBehaviour
         structure.Cell = cell;
         IndexStructure(structure);
 
-        structure.SetBluePrintState(false);
         if (draw)
         {
             structure.Refresh();
@@ -108,7 +107,8 @@ public class StructureController : MonoBehaviour
     internal Structure GetStructureBluePrint(string name, Cell cell, Faction faction)
     {
         var structure = SpawnStructure(name, cell, faction);
-        structure.SetBluePrintState(true);
+        structure.IsBluePrint = true;
+        structure.Refresh();
         return structure;
     }
 

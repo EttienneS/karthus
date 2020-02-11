@@ -127,7 +127,7 @@ public partial class Structure : IEntity
 
     public string InUseById { get; set; }
 
-    public bool IsBluePrint { get; private set; }
+    public bool IsBluePrint { get;  set; }
 
     public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
 
@@ -230,11 +230,6 @@ public partial class Structure : IEntity
         Rotation = Rotation.Rotate90CW();
         Game.StructureController.RefreshStructure(this);
         Refresh();
-    }
-
-    public void SetBluePrintState(bool state)
-    {
-        IsBluePrint = state;
     }
 
     public override string ToString()

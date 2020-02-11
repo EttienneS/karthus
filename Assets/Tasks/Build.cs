@@ -68,7 +68,8 @@ public class Build : CreatureTask
                 return false;
             }
 
-            TargetStructure.SetBluePrintState(false);
+            TargetStructure.IsBluePrint = false;
+            TargetStructure.Refresh();
 
             if (TargetStructure.IsInterlocking())
             {
