@@ -23,7 +23,7 @@ public class Eat : CreatureTask
             }
             else if (!Ate)
             {
-                var food = creature.CarriedItems.FirstOrDefault(i => i.IsType(FoodCriteria));
+                var food = creature.GetItemOfType(FoodCriteria);
                 creature.Hunger -= food.ValueProperties["Nutrition"];
                 creature.CarriedItemIds.Remove(food.Id);
                 Game.IdService.DestroyEntity(food);

@@ -102,7 +102,7 @@ public class Creature : IEntity
     public List<string> CarriedItemIds { get; set; } = new List<string>();
 
     [JsonIgnore]
-    public IEnumerable<Item> CarriedItems
+    private IEnumerable<Item> CarriedItems
     {
         get
         {
@@ -334,7 +334,9 @@ public class Creature : IEntity
 
     public Item GetItemOfType(string itemType)
     {
-        return CarriedItems.FirstOrDefault(i => i != null && i.IsType(itemType));
+        var item = CarriedItems.FirstOrDefault(i => i?.IsType(itemType) == true);
+        CarriedItemIds.RemoveAll(c => !Game.IdService.ItemIdLookup.ContainsKey(c));
+        return item;
     }
 
     public int GetMinRange()
