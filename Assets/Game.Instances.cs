@@ -29,6 +29,7 @@ public partial class Game //.Instances
     private ZoneController _zoneController;
     private ZoneInfoPanel _zoneInfoPanel;
     private DeveloperConsole _developerConsole;
+    private ConstructController _constructController;
 
     public static DeveloperConsole DeveloperConsole
     {
@@ -145,6 +146,18 @@ public partial class Game //.Instances
         get
         {
             return Instance._map != null ? Instance._map : (Instance._map = GameObject.Find(ControllerConstants.MapController).GetComponent<Map>());
+        }
+    }
+
+    public static ConstructController ConstructController
+    {
+        get
+        {
+            return Instance._constructController;
+        }
+        set
+        {
+            Instance._constructController = value;
         }
     }
 

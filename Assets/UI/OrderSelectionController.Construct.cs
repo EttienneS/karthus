@@ -55,7 +55,7 @@ public partial class OrderSelectionController //.Construct
         {
             EnableAndClear();
 
-            foreach (var construct in ConstructController.Constructs)
+            foreach (var construct in Game.ConstructController.Constructs)
             {
                 var title = $"{construct.Name} ({construct.Height}x{construct.Width})";
                 var button = CreateOrderButton(title, () => ConstructClicked(construct), construct.Sprite);

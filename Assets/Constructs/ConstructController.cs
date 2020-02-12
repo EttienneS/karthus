@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 
-public static class ConstructController
+public class ConstructController
 {
-    private static List<Construct> _constructs;
+    private List<Construct> _constructs;
 
-    public static List<Construct> Constructs
+    public List<Construct> Constructs
     {
         get
         {

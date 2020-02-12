@@ -1,11 +1,22 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class StructureController : MonoBehaviour
 {
-    internal Dictionary<string, Structure> StructureDataReference = new Dictionary<string, Structure>();
+    private Dictionary<string, Structure> _structureDataReference;
+
     private Dictionary<string, string> _structureTypeFileMap;
+
+    internal Dictionary<string, Structure> StructureDataReference
+    {
+        get
+        {
+            StructureTypeFileMap.First();
+            return _structureDataReference;
+        }
+    }
 
     internal Dictionary<string, string> StructureTypeFileMap
     {
@@ -14,11 +25,12 @@ public class StructureController : MonoBehaviour
             if (_structureTypeFileMap == null)
             {
                 _structureTypeFileMap = new Dictionary<string, string>();
+                _structureDataReference = new Dictionary<string, Structure>();
                 foreach (var structureFile in Game.FileController.StructureJson)
                 {
                     var data = Structure.GetFromJson(structureFile.text);
-                    StructureTypeFileMap.Add(data.Name, structureFile.text);
-                    StructureDataReference.Add(data.Name, data);
+                    _structureTypeFileMap.Add(data.Name, structureFile.text);
+                    _structureDataReference.Add(data.Name, data);
                 }
             }
             return _structureTypeFileMap;
@@ -36,6 +48,22 @@ public class StructureController : MonoBehaviour
         else
         {
             Game.Map.SetTile(structure.Cell, tile, Map.TileLayer.Structure);
+        }
+    }
+
+    public void RefreshStructure(Structure structure)
+    {
+        if (structure.Cell == null)
+        {
+            return;
+        }
+        if (structure.IsFloor())
+        {
+            Game.Map.SetTile(structure.Cell, structure.Tile, Map.TileLayer.Floor);
+        }
+        else
+        {
+            Game.Map.SetTile(structure.Cell, structure.Tile, Map.TileLayer.Structure);
         }
     }
 
@@ -64,22 +92,6 @@ public class StructureController : MonoBehaviour
         }
 
         return structure;
-    }
-
-    public void RefreshStructure(Structure structure)
-    {
-        if (structure.Cell == null)
-        {
-            return;
-        }
-        if (structure.IsFloor())
-        {
-            Game.Map.SetTile(structure.Cell, structure.Tile, Map.TileLayer.Floor);
-        }
-        else
-        {
-            Game.Map.SetTile(structure.Cell, structure.Tile, Map.TileLayer.Structure);
-        }
     }
 
     internal void DestroyStructure(Structure structure)

@@ -71,5 +71,7 @@ public class ItemController : MonoBehaviour
         renderer.UpdatePosition();
 
         IndexItem(data);
+
+        data.Cell = Game.Map.GetCellAtCoordinate(new Vector2(data.Coords.X, data.Coords.Y));
     }
 }

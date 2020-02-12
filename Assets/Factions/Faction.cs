@@ -192,6 +192,15 @@ public class Faction
         HomeCells = HomeCells.Distinct().ToList();
     }
 
+    public void LoadHomeCells()
+    {
+        foreach (var structure in Structures)
+        {
+            HomeCells.AddRange(Game.Map.GetCircle(structure.Cell, 5));
+        }
+        HomeCells = HomeCells.Distinct().ToList();
+    }
+
     internal void RemoveTask(CreatureTask task)
     {
         if (task != null)

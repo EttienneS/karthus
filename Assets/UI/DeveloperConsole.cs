@@ -23,6 +23,7 @@ public class DeveloperConsole : MonoBehaviour
             Game.TimeManager.Data.Hour = int.Parse(split[0]);
             Game.TimeManager.Data.Minute = int.Parse(split[1]);
         });
+        Commands.Add("Load", SaveManager.Load);
 
         Parser = new ArgsParser();
         foreach (var command in Commands)
@@ -47,7 +48,7 @@ public class DeveloperConsole : MonoBehaviour
 
         foreach (var command in Parser.Parse(input))
         {
-            Commands[command.Name].Invoke(command.Value);
+            Commands[command.Name].Invoke(command.Value.Trim());
         }
         Hide();
     }

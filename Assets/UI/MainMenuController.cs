@@ -30,7 +30,7 @@ public class MainMenuController : MonoBehaviour
 
     public void Load()
     {
-        SaveManager.Load();
+        SaveManager.Load("");
     }
 
     public void Save()

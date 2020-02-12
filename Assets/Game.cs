@@ -467,6 +467,7 @@ public partial class Game : MonoBehaviour
         }
         IdService = new IdService();
         MapGenerator = new MapGenerator();
+        ConstructController = new ConstructController();
     }
 
     private bool _finalizationStarted;
@@ -716,6 +717,8 @@ public partial class Game : MonoBehaviour
                         structure.Cell.Chunk.Renderer.StructureDrawn = false;
                     }
                 }
+
+                faction.LoadHomeCells();
             }
 
             if (SaveManager.SaveToLoad.Stores != null)

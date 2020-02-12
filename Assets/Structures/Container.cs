@@ -13,7 +13,7 @@ public class Container : Structure
 
     internal bool HasItemOfType(string type)
     {
-        return GetContainedItemTemplate().IsType(type);
+        return GetContainedItemTemplate()?.IsType(type) == true;
     }
 
     public Item GetContainedItemTemplate()
