@@ -26,7 +26,12 @@ public class RemoveStructure : CreatureTask
         {
             foreach (var item in StructureToRemove.Cost.Items)
             {
-                Game.ItemController.SpawnItem(item.Key, StructureToRemove.Cell).Amount = item.Value;
+                var spawnedItem = Game.ItemController.SpawnItem(item.Key, StructureToRemove.Cell);
+                spawnedItem.Amount = item.Value;
+                spawnedItem.FactionName = creature.FactionName;
+
+                // claim the entity to ensure that it can be used even if outside the 'home' area
+                creature.ClaimEntityForFaction(spawnedItem);
             }
 
             Game.StructureController.DestroyStructure(StructureToRemove);

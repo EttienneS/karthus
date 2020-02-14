@@ -9,13 +9,25 @@ public class Eat : CreatureTask
 
     public Eat()
     {
-        AddSubTask(new FindAndGetItem(FoodCriteria, 1));
+    }
+
+    public Eat(Item food)
+    {
+        AddSubTask(new Pickup(food, 1));
     }
 
     public override bool Done(Creature creature)
     {
         if (SubTasksComplete(creature))
         {
+            var food = creature.GetItemOfType(FoodCriteria);
+
+            if (food == null)
+            {
+                AddSubTask(new FindAndGetItem(FoodCriteria, 1));
+                return false;
+            }
+            
             if (!Eating)
             {
                 AddSubTask(new Wait(2, "Eating...") { BusyEmote = "OMONONOMNOM" });
@@ -23,13 +35,12 @@ public class Eat : CreatureTask
             }
             else if (!Ate)
             {
-                var food = creature.GetItemOfType(FoodCriteria);
                 creature.Hunger -= food.ValueProperties["Nutrition"];
                 creature.CarriedItemIds.Remove(food.Id);
                 Game.IdService.DestroyEntity(food);
                 Ate = true;
 
-                if (creature.Hunger > 10)
+                if (creature.Hunger > 20)
                 {
                     AddSubTask(new Eat());
                 }

@@ -13,6 +13,14 @@ public interface IEntity
     Vector2 Vector { get; }
 }
 
+public static class EntityExtensions
+{
+    public static void ClaimEntityForFaction(this IEntity claimer, IEntity entityToClaim)
+    {
+        entityToClaim.FactionName = claimer.FactionName;
+    }
+}
+
 public static class NamedProperties
 {
     public const string ContainedItemIds = "ContainedItemIds";

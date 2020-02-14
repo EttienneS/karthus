@@ -99,7 +99,15 @@ public static class Behaviours
         }
         else if (creature.Hunger > 100)
         {
-            task = new Eat();
+            var food = creature.GetFaction().FindItem(Eat.FoodCriteria, creature);
+            if (food != null)
+            {
+                task = new Eat(food);
+            }
+            else
+            {
+                Debug.LogWarning("No food items found!");
+            }
         }
         else if (creature.Energy < 15)
         {

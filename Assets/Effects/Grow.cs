@@ -15,16 +15,24 @@
 
         Stage++;
 
+        _visualEffect?.DestroySelf();
         if (Stage >= TotalStages)
         {
             var structure = Game.StructureController.SpawnStructure(PlantName, AssignedEntity.Cell, AssignedEntity.GetFaction());
             structure.Refresh();
+
+            // add job to harvest the plant
+            AssignedEntity.GetFaction().AddTask(new RemoveStructure(structure)
+            {
+                RequiredSkill = SkillConstants.Farming,
+                RequiredSkillLevel = 1
+            });
+
             Stage = 0;
             return true;
         }
         else
         {
-            _visualEffect?.DestroySelf();
             _visualEffect = Game.VisualEffectController.SpawnSpriteEffect(AssignedEntity, AssignedEntity.Cell.Vector, $"{PlantName}_{Stage}", float.MaxValue);
         }
 
