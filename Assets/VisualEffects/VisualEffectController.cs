@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 [Flags]
+[JsonConverter(typeof(StringEnumConverter))]
 public enum EffectType
 {
     Light = 1, Sprite = 2, Particle = 4
@@ -33,6 +36,13 @@ public class VisualEffectController : MonoBehaviour
         return effect;
     }
 
+    public VisualEffect Load(VisualEffectData data)
+    {
+        var effect = Instantiate(EffectPrefab, transform);
+        effect.Data = data;
+        return effect;
+    }
+
     public ChannelLine MakeChannellingLine(IEntity source, IEntity target, int intensity, float duration, ManaColor manaColor)
     {
         var line = Instantiate(ChannelLinePrefab, transform);
@@ -52,12 +62,14 @@ public class VisualEffectController : MonoBehaviour
         return GetBase(data.EffectType, data.Holder);
     }
 
+ 
+
     public VisualEffect SpawnEffect(IEntity holder, Vector2 vector, float lifeSpan)
     {
         var effect = GetBase(EffectType.Particle, holder);
         effect.Data.LifeSpan = lifeSpan;
-        effect.transform.position = vector;
-
+        effect.Data.SetProperty("X", vector.x.ToString());
+        effect.Data.SetProperty("Y", vector.y.ToString());
         return effect;
     }
 
@@ -69,7 +81,9 @@ public class VisualEffectController : MonoBehaviour
         effect.Data.Intensity = intensity;
         effect.Light.pointLightOuterRadius = radius;
         effect.Data.LifeSpan = lifeSpan;
-        effect.transform.position = vector;
+
+        effect.Data.SetProperty("X", vector.x.ToString());
+        effect.Data.SetProperty("Y", vector.y.ToString());
 
         return effect;
     }
@@ -77,10 +91,13 @@ public class VisualEffectController : MonoBehaviour
     public VisualEffect SpawnSpriteEffect(IEntity holder, Vector2 vector, string sprite, float lifeSpan, Color color)
     {
         var effect = GetBase(EffectType.Sprite, holder);
-        effect.Sprite.sprite = Game.SpriteStore.GetSprite(sprite);
-        effect.Sprite.color = color;
+
+        effect.Data.SetProperty("Sprite", sprite);
+        effect.Data.SetProperty("Color", color.ToFloatArrayString());
         effect.Data.LifeSpan = lifeSpan;
-        effect.transform.position = vector;
+
+        effect.Data.SetProperty("X", vector.x.ToString());
+        effect.Data.SetProperty("Y", vector.y.ToString());
 
         return effect;
     }

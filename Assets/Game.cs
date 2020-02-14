@@ -671,7 +671,7 @@ public partial class Game : MonoBehaviour
         DestroyItemsInCache();
     }
 
-    
+
 
     private IEnumerator FinalizeStartup()
     {
@@ -715,6 +715,16 @@ public partial class Game : MonoBehaviour
                     else
                     {
                         structure.Cell.Chunk.Renderer.StructureDrawn = false;
+                    }
+
+                    foreach (var effect in structure.LinkedVisualEffects)
+                    {
+                        VisualEffectController.Load(effect);
+                    }
+
+                    if (structure.AutoInteractions.Count > 0)
+                    {
+                        MagicController.AddEffector(structure);
                     }
                 }
 

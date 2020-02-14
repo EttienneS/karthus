@@ -1,0 +1,11 @@
+{
+  "Name": "Small Farm",
+  "Key": {
+    "F": "FarmPlot"
+  },
+  "Plan": [
+    "FFF",
+    "FFF",
+    "FFF"    
+  ]
+}

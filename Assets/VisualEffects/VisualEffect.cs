@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class VisualEffect : MonoBehaviour
@@ -43,6 +44,19 @@ public class VisualEffect : MonoBehaviour
         {
             particleObject.SetActive(false);
         }
+
+        if (Data.Properties.ContainsKey("Sprite"))
+        {
+            Sprite.sprite = Game.SpriteStore.GetSprite(Data.GetProperty("Sprite"));
+        }
+        if (Data.Properties.ContainsKey("Color"))
+        {
+            Sprite.color = Data.GetProperty("Color").FromFloatArrayString();
+        }
+
+        var x = float.Parse(Data.GetProperty("X"));
+        var y = float.Parse(Data.GetProperty("Y"));
+        transform.position = new Vector2(x, y);
     }
 
     internal void DestroySelf()
@@ -139,6 +153,7 @@ public class VisualEffectData
     public float LifeSpan;
     public float TimeAlive;
     private VisualEffect _linkedGameObject;
+    public bool Destroyed { get; set; }
     public EffectType EffectType { get; set; }
     public bool Fade { get; set; }
 
@@ -171,6 +186,23 @@ public class VisualEffectData
         }
     }
 
+    public Dictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
     public float StartIntensity { get; set; } = -1;
-    public bool Destroyed { get; set; }
+
+    internal string GetProperty(string key)
+    {
+        return Properties[key];
+    }
+
+    internal void SetProperty(string key, string value)
+    {
+        if (Properties.ContainsKey(key))
+        {
+            Properties[key] = value;
+        }
+        else
+        {
+            Properties.Add(key, value);
+        }
+    }
 }

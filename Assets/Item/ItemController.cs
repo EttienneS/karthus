@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -6,9 +7,17 @@ public class ItemController : MonoBehaviour
 {
     public ItemRenderer ItemPrefab;
 
-    internal Dictionary<string, Item> ItemDataReference = new Dictionary<string, Item>();
-
     private Dictionary<string, string> _itemTypeFileMap;
+    private Dictionary<string, Item> _itemDataReference;
+
+    internal Dictionary<string, Item> ItemDataReference
+    {
+        get
+        {
+            ItemTypeFileMap.First();
+            return _itemDataReference;
+        }
+    }
 
     internal Dictionary<string, string> ItemTypeFileMap
     {
@@ -17,11 +26,12 @@ public class ItemController : MonoBehaviour
             if (_itemTypeFileMap == null)
             {
                 _itemTypeFileMap = new Dictionary<string, string>();
+                _itemDataReference = new Dictionary<string, Item>();
                 foreach (var itemFile in Game.FileController.ItemFiles)
                 {
                     var data = Item.GetFromJson(itemFile.text);
-                    ItemTypeFileMap.Add(data.Name, itemFile.text);
-                    ItemDataReference.Add(data.Name, data);
+                    _itemTypeFileMap.Add(data.Name, itemFile.text);
+                    _itemDataReference.Add(data.Name, data);
                 }
             }
             return _itemTypeFileMap;
@@ -40,7 +50,7 @@ public class ItemController : MonoBehaviour
         data.Coords = (cell.Vector.x + Random.Range(-0.5f, 0.5f), cell.Vector.y + Random.Range(-0.5f, 0.5f));
         data.Cell = cell;
         data.Amount = amount;
-        
+
         SpawnItem(data);
         return data;
     }
@@ -66,7 +76,7 @@ public class ItemController : MonoBehaviour
 
         renderer.Data = data;
         data.Renderer = renderer;
-        
+
         renderer.SpriteRenderer.sprite = Game.SpriteStore.GetSprite(data.SpriteName);
         renderer.UpdatePosition();
 

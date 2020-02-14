@@ -3,6 +3,10 @@
     public int Amount;
     public string ItemId;
 
+    public Pickup()
+    {
+    }
+
     public Pickup(Item item, int amount = -1)
     {
         ItemId = item.Id;

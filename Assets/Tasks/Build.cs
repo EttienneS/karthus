@@ -73,7 +73,7 @@ public class Build : CreatureTask
 
             if (TargetStructure.IsInterlocking())
             {
-                foreach (var neighbour in TargetStructure.Cell.Neighbors)
+                foreach (var neighbour in TargetStructure.Cell.NonNullNeighbors)
                 {
                     if (neighbour.Structure != null)
                     {

@@ -3,6 +3,11 @@
     internal int Amount;
     internal string ItemId;
 
+    public Drop()
+    {
+
+    }
+
     public Drop(Cell target, Item item, int amount = -1)
     {
         ItemId = item.Id;

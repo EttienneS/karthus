@@ -19,6 +19,17 @@ public static class ColorExtensions
         return new[] { color.r, color.g, color.b, color.a };
     }
 
+    public static string ToFloatArrayString(this Color color)
+    {
+        return $"{color.r},{color.g},{color.b},{color.a}";
+    }
+
+    public static Color FromFloatArrayString(this string color)
+    {
+        var parts = color.Split(',');
+        return new Color(float.Parse(parts[0]), float.Parse(parts[1]), float.Parse(parts[2]), float.Parse(parts[3]));
+    }
+
     internal static Color GetColorFromHex(this string hexString)
     {
         Color col;
