@@ -27,7 +27,7 @@ public class Eat : CreatureTask
                 AddSubTask(new FindAndGetItem(FoodCriteria, 1));
                 return false;
             }
-            
+
             if (!Eating)
             {
                 AddSubTask(new Wait(2, "Eating...") { BusyEmote = "OMONONOMNOM" });
@@ -47,6 +47,8 @@ public class Eat : CreatureTask
             }
             else
             {
+                Eating = false;
+                Ate = false;
                 return creature.Hunger < 10;
             }
         }
