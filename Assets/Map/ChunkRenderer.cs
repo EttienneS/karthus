@@ -157,7 +157,7 @@ public class ChunkRenderer : MonoBehaviour
             _cellsToPopulate = Cells.ToList();
         }
 
-        var range = Mathf.Min(Cells.Count / 5, _cellsToPopulate.Count);
+        var range = Mathf.Min(5, _cellsToPopulate.Count);
         var current = _cellsToPopulate.GetRange(0, range);
         current.ForEach(c => c.Populate());
         _cellsToPopulate.RemoveRange(0, range);

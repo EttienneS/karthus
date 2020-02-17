@@ -506,8 +506,9 @@ public partial class Game : MonoBehaviour
             DeveloperConsole.gameObject.SetActive(false);
 
             _shownOnce = true;
+
             CameraController.Camera.orthographicSize = 10;
-            CameraController.MoveToCell(FactionController.PlayerFaction.Creatures[0].Cell);
+            CameraController.transform.position = FactionController.PlayerFaction.Creatures[0].Cell.Vector;
 
             MainMenuController.Toggle();
         }
@@ -673,8 +674,6 @@ public partial class Game : MonoBehaviour
         }
         DestroyItemsInCache();
     }
-
-
 
     private IEnumerator FinalizeStartup()
     {

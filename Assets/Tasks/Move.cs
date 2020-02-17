@@ -36,6 +36,11 @@ public class Move : CreatureTask
         {
             throw new TaskFailedException("Unable to find path");
         }
-        return creature.X == TargetX && creature.Y == TargetY;
+        if (creature.X == TargetX && creature.Y == TargetY)
+        {
+            Game.Map.ExpandChunksAround(creature.Cell);
+            return true;
+        }
+        return false;
     }
 }

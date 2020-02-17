@@ -96,7 +96,7 @@ public class Map : MonoBehaviour
         return newGroup.Distinct().ToList();
     }
 
-    public void ExpandChunks(Cell cell)
+    public void ExpandChunksAround(Cell cell)
     {
         if (cell == null)
         {

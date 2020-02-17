@@ -5,7 +5,9 @@ public partial class Game //.Instances
     private static Game _instance;
 
     private CameraController _cameraController;
+    private ConstructController _constructController;
     private CreatureController _creatureController;
+    private DeveloperConsole _developerConsole;
     private EntityInfoPanel _entityInfoPanel;
     private FactionController _factionController;
     private FileController _fileController;
@@ -24,21 +26,11 @@ public partial class Game //.Instances
     private SpriteStore _spriteStore;
     private StructureController _structureController;
     private TimeManager _timeManager;
+    private GameObject _ui;
     private UIController _uiController;
     private VisualEffectController _visualEffectController;
     private ZoneController _zoneController;
     private ZoneInfoPanel _zoneInfoPanel;
-    private DeveloperConsole _developerConsole;
-    private ConstructController _constructController;
-
-    public static DeveloperConsole DeveloperConsole
-    {
-        get
-        {
-            return Instance._developerConsole != null ? Instance._developerConsole : (Instance._developerConsole = GameObject.Find(ControllerConstants.DeveloperConsole).GetComponent<DeveloperConsole>());
-        }
-    }
-
     public static CameraController CameraController
     {
         get
@@ -47,11 +39,31 @@ public partial class Game //.Instances
         }
     }
 
+    public static ConstructController ConstructController
+    {
+        get
+        {
+            return Instance._constructController;
+        }
+        set
+        {
+            Instance._constructController = value;
+        }
+    }
+
     public static CreatureController CreatureController
     {
         get
         {
             return Instance._creatureController != null ? Instance._creatureController : (Instance._creatureController = GameObject.Find(ControllerConstants.CreatureController).GetComponent<CreatureController>());
+        }
+    }
+
+    public static DeveloperConsole DeveloperConsole
+    {
+        get
+        {
+            return Instance._developerConsole != null ? Instance._developerConsole : (Instance._developerConsole = GameObject.Find(ControllerConstants.DeveloperConsole).GetComponent<DeveloperConsole>());
         }
     }
 
@@ -149,18 +161,6 @@ public partial class Game //.Instances
         }
     }
 
-    public static ConstructController ConstructController
-    {
-        get
-        {
-            return Instance._constructController;
-        }
-        set
-        {
-            Instance._constructController = value;
-        }
-    }
-
     public static MapGenerator MapGenerator
     {
         get
@@ -237,6 +237,13 @@ public partial class Game //.Instances
         }
     }
 
+    public static GameObject UI
+    {
+        get
+        {
+            return Instance._ui != null ? Instance._ui : (Instance._ui = GameObject.Find(ControllerConstants.UI));
+        }
+    }
     public static UIController UIController
     {
         get

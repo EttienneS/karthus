@@ -2,20 +2,11 @@
 using System;
 using System.IO;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public static class SaveManager
 {
-    public static Save SaveToLoad { get; set; }
-
-    public static void Restart(Save save = null)
-    {
-        Game.Instance = null;
-        SaveToLoad = save;
-
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
-    }
-
     public static string SaveDir
     {
         get
@@ -23,6 +14,8 @@ public static class SaveManager
             return $"Saves\\{Game.Map.Seed}\\";
         }
     }
+
+    public static Save SaveToLoad { get; set; }
 
     public static void Load(string saveFile)
     {
@@ -40,6 +33,30 @@ public static class SaveManager
         });
 
         Restart(save);
+    }
+
+    public static Save MakeSave()
+    {
+        return new Save
+        {
+            Seed = Game.Map.Seed,
+            Factions = Game.FactionController.Factions.Values.ToList(),
+            Time = Game.TimeManager.Data,
+            Items = Game.IdService.ItemLookup.Values.ToList(),
+            CameraData = new CameraData(Game.CameraController.Camera),
+            Rooms = Game.ZoneController.RoomZones,
+            Stores = Game.ZoneController.StorageZones,
+            Areas = Game.ZoneController.AreaZones,
+            Chunks = Game.Map.Chunks.Values.Select(s => s.Data).ToList(),
+        };
+    }
+
+    public static void Restart(Save save = null)
+    {
+        Game.Instance = null;
+        SaveToLoad = save;
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
     }
 
     public static void Save()
@@ -62,10 +79,15 @@ public static class SaveManager
             };
 
             Directory.CreateDirectory(SaveDir);
-            using (var sw = new StreamWriter($"{SaveDir}\\{DateTime.Now.ToString("yy-MM-dd_HH-mm-ss")}.json"))
-            using (var writer = new JsonTextWriter(sw))
+
+            var file = $"{SaveDir}\\{DateTime.Now.ToString("yy-MM-dd_HH-mm-ss")}";
+            GetSaveScreenshot(file);
+            using (var sw = new StreamWriter($"{file}.json"))
             {
-                serializer.Serialize(writer, MakeSave(), typeof(Save));
+                using (var writer = new JsonTextWriter(sw))
+                {
+                    serializer.Serialize(writer, MakeSave(), typeof(Save));
+                }
             }
         }
         catch (Exception ex)
@@ -74,19 +96,10 @@ public static class SaveManager
         }
     }
 
-    public static Save MakeSave()
+    private static void GetSaveScreenshot(string file)
     {
-        return new Save
-        {
-            Seed = Game.Map.Seed,
-            Factions = Game.FactionController.Factions.Values.ToList(),
-            Time = Game.TimeManager.Data,
-            Items = Game.IdService.ItemLookup.Values.ToList(),
-            CameraData = new CameraData(Game.CameraController.Camera),
-            Rooms = Game.ZoneController.RoomZones,
-            Stores = Game.ZoneController.StorageZones,
-            Areas = Game.ZoneController.AreaZones,
-            Chunks = Game.Map.Chunks.Values.Select(s => s.Data).ToList(),
-        };
+        Game.UI.SetActive(false);
+        ScreenCapture.CaptureScreenshot($"{file}.png");
+        Game.UI.SetActive(true);
     }
 }
