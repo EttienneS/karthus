@@ -462,7 +462,10 @@ public partial class Game : MonoBehaviour
             Map.MaxX = Map.Origin.X + Map.ChunkSize;
             Map.MaxY = Map.Origin.Y + Map.ChunkSize;
 
-            Map.Seed = NameHelper.GetRandomName() + " " + NameHelper.GetRandomName();
+            if (string.IsNullOrEmpty(Map.Seed))
+            {
+                Map.Seed = NameHelper.GetRandomName() + " " + NameHelper.GetRandomName();
+            }
             InitFactions();
         }
         IdService = new IdService();
