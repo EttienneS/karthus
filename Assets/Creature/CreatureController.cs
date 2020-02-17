@@ -82,7 +82,7 @@ public class CreatureController : MonoBehaviour
         creature.name = $"{creature.Data.Name} ({creature.Data.Id})";
 
         creature.Data.Gender = Random.value > 0.5f ? Gender.Male : Gender.Female;
-        creature.Data.Name = CreatureHelper.GetRandomName();
+        creature.Data.Name = NameHelper.GetRandomName();
         creature.Data.X = cell.Vector.x + Random.Range(-0.25f, 0.25f);
         creature.Data.Y = cell.Vector.y + Random.Range(-0.25f, 0.25f);
         creature.UpdatePosition();

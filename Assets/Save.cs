@@ -15,5 +15,5 @@ public class Save
 
     public TimeData Time;
 
-    public float Seed;
+    public string Seed;
 }

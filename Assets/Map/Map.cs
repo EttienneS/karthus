@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
@@ -18,7 +20,25 @@ public class Map : MonoBehaviour
     internal int ChunkSize = 15;
 
     internal (int X, int Y) Origin = (500, 500);
-    internal float Seed;
+
+    public string Seed;
+
+    private float? _seedValue;
+
+    internal float SeedValue
+    {
+        get
+        {
+            if (!_seedValue.HasValue)
+            {
+                var md5Hasher = MD5.Create();
+                var hashed = md5Hasher.ComputeHash(Encoding.UTF8.GetBytes(Seed));
+                _seedValue = BitConverter.ToInt32(hashed, 0) % 100000f;
+            }
+            return _seedValue.Value;
+        }
+    }
+
     private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
     private int _searchFrontierPhase;
 
@@ -134,7 +154,7 @@ public class Map : MonoBehaviour
 
     public float GetCellHeight(float x, float y)
     {
-        return Mathf.PerlinNoise((Seed + x) * Scaler, (Seed + y) * Scaler);
+        return Mathf.PerlinNoise((SeedValue + x) * Scaler, (SeedValue + y) * Scaler);
     }
 
     public List<Cell> GetCircle(Cell center, int radius)

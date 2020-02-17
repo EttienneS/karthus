@@ -462,7 +462,7 @@ public partial class Game : MonoBehaviour
             Map.MaxX = Map.Origin.X + Map.ChunkSize;
             Map.MaxY = Map.Origin.Y + Map.ChunkSize;
 
-            Map.Seed = UnityEngine.Random.Range(-1000000, 1000000);
+            Map.Seed = NameHelper.GetRandomName() + " " + NameHelper.GetRandomName();
             InitFactions();
         }
         IdService = new IdService();

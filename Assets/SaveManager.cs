@@ -62,7 +62,7 @@ public static class SaveManager
             };
 
             Directory.CreateDirectory(SaveDir);
-            using (var sw = new StreamWriter($"{SaveDir}\\Save_{DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}.json"))
+            using (var sw = new StreamWriter($"{SaveDir}\\{DateTime.Now.ToString("yy-MM-dd_HH-mm-ss")}.json"))
             using (var writer = new JsonTextWriter(sw))
             {
                 serializer.Serialize(writer, MakeSave(), typeof(Save));

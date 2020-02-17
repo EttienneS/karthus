@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public static class CreatureHelper
+public static class NameHelper
 {
     public static string GetRandomName()
     {
