@@ -28,7 +28,7 @@ public static class NameHelper
         name += front[Random.Range(0, front.Length)];
         name += mid[Random.Range(0, mid.Length)];
         name += end[Random.Range(0, end.Length)];
-
+        
         return name;
     }
 }
