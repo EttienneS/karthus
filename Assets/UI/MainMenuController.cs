@@ -30,7 +30,7 @@ public class MainMenuController : MonoBehaviour
 
     public void Load()
     {
-        SaveManager.Load("");
+        Game.LoadPanel.Show();
     }
 
     public void Save()

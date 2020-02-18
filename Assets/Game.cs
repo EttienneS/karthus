@@ -502,6 +502,7 @@ public partial class Game : MonoBehaviour
             ZoneInfoPanel.Hide();
             OrderSelectionController.DisableAndReset();
             LoadingPanel.Hide();
+            LoadPanel.Hide();
 
             DeveloperConsole.gameObject.SetActive(false);
 

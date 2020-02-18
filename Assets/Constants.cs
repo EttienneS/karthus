@@ -39,6 +39,7 @@ public static class ControllerConstants
 {
     public const string UI = "UI";
     public const string MainMenu = "MainMenu";
+    public const string LoadPanel = "LoadPanel";
     public const string CameraController = "Main Camera";
     public const string PhysicsController = "PhysicsController";
     public const string CreatureController = "CreatureController";

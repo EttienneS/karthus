@@ -14,6 +14,7 @@ public partial class Game //.Instances
     private IdService _idService;
     private ItemController _itemController;
     private LoadStatus _loadingPanel;
+    private LoadPanel _loadPanel;
     private MagicController _magicController;
     private MainMenuController _mainMenuController;
     private Map _map;
@@ -31,6 +32,7 @@ public partial class Game //.Instances
     private VisualEffectController _visualEffectController;
     private ZoneController _zoneController;
     private ZoneInfoPanel _zoneInfoPanel;
+
     public static CameraController CameraController
     {
         get
@@ -134,6 +136,14 @@ public partial class Game //.Instances
         get
         {
             return Instance._loadingPanel != null ? Instance._loadingPanel : (Instance._loadingPanel = GameObject.Find("LoadingPanel").GetComponent<LoadStatus>());
+        }
+    }
+
+    public static LoadPanel LoadPanel
+    {
+        get
+        {
+            return Instance._loadPanel != null ? Instance._loadPanel : (Instance._loadPanel = GameObject.Find(ControllerConstants.LoadPanel).GetComponent<LoadPanel>());
         }
     }
 
@@ -244,6 +254,7 @@ public partial class Game //.Instances
             return Instance._ui != null ? Instance._ui : (Instance._ui = GameObject.Find(ControllerConstants.UI));
         }
     }
+
     public static UIController UIController
     {
         get
