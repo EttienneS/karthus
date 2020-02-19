@@ -86,13 +86,13 @@ public class ChunkRenderer : MonoBehaviour
 
     public void Update()
     {
-        if (!Data.Populated)
-        {
-            Populate();
-        }
-        else if (!GroundDrawn)
+        if (!GroundDrawn)
         {
             DrawGround();
+        }
+        else if (!Data.Populated)
+        {
+            Populate();
         }
         else if (!FloorDrawn)
         {
@@ -157,7 +157,7 @@ public class ChunkRenderer : MonoBehaviour
             _cellsToPopulate = Cells.ToList();
         }
 
-        var range = Mathf.Min(5, _cellsToPopulate.Count);
+        var range = Mathf.Min(10, _cellsToPopulate.Count);
         var current = _cellsToPopulate.GetRange(0, range);
         current.ForEach(c => c.Populate());
         _cellsToPopulate.RemoveRange(0, range);
@@ -192,10 +192,9 @@ public class ChunkRenderer : MonoBehaviour
 
     private void DrawFloors()
     {
-        var floors = Cells
-                        .Where(c => c.Floor != null)
-                        .Select(c => c.Floor)
-                        .ToList();
+        var floors = Cells.Where(c => c.Floor != null)
+                          .Select(c => c.Floor)
+                          .ToList();
 
         if (floors.Count > 0)
         {
@@ -218,10 +217,9 @@ public class ChunkRenderer : MonoBehaviour
 
     private void DrawStructures()
     {
-        var structures = Cells
-                                 .Where(c => c.Structure != null)
-                                 .Select(c => c.Structure)
-                                 .ToList();
+        var structures = Cells.Where(c => c.Structure != null)
+                              .Select(c => c.Structure)
+                              .ToList();
 
         if (structures.Count > 0)
         {

@@ -519,9 +519,14 @@ public partial class Game : MonoBehaviour
             return;
         }
 
-        if (_lastAutoSave == null || (DateTime.Now - _lastAutoSave.Value).TotalSeconds > 120)
+        if (_lastAutoSave == null)
         {
-            // autosave
+            // make the first autosave actually happen 2 mins after the game starts not on the first call
+            _lastAutoSave = DateTime.Now;
+        }
+        else if ((DateTime.Now - _lastAutoSave.Value).TotalSeconds > 120)
+        {
+            // autosave every two minutes
             _lastAutoSave = DateTime.Now;
             SaveManager.Save();
         }
