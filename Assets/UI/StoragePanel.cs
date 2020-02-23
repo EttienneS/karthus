@@ -29,8 +29,17 @@ public class StoragePanel : MonoBehaviour
         if (Zone.Containers.Count() > 0)
         {
             var text = $"Capacity: {Zone.Fill}/{Zone.Capacity}\n";
-            text += $"Containers: {Zone.Containers.Count()}/{Zone.Cells.Count}\n";
+            text += $"Containers: {Zone.Containers.Count()}/{Zone.Cells.Count}\n\n";
 
+            foreach (var container in Zone.Containers)
+            {
+                var item = container.GetContainedItemTemplate();
+
+                if (item != null)
+                {
+                    text += $"\t{item.Name} - {container.Count}\n";
+                }
+            }
             ZoneInfoText.text = text;
         }
         else
