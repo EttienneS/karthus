@@ -9,17 +9,23 @@ public class DeveloperConsole : MonoBehaviour
 {
     public Dictionary<string, Execute> Commands = new Dictionary<string, Execute>();
     public TMP_InputField InputField;
+    public TMP_Text OutputField;
 
     internal ArgsParser Parser;
 
-    public delegate void Execute(string args);
+    public delegate string Execute(string args);
 
-    public void Expand()
+    public string Expand()
     {
+        var expansions = string.Empty;
         foreach (var chunk in Game.Map.Chunks.ToList())
         {
             Game.Map.ExpandChunksAround(chunk.Value.Cells[0]);
+
+            expansions += $"Expanding {chunk.Key.x}:{chunk.Key.y}\n";
         }
+
+        return expansions;
     }
 
     public void Hide()
@@ -27,6 +33,49 @@ public class DeveloperConsole : MonoBehaviour
         gameObject.SetActive(false);
         InputField.ActivateInputField();
         Game.Instance.Typing = false;
+    }
+
+    public string List(string type)
+    {
+        var list = "";
+        switch (type.ToLower())
+        {
+            case "items":
+                foreach (var item in Game.IdService.ItemIdLookup)
+                {
+                    list += $"{item.Key}: {item.Value.Name}\n";
+                }
+                break;
+
+            case "creatures":
+                foreach (var creature in Game.IdService.CreatureIdLookup)
+                {
+                    list += $"{creature.Key}: {creature.Value.Name}\n";
+                }
+                break;
+
+            case "structures":
+                foreach (var structure in Game.IdService.StructureIdLookup)
+                {
+                    list += $"{structure.Key}: {structure.Value.Name}\n";
+                }
+                break;
+
+            case "factions":
+                foreach (var faction in Game.FactionController.Factions)
+                {
+                    list += $"{faction.Key}\n";
+                }
+                break;
+
+            case "zones":
+                foreach (var zone in Game.ZoneController.Zones)
+                {
+                    list += $"{zone.Key.Name}: {zone.Key.FactionName}\n";
+                }
+                break;
+        }
+        return list;
     }
 
     public void ProcessCommand()
@@ -37,14 +86,14 @@ public class DeveloperConsole : MonoBehaviour
 
         if (input.Contains(" "))
         {
-            input = input.Insert(InputField.text.IndexOf(" "), ":'") + "'";
+            input = input.Insert(InputField.text.IndexOf(" ") + 1, ":'") + "'";
         }
 
         foreach (var command in Parser.Parse(input))
         {
-            Commands[command.Name].Invoke(command.Value.Trim());
+            OutputField.text = Commands[command.Name].Invoke(command.Value.Trim());
         }
-        Hide();
+        //Hide();
     }
 
     public void Show()
@@ -59,15 +108,27 @@ public class DeveloperConsole : MonoBehaviour
 
     public void Start()
     {
-        Commands.Add("Log", (args) => Debug.Log($"{args}"));
+        Commands.Add("Log", (args) =>
+        {
+            Debug.Log($"{args}");
+            return args;
+        });
         Commands.Add("SetTime", (args) =>
         {
             var split = args.Split(':');
             Game.TimeManager.Data.Hour = int.Parse(split[0]);
             Game.TimeManager.Data.Minute = int.Parse(split[1]);
+            return $"Time Set To: {Game.TimeManager.Data.Hour}:{Game.TimeManager.Data.Minute}";
         });
-        Commands.Add("Load", SaveManager.Load);
+        Commands.Add("Load", (args) =>
+        {
+            SaveManager.Load(args);
+            return "Loading...";
+        });
         Commands.Add("Expand", (_) => Expand());
+
+        Commands.Add("List", List);
+        Commands.Add("inspect", (args) => args.GetEntity().ToString());
 
         Parser = new ArgsParser();
         foreach (var command in Commands)
@@ -93,6 +154,11 @@ public class DeveloperConsole : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
             ProcessCommand();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Hide();
         }
     }
 }
