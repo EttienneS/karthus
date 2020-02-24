@@ -1,4 +1,5 @@
 ﻿using LPC.Spritesheet.Generator.Enums;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -27,8 +28,15 @@ public class CreatureController : MonoBehaviour
     {
         foreach (var creatureFile in Game.FileController.CreatureFiles)
         {
-            var creature = creatureFile.text.LoadJson<Creature>();
-            Beastiary.Add(creature.Name, creature);
+            try
+            {
+                var creature = creatureFile.text.LoadJson<Creature>();
+                Beastiary.Add(creature.Name, creature);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Unable to load creature {creatureFile}: {ex.Message}");
+            }
         }
     }
 
@@ -90,6 +98,8 @@ public class CreatureController : MonoBehaviour
         creature.Data.InternalTick = Random.Range(0, Game.TimeManager.CreatureTick);
 
         creature.Data.GetBehaviourTask = Behaviours.GetBehaviourFor(creature.Data.BehaviourName);
+
+        creature.Data.Needs = Behaviours.GetNeedsFor(creature.Data.BehaviourName);
 
         creature.MainRenderer.material = Game.MaterialController.DefaultMaterial;
         creature.MainRenderer.color = Color.white;

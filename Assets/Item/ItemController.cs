@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -29,9 +30,16 @@ public class ItemController : MonoBehaviour
                 _itemDataReference = new Dictionary<string, Item>();
                 foreach (var itemFile in Game.FileController.ItemFiles)
                 {
-                    var data = Item.GetFromJson(itemFile.text);
-                    _itemTypeFileMap.Add(data.Name, itemFile.text);
-                    _itemDataReference.Add(data.Name, data);
+                    try
+                    {
+                        var data = Item.GetFromJson(itemFile.text);
+                        _itemTypeFileMap.Add(data.Name, itemFile.text);
+                        _itemDataReference.Add(data.Name, data);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogError($"Unable to load item {itemFile}: {ex.Message}");
+                    }
                 }
             }
             return _itemTypeFileMap;

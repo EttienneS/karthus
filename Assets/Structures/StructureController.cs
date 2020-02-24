@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -28,9 +29,16 @@ public class StructureController : MonoBehaviour
                 _structureDataReference = new Dictionary<string, Structure>();
                 foreach (var structureFile in Game.FileController.StructureJson)
                 {
-                    var data = Structure.GetFromJson(structureFile.text);
-                    _structureTypeFileMap.Add(data.Name, structureFile.text);
-                    _structureDataReference.Add(data.Name, data);
+                    try
+                    {
+                        var data = Structure.GetFromJson(structureFile.text);
+                        _structureTypeFileMap.Add(data.Name, structureFile.text);
+                        _structureDataReference.Add(data.Name, data);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogError($"Unable to load structure {structureFile}: {ex.Message}");
+                    }
                 }
             }
             return _structureTypeFileMap;

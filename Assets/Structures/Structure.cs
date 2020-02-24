@@ -127,7 +127,7 @@ public partial class Structure : IEntity
 
     public string InUseById { get; set; }
 
-    public bool IsBluePrint { get;  set; }
+    public bool IsBluePrint { get; set; }
 
     public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
 

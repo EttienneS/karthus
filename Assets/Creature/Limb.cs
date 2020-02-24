@@ -124,7 +124,7 @@ public class Limb
         {
             msg += $"\t\t{wound.Count}x {wound.Text}\n";
         }
-        return msg;
+        return msg.Trim();
     }
 
     internal void AddBoostAction(BuffBase boostAction)

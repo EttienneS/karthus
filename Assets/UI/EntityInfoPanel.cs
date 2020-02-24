@@ -117,9 +117,6 @@ public class EntityInfoPanel : MonoBehaviour
                         var rt = Log.GetComponent(typeof(RectTransform)) as RectTransform;
                         rt.sizeDelta = new Vector2(395, creature.LogHistory.Count * 20);
 
-                        PropertiesPanel.text += $"\nHunger: {creature.Hunger:0}\n";
-                        PropertiesPanel.text += $"Energy: {creature.Energy:0}\n";
-
                         if (creature.Skills != null)
                         {
                             PropertiesPanel.text += "\nSkills: \n\n";

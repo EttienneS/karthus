@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -97,7 +98,7 @@ public static class Behaviours
             // split up
             task = new Move(Game.Map.GetPathableNeighbour(creature.Cell));
         }
-        else if (creature.Hunger > 100)
+        else if (creature.GetNeed(NeedNames.Hunger).Current > 100)
         {
             var food = creature.GetFaction().FindItem(Eat.FoodCriteria, creature);
             if (food != null)
@@ -109,26 +110,50 @@ public static class Behaviours
                 Debug.LogWarning("No food items found!");
             }
         }
-        else if (creature.Energy < 15)
+        else if (creature.GetNeed(NeedNames.Energy).Current > 90)
         {
-            var bed = creature.Self.Structures.FirstOrDefault(s => s.Properties.ContainsKey("RecoveryRate"));
+            var bed = creature.Faction.Structures.Find(s => !s.IsBluePrint && !s.InUseByAnyone && s.Properties.ContainsKey("RecoveryRate"));
 
-            if (bed == null)
+            if (bed != null)
             {
-                bed = Game.IdService.StructureIdLookup.Values
-                                         .FirstOrDefault(s =>
-                                                !s.InUseByAnyone
-                                                && !s.IsBluePrint
-                                                && s.Name == "Bed");
+                task = new Sleep(bed.Id);
             }
-
-            //if (bed != null)
-            //{
-            //    task = new Interact(bed.ActivatedInteractions[0], creature, bed.Id);
-            //}
+            else
+            {
+                task = new Sleep();
+            }
         }
 
         return task;
+    }
+
+    internal static List<Need> GetNeedsFor(string behaviourName)
+    {
+        var needs = new List<Need>();
+        switch (behaviourName.ToLower())
+        {
+            case "person":
+                needs = new List<Need>
+                {
+                    new Need(NeedNames.Hunger, 100, 50),
+                    new Need(NeedNames.Joy, 100, 50),
+                    new Need(NeedNames.Energy, 100, 50),
+                    new Need(NeedNames.Comfort, 100, 50),
+                    new Need(NeedNames.Hygiene, 100, 50),
+                    new Need(NeedNames.Social, 100, 50),
+                    new Need(NeedNames.Beauty, 100, 50),
+                    new Need(NeedNames.Aspiration, 100, 50)
+                };
+                break;
+            default:
+                needs = new List<Need>
+                {
+                    new Need(NeedNames.Hunger, 100, 50),
+                    new Need(NeedNames.Energy, 100, 50),
+                };
+                break;
+        }
+        return needs;
     }
 
     private static Creature FindEnemy(Creature creature)

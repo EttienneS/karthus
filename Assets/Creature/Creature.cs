@@ -27,6 +27,12 @@ public class Creature : IEntity
 
     public Direction Facing = Direction.S;
 
+    public Animation? FixedAnimation = null;
+
+    public int? FixedFrame;
+
+    public Gender Gender;
+
     [JsonIgnore]
     public Behaviours.GetBehaviourTaskDelegate GetBehaviourTask;
 
@@ -36,38 +42,10 @@ public class Creature : IEntity
 
     public Mobility Mobility;
 
-    public (float x, float y) TargetCoordinate;
-
-    public Gender Gender;
+    public bool Moving;
     public Race Race;
-
-    private ICharacterSpriteDefinition _spriteDef;
-    private CharacterSpriteSheet _characterSpriteSheet;
-
-    [JsonIgnore]
-    internal CharacterSpriteSheet CharacterSpriteSheet
-    {
-        get
-        {
-            if (_characterSpriteSheet == null)
-            {
-                if (_spriteDef == null)
-                {
-                    _spriteDef = Game.SpriteStore.Generator.GetBaseCharacter(Gender, Race);
-                    Game.SpriteStore.Generator.AddClothes(_spriteDef);
-                }
-
-                _characterSpriteSheet = new CharacterSpriteSheet(_spriteDef);
-            }
-            return _characterSpriteSheet;
-        }
-    }
-
-    public void RefreshSprite()
-    {
-        _characterSpriteSheet = null;
-    }
-
+    public (float x, float y) TargetCoordinate;
+    public bool UnableToFindPath;
     internal int Frame;
     internal float InternalTick = float.MaxValue;
 
@@ -77,8 +55,10 @@ public class Creature : IEntity
     [JsonIgnore]
     private List<Cell> _awareness;
 
+    private CharacterSpriteSheet _characterSpriteSheet;
     private Faction _faction;
-
+    private List<Cell> _path = new List<Cell>();
+    private ICharacterSpriteDefinition _spriteDef;
     private CreatureTask _task;
 
     public float Aggression { get; set; }
@@ -100,15 +80,6 @@ public class Creature : IEntity
     public string BehaviourName { get; set; }
 
     public List<string> CarriedItemIds { get; set; } = new List<string>();
-
-    [JsonIgnore]
-    private IEnumerable<Item> CarriedItems
-    {
-        get
-        {
-            return CarriedItemIds.Select(i => i.GetItem());
-        }
-    }
 
     [JsonIgnore]
     public Cell Cell
@@ -133,8 +104,6 @@ public class Creature : IEntity
 
     public int Dexterity { get; set; }
 
-    public float Energy { get; set; }
-
     [JsonIgnore]
     public Faction Faction
     {
@@ -151,7 +120,6 @@ public class Creature : IEntity
 
     public string FactionName { get; set; }
 
-    public float Hunger { get; set; }
     public string Id { get; set; }
 
     [JsonIgnore]
@@ -172,6 +140,8 @@ public class Creature : IEntity
     public ManaPool ManaPool { get; set; }
 
     public string Name { get; set; }
+
+    public List<Need> Needs { get; set; }
 
     public int Perception { get; set; }
 
@@ -229,10 +199,55 @@ public class Creature : IEntity
 
     public float Y { get; set; }
 
+    [JsonIgnore]
+    internal CharacterSpriteSheet CharacterSpriteSheet
+    {
+        get
+        {
+            if (_characterSpriteSheet == null)
+            {
+                if (_spriteDef == null)
+                {
+                    _spriteDef = Game.SpriteStore.Generator.GetBaseCharacter(Gender, Race);
+                    Game.SpriteStore.Generator.AddClothes(_spriteDef);
+                }
+
+                _characterSpriteSheet = new CharacterSpriteSheet(_spriteDef);
+            }
+            return _characterSpriteSheet;
+        }
+    }
+
+    [JsonIgnore]
+    private IEnumerable<Item> CarriedItems
+    {
+        get
+        {
+            return CarriedItemIds.Select(i => i.GetItem());
+        }
+    }
+
     public void AddLimb(Limb limb)
     {
         limb.Owner = this;
         Limbs.Add(limb);
+    }
+
+    public void ClearFixedAnimation()
+    {
+        FixedAnimation = null;
+        FixedFrame = null;
+    }
+
+    public float DecreaseNeed(string name, float amount)
+    {
+        var need = GetNeed(name);
+        need.Current -= amount;
+        if (need.Current < 0)
+        {
+            need.Current = 0;
+        }
+        return need.Current;
     }
 
     public Item DropItem(Cell cell, string item, int amount)
@@ -312,6 +327,11 @@ public class Creature : IEntity
                     .ToList();
     }
 
+    public float GetCurrentNeed(string name)
+    {
+        return GetNeed(name).Current;
+    }
+
     public List<OffensiveActionBase> GetDefendableIncomingAttacks()
     {
         return IncomingAttacks.Where(a => GetPossibleDefensiveActions(a).Count > 0).ToList();
@@ -347,6 +367,16 @@ public class Creature : IEntity
             return 1;
         }
         return options.Max(o => o.Range);
+    }
+
+    public Need GetNeed(string name)
+    {
+        return Needs.Find(n => n.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+    }
+
+    public float GetNeedMax(string name)
+    {
+        return GetNeed(name).Max;
     }
 
     public Orientation GetOrientation()
@@ -419,6 +449,17 @@ public class Creature : IEntity
         return skill?.Enabled == true;
     }
 
+    public float IncreaseNeed(string name, float amount)
+    {
+        var need = GetNeed(name);
+        need.Current += amount;
+        if (need.Current > need.Max)
+        {
+            need.Current = need.Max;
+        }
+        return need.Current;
+    }
+
     public void Log(string message = "")
     {
         Debug.Log(Name + ":" + message);
@@ -457,10 +498,21 @@ public class Creature : IEntity
         }
     }
 
+    public void RefreshSprite()
+    {
+        _characterSpriteSheet = null;
+    }
+
     public void SetAnimation(Animation animation, float duration)
     {
         Animation = animation;
         AnimationDelta = duration;
+    }
+
+    public void SetFixedAnimation(Animation animation, int? fixedFrame = null)
+    {
+        FixedAnimation = animation;
+        FixedFrame = fixedFrame;
     }
 
     public void SetTargetCoordinate(float targetX, float targetY)
@@ -472,29 +524,19 @@ public class Creature : IEntity
 
     public override string ToString()
     {
-        var text = $"{Name}\n\n";
+        var text = $"{Name}\n";
 
         foreach (var limb in Limbs)
         {
             text += $"\t{limb}\n";
         }
+        text += "\n";
+        foreach (var need in Needs)
+        {
+            text += $"\t{need}\n";
+        }
 
         return text;
-    }
-
-    public Animation? FixedAnimation = null;
-    public int? FixedFrame;
-
-    public void SetFixedAnimation(Animation animation, int? fixedFrame = null)
-    {
-        FixedAnimation = animation;
-        FixedFrame = fixedFrame;
-    }
-
-    public void ClearFixedAnimation()
-    {
-        FixedAnimation = null;
-        FixedFrame = null;
     }
 
     public void UpdateSprite()
@@ -649,8 +691,8 @@ public class Creature : IEntity
 
     internal void Live()
     {
-        Hunger += 0.05f;
-        Energy -= 0.05f;
+        IncreaseNeed(NeedNames.Hunger, 0.05f);
+        IncreaseNeed(NeedNames.Energy, 0.05f);
     }
 
     internal void Perceive()
@@ -887,12 +929,6 @@ public class Creature : IEntity
 
         return (outgoingDamage, bestAttack);
     }
-
-    private List<Cell> _path = new List<Cell>();
-
-    public bool UnableToFindPath;
-
-    public bool Moving;
 
     private void Move()
     {
