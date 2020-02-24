@@ -76,6 +76,7 @@ public static class SaveManager
             {
                 NullValueHandling = NullValueHandling.Ignore,
                 DefaultValueHandling = DefaultValueHandling.Ignore,
+                Formatting = Formatting.Indented
             };
 
             Directory.CreateDirectory(SaveDir);

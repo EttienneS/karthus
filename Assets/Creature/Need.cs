@@ -17,7 +17,7 @@
 
     public override string ToString()
     {
-        return $"{Name} [{Current:2}/{Max}]";
+        return $"{Name} [{Current:0.0}/{Max}]";
     }
 }
 public static class NeedNames

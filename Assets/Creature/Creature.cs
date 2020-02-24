@@ -247,6 +247,7 @@ public class Creature : IEntity
         {
             need.Current = 0;
         }
+        //Debug.Log($"Decreased {name} by {amount} to {need.Current}");
         return need.Current;
     }
 
@@ -457,6 +458,7 @@ public class Creature : IEntity
         {
             need.Current = need.Max;
         }
+        //Debug.Log($"Increased {name} by {amount} to {need.Current}");
         return need.Current;
     }
 
@@ -691,8 +693,8 @@ public class Creature : IEntity
 
     internal void Live()
     {
-        IncreaseNeed(NeedNames.Hunger, 0.05f);
-        IncreaseNeed(NeedNames.Energy, 0.05f);
+        IncreaseNeed(NeedNames.Hunger, Random.Range(0.03f, 0.05f));
+        IncreaseNeed(NeedNames.Energy, Random.Range(0.03f, 0.05f));
     }
 
     internal void Perceive()
