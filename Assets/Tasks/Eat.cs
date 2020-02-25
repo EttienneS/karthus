@@ -46,6 +46,10 @@ public class Eat : CreatureTask
                 {
                     AddSubTask(new Eat());
                 }
+                else
+                {
+                    return true;
+                }
             }
             else
             {

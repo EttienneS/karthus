@@ -113,7 +113,7 @@ public static class Behaviours
         }
         else if (creature.GetNeed<Energy>().Current < 15)
         {
-            var bed = creature.Faction.Structures.Find(s => !s.IsBluePrint && !s.InUseByAnyone && s.Properties.ContainsKey("RecoveryRate"));
+            var bed = creature.Faction.Structures.Find(s => !s.IsBluePrint && !s.InUseByAnyone && s.ValueProperties.ContainsKey("RecoveryRate"));
 
             if (bed != null)
             {
