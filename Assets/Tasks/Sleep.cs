@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using Needs;
+using UnityEngine;
 using Animation = LPC.Spritesheet.Generator.Interfaces.Animation;
 
 public class Sleep : CreatureTask
 {
     public string BedId;
-    public float RecoveryRate = 2f;
+    public float RecoveryRate = 0.25f;
 
     public Structure Bed
     {
@@ -28,24 +29,17 @@ public class Sleep : CreatureTask
         }
     }
 
-    public float Delta = 0;
 
     public override bool Done(Creature creature)
     {
         if (SubTasksComplete(creature))
         {
             creature.SetFixedAnimation(Animation.Walk, 1);
+            creature.GetNeed<Energy>().CurrentChangeRate = RecoveryRate;
 
-            Delta += Time.deltaTime;
-
-            if (Delta > 1f)
+            if (creature.GetCurrentNeed<Energy>() > 90f)
             {
-                Delta--;
-                creature.DecreaseNeed(NeedNames.Energy, RecoveryRate);
-            }
-
-            if (creature.GetCurrentNeed(NeedNames.Energy) < 10f && Random.value > 0.75f)
-            {
+                creature.GetNeed<Energy>().ResetRate();
                 return true;
             }
         }

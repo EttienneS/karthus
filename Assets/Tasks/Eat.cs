@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using Needs;
+using System.Linq;
 
 public class Eat : CreatureTask
 {
@@ -36,12 +37,12 @@ public class Eat : CreatureTask
             }
             else if (!Ate)
             {
-                var hunger = creature.DecreaseNeed(NeedNames.Hunger, food.ValueProperties["Nutrition"]);
+                creature.GetNeed<Hunger>().Current += food.ValueProperties["Nutrition"];
                 creature.CarriedItemIds.Remove(food.Id);
                 Game.IdService.DestroyEntity(food);
                 Ate = true;
 
-                if (hunger > 20)
+                if (creature.GetNeed<Hunger>().Current < 20)
                 {
                     AddSubTask(new Eat());
                 }
@@ -50,7 +51,7 @@ public class Eat : CreatureTask
             {
                 Eating = false;
                 Ate = false;
-                return creature.GetNeed(NeedNames.Hunger).Current < 10;
+                return creature.GetNeed<Hunger>().Current < 10;
             }
         }
         return false;

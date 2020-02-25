@@ -10,7 +10,7 @@
   },
   "Buildable": "True",
   "ValueProperties": {
-    "RecoveryRate": 4
+    "RecoveryRate": 0.5
   },
   "Properties": {
     "Type": "Bed"

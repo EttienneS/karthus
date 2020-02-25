@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Needs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -98,7 +99,7 @@ public static class Behaviours
             // split up
             task = new Move(Game.Map.GetPathableNeighbour(creature.Cell));
         }
-        else if (creature.GetNeed(NeedNames.Hunger).Current > 100)
+        else if (creature.GetNeed<Hunger>().Current < 15)
         {
             var food = creature.GetFaction().FindItem(Eat.FoodCriteria, creature);
             if (food != null)
@@ -110,7 +111,7 @@ public static class Behaviours
                 Debug.LogWarning("No food items found!");
             }
         }
-        else if (creature.GetNeed(NeedNames.Energy).Current > 90)
+        else if (creature.GetNeed<Energy>().Current < 15)
         {
             var bed = creature.Faction.Structures.Find(s => !s.IsBluePrint && !s.InUseByAnyone && s.Properties.ContainsKey("RecoveryRate"));
 
@@ -127,29 +128,29 @@ public static class Behaviours
         return task;
     }
 
-    internal static List<Need> GetNeedsFor(string behaviourName)
+    internal static List<NeedBase> GetNeedsFor(string behaviourName)
     {
-        var needs = new List<Need>();
+        var needs = new List<NeedBase>();
         switch (behaviourName.ToLower())
         {
             case "person":
-                needs = new List<Need>
+                needs = new List<NeedBase>
                 {
-                    new Need(NeedNames.Hunger, 100, 50),
-                    new Need(NeedNames.Joy, 100, 50),
-                    new Need(NeedNames.Energy, 100, 50),
-                    new Need(NeedNames.Comfort, 100, 50),
-                    new Need(NeedNames.Hygiene, 100, 50),
-                    new Need(NeedNames.Social, 100, 50),
-                    new Need(NeedNames.Beauty, 100, 50),
-                    new Need(NeedNames.Aspiration, 100, 50)
+                    new Hunger(),
+                    new Joy(),
+                    new Energy(),
+                    new Comfort(),
+                    new Hygiene(),
+                    new Needs.Social(),
+                    new Beauty(),
+                    new Aspiration()
                 };
                 break;
             default:
-                needs = new List<Need>
+                needs = new List<NeedBase>
                 {
-                    new Need(NeedNames.Hunger, 100, 50),
-                    new Need(NeedNames.Energy, 100, 50),
+                    new Hunger(),
+                    new Energy(),
                 };
                 break;
         }

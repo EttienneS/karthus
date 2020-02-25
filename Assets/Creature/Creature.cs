@@ -1,6 +1,7 @@
 ﻿using LPC.Spritesheet.Generator;
 using LPC.Spritesheet.Generator.Enums;
 using LPC.Spritesheet.Generator.Interfaces;
+using Needs;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -141,7 +142,7 @@ public class Creature : IEntity
 
     public string Name { get; set; }
 
-    public List<Need> Needs { get; set; }
+    public List<NeedBase> Needs { get; set; }
 
     public int Perception { get; set; }
 
@@ -239,17 +240,6 @@ public class Creature : IEntity
         FixedFrame = null;
     }
 
-    public float DecreaseNeed(string name, float amount)
-    {
-        var need = GetNeed(name);
-        need.Current -= amount;
-        if (need.Current < 0)
-        {
-            need.Current = 0;
-        }
-        //Debug.Log($"Decreased {name} by {amount} to {need.Current}");
-        return need.Current;
-    }
 
     public Item DropItem(Cell cell, string item, int amount)
     {
@@ -328,9 +318,9 @@ public class Creature : IEntity
                     .ToList();
     }
 
-    public float GetCurrentNeed(string name)
+    public float GetCurrentNeed<T>() where T : NeedBase
     {
-        return GetNeed(name).Current;
+        return GetNeed<T>().Current;
     }
 
     public List<OffensiveActionBase> GetDefendableIncomingAttacks()
@@ -370,14 +360,14 @@ public class Creature : IEntity
         return options.Max(o => o.Range);
     }
 
-    public Need GetNeed(string name)
+    public NeedBase GetNeed<T>() where T : NeedBase
     {
-        return Needs.Find(n => n.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+        return Needs.OfType<T>().FirstOrDefault();
     }
 
-    public float GetNeedMax(string name)
+    public float GetNeedMax<T>() where T : NeedBase
     {
-        return GetNeed(name).Max;
+        return GetNeed<T>().Max;
     }
 
     public Orientation GetOrientation()
@@ -450,17 +440,6 @@ public class Creature : IEntity
         return skill?.Enabled == true;
     }
 
-    public float IncreaseNeed(string name, float amount)
-    {
-        var need = GetNeed(name);
-        need.Current += amount;
-        if (need.Current > need.Max)
-        {
-            need.Current = need.Max;
-        }
-        //Debug.Log($"Increased {name} by {amount} to {need.Current}");
-        return need.Current;
-    }
 
     public void Log(string message = "")
     {
@@ -693,8 +672,11 @@ public class Creature : IEntity
 
     internal void Live()
     {
-        IncreaseNeed(NeedNames.Hunger, Random.Range(0.03f, 0.05f));
-        IncreaseNeed(NeedNames.Energy, Random.Range(0.03f, 0.05f));
+        foreach (var need in Needs)
+        {
+            need.ApplyChange();
+            need.Update();
+        }
     }
 
     internal void Perceive()
