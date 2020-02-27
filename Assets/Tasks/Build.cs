@@ -83,7 +83,6 @@ public class Build : CreatureTask
             }
 
             creature.GetFaction().AddStructure(TargetStructure);
-            creature.UpdateMemory(Context, MemoryType.Structure, TargetStructure.Id);
 
             if (TargetStructure.AutoInteractions.Count > 0)
             {

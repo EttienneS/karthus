@@ -39,7 +39,55 @@ public class Creature : IEntity
 
     public List<OffensiveActionBase> IncomingAttacks = new List<OffensiveActionBase>();
 
-    public Dictionary<string, Memory> Mind = new Dictionary<string, Memory>();
+    public List<Feeling> Feelings = new List<Feeling>();
+
+    [JsonIgnore]
+    public int Mood
+    {
+        get
+        {
+            return Feelings.Sum(f => f.MoodImpact);
+        }
+    }
+
+
+    [JsonIgnore]
+    public string MoodString
+    {
+        get
+        {
+            if (Mood > 80)
+            {
+                return "Ecstatic";
+            }
+            else if (Mood > 50)
+            {
+                return "Very Happy";
+            }
+            else if (Mood > 20)
+            {
+                return "Happy";
+            }
+            else if (Mood > -20)
+            {
+                return "Fine";
+            }
+            else if (Mood > -40)
+            {
+                return "Sad";
+            }
+            else if (Mood > -60)
+            {
+                return "Very Sad";
+            }
+            else if (Mood > -80)
+            {
+                return "Terrible";
+            }
+
+            return "Fine";
+        }
+    }
 
     public Mobility Mobility;
 
@@ -148,20 +196,6 @@ public class Creature : IEntity
 
     public Dictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
 
-    [JsonIgnore]
-    public Memory Self
-    {
-        get
-        {
-            if (!Mind.ContainsKey(SelfKey))
-            {
-                Mind.Add(SelfKey, new Memory());
-            }
-
-            return Mind[SelfKey];
-        }
-    }
-
     public List<Skill> Skills { get; set; }
 
     public float Speed { get; set; }
@@ -239,7 +273,6 @@ public class Creature : IEntity
         FixedAnimation = null;
         FixedFrame = null;
     }
-
 
     public Item DropItem(Cell cell, string item, int amount)
     {
@@ -440,7 +473,6 @@ public class Creature : IEntity
         return skill?.Enabled == true;
     }
 
-
     public void Log(string message = "")
     {
         Debug.Log(Name + ":" + message);
@@ -602,36 +634,6 @@ public class Creature : IEntity
         return item.Amount;
     }
 
-    internal void Forget(string context)
-    {
-        // Debug.Log($"Forget context: {context}");
-        // if !LongTerm?
-        Mind.Remove(context);
-    }
-
-    internal void FreeResources(string context)
-    {
-        if (!Mind.ContainsKey(context))
-        {
-            // already forgot about this context, do nothing
-            return;
-        }
-
-        // see if character remembers any structures used in this current task context
-        // if any exist and they were reserved by this creature, free them
-        if (Mind[context].ContainsKey(MemoryType.Structure))
-        {
-            foreach (var structureId in Mind[context][MemoryType.Structure])
-            {
-                var structure = structureId.GetStructure();
-                if (structure != null && structure.InUseBy == this)
-                {
-                    structure.Free();
-                }
-            }
-        }
-    }
-
     internal int GetPriority(CreatureTask t)
     {
         if (string.IsNullOrEmpty(t.RequiredSkill))
@@ -662,14 +664,6 @@ public class Creature : IEntity
         return false;
     }
 
-    internal void Know(string context)
-    {
-        if (!Mind.ContainsKey(context))
-        {
-            Mind.Add(context, new Memory());
-        }
-    }
-
     internal void Live()
     {
         foreach (var need in Needs)
@@ -694,6 +688,12 @@ public class Creature : IEntity
         {
             limb.Link(this);
         }
+
+        foreach (var need in Needs)
+        {
+            need.Creature = this;
+        }
+
         LogHistory = new List<string>();
 
         ManaPool.EntityId = Id;
@@ -760,17 +760,6 @@ public class Creature : IEntity
         }
 
         return false;
-    }
-
-    internal void UpdateMemory(string context, MemoryType memoryType, string info)
-    {
-        // Debug.Log($"Remember: {context}, {memoryType}: '{info}'");
-        Mind[context].AddInfo(memoryType, info);
-    }
-
-    internal void UpdateSelfMemory(MemoryType memoryType, string info)
-    {
-        UpdateMemory(SelfKey, memoryType, info);
     }
 
     private OffensiveActionBase GetBestAttack(Creature target)
@@ -1075,7 +1064,6 @@ public class Creature : IEntity
             {
                 var context = $"{Id} - {task} - {Game.TimeManager.Now}";
 
-                Know(context);
                 task.Context = context;
 
                 Task = task;
@@ -1098,8 +1086,6 @@ public class Creature : IEntity
                     }
 
                     Task.ShowDoneEmote(this);
-                    FreeResources(Task.Context);
-                    Forget(Task.Context);
 
                     Faction.RemoveTask(Task);
                     Task = null;

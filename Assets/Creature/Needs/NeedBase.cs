@@ -1,14 +1,18 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Needs
 {
     public abstract class NeedBase
     {
-        public abstract string Icon { get; set; }
         public float BaselineChangeRate { get; set; } = -0.025f;
-        public float CurrentChangeRate { get; set; } = -0.025f;
+
+        [JsonIgnore]
+        public Creature Creature { get; set; }
+
         public float Current { get; set; } = 100;
+        public float CurrentChangeRate { get; set; } = -0.025f;
+        public abstract string Icon { get; set; }
         public float Max { get; set; } = 100;
 
         public void ApplyChange()
