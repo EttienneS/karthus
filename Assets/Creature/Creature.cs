@@ -664,12 +664,26 @@ public class Creature : IEntity
         return false;
     }
 
-    internal void Live()
+    internal void Live(float delta)
     {
         foreach (var need in Needs)
         {
-            need.ApplyChange();
+            need.ApplyChange(delta);
             need.Update();
+        }
+
+        foreach (var feeling in Feelings.ToList())
+        {
+            if (feeling.DurationLeft <= -1f)
+            {
+                continue;
+            }
+            feeling.DurationLeft -= delta;
+
+            if (feeling.DurationLeft <= 0)
+            {
+                Feelings.Remove(feeling);
+            }
         }
     }
 
@@ -738,15 +752,14 @@ public class Creature : IEntity
                 item.Coords = (X, Y);
             }
 
-            InternalTick = 0;
-
-            UpdateLimbs(timeDelta);
+            UpdateLimbs(InternalTick);
 
             Perceive();
-            Live();
+            Live(InternalTick);
             UpdateSprite();
             Move();
 
+            InternalTick -= Game.TimeManager.CreatureTick;
             return true;
         }
 

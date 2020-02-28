@@ -23,10 +23,7 @@ namespace Needs
             {
                 if (feeling == null)
                 {
-                    feeling = new Feeling
-                    {
-                        Name = FeelingName
-                    };
+                    feeling = new Feeling(FeelingName, 0, -1f);
                     Creature.Feelings.Add(feeling);
                 }
 

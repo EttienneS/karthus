@@ -1,0 +1,18 @@
+{
+  "Name": "Chair",
+  "SpriteName": "Chair",
+  "TravelCost": "3",
+  "Description": "A place to sit, creatures will gain comfort when sitting while working and eating.",
+  "Cost": {
+    "Items": {
+      "Wood": "3"
+    }
+  },
+  "Buildable": "True",
+  "Properties": {
+    "Type": "Chair"
+  },
+  "ValueProperties": {
+    "Comfort": 0.5
+  }
+}

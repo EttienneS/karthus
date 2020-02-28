@@ -15,9 +15,9 @@ namespace Needs
         public abstract string Icon { get; set; }
         public float Max { get; set; } = 100;
 
-        public void ApplyChange()
+        public void ApplyChange(float delta)
         {
-            Current += CurrentChangeRate;
+            Current += delta * CurrentChangeRate;
             Current = Mathf.Clamp(Current, 0, Max);
         }
 
