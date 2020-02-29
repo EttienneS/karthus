@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Needs
@@ -31,6 +33,38 @@ namespace Needs
         internal void ResetRate()
         {
             CurrentChangeRate = BaselineChangeRate;
+        }
+
+
+        public void SetMoodFeeling(string feelingName, List<(string description, int impact, float threshold)> levels)
+        {
+            var feeling = Creature.Feelings.Find(f => f.Name.Equals(feelingName, StringComparison.OrdinalIgnoreCase));
+
+            (string description, int impact, float threshold)? current = null;
+            foreach (var level in levels)
+            {
+                if (Current < level.threshold)
+                {
+                    current = level;
+                    break;
+                }
+            }
+
+            if (current == null && feeling != null)
+            {
+                Creature.Feelings.Remove(feeling);
+            }
+            else
+            {
+                if (feeling == null)
+                {
+                    feeling = new Feeling(feelingName, 0, -1f);
+                    Creature.Feelings.Add(feeling);
+                }
+
+                feeling.Description = current.Value.description;
+                feeling.MoodImpact = current.Value.impact;
+            }
         }
     }
 }

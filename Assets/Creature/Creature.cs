@@ -666,6 +666,8 @@ public class Creature : IEntity
 
     internal void Live(float delta)
     {
+        UpdateLimbs(delta);
+
         foreach (var need in Needs)
         {
             need.ApplyChange(delta);
@@ -752,7 +754,6 @@ public class Creature : IEntity
                 item.Coords = (X, Y);
             }
 
-            UpdateLimbs(InternalTick);
 
             Perceive();
             Live(InternalTick);

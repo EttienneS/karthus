@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 
 namespace Needs
 {
@@ -8,36 +10,19 @@ namespace Needs
 
         public const string FeelingName = "Hunger";
 
+        [JsonIgnore]
+        public List<(string description, int impact, float threshold)> Levels = new List<(string description, int impact, float threshold)>
+        {
+            ("Ravenous",-20, 10),
+            ("Hungry",-10, 30),
+            ("Fine", 0, 80),
+            ("Full", 5, 100),
+        };
+
+
         public override void Update()
         {
-            var feeling = Creature.Feelings.Find(f => f.Name.Equals(FeelingName, StringComparison.OrdinalIgnoreCase));
-
-            if (Current < 70 && Current > 30)
-            {
-                if (feeling != null)
-                {
-                    Creature.Feelings.Remove(feeling);
-                }
-            }
-            else
-            {
-                if (feeling == null)
-                {
-                    feeling = new Feeling(FeelingName, 0, -1f);
-                    Creature.Feelings.Add(feeling);
-                }
-
-                if (Current > 70)
-                {
-                    feeling.Description = "Full";
-                    feeling.MoodImpact = 10;
-                }
-                else if (Current < 30)
-                {
-                    feeling.Description = "Hungry";
-                    feeling.MoodImpact = -10;
-                }
-            }
+            SetMoodFeeling(FeelingName, Levels);
         }
     }
 }

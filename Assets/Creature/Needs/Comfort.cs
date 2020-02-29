@@ -1,8 +1,13 @@
-﻿namespace Needs
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
+
+namespace Needs
 {
     public class Comfort : NeedBase
     {
         public override string Icon { get; set; }
+
+        
 
         public override void Update()
         {
@@ -12,6 +17,8 @@
             {
                 Current += comfort.Value;
             }
+
+
         }
     }
 }
