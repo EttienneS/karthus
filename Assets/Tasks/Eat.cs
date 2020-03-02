@@ -12,7 +12,7 @@ public class Eat : CreatureTask
     {
     }
 
-    public Eat(Item food)
+    public Eat(Item food) : this()
     {
         AddSubTask(new Pickup(food, 1));
     }
@@ -32,11 +32,13 @@ public class Eat : CreatureTask
 
             if (!Eating)
             {
-                AddSubTask(new Wait(2, "Eating...") { BusyEmote = "OMONONOMNOM" });
+                AddSubTask(new Wait(2, "Eating..."));
+                BusyEmote = "*munch, chomp*";
                 Eating = true;
             }
             else if (!Ate)
             {
+                BusyEmote = "";
                 creature.GetNeed<Hunger>().Current += food.ValueProperties["Nutrition"];
                 creature.CarriedItemIds.Remove(food.Id);
                 Game.IdService.DestroyEntity(food);

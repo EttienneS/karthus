@@ -50,7 +50,6 @@ public class Creature : IEntity
         }
     }
 
-
     [JsonIgnore]
     public string MoodString
     {
@@ -666,6 +665,13 @@ public class Creature : IEntity
 
     internal void Live(float delta)
     {
+        _liveTick++;
+        if (_liveTick < 5)
+        {
+            return;
+        }
+        _liveTick = 0;
+
         UpdateLimbs(delta);
 
         foreach (var need in Needs)
@@ -686,6 +692,11 @@ public class Creature : IEntity
             {
                 Feelings.Remove(feeling);
             }
+        }
+
+        if (Random.value > 0.9 && !string.IsNullOrEmpty(Task?.BusyEmote))
+        {
+            Task.ShowBusyEmote(this);
         }
     }
 
@@ -715,6 +726,9 @@ public class Creature : IEntity
         ManaPool.EntityId = Id;
         TargetCoordinate = (Cell.X, Cell.Y);
     }
+
+    [JsonIgnore]
+    private int _liveTick;
 
     internal bool Update(float timeDelta)
     {
@@ -754,9 +768,9 @@ public class Creature : IEntity
                 item.Coords = (X, Y);
             }
 
-
             Perceive();
             Live(InternalTick);
+
             UpdateSprite();
             Move();
 
@@ -1099,13 +1113,6 @@ public class Creature : IEntity
 
                     Faction.RemoveTask(Task);
                     Task = null;
-                }
-                else
-                {
-                    if (Random.value > 0.8)
-                    {
-                        Task.ShowBusyEmote(this);
-                    }
                 }
             }
             catch (Exception ex)

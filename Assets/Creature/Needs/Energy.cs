@@ -25,7 +25,7 @@ namespace Needs
 
                 // collapse and sleep where you are
                 Creature.Task = new Sleep();
-                Creature.CreatureRenderer.ShowText("Zzzz...", 10);
+                Creature.CreatureRenderer.ShowText($"*{Creature.Name} passes out from exhaustion.*", 10);
             }
 
             if (Creature.Task is Sleep)

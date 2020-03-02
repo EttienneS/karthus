@@ -1,5 +1,4 @@
 ﻿using Needs;
-using UnityEngine;
 using Animation = LPC.Spritesheet.Generator.Interfaces.Animation;
 
 public class Sleep : CreatureTask
@@ -17,6 +16,7 @@ public class Sleep : CreatureTask
 
     public Sleep()
     {
+        BusyEmote = "Zzzz...";
     }
 
     public Sleep(string bedId) : this()

@@ -107,7 +107,7 @@ public abstract class CreatureTask
     {
         if (!string.IsNullOrEmpty(BusyEmote))
         {
-            creature.CreatureRenderer.ShowText(BusyEmote, 1f);
+            creature.CreatureRenderer.ShowText(BusyEmote, 2f);
         }
     }
 
@@ -115,7 +115,7 @@ public abstract class CreatureTask
     {
         if (!string.IsNullOrEmpty(DoneEmote))
         {
-            creature.CreatureRenderer.ShowText(DoneEmote, 0.8f);
+            creature.CreatureRenderer.ShowText(DoneEmote, 2f);
         }
     }
 
