@@ -1104,11 +1104,6 @@ public class Creature : IEntity
 
                 if (Task.Done(this))
                 {
-                    if (!(Task is Idle))
-                    {
-                        Log($"Completed {Task} task");
-                    }
-
                     Task.ShowDoneEmote(this);
 
                     Faction.RemoveTask(Task);
