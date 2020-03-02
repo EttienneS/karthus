@@ -7,6 +7,9 @@ namespace Needs
 {
     public abstract class NeedBase
     {
+        [JsonIgnore]
+        public abstract List<(string description, int impact, float min, float max)> Levels { get; }
+
         public float BaselineChangeRate { get; set; } = -0.025f;
 
         [JsonIgnore]
@@ -17,15 +20,23 @@ namespace Needs
         public abstract string Icon { get; set; }
         public float Max { get; set; } = 100;
 
+        [JsonIgnore]
+        public string Name
+        {
+            get => GetType().Name;
+        }
+
         public void ApplyChange(float delta)
         {
             Current += delta * CurrentChangeRate;
             Current = Mathf.Clamp(Current, 0, Max);
+
+            SetMoodFeeling();
         }
 
         public override string ToString()
         {
-            return $"{GetType().Name} [{Current:0.0}/{Max}]";
+            return $"{Name} [{Current:0.0}/{Max}]";
         }
 
         public abstract void Update();
@@ -35,35 +46,46 @@ namespace Needs
             CurrentChangeRate = BaselineChangeRate;
         }
 
-
-        public void SetMoodFeeling(string feelingName, List<(string description, int impact, float threshold)> levels)
+        public void SetMoodFeeling()
         {
-            var feeling = Creature.Feelings.Find(f => f.Name.Equals(feelingName, StringComparison.OrdinalIgnoreCase));
+            var feeling = Creature.Feelings.Find(f => f.Name.Equals(Name, StringComparison.OrdinalIgnoreCase));
 
-            (string description, int impact, float threshold)? current = null;
-            foreach (var level in levels)
+            (string description, int impact, float min, float max)? current = null;
+            foreach (var level in Levels)
             {
-                if (Current < level.threshold)
+                if (Current < level.max && Current > level.min)
                 {
                     current = level;
                     break;
                 }
             }
 
-            if (current == null && feeling != null)
+            if (!current.HasValue && feeling != null)
             {
                 Creature.Feelings.Remove(feeling);
             }
             else
             {
-                if (feeling == null)
+
+                try
                 {
-                    feeling = new Feeling(feelingName, 0, -1f);
-                    Creature.Feelings.Add(feeling);
+                    if (current.HasValue)
+                    {
+                        if (feeling == null)
+                        {
+                            feeling = new Feeling(Name, 0, -1f);
+                            Creature.Feelings.Add(feeling);
+                        }
+
+                        feeling.Description = current.Value.description;
+                        feeling.MoodImpact = current.Value.impact;
+                    }
+                }
+                catch (Exception ex)
+                {
+
                 }
 
-                feeling.Description = current.Value.description;
-                feeling.MoodImpact = current.Value.impact;
             }
         }
     }

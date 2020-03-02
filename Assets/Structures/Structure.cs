@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -7,6 +8,11 @@ using UnityEngine.Tilemaps;
 public partial class Structure : IEntity
 {
     public List<EffectBase> AutoInteractions = new List<EffectBase>();
+
+    internal bool HasValue(string v)
+    {
+        return ValueProperties.ContainsKey(v);
+    }
 
     public bool Buildable;
 

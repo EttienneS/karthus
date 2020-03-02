@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 
 namespace Needs
@@ -8,21 +7,19 @@ namespace Needs
     {
         public override string Icon { get; set; }
 
-        public const string FeelingName = "Hunger";
+        [JsonIgnore]
+        public override List<(string description, int impact, float min, float max)> Levels { get => HungerLevels; }
 
         [JsonIgnore]
-        public List<(string description, int impact, float threshold)> Levels = new List<(string description, int impact, float threshold)>
+        public static List<(string description, int impact, float min, float max)> HungerLevels = new List<(string description, int impact, float min, float max)>
         {
-            ("Ravenous",-20, 10),
-            ("Hungry",-10, 30),
-            ("Fine", 0, 80),
-            ("Full", 5, 100),
+            ("Ravenous",-20, 0, 10),
+            ("Hungry",-10, 10, 30),
+            ("Full", 5, 90, 100),
         };
-
 
         public override void Update()
         {
-            SetMoodFeeling(FeelingName, Levels);
         }
     }
 }

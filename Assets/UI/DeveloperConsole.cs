@@ -1,4 +1,5 @@
 ﻿using Arg;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -127,8 +128,25 @@ public class DeveloperConsole : MonoBehaviour
         });
         Commands.Add("Expand", (_) => Expand());
 
+        Commands.Add("Creatures", (_) => List("Creatures"));
+        Commands.Add("Items", (_) => List("Items"));
+        Commands.Add("Structures", (_) => List("Structures"));
+        Commands.Add("Zones", (_) => List("Zones"));
+        Commands.Add("Factions", (_) => List("Factions"));
+
         Commands.Add("List", List);
-        Commands.Add("inspect", (args) => args.GetEntity().ToString());
+        Commands.Add("Inspect", (args) => args.GetEntity().ToString());
+        Commands.Add("SetNeed", (args) =>
+        {
+            var parts = args.Split(' ');
+            var entity = parts[0].GetCreature();
+            var need = entity.Needs.Find(n => n.Name.Equals(parts[1], StringComparison.OrdinalIgnoreCase));
+
+            var msg = $"Changed ({entity.Id}){entity.Name}'s {need.Name} from '{need.Current}' to '{parts[2]}'";
+            need.Current = int.Parse(parts[2]);
+
+            return msg;
+        });
 
         Parser = new ArgsParser();
         foreach (var command in Commands)

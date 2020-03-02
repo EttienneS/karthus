@@ -24,7 +24,6 @@ public class Sleep : CreatureTask
         if (string.IsNullOrEmpty(bedId))
         {
             BedId = bedId;
-            RecoveryRate = Bed.GetValue("RecoveryRate");
             AddSubTask(new Move(Bed.Cell));
         }
     }

@@ -50,7 +50,6 @@ public class Cost
 public abstract class CreatureTask
 {
     public string BusyEmote;
-    public string Context;
     public string DoneEmote;
     public string Message;
 
@@ -96,7 +95,6 @@ public abstract class CreatureTask
     public CreatureTask AddSubTask(CreatureTask subTask)
     {
         subTask.Parent = this;
-        subTask.Context = Context;
 
         SubTasks.Enqueue(subTask);
 

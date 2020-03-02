@@ -1076,10 +1076,6 @@ public class Creature : IEntity
 
             if (task != null)
             {
-                var context = $"{Id} - {task} - {Game.TimeManager.Now}";
-
-                task.Context = context;
-
                 Task = task;
             }
         }
