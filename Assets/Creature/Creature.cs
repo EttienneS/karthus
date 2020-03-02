@@ -28,6 +28,7 @@ public class Creature : IEntity
 
     public Direction Facing = Direction.S;
 
+    public List<Feeling> Feelings = new List<Feeling>();
     public Animation? FixedAnimation = null;
 
     public int? FixedFrame;
@@ -38,63 +39,18 @@ public class Creature : IEntity
     public Behaviours.GetBehaviourTaskDelegate GetBehaviourTask;
 
     public List<OffensiveActionBase> IncomingAttacks = new List<OffensiveActionBase>();
-
-    public List<Feeling> Feelings = new List<Feeling>();
-
-    [JsonIgnore]
-    public int Mood
-    {
-        get
-        {
-            return Feelings.Sum(f => f.MoodImpact);
-        }
-    }
-
-    [JsonIgnore]
-    public string MoodString
-    {
-        get
-        {
-            if (Mood > 80)
-            {
-                return "Ecstatic";
-            }
-            else if (Mood > 50)
-            {
-                return "Very Happy";
-            }
-            else if (Mood > 20)
-            {
-                return "Happy";
-            }
-            else if (Mood > -20)
-            {
-                return "Fine";
-            }
-            else if (Mood > -40)
-            {
-                return "Sad";
-            }
-            else if (Mood > -60)
-            {
-                return "Very Sad";
-            }
-            else if (Mood > -80)
-            {
-                return "Terrible";
-            }
-
-            return "Fine";
-        }
-    }
-
     public Mobility Mobility;
 
     public bool Moving;
+
     public Race Race;
+
     public (float x, float y) TargetCoordinate;
+
     public bool UnableToFindPath;
+
     internal int Frame;
+
     internal float InternalTick = float.MaxValue;
 
     [JsonIgnore]
@@ -104,9 +60,16 @@ public class Creature : IEntity
     private List<Cell> _awareness;
 
     private CharacterSpriteSheet _characterSpriteSheet;
+
     private Faction _faction;
+
+    [JsonIgnore]
+    private int _liveTick;
+
     private List<Cell> _path = new List<Cell>();
+
     private ICharacterSpriteDefinition _spriteDef;
+
     private CreatureTask _task;
 
     public float Aggression { get; set; }
@@ -187,6 +150,52 @@ public class Creature : IEntity
 
     public ManaPool ManaPool { get; set; }
 
+    [JsonIgnore]
+    public int Mood
+    {
+        get
+        {
+            return Feelings.Sum(f => f.MoodImpact);
+        }
+    }
+
+    [JsonIgnore]
+    public string MoodString
+    {
+        get
+        {
+            if (Mood > 80)
+            {
+                return "Ecstatic";
+            }
+            else if (Mood > 50)
+            {
+                return "Very Happy";
+            }
+            else if (Mood > 20)
+            {
+                return "Happy";
+            }
+            else if (Mood > -20)
+            {
+                return "Fine";
+            }
+            else if (Mood > -40)
+            {
+                return "Sad";
+            }
+            else if (Mood > -60)
+            {
+                return "Very Sad";
+            }
+            else if (Mood > -80)
+            {
+                return "Terrible";
+            }
+
+            return "Fine";
+        }
+    }
     public string Name { get; set; }
 
     public List<NeedBase> Needs { get; set; }
@@ -726,10 +735,6 @@ public class Creature : IEntity
         ManaPool.EntityId = Id;
         TargetCoordinate = (Cell.X, Cell.Y);
     }
-
-    [JsonIgnore]
-    private int _liveTick;
-
     internal bool Update(float timeDelta)
     {
         if (!Game.Instance.Ready)

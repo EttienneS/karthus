@@ -5,11 +5,12 @@ using UnityEngine;
 
 public class CreatureRenderer : MonoBehaviour
 {
+    public UnityEngine.Experimental.Rendering.Universal.Light2D Light;
     internal Creature Data = new Creature();
     internal SpriteRenderer Highlight;
     internal LineRenderer LineRenderer;
-    internal float RemainingTextDuration;
     internal SpriteRenderer MainRenderer;
+    internal float RemainingTextDuration;
     internal TextMeshPro Text;
 
     public void Awake()
@@ -68,13 +69,6 @@ public class CreatureRenderer : MonoBehaviour
         Data.Start();
     }
 
-    internal void UpdatePosition()
-    {
-        transform.position = new Vector2(Data.X, Data.Y);
-
-        Data.UpdateSprite();
-    }
-
     public void Update()
     {
         UpdateFloatingText();
@@ -99,6 +93,15 @@ public class CreatureRenderer : MonoBehaviour
         MainRenderer.material = Game.MaterialController.GetChannelingMaterial(col);
     }
 
+    internal void EnableHighlight(Color color)
+    {
+        if (Highlight != null)
+        {
+            Highlight.color = color;
+            Highlight.gameObject.SetActive(true);
+        }
+    }
+
     internal void EnableLight()
     {
         if (Light != null)
@@ -107,15 +110,11 @@ public class CreatureRenderer : MonoBehaviour
         }
     }
 
-    public UnityEngine.Experimental.Rendering.Universal.Light2D Light;
-
-    internal void EnableHighlight(Color color)
+    internal void UpdatePosition()
     {
-        if (Highlight != null)
-        {
-            Highlight.color = color;
-            Highlight.gameObject.SetActive(true);
-        }
+        transform.position = new Vector2(Data.X, Data.Y);
+
+        Data.UpdateSprite();
     }
 
     private void UpdateFloatingText()
