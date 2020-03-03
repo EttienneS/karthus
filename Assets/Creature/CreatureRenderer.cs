@@ -87,12 +87,7 @@ public class CreatureRenderer : MonoBehaviour
         }
     }
 
-    internal void DisplayChannel(ManaColor color, float duration)
-    {
-        var col = color.GetActualColor();
-        MainRenderer.material = Game.MaterialController.GetChannelingMaterial(col);
-    }
-
+   
     internal void EnableHighlight(Color color)
     {
         if (Highlight != null)

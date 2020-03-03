@@ -19,7 +19,6 @@ public partial class Game //.Instances
     private MainMenuController _mainMenuController;
     private Map _map;
     private MapGenerator _mapGenerator;
-    private MaterialController _materialController;
     private OrderInfoPanel _orderInfoPanel;
     private OrderSelectionController _orderSelectionController;
     private OrderTrayController _orderTrayController;
@@ -180,14 +179,6 @@ public partial class Game //.Instances
         set
         {
             Instance._mapGenerator = value;
-        }
-    }
-
-    public static MaterialController MaterialController
-    {
-        get
-        {
-            return Instance._materialController != null ? Instance._materialController : (Instance._materialController = GameObject.Find(ControllerConstants.MaterialController).GetComponent<MaterialController>());
         }
     }
 
