@@ -1,6 +1,6 @@
 {
   "Name": "Chair",
-  "SpriteName": "Chair",
+  "SpriteName": "stoolBar_NE",
   "TravelCost": "3",
   "Description": "A place to sit, creatures will gain comfort when sitting while working and eating.",
   "Cost": {

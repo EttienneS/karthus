@@ -6,23 +6,16 @@ using UnityEngine.UI;
 public class TimePanel : MonoBehaviour
 {
     internal Dictionary<TimeStep, Button> AllButtons;
-    internal Button FastButton;
-    internal Button FasterButton;
-    internal Button NormalButton;
-    internal Button PauseButton;
-    internal Button SlowButton;
-    internal Text TimeDisplay;
+    public Button FastButton;
+    public Button FasterButton;
+    public Button NormalButton;
+    public Button PauseButton;
+    public Button SlowButton;
+    public Text TimeDisplay;
 
     public void Awake()
     {
-        TimeDisplay = GetComponentsInChildren<Text>().First(t => t.name == "TimeDisplay");
         var buttons = GetComponentsInChildren<Button>();
-
-        PauseButton = buttons.First(b => b.name == "PauseButton");
-        SlowButton = buttons.First(b => b.name == "SlowButton");
-        NormalButton = buttons.First(b => b.name == "NormalButton");
-        FastButton = buttons.First(b => b.name == "FastButton");
-        FasterButton = buttons.First(b => b.name == "FasterButton");
 
         PauseButton.onClick.AddListener(() => Game.TimeManager.TimeStep = TimeStep.Paused);
         NormalButton.onClick.AddListener(() => Game.TimeManager.TimeStep = TimeStep.Normal);
@@ -31,7 +24,7 @@ public class TimePanel : MonoBehaviour
 
         AllButtons = new Dictionary<TimeStep, Button>
         {
-            { TimeStep.Paused,PauseButton},
+            { TimeStep.Paused, PauseButton},
             { TimeStep.Slow, SlowButton },
             { TimeStep.Normal, NormalButton},
             { TimeStep.Fast, FastButton },

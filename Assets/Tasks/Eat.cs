@@ -21,7 +21,6 @@ public class Eat : CreatureTask
     {
         if (SubTasksComplete(creature))
         {
-
             var food = creature.GetItemOfType(FoodCriteria);
 
             if (food == null)

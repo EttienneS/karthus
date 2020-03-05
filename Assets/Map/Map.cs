@@ -126,6 +126,11 @@ public class Map : MonoBehaviour
         return frame;
     }
 
+    public Cell GetCellAtCoordinate((float x, float y) coords)
+    {
+        return GetCellAtCoordinate(coords.x, coords.y);
+    }
+
     public Cell GetCellAtCoordinate(float x, float y)
     {
         var intx = Mathf.RoundToInt(x - 0.001f);

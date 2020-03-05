@@ -1,0 +1,18 @@
+{
+  "Name": "WashBucket",
+  "SpriteName": "item_bucketWater",
+  "TravelCost": "3",
+  "Description": "A place to wash off the grime.",
+  "Cost": {
+    "Items": {
+      "Wood": "3"
+    }
+  },
+  "Buildable": "True",
+  "Properties": {
+    "Type": "Bath"
+  },
+  "ValueProperties": {
+    "Hygiene": 0.5
+  }
+}
