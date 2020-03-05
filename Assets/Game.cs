@@ -13,27 +13,30 @@ public enum SelectionPreference
 
 public partial class Game : MonoBehaviour
 {
-    public float LoadProgress;
-    public bool Ready;
-    public string MouseSpriteName;
     public SpriteRenderer MouseSpriteRenderer;
-    public Rotate RotateMouseLeft;
-    public Rotate RotateMouseRight;
-    public Vector3 SelectionEndScreen;
-    public SelectionPreference SelectionPreference = SelectionPreference.Anything;
-    public Vector3 SelectionStartWorld;
     public RectTransform selectSquareImage;
-
     public ValidateMouseSpriteDelegate ValidateMouse;
-    internal string LoadStatus;
+
     internal LineRenderer LineRenderer;
+    internal float LoadProgress;
+    internal string LoadStatus;
+    internal string MouseSpriteName;
+    internal bool Ready;
+    internal Rotate RotateMouseLeft;
+    internal Rotate RotateMouseRight;
     internal List<Cell> SelectedCells = new List<Cell>();
     internal List<CreatureRenderer> SelectedCreatures = new List<CreatureRenderer>();
     internal List<Item> SelectedItems = new List<Item>();
     internal List<Structure> SelectedStructures = new List<Structure>();
+    internal Vector3 SelectionEndScreen;
+    internal SelectionPreference SelectionPreference;
+    internal Vector3 SelectionStartWorld;
+
     private bool _constructMode;
     private List<GameObject> _destroyCache = new List<GameObject>();
+    private bool _finalizationStarted;
     private List<VisualEffect> _ghostEffects = new List<VisualEffect>();
+    private DateTime? _lastAutoSave = null;
     private TimeStep _oldTimeStep = TimeStep.Normal;
     private bool _shownOnce;
 
@@ -41,18 +44,10 @@ public partial class Game : MonoBehaviour
 
     public delegate bool ValidateMouseSpriteDelegate(Cell cell);
 
-    public bool Paused { get; set; }
     public float MaxTimeToClick { get; set; } = 0.60f;
-
     public float MinTimeToClick { get; set; } = 0.05f;
+    public bool Paused { get; set; }
     public bool Typing { get; set; }
-
-    public void SetLoadStatus(string message, float progress)
-    {
-        LoadStatus = message;
-        Debug.Log(LoadStatus);
-        Instance.LoadProgress = progress;
-    }
 
     public void AddItemToDestroy(GameObject gameObject)
     {
@@ -227,6 +222,13 @@ public partial class Game : MonoBehaviour
         ValidateMouse = validation;
     }
 
+    public void SetLoadStatus(string message, float progress)
+    {
+        LoadStatus = message;
+        Debug.Log(LoadStatus);
+        Instance.LoadProgress = progress;
+    }
+
     public void SetMouseSprite(string spriteName, ValidateMouseSpriteDelegate validation)
     {
         _constructMode = false;
@@ -234,6 +236,110 @@ public partial class Game : MonoBehaviour
         MouseSpriteRenderer.sprite = SpriteStore.GetSprite(spriteName);
         MouseSpriteName = spriteName;
         ValidateMouse = validation;
+    }
+
+    internal void SelectZone(ZoneBase zone)
+    {
+        DeselectCell();
+        DeselectCreature();
+        DeselectStructure(true);
+        DeselectItem();
+
+        ZoneInfoPanel.Show(zone);
+    }
+
+    private IEnumerator FinalizeStartup()
+    {
+        if (SaveManager.SaveToLoad == null)
+        {
+            MapGenerator.MakeFactionBootStrap(Game.FactionController.PlayerFaction);
+            MapGenerator.SpawnCreatures();
+        }
+        else
+        {
+            SetLoadStatus("Loading Time", 0.80f);
+            TimeManager.Data = SaveManager.SaveToLoad.Time;
+            yield return null;
+
+            SetLoadStatus("Loading Items", 0.85f);
+            foreach (var item in SaveManager.SaveToLoad.Items)
+            {
+                ItemController.SpawnItem(item);
+            }
+            yield return null;
+
+            foreach (var faction in SaveManager.SaveToLoad.Factions)
+            {
+                SetLoadStatus($"Loading Faction: {faction.FactionName}", 0.90f);
+                FactionController.Factions.Add(faction.FactionName, faction);
+
+                foreach (var creature in faction.Creatures.ToList())
+                {
+                    CreatureController.SpawnCreature(creature, creature.Cell, faction);
+                }
+
+                foreach (var structure in faction.Structures.ToList())
+                {
+                    IdService.EnrollEntity(structure);
+
+                    // flag layer where structure is on to be redrawn
+                    if (structure.IsFloor())
+                    {
+                        structure.Cell.Chunk.Renderer.FloorDrawn = false;
+                    }
+                    else
+                    {
+                        structure.Cell.Chunk.Renderer.StructureDrawn = false;
+                    }
+
+                    foreach (var effect in structure.LinkedVisualEffects)
+                    {
+                        VisualEffectController.Load(effect);
+                    }
+
+                    if (structure.AutoInteractions.Count > 0)
+                    {
+                        MagicController.AddEffector(structure);
+                    }
+                }
+
+                faction.LoadHomeCells();
+            }
+
+            if (SaveManager.SaveToLoad.Stores != null)
+            {
+                SetLoadStatus($"Loading Stores", 0.95f);
+                foreach (var zone in SaveManager.SaveToLoad.Stores)
+                {
+                    ZoneController.Load(zone);
+                }
+                yield return null;
+            }
+            if (SaveManager.SaveToLoad.Rooms != null)
+            {
+                SetLoadStatus($"Loading Rooms", 0.96f);
+                foreach (var zone in SaveManager.SaveToLoad.Rooms)
+                {
+                    ZoneController.Load(zone);
+                }
+                yield return null;
+            }
+            if (SaveManager.SaveToLoad.Areas != null)
+            {
+                SetLoadStatus($"Loading Areas", 0.97f);
+                foreach (var zone in SaveManager.SaveToLoad.Areas)
+                {
+                    ZoneController.Load(zone);
+                }
+                yield return null;
+            }
+
+            SetLoadStatus($"Loading Camera", 0.99f);
+            SaveManager.SaveToLoad.CameraData.Load(CameraController.Camera);
+            SaveManager.SaveToLoad = null;
+            yield return null;
+        }
+        Ready = true;
     }
 
     private void HandleHotkeys()
@@ -387,54 +493,67 @@ public partial class Game : MonoBehaviour
         }
     }
 
-    private void SelectCreature()
+    private bool SelectCreature()
     {
-        DeselectCell();
-        DeselectStructure(true);
-        DeselectItem();
-        DeselectZone();
-
         foreach (var creature in SelectedCreatures)
         {
             creature.EnableHighlight(ColorConstants.InvalidColor);
         }
 
-        EntityInfoPanel.Show(SelectedCreatures.Select(c => c.Data).ToList());
+        if (SelectedCreatures?.Count > 0)
+        {
+            DeselectCell();
+            DeselectStructure(true);
+            DeselectItem();
+            DeselectZone();
+
+            EntityInfoPanel.Show(SelectedCreatures.Select(c => c.Data).ToList());
+            return true;
+        }
+
+        return false;
     }
 
-    private void SelectItem()
+    private bool SelectItem()
     {
-        DeselectCell();
-        DeselectStructure(true);
-        DeselectCreature();
-        DeselectZone();
 
         foreach (var item in SelectedItems)
         {
             item.ShowOutline();
         }
 
-        EntityInfoPanel.Show(SelectedItems);
+        if (SelectedItems?.Count > 0)
+        {
+            DeselectCell();
+            DeselectStructure(true);
+            DeselectCreature();
+            DeselectZone();
+
+            EntityInfoPanel.Show(SelectedItems);
+            return true;
+        }
+        return false;
     }
 
-    private void SelectStructure()
+    private bool SelectStructure()
     {
+       
         foreach (var structure in SelectedStructures)
         {
             structure.ShowOutline();
         }
 
-        EntityInfoPanel.Show(SelectedStructures.ToList());
-    }
+        if (SelectedStructures?.Count > 0)
+        {
+            DeselectCell();
+            DeselectItem();
+            DeselectCreature();
+            DeselectZone();
 
-    internal void SelectZone(ZoneBase zone)
-    {
-        DeselectCell();
-        DeselectCreature();
-        DeselectStructure(true);
-        DeselectItem();
-
-        ZoneInfoPanel.Show(zone);
+            EntityInfoPanel.Show(SelectedStructures.ToList());
+            return true;
+        }
+        return false;
     }
 
     private void Start()
@@ -472,10 +591,6 @@ public partial class Game : MonoBehaviour
         MapGenerator = new MapGenerator();
         ConstructController = new ConstructController();
     }
-
-    private bool _finalizationStarted;
-
-    private DateTime? _lastAutoSave = null;
 
     private void Update()
     {
@@ -591,63 +706,7 @@ public partial class Game : MonoBehaviour
                     }
                 }
 
-                switch (SelectionPreference)
-                {
-                    case SelectionPreference.Cell:
-                        if (SelectedCells.Count > 0)
-                        {
-                            SelectCell();
-                        }
-                        break;
-
-                    case SelectionPreference.Item:
-                        if (SelectedCells.Count > 0)
-                        {
-                            SelectItem();
-                        }
-                        break;
-
-                    case SelectionPreference.Structure:
-                        if (SelectedCells.Count > 0)
-                        {
-                            SelectStructure();
-                        }
-                        break;
-
-                    case SelectionPreference.Creature:
-                        if (SelectedCells.Count > 0)
-                        {
-                            SelectCreature();
-                        }
-                        break;
-
-                    case SelectionPreference.Zone:
-                        if (selectedZone != null)
-                        {
-                            SelectZone(selectedZone);
-                        }
-
-                        break;
-
-                    case SelectionPreference.Anything:
-                        if (SelectedCreatures.Count > 0)
-                        {
-                            SelectCreature();
-                        }
-                        if (SelectedStructures.Count > 0)
-                        {
-                            SelectStructure();
-                        }
-                        if (SelectedItems.Count > 0)
-                        {
-                            SelectItem();
-                        }
-                        if (selectedZone != null)
-                        {
-                            SelectZone(selectedZone);
-                        }
-                        break;
-                }
+                Select(selectedZone, SelectionPreference);
 
                 SelectionStartWorld = Vector3.zero;
                 ClearGhostEffects();
@@ -681,97 +740,78 @@ public partial class Game : MonoBehaviour
         DestroyItemsInCache();
     }
 
-    private IEnumerator FinalizeStartup()
+    internal SelectionPreference LastSelection = SelectionPreference.Creature;
+
+    private bool Select(ZoneBase selectedZone, SelectionPreference selection)
     {
-        if (SaveManager.SaveToLoad == null)
+        switch (selection)
         {
-            MapGenerator.MakeFactionBootStrap(Game.FactionController.PlayerFaction);
-            MapGenerator.SpawnCreatures();
+            case SelectionPreference.Anything:
+
+                for (int i = 0; i < 5; i++)
+                {
+                    switch (LastSelection)
+                    {
+                        case SelectionPreference.Creature:
+                            LastSelection = SelectionPreference.Structure;
+                            break;
+
+                        case SelectionPreference.Structure:
+                            LastSelection = SelectionPreference.Item;
+                            break;
+
+                        case SelectionPreference.Item:
+                            LastSelection = SelectionPreference.Zone;
+                            break;
+
+                        case SelectionPreference.Zone:
+                            LastSelection = SelectionPreference.Creature;
+                            break;
+                    }
+                    if (Select(selectedZone, LastSelection))
+                    {
+                        break;
+                    }
+                }
+                break;
+
+            case SelectionPreference.Cell:
+                if (SelectedCells.Count > 0)
+                {
+                    SelectCell();
+                    return true;
+                }
+                break;
+
+            case SelectionPreference.Item:
+                if (SelectedCells.Count > 0)
+                {
+                    return SelectItem();
+                }
+                break;
+
+            case SelectionPreference.Structure:
+                if (SelectedCells.Count > 0)
+                {
+                    return SelectStructure();
+                }
+                break;
+
+            case SelectionPreference.Creature:
+                if (SelectedCells.Count > 0)
+                {
+                    return SelectCreature();
+                }
+                break;
+
+            case SelectionPreference.Zone:
+                if (selectedZone != null)
+                {
+                    SelectZone(selectedZone);
+                    return true;
+                }
+                break;
         }
-        else
-        {
-            SetLoadStatus("Loading Time", 0.80f);
-            TimeManager.Data = SaveManager.SaveToLoad.Time;
-            yield return null;
-
-            SetLoadStatus("Loading Items", 0.85f);
-            foreach (var item in SaveManager.SaveToLoad.Items)
-            {
-                ItemController.SpawnItem(item);
-            }
-            yield return null;
-
-            foreach (var faction in SaveManager.SaveToLoad.Factions)
-            {
-                SetLoadStatus($"Loading Faction: {faction.FactionName}", 0.90f);
-                FactionController.Factions.Add(faction.FactionName, faction);
-
-                foreach (var creature in faction.Creatures.ToList())
-                {
-                    CreatureController.SpawnCreature(creature, creature.Cell, faction);
-                }
-
-                foreach (var structure in faction.Structures.ToList())
-                {
-                    IdService.EnrollEntity(structure);
-
-                    // flag layer where structure is on to be redrawn
-                    if (structure.IsFloor())
-                    {
-                        structure.Cell.Chunk.Renderer.FloorDrawn = false;
-                    }
-                    else
-                    {
-                        structure.Cell.Chunk.Renderer.StructureDrawn = false;
-                    }
-
-                    foreach (var effect in structure.LinkedVisualEffects)
-                    {
-                        VisualEffectController.Load(effect);
-                    }
-
-                    if (structure.AutoInteractions.Count > 0)
-                    {
-                        MagicController.AddEffector(structure);
-                    }
-                }
-
-                faction.LoadHomeCells();
-            }
-
-            if (SaveManager.SaveToLoad.Stores != null)
-            {
-                SetLoadStatus($"Loading Stores", 0.95f);
-                foreach (var zone in SaveManager.SaveToLoad.Stores)
-                {
-                    ZoneController.Load(zone);
-                }
-                yield return null;
-            }
-            if (SaveManager.SaveToLoad.Rooms != null)
-            {
-                SetLoadStatus($"Loading Rooms", 0.96f);
-                foreach (var zone in SaveManager.SaveToLoad.Rooms)
-                {
-                    ZoneController.Load(zone);
-                }
-                yield return null;
-            }
-            if (SaveManager.SaveToLoad.Areas != null)
-            {
-                SetLoadStatus($"Loading Areas", 0.97f);
-                foreach (var zone in SaveManager.SaveToLoad.Areas)
-                {
-                    ZoneController.Load(zone);
-                }
-                yield return null;
-            }
-
-            SetLoadStatus($"Loading Camera", 0.99f);
-            SaveManager.SaveToLoad.CameraData.Load(CameraController.Camera);
-            SaveManager.SaveToLoad = null;
-            yield return null;
-        }
-        Ready = true;
+        return false;
     }
 }

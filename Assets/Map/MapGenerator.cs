@@ -90,7 +90,7 @@ public class MapGenerator
         var counter = 1;
         Game.Instance.SetLoadStatus("Create Map", 0);
         var size = 1;
-        var inc = 1f / Mathf.Pow(size, 4);
+        var inc = 1f / 9f;
         if (SaveManager.SaveToLoad == null)
         {
             for (var i = 0 - size; i <= 0 + size; i++)
@@ -100,7 +100,7 @@ public class MapGenerator
                     Game.Map.MakeChunk(new Chunk((Game.Map.Origin.X / Game.Map.ChunkSize) + i,
                                                  (Game.Map.Origin.Y / Game.Map.ChunkSize) + k));
 
-                    Game.Instance.SetLoadStatus($"Create Chunk {counter}", counter * inc);
+                    Game.Instance.SetLoadStatus($"Create Chunk {counter}", (counter -1) * inc);
                     counter++;
                     yield return null;
                 }

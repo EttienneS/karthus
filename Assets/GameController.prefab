@@ -45,10 +45,11 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 5c0aef44052b8d24d902de7b45295f05, type: 2}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -67,9 +68,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1765142349
-  m_SortingLayer: 9
+  m_SortingLayer: 8
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 40ba4559dd24368428cb2542220a76ea, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 598f454f3d53d2c40b34f666e0239c52, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
   m_FlipX: 0
   m_FlipY: 0
@@ -125,9 +126,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c9319c38c3fa594db9dd4391edf4906, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SelectionPreference: 0
-  selectSquareImage: {fileID: 0}
   MouseSpriteRenderer: {fileID: 4395502561622324067}
+  selectSquareImage: {fileID: 0}
 --- !u!120 &1817309255
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -142,10 +142,11 @@ LineRenderer:
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f05fc6d848b0b6c4c8b613023b0a1166, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
