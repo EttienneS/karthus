@@ -20,7 +20,7 @@ namespace Needs
 
         public override void Update()
         {
-            if (Current < 15)
+            if (Current < 15 && Creature.IsIdle())
             {
                 if (!(Creature.Task is Wash))
                 {

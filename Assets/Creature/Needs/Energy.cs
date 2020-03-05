@@ -19,6 +19,21 @@ namespace Needs
 
         public override void Update()
         {
+            if (Creature.GetNeed<Energy>().Current < 15 && Creature.IsIdle())
+            {
+                var bed = Creature.Faction.Structures.Find(s => !s.IsBluePrint && !s.InUseByAnyone && s.ValueProperties.ContainsKey("RecoveryRate"));
+
+                if (bed != null)
+                {
+                    Creature.Task = new Sleep(bed.Id);
+                }
+                else
+                {
+                    Creature.Task = new Sleep();
+                }
+            }
+
+
             if (Current <= 0)
             {
                 Creature.CancelTask();

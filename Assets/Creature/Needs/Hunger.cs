@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Needs
 {
@@ -20,6 +21,18 @@ namespace Needs
 
         public override void Update()
         {
+            if (Creature.GetNeed<Hunger>().Current < 15 && Creature.IsIdle())
+            {
+                var food = Creature.GetFaction().FindItem(Eat.FoodCriteria, Creature);
+                if (food != null)
+                {
+                    Creature.Task = new Eat(food);
+                }
+                else
+                {
+                    Debug.LogWarning("No food items found!");
+                }
+            }
         }
     }
 }

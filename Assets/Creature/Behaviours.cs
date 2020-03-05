@@ -99,31 +99,7 @@ public static class Behaviours
             // split up
             task = new Move(Game.Map.GetPathableNeighbour(creature.Cell));
         }
-        else if (creature.GetNeed<Hunger>().Current < 15)
-        {
-            var food = creature.GetFaction().FindItem(Eat.FoodCriteria, creature);
-            if (food != null)
-            {
-                task = new Eat(food);
-            }
-            else
-            {
-                Debug.LogWarning("No food items found!");
-            }
-        }
-        else if (creature.GetNeed<Energy>().Current < 15)
-        {
-            var bed = creature.Faction.Structures.Find(s => !s.IsBluePrint && !s.InUseByAnyone && s.ValueProperties.ContainsKey("RecoveryRate"));
-
-            if (bed != null)
-            {
-                task = new Sleep(bed.Id);
-            }
-            else
-            {
-                task = new Sleep();
-            }
-        }
+        
 
         return task;
     }

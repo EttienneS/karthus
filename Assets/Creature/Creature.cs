@@ -63,9 +63,6 @@ public class Creature : IEntity
 
     private Faction _faction;
 
-    [JsonIgnore]
-    private int _liveTick;
-
     private List<Cell> _path = new List<Cell>();
 
     private ICharacterSpriteDefinition _spriteDef;
@@ -268,6 +265,11 @@ public class Creature : IEntity
         {
             return CarriedItemIds.Select(i => i.GetItem());
         }
+    }
+
+    public bool IsIdle()
+    {
+        return Task == null || Task is Idle;
     }
 
     public void AddLimb(Limb limb)
@@ -672,15 +674,8 @@ public class Creature : IEntity
         return false;
     }
 
-    internal void Live(float delta)
+    internal void ProcessSelf(float delta)
     {
-        _liveTick++;
-        if (_liveTick < 5)
-        {
-            return;
-        }
-        _liveTick = 0;
-
         UpdateLimbs(delta);
 
         foreach (var need in Needs)
@@ -746,13 +741,18 @@ public class Creature : IEntity
         InternalTick += timeDelta;
         if (InternalTick >= Game.TimeManager.CreatureTick)
         {
+            Perceive();
+            ProcessSelf(InternalTick);
+
+            UpdateSprite();
+            Move();
+
+            InternalTick -= Game.TimeManager.CreatureTick;
+
             if (InCombat)
             {
                 ClearFixedAnimation();
-                if (Task != null)
-                {
-                    CancelTask();
-                }
+                CancelTask();
                 ProcessCombat();
             }
             else
@@ -773,13 +773,7 @@ public class Creature : IEntity
                 item.Coords = (X, Y);
             }
 
-            Perceive();
-            Live(InternalTick);
-
-            UpdateSprite();
-            Move();
-
-            InternalTick -= Game.TimeManager.CreatureTick;
+           
             return true;
         }
 
