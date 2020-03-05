@@ -1,5 +1,4 @@
 ﻿using Needs;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -7,6 +6,8 @@ using Random = UnityEngine.Random;
 
 public static class Behaviours
 {
+    public const int WanderRange = 10;
+
     public static Dictionary<string, GetBehaviourTaskDelegate> BehaviourTypes = new Dictionary<string, GetBehaviourTaskDelegate>
     {
         { "Monster", Monster },
@@ -14,21 +15,18 @@ public static class Behaviours
         { "Skeleton", Skeleton }
     };
 
+    public delegate CreatureTask GetBehaviourTaskDelegate(Creature creature);
+
     public static GetBehaviourTaskDelegate GetBehaviourFor(string type)
     {
         return BehaviourTypes[type];
     }
 
-    public delegate CreatureTask GetBehaviourTaskDelegate(Creature creature);
-
-    public const int WanderRange = 10;
-
     public static CreatureTask Monster(Creature creature)
     {
-        CreatureTask task = null;
-
         var rand = Random.value;
 
+        CreatureTask task;
         if (rand > 0.8f)
         {
             task = new Move(Game.Map.GetCircle(creature.Cell, WanderRange).GetRandomItem());
@@ -36,28 +34,6 @@ public static class Behaviours
         else
         {
             task = new Wait(Random.value * 2f, "Lingering..");
-        }
-
-        return task;
-    }
-
-    public static CreatureTask Skeleton(Creature creature)
-    {
-        CreatureTask task = null;
-
-        var rand = Random.value;
-        var targets = creature.Awareness.SelectMany(cell => cell.Creatures.Where(c => c.Faction != creature.Faction));
-
-        creature.SetFixedAnimation(LPC.Spritesheet.Generator.Interfaces.Animation.Die, 4);
-
-        if (targets.Any())
-        {
-            creature.ClearFixedAnimation();
-            creature.Combatants.Add(targets.GetRandomItem());
-        }
-        else
-        {
-            task = new Wait(Random.Range(3f, 6f), "Lingering..", null);
         }
 
         return task;
@@ -99,7 +75,28 @@ public static class Behaviours
             // split up
             task = new Move(Game.Map.GetPathableNeighbour(creature.Cell));
         }
-        
+
+        return task;
+    }
+
+    public static CreatureTask Skeleton(Creature creature)
+    {
+        CreatureTask task = null;
+
+        var rand = Random.value;
+        var targets = creature.Awareness.SelectMany(cell => cell.Creatures.Where(c => c.Faction != creature.Faction));
+
+        creature.SetFixedAnimation(LPC.Spritesheet.Generator.Interfaces.Animation.Die, 4);
+
+        if (targets.Any())
+        {
+            creature.ClearFixedAnimation();
+            creature.Combatants.Add(targets.GetRandomItem());
+        }
+        else
+        {
+            task = new Wait(Random.Range(3f, 6f), "Lingering..", null);
+        }
 
         return task;
     }
@@ -122,6 +119,7 @@ public static class Behaviours
                     new Aspiration()
                 };
                 break;
+
             default:
                 needs = new List<NeedBase>
                 {
