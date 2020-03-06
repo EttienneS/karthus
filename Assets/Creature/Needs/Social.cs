@@ -32,8 +32,8 @@ namespace Needs
                     _chatDelta = 0;
                     var friend = friends.GetRandomItem();
 
-                    Creature.Log($"Hey {friend.Name}!");
-                    friend.Log($"Sup {Creature.Name}!");
+                    Creature.Say($"Hey {friend.Name}!", 2);
+                    friend.Say($"Sup {Creature.Name}!", 2);
                     Current += 25f;
                 }
             }
