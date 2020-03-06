@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 public enum TimeStep
 {
@@ -17,6 +19,8 @@ public class TimeData
 
 public class TimeManager : MonoBehaviour
 {
+    public List<(int min, int max, Color start, Color end)> ColorZones;
+
     public TimeData Data = new TimeData()
     {
         Hour = 6,
@@ -71,9 +75,19 @@ public class TimeManager : MonoBehaviour
         }
     }
 
-    public void Start()
+    public void Awake()
     {
         TimeStep = TimeStep.Normal;
+        var nightColor = ColorExtensions.GetColorFromHex("#474B7E");
+
+        ColorZones = new List<(int min, int max, Color start, Color end)>
+        {
+            (0,4, nightColor, nightColor),
+            (4,7, nightColor, Color.white),
+            (7,17, Color.white, Color.white),
+            (17,22, Color.white, nightColor),
+            (22,24, nightColor, nightColor)
+        };
     }
 
     public void Update()
@@ -100,11 +114,22 @@ public class TimeManager : MonoBehaviour
                     Data.Hour = 0;
                 }
             }
+
+            UpdateGlobalLight();
         }
     }
 
     internal void Pause()
     {
         TimeStep = TimeStep.Paused;
+    }
+
+    private void UpdateGlobalLight()
+    {
+        var (min, max, start, end) = ColorZones.First(c => Data.Hour > c.min && Data.Hour < c.max);
+        var range = max - min;
+        var total = range * 60f;
+        var current = ((Data.Hour - min) * 60) + Data.Minute;
+        Game.Map.GlobalLight.color = Color.Lerp(start, end, current / total);
     }
 }

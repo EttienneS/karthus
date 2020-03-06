@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace Needs
 {
@@ -16,8 +18,25 @@ namespace Needs
 
         public override string Icon { get; set; }
 
+        [JsonIgnore]
+        private float _chatDelta;
+
         public override void Update()
         {
+            _chatDelta += Random.value;
+            if (_chatDelta > 50 && Current < 80)
+            {
+                var friends = Creature.Faction.Creatures.Where(c => Creature.Awareness.Contains(c.Cell));
+                if (friends.Any())
+                {
+                    _chatDelta = 0;
+                    var friend = friends.GetRandomItem();
+
+                    Creature.Log($"Hey {friend.Name}!");
+                    friend.Log($"Sup {Creature.Name}!");
+                    Current += 25f;
+                }
+            }
         }
     }
 }

@@ -13,10 +13,8 @@ public class TimePanel : MonoBehaviour
     public Button SlowButton;
     public Text TimeDisplay;
 
-    public void Awake()
+    public void Start()
     {
-        var buttons = GetComponentsInChildren<Button>();
-
         PauseButton.onClick.AddListener(() => Game.TimeManager.TimeStep = TimeStep.Paused);
         NormalButton.onClick.AddListener(() => Game.TimeManager.TimeStep = TimeStep.Normal);
         FastButton.onClick.AddListener(() => Game.TimeManager.TimeStep = TimeStep.Fast);

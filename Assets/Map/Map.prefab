@@ -130,7 +130,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a2e50b14c390774ea0feb5aaa8185b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ChunkPrefab: {fileID: 0}
+  ChunkPrefab: {fileID: 1942139927005994989, guid: 92e798fcdd174d54a9f8e2eb6ce7983c,
+    type: 3}
+  GlobalLight: {fileID: 69522275}
   Scaler: 0.07
   Seed: 
 --- !u!1001 &8425998318200554966
@@ -144,7 +146,12 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 5c0aef44052b8d24d902de7b45295f05, type: 2}
+      objectReference: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+    - target: {fileID: 2843538654743217709, guid: 4956cfd9aa88e78409c9205e12a2e441,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0.29803923
+      objectReference: {fileID: 0}
     - target: {fileID: 4526516344799543720, guid: 4956cfd9aa88e78409c9205e12a2e441,
         type: 3}
       propertyPath: m_Name

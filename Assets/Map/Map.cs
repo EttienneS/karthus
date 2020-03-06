@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering.Universal;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
@@ -12,6 +13,8 @@ public class Map : MonoBehaviour
     public const int PixelsPerCell = 64;
     public Dictionary<(int x, int y), Cell> CellLookup = new Dictionary<(int x, int y), Cell>();
     public ChunkRenderer ChunkPrefab;
+
+    public Light2D GlobalLight;
 
     [Range(0.001f, 0.2f)]
     public float Scaler = 0.1f;
@@ -443,7 +446,9 @@ public class Map : MonoBehaviour
 
     public void Update()
     {
+      
     }
+
 
     internal void DestroyCell(Cell cell)
     {

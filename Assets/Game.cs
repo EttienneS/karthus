@@ -770,7 +770,7 @@ public partial class Game : MonoBehaviour
                     }
                     if (Select(selectedZone, LastSelection))
                     {
-                        break;
+                         break;
                     }
                 }
                 break;

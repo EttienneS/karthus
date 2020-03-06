@@ -700,43 +700,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 5952559971981639359, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
     - target: {fileID: 5952559972800760937, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
         type: 3}
       propertyPath: m_Name
       value: Map
       objectReference: {fileID: 0}
-    - target: {fileID: 5952559972800760938, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
-        type: 3}
-      propertyPath: Seed
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5952559972800760938, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
-        type: 3}
-      propertyPath: Height
-      value: 25
-      objectReference: {fileID: 0}
-    - target: {fileID: 5952559972800760938, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
-        type: 3}
-      propertyPath: Width
-      value: 25
-      objectReference: {fileID: 0}
-    - target: {fileID: 5952559972800760938, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
-        type: 3}
-      propertyPath: TilemapPrefab
-      value: 
-      objectReference: {fileID: 9110896918050871513, guid: 1a4323a521099224fa43bdaf0815b956,
-        type: 3}
-    - target: {fileID: 5952559972800760938, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
-        type: 3}
-      propertyPath: ChunkPrefab
-      value: 
-      objectReference: {fileID: 1942139927005994989, guid: 92e798fcdd174d54a9f8e2eb6ce7983c,
-        type: 3}
     - target: {fileID: 5952559972800760939, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -791,11 +759,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6023968593193845755, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
-        type: 3}
-      propertyPath: m_Color.a
-      value: 0.29803923
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fd9fe2ef5313abb4aa06105b1ebd9a97, type: 3}
@@ -1398,7 +1361,7 @@ PrefabInstance:
     - target: {fileID: 6198119545509704615, guid: 21216dc22b576ec4785cf4c518463eaa,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 12.729881
+      value: 0.00010632181
       objectReference: {fileID: 0}
     - target: {fileID: 6486745693095385764, guid: 21216dc22b576ec4785cf4c518463eaa,
         type: 3}

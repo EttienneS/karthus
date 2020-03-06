@@ -483,14 +483,20 @@ public class Creature : IEntity
         return skill?.Enabled == true;
     }
 
-    public void Log(string message = "")
+    public void Log(string message)
     {
         Debug.Log(Name + ":" + message);
         LogHistory.Add(message);
 
+        // if verbose
+        // Say(message);
+    }
+
+    public void Say(string message, float duration = 1f)
+    {
         if (FactionName == FactionConstants.Player)
         {
-            CreatureRenderer.ShowText(message, 0.75f);
+            CreatureRenderer.ShowText(message, duration);
         }
     }
 
@@ -773,7 +779,7 @@ public class Creature : IEntity
                 item.Coords = (X, Y);
             }
 
-           
+
             return true;
         }
 
