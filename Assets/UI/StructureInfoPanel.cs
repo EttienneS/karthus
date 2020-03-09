@@ -46,6 +46,10 @@ namespace UI
             if (structure is WorkStructureBase workStructure)
             {
                 ActivePrefabs = new List<WorkOrderPrefab>();
+                foreach (Transform item in WorkOrderPrefab.transform)
+                {
+                    Destroy(item.transform);
+                }
                 foreach (var option in workStructure.Definition.Options)
                 {
                     var prefab = Instantiate(WorkOrderPrefab, OrderPanel.transform);
@@ -99,6 +103,10 @@ namespace UI
             {
                 StructureInfo.text += workStructure.ToString();
 
+                foreach (Transform item in OrderListPanel.transform)
+                {
+                    Destroy(item.transform);
+                }
                 foreach (var order in workStructure.Orders)
                 {
                     Instantiate(OrderDetailPrefab, OrderListPanel.transform).Load(order);
