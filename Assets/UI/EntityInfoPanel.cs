@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-
+using Structures;
 public class EntityInfoPanel : MonoBehaviour
 {
     public GameObject ButtonPanel;

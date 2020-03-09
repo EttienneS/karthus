@@ -1,354 +1,344 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public partial class Structure : IEntity
+namespace Structures
 {
-    public List<EffectBase> AutoInteractions = new List<EffectBase>();
-
-    internal bool HasValue(string v)
+    public class Structure : IEntity
     {
-        return ValueProperties.ContainsKey(v);
-    }
+        public List<EffectBase> AutoInteractions = new List<EffectBase>();
 
-    public bool Buildable;
-
-    [JsonIgnore]
-    public VisualEffect ContainedItemEffect;
-
-    // rather than serializing the cell object we keep this lazy link for load
-    public (int X, int Y) Coords = (-1, -1);
-
-    public string Layer;
-
-    public Direction Rotation;
-
-    public string Size;
-
-    public string SpriteName;
-
-    public float TravelCost;
-
-    private Cell _cell;
-
-    private Faction _faction;
-
-    private VisualEffect _outline;
-
-    [JsonIgnore]
-    private int _width, _height = -1;
-
-    public Structure()
-    {
-    }
-
-    public Structure(string name, string sprite)
-    {
-        Name = name;
-        SpriteName = sprite;
-    }
-
-    [JsonIgnore]
-    public Cell Cell
-    {
-        get
+        internal bool HasValue(string v)
         {
-            if (_cell == null && Coords.X >= 0 && Coords.Y >= 0)
+            return ValueProperties.ContainsKey(v);
+        }
+
+        public bool Buildable;
+
+        [JsonIgnore]
+        public VisualEffect ContainedItemEffect;
+
+        // rather than serializing the cell object we keep this lazy link for load
+        public (int X, int Y) Coords = (-1, -1);
+
+        public string Layer;
+
+        public Direction Rotation;
+
+        public string Size;
+
+        public string SpriteName;
+        public string Type;
+
+        public float TravelCost;
+
+        private Cell _cell;
+
+        private Faction _faction;
+
+        private VisualEffect _outline;
+
+        [JsonIgnore]
+        private int _width, _height = -1;
+
+        public Structure()
+        {
+        }
+
+        public Structure(string name, string sprite)
+        {
+            Name = name;
+            SpriteName = sprite;
+        }
+
+        [JsonIgnore]
+        public Cell Cell
+        {
+            get
             {
-                _cell = Game.Map.GetCellAtCoordinate(Coords.X, Coords.Y);
+                if (_cell == null && Coords.X >= 0 && Coords.Y >= 0)
+                {
+                    _cell = Game.Map.GetCellAtCoordinate(Coords.X, Coords.Y);
+                }
+                return _cell;
             }
-            return _cell;
-        }
-        set
-        {
-            if (value != null)
+            set
             {
-                _cell = value;
-                Coords = (_cell.X, _cell.Y);
+                if (value != null)
+                {
+                    _cell = value;
+                    Coords = (_cell.X, _cell.Y);
+                }
             }
         }
-    }
 
-    public Cost Cost { get; set; } = new Cost();
+        public Cost Cost { get; set; } = new Cost();
 
-    public string Description { get; set; }
+        public string Description { get; set; }
 
-    [JsonIgnore]
-    public Faction Faction
-    {
-        get
+        [JsonIgnore]
+        public Faction Faction
         {
-            if (_faction == null)
+            get
             {
-                _faction = Game.FactionController.Factions[FactionName];
+                if (_faction == null)
+                {
+                    _faction = Game.FactionController.Factions[FactionName];
+                }
+                return _faction;
             }
-            return _faction;
         }
-    }
 
-    public string FactionName { get; set; }
+        public string FactionName { get; set; }
 
-    [JsonIgnore]
-    public int Height
-    {
-        get
+        [JsonIgnore]
+        public int Height
         {
-            ParseHeight();
-            return _width;
-        }
-    }
-
-    public float HP { get; set; } = 5;
-
-    public string Id { get; set; }
-
-    [JsonIgnore]
-    public IEntity InUseBy
-    {
-        get
-        {
-            if (string.IsNullOrEmpty(InUseById))
+            get
             {
-                return null;
+                ParseHeight();
+                return _width;
             }
-            return InUseById.GetEntity();
         }
-        set
+
+        public float HP { get; set; } = 5;
+
+        public string Id { get; set; }
+
+        [JsonIgnore]
+        public IEntity InUseBy
         {
-            InUseById = value.Id;
-        }
-    }
-
-    [JsonIgnore]
-    public bool InUseByAnyone
-    {
-        get
-        {
-            return InUseBy != null;
-        }
-    }
-
-    public string InUseById { get; set; }
-
-    public bool IsBluePrint { get; set; }
-
-    public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
-
-    public string Name { get; set; }
-
-    public Dictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
-
-    [JsonIgnore]
-    public Tile Tile
-    {
-        get
-        {
-            var tile = ScriptableObject.CreateInstance<Tile>();
-            tile.RotateTile(Rotation);
-
-            //if (!Buildable)
-            //{
-            //    tile.ShiftTile(new Vector2(Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f)));
-            //}
-
-            if (IsWall())
+            get
             {
-                tile.sprite = Game.SpriteStore.GetInterlockingSprite(this);
+                if (string.IsNullOrEmpty(InUseById))
+                {
+                    return null;
+                }
+                return InUseById.GetEntity();
             }
-            else
+            set
             {
-                tile.sprite = Game.SpriteStore.GetSprite(SpriteName);
+                InUseById = value.Id;
+            }
+        }
+
+        [JsonIgnore]
+        public bool InUseByAnyone
+        {
+            get
+            {
+                return InUseBy != null;
+            }
+        }
+
+        public string InUseById { get; set; }
+
+        public bool IsBluePrint { get; set; }
+
+        public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
+
+        public string Name { get; set; }
+
+        public Dictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
+
+        [JsonIgnore]
+        public Tile Tile
+        {
+            get
+            {
+                var tile = ScriptableObject.CreateInstance<Tile>();
+                tile.RotateTile(Rotation);
+
+                //if (!Buildable)
+                //{
+                //    tile.ShiftTile(new Vector2(Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f)));
+                //}
+
+                if (IsWall())
+                {
+                    tile.sprite = Game.SpriteStore.GetInterlockingSprite(this);
+                }
+                else
+                {
+                    tile.sprite = Game.SpriteStore.GetSprite(SpriteName);
+                }
+
+                if (IsBluePrint)
+                {
+                    tile.color = ColorConstants.BluePrintColor;
+                }
+                else
+                {
+                    tile.color = Cell.Color;
+                }
+
+                return tile;
+            }
+        }
+
+        public Dictionary<string, float> ValueProperties { get; set; } = new Dictionary<string, float>();
+
+        [JsonIgnore]
+        public Vector2 Vector
+        {
+            get
+            {
+                return Cell.Vector;
+            }
+        }
+
+        [JsonIgnore]
+        public int Width
+        {
+            get
+            {
+                ParseHeight();
+                return _width;
+            }
+        }
+
+        public bool IsType(string name)
+        {
+            return !string.IsNullOrEmpty(Type) && Type.Split(',').Contains(name);
+        }
+
+        public bool IsWall()
+        {
+            return IsType("Wall");
+        }
+
+        public void Refresh()
+        {
+            Game.StructureController.RefreshStructure(this);
+        }
+
+        public void RotateCCW()
+        {
+            Rotation = Rotation.Rotate90CCW();
+            Refresh();
+        }
+
+        public void RotateCW()
+        {
+            Rotation = Rotation.Rotate90CW();
+            Game.StructureController.RefreshStructure(this);
+            Refresh();
+        }
+
+        public override string ToString()
+        {
+            return $"{Name}";
+        }
+
+        public bool ValidateCellLocationForStructure(Cell cell)
+        {
+            if (!cell.Buildable)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        internal void Free()
+        {
+            InUseBy = null;
+        }
+
+        internal List<EffectBase> GetInteraction()
+        {
+            var interactions = new List<EffectBase>();
+            foreach (var interaction in AutoInteractions.Where(i => !i.Disabled))
+            {
+                interaction.AssignedEntityId = this.Id;
+                interactions.Add(interaction);
             }
 
-            if (IsBluePrint)
+            return interactions;
+        }
+
+        internal string GetProperty(string propertyName)
+        {
+            if (Properties.ContainsKey(propertyName))
             {
-                tile.color = ColorConstants.BluePrintColor;
+                return Properties[propertyName];
             }
-            else
+            return string.Empty;
+        }
+
+        internal float GetValue(string valueName)
+        {
+            if (ValueProperties.ContainsKey(valueName))
             {
-                tile.color = Cell.Color;
+                return ValueProperties[valueName];
             }
-
-            return tile;
-        }
-    }
-
-    public Dictionary<string, float> ValueProperties { get; set; } = new Dictionary<string, float>();
-
-    [JsonIgnore]
-    public Vector2 Vector
-    {
-        get
-        {
-            return Cell.Vector;
-        }
-    }
-
-    [JsonIgnore]
-    public int Width
-    {
-        get
-        {
-            ParseHeight();
-            return _width;
-        }
-    }
-
-    public static Structure GetFromJson(string json)
-
-    {
-        var structure = json.LoadJson<Structure>();
-
-        if (structure.IsType("Container"))
-        {
-            return json.LoadJson<Container>();
+            return 0f;
         }
 
-        return structure;
-    }
-
-    public bool IsType(string name)
-    {
-        return Properties.ContainsKey("Type") && Properties["Type"].Split(',').Contains(name);
-    }
-
-    public bool IsWall()
-    {
-        return IsType("Wall");
-    }
-
-    public void Refresh()
-    {
-        Game.StructureController.RefreshStructure(this);
-    }
-
-    public void RotateCCW()
-    {
-        Rotation = Rotation.Rotate90CCW();
-        Refresh();
-    }
-
-    public void RotateCW()
-    {
-        Rotation = Rotation.Rotate90CW();
-        Game.StructureController.RefreshStructure(this);
-        Refresh();
-    }
-
-    public override string ToString()
-    {
-        return $"{Name}";
-    }
-
-    public bool ValidateCellLocationForStructure(Cell cell)
-    {
-        if (!cell.Buildable)
+        internal void HideOutline()
         {
-            return false;
-        }
-        return true;
-    }
-
-    internal void Free()
-    {
-        InUseBy = null;
-    }
-
-    internal List<EffectBase> GetInteraction()
-    {
-        var interactions = new List<EffectBase>();
-        foreach (var interaction in AutoInteractions.Where(i => !i.Disabled))
-        {
-            interaction.AssignedEntityId = this.Id;
-            interactions.Add(interaction);
-        }
-
-        return interactions;
-    }
-
-    internal string GetProperty(string propertyName)
-    {
-        if (Properties.ContainsKey(propertyName))
-        {
-            return Properties[propertyName];
-        }
-        return string.Empty;
-    }
-
-    internal float GetValue(string valueName)
-    {
-        if (ValueProperties.ContainsKey(valueName))
-        {
-            return ValueProperties[valueName];
-        }
-        return 0f;
-    }
-
-    internal void HideOutline()
-    {
-        if (_outline != null)
-        {
-            _outline.Kill();
-        }
-    }
-
-    internal bool IsFloor()
-    {
-        return IsType("Floor");
-    }
-
-    internal bool IsInterlocking()
-    {
-        return IsWall();
-    }
-
-    internal void Reserve(IEntity reservedBy)
-    {
-        InUseBy = reservedBy;
-    }
-
-    internal void SetProperty(string propertyName, string value)
-    {
-        if (!Properties.ContainsKey(propertyName))
-        {
-            Properties.Add(propertyName, string.Empty);
-        }
-        Properties[propertyName] = value;
-    }
-
-    internal void SetValue(string valueName, float value)
-    {
-        if (!ValueProperties.ContainsKey(valueName))
-        {
-            ValueProperties.Add(valueName, 0f);
-        }
-        ValueProperties[valueName] = value;
-    }
-
-    internal void ShowOutline()
-    {
-        _outline = Game.VisualEffectController
-                       .SpawnSpriteEffect(this, Vector, "CellOutline", float.MaxValue);
-        _outline.Regular();
-    }
-
-    private void ParseHeight()
-    {
-        if (_width == -1 || _height == -1)
-        {
-            if (!string.IsNullOrEmpty(Size))
+            if (_outline != null)
             {
-                var parts = Size.Split('x');
-                _height = int.Parse(parts[0]);
-                _width = int.Parse(parts[1]);
+                _outline.Kill();
             }
-            else
+        }
+
+        internal bool IsFloor()
+        {
+            return IsType("Floor");
+        }
+
+        internal bool IsInterlocking()
+        {
+            return IsWall();
+        }
+
+        internal void Reserve(IEntity reservedBy)
+        {
+            InUseBy = reservedBy;
+        }
+
+        internal void SetProperty(string propertyName, string value)
+        {
+            if (!Properties.ContainsKey(propertyName))
             {
-                _width = 1;
-                _height = 1;
+                Properties.Add(propertyName, string.Empty);
+            }
+            Properties[propertyName] = value;
+        }
+
+        internal void SetValue(string valueName, float value)
+        {
+            if (!ValueProperties.ContainsKey(valueName))
+            {
+                ValueProperties.Add(valueName, 0f);
+            }
+            ValueProperties[valueName] = value;
+        }
+
+        internal void ShowOutline()
+        {
+            _outline = Game.VisualEffectController
+                           .SpawnSpriteEffect(this, Vector, "CellOutline", float.MaxValue);
+            _outline.Regular();
+        }
+
+        private void ParseHeight()
+        {
+            if (_width == -1 || _height == -1)
+            {
+                if (!string.IsNullOrEmpty(Size))
+                {
+                    var parts = Size.Split('x');
+                    _height = int.Parse(parts[0]);
+                    _width = int.Parse(parts[1]);
+                }
+                else
+                {
+                    _width = 1;
+                    _height = 1;
+                }
             }
         }
     }

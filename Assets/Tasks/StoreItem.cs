@@ -1,4 +1,5 @@
-﻿public class StoreItem : CreatureTask
+﻿using Structures;
+public class StoreItem : CreatureTask
 {
     public string ItemToStoreId { get; set; }
     public string StorageStructureId { get; set; }

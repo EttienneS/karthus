@@ -4,136 +4,155 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class StructureController : MonoBehaviour
+namespace Structures
 {
-    private Dictionary<string, Structure> _structureDataReference;
-
-    private Dictionary<string, string> _structureTypeFileMap;
-
-    internal Dictionary<string, Structure> StructureDataReference
+    public class StructureController : MonoBehaviour
     {
-        get
-        {
-            StructureTypeFileMap.First();
-            return _structureDataReference;
-        }
-    }
+        private Dictionary<string, Structure> _structureDataReference;
 
-    internal Dictionary<string, string> StructureTypeFileMap
-    {
-        get
+        private Dictionary<string, string> _structureTypeFileMap;
+
+        internal Dictionary<string, Structure> StructureDataReference
         {
-            if (_structureTypeFileMap == null)
+            get
             {
-                _structureTypeFileMap = new Dictionary<string, string>();
-                _structureDataReference = new Dictionary<string, Structure>();
-                foreach (var structureFile in Game.FileController.StructureJson)
+                StructureTypeFileMap.First();
+                return _structureDataReference;
+            }
+        }
+
+        internal Dictionary<string, string> StructureTypeFileMap
+        {
+            get
+            {
+                if (_structureTypeFileMap == null)
                 {
-                    try
+                    _structureTypeFileMap = new Dictionary<string, string>();
+                    _structureDataReference = new Dictionary<string, Structure>();
+                    foreach (var structureFile in Game.FileController.StructureJson)
                     {
-                        var data = Structure.GetFromJson(structureFile.text);
-                        _structureTypeFileMap.Add(data.Name, structureFile.text);
-                        _structureDataReference.Add(data.Name, data);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.LogError($"Unable to load structure {structureFile}: {ex.Message}");
+                        try
+                        {
+                            var data = GetFromJson(structureFile.text);
+                            _structureTypeFileMap.Add(data.Name, structureFile.text);
+                            _structureDataReference.Add(data.Name, data);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.LogError($"Unable to load structure {structureFile}: {ex.Message}");
+                        }
                     }
                 }
-            }
-            return _structureTypeFileMap;
-        }
-    }
-
-    public void ClearStructure(Structure structure)
-    {
-        var tile = ScriptableObject.CreateInstance<Tile>();
-
-        if (structure.IsFloor())
-        {
-            Game.Map.SetTile(structure.Cell, tile, Map.TileLayer.Floor);
-        }
-        else
-        {
-            Game.Map.SetTile(structure.Cell, tile, Map.TileLayer.Structure);
-        }
-    }
-
-    public void RefreshStructure(Structure structure)
-    {
-        if (structure.Cell == null)
-        {
-            return;
-        }
-        if (structure.IsFloor())
-        {
-            Game.Map.SetTile(structure.Cell, structure.Tile, Map.TileLayer.Floor);
-        }
-        else
-        {
-            Game.Map.SetTile(structure.Cell, structure.Tile, Map.TileLayer.Structure);
-        }
-    }
-
-    public Structure SpawnStructure(string name, Cell cell, Faction faction, bool draw = true)
-    {
-        var structureData = StructureTypeFileMap[name];
-
-        var structure = Structure.GetFromJson(structureData);
-        structure.Cell = cell;
-        IndexStructure(structure);
-
-        if (draw)
-        {
-            structure.Refresh();
-        }
-        faction?.AddStructure(structure);
-
-        if (structure is Container container)
-        {
-            var zone = Game.ZoneController.GetZoneForCell(cell);
-
-            if (zone != null && zone is StorageZone store)
-            {
-                container.Filter = store.Filter;
+                return _structureTypeFileMap;
             }
         }
 
-        return structure;
-    }
-
-    internal void DestroyStructure(Structure structure)
-    {
-        if (structure != null)
+        public static Structure GetFromJson(string json)
         {
-            if (structure.Cell != null)
+            var structure = json.LoadJson<Structure>();
+
+            if (structure.IsType("Container"))
             {
-                ClearStructure(structure);
+                return json.LoadJson<Container>();
+            }
+            else if (structure.IsType("Container"))
+            {
+                return json.LoadJson<Container>();
+            }
+
+            return structure;
+        }
+
+        public void ClearStructure(Structure structure)
+        {
+            var tile = ScriptableObject.CreateInstance<Tile>();
+
+            if (structure.IsFloor())
+            {
+                Game.Map.SetTile(structure.Cell, tile, Map.TileLayer.Floor);
             }
             else
             {
-                Debug.Log("Unbound structure");
+                Game.Map.SetTile(structure.Cell, tile, Map.TileLayer.Structure);
             }
-
-            if (structure.AutoInteractions.Count > 0)
-            {
-                Game.MagicController.RemoveEffector(structure);
-            }
-            Game.IdService.RemoveEntity(structure);
-            Game.FactionController.Factions[structure.FactionName].Structures.Remove(structure);
         }
-    }
 
-    internal Structure GetStructureBluePrint(string name, Cell cell, Faction faction)
-    {
-        var structure = SpawnStructure(name, cell, faction);
-        structure.IsBluePrint = true;
-        structure.Refresh();
-        return structure;
-    }
+        public void RefreshStructure(Structure structure)
+        {
+            if (structure.Cell == null)
+            {
+                return;
+            }
+            if (structure.IsFloor())
+            {
+                Game.Map.SetTile(structure.Cell, structure.Tile, Map.TileLayer.Floor);
+            }
+            else
+            {
+                Game.Map.SetTile(structure.Cell, structure.Tile, Map.TileLayer.Structure);
+            }
+        }
 
-    private void IndexStructure(Structure structure)
-    {
-        Game.IdService.EnrollEntity(structure);
+        public Structure SpawnStructure(string name, Cell cell, Faction faction, bool draw = true)
+        {
+            var structureData = StructureTypeFileMap[name];
+
+            var structure = GetFromJson(structureData);
+            structure.Cell = cell;
+            IndexStructure(structure);
+
+            if (draw)
+            {
+                structure.Refresh();
+            }
+            faction?.AddStructure(structure);
+
+            if (structure is Container container)
+            {
+                var zone = Game.ZoneController.GetZoneForCell(cell);
+
+                if (zone != null && zone is StorageZone store)
+                {
+                    container.Filter = store.Filter;
+                }
+            }
+
+            return structure;
+        }
+
+        internal void DestroyStructure(Structure structure)
+        {
+            if (structure != null)
+            {
+                if (structure.Cell != null)
+                {
+                    ClearStructure(structure);
+                }
+                else
+                {
+                    Debug.Log("Unbound structure");
+                }
+
+                if (structure.AutoInteractions.Count > 0)
+                {
+                    Game.MagicController.RemoveEffector(structure);
+                }
+                Game.IdService.RemoveEntity(structure);
+                Game.FactionController.Factions[structure.FactionName].Structures.Remove(structure);
+            }
+        }
+
+        internal Structure GetStructureBluePrint(string name, Cell cell, Faction faction)
+        {
+            var structure = SpawnStructure(name, cell, faction);
+            structure.IsBluePrint = true;
+            structure.Refresh();
+            return structure;
+        }
+
+        private void IndexStructure(Structure structure)
+        {
+            Game.IdService.EnrollEntity(structure);
+        }
     }
 }

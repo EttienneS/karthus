@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-
+using Structures;
 public class RemoveStructure : CreatureTask
 {
     public Structure StructureToRemove;

@@ -9,31 +9,12 @@
     }
   },
   "Buildable": "True",
-  "AutoInteractions": [
-    {
-      "$type": "Job, Assembly-CSharp",
-      "ActivationTime": 300,
-      "DisplayName": "Tend",
-      "Task": [
-        "{",
-        " \"$type\": \"Work, Assembly-CSharp\",",
-        " \"StructureId\": \"[THIS]\",",
-        " \"WorkTime\": \"5\",",
-        " \"RequiredSkill\": \"Farming\",",
-        " \"BusySprite\": \"leaf_t\",",
-        " \"RequiredSkillLevel\": 1",
-        "}"
-      ]
-    },
-    {
-      "$type": "Grow, Assembly-CSharp",
-      "ActivationTime": 300,
-      "Elapsed": 300,
-      "TotalStages": "5",
-      "PlantName": "BerryBush"
+  "Task": {
+    "Name": "Farm",
+    "Worktime": 5,
+    "RequiredSkill": "Farming",
+    "Options": {
     }
-  ],
-  "Properties": {
-    "Type": "Floor"
-  }
+  },
+  "Type": "Farm"
 }

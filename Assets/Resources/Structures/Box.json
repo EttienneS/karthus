@@ -12,7 +12,5 @@
   "Capacity": 100,
   "Priority": 5,
   "Filter": "-- Add to a storage zone --",
-  "Properties": {
-    "Type": "Container"
-  }
+  "Type": "Container"
 }

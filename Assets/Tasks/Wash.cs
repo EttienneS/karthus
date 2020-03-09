@@ -1,6 +1,6 @@
 ﻿using Needs;
 using Animation = LPC.Spritesheet.Generator.Interfaces.Animation;
-
+using Structures;
 public class Wash : CreatureTask
 {
     public float RecoveryRate = 0.25f;

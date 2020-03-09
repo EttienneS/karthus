@@ -9,7 +9,5 @@
     }
   },
   "Buildable": "True",
-  "Properties": {
-    "Type": "Table"
-  }
+  "Type": "Table"
 }

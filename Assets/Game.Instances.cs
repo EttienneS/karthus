@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-
+using Structures;
 public partial class Game //.Instances
 {
     private static Game _instance;

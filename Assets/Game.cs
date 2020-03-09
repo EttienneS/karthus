@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Debug = UnityEngine.Debug;
-
+using Structures;
 public enum SelectionPreference
 {
     Anything, Cell, Item, Structure, Creature, Zone

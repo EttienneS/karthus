@@ -1,6 +1,6 @@
 ﻿using Needs;
 using Animation = LPC.Spritesheet.Generator.Interfaces.Animation;
-
+using Structures;
 public class Sleep : CreatureTask
 {
     public string BedId;

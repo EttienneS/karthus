@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-
+using Structures;
 public class RoomPanel : MonoBehaviour
 {
     internal RoomZone Zone;

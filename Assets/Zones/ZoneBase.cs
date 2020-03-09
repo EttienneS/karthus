@@ -2,7 +2,7 @@
 using Newtonsoft.Json.Converters;
 using System.Collections.Generic;
 using System.Linq;
-
+using Structures;
 [JsonConverter(typeof(StringEnumConverter))]
 public enum Purpose
 {

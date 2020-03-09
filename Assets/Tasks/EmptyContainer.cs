@@ -1,4 +1,5 @@
-﻿public class EmptyContainer : CreatureTask
+﻿using Structures;
+public class EmptyContainer : CreatureTask
 {
     public string ContainerId;
 

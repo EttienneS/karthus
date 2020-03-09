@@ -9,14 +9,12 @@
     }
   },
   "Buildable": "True",
-  "Properties": {
-    "Type": "Siphon"
-  },
   "AutoInteractions": [
     {
       "$type": "SpawnItem, Assembly-CSharp",
       "ItemName": "Stone",
       "ActivationTime": "300"
     }
-  ]
+  ],
+  "Type": "Siphon"
 }

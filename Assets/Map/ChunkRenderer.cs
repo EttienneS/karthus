@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-
+using Structures;
 public class ChunkRenderer : MonoBehaviour
 {
     public List<Cell> Cells;

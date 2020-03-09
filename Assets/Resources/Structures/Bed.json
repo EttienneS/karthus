@@ -12,7 +12,5 @@
   "ValueProperties": {
     "RecoveryRate": 0.5
   },
-  "Properties": {
-    "Type": "Bed"
-  }
+  "Type": "Bed"
 }

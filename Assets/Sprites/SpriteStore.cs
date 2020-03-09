@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
+using Structures;
 public class SpriteStore : MonoBehaviour
 {
     public Dictionary<string, Sprite> CreatureSprites = new Dictionary<string, Sprite>();

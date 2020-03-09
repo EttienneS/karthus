@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Structures;
 public class MagicController : MonoBehaviour
 {
     public List<Structure> Structures = new List<Structure>();

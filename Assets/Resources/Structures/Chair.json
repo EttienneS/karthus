@@ -9,10 +9,8 @@
     }
   },
   "Buildable": "True",
-  "Properties": {
-    "Type": "Chair"
-  },
   "ValueProperties": {
     "Comfort": 0.5
-  }
+  },
+  "Type": "Chair"
 }

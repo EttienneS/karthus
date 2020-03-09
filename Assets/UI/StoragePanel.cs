@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-
+using Structures;
 public class StoragePanel : MonoBehaviour
 {
     internal StorageZone Zone;

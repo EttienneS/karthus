@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
-
+using Structures;
 public class Cell : IEquatable<Cell>
 {
     [JsonIgnore]
