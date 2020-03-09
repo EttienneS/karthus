@@ -1,49 +1,62 @@
-﻿using System.Linq;
-using UnityEngine;
-using Structures;
+﻿using Structures;
+using Structures.Work;
+using System.Linq;
 
-public class Work : CreatureTask
+public class DoWork : CreatureTask
 {
+    public WorkOrderBase Order;
     public string StructureId;
-    public float WorkTime;
-    public string BusySprite;
 
-    public Work()
+    private Structure _structure;
+
+    public DoWork()
     {
     }
 
-    public Work(Structure structure, float workTime)
+    public DoWork(Structure structure, WorkOrderBase order)
     {
+        _structure = structure;
         StructureId = structure.Id;
-        WorkTime = workTime;
+        Order = order;
     }
 
-    public VisualEffect _creatureEffect;
+    public Structure Structure
+    {
+        get
+        {
+            if (_structure == null)
+            {
+                _structure = StructureId.GetStructure();
+            }
+            return _structure;
+        }
+    }
 
     public override bool Done(Creature creature)
     {
-        var structure = StructureId.GetStructure();
-
         if (SubTasksComplete(creature))
         {
-            if (!creature.Cell.NonNullNeighbors.Contains(structure.Cell))
+            if (!creature.Cell.NonNullNeighbors.Contains(Structure.Cell))
             {
-                AddSubTask(new Move(structure.Cell.GetPathableNeighbour()));
-                return false;
+                AddSubTask(new Move(Structure.Cell.GetPathableNeighbour()));
             }
+            else
+            {
+                Order.Progress += Game.TimeManager.CreatureTick;
 
-            if (_creatureEffect == null)
-            {
-                _creatureEffect = Game.VisualEffectController.SpawnSpriteEffect(creature, creature.Vector, string.IsNullOrEmpty(BusySprite) ? "time_t" : BusySprite, WorkTime);
-            }
-            WorkTime -= Time.deltaTime;
-            creature.Face(structure.Cell);
-            if (WorkTime <= 0)
-            {
-                structure.SetValue("Work", structure.GetValue("Work") + creature.GetSkill(RequiredSkill).RollSkill());
-                creature.GainSkill(RequiredSkill, RequiredSkillLevel / 10);
-                _creatureEffect.DestroySelf();
-                return true;
+                if (Order.Progress >= Order.Option.TimeToComplete)
+                {
+                    Order.UnitComplete(creature.GetSkillLevel(Order.Skill));
+                    creature.GainSkill(Order.Skill, 0.1f);
+                    Order.Amount--;
+                    Order.Progress = 0;
+                }
+
+                if (Order.Amount <= 0)
+                {
+                    Order.OrderComplete();
+                    return true;
+                }
             }
         }
         return false;

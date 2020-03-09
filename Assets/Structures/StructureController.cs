@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Structures.Work;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -8,6 +9,7 @@ namespace Structures
 {
     public class StructureController : MonoBehaviour
     {
+        private float _lastUpdate;
         private Dictionary<string, Structure> _structureDataReference;
 
         private Dictionary<string, string> _structureTypeFileMap;
@@ -55,9 +57,9 @@ namespace Structures
             {
                 return json.LoadJson<Container>();
             }
-            else if (structure.IsType("Container"))
+            else if (structure.IsType("Farm"))
             {
-                return json.LoadJson<Container>();
+                return json.LoadJson<Farm>();
             }
 
             return structure;
@@ -118,6 +120,26 @@ namespace Structures
             }
 
             return structure;
+        }
+
+        public void Update()
+        {
+            if (!Game.Instance.Ready)
+                return;
+
+            if (Game.TimeManager.Paused)
+                return;
+
+            _lastUpdate += Time.deltaTime;
+
+            if (_lastUpdate > Game.TimeManager.CreatureTick)
+            {
+                _lastUpdate -= Game.TimeManager.CreatureTick;
+                foreach (var structure in Game.IdService.StructureLookup.Values.OfType<WorkStructureBase>().Where(s => !s.IsBluePrint))
+                {
+                    structure.Update(Game.TimeManager.CreatureTick);
+                }
+            }
         }
 
         internal void DestroyStructure(Structure structure)

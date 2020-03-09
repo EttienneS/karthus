@@ -595,8 +595,7 @@ public class Creature : IEntity
         }
         else
         {
-            bool flip = Facing == Direction.W || Facing == Direction.NE || Facing == Direction.SW;
-            CreatureRenderer.MainRenderer.flipX = flip;
+            CreatureRenderer.MainRenderer.flipX = Facing == Direction.W || Facing == Direction.NE || Facing == Direction.SW;
             if (!Sprite.Contains("_"))
             {
                 CreatureRenderer.MainRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite, ref Frame);

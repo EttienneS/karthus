@@ -9,12 +9,29 @@
     }
   },
   "Buildable": "True",
-  "Task": {
-    "Name": "Farm",
-    "Worktime": 5,
-    "RequiredSkill": "Farming",
-    "Options": {
+  "Type": "Farm",
+  "WorkDefinitions": [
+    {
+      "Name": "Farm",
+      "RequiredSkillName": "Farming",
+      "WorkOrderType": "Tend",
+      "Options": [
+        {
+          "Name": "Berries",
+          "RequiredSkillLevel": 3,
+          "TimeToComplete": 5
+        },
+        {
+          "Name": "Corn",
+          "RequiredSkillLevel": 5,
+          "TimeToComplete": 5
+        },
+        {
+          "Name": "Wheat",
+          "RequiredSkillLevel": 8,
+          "TimeToComplete": 5
+        }
+      ]
     }
-  },
-  "Type": "Farm"
+  ]
 }

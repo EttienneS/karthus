@@ -126,7 +126,7 @@ public class TimeManager : MonoBehaviour
 
     private void UpdateGlobalLight()
     {
-        var (min, max, start, end) = ColorZones.First(c => Data.Hour > c.min && Data.Hour < c.max);
+        var (min, max, start, end) = ColorZones.First(c => Data.Hour >= c.min && Data.Hour < c.max);
         var range = max - min;
         var total = range * 60f;
         var current = ((Data.Hour - min) * 60) + Data.Minute;
