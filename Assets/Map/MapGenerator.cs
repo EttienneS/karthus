@@ -45,7 +45,7 @@ public class MapGenerator
 
         Game.FactionController.PlayerFaction.HomeCells.AddRange(Game.Map.GetCircle(Game.Map.Center, 15));
 
-        var open = Game.Map.GetCircle(center, 8).Where(c => c.Pathable(Mobility.Walk));
+        var open = Game.Map.GetCircle(center, 8).Where(c => c.Pathable(Mobility.Walk) && c.Structure == null);
         Game.ItemController.SpawnItem("Berries", open.GetRandomItem(), 100);
         Game.ItemController.SpawnItem("Wood", open.GetRandomItem(), 25);
         Game.ItemController.SpawnItem("Stone", open.GetRandomItem(), 25);
@@ -100,7 +100,7 @@ public class MapGenerator
                     Game.Map.MakeChunk(new Chunk((Game.Map.Origin.X / Game.Map.ChunkSize) + i,
                                                  (Game.Map.Origin.Y / Game.Map.ChunkSize) + k));
 
-                    Game.Instance.SetLoadStatus($"Create Chunk {counter}", (counter -1) * inc);
+                    Game.Instance.SetLoadStatus($"Create Chunk {counter}", (counter - 1) * inc);
                     counter++;
                     yield return null;
                 }

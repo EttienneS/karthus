@@ -84,11 +84,6 @@ public class Build : CreatureTask
 
             creature.GetFaction().AddStructure(TargetStructure);
 
-            if (TargetStructure.AutoInteractions.Count > 0)
-            {
-                Game.MagicController.AddEffector(TargetStructure);
-            }
-
             foreach (var item in GetContainedItems())
             {
                 Game.ItemController.DestroyItem(item);

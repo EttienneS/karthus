@@ -9,5 +9,7 @@
         public WorkOption[] Options { get; set; }
 
         public string WorkOrderType { get; set; }
+
+        public bool Auto { get; set; }
     }
 }

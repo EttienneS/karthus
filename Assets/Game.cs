@@ -106,7 +106,7 @@ public partial class Game : MonoBehaviour
         {
             creature.DisableHightlight();
         }
-        EntityInfoPanel.Hide();
+        CreatureInfoPanel.Hide();
         SelectedCreatures.Clear();
     }
 
@@ -132,6 +132,7 @@ public partial class Game : MonoBehaviour
         {
             structure.HideOutline();
         }
+        StructureInfoPanel.Hide();
         SelectedStructures.Clear();
     }
 
@@ -295,11 +296,6 @@ public partial class Game : MonoBehaviour
                     foreach (var effect in structure.LinkedVisualEffects)
                     {
                         VisualEffectController.Load(effect);
-                    }
-
-                    if (structure.AutoInteractions.Count > 0)
-                    {
-                        MagicController.AddEffector(structure);
                     }
                 }
 
@@ -507,7 +503,7 @@ public partial class Game : MonoBehaviour
             DeselectItem();
             DeselectZone();
 
-            EntityInfoPanel.Show(SelectedCreatures.Select(c => c.Data).ToList());
+            CreatureInfoPanel.Show(SelectedCreatures.Select(c => c.Data).ToList());
             return true;
         }
 
@@ -529,7 +525,7 @@ public partial class Game : MonoBehaviour
             DeselectCreature();
             DeselectZone();
 
-            EntityInfoPanel.Show(SelectedItems);
+            //CreatureInfoPanel.Show(SelectedItems);
             return true;
         }
         return false;
@@ -537,7 +533,7 @@ public partial class Game : MonoBehaviour
 
     private bool SelectStructure()
     {
-       
+
         foreach (var structure in SelectedStructures)
         {
             structure.ShowOutline();
@@ -550,7 +546,7 @@ public partial class Game : MonoBehaviour
             DeselectCreature();
             DeselectZone();
 
-            EntityInfoPanel.Show(SelectedStructures.ToList());
+            StructureInfoPanel.Show(SelectedStructures.ToList());
             return true;
         }
         return false;
@@ -613,7 +609,8 @@ public partial class Game : MonoBehaviour
         else if (!_shownOnce)
         {
             UIController.Show();
-            EntityInfoPanel.Hide();
+            StructureInfoPanel.Hide();
+            CreatureInfoPanel.Hide();
             ZoneInfoPanel.Hide();
             OrderSelectionController.DisableAndReset();
             LoadingPanel.Hide();
@@ -655,8 +652,8 @@ public partial class Game : MonoBehaviour
         {
             // right mouse deselect all
             DeselectAll();
-
-            EntityInfoPanel.Hide();
+            StructureInfoPanel.Hide();
+            CreatureInfoPanel.Hide();
             ZoneInfoPanel.Hide();
             DisableMouseSprite();
             OrderSelectionController.DisableAndReset();
@@ -770,7 +767,7 @@ public partial class Game : MonoBehaviour
                     }
                     if (Select(selectedZone, LastSelection))
                     {
-                         break;
+                        break;
                     }
                 }
                 break;

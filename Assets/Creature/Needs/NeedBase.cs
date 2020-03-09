@@ -10,13 +10,13 @@ namespace Needs
         [JsonIgnore]
         public abstract List<(string description, int impact, float min, float max)> Levels { get; }
 
-        public float BaselineChangeRate { get; set; } = -0.025f;
+        public float BaselineChangeRate { get; set; } = -0.0025f;
 
         [JsonIgnore]
         public Creature Creature { get; set; }
 
         public float Current { get; set; } = 100;
-        public float CurrentChangeRate { get; set; } = -0.025f;
+        public float CurrentChangeRate { get; set; } = -0.0025f;
         public abstract string Icon { get; set; }
         public float Max { get; set; } = 100;
 

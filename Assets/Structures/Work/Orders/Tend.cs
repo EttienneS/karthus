@@ -5,7 +5,7 @@
 
         public override void OrderComplete()
         {
-            (StructureId.GetEntity() as WorkStructureBase).AddWorkOrder(1);
+            (StructureId.GetEntity() as WorkStructureBase).AddWorkOrder(1, Option);
         }
 
         public override void UnitComplete(float quality)

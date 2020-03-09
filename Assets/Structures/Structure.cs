@@ -8,8 +8,6 @@ namespace Structures
 {
     public class Structure : IEntity
     {
-        public List<EffectBase> AutoInteractions = new List<EffectBase>();
-
         internal bool HasValue(string v)
         {
             return ValueProperties.ContainsKey(v);
@@ -244,18 +242,6 @@ namespace Structures
         internal void Free()
         {
             InUseBy = null;
-        }
-
-        internal List<EffectBase> GetInteraction()
-        {
-            var interactions = new List<EffectBase>();
-            foreach (var interaction in AutoInteractions.Where(i => !i.Disabled))
-            {
-                interaction.AssignedEntityId = this.Id;
-                interactions.Add(interaction);
-            }
-
-            return interactions;
         }
 
         internal string GetProperty(string propertyName)

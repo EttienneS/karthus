@@ -1,5 +1,7 @@
-﻿using UnityEngine;
-using Structures;
+﻿using Structures;
+using UI;
+using UnityEngine;
+
 public partial class Game //.Instances
 {
     private static Game _instance;
@@ -7,15 +9,14 @@ public partial class Game //.Instances
     private CameraController _cameraController;
     private ConstructController _constructController;
     private CreatureController _creatureController;
+    private CreatureInfoPanel _creatureInfoPanel;
     private DeveloperConsole _developerConsole;
-    private EntityInfoPanel _entityInfoPanel;
     private FactionController _factionController;
     private FileController _fileController;
     private IdService _idService;
     private ItemController _itemController;
     private LoadStatus _loadingPanel;
     private LoadPanel _loadPanel;
-    private MagicController _magicController;
     private MainMenuController _mainMenuController;
     private Map _map;
     private MapGenerator _mapGenerator;
@@ -25,6 +26,7 @@ public partial class Game //.Instances
     private PhysicsController _physicsController;
     private SpriteStore _spriteStore;
     private StructureController _structureController;
+    private StructureInfoPanel _structureInfoPanel;
     private TimeManager _timeManager;
     private GameObject _ui;
     private UIController _uiController;
@@ -60,6 +62,14 @@ public partial class Game //.Instances
         }
     }
 
+    public static CreatureInfoPanel CreatureInfoPanel
+    {
+        get
+        {
+            return Instance._creatureInfoPanel != null ? Instance._creatureInfoPanel : (Instance._creatureInfoPanel = GameObject.Find("CreatureInfoPanel").GetComponent<CreatureInfoPanel>());
+        }
+    }
+
     public static DeveloperConsole DeveloperConsole
     {
         get
@@ -67,15 +77,6 @@ public partial class Game //.Instances
             return Instance._developerConsole != null ? Instance._developerConsole : (Instance._developerConsole = GameObject.Find(ControllerConstants.DeveloperConsole).GetComponent<DeveloperConsole>());
         }
     }
-
-    public static EntityInfoPanel EntityInfoPanel
-    {
-        get
-        {
-            return Instance._entityInfoPanel != null ? Instance._entityInfoPanel : (Instance._entityInfoPanel = GameObject.Find("EntityInfoPanel").GetComponent<EntityInfoPanel>());
-        }
-    }
-
     public static FactionController FactionController
     {
         get
@@ -143,14 +144,6 @@ public partial class Game //.Instances
         get
         {
             return Instance._loadPanel != null ? Instance._loadPanel : (Instance._loadPanel = GameObject.Find(ControllerConstants.LoadPanel).GetComponent<LoadPanel>());
-        }
-    }
-
-    public static MagicController MagicController
-    {
-        get
-        {
-            return Instance._magicController != null ? Instance._magicController : (Instance._magicController = GameObject.Find(ControllerConstants.MagicController).GetComponent<MagicController>());
         }
     }
 
@@ -230,6 +223,13 @@ public partial class Game //.Instances
         }
     }
 
+    public static StructureInfoPanel StructureInfoPanel
+    {
+        get
+        {
+            return Instance._structureInfoPanel != null ? Instance._structureInfoPanel : (Instance._structureInfoPanel = GameObject.Find("StructureInfoPanel").GetComponent<StructureInfoPanel>());
+        }
+    }
     public static TimeManager TimeManager
     {
         get

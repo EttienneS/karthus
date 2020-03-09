@@ -155,10 +155,6 @@ namespace Structures
                     Debug.Log("Unbound structure");
                 }
 
-                if (structure.AutoInteractions.Count > 0)
-                {
-                    Game.MagicController.RemoveEffector(structure);
-                }
                 Game.IdService.RemoveEntity(structure);
                 Game.FactionController.Factions[structure.FactionName].Structures.Remove(structure);
             }

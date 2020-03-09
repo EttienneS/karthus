@@ -291,12 +291,6 @@ public class Cell : IEquatable<Cell>
     internal Structure CreateStructure(string structureName, string faction = FactionConstants.World)
     {
         var structure = Game.StructureController.SpawnStructure(structureName, this, Game.FactionController.Factions[faction]);
-
-        if (structure.AutoInteractions.Count > 0)
-        {
-            Game.MagicController.AddEffector(structure);
-        }
-
         return structure;
     }
 
@@ -344,11 +338,6 @@ public class Cell : IEquatable<Cell>
                                                     this, 
                                                     Game.FactionController.Factions[FactionConstants.World], 
                                                     false);
-
-                if (structure.AutoInteractions.Count > 0)
-                {
-                    Game.MagicController.AddEffector(structure);
-                }
             }
             else
             {

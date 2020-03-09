@@ -9,15 +9,28 @@
 
         public override void Update(float delta)
         {
-            if (string.IsNullOrEmpty(PlantName) && Orders.Count == 0)
+            if (!string.IsNullOrEmpty(PlantName))
             {
-                AddWorkOrder(1);
+                CurrentGrowth += delta;
             }
-            else if (CurrentGrowth >= MaxGrowth)
+
+            if (CurrentGrowth >= MaxGrowth)
             {
                 Game.ItemController.SpawnItem(PlantName, Cell, (int)Quality);
-
             }
+        }
+
+        public override string ToString()
+        {
+            if (string.IsNullOrEmpty(PlantName))
+            {
+                return "\n** No crop selected. Choose one of the options and click the Select button. **";
+            }
+
+            return "Farm:\n" +
+                   $"  Growing: {PlantName}\n" +
+                   $"  Quality: {Quality}\n" +
+                   $"  Grown: {(CurrentGrowth / MaxGrowth) * 100:0,0}%\n";
         }
     }
 }

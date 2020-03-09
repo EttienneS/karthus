@@ -1,13 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using Structures;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using Structures;
-public class EntityInfoPanel : MonoBehaviour
+
+public class CreatureInfoPanel : MonoBehaviour
 {
     public GameObject ButtonPanel;
     public Text CreatureName;
-    public List<IEntity> CurrentEntities;
+    public List<Creature> CurrentCreatures;
     public Toggle FirstPanelToggle;
     public Text HealthText;
     public ImageButton ImageButtonPrefab;
@@ -33,14 +34,14 @@ public class EntityInfoPanel : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void Show(IEnumerable<IEntity> entities)
+    public void Show(IEnumerable<Creature> entities)
     {
         gameObject.SetActive(true);
 
         // switch to overview panel
         FirstPanelToggle.isOn = true;
 
-        CurrentEntities = entities.ToList();
+        CurrentCreatures = entities.ToList();
 
         _contextButtons.Clear();
         foreach (Transform child in ButtonPanel.transform)
@@ -65,29 +66,18 @@ public class EntityInfoPanel : MonoBehaviour
                 ManaPanel.SetPool(creature.ManaPool);
             }
         }
-        else if (entities.First() is Structure)
-        {
-            // structures
-            AddRemoveStructureButton(entities.OfType<Structure>());
-            AddCycleModeButton(entities.OfType<Structure>());
-            AddRotateModeButtons(entities.OfType<Structure>());
-        }
-        else
-        {
-            // items
-        }
     }
 
     public void Update()
     {
-        if (CurrentEntities != null)
+        if (CurrentCreatures != null)
         {
             PropertiesPanel.text = string.Empty;
             TabPanel.SetActive(false);
 
-            if (CurrentEntities.Count == 1)
+            if (CurrentCreatures.Count == 1)
             {
-                var currentEntity = CurrentEntities[0];
+                var currentEntity = CurrentCreatures[0];
 
                 Log.text = string.Empty;
 
@@ -136,81 +126,10 @@ public class EntityInfoPanel : MonoBehaviour
 
                     PropertiesPanel.text += $"\nLocation:\t{creature.X:F1}:{creature.Y:F1}\n\n";
                 }
-                else
-                {
-                    PropertiesPanel.text += $"\nLocation:\t{currentEntity.Cell}\n\n";
-
-                    if (currentEntity is Structure structure)
-                    {
-                        PropertiesPanel.text += $"\nMana:\t{structure.Cost.Mana.GetString(1)}\n\n";
-
-                        PropertiesPanel.text += $"Rotation:\t {structure.Rotation}\n";
-
-                        if (structure.IsBluePrint)
-                        {
-                            PropertiesPanel.text += "\n*Blueprint, waiting for construction...*\n";
-                        }
-                        else
-                        {
-                            if (structure.InUseByAnyone)
-                            {
-                                PropertiesPanel.text += $"In use by:\t{structure.InUseBy.Name}\n";
-                            }
-
-                            if (structure is Container container)
-                            {
-                                PropertiesPanel.text += $"\nContainer:\n";
-
-                                if (container.Empty)
-                                {
-                                    PropertiesPanel.text += $"Contains:\tNothing\n";
-                                }
-                                else
-                                {
-                                    PropertiesPanel.text += $"Contains:\t{container.ItemType}\n";
-                                }
-
-                                PropertiesPanel.text += $"Capacity:\t{container.Count}/{container.Capacity}\n";
-                                PropertiesPanel.text += $"Filter:\t{container.Filter}\n";
-                            }
-                        }
-
-                        foreach (var interaction in structure.AutoInteractions)
-                        {
-                            PropertiesPanel.text += $"{interaction}: {interaction.Elapsed}/{interaction.ActivationTime}\n";
-                        }
-                    }
-                    else if (currentEntity is Item item)
-                    {
-                        PropertiesPanel.text += $"\nMana:\t{item.Cost.Mana.GetString(item.Amount)}\n\n";
-
-                        PropertiesPanel.text += $"Amount:\t {item.Amount}\n";
-                        if (item.InUseByAnyone)
-                        {
-                            PropertiesPanel.text += $"In use by:\t{item.InUseBy.Name}\n";
-                        }
-                    }
-                }
             }
             else
             {
-                CreatureName.text = $"{CurrentEntities.Count} entities";
-
-                //var entityGroups = CurrentEntities.GroupBy(e => e.Name).Select(e => new
-                //{
-                //    Text = e.Key,
-                //    Count = e.Count(),
-                //    Green = e.Sum(g => g.ManaValue.GetTotal(ManaColor.Green)),
-                //    Red = e.Sum(r => r.ManaValue.GetTotal(ManaColor.Red)),
-                //    Blue = e.Sum(u => u.ManaValue.GetTotal(ManaColor.Blue)),
-                //    Black = e.Sum(b => b.ManaValue.GetTotal(ManaColor.Black)),
-                //    White = e.Sum(w => w.ManaValue.GetTotal(ManaColor.White))
-                //});
-
-                //foreach (var group in entityGroups)
-                //{
-                //    PropertiesPanel.text += $"- {group.Text} x{group.Count} (R:{group.Red}, G:{group.Green}, U:{group.Blue}, B:{group.Black}, W:{group.White})\n";
-                //}
+                CreatureName.text = $"{CurrentCreatures.Count} creatures";
             }
         }
     }
@@ -221,101 +140,14 @@ public class EntityInfoPanel : MonoBehaviour
         btn.SetOnClick(() => AttackClicked(creatures, btn));
     }
 
-    private void AddCycleModeButton(IEnumerable<Structure> structures)
-    {
-        var prime = structures.First();
-
-        if (!structures.All(s => s.Name == prime.Name && s.AutoInteractions.Count > 0))
-        {
-            return;
-        }
-
-        foreach (var interaction in prime.AutoInteractions)
-        {
-            if (string.IsNullOrEmpty(interaction.DisplayName))
-            {
-                continue;
-            }
-
-            var btn = AddButton($"{interaction.DisplayName} - {(interaction.Disabled ? "Off" : "On")}", interaction.Disabled ? "check_mark_t" : "quest_complete_t");
-            btn.SetOnClick(() =>
-            {
-                SetActiveButton(btn);
-                interaction.Disabled = !interaction.Disabled;
-
-                foreach (var structure in structures)
-                {
-                    structure.AutoInteractions[prime.AutoInteractions.IndexOf(interaction)].Disabled = interaction.Disabled;
-                }
-
-                btn.Text.text = $"{interaction.DisplayName} - {(interaction.Disabled ? "Off" : "On")}";
-                btn.Image.sprite = Game.SpriteStore.GetSprite(interaction.Disabled ? "check_mark_t" : "quest_complete_t");
-            });
-        }
-    }
-
+ 
     private void AddMoveButton(IEnumerable<Creature> creatures)
     {
         var btn = AddButton(OrderSelectionController.MoveText, OrderSelectionController.MoveIcon);
         btn.SetOnClick(() => MoveClicked(creatures, btn));
     }
 
-    private void AddRemoveStructureButton(IEnumerable<Structure> structures)
-    {
-        var btn = AddButton(OrderSelectionController.DefaultRemoveText, OrderSelectionController.DefaultRemoveIcon);
-        btn.SetOnClick(() =>
-        {
-            SetActiveButton(btn);
-
-            foreach (var structure in structures)
-            {
-                if (structure.IsBluePrint)
-                {
-                    Game.StructureController.DestroyStructure(structure);
-                }
-                else
-                {
-                    if (Game.FactionController.PlayerFaction.AvailableTasks.OfType<RemoveStructure>().Any(t => t.StructureToRemove == structure))
-                    {
-                        Debug.Log("Structure already flagged to remove");
-                    }
-                    else
-                    {
-                        Game.FactionController.PlayerFaction
-                                         .AddTask(new RemoveStructure(structure))
-                                         .AddCellBadge(structure.Cell,
-                                                       OrderSelectionController.DefaultRemoveIcon);
-                    }
-                }
-            }
-        });
-    }
-
-    private void AddRotateModeButtons(IEnumerable<Structure> structures)
-    {
-        var btnCW = AddButton($"Rotate Clockwise", "rotate_cw");
-        btnCW.SetOnClick(() =>
-        {
-            SetActiveButton(btnCW);
-
-            foreach (var structure in structures)
-            {
-                structure.RotateCW();
-            }
-        });
-
-        var btnCCW = AddButton($"Rotate Counter-Clockwise", "rotate_ccw");
-        btnCCW.SetOnClick(() =>
-        {
-            SetActiveButton(btnCCW);
-
-            foreach (var structure in structures)
-            {
-                structure.RotateCCW();
-            }
-        });
-    }
-
+   
     private void AttackClicked(IEnumerable<Creature> creatures, ImageButton btn)
     {
         SetActiveButton(btn);

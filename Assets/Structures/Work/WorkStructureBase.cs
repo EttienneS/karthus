@@ -6,30 +6,26 @@ namespace Structures.Work
     public abstract class WorkStructureBase : Structure
     {
         public List<WorkOrderBase> Orders { get; set; } = new List<WorkOrderBase>();
-        public int SelectedDefinition { get; set; }
-        public int SelectedOption { get; set; }
-        public WorkDefinition[] WorkDefinitions { get; set; }
 
-        public void AddWorkOrder(int amount)
+        public WorkDefinition Definition { get; set; }
+
+        public void AddWorkOrder(int amount, WorkOption option)
         {
-            var def = WorkDefinitions[SelectedDefinition];
-            var opt = def.Options[SelectedOption];
-
-            var orderBase = GetOrder(def, opt, amount);
+            var orderBase = GetOrder(option, amount);
             orderBase.Amount = amount;
 
             Faction.AddTask(new DoWork(this, orderBase));
             Orders.Add(orderBase);
         }
 
-        public WorkOrderBase GetOrder(WorkDefinition definition, WorkOption option, int amount)
+        public WorkOrderBase GetOrder(WorkOption option, int amount)
         {
-            var type = WorkHelper.GetTypeFor(definition.WorkOrderType);
+            var type = WorkHelper.GetTypeFor(Definition.WorkOrderType);
             var order = Activator.CreateInstance(type, null) as WorkOrderBase;
-            order.Name = $"{definition.Name} : {option.Name}";
+            order.Name = $"{Definition.Name} : {option.Name}";
             order.Option = option;
             order.Amount = amount;
-            order.Skill = definition.RequiredSkillName;
+            order.Skill = Definition.RequiredSkillName;
             order.StructureId = Id;
 
             return order;

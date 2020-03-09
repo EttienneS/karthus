@@ -8,7 +8,7 @@ public class NeedsPanel : MonoBehaviour
 
     private void Update()
     {
-        var creature = Game.EntityInfoPanel.CurrentEntities.OfType<Creature>().FirstOrDefault();
+        var creature = Game.CreatureInfoPanel.CurrentCreatures.OfType<Creature>().FirstOrDefault();
 
         if (creature == null)
         {

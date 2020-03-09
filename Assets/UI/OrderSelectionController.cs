@@ -51,7 +51,7 @@ public partial class OrderSelectionController : MonoBehaviour
     private void Start()
     {
         Game.OrderTrayController.gameObject.SetActive(false);
-        Game.EntityInfoPanel.gameObject.SetActive(false);
+        Game.CreatureInfoPanel.gameObject.SetActive(false);
         Game.OrderInfoPanel.Hide();
 
         BuildButton = CreateOrderButton(DefaultBuildText, BuildTypeClicked, "hammer", false);
