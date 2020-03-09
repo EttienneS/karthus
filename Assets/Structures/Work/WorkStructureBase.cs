@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Structures.Work
 {
@@ -30,6 +31,20 @@ namespace Structures.Work
 
             return order;
         }
+
+        public void Process(float delta)
+        {
+            foreach (var order in Orders.ToList())
+            {
+                if (order.Complete)
+                {
+                    Orders.Remove(order);
+                }
+            }
+
+            Update(delta);
+        }
+
         public abstract void Update(float delta);
     }
 }

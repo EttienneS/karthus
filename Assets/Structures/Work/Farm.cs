@@ -17,6 +17,7 @@
             if (CurrentGrowth >= MaxGrowth)
             {
                 Game.ItemController.SpawnItem(PlantName, Cell, (int)Quality);
+                CurrentGrowth = 0;
             }
         }
 

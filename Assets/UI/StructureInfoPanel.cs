@@ -9,17 +9,18 @@ namespace UI
 {
     public class StructureInfoPanel : MonoBehaviour
     {
-        public WorkOrderPrefab WorkOrderPrefab;
-        public OrderDetailItem OrderDetailPrefab;
-
-        public Text Title;
-        public Text StructureInfo;
-        public GameObject OrderPanel;
         public Button AddButton;
-        public GameObject OrderListPanel;
-
+        public Structure Current;
+        public OrderDetailItem OrderDetailPrefab;
+        public GameObject OrderItemListPanel;
+        public GameObject OrderPanel;
+        public Text StructureInfo;
+        public Text Title;
+        public WorkOrderPrefab WorkOrderPrefab;
 
         internal List<WorkOrderPrefab> ActivePrefabs;
+        internal List<OrderDetailItem> DetailItems = new List<OrderDetailItem>();
+        internal WorkOrderPrefab Selected;
 
         public void Add()
         {
@@ -35,21 +36,18 @@ namespace UI
             gameObject.SetActive(false);
         }
 
-        public Structure Current;
-
         public void Show(IEnumerable<Structure> entities)
         {
             gameObject.SetActive(true);
 
             var structure = entities.First();
             Current = structure;
+            ResetPanel();
+
             if (structure is WorkStructureBase workStructure)
             {
                 ActivePrefabs = new List<WorkOrderPrefab>();
-                foreach (Transform item in WorkOrderPrefab.transform)
-                {
-                    Destroy(item.transform);
-                }
+
                 foreach (var option in workStructure.Definition.Options)
                 {
                     var prefab = Instantiate(WorkOrderPrefab, OrderPanel.transform);
@@ -67,6 +65,11 @@ namespace UI
                     AddButton.GetComponentInChildren<Text>().text = "Select";
                 }
             }
+        }
+
+        public void Start()
+        {
+            AddButton.enabled = false;
         }
 
         public void Update()
@@ -103,18 +106,26 @@ namespace UI
             {
                 StructureInfo.text += workStructure.ToString();
 
-                foreach (Transform item in OrderListPanel.transform)
+                foreach (var order in DetailItems.ToList())
                 {
-                    Destroy(item.transform);
+                    if (order.WorkOrder.Complete)
+                    {
+                        DetailItems.Remove(order);
+                        Destroy(order.gameObject);
+                    }
                 }
+
                 foreach (var order in workStructure.Orders)
                 {
-                    Instantiate(OrderDetailPrefab, OrderListPanel.transform).Load(order);
+                    if (!DetailItems.Any(d => d.WorkOrder == order))
+                    {
+                        var detailItem = Instantiate(OrderDetailPrefab, OrderItemListPanel.transform);
+                        detailItem.Load(order);
+                        DetailItems.Add(detailItem);
+                    }
                 }
             }
         }
-
-        internal WorkOrderPrefab Selected;
 
         internal void SetSelected(WorkOrderPrefab selected)
         {
@@ -128,9 +139,17 @@ namespace UI
             AddButton.enabled = true;
         }
 
-        public void Start()
+        private void ResetPanel()
         {
-            AddButton.enabled = false;
+            foreach (Transform detailItem in OrderItemListPanel.transform)
+            {
+                Destroy(detailItem.gameObject);
+            }
+            foreach (Transform orderItem in OrderPanel.transform)
+            {
+                Destroy(orderItem.gameObject);
+            }
+            DetailItems.Clear();
         }
     }
 }

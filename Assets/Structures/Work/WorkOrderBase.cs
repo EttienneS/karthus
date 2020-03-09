@@ -8,6 +8,7 @@
         public int Amount { get; set; }
         public WorkOption Option { get; set; }
         public string Skill { get; set; }
+        public bool Complete { get; set; }
 
         public abstract void UnitComplete(float quality);
 

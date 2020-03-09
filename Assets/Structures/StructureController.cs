@@ -137,7 +137,7 @@ namespace Structures
                 _lastUpdate -= Game.TimeManager.CreatureTick;
                 foreach (var structure in Game.IdService.StructureLookup.Values.OfType<WorkStructureBase>().Where(s => !s.IsBluePrint))
                 {
-                    structure.Update(Game.TimeManager.CreatureTick);
+                    structure.Process(Game.TimeManager.CreatureTick);
                 }
             }
         }

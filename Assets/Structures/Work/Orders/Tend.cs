@@ -2,10 +2,10 @@
 {
     public class Tend : WorkOrderBase
     {
-
         public override void OrderComplete()
         {
             (StructureId.GetEntity() as WorkStructureBase).AddWorkOrder(1, Option);
+            Complete = true;
         }
 
         public override void UnitComplete(float quality)

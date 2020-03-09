@@ -9041,7 +9041,7 @@ GameObject:
   - component: {fileID: 905138904030559302}
   - component: {fileID: 7719222899998124909}
   m_Layer: 5
-  m_Name: OrderList
+  m_Name: OrderItemListPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9466,15 +9466,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7135f980126ba14ebcdfd42f6d7bd92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WorkOrderPrefab: {fileID: 4792367887296976723, guid: 37f395cc94fb701419cb52e30f46db37,
-    type: 3}
+  AddButton: {fileID: 7709745010012780789}
   OrderDetailPrefab: {fileID: 7860004094668798811, guid: ae04a2c018d1769469124e3ddd2cc29e,
     type: 3}
-  Title: {fileID: 2498689592419194641}
-  StructureInfo: {fileID: 5631989066845075766}
+  OrderItemListPanel: {fileID: 7573243484136552583}
   OrderPanel: {fileID: 1255633994881723067}
-  AddButton: {fileID: 7709745010012780789}
-  OrderListPanel: {fileID: 7573243484136552583}
+  StructureInfo: {fileID: 5631989066845075766}
+  Title: {fileID: 2498689592419194641}
+  WorkOrderPrefab: {fileID: 4792367887296976723, guid: 37f395cc94fb701419cb52e30f46db37,
+    type: 3}
 --- !u!1 &7859177947258001871
 GameObject:
   m_ObjectHideFlags: 0
