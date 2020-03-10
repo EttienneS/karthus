@@ -24,7 +24,6 @@ public class CreatureRenderer : MonoBehaviour
         LineRenderer = GetComponent<LineRenderer>();
 
         Highlight.gameObject.SetActive(false);
-        Light.gameObject.SetActive(false);
     }
 
     public void DrawAwareness()
@@ -75,8 +74,15 @@ public class CreatureRenderer : MonoBehaviour
 
         if (Data.Update(Time.deltaTime))
         {
+            if (Game.TimeManager.Data.Hour < 6 || Game.TimeManager.Data.Hour > 18)
+            {
+                EnableLight();
+            }
+            else
+            {
+                DisableLight();
+            }
         }
-        UpdateLight();
     }
 
     internal void DisableHightlight()
@@ -87,7 +93,7 @@ public class CreatureRenderer : MonoBehaviour
         }
     }
 
-   
+
     internal void EnableHighlight(Color color)
     {
         if (Highlight != null)
@@ -102,6 +108,23 @@ public class CreatureRenderer : MonoBehaviour
         if (Light != null)
         {
             Light.gameObject.SetActive(true);
+        }
+    }
+
+    void OnDrawGizmos()
+    {
+        if (Data.UnableToFindPath)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(Data.Cell.Vector + new Vector3(0, 0, 5), Game.Map.GetCellAtCoordinate(Data.TargetCoordinate).Vector + new Vector3(0, 0, 5));
+        }
+    }
+
+    internal void DisableLight()
+    {
+        if (Light != null)
+        {
+            Light.gameObject.SetActive(false);
         }
     }
 
@@ -129,16 +152,4 @@ public class CreatureRenderer : MonoBehaviour
         }
     }
 
-    private void UpdateLight()
-    {
-        if (Data.ManaPool != null)
-        {
-            var totalMana = Data.ManaPool.Sum(t => t.Value.Total);
-            Light.pointLightOuterRadius = 1 + Mathf.PingPong(Time.time, 0.1f);
-            Light.intensity = (totalMana / 15.0f) * (1 + Mathf.PingPong(Time.time, 0.1f));
-            Light.pointLightInnerAngle = Mathf.Min(totalMana * 5.0f, 360.0f);
-
-            Light.color = Data.ManaPool.GetManaWithMost().GetActualColor();
-        }
-    }
 }

@@ -238,7 +238,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.03, y: -0.06}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1052101531876439000
@@ -256,8 +256,8 @@ MonoBehaviour:
   m_LightType: 3
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 1
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 10
+  m_Color: {r: 1, g: 0.99595976, b: 0.8160377, a: 1}
+  m_Intensity: 0.5
   m_LightVolumeOpacity: 0.1
   m_ApplyToSortingLayers: 00000000098c6d677349ad24656c353427a42189b9325fe8f59bf2228b4e4f75313eaac84def3569df5853e3
   m_LightCookieSprite: {fileID: 0}
@@ -266,10 +266,10 @@ MonoBehaviour:
   m_AlphaBlendOnOverlap: 0
   m_ShadowIntensity: 0
   m_ShadowVolumeIntensity: 0
-  m_PointLightInnerAngle: 0
+  m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
-  m_PointLightInnerRadius: 0
-  m_PointLightOuterRadius: 0.5
+  m_PointLightInnerRadius: 1
+  m_PointLightOuterRadius: 5
   m_PointLightDistance: 3
   m_PointLightQuality: 1
   m_ShapeLightParametricSides: 5
@@ -357,7 +357,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d18ad302dfa30fe4c9b8df47e793a774, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -522,7 +522,7 @@ SpriteRenderer:
   m_SortingLayerID: -396414279
   m_SortingLayer: 4
   m_SortingOrder: 0
-  m_Sprite: {fileID: 611582470095337371, guid: 89cde8e6106507442be858858cfbd35a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8c37c41eb5c2f7b41b720b3fb92c4415, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -558,7 +558,7 @@ MonoBehaviour:
   - {x: -0.08, y: 0.075, z: 0}
   m_ShapePathHash: 0
   m_Mesh: {fileID: 0}
-  m_InstanceId: 131872
+  m_InstanceId: 47482
 --- !u!114 &385317183904278325
 MonoBehaviour:
   m_ObjectHideFlags: 0

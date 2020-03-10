@@ -67,6 +67,11 @@ public class Item : IEntity
         }
     }
 
+    public void Free()
+    {
+        InUseById = null;
+    }
+
     [JsonIgnore]
     public bool InUseByAnyone
     {

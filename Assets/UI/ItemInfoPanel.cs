@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,8 +16,11 @@ namespace UI
             gameObject.SetActive(true);
 
             Items = items;
+        }
 
-            var current = items[0];
+        public void Update()
+        {
+            var current = Items[0];
 
             Title.text = current.Name;
             Description.text = string.Empty;
@@ -30,6 +31,9 @@ namespace UI
                 Description.text += $"In use by: {current.InUseBy.Name}\n";
             }
             Description.text += $"Amount: {current.Amount}\n";
+
+            Description.text += $"\n{current.Cell}\n";
+
         }
 
         public void Hide()

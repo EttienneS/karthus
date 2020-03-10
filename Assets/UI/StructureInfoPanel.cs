@@ -45,11 +45,11 @@ namespace UI
             }
         }
 
-        public void Show(IEnumerable<Structure> entities)
+        public void Show(IEnumerable<Structure> structures)
         {
             gameObject.SetActive(true);
 
-            var structure = entities.First();
+            var structure = structures.First();
             Current = structure;
             ResetPanel();
 

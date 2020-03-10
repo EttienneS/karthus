@@ -58,6 +58,26 @@ public partial class OrderSelectionController //.Designate
 
                     if (structure.IsBluePrint)
                     {
+                        var task = structure.Faction.AvailableTasks.OfType<Build>().FirstOrDefault(b => b.TargetStructure == structure);
+                        if (task != null)
+                        {
+                            structure.Faction.RemoveTask(task);
+                            task.Destroy();
+                        }
+                        else
+                        {
+                            foreach (var creature in structure.Faction.Creatures)
+                            {
+                                if (creature.Task != null && task is Build build)
+                                {
+                                    if (build.TargetStructure == structure)
+                                    {
+                                        creature.CancelTask();
+                                    }
+                                }
+                            }
+                        }
+
                         Game.StructureController.DestroyStructure(structure);
                     }
                     else

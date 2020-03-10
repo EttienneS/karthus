@@ -16,18 +16,19 @@
 
     public override bool Done(Creature creature)
     {
+        var item = ItemId.GetItem();
+        if (item == null)
+        {
+            throw new TaskFailedException("Cannot pick up, item does not exist!");
+        }
+
         if (SubTasksComplete(creature))
         {
             if (creature.HasItem(ItemId))
             {
                 return true;
             }
-
-            var item = ItemId.GetItem();
-            if (item == null)
-            {
-                throw new TaskFailedException("Cannot pick up, item does not exist!");
-            }
+            
             creature.PickUpItem(item, Amount < 0 ? item.Amount : Amount);
             return true;
         }

@@ -513,6 +513,8 @@ public class Creature : IEntity
                 item.Amount -= amount;
 
                 CarriedItemIds.Add(newItem.Id);
+                newItem.InUseBy = this;
+                item.Free();
             }
             else
             {
@@ -947,9 +949,10 @@ public class Creature : IEntity
         Moving = true;
 
         var targetCell = Game.Map.GetCellAtCoordinate(TargetCoordinate.x, TargetCoordinate.y);
+        var currentCell = Game.Map.GetCellAtCoordinate(X, Y);
         if (_path == null || _path.Count == 0)
         {
-            _path = Pathfinder.FindPath(Game.Map.GetCellAtCoordinate(X, Y), targetCell, Mobility);
+            _path = Pathfinder.FindPath(currentCell, targetCell, Mobility);
         }
 
         if (_path == null || _path.Count == 0)
