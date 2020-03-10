@@ -9,7 +9,7 @@ public class Badge : MonoBehaviour
     {
         if (Entity != null)
         {
-            transform.position = Entity.Vector;
+            transform.position = new Vector3(Entity.Vector.x, Entity.Vector.y, 5);
         }
     }
 

@@ -62,7 +62,7 @@ public class VisualEffectController : MonoBehaviour
         return GetBase(data.EffectType, data.Holder);
     }
 
- 
+
 
     public VisualEffect SpawnEffect(IEntity holder, Vector2 vector, float lifeSpan)
     {
@@ -138,7 +138,7 @@ public class VisualEffectController : MonoBehaviour
     {
         var badge = Spawn();
         badge.SetSprite(iconName);
-        badge.transform.position = cell.Vector;
+        badge.transform.position = cell.Vector + new Vector3(0, 0, 5);
 
         return badge;
     }

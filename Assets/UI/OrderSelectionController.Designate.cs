@@ -52,7 +52,7 @@ public partial class OrderSelectionController //.Designate
         {
             foreach (var cell in cells)
             {
-                if (cell.Structure?.Buildable == true)
+                if (cell.Structure != null)
                 {
                     var structure = cell.Structure;
 
@@ -67,8 +67,8 @@ public partial class OrderSelectionController //.Designate
                             continue;
                         }
                         Game.FactionController.PlayerFaction
-                                         .AddTask(new RemoveStructure(structure))
-                                         .AddCellBadge(structure.Cell, DefaultRemoveIcon);
+                                              .AddTask(new RemoveStructure(structure))
+                                              .AddCellBadge(structure.Cell, DefaultRemoveIcon);
                     }
                 }
             }

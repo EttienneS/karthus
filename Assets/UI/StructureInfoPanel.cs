@@ -27,6 +27,11 @@ namespace UI
             Selected.Structure.AddWorkOrder(1, Selected.Option);
         }
 
+        public void Remove()
+        {
+            Current.Faction.AddTask(new RemoveStructure(Current));
+        }
+
         public void Hide()
         {
             gameObject.SetActive(false);
@@ -84,6 +89,7 @@ namespace UI
             {
                 StructureInfo.text += "\n** Blueprint, waiting for construction... **\n";
             }
+
             else if (Current is Container container)
             {
                 StructureInfo.text += $"\nContainer:\n";
