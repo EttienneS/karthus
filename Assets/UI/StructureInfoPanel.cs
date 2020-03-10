@@ -27,14 +27,22 @@ namespace UI
             Selected.Structure.AddWorkOrder(1, Selected.Option);
         }
 
-        public void Remove()
-        {
-            Current.Faction.AddTask(new RemoveStructure(Current));
-        }
-
         public void Hide()
         {
             gameObject.SetActive(false);
+        }
+
+        public void Remove()
+        {
+            if (!Game.FactionController.PlayerFaction.AvailableTasks.OfType<RemoveStructure>().Any(r => r.StructureToRemove == Current))
+            {
+                Game.FactionController.PlayerFaction.AddTask(new RemoveStructure(Current))
+                                                    .AddCellBadge(Current.Cell, OrderSelectionController.DefaultRemoveIcon);
+            }
+            else
+            {
+                Debug.Log("Already added task to remove");
+            }
         }
 
         public void Show(IEnumerable<Structure> entities)
@@ -89,7 +97,6 @@ namespace UI
             {
                 StructureInfo.text += "\n** Blueprint, waiting for construction... **\n";
             }
-
             else if (Current is Container container)
             {
                 StructureInfo.text += $"\nContainer:\n";

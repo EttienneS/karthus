@@ -27,6 +27,7 @@ public partial class Game //.Instances
     private SpriteStore _spriteStore;
     private StructureController _structureController;
     private StructureInfoPanel _structureInfoPanel;
+    private ItemInfoPanel _itemInfoPanel;
     private TimeManager _timeManager;
     private GameObject _ui;
     private UIController _uiController;
@@ -230,6 +231,15 @@ public partial class Game //.Instances
             return Instance._structureInfoPanel != null ? Instance._structureInfoPanel : (Instance._structureInfoPanel = GameObject.Find("StructureInfoPanel").GetComponent<StructureInfoPanel>());
         }
     }
+
+    public static ItemInfoPanel ItemInfoPanel
+    {
+        get
+        {
+            return Instance._itemInfoPanel != null ? Instance._itemInfoPanel : (Instance._itemInfoPanel = GameObject.Find("ItemInfoPanel").GetComponent<ItemInfoPanel>());
+        }
+    }
+
     public static TimeManager TimeManager
     {
         get

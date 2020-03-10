@@ -118,6 +118,7 @@ public partial class Game : MonoBehaviour
             item.HideOutline();
         }
         SelectedItems.Clear();
+        ItemInfoPanel.Hide();
     }
 
     public void DeselectStructure(bool stopGhost)
@@ -512,7 +513,6 @@ public partial class Game : MonoBehaviour
 
     private bool SelectItem()
     {
-
         foreach (var item in SelectedItems)
         {
             item.ShowOutline();
@@ -525,7 +525,7 @@ public partial class Game : MonoBehaviour
             DeselectCreature();
             DeselectZone();
 
-            //CreatureInfoPanel.Show(SelectedItems);
+            ItemInfoPanel.Show(SelectedItems);
             return true;
         }
         return false;
@@ -610,6 +610,7 @@ public partial class Game : MonoBehaviour
         {
             UIController.Show();
             StructureInfoPanel.Hide();
+            ItemInfoPanel.Hide();
             CreatureInfoPanel.Hide();
             ZoneInfoPanel.Hide();
             OrderSelectionController.DisableAndReset();
@@ -653,6 +654,7 @@ public partial class Game : MonoBehaviour
             // right mouse deselect all
             DeselectAll();
             StructureInfoPanel.Hide();
+            ItemInfoPanel.Hide();
             CreatureInfoPanel.Hide();
             ZoneInfoPanel.Hide();
             DisableMouseSprite();

@@ -66,26 +66,17 @@ namespace Needs
             }
             else
             {
-
-                try
+                if (current.HasValue)
                 {
-                    if (current.HasValue)
+                    if (feeling == null)
                     {
-                        if (feeling == null)
-                        {
-                            feeling = new Feeling(Name, 0, -1f);
-                            Creature.Feelings.Add(feeling);
-                        }
-
-                        feeling.Description = current.Value.description;
-                        feeling.MoodImpact = current.Value.impact;
+                        feeling = new Feeling(Name, 0, -1f);
+                        Creature.Feelings.Add(feeling);
                     }
-                }
-                catch (Exception ex)
-                {
 
+                    feeling.Description = current.Value.description;
+                    feeling.MoodImpact = current.Value.impact;
                 }
-
             }
         }
     }

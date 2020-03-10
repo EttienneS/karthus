@@ -24,6 +24,7 @@ namespace Needs
             if (Creature.GetNeed<Hunger>().Current < 15 && Creature.IsIdle())
             {
                 var food = Creature.GetFaction().FindItem(Eat.FoodCriteria, Creature);
+                food.InUseBy = Creature;
                 if (food != null)
                 {
                     Creature.Task = new Eat(food);
