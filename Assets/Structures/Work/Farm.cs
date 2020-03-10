@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using UnityEngine;
 
 namespace Structures.Work
 {
@@ -36,7 +37,7 @@ namespace Structures.Work
 
             return "Farm:\n" +
                    $"  Growing: {PlantName}\n" +
-                   $"  Quality: {Quality}\n" +
+                   $"  Quality: {Quality:0,0}\n" +
                    $"  Grown: {(CurrentGrowth / MaxGrowth) * 100:0,0}%\n";
         }
 
@@ -44,7 +45,8 @@ namespace Structures.Work
         {
             if (!string.IsNullOrEmpty(PlantName))
             {
-                CurrentGrowth += delta / 5;
+                CurrentGrowth += delta / 10;
+                Quality += Random.Range(0, 0.001f);
             }
             else if (AutoOrder != null)
             {
