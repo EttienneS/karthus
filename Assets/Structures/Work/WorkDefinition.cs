@@ -11,5 +11,9 @@
         public string WorkOrderType { get; set; }
 
         public bool Auto { get; set; }
+
+        public float AutoCooldown { get; set; }
+
+        public bool SkipInitialDelay { get; set; } = true;
     }
 }

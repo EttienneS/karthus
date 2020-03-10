@@ -1,0 +1,11 @@
+{
+  "Name": "WheatPlant",
+  "SpriteName": "WheatPlant",
+  "TravelCost": "3",
+  "Buildable": "False",
+  "Cost": {
+    "Items": {
+      "Wheat": "10"
+    }
+  }
+}

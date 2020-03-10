@@ -24,10 +24,6 @@ namespace UI
 
         public void Add()
         {
-            if (Selected.Definition.Auto)
-            {
-                Selected.Structure.Orders.Clear();
-            }
             Selected.Structure.AddWorkOrder(1, Selected.Option);
         }
 
@@ -44,6 +40,7 @@ namespace UI
             Current = structure;
             ResetPanel();
 
+            AddButton.gameObject.SetActive(false);
             if (structure is WorkStructureBase workStructure)
             {
                 ActivePrefabs = new List<WorkOrderPrefab>();
@@ -58,11 +55,12 @@ namespace UI
                 if (ActivePrefabs.Count > 0)
                 {
                     SetSelected(ActivePrefabs[0]);
-                }
 
-                if (workStructure.Definition.Auto)
-                {
-                    AddButton.GetComponentInChildren<Text>().text = "Select";
+                    AddButton.gameObject.SetActive(true);
+                    if (workStructure.Definition.Auto)
+                    {
+                        AddButton.GetComponentInChildren<Text>().text = "Select";
+                    }
                 }
             }
         }
@@ -74,9 +72,9 @@ namespace UI
 
         public void Update()
         {
-            Title.text = Current.Name;
+            Title.text = $"{Current.Name}";
 
-            StructureInfo.text = $"Rotation: {Current.Rotation}\n";
+            StructureInfo.text = string.Empty;
 
             if (Current.InUseByAnyone)
             {
@@ -105,6 +103,11 @@ namespace UI
             else if (Current is WorkStructureBase workStructure)
             {
                 StructureInfo.text += workStructure.ToString();
+
+                if (workStructure.AutoCooldown > 0)
+                {
+                    StructureInfo.text += $"Next {workStructure.AutoOrder.Name} in {workStructure.AutoCooldown:0,0}/{workStructure.Definition.AutoCooldown:0,0}";
+                }
 
                 foreach (var order in DetailItems.ToList())
                 {

@@ -1,0 +1,13 @@
+{
+  "Name": "Wheat",
+  "SpriteName": "Wheat",
+  "Cost": {
+    "Items": {
+      "Wheat": "1"
+    }
+  },
+  "Categories": [ "Food" ],
+  "ValueProperties": {
+    "Nutrition": 30
+  }
+}

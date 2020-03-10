@@ -10,13 +10,34 @@ namespace Structures.Work
 
         public WorkDefinition Definition { get; set; }
 
+        public WorkOrderBase AutoOrder { get; set; }
+
+        public float AutoCooldown { get; set; }
+
         public void AddWorkOrder(int amount, WorkOption option)
         {
             var orderBase = GetOrder(option, amount);
             orderBase.Amount = amount;
 
-            Faction.AddTask(new DoWork(this, orderBase));
-            Orders.Add(orderBase);
+            if (Definition.Auto)
+            {
+                Orders.ForEach(o => o.Complete = true);
+                Orders.Clear();
+                AutoOrder = orderBase;
+                AutoCooldown = Definition.AutoCooldown;
+
+                if (Definition.SkipInitialDelay)
+                {
+                    // first time it should immediately run
+                    Definition.SkipInitialDelay = false;
+                    AutoCooldown = 0.00000001f;
+                }
+            }
+            else
+            {
+                Faction.AddTask(new DoWork(this, orderBase));
+                Orders.Add(orderBase);
+            }
         }
 
         public WorkOrderBase GetOrder(WorkOption option, int amount)
@@ -41,6 +62,22 @@ namespace Structures.Work
                     Orders.Remove(order);
                 }
             }
+
+            if (AutoOrder != null)
+            {
+                if (AutoCooldown > 0)
+                {
+                    AutoCooldown -= delta;
+                }
+
+                if (AutoCooldown <= 0)
+                {
+                    Faction.AddTask(new DoWork(this, AutoOrder));
+                    Orders.Add(AutoOrder);
+                    AutoOrder = null;
+                }
+            }
+            
 
             Update(delta);
         }

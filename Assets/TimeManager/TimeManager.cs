@@ -27,7 +27,6 @@ public class TimeManager : MonoBehaviour
         Minute = 0
     };
 
-    public float MagicInterval = 0.01f;
     internal float CreatureTick = 0.1f;
 
     private TimeStep _timeStep;
@@ -99,7 +98,7 @@ public class TimeManager : MonoBehaviour
 
         _timeTicks += Time.deltaTime;
 
-        if (_timeTicks >= CreatureTick)
+        if (_timeTicks >= (CreatureTick * 5))
         {
             _timeTicks = 0;
             Data.Minute += 5;

@@ -15,27 +15,28 @@
     "RequiredSkillName": "Farming",
     "WorkOrderType": "Tend",
     "Auto": "true",
+    "AutoCooldown": 100,
     "Options": [
       {
         "Name": "Berries",
         "Sprite": "BerryBush",
         "Description": "Berry bushes grow quickly but do not handle bad weather well.",
         "RequiredSkillLevel": 3,
-        "TimeToComplete": 5
+        "TimeToComplete": 10
       },
       {
         "Name": "Corn",
         "Sprite": "CornPlant",
         "Description": "Corn is a hardy plant but yields less than wheat.",
         "RequiredSkillLevel": 5,
-        "TimeToComplete": 5
+        "TimeToComplete": 10
       },
       {
         "Name": "Wheat",
         "Sprite": "WheatPlant",
         "Description": "Wheat has a higher yield than corn but is more prone to disease.",
         "RequiredSkillLevel": 8,
-        "TimeToComplete": 5
+        "TimeToComplete": 10
       }
     ]
   }

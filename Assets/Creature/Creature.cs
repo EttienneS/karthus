@@ -534,6 +534,7 @@ public class Creature : IEntity
 
     public void SetAnimation(Animation animation, float duration)
     {
+        ClearFixedAnimation();
         Animation = animation;
         AnimationDelta = duration;
     }
