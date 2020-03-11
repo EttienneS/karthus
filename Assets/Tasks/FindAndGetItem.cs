@@ -1,4 +1,6 @@
-﻿public class FindAndGetItem : CreatureTask
+﻿using UnityEngine;
+
+public class FindAndGetItem : CreatureTask
 {
     internal string ItemCriteria;
     internal int Amount;
@@ -14,7 +16,7 @@
     {
         if (SubTasksComplete(creature))
         {
-            if (creature.HasItem(ItemCriteria, Amount))
+            if (creature.HeldItem?.IsType(ItemCriteria) == true)
             {
                 return true;
             }
@@ -30,30 +32,49 @@
                     }
                     else
                     {
-                        AddSubTask(new Move(targetEntity.Cell));
+                        if (targetEntity.Cell.Pathable(creature.Mobility))
+                        {
+                            AddSubTask(new Move(targetEntity.Cell));
+                        }
+                        else
+                        {
+                            AddSubTask(new Move(targetEntity.Cell.GetPathableNeighbour()));
+                        }
                         TargetId = targetEntity.Id;
                     }
                 }
                 else
                 {
                     var targetItem = TargetId.GetItem();
-                    var requiredAmount = Amount - creature.CurrentItemCount(ItemCriteria);
-                    if (targetItem != null)
+                    if (targetItem == null)
                     {
-                        creature.PickUpItem(targetItem, requiredAmount);
+                        TargetId = null;
+                        Debug.Log("Item no longer exists");
                     }
                     else
                     {
-                        var container = TargetId.GetContainer();
-                        var item = container.GetItem(requiredAmount);
-                        if (item != null)
+                        var requiredAmount = Amount;
+                        if (creature.HeldItem != null)
                         {
-                            creature.PickUpItem(item, requiredAmount);
+                            requiredAmount -= creature.HeldItem.Amount;
                         }
-                        container.Free();
-                    }
 
-                    TargetId = null;
+                        if (creature.HeldItem == null)
+                        {
+                            creature.PickUpItem(targetItem, requiredAmount);
+                        }
+                        else
+                        {
+                            var container = TargetId.GetContainer();
+                            var item = container.GetItem(requiredAmount);
+                            if (item != null)
+                            {
+                                creature.PickUpItem(item, requiredAmount);
+                            }
+                            container.Free();
+                        }
+                        TargetId = null;
+                    }
                 }
             }
         }

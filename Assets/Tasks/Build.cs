@@ -22,7 +22,7 @@ public class Build : CreatureTask
         {
             item.InUseById = null;
             AddSubTask(new Pickup(item));
-            AddSubTask(new Drop(structure.Cell.GetPathableNeighbour(), item, item.Amount));
+            AddSubTask(new Drop(structure.Cell.GetPathableNeighbour()));
         }
 
         foreach (var item in structure.Cost.Items)
@@ -87,6 +87,10 @@ public class Build : CreatureTask
             foreach (var item in GetContainedItems())
             {
                 Game.ItemController.DestroyItem(item);
+            }
+            if (TargetStructure.Properties.ContainsKey(NamedProperties.ContainedItemIds))
+            {
+                TargetStructure.Properties.Remove(NamedProperties.ContainedItemIds);
             }
 
             return true;

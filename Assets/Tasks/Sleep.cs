@@ -4,7 +4,7 @@ using Structures;
 public class Sleep : CreatureTask
 {
     public string BedId;
-    public float RecoveryRate = 0.25f;
+    public float RecoveryRate = 1.25f;
 
     public Structure Bed
     {

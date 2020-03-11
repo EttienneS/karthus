@@ -12,12 +12,19 @@ public class Item : IEntity
 
     public int Amount { get; set; } = 1;
 
-    public Cost Cost { get; set; } = new Cost();
-
-    [JsonIgnore]
-    public Cell Cell { get; set; }
-
     public string[] Categories { get; set; }
+    [JsonIgnore]
+    public Cell Cell
+    {
+        get
+        {
+            return Game.Map.GetCellAtCoordinate(Coords);
+        }
+        set
+        {
+            Coords = (Cell.X, Cell.Y);
+        }
+    }
 
     public (float X, float Y) Coords
     {
@@ -33,55 +40,22 @@ public class Item : IEntity
         }
     }
 
-    internal bool IsType(string type)
-    {
-        if (Name.Equals(type, StringComparison.OrdinalIgnoreCase))
-        {
-            return true;
-        }
-
-        if (Categories == null)
-            return false;
-
-        return Categories.Contains(type, StringComparer.OrdinalIgnoreCase);
-    }
-
+    public Cost Cost { get; set; } = new Cost();
     public string FactionName { get; set; }
 
     public string Id { get; set; }
-
-    [JsonIgnore]
-    public IEntity InUseBy
-    {
-        get
-        {
-            if (string.IsNullOrEmpty(InUseById))
-            {
-                return null;
-            }
-            return InUseById.GetEntity();
-        }
-        set
-        {
-            InUseById = value.Id;
-        }
-    }
-
-    public void Free()
-    {
-        InUseById = null;
-    }
 
     [JsonIgnore]
     public bool InUseByAnyone
     {
         get
         {
-            return InUseBy != null;
+            return !string.IsNullOrEmpty(InUseById);
         }
     }
 
     public string InUseById { get; set; }
+
     public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
 
     public string Name { get; set; }
@@ -109,6 +83,30 @@ public class Item : IEntity
         return json.LoadJson<Item>();
     }
 
+    public bool CanUse(IEntity entity)
+    {
+        if (string.IsNullOrEmpty(InUseById))
+        {
+            return true;
+        }
+        return InUseById.GetEntity() == entity;
+    }
+
+    public void Free()
+    {
+        InUseById = null;
+    }
+
+    public void Reserve(IEntity entity)
+    {
+        InUseById = entity.Id;
+    }
+
+    public override string ToString()
+    {
+        return $"{Name} ({Amount}) - {Id}";
+    }
+
     internal void HideOutline()
     {
         if (_outline != null)
@@ -117,15 +115,27 @@ public class Item : IEntity
         }
     }
 
+    internal bool IsType(string type)
+    {
+        if (Name.Equals(type, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        if (Categories == null)
+            return false;
+
+        return Categories.Contains(type, StringComparer.OrdinalIgnoreCase);
+    }
     internal void ShowOutline()
     {
         _outline = Game.VisualEffectController
                        .SpawnSpriteEffect(this, Vector, "CellOutline", float.MaxValue);
         _outline.Regular();
     }
-
-    public override string ToString()
+    internal Item Split(int amount)
     {
-        return $"{Name} ({Amount}) - {Id}";
+        Amount -= amount;
+        return Game.ItemController.SpawnItem(Name, Cell, amount);
     }
 }

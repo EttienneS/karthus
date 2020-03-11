@@ -484,7 +484,7 @@ public partial class Game : MonoBehaviour
     {
         if (OrderSelectionController.CellClickOrder != null)
         {
-            Debug.Log($"Clicked: {SelectedCells.Count}: {SelectedCells[0]}");
+            //Debug.Log($"Clicked: {SelectedCells.Count}: {SelectedCells[0]}");
             OrderSelectionController.CellClickOrder.Invoke(SelectedCells);
             DeselectCell();
         }

@@ -86,6 +86,7 @@ public class CreatureController : MonoBehaviour
         var creature = Instantiate(CreaturePrefab, transform);
         creature.Data = creatureData;
         creature.Data.CreatureRenderer = creature;
+        
         Game.IdService.EnrollEntity(creature.Data);
         creature.name = $"{creature.Data.Name} ({creature.Data.Id})";
 

@@ -6,11 +6,6 @@ namespace Needs
 {
     public class Hunger : NeedBase
     {
-        public override string Icon { get; set; }
-
-        [JsonIgnore]
-        public override List<(string description, int impact, float min, float max)> Levels { get => HungerLevels; }
-
         [JsonIgnore]
         public static List<(string description, int impact, float min, float max)> HungerLevels = new List<(string description, int impact, float min, float max)>
         {
@@ -19,6 +14,10 @@ namespace Needs
             ("Full", 5, 90, 100),
         };
 
+        public override string Icon { get; set; }
+
+        [JsonIgnore]
+        public override List<(string description, int impact, float min, float max)> Levels { get => HungerLevels; }
         public override void Update()
         {
             if (Creature.GetNeed<Hunger>().Current < 15 && Creature.IsIdle())
@@ -26,7 +25,6 @@ namespace Needs
                 var food = Creature.GetFaction().FindItem(Eat.FoodCriteria, Creature);
                 if (food != null)
                 {
-                    food.InUseBy = Creature;
                     Creature.Task = new Eat(food);
                 }
                 else

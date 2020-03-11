@@ -84,7 +84,7 @@ namespace Structures
         internal bool AddItem(Item item)
         {
             item.Coords = (Cell.Vector.x, Cell.Vector.y);
-
+            item.Free();
             if (Empty)
             {
                 ItemType = item.Name;

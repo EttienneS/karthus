@@ -230,7 +230,7 @@ public class Faction
     public Item FindItem(string criteria, Creature creature)
     {
         var items = HomeCells.SelectMany(c => c?.Items.Where(item => item.IsType(criteria) && !item.InUseByAnyone)).ToList();
-        items.AddRange(Game.IdService.ItemLookup.Values.Where(i => i.FactionName == FactionName));
+        items.AddRange(Game.IdService.ItemLookup.Values.Where(i => i.FactionName == FactionName && i.IsType(criteria)));
 
         Item targetItem = null;
         var bestDistance = float.MaxValue;

@@ -45,12 +45,12 @@ public class FindAndHaulItem : CreatureTask
     {
         if (SubTasksComplete(creature))
         {
-            var item = creature.DropItem(TargetCell, ItemType, Amount);
+            var item = creature.DropItem(TargetCell);
 
             if (!string.IsNullOrEmpty(DestinationEntityId))
             {
                 var entity = DestinationEntityId.GetEntity();
-                item.InUseBy = entity;
+                item.Reserve(entity);
 
                 if (!entity.Properties.ContainsKey(NamedProperties.ContainedItemIds))
                 {

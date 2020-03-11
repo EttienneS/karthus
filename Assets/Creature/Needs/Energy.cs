@@ -19,8 +19,9 @@ namespace Needs
 
         public override void Update()
         {
-            if (Creature.GetNeed<Energy>().Current < 15 && Creature.IsIdle())
+            if (Creature.GetNeed<Energy>().Current < 15)
             {
+                Creature.CancelTask();
                 var bed = Creature.Faction.Structures.Find(s => !s.IsBluePrint && !s.InUseByAnyone && s.ValueProperties.ContainsKey("RecoveryRate"));
 
                 if (bed != null)
@@ -30,17 +31,8 @@ namespace Needs
                 else
                 {
                     Creature.Task = new Sleep();
+                    Creature.CreatureRenderer.ShowText($"*{Creature.Name} passes out from exhaustion.*", 10);
                 }
-            }
-
-
-            if (Current <= 0)
-            {
-                Creature.CancelTask();
-
-                // collapse and sleep where you are
-                Creature.Task = new Sleep();
-                Creature.CreatureRenderer.ShowText($"*{Creature.Name} passes out from exhaustion.*", 10);
             }
 
             if (Creature.Task is Sleep)

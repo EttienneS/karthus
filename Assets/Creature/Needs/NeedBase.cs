@@ -10,13 +10,13 @@ namespace Needs
         [JsonIgnore]
         public abstract List<(string description, int impact, float min, float max)> Levels { get; }
 
-        public float BaselineChangeRate { get; set; } = -0.0025f;
+        public float BaselineChangeRate { get; set; } = -1f;
 
         [JsonIgnore]
         public Creature Creature { get; set; }
 
         public float Current { get; set; } = 100;
-        public float CurrentChangeRate { get; set; } = -0.0025f;
+        public float CurrentChangeRate { get; set; } = -1f;
         public abstract string Icon { get; set; }
         public float Max { get; set; } = 100;
 
@@ -36,7 +36,7 @@ namespace Needs
 
         public override string ToString()
         {
-            return $"{Name} [{Current:0.0}/{Max}]";
+            return $"{Name} [{Current:0}/{Max:0}]";
         }
 
         public abstract void Update();

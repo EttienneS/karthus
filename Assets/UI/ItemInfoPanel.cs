@@ -28,7 +28,7 @@ namespace UI
             Description.text += $"ID: {current.Id}\n";
             if (current.InUseByAnyone)
             {
-                Description.text += $"In use by: {current.InUseBy.Name}\n";
+                Description.text += $"In use by: {current.InUseById.GetEntity().Name}\n";
             }
             Description.text += $"Amount: {current.Amount}\n";
 

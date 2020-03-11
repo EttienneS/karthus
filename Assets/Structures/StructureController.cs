@@ -134,7 +134,7 @@ namespace Structures
 
             if (_lastUpdate > Game.TimeManager.CreatureTick)
             {
-                _lastUpdate -= Game.TimeManager.CreatureTick;
+                _lastUpdate = 0;
                 foreach (var structure in Game.IdService.StructureLookup.Values.OfType<WorkStructureBase>().Where(s => !s.IsBluePrint))
                 {
                     structure.Process(Game.TimeManager.CreatureTick);

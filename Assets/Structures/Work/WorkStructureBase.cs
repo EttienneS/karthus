@@ -65,7 +65,7 @@ namespace Structures.Work
 
             if (AutoOrder != null)
             {
-                if (AutoCooldown > 0)
+                if (AutoCooldown > 0) 
                 {
                     AutoCooldown -= delta;
                 }

@@ -4,13 +4,13 @@
   "TravelCost": "4",
   "Description": "A structure where a creature will sleep.  Sleeping in a bed recovers energy quicker.",
   "Cost": {
-    "Items": {
+    "Items": { 
       "Wood": "3"
     }
   },
   "Buildable": "True",
   "ValueProperties": {
-    "RecoveryRate": 0.5
+    "RecoveryRate": 2.5
   },
   "Type": "Bed"
 }

@@ -136,10 +136,15 @@ public class DeveloperConsole : MonoBehaviour
 
         Commands.Add("List", List);
         Commands.Add("Inspect", (args) => args.GetEntity().ToString());
-        Commands.Add("SetNeed", (args) =>
+        Commands.Add("Set", (args) =>
         {
             var parts = args.Split(' ');
             var entity = parts[0].GetCreature();
+            if (entity == null)
+            {
+                entity = Game.IdService.CreatureLookup.Values.ToList().Find(c => c.Name.Equals(parts[0], StringComparison.OrdinalIgnoreCase));
+            }
+
             var need = entity.Needs.Find(n => n.Name.Equals(parts[1], StringComparison.OrdinalIgnoreCase));
 
             var msg = $"Changed ({entity.Id}){entity.Name}'s {need.Name} from '{need.Current}' to '{parts[2]}'";

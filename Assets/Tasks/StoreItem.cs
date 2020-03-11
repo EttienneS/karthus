@@ -16,7 +16,7 @@ public class StoreItem : CreatureTask
         StorageStructureId = storageStructure.Id;
 
         AddSubTask(new Pickup(item));
-        AddSubTask(new Drop(storageStructure.Cell, item));
+        AddSubTask(new Drop(storageStructure.Cell));
     }
 
     public override bool Done(Creature creature)
@@ -36,7 +36,6 @@ public class StoreItem : CreatureTask
             }
 
             storage.AddItem(item);
-
             return true;
         }
         return false;

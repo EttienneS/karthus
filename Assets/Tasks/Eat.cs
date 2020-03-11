@@ -21,10 +21,11 @@ public class Eat : CreatureTask
     {
         if (SubTasksComplete(creature))
         {
-            var food = creature.GetItemOfType(FoodCriteria);
+            var food = creature.HeldItem;
 
-            if (food == null)
+            if (food?.IsType(FoodCriteria) == false)
             {
+                creature.DropItem(creature.Cell);
                 AddSubTask(new FindAndGetItem(FoodCriteria, 1));
                 return false;
             }
@@ -39,7 +40,7 @@ public class Eat : CreatureTask
             {
                 BusyEmote = "";
                 creature.GetNeed<Hunger>().Current += food.ValueProperties["Nutrition"];
-                creature.CarriedItemIds.Remove(food.Id);
+                creature.DropItem(creature.Cell);
                 Game.IdService.DestroyEntity(food);
                 Ate = true;
 
