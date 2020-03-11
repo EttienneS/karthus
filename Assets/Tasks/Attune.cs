@@ -19,6 +19,10 @@ public class Attune : CreatureTask
 
     public Dictionary<ManaColor, float> Desired { get; set; }
 
+    public override void Complete()
+    {
+    }
+
     public override bool Done(Creature creature)
     {
         if (SubTasksComplete(creature))

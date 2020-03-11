@@ -1,4 +1,5 @@
 ﻿using Structures;
+
 public class StoreItem : CreatureTask
 {
     public string ItemToStoreId { get; set; }
@@ -8,6 +9,10 @@ public class StoreItem : CreatureTask
     {
         RequiredSkill = SkillConstants.Haul;
         RequiredSkillLevel = 1;
+    }
+
+    public override void Complete()
+    {
     }
 
     public StoreItem(Item item, Structure storageStructure) : this()

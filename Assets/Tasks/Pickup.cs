@@ -9,6 +9,10 @@ public class Pickup : CreatureTask
     {
     }
 
+    public override void Complete()
+    {
+    }
+
     public Pickup(Item item, int amount = -1)
     {
         ItemId = item.Id;

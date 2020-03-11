@@ -1,5 +1,4 @@
 ﻿using Needs;
-using System.Linq;
 
 public class Eat : CreatureTask
 {
@@ -9,6 +8,10 @@ public class Eat : CreatureTask
     public const string FoodCriteria = "Food";
 
     public Eat()
+    {
+    }
+
+    public override void Complete()
     {
     }
 

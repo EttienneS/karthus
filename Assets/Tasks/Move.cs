@@ -9,6 +9,10 @@ public class Move : CreatureTask
     {
     }
 
+    public override void Complete()
+    {
+    }
+
     public Move(Cell targetCoordinates) : this()
     {
         TargetX = targetCoordinates.Vector.x;

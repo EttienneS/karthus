@@ -7,6 +7,10 @@ public class Idle : CreatureTask
     {
     }
 
+    public override void Complete()
+    {
+    }
+
     public Idle(Creature creature) : this()
     {
         if (Random.value > 0.6)

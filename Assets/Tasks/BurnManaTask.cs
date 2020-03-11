@@ -12,6 +12,10 @@
         Amount = amount;
     }
 
+    public override void Complete()
+    {
+    }
+
     public float Amount { get; set; }
     public ManaColor Color { get; set; }
 

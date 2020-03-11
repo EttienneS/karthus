@@ -118,7 +118,10 @@ namespace Structures
             }
             set
             {
-                InUseById = value.Id;
+                if (value != null)
+                {
+                    InUseById = value.Id;
+                }
             }
         }
 
@@ -241,7 +244,7 @@ namespace Structures
 
         internal void Free()
         {
-            InUseBy = null;
+            InUseById = null;
         }
 
         internal string GetProperty(string propertyName)

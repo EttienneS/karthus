@@ -1,6 +1,7 @@
 ﻿using Needs;
-using Animation = LPC.Spritesheet.Generator.Interfaces.Animation;
 using Structures;
+using Animation = LPC.Spritesheet.Generator.Interfaces.Animation;
+
 public class Wash : CreatureTask
 {
     public float RecoveryRate = 0.25f;
@@ -9,6 +10,10 @@ public class Wash : CreatureTask
     public Wash()
     {
         BusyEmote = "**Scrub, scrub, scrub**";
+    }
+
+    public override void Complete()
+    {
     }
 
     public Wash(Structure bath) : this()
@@ -23,7 +28,6 @@ public class Wash : CreatureTask
         AddSubTask(new Move(cell.GetPathableNeighbour()));
         WashCoords = (cell.X, cell.Y);
     }
-
 
     public override bool Done(Creature creature)
     {

@@ -9,6 +9,10 @@ public class Heal : CreatureTask
         RequiredSkillLevel = 1;
     }
 
+    public override void Complete()
+    {
+    }
+
     public override bool Done(Creature creature)
     {
         if (SubTasksComplete(creature))

@@ -1,12 +1,17 @@
-﻿using System;
+﻿using Structures;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Structures;
+
 public class Build : CreatureTask
 {
     public Structure TargetStructure;
 
     private int _waitCount = 0;
+
+    public override void Complete()
+    {
+    }
 
     public Build()
     {

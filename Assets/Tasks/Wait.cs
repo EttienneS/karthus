@@ -14,6 +14,10 @@ public class Wait : CreatureTask
     {
     }
 
+    public override void Complete()
+    {
+    }
+
     public Wait(float duration, string reason, Animation? animation = LPC.Spritesheet.Generator.Interfaces.Animation.Walk) : this()
     {
         Duration = duration;

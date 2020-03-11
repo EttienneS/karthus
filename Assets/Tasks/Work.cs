@@ -32,6 +32,11 @@ public class DoWork : CreatureTask
         }
     }
 
+    public override void Complete()
+    {
+        Structure.Free();
+    }
+
     public override bool Done(Creature creature)
     {
         if (SubTasksComplete(creature))
@@ -42,6 +47,8 @@ public class DoWork : CreatureTask
             }
             else
             {
+                Structure.Reserve(creature);
+
                 creature.SetAnimation(LPC.Spritesheet.Generator.Interfaces.Animation.Thrust, Game.TimeManager.CreatureTick);
                 creature.Face(Structure.Cell);
                 Order.Progress += Game.TimeManager.CreatureTick;

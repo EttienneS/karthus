@@ -12,6 +12,10 @@ public class FindAndHaulItem : CreatureTask
 
     internal string DestinationEntityId;
 
+    public override void Complete()
+    {
+    }
+
     public FindAndHaulItem()
     {
         RequiredSkill = SkillConstants.Haul;

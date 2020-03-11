@@ -19,22 +19,6 @@ namespace Needs
 
         public override void Update()
         {
-            if (Creature.GetNeed<Energy>().Current < 15)
-            {
-                Creature.CancelTask();
-                var bed = Creature.Faction.Structures.Find(s => !s.IsBluePrint && !s.InUseByAnyone && s.ValueProperties.ContainsKey("RecoveryRate"));
-
-                if (bed != null)
-                {
-                    Creature.Task = new Sleep(bed.Id);
-                }
-                else
-                {
-                    Creature.Task = new Sleep();
-                    Creature.CreatureRenderer.ShowText($"*{Creature.Name} passes out from exhaustion.*", 10);
-                }
-            }
-
             if (Creature.Task is Sleep)
             {
                 if (Creature.Cell.Structure?.HasValue("RecoveryRate") == true)
@@ -44,6 +28,15 @@ namespace Needs
                 else
                 {
                     CurrentChangeRate = BaselineChangeRate;
+                }
+            }
+            else
+            {
+                if (Creature.GetNeed<Energy>().Current < 15)
+                {
+                    Creature.CancelTask();
+                    Creature.Task = new Sleep();
+
                 }
             }
         }

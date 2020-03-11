@@ -1,5 +1,6 @@
-﻿using System.Linq;
-using Structures;
+﻿using Structures;
+using System.Linq;
+
 public class RemoveStructure : CreatureTask
 {
     public Structure StructureToRemove;
@@ -8,6 +9,10 @@ public class RemoveStructure : CreatureTask
     {
         RequiredSkill = SkillConstants.Build;
         RequiredSkillLevel = 1;
+    }
+
+    public override void Complete()
+    {
     }
 
     public RemoveStructure(Structure structure) : this()

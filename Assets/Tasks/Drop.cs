@@ -9,6 +9,10 @@
         AddSubTask(new Move(target));
     }
 
+    public override void Complete()
+    {
+    }
+
     public override bool Done(Creature creature)
     {
         if (SubTasksComplete(creature))

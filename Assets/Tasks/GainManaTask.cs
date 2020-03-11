@@ -15,6 +15,10 @@
         Amount = amount;
     }
 
+    public override void Complete()
+    {
+    }
+
     public override bool Done(Creature creature)
     {
         if (SubTasksComplete(creature))

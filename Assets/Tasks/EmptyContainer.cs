@@ -1,4 +1,5 @@
 ﻿using Structures;
+
 public class EmptyContainer : CreatureTask
 {
     public string ContainerId;
@@ -12,6 +13,10 @@ public class EmptyContainer : CreatureTask
         ContainerId = container.Id;
 
         AddSubTask(new Move(container.Cell));
+    }
+
+    public override void Complete()
+    {
     }
 
     public override bool Done(Creature creature)

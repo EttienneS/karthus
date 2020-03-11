@@ -617,6 +617,7 @@ public class Creature : IEntity
             DropItem(Cell);
             Log($"Canceled {Task} task");
             Faction.RemoveTask(Task);
+            Task.Complete();
             Task.Destroy();
             Task = null;
         }
@@ -1102,6 +1103,7 @@ public class Creature : IEntity
                 if (Task.Done(this))
                 {
                     Task.ShowDoneEmote(this);
+                    Task.Complete();
 
                     Faction.RemoveTask(Task);
                     Task = null;

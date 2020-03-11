@@ -29,6 +29,16 @@ public class DeveloperConsole : MonoBehaviour
         return expansions;
     }
 
+    public IEntity GetEntity(string id)
+    {
+        var entity = id.GetEntity();
+        if (entity == null)
+        {
+            entity = Game.IdService.CreatureLookup.Values.ToList().Find(c => c.Name.Equals(id, StringComparison.OrdinalIgnoreCase));
+        }
+        return entity;
+    }
+
     public void Hide()
     {
         gameObject.SetActive(false);
@@ -135,15 +145,12 @@ public class DeveloperConsole : MonoBehaviour
         Commands.Add("Factions", (_) => List("Factions"));
 
         Commands.Add("List", List);
-        Commands.Add("Inspect", (args) => args.GetEntity().ToString());
+        Commands.Add("Inspect", (args) => GetEntity(args).ToString());
         Commands.Add("Set", (args) =>
         {
             var parts = args.Split(' ');
-            var entity = parts[0].GetCreature();
-            if (entity == null)
-            {
-                entity = Game.IdService.CreatureLookup.Values.ToList().Find(c => c.Name.Equals(parts[0], StringComparison.OrdinalIgnoreCase));
-            }
+
+            var entity = GetEntity(parts[0]) as Creature;
 
             var need = entity.Needs.Find(n => n.Name.Equals(parts[1], StringComparison.OrdinalIgnoreCase));
 
@@ -159,7 +166,6 @@ public class DeveloperConsole : MonoBehaviour
             Parser.ArgumentDefinitions.Add(new StringArgument(command.Key));
         }
     }
-
     public void Toggle()
     {
         if (gameObject.activeInHierarchy)

@@ -15,6 +15,10 @@
         Amount = amount;
     }
 
+    public override void Complete()
+    {
+    }
+
     private bool _firstRun = true;
 
     public override bool Done(Creature creature)

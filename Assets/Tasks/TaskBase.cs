@@ -129,6 +129,7 @@ public abstract class CreatureTask
         if (current.Done(creature))
         {
             SubTasks.Dequeue();
+            current.Complete();
         }
         return false;
     }
@@ -147,4 +148,6 @@ public abstract class CreatureTask
         }
         Destroyed = true;
     }
+
+    public abstract void Complete();
 }
