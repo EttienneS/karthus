@@ -35,7 +35,6 @@ namespace Structures.Work
             }
             else
             {
-                Faction.AddTask(new DoWork(this, orderBase));
                 Orders.Add(orderBase);
             }
         }
@@ -63,9 +62,14 @@ namespace Structures.Work
                 }
             }
 
+            if (InUseByAnyone)
+            {
+                return;
+            }
+
             if (AutoOrder != null)
             {
-                if (AutoCooldown > 0) 
+                if (AutoCooldown > 0)
                 {
                     AutoCooldown -= delta;
                 }
@@ -77,7 +81,17 @@ namespace Structures.Work
                     AutoOrder = null;
                 }
             }
-            
+            else
+            {
+                var order = Orders.FirstOrDefault();
+
+                var tasks = Faction.AvailableTasks.OfType<DoWork>().ToList();
+                tasks.AddRange(Faction.Creatures.Select(s => s.Task).OfType<DoWork>().ToList());
+                if (order != null && !tasks.Any(t => t.Order == order))
+                {
+                    Faction.AddTask(new DoWork(this, order));
+                }
+            }
 
             Update(delta);
         }

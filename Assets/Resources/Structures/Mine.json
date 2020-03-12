@@ -20,14 +20,14 @@
         "Sprite": "Stone",
         "Description": "Stone is used for building and some crafting.",
         "RequiredSkillLevel": 1,
-        "TimeToComplete": 20
+        "TimeToComplete": 10
       },
       {
         "Name": "Ore",
         "Sprite": "whitecrystals",
         "Description": "Ore is used to to craft advanced items and structures.",
         "RequiredSkillLevel": 5,
-        "TimeToComplete": 20
+        "TimeToComplete": 10
       }
     ]
   }
