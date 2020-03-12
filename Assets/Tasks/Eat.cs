@@ -26,7 +26,7 @@ public class Eat : CreatureTask
         {
             var food = creature.HeldItem;
 
-            if (food?.IsType(FoodCriteria) == false)
+            if (food == null || !food.IsType(FoodCriteria))
             {
                 creature.DropItem(creature.Cell);
                 AddSubTask(new FindAndGetItem(FoodCriteria, 1));
@@ -47,7 +47,7 @@ public class Eat : CreatureTask
                 Game.IdService.DestroyEntity(food);
                 Ate = true;
 
-                if (creature.GetNeed<Hunger>().Current < 20)
+                if (creature.GetNeed<Hunger>().Current < 60)
                 {
                     AddSubTask(new Eat());
                 }
@@ -60,7 +60,7 @@ public class Eat : CreatureTask
             {
                 Eating = false;
                 Ate = false;
-                return creature.GetNeed<Hunger>().Current < 10;
+                return true;
             }
         }
         return false;
