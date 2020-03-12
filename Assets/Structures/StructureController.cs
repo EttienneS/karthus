@@ -1,4 +1,5 @@
-﻿using Structures.Work;
+﻿using Newtonsoft.Json;
+using Structures.Work;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,16 @@ namespace Structures
         private Dictionary<string, Structure> _structureDataReference;
 
         private Dictionary<string, string> _structureTypeFileMap;
+
+        private static List<Type> _structureTypes;
+
+        public static List<Type> StructureTypes
+        {
+            get
+            {
+                return _structureTypes == null ? ReflectionHelper.GetAllTypes(typeof(Structure)) : _structureTypes;
+            }
+        }
 
         internal Dictionary<string, Structure> StructureDataReference
         {
@@ -49,19 +60,21 @@ namespace Structures
             }
         }
 
+        public static Type GetTypeFor(string name)
+        {
+            return StructureTypes.Find(w => w.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+        }
+
         public static Structure GetFromJson(string json)
         {
             var structure = json.LoadJson<Structure>();
+            var type = GetTypeFor(structure.Type);
 
-            if (structure.IsType("Container"))
+            if (type != null)
             {
-                return json.LoadJson<Container>();
+                return json.LoadJson(type) as Structure;
             }
-            else if (structure.IsType("Farm"))
-            {
-                return json.LoadJson<Farm>();
-            }
-
+           
             return structure;
         }
 
