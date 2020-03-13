@@ -63,7 +63,8 @@ public class Creature : IEntity
 
     private Faction _faction;
 
-    private List<Cell> _path = new List<Cell>();
+    [JsonIgnore]
+    public List<Cell> Path = new List<Cell>();
 
     private ICharacterSpriteDefinition _spriteDef;
 
@@ -550,7 +551,7 @@ public class Creature : IEntity
     public void SetTargetCoordinate(float targetX, float targetY)
     {
         TargetCoordinate = (targetX, targetY);
-        _path = null;
+        Path = null;
         UnableToFindPath = false;
     }
 
@@ -936,32 +937,41 @@ public class Creature : IEntity
             Moving = false;
             return;
         }
-        Moving = true;
 
-        var targetCell = Game.Map.GetCellAtCoordinate(TargetCoordinate.x, TargetCoordinate.y);
-        var currentCell = Game.Map.GetCellAtCoordinate(X, Y);
-        if (_path == null || _path.Count == 0)
+        if (Path == null || Path.Count == 0)
         {
-            _path = Pathfinder.FindPath(currentCell, targetCell, Mobility);
+            Path = Pathfinder.FindPath(Game.Map.GetCellAtCoordinate(X, Y),
+                                       Game.Map.GetCellAtCoordinate(TargetCoordinate.x, TargetCoordinate.y),
+                                       Mobility);
+            Path.Reverse();
         }
 
-        if (_path == null || _path.Count == 0)
+        if (Path == null || Path.Count == 0)
         {
             UnableToFindPath = true;
             Debug.LogWarning("Unable to find path!");
             return;
         }
 
-        var nextCell = _path[0];
+        var nextCell = Path[0];
         var targetX = nextCell.Vector.x;
         var targetY = nextCell.Vector.y;
+
+        if (!nextCell.Pathable(Mobility))
+        {
+            Path = null;
+            Say("...", 5);
+            return;
+        }
 
         if (X == targetX && Y == targetY)
         {
             // reached the cell
-            _path.RemoveAt(0);
+            Path.RemoveAt(0);
             return;
         }
+
+        Moving = true;
 
         var maxX = Mathf.Max(targetX, X);
         var minX = Mathf.Min(targetX, X);

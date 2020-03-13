@@ -116,8 +116,27 @@ public class CreatureRenderer : MonoBehaviour
         if (Data.UnableToFindPath)
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawLine(Data.Cell.Vector + new Vector3(0, 0, 5), Game.Map.GetCellAtCoordinate(Data.TargetCoordinate).Vector + new Vector3(0, 0, 5));
+
         }
+        else
+        {
+            Gizmos.color = Color.green;
+        }
+
+        if (Data.Path != null)
+        {
+            Cell lastNode = null;
+            foreach (var cell in Data.Path)
+            {
+                if (lastNode != null)
+                {
+                    Gizmos.DrawLine(lastNode.Vector + new Vector3(0, 0, 5), cell.Vector + new Vector3(0, 0, 5));
+                }
+                lastNode = cell;
+            }
+        }
+
+        Gizmos.DrawCube(Game.Map.GetCellAtCoordinate(Data.TargetCoordinate).Vector + new Vector3(0, 0, 5), new Vector3(0.1f, 0.1f, 0.1f));
     }
 
     internal void DisableLight()

@@ -264,8 +264,8 @@ MonoBehaviour:
   m_UseNormalMap: 0
   m_LightOrder: 0
   m_AlphaBlendOnOverlap: 0
-  m_ShadowIntensity: 0
-  m_ShadowVolumeIntensity: 0
+  m_ShadowIntensity: 0.4
+  m_ShadowVolumeIntensity: 0.2
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 1
@@ -558,7 +558,7 @@ MonoBehaviour:
   - {x: -0.08, y: 0.075, z: 0}
   m_ShapePathHash: 0
   m_Mesh: {fileID: 0}
-  m_InstanceId: 47482
+  m_InstanceId: 23578
 --- !u!114 &385317183904278325
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -49,7 +49,7 @@ public class MapGenerator
         Game.ItemController.SpawnItem("Wood", open.GetRandomItem(), 250);
         Game.ItemController.SpawnItem("Stone", open.GetRandomItem(), 250);
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 1; i++)
         {
             var c = Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("Person"),
                                                      Game.Map.GetNearestPathableCell(center, Mobility.Walk, 25),
