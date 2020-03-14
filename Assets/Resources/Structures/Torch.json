@@ -1,0 +1,16 @@
+{
+  "Name": "Torch",
+  "SpriteName": "torch",
+  "TravelCost": "2",
+  "Description": "A structure that emits light at night.",
+  "Cost": {
+    "Items": {
+      "Wood": "3"
+    }
+  },
+  "Buildable": "True",
+  "Type": "Light",
+  "ColorHex": "FFFFFF",
+  "Radius": 3,
+  "Intensity": 1
+}

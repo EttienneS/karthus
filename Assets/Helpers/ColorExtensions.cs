@@ -4,6 +4,12 @@ using Random = UnityEngine.Random;
 
 public static class ColorExtensions
 {
+    public static Color FromFloatArrayString(this string color)
+    {
+        var parts = color.Split(',');
+        return new Color(float.Parse(parts[0]), float.Parse(parts[1]), float.Parse(parts[2]), float.Parse(parts[3]));
+    }
+
     public static Color GetRandomColor(float alpha = 1.0f)
     {
         return new Color(Random.value, Random.value, Random.value, alpha);
@@ -23,17 +29,13 @@ public static class ColorExtensions
     {
         return $"{color.r},{color.g},{color.b},{color.a}";
     }
-
-    public static Color FromFloatArrayString(this string color)
-    {
-        var parts = color.Split(',');
-        return new Color(float.Parse(parts[0]), float.Parse(parts[1]), float.Parse(parts[2]), float.Parse(parts[3]));
-    }
-
     internal static Color GetColorFromHex(this string hexString)
     {
         Color col;
-
+        if (!hexString.StartsWith("#"))
+        {
+            hexString = "#" + hexString;
+        }
         if (ColorUtility.TryParseHtmlString(hexString, out col))
         {
             return col;
