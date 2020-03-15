@@ -34,6 +34,8 @@ namespace Needs
 
                     Creature.Say($"Hey {friend.Name}!", 2);
                     friend.Say($"Sup {Creature.Name}!", 2);
+
+                    Creature.AddRelationshipEvent(friend, "Friendly Chat", 5);
                     Current += 25f;
                 }
             }

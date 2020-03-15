@@ -41,11 +41,13 @@ public class Creature : IEntity
     public List<OffensiveActionBase> IncomingAttacks = new List<OffensiveActionBase>();
     public Mobility Mobility;
     public bool Moving;
+
     [JsonIgnore]
     public List<Cell> Path = new List<Cell>();
 
     public Race Race;
     public List<Relationship> Relationships = new List<Relationship>();
+
     public (float x, float y) TargetCoordinate;
 
     public bool UnableToFindPath;
@@ -65,7 +67,9 @@ public class Creature : IEntity
     private CharacterSpriteSheet _characterSpriteSheet;
 
     private Faction _faction;
+
     private int _selfTicks;
+
     private ICharacterSpriteDefinition _spriteDef;
 
     private CreatureTask _task;
@@ -611,6 +615,17 @@ public class Creature : IEntity
         }
     }
 
+    internal void AddRelationshipEvent(Creature creature, string name, float value)
+    {
+        var relation = Relationships.Find(r => r.Entity == creature);
+        if (Relationships == null)
+        {
+            relation = new Relationship(creature);
+            Relationships.Add(relation);
+        }
+        relation.AddEffect(name, value);
+    }
+
     internal void CancelTask()
     {
         if (Task != null)
@@ -725,6 +740,7 @@ public class Creature : IEntity
         ManaPool.EntityId = Id;
         TargetCoordinate = (Cell.X, Cell.Y);
     }
+
     internal bool Update(float timeDelta)
     {
         if (!Game.Instance.Ready)
@@ -1168,6 +1184,16 @@ public class Creature : IEntity
 public class Relationship
 {
     public List<(string name, float value)> Effectors = new List<(string name, float value)>();
+
+    public Relationship()
+    {
+    }
+
+    public Relationship(IEntity entity) : this()
+    {
+        Entity = entity;
+    }
+
     [JsonIgnore]
     public IEntity Entity
     {
@@ -1182,6 +1208,7 @@ public class Relationship
     }
 
     public string EntityId { get; set; }
+
     [JsonIgnore]
     public float Value
     {
@@ -1196,5 +1223,10 @@ public class Relationship
 
             return total;
         }
+    }
+
+    internal void AddEffect(string name, float value)
+    {
+        Effectors.Add((name, value));
     }
 }
