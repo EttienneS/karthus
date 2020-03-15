@@ -40,11 +40,12 @@ public class Creature : IEntity
 
     public List<OffensiveActionBase> IncomingAttacks = new List<OffensiveActionBase>();
     public Mobility Mobility;
-
     public bool Moving;
+    [JsonIgnore]
+    public List<Cell> Path = new List<Cell>();
 
     public Race Race;
-
+    public List<Relationship> Relationships = new List<Relationship>();
     public (float x, float y) TargetCoordinate;
 
     public bool UnableToFindPath;
@@ -56,16 +57,15 @@ public class Creature : IEntity
     [JsonIgnore]
     internal Cell LastPercievedCoordinate;
 
+    private const int SelfTickCount = 10;
+
     [JsonIgnore]
     private List<Cell> _awareness;
 
     private CharacterSpriteSheet _characterSpriteSheet;
 
     private Faction _faction;
-
-    [JsonIgnore]
-    public List<Cell> Path = new List<Cell>();
-
+    private int _selfTicks;
     private ICharacterSpriteDefinition _spriteDef;
 
     private CreatureTask _task;
@@ -725,10 +725,6 @@ public class Creature : IEntity
         ManaPool.EntityId = Id;
         TargetCoordinate = (Cell.X, Cell.Y);
     }
-
-    private int _selfTicks;
-    private const int SelfTickCount = 10;
-
     internal bool Update(float timeDelta)
     {
         if (!Game.Instance.Ready)
@@ -1165,6 +1161,40 @@ public class Creature : IEntity
         foreach (var limb in Limbs)
         {
             limb.Update(timeDelta);
+        }
+    }
+}
+
+public class Relationship
+{
+    public List<(string name, float value)> Effectors = new List<(string name, float value)>();
+    [JsonIgnore]
+    public IEntity Entity
+    {
+        get
+        {
+            return EntityId.GetEntity();
+        }
+        set
+        {
+            EntityId = value.Id;
+        }
+    }
+
+    public string EntityId { get; set; }
+    [JsonIgnore]
+    public float Value
+    {
+        get
+        {
+            var total = 0f;
+
+            foreach (var (name, value) in Effectors)
+            {
+                total += value;
+            }
+
+            return total;
         }
     }
 }
