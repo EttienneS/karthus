@@ -14,7 +14,6 @@ public class CreatureInfoPanel : MonoBehaviour
     public Text HealthText;
     public ImageButton ImageButtonPrefab;
     public Text Log;
-    public ManaPanel ManaPanel;
     public Text PropertiesPanel;
     public GameObject TabPanel;
     private List<ImageButton> _contextButtons = new List<ImageButton>();
@@ -62,11 +61,6 @@ public class CreatureInfoPanel : MonoBehaviour
             var creatures = entities.OfType<Creature>();
             AddMoveButton(creatures);
             AddAttackButton(creatures);
-
-            if (creature.ManaPool != null)
-            {
-                ManaPanel.SetPool(creature.ManaPool);
-            }
         }
     }
 
