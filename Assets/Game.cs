@@ -6,6 +6,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using Debug = UnityEngine.Debug;
 using Structures;
+using UI;
+
 public enum SelectionPreference
 {
     Anything, Cell, Item, Structure, Creature, Zone
@@ -16,6 +18,7 @@ public partial class Game : MonoBehaviour
     public SpriteRenderer MouseSpriteRenderer;
     public RectTransform selectSquareImage;
     public ValidateMouseSpriteDelegate ValidateMouse;
+    public Tooltip Tooltip;
 
     internal LineRenderer LineRenderer;
     internal float LoadProgress;
@@ -616,6 +619,7 @@ public partial class Game : MonoBehaviour
             OrderSelectionController.DisableAndReset();
             LoadingPanel.Hide();
             LoadPanel.Hide();
+            Tooltip.Hide();
 
             DeveloperConsole.gameObject.SetActive(false);
 
@@ -678,7 +682,8 @@ public partial class Game : MonoBehaviour
                     return;
                 }
 
-                if (!Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.RightShift)
+                if (!Input.GetKey(KeyCode.LeftShift) 
+                    && !Input.GetKey(KeyCode.RightShift)
                     && OrderSelectionController.CellClickOrder == null)
                 {
                     DeselectAll();
@@ -813,4 +818,6 @@ public partial class Game : MonoBehaviour
         }
         return false;
     }
+
+
 }

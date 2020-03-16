@@ -1,6 +1,7 @@
 ﻿using Structures;
 using System.Collections.Generic;
 using System.Linq;
+using UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,6 +18,7 @@ public class CreatureInfoPanel : MonoBehaviour
     public Text PropertiesPanel;
     public GameObject TabPanel;
     private List<ImageButton> _contextButtons = new List<ImageButton>();
+
 
     public ImageButton AddButton(string title, string spriteName)
     {

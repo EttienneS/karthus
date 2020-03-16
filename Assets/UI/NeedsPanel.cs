@@ -1,10 +1,16 @@
-﻿using System.Linq;
+﻿using Needs;
+using System.Collections.Generic;
+using System.Linq;
+using UI;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class NeedsPanel : MonoBehaviour
 {
-    public Text NeedsText;
+    public TitledProgressBar ProgressBarPrefab;
+
+    public Dictionary<NeedBase, TitledProgressBar> NeedProgressLinks;
+
+    public Creature Current;
 
     private void Update()
     {
@@ -15,16 +21,22 @@ public class NeedsPanel : MonoBehaviour
             return;
         }
 
-        NeedsText.text = "\nNeeds:\n\n";
-        foreach (var need in creature.Needs)
+        if (Current != creature)
         {
-            NeedsText.text += $"\t{need} [{need.CurrentChangeRate}]\n";
+            Current = creature;
+            NeedProgressLinks = new Dictionary<NeedBase, TitledProgressBar>();
+
+            foreach (var need in Current.Needs)
+            {
+                var bar = Instantiate(ProgressBarPrefab, transform);
+                bar.Load(need.Name, need.Current / need.Max, need.Name, need.GetDescription());
+                NeedProgressLinks.Add(need, bar);
+            }
         }
 
-        NeedsText.text += $"\nMood: {creature.MoodString} ({creature.Mood})\n";
-        foreach (var feeling in creature.Feelings)
+        foreach (var need in creature.Needs)
         {
-            NeedsText.text += $"\t{feeling}\n";
+            NeedProgressLinks[need].SetProgress(need.Current / need.Max);
         }
     }
 }

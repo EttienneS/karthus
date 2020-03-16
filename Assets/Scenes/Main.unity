@@ -217,6 +217,12 @@ PrefabInstance:
       propertyPath: selectSquareImage
       value: 
       objectReference: {fileID: 1640372943}
+    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: Tooltip
+      value: 
+      objectReference: {fileID: 7554671541487698571, guid: 5dcc672705c467847af5264efd228893,
+        type: 3}
     - target: {fileID: 4791717066980201731, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
       propertyPath: m_Name

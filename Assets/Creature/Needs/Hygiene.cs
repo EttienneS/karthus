@@ -44,5 +44,10 @@ namespace Needs
                 }
             }
         }
+
+        public override string GetDescription()
+        {
+            return "The will to do more.";
+        }
     }
 }

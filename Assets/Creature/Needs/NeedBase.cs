@@ -26,6 +26,8 @@ namespace Needs
             get => GetType().Name;
         }
 
+        public abstract string GetDescription();
+
         public void ApplyChange(float delta)
         {
             Current += delta * CurrentChangeRate;

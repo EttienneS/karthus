@@ -26,5 +26,10 @@ namespace Needs
                 Current += comfort.Value;
             }
         }
+
+        public override string GetDescription()
+        {
+            return "The will to do more.";
+        }
     }
 }

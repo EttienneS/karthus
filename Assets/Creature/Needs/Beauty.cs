@@ -19,5 +19,10 @@ namespace Needs
         public override void Update()
         {
         }
+
+        public override string GetDescription()
+        {
+            return "The will to do more.";
+        }
     }
 }
