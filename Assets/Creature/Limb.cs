@@ -35,7 +35,6 @@ public class Limb
 
     public bool Disabled { get; set; }
 
-    public int Max { get; set; }
 
     public string Name { get; set; }
 
@@ -118,7 +117,7 @@ public class Limb
 
     public override string ToString()
     {
-        var msg = $"{Name} [{GetState()}]\n";
+        var msg = $"State: {GetState()}\n";
 
         foreach (var wound in Wounds.GroupBy(w => w.ToString()).Select(w => new { Text = w.Key, Count = w.Count() }))
         {
@@ -194,7 +193,7 @@ public class Limb
         CheckDeath();
     }
 
-    private float GetChanceOfDeath()
+    public float GetChanceOfDeath()
     {
         var total = 0f;
 

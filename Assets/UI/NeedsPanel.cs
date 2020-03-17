@@ -8,9 +8,8 @@ public class NeedsPanel : MonoBehaviour
 {
     public TitledProgressBar ProgressBarPrefab;
 
-    public Dictionary<NeedBase, TitledProgressBar> NeedProgressLinks;
-
-    public Creature Current;
+    internal Dictionary<NeedBase, TitledProgressBar> NeedProgressLinks;
+    internal Creature Current;
 
     private void Update()
     {

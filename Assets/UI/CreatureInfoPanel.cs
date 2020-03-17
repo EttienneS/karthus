@@ -11,7 +11,6 @@ public class CreatureInfoPanel : MonoBehaviour
     public Text CreatureName;
     public List<Creature> CurrentCreatures;
     public Toggle FirstPanelToggle;
-    public Text HealthText;
     public ImageButton ImageButtonPrefab;
     public Text Log;
     public Text PropertiesPanel;
@@ -116,7 +115,6 @@ public class CreatureInfoPanel : MonoBehaviour
                             PropertiesPanel.text += "\n";
                         }
 
-                        LogHealth(creature);
                         LogTask(creature);
                     }
 
@@ -167,17 +165,6 @@ public class CreatureInfoPanel : MonoBehaviour
                 }
             }
         };
-    }
-
-    private void LogHealth(Creature creature)
-    {
-        HealthText.text = "\nBody: \n\n";
-
-        foreach (var limb in creature.Limbs)
-        {
-            HealthText.text += $"\t{limb}\n";
-        }
-        HealthText.text += "\n";
     }
 
     private void LogTask(Creature creature)

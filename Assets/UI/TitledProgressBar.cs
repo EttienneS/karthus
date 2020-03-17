@@ -26,7 +26,7 @@ namespace UI
         {
             if (!string.IsNullOrEmpty(TooltipTitle))
             {
-                Game.Instance.Tooltip.Show(TooltipText, TooltipTitle);
+                Game.Instance.Tooltip.Show(TooltipTitle, TooltipText);
             }
         }
 
