@@ -34,5 +34,37 @@ MonoBehaviour:
     m_Localized: Log
     m_Metadata:
       m_Items: []
+  - m_Id: 5
+    m_Localized: Menu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6
+    m_Localized: Continue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7
+    m_Localized: Restart
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8
+    m_Localized: Load
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9
+    m_Localized: Save
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10
+    m_Localized: Settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11
+    m_Localized: Exit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12
+    m_Localized: Loading
+    m_Metadata:
+      m_Items: []
   references:
     version: 1
