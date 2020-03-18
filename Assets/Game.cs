@@ -288,16 +288,6 @@ public partial class Game : MonoBehaviour
                 {
                     IdService.EnrollEntity(structure);
 
-                    // flag layer where structure is on to be redrawn
-                    if (structure.IsFloor())
-                    {
-                        structure.Cell.Chunk.Renderer.FloorDrawn = false;
-                    }
-                    else
-                    {
-                        structure.Cell.Chunk.Renderer.StructureDrawn = false;
-                    }
-
                     foreach (var effect in structure.LinkedVisualEffects)
                     {
                         VisualEffectController.Load(effect);

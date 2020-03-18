@@ -19,14 +19,30 @@ public class Map : MonoBehaviour
     [Range(0.001f, 0.2f)]
     public float Scaler = 0.1f;
 
+    public string Seed;
     internal Dictionary<(int x, int y), ChunkRenderer> Chunks;
     internal int ChunkSize = 15;
 
     internal (int X, int Y) Origin = (500, 500);
-
-    public string Seed;
-
+    private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
+    private int _searchFrontierPhase;
     private float? _seedValue;
+
+    public Cell Center
+    {
+        get
+        {
+            return CellLookup[(Origin.X + (ChunkSize / 2), Origin.Y + (ChunkSize / 2))];
+        }
+    }
+
+    internal int MaxX { get; set; }
+
+    internal int MaxY { get; set; }
+
+    internal int MinX { get; set; }
+
+    internal int MinY { get; set; }
 
     internal float SeedValue
     {
@@ -41,28 +57,6 @@ public class Map : MonoBehaviour
             return _seedValue.Value;
         }
     }
-
-    private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
-    private int _searchFrontierPhase;
-
-    public enum TileLayer
-    {
-        Ground, Floor, Structure
-    }
-
-    public Cell Center
-    {
-        get
-        {
-            return CellLookup[(Origin.X + (ChunkSize / 2), Origin.Y + (ChunkSize / 2))];
-        }
-    }
-
-    internal int MaxX { get; set; }
-    internal int MaxY { get; set; }
-    internal int MinX { get; set; }
-    internal int MinY { get; set; }
-
     public void AddCellIfValid(int x, int y, List<Cell> cells)
     {
         if (CellLookup.ContainsKey((x, y)))
@@ -446,9 +440,7 @@ public class Map : MonoBehaviour
 
     public void Update()
     {
-      
     }
-
 
     internal void DestroyCell(Cell cell)
     {
@@ -594,8 +586,8 @@ public class Map : MonoBehaviour
         return GetCellAtCoordinate(mineX, mineY);
     }
 
-    internal void SetTile(Cell cell, Tile tile, TileLayer layer)
+    internal void SetTile(Cell cell, Tile tile)
     {
-        Chunks[cell.Chunk.Coords].SetTile(cell.X, cell.Y, tile, layer);
+        Chunks[cell.Chunk.Coords].SetTile(cell.X, cell.Y, tile);
     }
 }

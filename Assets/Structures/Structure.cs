@@ -2,17 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 namespace Structures
 {
     public class Structure : IEntity
     {
-        internal bool HasValue(string v)
-        {
-            return ValueProperties.ContainsKey(v);
-        }
-
         public bool Buildable;
 
         [JsonIgnore]
@@ -28,9 +22,10 @@ namespace Structures
         public string Size;
 
         public string SpriteName;
-        public string Type;
 
         public float TravelCost;
+
+        public string Type;
 
         private Cell _cell;
 
@@ -68,6 +63,7 @@ namespace Structures
                 {
                     _cell = value;
                     Coords = (_cell.X, _cell.Y);
+                    Renderer.UpdatePosition();
                 }
             }
         }
@@ -145,38 +141,30 @@ namespace Structures
         public Dictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
 
         [JsonIgnore]
-        public Tile Tile
+        public StructureRenderer Renderer { get; set; }
+
+        public Sprite GetSprite()
         {
-            get
+            Sprite sprite;
+            if (IsWall())
             {
-                var tile = ScriptableObject.CreateInstance<Tile>();
-                tile.RotateTile(Rotation);
-
-                //if (!Buildable)
-                //{
-                //    tile.ShiftTile(new Vector2(Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f)));
-                //}
-
-                if (IsWall())
-                {
-                    tile.sprite = Game.SpriteStore.GetInterlockingSprite(this);
-                }
-                else
-                {
-                    tile.sprite = Game.SpriteStore.GetSprite(SpriteName);
-                }
-
-                if (IsBluePrint)
-                {
-                    tile.color = ColorConstants.BluePrintColor;
-                }
-                else
-                {
-                    tile.color = Cell.Color;
-                }
-
-                return tile;
+                sprite = Game.SpriteStore.GetInterlockingSprite(this);
             }
+            else
+            {
+                sprite = Game.SpriteStore.GetSprite(SpriteName);
+            }
+
+            if (IsBluePrint)
+            {
+                Renderer.SpriteRenderer.color = ColorConstants.BluePrintColor;
+            }
+            else
+            {
+                Renderer.SpriteRenderer.color = Cell.Color;
+            }
+
+            return sprite;
         }
 
         public Dictionary<string, float> ValueProperties { get; set; } = new Dictionary<string, float>();
@@ -265,6 +253,10 @@ namespace Structures
             return 0f;
         }
 
+        internal bool HasValue(string v)
+        {
+            return ValueProperties.ContainsKey(v);
+        }
         internal void HideOutline()
         {
             if (_outline != null)

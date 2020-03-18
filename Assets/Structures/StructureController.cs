@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using Structures.Work;
+﻿using Structures.Work;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,12 +9,12 @@ namespace Structures
 {
     public class StructureController : MonoBehaviour
     {
-        private float _lastUpdate;
-        private Dictionary<string, Structure> _structureDataReference;
-
-        private Dictionary<string, string> _structureTypeFileMap;
+        public StructureRenderer StructureRendererPrefab;
 
         private static List<Type> _structureTypes;
+        private float _lastUpdate;
+        private Dictionary<string, Structure> _structureDataReference;
+        private Dictionary<string, string> _structureTypeFileMap;
 
         public static List<Type> StructureTypes
         {
@@ -60,11 +59,6 @@ namespace Structures
             }
         }
 
-        public static Type GetTypeFor(string name)
-        {
-            return StructureTypes.Find(w => w.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
-        }
-
         public static Structure GetFromJson(string json)
         {
             var structure = json.LoadJson<Structure>();
@@ -74,21 +68,20 @@ namespace Structures
             {
                 return json.LoadJson(type) as Structure;
             }
-           
+
             return structure;
+        }
+
+        public static Type GetTypeFor(string name)
+        {
+            return StructureTypes.Find(w => w.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
 
         public void ClearStructure(Structure structure)
         {
-            var tile = ScriptableObject.CreateInstance<Tile>();
-
             if (structure.IsFloor())
             {
-                Game.Map.SetTile(structure.Cell, tile, Map.TileLayer.Floor);
-            }
-            else
-            {
-                Game.Map.SetTile(structure.Cell, tile, Map.TileLayer.Structure);
+                structure.Cell.RefreshTile();
             }
         }
 
@@ -100,11 +93,11 @@ namespace Structures
             }
             if (structure.IsFloor())
             {
-                Game.Map.SetTile(structure.Cell, structure.Tile, Map.TileLayer.Floor);
+                structure.Cell.RefreshTile();
             }
             else
             {
-                Game.Map.SetTile(structure.Cell, structure.Tile, Map.TileLayer.Structure);
+                structure.Renderer.SpriteRenderer.sprite = structure.GetSprite();
             }
         }
 
@@ -113,6 +106,10 @@ namespace Structures
             var structureData = StructureTypeFileMap[name];
 
             var structure = GetFromJson(structureData);
+            var renderer = Instantiate(StructureRendererPrefab, transform);
+            structure.Renderer = renderer;
+            renderer.Data = structure;
+
             structure.Cell = cell;
             IndexStructure(structure);
 
@@ -131,6 +128,8 @@ namespace Structures
                     container.Filter = store.Filter;
                 }
             }
+
+            RefreshStructure(structure);
 
             return structure;
         }

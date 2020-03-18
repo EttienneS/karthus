@@ -2,19 +2,15 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using Structures;
+
 public class ChunkRenderer : MonoBehaviour
 {
     public List<Cell> Cells;
 
     public Chunk Data;
 
-    public bool FloorDrawn;
-    public Tilemap FloorMap;
     public bool GroundDrawn;
     public Tilemap GroundMap;
-    public bool StructureDrawn;
-    public Tilemap StructureMap;
     private List<Cell> _cellsToPopulate;
 
     public Cell CreateCell(int x, int y)
@@ -94,14 +90,6 @@ public class ChunkRenderer : MonoBehaviour
         {
             Populate();
         }
-        else if (!FloorDrawn)
-        {
-            DrawFloors();
-        }
-        else if (!StructureDrawn)
-        {
-            DrawStructures();
-        }
     }
 
     internal void MakeCells()
@@ -168,41 +156,12 @@ public class ChunkRenderer : MonoBehaviour
         }
     }
 
-    internal void SetTile(int x, int y, Tile tile, Map.TileLayer layer)
+    internal void SetTile(int x, int y, Tile tile)
     {
         var pos = new Vector3Int(x % Game.Map.ChunkSize, y % Game.Map.ChunkSize, 0);
-        Tilemap tilemap = null;
-        switch (layer)
-        {
-            case Map.TileLayer.Ground:
-                tilemap = GroundMap;
-                break;
 
-            case Map.TileLayer.Floor:
-                tilemap = FloorMap;
-                break;
-
-            case Map.TileLayer.Structure:
-                tilemap = StructureMap;
-                break;
-        }
-        tilemap.SetTile(pos, null);
-        tilemap.SetTile(pos, tile);
-    }
-
-    private void DrawFloors()
-    {
-        var floors = Cells.Where(c => c.Floor != null)
-                          .Select(c => c.Floor)
-                          .ToList();
-
-        if (floors.Count > 0)
-        {
-            var floorTiles = floors.Select(c => c.Tile).ToArray();
-            var floorCoords = floors.Select(c => GetChunkCoordinate(c.Cell)).ToArray();
-            FloorMap.SetTiles(floorCoords, floorTiles);
-        }
-        FloorDrawn = true;
+        GroundMap.SetTile(pos, null);
+        GroundMap.SetTile(pos, tile);
     }
 
     private void DrawGround()
@@ -213,20 +172,5 @@ public class ChunkRenderer : MonoBehaviour
         GroundMap.SetTiles(groundCoords, null);
         GroundMap.SetTiles(groundCoords, groundTiles);
         GroundDrawn = true;
-    }
-
-    private void DrawStructures()
-    {
-        var structures = Cells.Where(c => c.Structure != null)
-                              .Select(c => c.Structure)
-                              .ToList();
-
-        if (structures.Count > 0)
-        {
-            var structureTiles = structures.Select(c => c.Tile).ToArray();
-            var structureCoords = structures.Select(c => GetChunkCoordinate(c.Cell)).ToArray();
-            StructureMap.SetTiles(structureCoords, structureTiles);
-        }
-        StructureDrawn = true;
     }
 }

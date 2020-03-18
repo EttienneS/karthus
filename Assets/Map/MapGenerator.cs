@@ -88,8 +88,8 @@ public class MapGenerator
 
         var counter = 1;
         Game.Instance.SetLoadStatus("Create Map", 0);
-        var size = 1;
-        var inc = 1f / 9f;
+        var size = 2;
+        var inc = 1f / 16f;
         if (SaveManager.SaveToLoad == null)
         {
             for (var i = 0 - size; i <= 0 + size; i++)

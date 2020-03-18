@@ -1,13 +1,16 @@
 ﻿using Newtonsoft.Json;
+using Structures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
-using Structures;
+
 public class Cell : IEquatable<Cell>
 {
+    public Chunk Chunk;
+
     [JsonIgnore]
     public Cell[] Neighbors = new Cell[8];
 
@@ -16,8 +19,6 @@ public class Cell : IEquatable<Cell>
     internal Color Color;
 
     private BiomeRegion _biomeRegion;
-
-    public Chunk Chunk;
 
     [JsonIgnore]
     public BiomeRegion BiomeRegion
@@ -30,11 +31,6 @@ public class Cell : IEquatable<Cell>
             }
             return _biomeRegion;
         }
-    }
-
-    internal Cell GetPathableNeighbour()
-    {
-        return NonNullNeighbors.Where(n => n.TravelCost > 0).GetRandomItem();
     }
 
     [JsonIgnore]
@@ -64,6 +60,39 @@ public class Cell : IEquatable<Cell>
         get
         {
             return Game.IdService.StructureCellLookup.ContainsKey(this) ? Game.IdService.StructureCellLookup[this].Find(s => s.IsFloor()) : null;
+        }
+    }
+
+    [JsonIgnore]
+    public Tile GroundTile
+    {
+        get
+        {
+            var tile = ScriptableObject.CreateInstance<Tile>();
+            tile.RotateRandom90();
+
+            RefreshColor();
+
+            if (Floor != null)
+            {
+                tile.sprite = Game.SpriteStore.GetSprite(Floor.SpriteName);
+
+                if (Floor.IsBluePrint)
+                {
+                    tile.color = ColorConstants.BluePrintColor;
+                }
+                else
+                {
+                    tile.color = Color;
+                }
+            }
+            else
+            {
+                tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(BiomeRegion.SpriteName);
+                tile.color = Color;
+            }
+
+            return tile;
         }
     }
 
@@ -115,23 +144,6 @@ public class Cell : IEquatable<Cell>
         get
         {
             return Game.IdService.StructureCellLookup.ContainsKey(this) ? Game.IdService.StructureCellLookup[this].Find(s => !s.IsFloor()) : null;
-        }
-    }
-
-    [JsonIgnore]
-    public Tile GroundTile
-    {
-        get
-        {
-            var tile = ScriptableObject.CreateInstance<Tile>();
-            tile.RotateRandom90();
-
-            RefreshColor();
-
-            tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(BiomeRegion.SpriteName);
-            tile.color = Color;
-
-            return tile;
         }
     }
 
@@ -259,6 +271,11 @@ public class Cell : IEquatable<Cell>
         Color = new Color(baseColor.r - scaled, baseColor.g - scaled, baseColor.b - scaled, baseColor.a);
     }
 
+    public void RefreshTile()
+    {
+        Game.Map.SetTile(this, GroundTile);
+    }
+
     public void SetNeighbor(Direction direction, Cell cell)
     {
         Neighbors[(int)direction] = cell;
@@ -302,6 +319,11 @@ public class Cell : IEquatable<Cell>
     internal IEnumerable<Creature> GetEnemyCreaturesOf(string faction)
     {
         return Creatures.Where(c => c.FactionName != faction);
+    }
+
+    internal Cell GetPathableNeighbour()
+    {
+        return NonNullNeighbors.Where(n => n.TravelCost > 0).GetRandomItem();
     }
 
     internal Cell GetRandomNeighbor()
