@@ -781,7 +781,7 @@ public partial class Game : MonoBehaviour
                 {
                     foreach (var item in items)
                     {
-                        content += item.Value.Name + ",";
+                        content += $"{item.Value.Name} x{item.Value.Amount},";
                     }
                     content = content.Trim(',') + "\n";
                 }

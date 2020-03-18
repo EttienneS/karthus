@@ -44,7 +44,7 @@ public class MapGenerator
 
         Game.FactionController.PlayerFaction.HomeCells.AddRange(Game.Map.GetCircle(Game.Map.Center, 15));
 
-        var open = Game.Map.GetCircle(center, 8).Where(c => c.Pathable(Mobility.Walk) && c.Structure == null);
+        var open = Game.Map.GetCircle(center, 5).Where(c => c.Pathable(Mobility.Walk) && c.Structure == null);
         Game.ItemController.SpawnItem("Berries", open.GetRandomItem(), 250);
         Game.ItemController.SpawnItem("Wood", open.GetRandomItem(), 250);
         Game.ItemController.SpawnItem("Stone", open.GetRandomItem(), 250);
@@ -52,8 +52,8 @@ public class MapGenerator
         for (int i = 0; i < 1; i++)
         {
             var c = Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("Person"),
-                                                     Game.Map.GetNearestPathableCell(center, Mobility.Walk, 25),
-                                                     faction);
+                                                          Game.Map.GetNearestPathableCell(center, Mobility.Walk, 5),
+                                                          faction);
         }
     }
 

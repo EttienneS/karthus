@@ -22,7 +22,7 @@ public class Item : IEntity
         }
         set
         {
-            Coords = (Cell.X, Cell.Y);
+            Coords = (Cell.Vector.x, Cell.Vector.y);
         }
     }
 

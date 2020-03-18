@@ -54,8 +54,6 @@ public class ItemController : MonoBehaviour
         }
 
         var data = Item.GetFromJson(ItemTypeFileMap[name]);
-
-        data.Coords = (cell.Vector.x + Random.Range(-0.5f, 0.5f), cell.Vector.y + Random.Range(-0.5f, 0.5f));
         data.Cell = cell;
         data.Amount = amount;
 
