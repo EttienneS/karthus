@@ -129,6 +129,7 @@ MonoBehaviour:
   MouseSpriteRenderer: {fileID: 4395502561622324067}
   selectSquareImage: {fileID: 0}
   Tooltip: {fileID: 0}
+  WorldTooltip: {fileID: 0}
 --- !u!120 &1817309255
 LineRenderer:
   m_ObjectHideFlags: 0

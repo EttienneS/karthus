@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Structures;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Debug = UnityEngine.Debug;
-using Structures;
-using UI;
 
 public enum SelectionPreference
 {
@@ -19,6 +19,7 @@ public partial class Game : MonoBehaviour
     public RectTransform selectSquareImage;
     public ValidateMouseSpriteDelegate ValidateMouse;
     public Tooltip Tooltip;
+    public Tooltip WorldTooltip;
 
     internal LineRenderer LineRenderer;
     internal float LoadProgress;
@@ -536,7 +537,6 @@ public partial class Game : MonoBehaviour
 
     private bool SelectStructure()
     {
-
         foreach (var structure in SelectedStructures)
         {
             structure.ShowOutline();
@@ -591,6 +591,8 @@ public partial class Game : MonoBehaviour
         ConstructController = new ConstructController();
     }
 
+    internal Cell MouseOverCell;
+
     private void Update()
     {
         if (!Ready)
@@ -620,6 +622,7 @@ public partial class Game : MonoBehaviour
             LoadingPanel.Hide();
             LoadPanel.Hide();
             Tooltip.Hide();
+            WorldTooltip.Hide();
 
             DeveloperConsole.gameObject.SetActive(false);
 
@@ -666,6 +669,8 @@ public partial class Game : MonoBehaviour
         }
         else
         {
+            UpdateMouseOverTooltip(mousePosition);
+
             if (Input.GetMouseButtonDown(0))
             {
                 if (MouseOverUi())
@@ -682,7 +687,7 @@ public partial class Game : MonoBehaviour
                     return;
                 }
 
-                if (!Input.GetKey(KeyCode.LeftShift) 
+                if (!Input.GetKey(KeyCode.LeftShift)
                     && !Input.GetKey(KeyCode.RightShift)
                     && OrderSelectionController.CellClickOrder == null)
                 {
@@ -742,6 +747,48 @@ public partial class Game : MonoBehaviour
             }
         }
         DestroyItemsInCache();
+    }
+
+    private void UpdateMouseOverTooltip(Vector3 mousePosition)
+    {
+        if (!MouseOverUi())
+        {
+            MouseOverCell = Map.GetCellAtPoint(Camera.main.ScreenToWorldPoint(mousePosition));
+            if (MouseOverCell != null)
+            {
+                var content = "";
+
+                if (MouseOverCell.Structure != null)
+                {
+                    content += MouseOverCell.Structure.Name + "\n";
+                }
+                if (MouseOverCell.Floor != null)
+                {
+                    content += MouseOverCell.Floor.Name + "\n";
+                }
+                var creatures = IdService.CreatureLookup.Where(c => c.Value.Cell == MouseOverCell).ToList();
+                if (creatures.Count > 0)
+                {
+                    foreach (var creature in creatures)
+                    {
+                        content += creature.Value.Name + ",";
+                    }
+                    content = content.Trim(',') + "\n";
+                }
+
+                var items = IdService.ItemLookup.Where(c => c.Value.Cell == MouseOverCell).ToList();
+                if (items.Count > 0)
+                {
+                    foreach (var item in items)
+                    {
+                        content += item.Value.Name + ",";
+                    }
+                    content = content.Trim(',') + "\n";
+                }
+
+                WorldTooltip.Show(MouseOverCell.ToString(), content, new Vector3(Screen.width - 125, Screen.height - 100));
+            }
+        }
     }
 
     internal SelectionPreference LastSelection = SelectionPreference.Creature;
@@ -818,6 +865,4 @@ public partial class Game : MonoBehaviour
         }
         return false;
     }
-
-
 }
