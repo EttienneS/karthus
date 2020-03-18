@@ -604,7 +604,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1e0f965a50ba2148bf2e637830e1271, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ProgressBarPrefab: {fileID: 5903364936081096362, guid: 2ca6146461f9e1b48a749dacdb131010,
+  ProgressBarPrefab: {fileID: 8661941441360709138, guid: 19fe14a36806662428c2b15ffdf75595,
     type: 3}
 --- !u!114 &6882949437339762815
 MonoBehaviour:
@@ -623,7 +623,7 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 0
+  m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 200, y: 40}
