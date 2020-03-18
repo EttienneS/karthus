@@ -44,15 +44,15 @@ public class MapGenerator
 
         Game.FactionController.PlayerFaction.HomeCells.AddRange(Game.Map.GetCircle(Game.Map.Center, 15));
 
-        var open = Game.Map.GetCircle(center, 5).Where(c => c.Pathable(Mobility.Walk) && c.Structure == null);
+        var open = Game.Map.GetCircle(center, 10).Where(c => c.Pathable(Mobility.Walk) && c.Structure == null);
         Game.ItemController.SpawnItem("Berries", open.GetRandomItem(), 250);
         Game.ItemController.SpawnItem("Wood", open.GetRandomItem(), 250);
         Game.ItemController.SpawnItem("Stone", open.GetRandomItem(), 250);
 
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < 3; i++)
         {
             var c = Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("Person"),
-                                                          Game.Map.GetNearestPathableCell(center, Mobility.Walk, 5),
+                                                          Game.Map.GetNearestPathableCell(center, Mobility.Walk, 10),
                                                           faction);
         }
     }
@@ -61,16 +61,16 @@ public class MapGenerator
     {
         foreach (var monster in Game.CreatureController.Beastiary)
         {
-            if (monster.Key == "Person")
+            if (monster.Key != "Skeleton")
             {
                 continue;
             }
 
-            for (int i = Game.Map.MinY; i < Game.Map.MaxX / 50; i++)
+            for (int i = 0; i < 1; i++)
             {
                 var creature = Game.CreatureController.GetCreatureOfType(monster.Key);
 
-                var spot = Game.Map.GetRandomCell();
+                var spot = Game.Map.GetCircle(Game.Map.Center, 25).GetRandomItem();
                 if (spot.TravelCost <= 0 && creature.Mobility != Mobility.Fly)
                 {
                     spot = Game.Map.CellLookup.Values.Where(c => c.TravelCost > 0).GetRandomItem();

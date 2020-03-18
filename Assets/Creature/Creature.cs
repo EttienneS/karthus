@@ -955,7 +955,7 @@ public class Creature : IEntity
             Path = Pathfinder.FindPath(Game.Map.GetCellAtCoordinate(X, Y),
                                        Game.Map.GetCellAtCoordinate(TargetCoordinate.x, TargetCoordinate.y),
                                        Mobility);
-            Path.Reverse();
+            Path?.Reverse();
         }
 
         if (Path == null || Path.Count == 0)

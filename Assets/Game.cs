@@ -786,7 +786,7 @@ public partial class Game : MonoBehaviour
                     content = content.Trim(',') + "\n";
                 }
 
-                WorldTooltip.Show(MouseOverCell.ToString(), content, new Vector3(Screen.width - 125, Screen.height - 100));
+                WorldTooltip.Show(MouseOverCell.BiomeRegion.SpriteName, content, new Vector3(Screen.width - 125, Screen.height - 100));
             }
         }
     }
