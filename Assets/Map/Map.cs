@@ -146,12 +146,14 @@ public class Map : MonoBehaviour
         // subtract half a unit to compensate for cell offset
         var cell = Cell.FromPosition(position - new Vector3(0.5f, 0.5f));
 
-        if (cell.X < MinX || cell.Y < MinY ||
+        if (cell == null || 
+            cell.X < MinX || cell.Y < MinY ||
             cell.X >= MaxX || cell.Y >= MaxY)
         {
             return null;
         }
         return CellLookup[(cell.X, cell.Y)];
+
     }
 
     public float GetCellHeight(float x, float y)

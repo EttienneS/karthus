@@ -1,6 +1,5 @@
 {
   "dependencies": {
-	"com.unity.localization": "0.6.1-preview",
     "com.unity.2d.animation": "3.1.1",
     "com.unity.2d.common": "2.0.2",
     "com.unity.2d.pixel-perfect": "2.0.4",

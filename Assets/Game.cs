@@ -433,6 +433,11 @@ public partial class Game : MonoBehaviour
         {
             var cell = Map.GetCellAtPoint(Camera.main.ScreenToWorldPoint(mousePosition));
 
+            if (cell == null)
+            {
+                return;
+            }
+
             float x = cell.X;
             float y = cell.Y;
 
