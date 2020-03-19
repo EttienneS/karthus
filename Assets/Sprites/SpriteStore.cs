@@ -1,10 +1,10 @@
-﻿using LPC.Spritesheet.Generator;
-using LPC.Spritesheet.ResourceManager;
+﻿using LPC.Spritesheet.Generator.Enums;
+using Structures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Structures;
+
 public class SpriteStore : MonoBehaviour
 {
     public Dictionary<string, Sprite> CreatureSprites = new Dictionary<string, Sprite>();
@@ -12,9 +12,6 @@ public class SpriteStore : MonoBehaviour
     private Dictionary<string, Sprite> _itemSprites;
 
     private Dictionary<string, Sprite> _mapSprites;
-
-    public EmbeddedResourceManager ResourceManager { get; set; }
-    public CharacterSpriteGenerator Generator { get; set; }
 
     internal Dictionary<string, Sprite> ItemSprites
     {
@@ -37,6 +34,39 @@ public class SpriteStore : MonoBehaviour
             }
 
             return _itemSprites;
+        }
+    }
+
+    private Dictionary<(Race, Gender), List<Sprite>> _characterSprites;
+
+    internal Dictionary<(Race, Gender), List<Sprite>> CharacterSprites
+    {
+        get
+        {
+            if (_characterSprites == null)
+            {
+                //Debug.Log("load item sprites");
+
+                _characterSprites = new Dictionary<(Race, Gender), List<Sprite>>();
+
+                foreach (Race race in Enum.GetValues(typeof(Race)))
+                {
+                    if (race == Race.Any)
+                    {
+                        continue;
+                    }
+                    foreach (Gender gender in Enum.GetValues(typeof(Gender)))
+                    {
+                        if (gender == Gender.Either)
+                        {
+                            continue;
+                        }
+                        _characterSprites.Add((race, gender), Resources.LoadAll<Sprite>($"Sprites/Chars/{race}_{gender}").ToList());
+                    }
+                }
+            }
+
+            return _characterSprites;
         }
     }
 
@@ -68,8 +98,6 @@ public class SpriteStore : MonoBehaviour
 
     public void Awake()
     {
-        ResourceManager = new EmbeddedResourceManager();
-        Generator = new CharacterSpriteGenerator(ResourceManager);
     }
 
     public void LoadCreatureSprites()
@@ -151,6 +179,11 @@ public class SpriteStore : MonoBehaviour
         }
 
         return GetSprite(structure.SpriteName + type);
+    }
+
+    internal Sprite GetCreatureSprite(Race race, Gender gender)
+    {
+        return CharacterSprites[(race, gender)].GetRandomItem();
     }
 
     internal bool FacingUp(Direction facing)

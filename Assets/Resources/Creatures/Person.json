@@ -10,7 +10,7 @@
   "Race": "Human",
 
   "Aggression": 1,
-  "Sprite": "Creature",
+  "Sprite": "Composite",
   "BehaviourName": "Person",
   "Mobility": "Walk",
   "Skills": [

@@ -10,7 +10,7 @@
   "Race": "Skeleton",
 
   "Aggression": 2,
-  "Sprite": "Creature",
+  "Sprite": "Composite",
   "BehaviourName": "Skeleton",
   "Mobility": "Walk",
   "Skills": [],

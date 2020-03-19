@@ -83,10 +83,16 @@ public class CreatureController : MonoBehaviour
 
     internal CreatureRenderer SpawnCreature(Creature creatureData, Cell cell, Faction faction)
     {
+        if (creatureData.Sprite == "Composite")
+        {
+            creatureData.CharacterSpriteSheet = new LPC.Spritesheet.Generator.CharacterSpriteSheet(Game.SpriteStore.GetCreatureSprite(creatureData.Race, creatureData.Gender));
+        }
+
         var creature = Instantiate(CreaturePrefab, transform);
+
         creature.Data = creatureData;
         creature.Data.CreatureRenderer = creature;
-        
+
         Game.IdService.EnrollEntity(creature.Data);
         creature.name = $"{creature.Data.Name} ({creature.Data.Id})";
 
@@ -104,6 +110,7 @@ public class CreatureController : MonoBehaviour
 
         creature.MainRenderer.color = Color.white;
         faction.AddCreature(creatureData);
+
         return creature;
     }
 }

@@ -45,15 +45,6 @@ namespace LPC.Spritesheet.Generator
 
         public static int PixelsPerUnit { get; set; } = 64;
 
-        public static List<ISpriteSheet> GetOrderedLayers(List<ISpriteSheet> layers)
-        {
-            return layers.OrderBy(l => (int)l.SpriteLayer).ToList();
-        }
-
-        public static List<ISpriteSheet> GetOrderedLayersDescending(List<ISpriteSheet> layers)
-        {
-            return layers.OrderByDescending(l => (int)l.SpriteLayer).ToList();
-        }
 
         public static string[] ToneConstants = new[]
         {

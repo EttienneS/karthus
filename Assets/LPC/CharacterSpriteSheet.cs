@@ -1,5 +1,4 @@
 ﻿using LPC.Spritesheet.Generator.Enums;
-using LPC.Spritesheet.Generator.Interfaces;
 using System.Collections.Generic;
 using UnityEngine;
 using Animation = LPC.Spritesheet.Generator.Interfaces.Animation;
@@ -12,9 +11,9 @@ namespace LPC.Spritesheet.Generator
 
         public Texture2D Texture;
 
-        public CharacterSpriteSheet(ICharacterSpriteDefinition characterSprite)
+        public CharacterSpriteSheet(Sprite sprite)
         {
-            Texture = TextureRenderer.GetFullSheetTexture(characterSprite);
+            Texture = sprite.texture;
 
             foreach (var renderConstant in Settings.SpriteSheetAnimationDefinition)
             {

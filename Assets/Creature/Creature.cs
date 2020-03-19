@@ -1,6 +1,5 @@
 ﻿using LPC.Spritesheet.Generator;
 using LPC.Spritesheet.Generator.Enums;
-using LPC.Spritesheet.Generator.Interfaces;
 using Needs;
 using Newtonsoft.Json;
 using System;
@@ -64,13 +63,9 @@ public class Creature : IEntity
     [JsonIgnore]
     private List<Cell> _awareness;
 
-    private CharacterSpriteSheet _characterSpriteSheet;
-
     private Faction _faction;
 
     private int _selfTicks;
-
-    private ICharacterSpriteDefinition _spriteDef;
 
     private CreatureTask _task;
 
@@ -268,25 +263,6 @@ public class Creature : IEntity
     public float X { get; set; }
 
     public float Y { get; set; }
-
-    [JsonIgnore]
-    internal CharacterSpriteSheet CharacterSpriteSheet
-    {
-        get
-        {
-            if (_characterSpriteSheet == null)
-            {
-                if (_spriteDef == null)
-                {
-                    _spriteDef = Game.SpriteStore.Generator.GetBaseCharacter(Gender, Race);
-                    Game.SpriteStore.Generator.AddClothes(_spriteDef);
-                }
-
-                _characterSpriteSheet = new CharacterSpriteSheet(_spriteDef);
-            }
-            return _characterSpriteSheet;
-        }
-    }
 
     public void AddLimb(Limb limb)
     {
@@ -526,11 +502,6 @@ public class Creature : IEntity
         HeldItem.Reserve(this);
     }
 
-    public void RefreshSprite()
-    {
-        _characterSpriteSheet = null;
-    }
-
     public void Say(string message, float duration = 1f)
     {
         if (FactionName == FactionConstants.Player)
@@ -576,9 +547,12 @@ public class Creature : IEntity
         return text;
     }
 
+    [JsonIgnore]
+    public CharacterSpriteSheet CharacterSpriteSheet;
+
     public void UpdateSprite()
     {
-        if (Sprite == "Creature")
+        if (Sprite == "Composite")
         {
             if (FixedAnimation != null)
             {
