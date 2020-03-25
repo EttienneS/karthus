@@ -70,6 +70,30 @@ public class SpriteStore : MonoBehaviour
         }
     }
 
+    private Dictionary<Gender, List<Sprite>> _clothesSprites;
+
+    internal Dictionary<Gender, List<Sprite>> ClothesSprites
+    {
+        get
+        {
+            if (_clothesSprites == null)
+            {
+                _clothesSprites = new Dictionary<Gender, List<Sprite>>();
+
+                foreach (Gender gender in Enum.GetValues(typeof(Gender)))
+                {
+                    if (gender == Gender.Either)
+                    {
+                        continue;
+                    }
+                    _clothesSprites.Add(gender, Resources.LoadAll<Sprite>($"Sprites/Clothes/{gender}").ToList());
+                }
+            }
+
+            return _clothesSprites;
+        }
+    }
+
     internal Dictionary<string, Sprite> MapSpriteTypeDictionary
     {
         get
@@ -184,6 +208,11 @@ public class SpriteStore : MonoBehaviour
     internal Sprite GetCreatureSprite(Race race, Gender gender)
     {
         return CharacterSprites[(race, gender)].GetRandomItem();
+    }
+
+    internal Sprite GetClothesSprite( Gender gender)
+    {
+        return ClothesSprites[gender].GetRandomItem();
     }
 
     internal bool FacingUp(Direction facing)

@@ -86,6 +86,7 @@ public class CreatureController : MonoBehaviour
         if (creatureData.Sprite == "Composite")
         {
             creatureData.CharacterSpriteSheet = new LPC.Spritesheet.Generator.CharacterSpriteSheet(Game.SpriteStore.GetCreatureSprite(creatureData.Race, creatureData.Gender));
+            creatureData.CharacterSpriteSheet.SetClothes(Game.SpriteStore.GetClothesSprite(creatureData.Gender));
         }
 
         var creature = Instantiate(CreaturePrefab, transform);

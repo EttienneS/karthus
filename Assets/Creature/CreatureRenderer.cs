@@ -7,52 +7,16 @@ public class CreatureRenderer : MonoBehaviour
 {
     public UnityEngine.Experimental.Rendering.Universal.Light2D Light;
     internal Creature Data = new Creature();
-    internal SpriteRenderer Highlight;
-    internal LineRenderer LineRenderer;
-    internal SpriteRenderer MainRenderer;
+    public SpriteRenderer Highlight;
+    public SpriteRenderer MainRenderer;
+    public SpriteRenderer ClothesRenderer;
+    public SpriteRenderer WeaponRenderer;
     internal float RemainingTextDuration;
-    internal TextMeshPro Text;
+    public TextMeshPro Text;
 
     public void Awake()
     {
-        Highlight = transform.Find("Highlight").GetComponent<SpriteRenderer>();
-        var mainSprite = transform.Find("Sprite");
-        MainRenderer = mainSprite.GetComponent<SpriteRenderer>();
-
-        Text = GetComponentInChildren<TextMeshPro>();
-
-        LineRenderer = GetComponent<LineRenderer>();
-
         Highlight.gameObject.SetActive(false);
-    }
-
-    public void DrawAwareness()
-    {
-        var awareness = new List<Vector3> { Data.Vector };
-        awareness.AddRange(Data.Awareness.Where(c => c.Neighbors.Any(n => !Data.Awareness.Contains(n)))
-                                         .Select(c => c.Vector));
-        awareness.Add(Data.Cell.Vector);
-
-        ShowLine(Color.white, awareness.ToArray());
-    }
-
-    public Sprite GetIcon()
-    {
-        return MainRenderer.sprite;
-    }
-
-    public void HideLine()
-    {
-        LineRenderer.positionCount = 0;
-    }
-
-    public void ShowLine(Color color, params Vector3[] points)
-    {
-        LineRenderer.startColor = color;
-        LineRenderer.endColor = color;
-
-        LineRenderer.SetPositions(points);
-        LineRenderer.positionCount = points.Length;
     }
 
     public void ShowText(string text, float duration)

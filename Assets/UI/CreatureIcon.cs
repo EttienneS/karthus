@@ -4,6 +4,7 @@ using UnityEngine.UI;
 public class CreatureIcon : MonoBehaviour
 {
     public Image Image;
+    public Image Clothes;
     public Text Text;
 
     public Creature Creature { get; set; }
@@ -21,6 +22,7 @@ public class CreatureIcon : MonoBehaviour
         if (Creature != null)
         {
             Image.sprite = Creature.CreatureRenderer.MainRenderer.sprite;
+            Clothes.sprite = Creature.CreatureRenderer.ClothesRenderer.sprite;
             Text.text = Creature.Name;
         }
     }

@@ -560,8 +560,7 @@ public class Creature : IEntity
                 {
                     Frame = FixedFrame.Value;
                 }
-
-                CreatureRenderer.MainRenderer.sprite = CharacterSpriteSheet.GetFrame(FixedAnimation.Value, GetOrientation(), ref Frame);
+                SetSprite(FixedAnimation.Value);
             }
             else
             {
@@ -570,13 +569,14 @@ public class Creature : IEntity
                     // standing still, stay on frame 0
                     Frame = 0;
                 }
-                CreatureRenderer.MainRenderer.sprite = CharacterSpriteSheet.GetFrame(Animation, GetOrientation(), ref Frame);
+                SetSprite(Animation);
             }
-
-            return;
         }
         else
         {
+            CreatureRenderer.ClothesRenderer.gameObject.SetActive(false);
+            CreatureRenderer.WeaponRenderer.gameObject.SetActive(false);
+
             CreatureRenderer.MainRenderer.flipX = Facing == Direction.W || Facing == Direction.NE || Facing == Direction.SW;
             if (!Sprite.Contains("_"))
             {
@@ -587,6 +587,13 @@ public class Creature : IEntity
                 CreatureRenderer.MainRenderer.sprite = Game.SpriteStore.GetSprite(Sprite);
             }
         }
+    }
+
+    private void SetSprite(Animation animation)
+    {
+        var frame = CharacterSpriteSheet.GetFrame(animation, GetOrientation(), ref Frame);
+        CreatureRenderer.MainRenderer.sprite = frame.body;
+        CreatureRenderer.ClothesRenderer.sprite = frame.clothes;
     }
 
     internal void AddRelationshipEvent(Creature creature, string name, float value)

@@ -7,45 +7,71 @@ namespace LPC.Spritesheet.Generator
 {
     public class CharacterSpriteSheet
     {
-        private Dictionary<Animation, Dictionary<Orientation, Sprite[]>> _animationDictionary = new Dictionary<Animation, Dictionary<Orientation, Sprite[]>>();
+        private Dictionary<Animation, Dictionary<Orientation, Sprite[]>> _bodyAnimationDictionary = new Dictionary<Animation, Dictionary<Orientation, Sprite[]>>();
+        private Dictionary<Animation, Dictionary<Orientation, Sprite[]>> _clothesAnimationDictionary;
+        private Dictionary<Animation, Dictionary<Orientation, Sprite[]>> _weaponAnimationDictionary;
 
-        public Texture2D Texture;
-
-        public CharacterSpriteSheet(Sprite sprite)
+        public CharacterSpriteSheet(Sprite body)
         {
-            Texture = sprite.texture;
+            _bodyAnimationDictionary = BuildAnimationDictionary(body.texture);
+        }
 
+        public void SetClothes(Sprite clothes)
+        {
+            _clothesAnimationDictionary = BuildAnimationDictionary(clothes.texture);
+        }
+
+        public void SetWeapon(Sprite weapon)
+        {
+            _weaponAnimationDictionary = BuildAnimationDictionary(weapon.texture);
+        }
+
+        private Dictionary<Animation, Dictionary<Orientation, Sprite[]>> BuildAnimationDictionary(Texture2D texture2D)
+        {
+            var animationDictionary = new Dictionary<Animation, Dictionary<Orientation, Sprite[]>>();
             foreach (var renderConstant in Settings.SpriteSheetAnimationDefinition)
             {
-                if (!_animationDictionary.ContainsKey(renderConstant.Key.animation))
+                if (!animationDictionary.ContainsKey(renderConstant.Key.animation))
                 {
-                    _animationDictionary.Add(renderConstant.Key.animation, new Dictionary<Orientation, Sprite[]>());
+                    animationDictionary.Add(renderConstant.Key.animation, new Dictionary<Orientation, Sprite[]>());
                 }
                 var sprites = new Sprite[renderConstant.Value.frames];
                 for (int frame = 0; frame < renderConstant.Value.frames; frame++)
                 {
-                    sprites[frame] = Sprite.Create(Texture, new Rect(frame * Settings.SpriteWidth,
-                                                                     (20 - renderConstant.Value.row) * Settings.SpriteHeight,
-                                                                     Settings.SpriteWidth,
-                                                                     Settings.SpriteHeight),
-                                                            new Vector2(0.5f, 0.5f),
-                                                            Settings.PixelsPerUnit);
+                    sprites[frame] = Sprite.Create(texture2D, new Rect(frame * Settings.SpriteWidth,
+                                                                      (20 - renderConstant.Value.row) * Settings.SpriteHeight,
+                                                                      Settings.SpriteWidth,
+                                                                      Settings.SpriteHeight),
+                                                              new Vector2(0.5f, 0.5f),
+                                                              Settings.PixelsPerUnit);
                 }
-                _animationDictionary[renderConstant.Key.animation].Add(renderConstant.Key.orientation, sprites);
+                animationDictionary[renderConstant.Key.animation].Add(renderConstant.Key.orientation, sprites);
             }
+            return animationDictionary;
         }
 
-        public Sprite GetFrame(Animation animation, Orientation orientation, ref int frame)
+        public (Sprite body, Sprite clothes, Sprite weapon) GetFrame(Animation animation, Orientation orientation, ref int frame)
         {
-            var sprites = _animationDictionary[animation][orientation];
-            frame++;
+            var body = GetSprites(_bodyAnimationDictionary, animation, orientation);
+            var clothes = GetSprites(_clothesAnimationDictionary, animation, orientation);
+            var weapon = GetSprites(_weaponAnimationDictionary, animation, orientation);
 
-            if (frame >= sprites.Length)
+            frame++;
+            if (frame >= body.Length)
             {
                 frame = 0;
             }
 
-            return sprites[frame];
+            return (body[frame], clothes?[frame], weapon?[frame]);
+        }
+
+        public Sprite[] GetSprites(Dictionary<Animation, Dictionary<Orientation, Sprite[]>> dict, Animation animation, Orientation orientation)
+        {
+            if (dict == null)
+            {
+                return null;
+            }
+            return dict[animation][orientation];
         }
     }
 }
