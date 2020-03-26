@@ -198,6 +198,11 @@ namespace Structures
             return IsType("Wall");
         }
 
+        public bool IsShadowCaster()
+        {
+            return IsWall();
+        }
+
         public void Refresh()
         {
             Game.StructureController.RefreshStructure(this);

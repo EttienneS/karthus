@@ -98,6 +98,15 @@ public class Build : CreatureTask
                 TargetStructure.Properties.Remove(NamedProperties.ContainedItemIds);
             }
 
+            if (TargetStructure.IsShadowCaster())
+            {
+                TargetStructure.Renderer.EnableShadow();
+            }
+            else
+            {
+                TargetStructure.Renderer.DisableShadow();
+            }
+
             return true;
         }
         return false;

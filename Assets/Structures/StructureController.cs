@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering.Universal;
 using UnityEngine.Tilemaps;
 
 namespace Structures
@@ -107,6 +108,7 @@ namespace Structures
 
             var structure = GetFromJson(structureData);
             var renderer = Instantiate(StructureRendererPrefab, transform);
+            renderer.transform.name = structure.Name + " " + structure.Id;
             structure.Renderer = renderer;
             renderer.Data = structure;
 
