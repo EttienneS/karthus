@@ -11,7 +11,6 @@ public class ChunkRenderer : MonoBehaviour
 
     public bool GroundDrawn;
     public Tilemap GroundMap;
-    private List<Cell> _cellsToPopulate;
 
     public Cell CreateCell(int x, int y)
     {
@@ -140,20 +139,8 @@ public class ChunkRenderer : MonoBehaviour
 
     internal void Populate()
     {
-        if (_cellsToPopulate == null)
-        {
-            _cellsToPopulate = Cells.ToList();
-        }
-
-        var range = Mathf.Min(5, _cellsToPopulate.Count);
-        var current = _cellsToPopulate.GetRange(0, range);
-        current.ForEach(c => c.Populate());
-        _cellsToPopulate.RemoveRange(0, range);
-
-        if (_cellsToPopulate.Count == 0)
-        {
-            Data.Populated = true;
-        }
+        Cells.ForEach(c => c.Populate());
+        Data.Populated = true;
     }
 
     internal void SetTile(int x, int y, Tile tile)

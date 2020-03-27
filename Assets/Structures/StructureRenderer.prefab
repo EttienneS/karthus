@@ -18,7 +18,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &6304060896368872935
 Transform:
@@ -96,8 +96,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f39dcb5d084f3eb44a64a96c32614c49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShadowCaster: {fileID: 153953213624625761}
   CompositeCaster: {fileID: 3844558605151660104}
+  ShadowCaster: {fileID: 153953213624625761}
 --- !u!114 &153953213624625761
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -123,7 +123,7 @@ MonoBehaviour:
   - {x: -0.5, y: 0.5, z: 0}
   m_ShapePathHash: 160822549
   m_Mesh: {fileID: 0}
-  m_InstanceId: 82688
+  m_InstanceId: 91194
 --- !u!114 &3844558605151660104
 MonoBehaviour:
   m_ObjectHideFlags: 0
