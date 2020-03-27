@@ -14,25 +14,12 @@ public class MainMenuController : MonoBehaviour
 
     public void Toggle()
     {
-        if (!gameObject.activeInHierarchy)
+        gameObject.SetActive(!gameObject.activeInHierarchy);
+        MainMenuActive = gameObject.activeInHierarchy;
+
+        if (MainMenuActive)
         {
-            transform.localScale = new Vector3(0, 0);
-            Game.TimeManager.TimeStep = TimeStep.Normal;
-            gameObject.SetActive(true);
-            LeanTween.scale(gameObject, new Vector3(1, 1), 0.5f).setDelay(0.3f).setOnComplete(() =>
-            {
-                Game.TimeManager.Pause();
-                MainMenuActive = true;
-            });
-        }
-        else
-        {
-            Game.TimeManager.TimeStep = TimeStep.Normal;
-            LeanTween.scale(gameObject, new Vector3(0, 0), 0.5f).setOnComplete(() =>
-            {
-                gameObject.SetActive(false);
-                MainMenuActive = false;
-            });
+            Game.TimeManager.Pause();
         }
     }
 
