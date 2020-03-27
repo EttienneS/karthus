@@ -16,6 +16,10 @@ public class Map : MonoBehaviour
 
     public Light2D GlobalLight;
 
+    public NoiseSettings NoiseSettings;
+
+    public int Size = 3;
+
     [Range(0.001f, 0.2f)]
     public float Scaler = 0.1f;
 
@@ -24,15 +28,28 @@ public class Map : MonoBehaviour
     internal int ChunkSize = 15;
 
     internal (int X, int Y) Origin = (500, 500);
+    private float[,] _noiseMap;
     private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
     private int _searchFrontierPhase;
-    private float? _seedValue;
+    private int? _seedValue;
 
     public Cell Center
     {
         get
         {
             return CellLookup[(Origin.X + (ChunkSize / 2), Origin.Y + (ChunkSize / 2))];
+        }
+    }
+
+    public float[,] NoiseMap
+    {
+        get
+        {
+            if (_noiseMap == null)
+            {
+                _noiseMap = Noise.GenerateNoiseMap(SeedValue, 1000, 1000, NoiseSettings, Vector2.zero);
+            }
+            return _noiseMap;
         }
     }
 
@@ -44,7 +61,7 @@ public class Map : MonoBehaviour
 
     internal int MinY { get; set; }
 
-    internal float SeedValue
+    internal int SeedValue
     {
         get
         {
@@ -52,11 +69,12 @@ public class Map : MonoBehaviour
             {
                 var md5Hasher = MD5.Create();
                 var hashed = md5Hasher.ComputeHash(Encoding.UTF8.GetBytes(Seed));
-                _seedValue = BitConverter.ToInt32(hashed, 0) % 100000f;
+                _seedValue = BitConverter.ToInt32(hashed, 0);
             }
             return _seedValue.Value;
         }
     }
+
     public void AddCellIfValid(int x, int y, List<Cell> cells)
     {
         if (CellLookup.ContainsKey((x, y)))
@@ -146,19 +164,19 @@ public class Map : MonoBehaviour
         // subtract half a unit to compensate for cell offset
         var cell = Cell.FromPosition(position - new Vector3(0.5f, 0.5f));
 
-        if (cell == null || 
+        if (cell == null ||
             cell.X < MinX || cell.Y < MinY ||
             cell.X >= MaxX || cell.Y >= MaxY)
         {
             return null;
         }
         return CellLookup[(cell.X, cell.Y)];
-
     }
 
     public float GetCellHeight(float x, float y)
     {
-        return Mathf.PerlinNoise((SeedValue + x) * Scaler, (SeedValue + y) * Scaler);
+        return NoiseMap[(int)x, (int)y];
+        //return Mathf.PerlinNoise((SeedValue + x) * Scaler, (SeedValue + y) * Scaler);
     }
 
     public List<Cell> GetCircle(Cell center, int radius)
@@ -547,11 +565,9 @@ public class Map : MonoBehaviour
     {
         var circle = GetCircle(centerPoint, radius);
 
-        var result = circle.Where(c => c != centerPoint && c.Pathable(mobility))
+        return circle.Where(c => c != centerPoint && c.Pathable(mobility))
                            .OrderBy(c => c.DistanceTo(centerPoint))
                            .First();
-
-        return result;
     }
 
     internal Cell GetPathableNeighbour(Cell coordinates)

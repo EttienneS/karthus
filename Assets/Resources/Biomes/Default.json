@@ -2,69 +2,58 @@
   "BiomeRegions": [
     {
       "Content": {},
-      "Max": 0.2,
       "Min": 0.0,
+      "Max": 0.25,
       "TravelCost": -1,
       "SpriteName": "Water"
     },
     {
       "Content": {
       },
-      "Max": 0.23,
-      "Min": 0.2,
+      "Min": 0.25,
+      "Max": 0.35,
       "SpriteName": "Sand"
     },
     {
       "Content": {
-        "Medium Rock": 0.01
+        "Medium Rock": 0.05
       },
-      "Max": 0.28,
-      "Min": 0.23,
+      "Min": 0.35,
+      "Max": 0.45,
       "SpriteName": "Dirt"
     },
     {
       "Content": {
-        "Bush": 0.05,
+        "Medium Rock": 0.01,
+        "Bush": 0.05
       },
-      "Max": 0.6,
-      "Min": 0.28,
+      "Min": 0.45,
+      "Max": 0.7,
       "SpriteName": "Grass"
     },
     {
       "Content": {
-        "Tree": 0.75,
-        "Bush": 0.25,
+        "Tree": 0.35
       },
-      "Max": 0.8,
       "Min": 0.7,
+      "Max": 0.8,
       "SpriteName": "Forest"
     },
     {
       "Content": {
-        "Tree": 0.15,
-        "Bush": 0.25,
+        "Tree": 0.65
       },
-      "Max": 0.7,
-      "Min": 0.6,
-      "SpriteName": "Forest"
-    },
-    {
-      "Content": {
-        "Medium Rock": 0.25,
-        "Big Rock": 0.10
-      },
-      "Max": 0.9,
       "Min": 0.8,
-      "SpriteName": "Stone"
+      "Max": 0.9,
+      "SpriteName": "Forest"
     },
     {
       "Content": {
-        "Medium Rock": 0.6,
-        "Big Rock": 0.9
+        "Tree": 1
       },
-      "Max": 1.0,
       "Min": 0.9,
-      "SpriteName": "Stone"
+      "Max": 1.0,
+      "SpriteName": "Forest"
     }
   ],
   "Name": "Default",

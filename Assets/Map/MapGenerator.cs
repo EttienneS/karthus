@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class MapGenerator
 {
@@ -88,13 +89,12 @@ public class MapGenerator
 
         var counter = 1;
         Game.Instance.SetLoadStatus("Create Map", 0);
-        var size = 2;
-        var inc = 1f / 16f;
+        var inc = 1f / (Mathf.Pow(Game.Map.Size, 4) + 2);
         if (SaveManager.SaveToLoad == null)
         {
-            for (var i = 0 - size; i <= 0 + size; i++)
+            for (var i = 0 - Game.Map.Size; i < 0 + Game.Map.Size; i++)
             {
-                for (var k = 0 - size; k <= 0 + size; k++)
+                for (var k = 0 - Game.Map.Size; k < 0 + Game.Map.Size; k++)
                 {
                     Game.Map.MakeChunk(new Chunk((Game.Map.Origin.X / Game.Map.ChunkSize) + i,
                                                  (Game.Map.Origin.Y / Game.Map.ChunkSize) + k));
