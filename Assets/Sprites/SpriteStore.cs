@@ -280,7 +280,7 @@ public class SpriteStore : MonoBehaviour
 
     internal Sprite GetSpriteForTerrainType(string spriteName)
     {
-        var typeString = spriteName.ToString();
+        var typeString = spriteName;
         if (MapSpriteTypeDictionary.ContainsKey(typeString))
         {
             return MapSpriteTypeDictionary[typeString];

@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class MapGenerator
 {
-    public Biome Biome;
-
     public bool Busy;
     public bool Done;
     public string Status;
@@ -27,6 +25,17 @@ public class MapGenerator
 
             return _biomeTemplates;
         }
+    }
+
+    public Biome GetBiome(int x, int y)
+    {
+        return BiomeTemplates[0];
+        //var value = Game.Map.WorldNoiseMap[x, y];
+        //if (value > 0.5f)
+        //{
+        //    return BiomeTemplates[0];
+        //}
+        //return BiomeTemplates[1];
     }
 
     public (Cell bottomLeft, Cell bottomRight, Cell topLeft, Cell topRight) GetCorners(List<Cell> square)
@@ -83,8 +92,6 @@ public class MapGenerator
 
     public IEnumerator Work()
     {
-        Biome = BiomeTemplates.First(b => b.Name == "Default");
-
         Game.Map.Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
 
         var counter = 1;

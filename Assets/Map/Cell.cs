@@ -27,7 +27,7 @@ public class Cell : IEquatable<Cell>
         {
             if (_biomeRegion == null)
             {
-                _biomeRegion = Game.MapGenerator.Biome.GetRegion(Height);
+                _biomeRegion = Game.MapGenerator.GetBiome(X,Y).GetRegion(Height);
             }
             return _biomeRegion;
         }
@@ -263,7 +263,7 @@ public class Cell : IEquatable<Cell>
     public void RefreshColor()
     {
         const float totalShade = 1f;
-        const float maxShade = 0.4f;
+        const float maxShade = 0.25f;
         var baseColor = new Color(totalShade, totalShade, totalShade, 1f);
 
         var scaled = Helpers.Scale(BiomeRegion.Min, BiomeRegion.Max, 0f, maxShade, Height);

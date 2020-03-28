@@ -16,23 +16,23 @@ public class Map : MonoBehaviour
 
     public Light2D GlobalLight;
 
-    public NoiseSettings NoiseSettings;
-
-    public int Size = 3;
-
+    public NoiseSettings LocalNoise;
+    public int MaxSize = 1000;
     [Range(0.001f, 0.2f)]
     public float Scaler = 0.1f;
 
     public string Seed;
+    public int Size = 3;
+    public NoiseSettings WorldNoise;
     internal Dictionary<(int x, int y), ChunkRenderer> Chunks;
     internal int ChunkSize = 15;
 
     internal (int X, int Y) Origin = (500, 500);
-    private float[,] _noiseMap;
+    private float[,] _localNoiseMap;
     private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
     private int _searchFrontierPhase;
     private int? _seedValue;
-
+    private float[,] _worldNoiseMap;
     public Cell Center
     {
         get
@@ -41,15 +41,27 @@ public class Map : MonoBehaviour
         }
     }
 
-    public float[,] NoiseMap
+    public float[,] LocalNoiseMap
     {
         get
         {
-            if (_noiseMap == null)
+            if (_localNoiseMap == null)
             {
-                _noiseMap = Noise.GenerateNoiseMap(SeedValue, 1000, 1000, NoiseSettings, Vector2.zero);
+                _localNoiseMap = Noise.GenerateNoiseMap(SeedValue, MaxSize, MaxSize, LocalNoise, Vector2.zero);
             }
-            return _noiseMap;
+            return _localNoiseMap;
+        }
+    }
+
+    public float[,] WorldNoiseMap
+    {
+        get
+        {
+            if (_worldNoiseMap == null)
+            {
+                _worldNoiseMap = Noise.GenerateNoiseMap(SeedValue, MaxSize, MaxSize, WorldNoise, Vector2.zero);
+            }
+            return _worldNoiseMap;
         }
     }
 
@@ -175,7 +187,7 @@ public class Map : MonoBehaviour
 
     public float GetCellHeight(float x, float y)
     {
-        return NoiseMap[(int)x, (int)y];
+        return LocalNoiseMap[(int)x, (int)y];
         //return Mathf.PerlinNoise((SeedValue + x) * Scaler, (SeedValue + y) * Scaler);
     }
 
