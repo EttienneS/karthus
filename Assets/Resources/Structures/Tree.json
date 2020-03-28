@@ -1,11 +1,9 @@
 {
   "Name": "Tree",
   "SpriteName": "Tree",
-  "TravelCost": "-1",
+  "TravelCost": "7",
   "Buildable": "False",
   "Layer": "Tree",
-  "ShiftY": "0.7~1",
-  "ShiftX": "-0.2~0.2",
   "Cost": {
     "Items": {
       "Wood": "15"

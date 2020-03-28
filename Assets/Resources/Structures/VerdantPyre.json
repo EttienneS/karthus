@@ -1,0 +1,11 @@
+{
+  "Name": "Verdant Pyre",
+  "SpriteName": "Verdant Pyre",
+  "TravelCost": "3",
+  "Buildable": "False",
+  "Cost": {
+    "Items": {
+      "Wood": "1"
+    }
+  }
+}
