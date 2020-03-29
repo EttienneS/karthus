@@ -90,6 +90,8 @@ public class MapGenerator
         }
     }
 
+    private ChunkRenderer _currentChunk;
+
     public IEnumerator Work()
     {
         Game.Map.Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
@@ -99,12 +101,20 @@ public class MapGenerator
         var inc = 1f / (Mathf.Pow(Game.Map.Size, 4) + 2);
         if (SaveManager.SaveToLoad == null)
         {
+            if (_currentChunk != null)
+            {
+                if (!_currentChunk.GroundDrawn || !_currentChunk.Data.Populated)
+                {
+                    yield return null;
+                }
+            }
+
             for (var i = 0 - Game.Map.Size; i < 0 + Game.Map.Size; i++)
             {
                 for (var k = 0 - Game.Map.Size; k < 0 + Game.Map.Size; k++)
                 {
-                    Game.Map.MakeChunk(new Chunk((Game.Map.Origin.X / Game.Map.ChunkSize) + i,
-                                                 (Game.Map.Origin.Y / Game.Map.ChunkSize) + k));
+                    _currentChunk = Game.Map.MakeChunk(new Chunk((Game.Map.Origin.X / Game.Map.ChunkSize) + i,
+                                                             (Game.Map.Origin.Y / Game.Map.ChunkSize) + k));
 
                     Game.Instance.SetLoadStatus($"Create Chunk {counter}", (counter - 1) * inc);
                     counter++;

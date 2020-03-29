@@ -589,6 +589,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Main Camera
       objectReference: {fileID: 0}
+    - target: {fileID: 5246461426590746731, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
+        type: 3}
+      propertyPath: orthographic size
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 5246461426590746772, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -671,7 +676,7 @@ PrefabInstance:
     - target: {fileID: 5952559972800760938, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
         type: 3}
       propertyPath: Size
-      value: 3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5952559972800760938, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
         type: 3}
@@ -687,6 +692,11 @@ PrefabInstance:
         type: 3}
       propertyPath: WorldNoise.persistance
       value: 0.72
+      objectReference: {fileID: 0}
+    - target: {fileID: 5952559972800760938, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
+        type: 3}
+      propertyPath: ChunkSize
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5952559972800760939, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
         type: 3}
@@ -1351,7 +1361,7 @@ PrefabInstance:
     - target: {fileID: 6198119545509704615, guid: 21216dc22b576ec4785cf4c518463eaa,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.51000977
+      value: 64
       objectReference: {fileID: 0}
     - target: {fileID: 6486745693095385764, guid: 21216dc22b576ec4785cf4c518463eaa,
         type: 3}

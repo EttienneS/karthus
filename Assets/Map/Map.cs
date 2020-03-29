@@ -14,10 +14,12 @@ public class Map : MonoBehaviour
     public Dictionary<(int x, int y), Cell> CellLookup = new Dictionary<(int x, int y), Cell>();
     public ChunkRenderer ChunkPrefab;
 
+    public int ChunkSize = 5;
     public Light2D GlobalLight;
 
     public NoiseSettings LocalNoise;
     public int MaxSize = 1000;
+
     [Range(0.001f, 0.2f)]
     public float Scaler = 0.1f;
 
@@ -25,14 +27,13 @@ public class Map : MonoBehaviour
     public int Size = 3;
     public NoiseSettings WorldNoise;
     internal Dictionary<(int x, int y), ChunkRenderer> Chunks;
-    internal int ChunkSize = 15;
-
     internal (int X, int Y) Origin = (500, 500);
     private float[,] _localNoiseMap;
     private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
     private int _searchFrontierPhase;
     private int? _seedValue;
     private float[,] _worldNoiseMap;
+
     public Cell Center
     {
         get
@@ -435,7 +436,7 @@ public class Map : MonoBehaviour
                             minMax.maxy - minMax.miny - 1);
     }
 
-    public void MakeChunk(Chunk data)
+    public ChunkRenderer MakeChunk(Chunk data)
     {
         var chunk = Instantiate(ChunkPrefab, transform);
         chunk.name = $"Chunk: {data.X}_{data.Y}";
@@ -468,6 +469,8 @@ public class Map : MonoBehaviour
             MaxX = (Game.Map.Chunks.Max(c => c.Key.x) * Game.Map.ChunkSize) + Game.Map.ChunkSize;
             MaxY = (Game.Map.Chunks.Max(c => c.Key.y) * Game.Map.ChunkSize) + Game.Map.ChunkSize;
         }
+
+        return chunk;
     }
 
     public void Update()

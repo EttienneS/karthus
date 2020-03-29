@@ -600,7 +600,7 @@ public partial class Game : MonoBehaviour
             else if (!MapGenerator.Busy)
             {
                 CameraController.Camera.transform.position = new Vector3(Map.Origin.X, Map.Origin.Y, -1);
-                CameraController.Camera.orthographicSize = Map.ChunkSize * 3;
+                CameraController.Camera.orthographicSize = 1;
                 MapGenerator.Busy = true;
                 StartCoroutine(MapGenerator.Work());
             }
