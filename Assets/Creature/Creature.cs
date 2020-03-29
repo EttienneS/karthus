@@ -525,9 +525,13 @@ public class Creature : IEntity
 
     public void SetTargetCoordinate(float targetX, float targetY)
     {
-        TargetCoordinate = (targetX, targetY);
-        Path = null;
-        UnableToFindPath = false;
+        // only change the path and reset if the coords do not match
+        if (TargetCoordinate.x != targetX && TargetCoordinate.y != targetY)
+        {
+            TargetCoordinate = (targetX, targetY);
+            Path = null;
+            UnableToFindPath = false;
+        }
     }
 
     public override string ToString()
