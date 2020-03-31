@@ -1,7 +1,5 @@
-﻿using Structures;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,7 +15,6 @@ public class CreatureInfoPanel : MonoBehaviour
     public GameObject TabPanel;
     private List<ImageButton> _contextButtons = new List<ImageButton>();
 
-
     public ImageButton AddButton(string title, string spriteName)
     {
         var button = Instantiate(ImageButtonPrefab, ButtonPanel.transform);
@@ -25,7 +22,7 @@ public class CreatureInfoPanel : MonoBehaviour
         button.SetImage(Game.SpriteStore.GetSprite(spriteName));
 
         _contextButtons.Add(button);
-
+        button.SetOnClick(() => SetActiveButton(button));
         return button;
     }
 
@@ -58,8 +55,14 @@ public class CreatureInfoPanel : MonoBehaviour
         {
             // creatures
             var creatures = entities.OfType<Creature>();
-            AddMoveButton(creatures);
-            AddAttackButton(creatures);
+
+            AddButton(OrderSelectionController.MoveText,
+                      OrderSelectionController.MoveIcon)
+                        .SetOnClick(() => MoveClicked(creatures));
+
+            AddButton(OrderSelectionController.AttackText,
+                      OrderSelectionController.AttackIcon)
+                        .SetOnClick(() => AttackClicked(creatures));
         }
     }
 
@@ -128,24 +131,8 @@ public class CreatureInfoPanel : MonoBehaviour
         }
     }
 
-    private void AddAttackButton(IEnumerable<Creature> creatures)
+    private void AttackClicked(IEnumerable<Creature> creatures)
     {
-        var btn = AddButton(OrderSelectionController.AttackText, OrderSelectionController.AttackIcon);
-        btn.SetOnClick(() => AttackClicked(creatures, btn));
-    }
-
- 
-    private void AddMoveButton(IEnumerable<Creature> creatures)
-    {
-        var btn = AddButton(OrderSelectionController.MoveText, OrderSelectionController.MoveIcon);
-        btn.SetOnClick(() => MoveClicked(creatures, btn));
-    }
-
-   
-    private void AttackClicked(IEnumerable<Creature> creatures, ImageButton btn)
-    {
-        SetActiveButton(btn);
-
         Game.Instance.SelectionPreference = SelectionPreference.Cell;
         Game.Instance.SetMouseSprite(OrderSelectionController.AttackIcon,
                                         (cell) => cell.GetEnemyCreaturesOf(FactionConstants.Player).Any());
@@ -186,9 +173,8 @@ public class CreatureInfoPanel : MonoBehaviour
         }
     }
 
-    private void MoveClicked(IEnumerable<Creature> creatures, ImageButton btn)
+    private void MoveClicked(IEnumerable<Creature> creatures)
     {
-        SetActiveButton(btn);
         Game.Instance.SelectionPreference = SelectionPreference.Cell;
         Game.Instance.SetMouseSprite(OrderSelectionController.MoveIcon, (cell) => cell.TravelCost > 0);
 
@@ -196,6 +182,10 @@ public class CreatureInfoPanel : MonoBehaviour
         {
             foreach (var creature in creatures)
             {
+                if (creature.InCombat)
+                {
+                    creature.Combatants.Clear();
+                }
                 var cell = cells[0];
 
                 var faction = creature.GetFaction();

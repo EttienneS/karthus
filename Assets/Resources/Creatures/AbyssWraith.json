@@ -41,8 +41,7 @@
         }
       ],
       "Vital": true,
-      "Enabled": true,
-      "Percentage": 1.0
+      "MaxHP": 15
     },
     {
       "Resistance": {
@@ -76,7 +75,8 @@
           "Progress": 0.0
         }
       ],
-      "Vital": false
+      "Vital": false,
+      "MaxHP": 15
     },
     {
       "Resistance": {
@@ -110,7 +110,8 @@
           "Progress": 0.0
         }
       ],
-      "Vital": false
+      "Vital": false,
+      "MaxHP": 15
     },
     {
       "Resistance": {
@@ -144,7 +145,8 @@
           "Progress": 0.0
         }
       ],
-      "Vital": false
+      "Vital": false,
+      "MaxHP": 15
     },
     {
       "Resistance": {
@@ -178,7 +180,8 @@
           "Progress": 0.0
         }
       ],
-      "Vital": false
+      "Vital": false,
+      "MaxHP": 15
     },
     {
       "Resistance": {
@@ -212,7 +215,8 @@
           "Progress": 0.0
         }
       ],
-      "Vital": false
+      "Vital": false,
+      "MaxHP": 15
     }
   ],
   "ManaPool": {

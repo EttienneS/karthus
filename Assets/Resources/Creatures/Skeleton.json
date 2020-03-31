@@ -30,7 +30,7 @@
       "Name": "Torso",
       "OffensiveActions": [],
       "Vital": false,
-      "Percentage": 1.0
+      "MaxHP": 15
     },
     {
       "Resistance": {
@@ -56,7 +56,7 @@
         }
       ],
       "Vital": true,
-      "Percentage": 1.0
+      "MaxHP": 15
     },
     {
       "Resistance": {
@@ -94,7 +94,7 @@
         }
       ],
       "Vital": false,
-      "Percentage": 1.0
+      "MaxHP": 15
     },
     {
       "Resistance": {
@@ -132,7 +132,7 @@
         }
       ],
       "Vital": false,
-      "Percentage": 1.0
+      "MaxHP": 15
     },
     {
       "Resistance": {
@@ -149,7 +149,7 @@
       "Name": "Left Leg",
       "OffensiveActions": [],
       "Vital": false,
-      "Percentage": 1.0
+      "MaxHP": 15
     },
     {
       "Resistance": {
@@ -166,7 +166,7 @@
       "Name": "Right Leg",
       "OffensiveActions": [],
       "Vital": false,
-      "Percentage": 1.0
+      "MaxHP": 15
     }
   ],
   "ManaPool": {

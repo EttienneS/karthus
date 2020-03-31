@@ -7,10 +7,10 @@ using Random = UnityEngine.Random;
 
 public class Limb
 {
-    public Limb(string name, params (DamageType damageType, int amount)[] resistances)
+    public Limb(string name, int maxHp, params (DamageType damageType, int amount)[] resistances)
     {
         Name = name;
-
+        MaxHP = maxHp;
         Resistance = new Dictionary<DamageType, int>();
 
         if (resistances != null)
@@ -49,14 +49,27 @@ public class Limb
 
     public List<Wound> Wounds { get; set; }
 
+    [JsonIgnore]
+    public int HP
+    {
+        get
+        {
+            var hp = MaxHP;
+            foreach (var wound in Wounds)
+            {
+                hp -= wound.Danger;
+            }
+            return hp;
+        }
+    }
+    public int MaxHP { get; set; }
+
     public void CheckDeath()
     {
         if (Disabled)
             return;
 
-        var chance = GetChanceOfDeath();
-
-        if (Random.value < chance)
+        if (HP < 0)
         {
             Owner.Log($"-- {Owner.Name}'s {Name} has been disabled!! --");
 
@@ -84,28 +97,36 @@ public class Limb
         return damage;
     }
 
-    public string GetState()
+    [JsonIgnore]
+    public float State
+    {
+        get
+        {
+            return HP / (float)MaxHP;
+        }
+    }
+
+    public string GetStateName()
     {
         if (Disabled)
         {
             return "- Disabled -";
         }
+        var current = State;
 
-        var chance = GetChanceOfDeath();
-
-        if (chance > 0.1f)
+        if (current < 0.2f)
         {
             return "Critical";
         }
-        else if (chance > 0.07f)
+        else if (current < 0.4f)
         {
             return "Severe";
         }
-        else if (chance > 0.03f)
+        else if (current < 0.6f)
         {
             return "Wounded";
         }
-        else if (chance > 0.01f)
+        else if (current < 0.8f)
         {
             return "Hurt";
         }
@@ -117,7 +138,7 @@ public class Limb
 
     public override string ToString()
     {
-        var msg = $"State: {GetState()}\n";
+        var msg = $"State: {GetStateName()}\n";
 
         foreach (var wound in Wounds.GroupBy(w => w.ToString()).Select(w => new { Text = w.Key, Count = w.Count() }))
         {
@@ -193,23 +214,5 @@ public class Limb
         CheckDeath();
     }
 
-    public float GetChanceOfDeath()
-    {
-        var total = 0f;
 
-        foreach (var wound in Wounds)
-        {
-            total += wound.Danger;
-        }
-
-        total -= Owner.Vitality;
-
-        var chance = 0f;
-        if (total > 0)
-        {
-            chance = total * 0.005f;
-        }
-
-        return chance;
-    }
 }

@@ -526,7 +526,7 @@ public class Creature : IEntity
     public void SetTargetCoordinate(float targetX, float targetY)
     {
         // only change the path and reset if the coords do not match
-        if (TargetCoordinate.x != targetX && TargetCoordinate.y != targetY)
+        if (TargetCoordinate.x != targetX || TargetCoordinate.y != targetY)
         {
             TargetCoordinate = (targetX, targetY);
             Path = null;
@@ -753,7 +753,6 @@ public class Creature : IEntity
             if (InCombat)
             {
                 ClearFixedAnimation();
-                CancelTask();
                 ProcessCombat();
             }
             else

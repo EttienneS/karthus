@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UI;
 using UnityEngine;
 
 public class HealthPanel : MonoBehaviour
 {
-    public LimbDisplay ProgressBarPrefab;
+    public TitledProgressBar ProgressBarPrefab;
 
-    internal Dictionary<Limb, LimbDisplay> LimbLinks;
+    internal Dictionary<Limb, TitledProgressBar> LimbLinks;
     internal Creature Current;
 
     private void Update()
@@ -21,14 +22,20 @@ public class HealthPanel : MonoBehaviour
         if (Current != creature)
         {
             Current = creature;
-            LimbLinks = new Dictionary<Limb, LimbDisplay>();
+            LimbLinks = new Dictionary<Limb, TitledProgressBar>();
 
             foreach (var limb in Current.Limbs)
             {
                 var bar = Instantiate(ProgressBarPrefab, transform);
-                bar.Limb = limb;
+                bar.Load(limb.Name, limb.State, limb.Name, limb.ToString());
                 LimbLinks.Add(limb, bar);
             }
+        }
+
+        foreach (var limb in Current.Limbs)
+        {
+            LimbLinks[limb].SetProgress(limb.State);
+            LimbLinks[limb].TooltipText = limb.ToString();
         }
     }
 }

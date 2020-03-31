@@ -68,23 +68,24 @@ public class Wound
     {
         get
         {
-            var danger = 2;
+            int danger;
             switch (Severity)
             {
-                case Severity.Low:
-                    danger = 2;
-                    break;
-
-                case Severity.Medium:
-                    danger = 4;
+                case Severity.Critical:
+                    danger = 10;
                     break;
 
                 case Severity.High:
-                    danger = 8;
+                    danger = 6;
                     break;
 
-                case Severity.Critical:
-                    danger = 16;
+                case Severity.Medium:
+                    danger = 3;
+                    break;
+
+                default:
+                case Severity.Low:
+                    danger = 1;
                     break;
             }
 

@@ -13,7 +13,7 @@
 
     public Limb GetShieldLimb()
     {
-        var limb = new Limb("Shield", (DamageType.Bludgeoning, 10), (DamageType.Piercing, 10), (DamageType.Slashing, 10), (DamageType.Energy, 10));
+        var limb = new Limb("Shield", 25, (DamageType.Bludgeoning, 10), (DamageType.Piercing, 10), (DamageType.Slashing, 10), (DamageType.Energy, 10));
         limb.AddDefensiveAction(new Block("shield block", 10, DamageType.Bludgeoning, DamageType.Piercing, DamageType.Slashing, DamageType.Energy));
         limb.AddOffensiveAction(new Strike("shield bash", 6, DamageType.Bludgeoning));
 
