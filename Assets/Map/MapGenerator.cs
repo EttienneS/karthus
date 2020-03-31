@@ -10,6 +10,8 @@ public class MapGenerator
     public string Status;
     private List<Biome> _biomeTemplates;
 
+    private ChunkRenderer _currentChunk;
+
     public List<Biome> BiomeTemplates
     {
         get
@@ -90,15 +92,13 @@ public class MapGenerator
         }
     }
 
-    private ChunkRenderer _currentChunk;
-
     public IEnumerator Work()
     {
         Game.Map.Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
 
         var counter = 1;
         Game.Instance.SetLoadStatus("Create Map", 0);
-        var inc = 1f / (Mathf.Pow(Game.Map.Size, 4) + 2);
+        var inc = 1f / Mathf.Pow(Game.Map.Size, 3);
         if (SaveManager.SaveToLoad == null)
         {
             if (_currentChunk != null)
@@ -114,7 +114,7 @@ public class MapGenerator
                 for (var k = 0 - Game.Map.Size; k < 0 + Game.Map.Size; k++)
                 {
                     _currentChunk = Game.Map.MakeChunk(new Chunk((Game.Map.Origin.X / Game.Map.ChunkSize) + i,
-                                                             (Game.Map.Origin.Y / Game.Map.ChunkSize) + k));
+                                                                 (Game.Map.Origin.Y / Game.Map.ChunkSize) + k));
 
                     Game.Instance.SetLoadStatus($"Create Chunk {counter}", (counter - 1) * inc);
                     counter++;

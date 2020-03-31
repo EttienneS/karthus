@@ -117,7 +117,7 @@ public class CreatureInfoPanel : MonoBehaviour
                         }
 
                         var rt = Log.GetComponent(typeof(RectTransform)) as RectTransform;
-                        rt.sizeDelta = new Vector2(395, creature.LogHistory.Count * 20);
+                        rt.sizeDelta = new Vector2(530, creature.LogHistory.Count * 20);
 
                         PropertiesPanel.text += $"\nMood: {creature.MoodString} ({creature.Mood})\n";
 
