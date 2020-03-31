@@ -63,6 +63,20 @@ public class CreatureInfoPanel : MonoBehaviour
             AddButton(OrderSelectionController.AttackText,
                       OrderSelectionController.AttackIcon)
                         .SetOnClick(() => AttackClicked(creatures));
+
+            AddButton(OrderSelectionController.CancelText,
+                      OrderSelectionController.DefaultRemoveIcon)
+                        .SetOnClick(() =>
+                        {
+                            foreach (var c in creatures)
+                            {
+                                if (c.InCombat)
+                                {
+                                    c.Combatants.Clear();
+                                }
+                                c.CancelTask();
+                            }
+                        });
         }
     }
 
@@ -145,7 +159,6 @@ public class CreatureInfoPanel : MonoBehaviour
                 {
                     foreach (var enemy in cell.GetEnemyCreaturesOf(creature.FactionName))
                     {
-                        creature.CancelTask();
                         creature.Combatants.Add(enemy);
                         break;
                     }

@@ -40,12 +40,12 @@ public class Move : CreatureTask
         {
             throw new TaskFailedException("Unable to find path");
         }
-        // dynamic map expansion
-        //if (creature.X == TargetX && creature.Y == TargetY)
-        //{
-        //    Game.Map.ExpandChunksAround(creature.Cell);
-        //    return true;
-        //}
+        if (creature.X == TargetX && creature.Y == TargetY)
+        {
+            // dynamic map expansion
+            // Game.Map.ExpandChunksAround(creature.Cell);
+            return true;
+        }
         return false;
     }
 }

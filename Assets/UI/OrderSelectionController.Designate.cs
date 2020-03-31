@@ -4,6 +4,7 @@ public partial class OrderSelectionController //.Designate
 {
     internal const string AttackIcon = "war_t";
     internal const string AttackText = "Attack";
+    internal const string CancelText = "Cancel";
 
     internal const string DefaultDesignateText = "Designate";
 

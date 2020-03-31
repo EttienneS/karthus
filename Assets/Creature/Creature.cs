@@ -603,7 +603,7 @@ public class Creature : IEntity
     internal void AddRelationshipEvent(Creature creature, string name, float value)
     {
         var relation = Relationships.Find(r => r.Entity == creature);
-        if (Relationships == null)
+        if (relation == null)
         {
             relation = new Relationship(creature);
             Relationships.Add(relation);
