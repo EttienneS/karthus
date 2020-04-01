@@ -49,6 +49,8 @@ public partial class OrderSelectionController //.Designate
     {
         BuildButton.Text = DefaultRemoveText;
         Game.Instance.SelectionPreference = SelectionPreference.Cell;
+        Game.Instance.SetMouseSprite(DefaultRemoveIcon, (cell) => cell.Structure != null);
+
         CellClickOrder = cells =>
         {
             foreach (var cell in cells)

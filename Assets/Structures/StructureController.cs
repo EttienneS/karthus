@@ -171,6 +171,8 @@ namespace Structures
 
                 Game.IdService.RemoveEntity(structure);
                 Game.FactionController.Factions[structure.FactionName].Structures.Remove(structure);
+
+                Game.Instance.AddItemToDestroy(structure.Renderer.gameObject);
             }
         }
 

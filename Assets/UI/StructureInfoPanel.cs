@@ -10,7 +10,6 @@ namespace UI
     public class StructureInfoPanel : MonoBehaviour
     {
         public Button AddButton;
-        public Structure Current;
         public OrderDetailItem OrderDetailPrefab;
         public GameObject OrderItemListPanel;
         public GameObject OrderPanel;
@@ -34,27 +33,31 @@ namespace UI
 
         public void Remove()
         {
-            if (!Game.FactionController.PlayerFaction.AvailableTasks.OfType<RemoveStructure>().Any(r => r.StructureToRemove == Current))
+            foreach (var structure in Structures)
             {
-                Game.FactionController.PlayerFaction.AddTask(new RemoveStructure(Current))
-                                                    .AddCellBadge(Current.Cell, OrderSelectionController.DefaultRemoveIcon);
-            }
-            else
-            {
-                Debug.Log("Already added task to remove");
+                if (!Game.FactionController.PlayerFaction.AvailableTasks.OfType<RemoveStructure>().Any(r => r.StructureToRemove == structure))
+                {
+                    Game.FactionController.PlayerFaction.AddTask(new RemoveStructure(structure))
+                                                        .AddCellBadge(structure.Cell, OrderSelectionController.DefaultRemoveIcon);
+                }
+                else
+                {
+                    Debug.Log("Already added task to remove");
+                }
             }
         }
 
-        public void Show(IEnumerable<Structure> structures)
+        public List<Structure> Structures { get; set; }
+
+        public void Show(List<Structure> structures)
         {
             gameObject.SetActive(true);
 
-            var structure = structures.First();
-            Current = structure;
+            Structures = structures;
             ResetPanel();
 
             AddButton.gameObject.SetActive(false);
-            if (structure is WorkStructureBase workStructure)
+            if (structures[0] is WorkStructureBase workStructure && structures.All(s => s.Name == structures[0].Name))
             {
                 ActivePrefabs = new List<WorkOrderPrefab>();
 
@@ -85,59 +88,66 @@ namespace UI
 
         public void Update()
         {
-            Title.text = $"{Current.Name}";
-
+            var Current = Structures[0];
             StructureInfo.text = string.Empty;
 
-            if (Current.InUseByAnyone)
+            if (!Structures.All(s => s.Name == Structures[0].Name))
             {
-                StructureInfo.text += $"In use by:\t{Current.InUseBy.Name}\n";
+                Title.text = $"Various Structures ({Structures.Count})";
             }
-            if (Current.IsBluePrint)
+            else
             {
-                StructureInfo.text += "\n** Blueprint, waiting for construction... **\n";
-            }
-            else if (Current is Container container)
-            {
-                StructureInfo.text += $"\nContainer:\n";
-
-                if (container.Empty)
+                Title.text = $"{Current.Name}";
+                if (Current.InUseByAnyone)
                 {
-                    StructureInfo.text += $"Contains:\tNothing\n";
+                    StructureInfo.text += $"In use by:\t{Current.InUseBy.Name}\n";
                 }
-                else
+                if (Current.IsBluePrint)
                 {
-                    StructureInfo.text += $"Contains:\t{container.ItemType}\n";
+                    StructureInfo.text += "\n** Blueprint, waiting for construction... **\n";
                 }
-
-                StructureInfo.text += $"Capacity:\t{container.Count}/{container.Capacity}\n";
-                StructureInfo.text += $"Filter:\t{container.Filter}\n";
-            }
-            else if (Current is WorkStructureBase workStructure)
-            {
-                StructureInfo.text += workStructure.ToString();
-
-                if (workStructure.AutoCooldown > 0)
+                else if (Current is Container container)
                 {
-                    StructureInfo.text += $"Next {workStructure.AutoOrder.Name} in {workStructure.AutoCooldown:0,0}/{workStructure.Definition.AutoCooldown:0,0}";
-                }
+                    StructureInfo.text += $"\nContainer:\n";
 
-                foreach (var order in DetailItems.ToList())
-                {
-                    if (order.WorkOrder.Complete)
+                    if (container.Empty)
                     {
-                        DetailItems.Remove(order);
-                        Destroy(order.gameObject);
+                        StructureInfo.text += $"Contains:\tNothing\n";
                     }
-                }
-
-                foreach (var order in workStructure.Orders)
-                {
-                    if (!DetailItems.Any(d => d.WorkOrder == order))
+                    else
                     {
-                        var detailItem = Instantiate(OrderDetailPrefab, OrderItemListPanel.transform);
-                        detailItem.Load(order);
-                        DetailItems.Add(detailItem);
+                        StructureInfo.text += $"Contains:\t{container.ItemType}\n";
+                    }
+
+                    StructureInfo.text += $"Capacity:\t{container.Count}/{container.Capacity}\n";
+                    StructureInfo.text += $"Filter:\t{container.Filter}\n";
+                }
+                else if (Current is WorkStructureBase workStructure)
+                {
+                    StructureInfo.text += workStructure.ToString();
+
+                    if (workStructure.AutoCooldown > 0)
+                    {
+                        StructureInfo.text += $"Next {workStructure.AutoOrder.Name} in {workStructure.AutoCooldown:0,0}/{workStructure.Definition.AutoCooldown:0,0}";
+                    }
+
+                    foreach (var order in DetailItems.ToList())
+                    {
+                        if (order.WorkOrder.Complete)
+                        {
+                            DetailItems.Remove(order);
+                            Destroy(order.gameObject);
+                        }
+                    }
+
+                    foreach (var order in workStructure.Orders)
+                    {
+                        if (!DetailItems.Any(d => d.WorkOrder == order))
+                        {
+                            var detailItem = Instantiate(OrderDetailPrefab, OrderItemListPanel.transform);
+                            detailItem.Load(order);
+                            DetailItems.Add(detailItem);
+                        }
                     }
                 }
             }
