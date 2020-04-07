@@ -581,8 +581,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -32.5}
-  m_SizeDelta: {x: 0, y: -65}
+  m_AnchoredPosition: {x: 0, y: -39.799988}
+  m_SizeDelta: {x: 0, y: -79.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5069494861211790013
 CanvasRenderer:
@@ -623,7 +623,7 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 4
+  m_ChildAlignment: 1
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 200, y: 40}
@@ -4499,8 +4499,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -32.5}
-  m_SizeDelta: {x: 0, y: -65}
+  m_AnchoredPosition: {x: 0, y: -39.799988}
+  m_SizeDelta: {x: 0, y: -79.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1377537229092377841
 CanvasRenderer:
@@ -4527,7 +4527,7 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 4
+  m_ChildAlignment: 1
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 250, y: 100}
@@ -8201,8 +8201,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -32.5}
-  m_SizeDelta: {x: 0, y: -65}
+  m_AnchoredPosition: {x: 0, y: -39.8}
+  m_SizeDelta: {x: 0, y: -79.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1114091360888917057
 CanvasRenderer:
@@ -8243,7 +8243,7 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 4
+  m_ChildAlignment: 1
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 200, y: 40}
@@ -11246,7 +11246,7 @@ PrefabInstance:
     - target: {fileID: 2556550382161137442, guid: e23b1cba055c1324f823db6d383df22d,
         type: 3}
       propertyPath: m_Value
-      value: 945815.4
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2556550382161137442, guid: e23b1cba055c1324f823db6d383df22d,
         type: 3}
@@ -11276,7 +11276,7 @@ PrefabInstance:
     - target: {fileID: 2669716845120035291, guid: e23b1cba055c1324f823db6d383df22d,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -482375.06
+      value: -0.51000977
       objectReference: {fileID: 0}
     - target: {fileID: 2669716845120035291, guid: e23b1cba055c1324f823db6d383df22d,
         type: 3}

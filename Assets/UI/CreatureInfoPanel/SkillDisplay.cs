@@ -19,7 +19,7 @@ public class SkillDisplay : MonoBehaviour
     {
         if (Skill != null)
         {
-            Skill.Enabled = Toggle.enabled;
+            Skill.Enabled = Toggle.isOn;
             Skill.Priority = (int)Slider.value;
 
             Priority.text = Skill.Priority.ToString();

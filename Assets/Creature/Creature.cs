@@ -641,6 +641,10 @@ public class Creature : IEntity
                 }
             }
         }
+        else
+        {
+            return false;
+        }
 
         return true;
     }

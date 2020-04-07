@@ -7,7 +7,7 @@ public class HealthPanel : MonoBehaviour
 {
     public TitledProgressBar ProgressBarPrefab;
 
-    internal Dictionary<Limb, TitledProgressBar> LimbLinks;
+    internal Dictionary<Limb, TitledProgressBar> LimbLinks = new Dictionary<Limb, TitledProgressBar>();
     internal Creature Current;
 
     private void Update()

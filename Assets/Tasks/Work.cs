@@ -17,7 +17,9 @@ public class DoWork : CreatureTask
     {
         _structure = structure;
         StructureId = structure.Id;
-        Order = order;
+
+        RequiredSkill = order.Skill;
+        RequiredSkillLevel = order.Option.RequiredSkillLevel;
     }
 
     public Structure Structure

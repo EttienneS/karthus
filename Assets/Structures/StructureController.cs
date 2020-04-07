@@ -108,6 +108,7 @@ namespace Structures
 
             var structure = GetFromJson(structureData);
             var renderer = Instantiate(StructureRendererPrefab, transform);
+            renderer.SpriteRenderer.sortingOrder = Game.Map.MaxSize - cell.Y;
             renderer.transform.name = structure.Name + " " + structure.Id;
             structure.Renderer = renderer;
             renderer.Data = structure;

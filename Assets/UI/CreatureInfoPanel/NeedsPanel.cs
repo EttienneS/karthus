@@ -8,7 +8,7 @@ public class NeedsPanel : MonoBehaviour
 {
     public TitledProgressBar ProgressBarPrefab;
 
-    internal Dictionary<NeedBase, TitledProgressBar> NeedProgressLinks;
+    internal Dictionary<NeedBase, TitledProgressBar> NeedProgressLinks = new Dictionary<NeedBase, TitledProgressBar>();
     internal Creature Current;
 
     private void Update()
