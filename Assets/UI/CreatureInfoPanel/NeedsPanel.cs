@@ -23,6 +23,12 @@ public class NeedsPanel : MonoBehaviour
         if (Current != creature)
         {
             Current = creature;
+
+            foreach (var prefab in NeedProgressLinks.Values.ToList())
+            {
+                Destroy(prefab.gameObject);
+            }
+
             NeedProgressLinks = new Dictionary<NeedBase, TitledProgressBar>();
 
             foreach (var need in Current.Needs)

@@ -22,6 +22,12 @@ public class HealthPanel : MonoBehaviour
         if (Current != creature)
         {
             Current = creature;
+
+            foreach (var prefab in LimbLinks.Values.ToList())
+            {
+                Destroy(prefab.gameObject);
+            }
+
             LimbLinks = new Dictionary<Limb, TitledProgressBar>();
 
             foreach (var limb in Current.Limbs)

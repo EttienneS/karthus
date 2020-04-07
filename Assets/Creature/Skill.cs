@@ -15,6 +15,7 @@ public class Skill
     public bool Enabled { get; set; } = true;
     public float Level { get; set; }
     public string Name { get; set; }
+    public string Description { get; set; } = "Add a description for this skill!";
 
     public int Priority
     {
