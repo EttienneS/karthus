@@ -626,7 +626,7 @@ MonoBehaviour:
   m_ChildAlignment: 1
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 200, y: 40}
+  m_CellSize: {x: 250, y: 40}
   m_Spacing: {x: 10, y: 20}
   m_Constraint: 0
   m_ConstraintCount: 2
@@ -661,10 +661,10 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4494052622873188960}
+  - {fileID: 517279247567396519}
   - {fileID: 5263219717477269174}
   - {fileID: 1974849549147761304}
   - {fileID: 3641498712427689121}
-  - {fileID: 517279247567396519}
   m_Father: {fileID: 990388310514889929}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1903,7 +1903,7 @@ RectTransform:
   - {fileID: 7025016912732459401}
   - {fileID: 215458850066439894}
   m_Father: {fileID: 1954552878644394556}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -6845,7 +6845,7 @@ RectTransform:
   - {fileID: 8338165196167092670}
   - {fileID: 2310024566947511864}
   m_Father: {fileID: 1954552878644394556}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -8246,7 +8246,7 @@ MonoBehaviour:
   m_ChildAlignment: 1
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 200, y: 40}
+  m_CellSize: {x: 250, y: 40}
   m_Spacing: {x: 10, y: 20}
   m_Constraint: 0
   m_ConstraintCount: 2
@@ -9244,7 +9244,7 @@ RectTransform:
   - {fileID: 6422319931643914031}
   - {fileID: 8259794871703960095}
   m_Father: {fileID: 1954552878644394556}
-  m_RootOrder: 4
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -9595,7 +9595,7 @@ RectTransform:
   - {fileID: 4153366264341199320}
   - {fileID: 2466364842593799416}
   m_Father: {fileID: 1954552878644394556}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}

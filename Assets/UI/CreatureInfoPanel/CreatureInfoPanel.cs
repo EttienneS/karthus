@@ -120,18 +120,7 @@ public class CreatureInfoPanel : MonoBehaviour
                         rt.sizeDelta = new Vector2(530, creature.LogHistory.Count * 20);
 
                         PropertiesPanel.text += $"\nMood: {creature.MoodString} ({creature.Mood})\n";
-
-                        if (creature.Skills != null)
-                        {
-                            PropertiesPanel.text += "\nSkills: \n\n";
-
-                            foreach (var skill in creature.Skills)
-                            {
-                                PropertiesPanel.text += $"\t{skill}\n";
-                            }
-                            PropertiesPanel.text += "\n";
-                        }
-
+                       
                         LogTask(creature);
                     }
 
