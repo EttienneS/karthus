@@ -1,4 +1,5 @@
-﻿using Structures;
+﻿using Assets.UI.TaskPanel;
+using Structures;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -618,6 +619,7 @@ public partial class Game : MonoBehaviour
             LoadPanel.Hide();
             Tooltip.Hide();
             WorldTooltip.Hide();
+            TaskPanel.Hide();
 
             DeveloperConsole.gameObject.SetActive(false);
 
@@ -781,7 +783,7 @@ public partial class Game : MonoBehaviour
                     content = content.Trim(',') + "\n";
                 }
 
-                WorldTooltip.Show(MouseOverCell.BiomeRegion.SpriteName, content, new Vector3(Screen.width - 125, Screen.height - 100));
+                WorldTooltip.Show(MouseOverCell.BiomeRegion.SpriteName, content, new Vector3(125, Screen.height - 100));
             }
         }
     }

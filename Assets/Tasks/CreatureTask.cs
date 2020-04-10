@@ -1,59 +1,29 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-
 public delegate void TaskComplete();
-
-public class Cost
-{
-    public Dictionary<ManaColor, float> Mana = new Dictionary<ManaColor, float>();
-    public Dictionary<string, int> Items = new Dictionary<string, int>();
-
-    public static Cost AddCost(Cost cost1, Cost cost2)
-    {
-        var totalCost = new Cost()
-        {
-            Mana = ManaExtensions.AddPools(cost1.Mana, cost2.Mana),
-            Items = cost1.Items
-        };
-        foreach (var kvp in cost2.Items)
-        {
-            if (!totalCost.Items.ContainsKey(kvp.Key))
-            {
-                totalCost.Items.Add(kvp.Key, 0);
-            }
-
-            totalCost.Items[kvp.Key] += kvp.Value;
-        }
-
-        return totalCost;
-    }
-
-    public override string ToString()
-    {
-        var costString = "Cost:\n";
-
-        if (Mana.Keys.Count > 0)
-        {
-            costString += $"{Mana.GetString()}\n";
-        }
-        if (Items.Keys.Count > 0)
-        {
-            foreach (var item in Items)
-            {
-                costString += $"{item.Key}: x{item.Value}\n";
-            }
-        }
-        return costString;
-    }
-}
 
 public abstract class CreatureTask
 {
     public string BusyEmote;
+    public bool Destroyed;
     public string DoneEmote;
     public string Message;
 
+    [JsonIgnore]
+    public CreatureTask Parent;
+
+    public Queue<CreatureTask> SubTasks = new Queue<CreatureTask>();
+    [JsonIgnore]
+    public List<Badge> Badges { get; set; } = new List<Badge>();
+
     public Cost Cost { get; set; } = new Cost();
+
+    public string RequiredSkill { get; set; }
+
+    public float RequiredSkillLevel { get; set; }
+
+    public bool Suspended { get; set; }
 
     [JsonIgnore]
     public Cost TotalCost
@@ -70,18 +40,6 @@ public abstract class CreatureTask
             return total;
         }
     }
-
-    [JsonIgnore]
-    public CreatureTask Parent;
-
-    public Queue<CreatureTask> SubTasks = new Queue<CreatureTask>();
-
-    public string RequiredSkill { get; set; }
-    public float RequiredSkillLevel { get; set; }
-
-    [JsonIgnore]
-    public List<Badge> Badges { get; set; } = new List<Badge>();
-
     public void AddCellBadge(Cell cell, string badgeIcon)
     {
         Badges.Add(Game.VisualEffectController.AddBadge(cell, badgeIcon));
@@ -99,6 +57,21 @@ public abstract class CreatureTask
         SubTasks.Enqueue(subTask);
 
         return subTask;
+    }
+
+    public abstract void Complete();
+
+    public void Destroy()
+    {
+        foreach (var badge in Badges)
+        {
+            badge.Destroy();
+        }
+        foreach (var task in SubTasks)
+        {
+            task.Destroy();
+        }
+        Destroyed = true;
     }
 
     public abstract bool Done(Creature creature);
@@ -134,20 +107,10 @@ public abstract class CreatureTask
         return false;
     }
 
-    public bool Destroyed;
-
-    public void Destroy()
+    internal void Suspend()
     {
-        foreach (var badge in Badges)
-        {
-            badge.Destroy();
-        }
-        foreach (var task in SubTasks)
-        {
-            task.Destroy();
-        }
-        Destroyed = true;
+        Suspended = !Suspended;
     }
 
-    public abstract void Complete();
+    
 }

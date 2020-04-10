@@ -17,9 +17,16 @@ public class CreatureIcon : MonoBehaviour
         }
     }
 
+    public void Start()
+    {
+        Image.sprite = Game.SpriteStore.GetSprite("Blank");
+        Clothes.sprite = Game.SpriteStore.GetSprite("Blank");
+        Text.text = "__";
+    }
+
     private void Update()
     {
-        if (Creature != null)
+        if (Creature?.CreatureRenderer != null)
         {
             Image.sprite = Creature.CreatureRenderer.MainRenderer.sprite;
             Clothes.sprite = Creature.CreatureRenderer.ClothesRenderer.sprite;

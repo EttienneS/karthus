@@ -5,6 +5,9 @@ public static class ColorConstants
     public static Color AbyssColor = Color.magenta;
     public static Color BluePrintColor = new Color(0.3f, 1f, 1f, 0.4f);
 
+    public static Color UISuspended = new Color(1f, 0.7f, 0f, 0.6f);
+    public static Color UIDefault = new Color(1f, 1f, 1f, 0.6f);
+
     public static Color InvalidColor = Color.red;
 
     public static Color[] SkinArray = new[]

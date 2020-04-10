@@ -615,6 +615,11 @@ public class Creature : IEntity
     {
         if (Task != null)
         {
+            if (Task is Build build)
+            {
+                Game.StructureController.DestroyStructure(build.TargetStructure);
+            }
+
             DropItem(Cell);
             Log($"Canceled {Task} task");
             Faction.RemoveTask(Task);

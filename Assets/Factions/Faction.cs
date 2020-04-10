@@ -7,6 +7,13 @@ using Structures;
 public class Faction
 {
     public List<CreatureTask> AvailableTasks = new List<CreatureTask>();
+    public Dictionary<CreatureTask, Creature> AssignedTasks
+    {
+        get
+        {
+            return Creatures.Where(c => c.Task != null).ToDictionary(t => t.Task, c => c);
+        }
+    }
 
     public List<Creature> Creatures = new List<Creature>();
     public string FactionName;
@@ -47,7 +54,7 @@ public class Faction
         if (task == null)
         {
             var highestPriority = int.MinValue;
-            foreach (var availableTask in AvailableTasks.Where(t => creature.CanDo(t)))
+            foreach (var availableTask in AvailableTasks.Where(t => !t.Suspended && creature.CanDo(t)))
             {
                 if (creature.CanDo(availableTask))
                 {

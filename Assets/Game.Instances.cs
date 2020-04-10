@@ -1,4 +1,5 @@
-﻿using Structures;
+﻿using Assets.UI.TaskPanel;
+using Structures;
 using UI;
 using UnityEngine;
 
@@ -34,6 +35,15 @@ public partial class Game //.Instances
     private VisualEffectController _visualEffectController;
     private ZoneController _zoneController;
     private ZoneInfoPanel _zoneInfoPanel;
+    private TaskPanel _taskPanel;
+
+    public static TaskPanel TaskPanel
+    {
+        get
+        {
+            return Instance._taskPanel != null ? Instance._taskPanel : (Instance._taskPanel = GameObject.Find("TaskPanel").GetComponent<TaskPanel>());
+        }
+    }
 
     public static CameraController CameraController
     {
