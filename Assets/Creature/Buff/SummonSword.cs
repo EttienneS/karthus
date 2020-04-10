@@ -22,8 +22,6 @@
 
     internal override void StartBuff()
     {
-        Game.VisualEffectController.SpawnSpriteEffect(Owner, Owner.Vector, "sword_t", 1f).Fades();
-
         _sword = GetSword();
         Owner.AddLimb(_sword);
 

@@ -80,7 +80,6 @@ public class Limb
 
                 Owner.ManaPool.Release();
 
-                Game.VisualEffectController.SpawnSpriteEffect(null, Owner.Vector, "skull_02_t", 3f);
                 Game.VisualEffectController.SpawnLightEffect(null, Owner.Vector, Color.red, 1f, 1f, 3f);
                 Game.CreatureController.DestroyCreature(Owner.CreatureRenderer);
             }

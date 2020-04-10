@@ -41,7 +41,6 @@ public class Triage : BuffBase
 
     internal override void StartBuff()
     {
-        Game.VisualEffectController.SpawnSpriteEffect(Owner, Owner.Vector, "heart_t", 1f).Fades();
         Game.VisualEffectController.SpawnLightEffect(Owner, Owner.Vector, Color.white, 2, 1, 1).Fades();
 
         Owner.ManaPool.BurnMana(ManaColor.White, 3);

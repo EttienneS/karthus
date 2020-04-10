@@ -68,8 +68,6 @@ public class Build : CreatureTask
                 var time = TargetStructure.Cost.Items.Sum(i => i.Value);
                 AddSubTask(new Wait(time, "Building", LPC.Spritesheet.Generator.Interfaces.Animation.Thrust));
                 Built = true;
-                Game.VisualEffectController.SpawnSpriteEffect(TargetStructure, TargetStructure.Vector, "construct", time * 2).Fades();
-                Game.VisualEffectController.SpawnSpriteEffect(creature, creature.Vector, "construct", time * 2).Fades();
                 return false;
             }
 

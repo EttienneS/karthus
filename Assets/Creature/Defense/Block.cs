@@ -17,7 +17,6 @@ public class Block : DefensiveActionBase
 
     public override int Defend(string attackName, int incomingDamage, DamageType damageType)
     {
-        Game.VisualEffectController.SpawnSpriteEffect(Owner, Owner.Vector, "first_t", 1f).Fades();
         if (BlockableTypes.Contains(damageType))
         {
             var damageAfterBlock = Math.Max(0, incomingDamage - Defense);

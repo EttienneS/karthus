@@ -27,7 +27,6 @@ public class Heal : CreatureTask
             var wound = creature.GetWorstWound();
             if (wound != null)
             {
-                Game.VisualEffectController.SpawnSpriteEffect(creature, creature.Vector, "heart_t", 1f).Fades();
                 Game.VisualEffectController.SpawnLightEffect(creature, creature.Vector, Color.white, 2, 1, 1).Fades();
 
                 creature.ManaPool.BurnMana(ManaColor.White, 2);

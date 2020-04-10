@@ -22,8 +22,6 @@
 
     internal override void StartBuff()
     {
-        Game.VisualEffectController.SpawnSpriteEffect(Owner, Owner.Vector, "armor_t", 1f).Fades();
-
         _shieldLimb = GetShieldLimb();
         Owner.AddLimb(_shieldLimb);
 

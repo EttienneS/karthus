@@ -1070,7 +1070,6 @@ public class Creature : IEntity
             {
                 // aggro
                 Log($"{Name} launches a {bestAttack.Name} at {target.Name}'s {bestAttack.TargetLimb.Name}");
-                Game.VisualEffectController.SpawnSpriteEffect(this, Vector, "axe_t", 1f).Fades();
 
                 bestAttack.Reset();
 
