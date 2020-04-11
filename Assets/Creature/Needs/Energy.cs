@@ -21,7 +21,7 @@ namespace Needs
         {
             if (Creature.Task is Sleep)
             {
-                if (Creature.Cell.Structure?.HasValue("RecoveryRate") == true)
+                if (Creature.Cell.Structure?.HasValue("RecoveryRate") == true && Creature.Cell.Structure?.IsBluePrint == false)
                 {
                     CurrentChangeRate = Creature.Cell.Structure.GetValue("RecoveryRate");
                 }
@@ -34,9 +34,8 @@ namespace Needs
             {
                 if (Creature.GetNeed<Energy>().Current < 15)
                 {
-                    Creature.CancelTask();
+                    Creature.AbandonTask();
                     Creature.Task = new Sleep();
-
                 }
             }
         }

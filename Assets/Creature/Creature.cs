@@ -23,6 +23,9 @@ public class Creature : IEntity
     public float AnimationDelta = 0f;
 
     [JsonIgnore]
+    public CharacterSpriteSheet CharacterSpriteSheet;
+
+    [JsonIgnore]
     public List<Creature> Combatants = new List<Creature>();
 
     public Direction Facing = Direction.S;
@@ -551,9 +554,6 @@ public class Creature : IEntity
         return text;
     }
 
-    [JsonIgnore]
-    public CharacterSpriteSheet CharacterSpriteSheet;
-
     public void UpdateSprite()
     {
         if (Sprite == "Composite")
@@ -593,11 +593,12 @@ public class Creature : IEntity
         }
     }
 
-    private void SetSprite(Animation animation)
+    internal void AbandonTask()
     {
-        var frame = CharacterSpriteSheet.GetFrame(animation, GetOrientation(), ref Frame);
-        CreatureRenderer.MainRenderer.sprite = frame.body;
-        CreatureRenderer.ClothesRenderer.sprite = frame.clothes;
+        Log($"Abandoned task: {Task.Message}");
+        Faction.AvailableTasks.Add(Task);
+        DropItem(Cell);
+        Task = null;
     }
 
     internal void AddRelationshipEvent(Creature creature, string name, float value)
@@ -1131,7 +1132,11 @@ public class Creature : IEntity
                 {
                     // unstuck
                     Debug.LogError("Unstuck!");
-                    Cell = Game.Map.GetNearestPathableCell(Cell, Mobility, 10);
+                    var c = Game.Map.GetNearestPathableCell(Cell, Mobility, 10);
+
+                    X = c.X;
+                    Y = c.Y;
+                    CreatureRenderer.UpdatePosition();
                 }
                 else
                 {
@@ -1157,6 +1162,13 @@ public class Creature : IEntity
                 IncomingAttacks.Remove(attack);
             }
         }
+    }
+
+    private void SetSprite(Animation animation)
+    {
+        var frame = CharacterSpriteSheet.GetFrame(animation, GetOrientation(), ref Frame);
+        CreatureRenderer.MainRenderer.sprite = frame.body;
+        CreatureRenderer.ClothesRenderer.sprite = frame.clothes;
     }
 
     private void UpdateLimbs(float timeDelta)

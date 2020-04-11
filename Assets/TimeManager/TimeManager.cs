@@ -27,7 +27,7 @@ public class TimeManager : MonoBehaviour
         Minute = 0
     };
 
-    internal float CreatureTick = 0.2f;
+    internal float CreatureTick = 0.1f;
 
     private TimeStep _timeStep;
 

@@ -74,7 +74,7 @@ public class CreatureInfoPanel : MonoBehaviour
                                 {
                                     c.Combatants.Clear();
                                 }
-                                c.CancelTask();
+                                c.AbandonTask();
                             }
                         });
         }
@@ -193,7 +193,7 @@ public class CreatureInfoPanel : MonoBehaviour
                 var faction = creature.GetFaction();
                 var task = new Move(cell);
                 task.AddCellBadge(cell, OrderSelectionController.MoveIcon);
-                creature.CancelTask();
+                creature.AbandonTask();
                 creature.Task = task;
             }
         };

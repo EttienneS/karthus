@@ -46,7 +46,7 @@ public class CreatureController : MonoBehaviour
         {
             Debug.Log($"Destroying: {creature.Data.Name}");
             if (creature.Data.Task != null)
-                creature.Data.CancelTask();
+                creature.Data.AbandonTask();
 
             Game.FactionController.Factions[creature.Data.FactionName].Creatures.Remove(creature.Data);
             Game.IdService.RemoveEntity(creature.Data);

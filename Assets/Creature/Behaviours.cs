@@ -110,13 +110,10 @@ public static class Behaviours
                 needs = new List<NeedBase>
                 {
                     new Hunger(),
-                    new Joy(),
                     new Energy(),
                     new Comfort(),
                     new Hygiene(),
-                    new Needs.Social(),
-                    new Beauty(),
-                    new Aspiration()
+                    new Needs.Social()
                 };
                 break;
 

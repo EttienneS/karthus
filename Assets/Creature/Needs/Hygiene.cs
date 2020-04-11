@@ -34,7 +34,7 @@ namespace Needs
 
                     if (bath != null)
                     {
-                        Creature.CancelTask();
+                        Creature.AbandonTask();
                         Creature.Task = new Wash(bath);
                     }
                     else

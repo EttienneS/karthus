@@ -146,10 +146,28 @@ public class DeveloperConsole : MonoBehaviour
 
         Commands.Add("List", List);
         Commands.Add("Inspect", (args) => GetEntity(args).ToString());
+        Commands.Add("Move", (args) =>
+        {
+            var parts = args.Split(' ');
+            var entity = GetEntity(parts[0]);
+
+            var cell = Game.Map.GetCellAtCoordinate(float.Parse(parts[1]), float.Parse(parts[2]));
+            if (entity is Creature creature)
+            {
+                creature.X = cell.X;
+                creature.Y = cell.Y;
+                creature.CreatureRenderer.UpdatePosition();
+            }
+            else
+            {
+                entity.Cell = cell;
+            }
+
+            return $"Move {entity.Name} to {entity.Cell}";
+        });
         Commands.Add("Set", (args) =>
         {
             var parts = args.Split(' ');
-
             var entity = GetEntity(parts[0]) as Creature;
 
             var need = entity.Needs.Find(n => n.Name.Equals(parts[1], StringComparison.OrdinalIgnoreCase));
@@ -166,6 +184,7 @@ public class DeveloperConsole : MonoBehaviour
             Parser.ArgumentDefinitions.Add(new StringArgument(command.Key));
         }
     }
+
     public void Toggle()
     {
         if (gameObject.activeInHierarchy)

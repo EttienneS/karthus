@@ -5,18 +5,19 @@ using UnityEngine;
 
 namespace Needs
 {
+
     public abstract class NeedBase
     {
         [JsonIgnore]
         public abstract List<(string description, int impact, float min, float max)> Levels { get; }
 
-        public float BaselineChangeRate { get; set; } = -1f;
+        public float BaselineChangeRate { get; set; } = NeedConstants.BaseDegrateRate;
 
         [JsonIgnore]
         public Creature Creature { get; set; }
 
         public float Current { get; set; } = 100;
-        public float CurrentChangeRate { get; set; } = -1f;
+        public float CurrentChangeRate { get; set; } = NeedConstants.BaseDegrateRate;
         public abstract string Icon { get; set; }
         public float Max { get; set; } = 100;
 
