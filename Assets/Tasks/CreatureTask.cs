@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+
 public delegate void TaskComplete();
 
 public abstract class CreatureTask
@@ -63,11 +65,11 @@ public abstract class CreatureTask
 
     public void Destroy()
     {
-        foreach (var badge in Badges)
+        foreach (var badge in Badges.Where(b => b != null))
         {
             badge.Destroy();
         }
-        foreach (var task in SubTasks)
+        foreach (var task in SubTasks.Where(b => b != null))
         {
             task.Destroy();
         }

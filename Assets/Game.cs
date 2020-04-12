@@ -490,7 +490,7 @@ public partial class Game : MonoBehaviour
         }
     }
 
-    private bool SelectCreature()
+    public bool SelectCreature()
     {
         foreach (var creature in SelectedCreatures)
         {

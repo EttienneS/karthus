@@ -1,4 +1,5 @@
 ﻿using Needs;
+using System.Linq;
 
 public class Eat : CreatureTask
 {
@@ -20,6 +21,9 @@ public class Eat : CreatureTask
         AddSubTask(new Pickup(food, 1));
     }
 
+    public bool FoundSeating;
+    public string ChairId;
+
     public override bool Done(Creature creature)
     {
         if (SubTasksComplete(creature))
@@ -33,6 +37,26 @@ public class Eat : CreatureTask
                 return false;
             }
 
+            if (!FoundSeating)
+            {
+                FoundSeating = true;
+                var chair = creature.Faction.Structures
+                                 .Where(s => s.IsType("Chair") && !s.InUseByAnyone)
+                                 .OrderBy(c => Pathfinder.Distance(c.Cell, creature.Cell, creature.Mobility))
+                                 .FirstOrDefault();
+                if (chair != null)
+                {
+                    ChairId = chair.Id;
+                    chair.Reserve(creature);
+                    AddSubTask(new Move(chair.Cell));
+                    return false;
+                }
+                else
+                {
+                    creature.Feelings.Add(Feeling.GetAnnoyance("No place to sit and eat"));
+                }
+            }
+
             if (!Eating)
             {
                 AddSubTask(new Wait(2, "Eating..."));
@@ -44,6 +68,11 @@ public class Eat : CreatureTask
                 BusyEmote = "";
                 creature.GetNeed<Hunger>().Current += food.ValueProperties["Nutrition"];
                 creature.DropItem(creature.Cell);
+
+                if (!string.IsNullOrEmpty(ChairId))
+                {
+                    ChairId.GetStructure().Free();
+                }
                 Game.IdService.DestroyEntity(food);
                 Ate = true;
 

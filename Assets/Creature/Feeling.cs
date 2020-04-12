@@ -20,4 +20,9 @@
         var sign = MoodImpact > 0 ? "+" : "";
         return $"{Name}: {Description} [{sign}{MoodImpact}] {DurationLeft}";
     }
+
+    public static Feeling GetAnnoyance(string description)
+    {
+        return new Feeling("Annoyed", -10, 10) { Description = description };
+    }
 }

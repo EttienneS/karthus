@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class CreatureIcon : MonoBehaviour
@@ -14,6 +15,8 @@ public class CreatureIcon : MonoBehaviour
         if (Creature != null)
         {
             Game.CameraController.MoveToCell(Creature.Cell);
+            Game.Instance.SelectedCreatures = new List<CreatureRenderer> { Creature.CreatureRenderer };
+            Game.Instance.SelectCreature();
         }
     }
 
