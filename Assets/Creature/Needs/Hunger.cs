@@ -20,7 +20,7 @@ namespace Needs
         public override List<(string description, int impact, float min, float max)> Levels { get => HungerLevels; }
         public override void Update()
         {
-            if (Creature.GetNeed<Hunger>().Current < 15 && Creature.IsIdle())
+            if (Creature.GetNeed<Hunger>().Current < 50 && Creature.IsIdle())
             {
                 var food = Creature.GetFaction().FindItem(Eat.FoodCriteria, Creature);
                 if (food != null)
