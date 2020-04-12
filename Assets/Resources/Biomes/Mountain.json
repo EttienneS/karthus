@@ -1,0 +1,30 @@
+{
+  "BiomeRegions": [
+    {
+      "Content": {
+      },
+      "TravelCost": -1,
+      "Max": 1.0,
+      "Min": 0.6,
+      "SpriteName": "Rock"
+    },
+    {
+      "Content": {
+        "Medium Rock": 0.05
+      },
+      "Max": 0.6,
+      "Min": 0.3,
+      "SpriteName": "Stone"
+    },
+    {
+      "Content": {
+        "Medium Rock": 0.02
+      },
+      "Max": 0.3,
+      "Min": 0.0,
+      "SpriteName": "Dirt"
+    }
+  ],
+  "Name": "Mountain",
+  "Rarity": 0.2
+}

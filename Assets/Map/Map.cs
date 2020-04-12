@@ -27,7 +27,7 @@ public class Map : MonoBehaviour
     public int Size = 3;
     public NoiseSettings WorldNoise;
     internal Dictionary<(int x, int y), ChunkRenderer> Chunks;
-    internal (int X, int Y) Origin = (500, 500);
+    internal (int X, int Y) Origin = (0, 0);
     private float[,] _localNoiseMap;
     private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
     private int _searchFrontierPhase;
@@ -38,7 +38,7 @@ public class Map : MonoBehaviour
     {
         get
         {
-            return CellLookup[(Origin.X + (ChunkSize / 2), Origin.Y + (ChunkSize / 2))];
+            return CellLookup[((Size * Size) / 2,  (Size * Size) / 2)];
         }
     }
 

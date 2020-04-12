@@ -1,0 +1,12 @@
+{
+  "Name": "Rock",
+  "SpriteName": "Rock",
+  "TravelCost": "-1",
+  "Buildable": "False",
+  "Cost": {
+    "Items": {
+      "Stone": "10"
+    }
+  },
+  "Type": "Wall"
+}

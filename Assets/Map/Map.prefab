@@ -15,7 +15,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &69522274
 Transform:
@@ -88,7 +88,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &5952559972800760939
 Transform:
@@ -132,9 +132,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ChunkPrefab: {fileID: 1942139927005994989, guid: 92e798fcdd174d54a9f8e2eb6ce7983c,
     type: 3}
+  ChunkSize: 5
   GlobalLight: {fileID: 69522275}
+  LocalNoise:
+    normalizeMode: 0
+    scale: 50
+    octaves: 6
+    persistance: 0.6
+    lacunarity: 2
+    offset: {x: 0, y: 0}
+  MaxSize: 1000
   Scaler: 0.07
   Seed: 
+  Size: 3
+  WorldNoise:
+    normalizeMode: 0
+    scale: 50
+    octaves: 6
+    persistance: 0.6
+    lacunarity: 2
+    offset: {x: 0, y: 0}
 --- !u!1001 &8425998318200554966
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -156,6 +173,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ZoneController
+      objectReference: {fileID: 0}
+    - target: {fileID: 4526516344799543720, guid: 4956cfd9aa88e78409c9205e12a2e441,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 5393295188809770722, guid: 4956cfd9aa88e78409c9205e12a2e441,
         type: 3}

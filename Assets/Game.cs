@@ -1,7 +1,6 @@
 ﻿using Assets.UI.TaskPanel;
 using Structures;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UI;
@@ -18,13 +17,15 @@ public partial class Game : MonoBehaviour
 {
     public SpriteRenderer MouseSpriteRenderer;
     public RectTransform selectSquareImage;
-    public ValidateMouseSpriteDelegate ValidateMouse;
     public Tooltip Tooltip;
+    public ValidateMouseSpriteDelegate ValidateMouse;
     public Tooltip WorldTooltip;
 
+    internal SelectionPreference LastSelection = SelectionPreference.Creature;
     internal LineRenderer LineRenderer;
     internal float LoadProgress;
     internal string LoadStatus;
+    internal Cell MouseOverCell;
     internal string MouseSpriteName;
     internal bool Ready;
     internal Rotate RotateMouseLeft;
@@ -215,6 +216,27 @@ public partial class Game : MonoBehaviour
         return cells.Distinct().ToList();
     }
 
+    public bool SelectCreature()
+    {
+        foreach (var creature in SelectedCreatures)
+        {
+            creature.EnableHighlight(ColorConstants.InvalidColor);
+        }
+
+        if (SelectedCreatures?.Count > 0)
+        {
+            DeselectCell();
+            DeselectStructure(true);
+            DeselectItem();
+            DeselectZone();
+
+            CreatureInfoPanel.Show(SelectedCreatures.Select(c => c.Data).ToList());
+            return true;
+        }
+
+        return false;
+    }
+
     public void SetConstructSprite(Texture2D texture, int width, int height, ValidateMouseSpriteDelegate validation)
     {
         _constructMode = true;
@@ -255,7 +277,7 @@ public partial class Game : MonoBehaviour
         ZoneInfoPanel.Show(zone);
     }
 
-    private IEnumerator FinalizeStartup()
+    private void FinalizeStartup()
     {
         if (SaveManager.SaveToLoad == null)
         {
@@ -264,20 +286,14 @@ public partial class Game : MonoBehaviour
         }
         else
         {
-            SetLoadStatus("Loading Time", 0.80f);
             TimeManager.Data = SaveManager.SaveToLoad.Time;
-            yield return null;
-
-            SetLoadStatus("Loading Items", 0.85f);
             foreach (var item in SaveManager.SaveToLoad.Items)
             {
                 ItemController.SpawnItem(item);
             }
-            yield return null;
 
             foreach (var faction in SaveManager.SaveToLoad.Factions)
             {
-                SetLoadStatus($"Loading Faction: {faction.FactionName}", 0.90f);
                 FactionController.Factions.Add(faction.FactionName, faction);
 
                 foreach (var creature in faction.Creatures.ToList())
@@ -300,21 +316,17 @@ public partial class Game : MonoBehaviour
 
             if (SaveManager.SaveToLoad.Stores != null)
             {
-                SetLoadStatus($"Loading Stores", 0.95f);
                 foreach (var zone in SaveManager.SaveToLoad.Stores)
                 {
                     ZoneController.Load(zone);
                 }
-                yield return null;
             }
             if (SaveManager.SaveToLoad.Rooms != null)
             {
-                SetLoadStatus($"Loading Rooms", 0.96f);
                 foreach (var zone in SaveManager.SaveToLoad.Rooms)
                 {
                     ZoneController.Load(zone);
                 }
-                yield return null;
             }
             if (SaveManager.SaveToLoad.Areas != null)
             {
@@ -323,13 +335,11 @@ public partial class Game : MonoBehaviour
                 {
                     ZoneController.Load(zone);
                 }
-                yield return null;
             }
 
             SetLoadStatus($"Loading Camera", 0.99f);
             SaveManager.SaveToLoad.CameraData.Load(CameraController.Camera);
             SaveManager.SaveToLoad = null;
-            yield return null;
         }
         Ready = true;
     }
@@ -480,6 +490,79 @@ public partial class Game : MonoBehaviour
         }
     }
 
+    private bool Select(ZoneBase selectedZone, SelectionPreference selection)
+    {
+        switch (selection)
+        {
+            case SelectionPreference.Anything:
+
+                for (int i = 0; i < 5; i++)
+                {
+                    switch (LastSelection)
+                    {
+                        case SelectionPreference.Creature:
+                            LastSelection = SelectionPreference.Structure;
+                            break;
+
+                        case SelectionPreference.Structure:
+                            LastSelection = SelectionPreference.Item;
+                            break;
+
+                        case SelectionPreference.Item:
+                            LastSelection = SelectionPreference.Zone;
+                            break;
+
+                        case SelectionPreference.Zone:
+                            LastSelection = SelectionPreference.Creature;
+                            break;
+                    }
+                    if (Select(selectedZone, LastSelection))
+                    {
+                        break;
+                    }
+                }
+                break;
+
+            case SelectionPreference.Cell:
+                if (SelectedCells.Count > 0)
+                {
+                    SelectCell();
+                    return true;
+                }
+                break;
+
+            case SelectionPreference.Item:
+                if (SelectedCells.Count > 0)
+                {
+                    return SelectItem();
+                }
+                break;
+
+            case SelectionPreference.Structure:
+                if (SelectedCells.Count > 0)
+                {
+                    return SelectStructure();
+                }
+                break;
+
+            case SelectionPreference.Creature:
+                if (SelectedCells.Count > 0)
+                {
+                    return SelectCreature();
+                }
+                break;
+
+            case SelectionPreference.Zone:
+                if (selectedZone != null)
+                {
+                    SelectZone(selectedZone);
+                    return true;
+                }
+                break;
+        }
+        return false;
+    }
+
     private void SelectCell()
     {
         if (OrderSelectionController.CellClickOrder != null)
@@ -488,27 +571,6 @@ public partial class Game : MonoBehaviour
             OrderSelectionController.CellClickOrder.Invoke(SelectedCells);
             DeselectCell();
         }
-    }
-
-    public bool SelectCreature()
-    {
-        foreach (var creature in SelectedCreatures)
-        {
-            creature.EnableHighlight(ColorConstants.InvalidColor);
-        }
-
-        if (SelectedCreatures?.Count > 0)
-        {
-            DeselectCell();
-            DeselectStructure(true);
-            DeselectItem();
-            DeselectZone();
-
-            CreatureInfoPanel.Show(SelectedCreatures.Select(c => c.Data).ToList());
-            return true;
-        }
-
-        return false;
     }
 
     private bool SelectItem()
@@ -553,6 +615,7 @@ public partial class Game : MonoBehaviour
 
     private void Start()
     {
+        Debug.Log("Start game");
         LoadingPanel.LoadingTextBox.text = "Initializing...";
 
         UIController.Hide();
@@ -587,49 +650,9 @@ public partial class Game : MonoBehaviour
         ConstructController = new ConstructController();
     }
 
-    internal Cell MouseOverCell;
-
     private void Update()
     {
-        if (!Ready)
-        {
-            if (MapGenerator.Done && !_finalizationStarted)
-            {
-                _finalizationStarted = true;
-                StartCoroutine(FinalizeStartup());
-            }
-            else if (!MapGenerator.Busy)
-            {
-                CameraController.Camera.transform.position = new Vector3(Map.Origin.X, Map.Origin.Y, -1);
-                CameraController.Camera.orthographicSize = 1;
-                MapGenerator.Busy = true;
-                StartCoroutine(MapGenerator.Work());
-            }
-            return;
-        }
-        else if (!_shownOnce)
-        {
-            UIController.Show();
-            StructureInfoPanel.Hide();
-            ItemInfoPanel.Hide();
-            CreatureInfoPanel.Hide();
-            ZoneInfoPanel.Hide();
-            OrderSelectionController.DisableAndReset();
-            LoadingPanel.Hide();
-            LoadPanel.Hide();
-            Tooltip.Hide();
-            WorldTooltip.Hide();
-            TaskPanel.Hide();
-
-            DeveloperConsole.gameObject.SetActive(false);
-
-            _shownOnce = true;
-
-            CameraController.Camera.orthographicSize = 10;
-            CameraController.transform.position = FactionController.PlayerFaction.Creatures[0].Cell.Vector;
-
-            MainMenuController.Toggle();
-        }
+        Initialize();
 
         if (MainMenuController.MainMenuActive)
         {
@@ -746,6 +769,49 @@ public partial class Game : MonoBehaviour
         DestroyItemsInCache();
     }
 
+    private void Initialize()
+    {
+        if (!Ready)
+        {
+            if (MapGenerator.Done && !_finalizationStarted)
+            {
+                _finalizationStarted = true;
+                FinalizeStartup();
+            }
+            else
+            {
+                CameraController.Camera.transform.position = new Vector3(25, 25, -1);
+                CameraController.Camera.orthographicSize = 5;
+                Debug.Log("Start map gen");
+                MapGenerator.Work();
+                Debug.Log("Map gen complete");
+            }
+        }
+        else if (!_shownOnce)
+        {
+            UIController.Show();
+            StructureInfoPanel.Hide();
+            ItemInfoPanel.Hide();
+            CreatureInfoPanel.Hide();
+            ZoneInfoPanel.Hide();
+            OrderSelectionController.DisableAndReset();
+            LoadingPanel.Hide();
+            LoadPanel.Hide();
+            Tooltip.Hide();
+            WorldTooltip.Hide();
+            TaskPanel.Hide();
+
+            DeveloperConsole.gameObject.SetActive(false);
+
+            _shownOnce = true;
+
+            CameraController.Camera.orthographicSize = 10;
+            CameraController.transform.position = FactionController.PlayerFaction.Creatures[0].Cell.Vector;
+
+            MainMenuController.Toggle();
+        }
+    }
+
     private void UpdateMouseOverTooltip(Vector3 mousePosition)
     {
         if (!MouseOverUi())
@@ -786,80 +852,5 @@ public partial class Game : MonoBehaviour
                 WorldTooltip.Show(MouseOverCell.BiomeRegion.SpriteName, content, new Vector3(125, Screen.height - 100));
             }
         }
-    }
-
-    internal SelectionPreference LastSelection = SelectionPreference.Creature;
-
-    private bool Select(ZoneBase selectedZone, SelectionPreference selection)
-    {
-        switch (selection)
-        {
-            case SelectionPreference.Anything:
-
-                for (int i = 0; i < 5; i++)
-                {
-                    switch (LastSelection)
-                    {
-                        case SelectionPreference.Creature:
-                            LastSelection = SelectionPreference.Structure;
-                            break;
-
-                        case SelectionPreference.Structure:
-                            LastSelection = SelectionPreference.Item;
-                            break;
-
-                        case SelectionPreference.Item:
-                            LastSelection = SelectionPreference.Zone;
-                            break;
-
-                        case SelectionPreference.Zone:
-                            LastSelection = SelectionPreference.Creature;
-                            break;
-                    }
-                    if (Select(selectedZone, LastSelection))
-                    {
-                        break;
-                    }
-                }
-                break;
-
-            case SelectionPreference.Cell:
-                if (SelectedCells.Count > 0)
-                {
-                    SelectCell();
-                    return true;
-                }
-                break;
-
-            case SelectionPreference.Item:
-                if (SelectedCells.Count > 0)
-                {
-                    return SelectItem();
-                }
-                break;
-
-            case SelectionPreference.Structure:
-                if (SelectedCells.Count > 0)
-                {
-                    return SelectStructure();
-                }
-                break;
-
-            case SelectionPreference.Creature:
-                if (SelectedCells.Count > 0)
-                {
-                    return SelectCreature();
-                }
-                break;
-
-            case SelectionPreference.Zone:
-                if (selectedZone != null)
-                {
-                    SelectZone(selectedZone);
-                    return true;
-                }
-                break;
-        }
-        return false;
     }
 }

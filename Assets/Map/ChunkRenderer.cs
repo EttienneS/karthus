@@ -77,19 +77,19 @@ public class ChunkRenderer : MonoBehaviour
     public void Start()
     {
         transform.position = new Vector3(Data.X * Game.Map.ChunkSize, Data.Y * Game.Map.ChunkSize);
+        DrawGround();
+        Populate();
     }
 
-    public void Update()
-    {
-        if (!GroundDrawn)
-        {
-            DrawGround();
-        }
-        else if (!Data.Populated)
-        {
-            Populate();
-        }
-    }
+    //public void Update()
+    //{
+    //    if (!GroundDrawn)
+    //    {
+    //    }
+    //    else if (!Data.Populated)
+    //    {
+    //    }
+    //}
 
     internal void MakeCells()
     {

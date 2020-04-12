@@ -5,12 +5,9 @@ using UnityEngine;
 
 public class MapGenerator
 {
-    public bool Busy;
     public bool Done;
     public string Status;
     private List<Biome> _biomeTemplates;
-
-    private ChunkRenderer _currentChunk;
 
     public List<Biome> BiomeTemplates
     {
@@ -29,9 +26,15 @@ public class MapGenerator
         }
     }
 
+    private Biome _biome;
+
     public Biome GetBiome(int x, int y)
     {
-        return BiomeTemplates[0];
+        if (_biome == null)
+        {
+            _biome = BiomeTemplates.First(b => b.Name == "Default");
+        }
+        return _biome;
         //var value = Game.Map.WorldNoiseMap[x, y];
         //if (value > 0.5f)
         //{
@@ -92,31 +95,50 @@ public class MapGenerator
         }
     }
 
-    public IEnumerator Work()
+    public void Work()
     {
         Game.Map.Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
 
-        var counter = 1;
-        Game.Instance.SetLoadStatus("Create Map", 0);
-        var inc = 1f / Mathf.Pow(Game.Map.Size, 3);
         if (SaveManager.SaveToLoad == null)
         {
-            if (_currentChunk != null)
+            for (var i = 0; i < Game.Map.Size; i++)
             {
-                if (!_currentChunk.GroundDrawn || !_currentChunk.Data.Populated)
+                for (var k = 0; k < Game.Map.Size; k++)
                 {
-                    yield return null;
+                     Game.Map.MakeChunk(new Chunk((Game.Map.Origin.X / Game.Map.ChunkSize) + i,
+                                                  (Game.Map.Origin.Y / Game.Map.ChunkSize) + k));
+
                 }
             }
-
-            for (var i = 0 - Game.Map.Size; i < 0 + Game.Map.Size; i++)
+        }
+        else
+        {
+            foreach (var chunk in SaveManager.SaveToLoad.Chunks)
             {
-                for (var k = 0 - Game.Map.Size; k < 0 + Game.Map.Size; k++)
-                {
-                    _currentChunk = Game.Map.MakeChunk(new Chunk((Game.Map.Origin.X / Game.Map.ChunkSize) + i,
-                                                                 (Game.Map.Origin.Y / Game.Map.ChunkSize) + k));
+                Game.Map.MakeChunk(chunk);
+            }
+        }
 
-                    Game.Instance.SetLoadStatus($"Create Chunk {counter}", (counter - 1) * inc);
+        Done = true;
+    }
+
+    public IEnumerator xWork()
+    {
+        Game.Map.Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
+
+        var counter = 1f;
+        var total = Game.Map.Size * Game.Map.Size * 1f;
+        Game.Instance.SetLoadStatus("Create Map", 0);
+        if (SaveManager.SaveToLoad == null)
+        {
+            for (var i = 0; i < Game.Map.Size; i++)
+            {
+                for (var k = 0; k < Game.Map.Size; k++)
+                {
+                     Game.Map.MakeChunk(new Chunk((Game.Map.Origin.X / Game.Map.ChunkSize) + i,
+                                                  (Game.Map.Origin.Y / Game.Map.ChunkSize) + k));
+
+                    Game.Instance.SetLoadStatus($"Create Chunk {counter}", counter / total);
                     counter++;
                     yield return null;
                 }
