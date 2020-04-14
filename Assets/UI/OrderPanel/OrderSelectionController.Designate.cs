@@ -18,7 +18,7 @@ public partial class OrderSelectionController //.Designate
 
     public void DesignateTypeClicked()
     {
-        if (Game.OrderTrayController.gameObject.activeInHierarchy)
+        if (Game.Instance.OrderTrayController.gameObject.activeInHierarchy)
         {
             DisableAndReset();
             TaskButton.Text = DefaultDesignateText;
@@ -40,7 +40,7 @@ public partial class OrderSelectionController //.Designate
         CellClickOrder = cells =>
         {
             var cell = cells[0];
-            Game.FactionController.PlayerFaction.AddTask(new Move(cell))
+            Game.Instance.FactionController.PlayerFaction.AddTask(new Move(cell))
                                                 .AddCellBadge(cell, MoveIcon);
         };
     }
@@ -81,15 +81,15 @@ public partial class OrderSelectionController //.Designate
                             }
                         }
 
-                        Game.StructureController.DestroyStructure(structure);
+                        Game.Instance.StructureController.DestroyStructure(structure);
                     }
                     else
                     {
-                        if (Game.FactionController.PlayerFaction.AvailableTasks.OfType<RemoveStructure>().Any(t => t.StructureToRemove == structure))
+                        if (Game.Instance.FactionController.PlayerFaction.AvailableTasks.OfType<RemoveStructure>().Any(t => t.StructureToRemove == structure))
                         {
                             continue;
                         }
-                        Game.FactionController.PlayerFaction
+                        Game.Instance.FactionController.PlayerFaction
                                               .AddTask(new RemoveStructure(structure))
                                               .AddCellBadge(structure.Cell, DefaultRemoveIcon);
                     }

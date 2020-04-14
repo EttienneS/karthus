@@ -19,7 +19,7 @@ public class ZoneController : MonoBehaviour
 
     public void Awake()
     {
-        Sprite = Game.SpriteStore.GetSprite(ZoneSprite);
+        Sprite = Game.Instance.SpriteStore.GetSprite(ZoneSprite);
     }
 
     public ZoneBase Create(Purpose purpose, string faction, params Cell[] cells)
@@ -100,14 +100,14 @@ public class ZoneController : MonoBehaviour
 
     private ZoneLabel DrawZone(ZoneBase newZone)
     {
-        var sprite = Game.ZoneController.ZoneSprite;
+        var sprite = Game.Instance.ZoneController.ZoneSprite;
         if (newZone is RoomZone)
         {
-            sprite = Game.ZoneController.RoomSprite;
+            sprite = Game.Instance.ZoneController.RoomSprite;
         }
         else if (newZone is StorageZone)
         {
-            sprite = Game.ZoneController.StorageSprite;
+            sprite = Game.Instance.ZoneController.StorageSprite;
         }
 
         foreach (var cell in newZone.Cells)
@@ -119,7 +119,7 @@ public class ZoneController : MonoBehaviour
         label.name = newZone.Name;
         label.Text.text = newZone.Name;
 
-        var (bottomLeft, bottomRight, topLeft, topRight) = Game.MapGenerator.GetCorners(newZone.Cells);
+        var (bottomLeft, bottomRight, topLeft, topRight) = Game.Instance.MapGenerator.GetCorners(newZone.Cells);
         label.transform.position = new Vector3((bottomLeft.X + bottomRight.X + topLeft.X + topRight.X) / 4f,
                                                (bottomLeft.Y + bottomRight.Y + topLeft.Y + topRight.Y) / 4f, 0);
         label.transform.position += new Vector3(0.5f, 0.5f);
@@ -129,7 +129,7 @@ public class ZoneController : MonoBehaviour
     private void SetZoneCellTile(ZoneBase newZone, string sprite, Cell cell)
     {
         var tile = ScriptableObject.CreateInstance<Tile>();
-        tile.sprite = Game.SpriteStore.GetSprite(sprite);
+        tile.sprite = Game.Instance.SpriteStore.GetSprite(sprite);
         tile.color = newZone.Color.ToColor();
 
         ZoneTilemap.SetTile(new Vector3Int(cell.X, cell.Y, 0), tile);

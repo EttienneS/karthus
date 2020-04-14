@@ -11,7 +11,7 @@ public class SkillsPanel : MonoBehaviour
 
     private void Update()
     {
-        var creature = Game.CreatureInfoPanel.CurrentCreatures.Where(f => f != null).FirstOrDefault();
+        var creature = Game.Instance.CreatureInfoPanel.CurrentCreatures.Where(f => f != null).FirstOrDefault();
 
         if (creature == null)
         {

@@ -20,9 +20,9 @@ public class TownGenerator
             }
             else
             {
-                foreach (var cell in Game.Map.HollowSquare(building))
+                foreach (var cell in Game.Instance.Map.HollowSquare(building))
                 {
-                    Game.StructureController.DestroyStructure(cell.Structure);
+                    Game.Instance.StructureController.DestroyStructure(cell.Structure);
                     cell.CreateStructure("Wood Tile");
                 }
 
@@ -30,7 +30,7 @@ public class TownGenerator
                 if (doors.Count > 0)
                 {
                     var door = doors[Random.Range(0, doors.Count)];
-                    Game.StructureController.DestroyStructure(door.Structure);
+                    Game.Instance.StructureController.DestroyStructure(door.Structure);
                     door.CreateStructure("Wood Tile");
                 }
                 else
@@ -47,7 +47,7 @@ public class TownGenerator
     public List<Cell> GetPossibleDoors(List<Cell> building)
     {
         var doors = new List<Cell>();
-        foreach (var cell in Game.Map.GetBorder(building))
+        foreach (var cell in Game.Instance.Map.GetBorder(building))
         {
             var neighbours = cell.Neighbors.Count(c => c?.Floor?.Name == "Road");
             if (neighbours > 1)
@@ -77,9 +77,9 @@ public class TownGenerator
                         continue;
                     }
 
-                    if (tx >= Game.Map.MinX && tx < Game.Map.MaxX && ty >= Game.Map.MinY && ty < Game.Map.MaxY)
+                    if (tx >= Game.Instance.Map.MinX && tx < Game.Instance.Map.MaxX && ty >= Game.Instance.Map.MinY && ty < Game.Instance.Map.MaxY)
                     {
-                        group.Add(Game.Map.GetCellAtCoordinate(tx, ty));
+                        group.Add(Game.Instance.Map.GetCellAtCoordinate(tx, ty));
                     }
                 }
             }
@@ -90,7 +90,7 @@ public class TownGenerator
 
     internal void CreateTown()
     {
-        var streets = CreateStreets(Game.Map.Center, 0.5f);
+        var streets = CreateStreets(Game.Instance.Map.Center, 0.5f);
         var buildings = new List<List<Cell>>();
         foreach (var street in streets)
         {
@@ -109,10 +109,10 @@ public class TownGenerator
             var neighbours = new List<Cell>
                     {
                         cell,
-                        Game.Map.GetCellAtCoordinate(cell.X + 1, cell.Y),
-                        Game.Map.GetCellAtCoordinate(cell.X - 1, cell.Y),
-                        Game.Map.GetCellAtCoordinate(cell.X, cell.Y + 1),
-                        Game.Map.GetCellAtCoordinate(cell.X, cell.Y - 1),
+                        Game.Instance.Map.GetCellAtCoordinate(cell.X + 1, cell.Y),
+                        Game.Instance.Map.GetCellAtCoordinate(cell.X - 1, cell.Y),
+                        Game.Instance.Map.GetCellAtCoordinate(cell.X, cell.Y + 1),
+                        Game.Instance.Map.GetCellAtCoordinate(cell.X, cell.Y - 1),
                     };
 
             foreach (var neighbour in neighbours)
@@ -122,8 +122,8 @@ public class TownGenerator
                 {
                     for (int height = -maxHeight; height < maxHeight; height++)
                     {
-                        var structure = Game.Map.GetRectangle(neighbour.X, neighbour.Y, width, height);
-                        var measure = Game.Map.GetWidthAndHeight(structure);
+                        var structure = Game.Instance.Map.GetRectangle(neighbour.X, neighbour.Y, width, height);
+                        var measure = Game.Instance.Map.GetWidthAndHeight(structure);
 
                         if (measure.Item1 < minWidth)
                         {
@@ -192,7 +192,7 @@ public class TownGenerator
     private List<List<Cell>> CreateStreets(Cell center, float momentum)
     {
         var streets = new List<List<Cell>>();
-        var mainStreet = Game.Map.GetDiameterLine(center, Random.Range(30, 90), Random.Range(-10, 10));
+        var mainStreet = Game.Instance.Map.GetDiameterLine(center, Random.Range(30, 90), Random.Range(-10, 10));
         mainStreet.ForEach(c => c.CreateStructure("Road"));
         streets.Add(mainStreet);
 
@@ -218,7 +218,7 @@ public class TownGenerator
             angle += Random.Range(-10, 10);
         }
 
-        var street = Game.Map.GetLine(crossingPoint, Game.Map.GetPointAtDistanceOnAngle(crossingPoint, length, angle));
+        var street = Game.Instance.Map.GetLine(crossingPoint, Game.Instance.Map.GetPointAtDistanceOnAngle(crossingPoint, length, angle));
 
         foreach (var cell in street)
         {

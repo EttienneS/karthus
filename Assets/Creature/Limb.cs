@@ -78,10 +78,8 @@ public class Limb
                 Owner.Log($"{Owner.Name} succumbs to its damage!");
                 Owner.Dead = true;
 
-                Owner.ManaPool.Release();
-
-                Game.VisualEffectController.SpawnLightEffect(null, Owner.Vector, Color.red, 1f, 1f, 3f);
-                Game.CreatureController.DestroyCreature(Owner.CreatureRenderer);
+                Game.Instance.VisualEffectController.SpawnLightEffect(null, Owner.Vector, ColorConstants.RedAccent, 1f, 1f, 3f);
+                Game.Instance.CreatureController.DestroyCreature(Owner.CreatureRenderer);
             }
         }
     }

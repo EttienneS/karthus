@@ -19,7 +19,7 @@ public class CreatureInfoPanel : MonoBehaviour
     {
         var button = Instantiate(ImageButtonPrefab, ButtonPanel.transform);
         button.SetText(title);
-        button.SetImage(Game.SpriteStore.GetSprite(spriteName));
+        button.SetImage(Game.Instance.SpriteStore.GetSprite(spriteName));
 
         _contextButtons.Add(button);
         button.SetOnClick(() => SetActiveButton(button));
@@ -145,7 +145,7 @@ public class CreatureInfoPanel : MonoBehaviour
         Game.Instance.SetMouseSprite(OrderSelectionController.AttackIcon,
                                         (cell) => cell.GetEnemyCreaturesOf(FactionConstants.Player).Any());
 
-        Game.OrderSelectionController.CellClickOrder = cells =>
+        Game.Instance.OrderSelectionController.CellClickOrder = cells =>
         {
             foreach (var creature in creatures)
             {
@@ -185,7 +185,7 @@ public class CreatureInfoPanel : MonoBehaviour
         Game.Instance.SelectionPreference = SelectionPreference.Cell;
         Game.Instance.SetMouseSprite(OrderSelectionController.MoveIcon, (cell) => cell.TravelCost > 0);
 
-        Game.OrderSelectionController.CellClickOrder = cells =>
+        Game.Instance.OrderSelectionController.CellClickOrder = cells =>
         {
             foreach (var creature in creatures)
             {
@@ -208,8 +208,8 @@ public class CreatureInfoPanel : MonoBehaviour
     {
         foreach (var button in _contextButtons)
         {
-            button.Image.color = Color.white;
+            button.Image.color = ColorConstants.GreyBase;
         }
-        btn.Button.image.color = Color.red;
+        btn.Button.image.color = ColorConstants.BlueBase;
     }
 }

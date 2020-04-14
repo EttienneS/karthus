@@ -6,16 +6,16 @@
 
     public void BuildClicked(string structureName)
     {
-        var structure = Game.StructureController.StructureDataReference[structureName];
+        var structure = Game.Instance.StructureController.StructureDataReference[structureName];
         Game.Instance.SelectionPreference = SelectionPreference.Cell;
         Game.Instance.SetMouseSprite(structure.SpriteName,
                                       (cell) => structure.ValidateCellLocationForStructure(cell));
 
-        Game.OrderInfoPanel.Title = $"Build {structureName}";
-        Game.OrderInfoPanel.Description = "Select a location to place the structure.  A creature with the build skill will gather the required cost of material and then make the structure.";
-        Game.OrderInfoPanel.Detail = structure.Description;
-        Game.OrderInfoPanel.Cost = $"{structure.Cost}";
-        Game.OrderInfoPanel.Show();
+        Game.Instance.OrderInfoPanel.Title = $"Build {structureName}";
+        Game.Instance.OrderInfoPanel.Description = "Select a location to place the structure.  A creature with the build skill will gather the required cost of material and then make the structure.";
+        Game.Instance.OrderInfoPanel.Detail = structure.Description;
+        Game.Instance.OrderInfoPanel.Cost = $"{structure.Cost}";
+        Game.Instance.OrderInfoPanel.Show();
 
         CellClickOrder = cells =>
         {
@@ -23,8 +23,8 @@
             {
                 if (structure.ValidateCellLocationForStructure(cell))
                 {
-                    var blueprint = Game.StructureController.GetStructureBluePrint(structureName, cell, Game.FactionController.PlayerFaction);
-                    Game.FactionController.PlayerFaction.AddTask(new Build(blueprint));
+                    var blueprint = Game.Instance.StructureController.GetStructureBluePrint(structureName, cell, Game.Instance.FactionController.PlayerFaction);
+                    Game.Instance.FactionController.PlayerFaction.AddTask(new Build(blueprint));
                 }
             }
         };
@@ -32,7 +32,7 @@
 
     public void BuildTypeClicked()
     {
-        if (Game.OrderTrayController.gameObject.activeInHierarchy)
+        if (Game.Instance.OrderTrayController.gameObject.activeInHierarchy)
         {
             DisableAndReset();
         }
@@ -40,7 +40,7 @@
         {
             EnableAndClear();
 
-            foreach (var structureData in Game.StructureController.StructureDataReference.Values)
+            foreach (var structureData in Game.Instance.StructureController.StructureDataReference.Values)
             {
                 if (!structureData.Buildable) continue;
 

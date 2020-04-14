@@ -17,16 +17,16 @@ public partial class OrderSelectionController : MonoBehaviour
 
         Game.Instance.SelectionPreference = SelectionPreference.Anything;
 
-        Game.OrderTrayController.gameObject.SetActive(false);
+        Game.Instance.OrderTrayController.gameObject.SetActive(false);
         CellClickOrder = null;
 
-        Game.OrderInfoPanel.Hide();
+        Game.Instance.OrderInfoPanel.Hide();
     }
 
     private static void EnableAndClear()
     {
-        Game.OrderTrayController.gameObject.SetActive(true);
-        foreach (Transform child in Game.OrderTrayController.transform)
+        Game.Instance.OrderTrayController.gameObject.SetActive(true);
+        foreach (Transform child in Game.Instance.OrderTrayController.transform)
         {
             Destroy(child.gameObject);
         }
@@ -34,13 +34,13 @@ public partial class OrderSelectionController : MonoBehaviour
 
     private OrderButton CreateOrderButton(string text, UnityAction action, string sprite, bool isSubButton = true)
     {
-        return CreateOrderButton(text, action, Game.SpriteStore.GetSprite(sprite), isSubButton);
+        return CreateOrderButton(text, action, Game.Instance.SpriteStore.GetSprite(sprite), isSubButton);
     }
 
     private OrderButton CreateOrderButton(string text, UnityAction action, Sprite sprite, bool isSubButton = true)
     {
         // create a top level button for an order type
-        var button = Instantiate(OrderButtonPrefab, isSubButton ? Game.OrderTrayController.transform : transform);
+        var button = Instantiate(OrderButtonPrefab, isSubButton ? Game.Instance.OrderTrayController.transform : transform);
         button.Button.onClick.AddListener(action);
         button.Text = text;
         button.Button.image.sprite = sprite;
@@ -50,9 +50,9 @@ public partial class OrderSelectionController : MonoBehaviour
 
     private void Start()
     {
-        Game.OrderTrayController.gameObject.SetActive(false);
-        Game.CreatureInfoPanel.gameObject.SetActive(false);
-        Game.OrderInfoPanel.Hide();
+        Game.Instance.OrderTrayController.gameObject.SetActive(false);
+        Game.Instance.CreatureInfoPanel.gameObject.SetActive(false);
+        Game.Instance.OrderInfoPanel.Hide();
 
         BuildButton = CreateOrderButton(DefaultBuildText, BuildTypeClicked, "hammer", false);
         ZonesButton = CreateOrderButton(DefaultZoneText, ZoneTypeClicked, "plus_t", false);

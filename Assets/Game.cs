@@ -13,14 +13,41 @@ public enum SelectionPreference
     Anything, Cell, Item, Structure, Creature, Zone
 }
 
-public partial class Game : MonoBehaviour
+public class Game : MonoBehaviour
 {
+    public CameraController CameraController;
+    public ConstructController ConstructController;
+    public CreatureController CreatureController;
+    public CreatureInfoPanel CreatureInfoPanel;
+    public DeveloperConsole DeveloperConsole;
+    public FactionController FactionController;
+    public FileController FileController;
+    public IdService IdService;
+    public ItemController ItemController;
+    public ItemInfoPanel ItemInfoPanel;
+    public LoadStatus LoadingPanel;
+    public LoadPanel LoadPanel;
+    public MainMenuController MainMenuController;
+    public Map Map;
+    public MapGenerator MapGenerator;
     public SpriteRenderer MouseSpriteRenderer;
+    public OrderInfoPanel OrderInfoPanel;
+    public OrderSelectionController OrderSelectionController;
+    public OrderTrayController OrderTrayController;
     public RectTransform selectSquareImage;
+    public SpriteStore SpriteStore;
+    public StructureController StructureController;
+    public StructureInfoPanel StructureInfoPanel;
+    public TaskPanel TaskPanel;
+    public TimeManager TimeManager;
     public Tooltip Tooltip;
+    public GameObject UI;
+    public UIController UIController;
     public ValidateMouseSpriteDelegate ValidateMouse;
+    public VisualEffectController VisualEffectController;
     public Tooltip WorldTooltip;
-
+    public ZoneController ZoneController;
+    public ZoneInfoPanel ZoneInfoPanel;
     internal SelectionPreference LastSelection = SelectionPreference.Creature;
     internal LineRenderer LineRenderer;
     internal float LoadProgress;
@@ -37,19 +64,37 @@ public partial class Game : MonoBehaviour
     internal Vector3 SelectionEndScreen;
     internal SelectionPreference SelectionPreference;
     internal Vector3 SelectionStartWorld;
+    private static Game _instance;
 
     private bool _constructMode;
+
     private List<GameObject> _destroyCache = new List<GameObject>();
+
     private bool _finalizationStarted;
+
     private List<VisualEffect> _ghostEffects = new List<VisualEffect>();
+
     private DateTime? _lastAutoSave = null;
+
     private TimeStep _oldTimeStep = TimeStep.Normal;
+
     private bool _shownOnce;
 
     public delegate void Rotate();
 
     public delegate bool ValidateMouseSpriteDelegate(Cell cell);
 
+    public static Game Instance
+    {
+        get
+        {
+            return _instance != null ? _instance : (_instance = GameObject.Find("GameController").GetComponent<Game>());
+        }
+        set
+        {
+            _instance = value;
+        }
+    }
     public float MaxTimeToClick { get; set; } = 0.60f;
     public float MinTimeToClick { get; set; } = 0.05f;
     public bool Paused { get; set; }
@@ -281,7 +326,7 @@ public partial class Game : MonoBehaviour
     {
         if (SaveManager.SaveToLoad == null)
         {
-            MapGenerator.MakeFactionBootStrap(Game.FactionController.PlayerFaction);
+            MapGenerator.MakeFactionBootStrap(Game.Instance.FactionController.PlayerFaction);
             MapGenerator.SpawnCreatures();
         }
         else
@@ -353,7 +398,7 @@ public partial class Game : MonoBehaviour
 
         if (Input.GetKeyDown("`"))
         {
-            Game.DeveloperConsole.Toggle();
+            Game.Instance.DeveloperConsole.Toggle();
         }
         else if (Input.GetKeyDown("space"))
         {
@@ -426,8 +471,56 @@ public partial class Game : MonoBehaviour
         }
     }
 
+    private void Initialize()
+    {
+        if (!Ready)
+        {
+            if (MapGenerator.Done && !_finalizationStarted)
+            {
+                _finalizationStarted = true;
+                FinalizeStartup();
+            }
+            else
+            {
+                CameraController.Camera.transform.position = new Vector3(25, 25, -1);
+                CameraController.Camera.orthographicSize = 5;
+                Debug.Log("Start map gen");
+                MapGenerator.Work();
+                Debug.Log("Map gen complete");
+            }
+        }
+        else if (!_shownOnce)
+        {
+            UIController.Show();
+            StructureInfoPanel.Hide();
+            ItemInfoPanel.Hide();
+            CreatureInfoPanel.Hide();
+            ZoneInfoPanel.Hide();
+            OrderSelectionController.DisableAndReset();
+            LoadingPanel.Hide();
+            LoadPanel.Hide();
+            Tooltip.Hide();
+            WorldTooltip.Hide();
+            TaskPanel.Hide();
+
+            DeveloperConsole.gameObject.SetActive(false);
+
+            _shownOnce = true;
+
+            CameraController.Camera.orthographicSize = 10;
+            CameraController.transform.position = FactionController.PlayerFaction.Creatures[0].Cell.Vector;
+
+            MainMenuController.Toggle();
+        }
+    }
+
     private bool MouseOverUi()
     {
+        if (EventSystem.current == null)
+        {
+            // event system not on yet
+            return false;
+        }
         var overUI = EventSystem.current.IsPointerOverGameObject() && EventSystem.current.currentSelectedGameObject != null;
 
         if (overUI)
@@ -728,7 +821,7 @@ public partial class Game : MonoBehaviour
                     SelectedItems.AddRange(cell.Items);
                     SelectedCreatures.AddRange(cell.Creatures.Select(c => c.CreatureRenderer));
 
-                    var zone = Game.ZoneController.GetZoneForCell(cell);
+                    var zone = Game.Instance.ZoneController.GetZoneForCell(cell);
                     if (zone != null)
                     {
                         selectedZone = zone;
@@ -768,50 +861,6 @@ public partial class Game : MonoBehaviour
         }
         DestroyItemsInCache();
     }
-
-    private void Initialize()
-    {
-        if (!Ready)
-        {
-            if (MapGenerator.Done && !_finalizationStarted)
-            {
-                _finalizationStarted = true;
-                FinalizeStartup();
-            }
-            else
-            {
-                CameraController.Camera.transform.position = new Vector3(25, 25, -1);
-                CameraController.Camera.orthographicSize = 5;
-                Debug.Log("Start map gen");
-                MapGenerator.Work();
-                Debug.Log("Map gen complete");
-            }
-        }
-        else if (!_shownOnce)
-        {
-            UIController.Show();
-            StructureInfoPanel.Hide();
-            ItemInfoPanel.Hide();
-            CreatureInfoPanel.Hide();
-            ZoneInfoPanel.Hide();
-            OrderSelectionController.DisableAndReset();
-            LoadingPanel.Hide();
-            LoadPanel.Hide();
-            Tooltip.Hide();
-            WorldTooltip.Hide();
-            TaskPanel.Hide();
-
-            DeveloperConsole.gameObject.SetActive(false);
-
-            _shownOnce = true;
-
-            CameraController.Camera.orthographicSize = 10;
-            CameraController.transform.position = FactionController.PlayerFaction.Creatures[0].Cell.Vector;
-
-            MainMenuController.Toggle();
-        }
-    }
-
     private void UpdateMouseOverTooltip(Vector3 mousePosition)
     {
         if (!MouseOverUi())

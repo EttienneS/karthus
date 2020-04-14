@@ -16,7 +16,7 @@ public class MapGenerator
             if (_biomeTemplates == null)
             {
                 _biomeTemplates = new List<Biome>();
-                foreach (var biomeFile in Game.FileController.BiomeFiles)
+                foreach (var biomeFile in Game.Instance.FileController.BiomeFiles)
                 {
                     _biomeTemplates.Add(biomeFile.text.LoadJson<Biome>());
                 }
@@ -35,7 +35,7 @@ public class MapGenerator
             _biome = BiomeTemplates.First(b => b.Name == "Default");
         }
         return _biome;
-        //var value = Game.Map.WorldNoiseMap[x, y];
+        //var value = Game.Instance.Map.WorldNoiseMap[x, y];
         //if (value > 0.5f)
         //{
         //    return BiomeTemplates[0];
@@ -45,36 +45,36 @@ public class MapGenerator
 
     public (Cell bottomLeft, Cell bottomRight, Cell topLeft, Cell topRight) GetCorners(List<Cell> square)
     {
-        var minMax = Game.Map.GetMinMax(square);
+        var minMax = Game.Instance.Map.GetMinMax(square);
 
-        return (Game.Map.GetCellAtCoordinate(minMax.minx, minMax.miny),
-                Game.Map.GetCellAtCoordinate(minMax.maxx, minMax.miny),
-                Game.Map.GetCellAtCoordinate(minMax.minx, minMax.maxy),
-                Game.Map.GetCellAtCoordinate(minMax.maxx, minMax.maxy));
+        return (Game.Instance.Map.GetCellAtCoordinate(minMax.minx, minMax.miny),
+                Game.Instance.Map.GetCellAtCoordinate(minMax.maxx, minMax.miny),
+                Game.Instance.Map.GetCellAtCoordinate(minMax.minx, minMax.maxy),
+                Game.Instance.Map.GetCellAtCoordinate(minMax.maxx, minMax.maxy));
     }
 
     public void MakeFactionBootStrap(Faction faction)
     {
-        var center = Game.Map.GetNearestPathableCell(Game.Map.Center, Mobility.Walk, 25);
+        var center = Game.Instance.Map.GetNearestPathableCell(Game.Instance.Map.Center, Mobility.Walk, 25);
 
-        Game.FactionController.PlayerFaction.HomeCells.AddRange(Game.Map.GetCircle(Game.Map.Center, 15));
+        Game.Instance.FactionController.PlayerFaction.HomeCells.AddRange(Game.Instance.Map.GetCircle(Game.Instance.Map.Center, 15));
 
-        var open = Game.Map.GetCircle(center, 10).Where(c => c.Pathable(Mobility.Walk) && c.Structure == null);
-        Game.ItemController.SpawnItem("Berries", open.GetRandomItem(), 250);
-        Game.ItemController.SpawnItem("Wood", open.GetRandomItem(), 250);
-        Game.ItemController.SpawnItem("Stone", open.GetRandomItem(), 250);
+        var open = Game.Instance.Map.GetCircle(center, 10).Where(c => c.Pathable(Mobility.Walk) && c.Structure == null);
+        Game.Instance.ItemController.SpawnItem("Berries", open.GetRandomItem(), 250);
+        Game.Instance.ItemController.SpawnItem("Wood", open.GetRandomItem(), 250);
+        Game.Instance.ItemController.SpawnItem("Stone", open.GetRandomItem(), 250);
 
         for (int i = 0; i < 3; i++)
         {
-            var c = Game.CreatureController.SpawnCreature(Game.CreatureController.GetCreatureOfType("Person"),
-                                                          Game.Map.GetNearestPathableCell(center, Mobility.Walk, 10),
+            var c = Game.Instance.CreatureController.SpawnCreature(Game.Instance.CreatureController.GetCreatureOfType("Person"),
+                                                          Game.Instance.Map.GetNearestPathableCell(center, Mobility.Walk, 10),
                                                           faction);
         }
     }
 
     public void SpawnCreatures()
     {
-        foreach (var monster in Game.CreatureController.Beastiary)
+        foreach (var monster in Game.Instance.CreatureController.Beastiary)
         {
             if (monster.Key != "Skeleton")
             {
@@ -83,30 +83,30 @@ public class MapGenerator
 
             for (int i = 0; i < 1; i++)
             {
-                var creature = Game.CreatureController.GetCreatureOfType(monster.Key);
+                var creature = Game.Instance.CreatureController.GetCreatureOfType(monster.Key);
 
-                var spot = Game.Map.GetCircle(Game.Map.Center, 25).GetRandomItem();
+                var spot = Game.Instance.Map.GetCircle(Game.Instance.Map.Center, 25).GetRandomItem();
                 if (spot.TravelCost <= 0 && creature.Mobility != Mobility.Fly)
                 {
-                    spot = Game.Map.CellLookup.Values.Where(c => c.TravelCost > 0).GetRandomItem();
+                    spot = Game.Instance.Map.CellLookup.Values.Where(c => c.TravelCost > 0).GetRandomItem();
                 }
-                Game.CreatureController.SpawnCreature(creature, spot, Game.FactionController.MonsterFaction);
+                Game.Instance.CreatureController.SpawnCreature(creature, spot, Game.Instance.FactionController.MonsterFaction);
             }
         }
     }
 
     public void Work()
     {
-        Game.Map.Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
+        Game.Instance.Map.Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
 
         if (SaveManager.SaveToLoad == null)
         {
-            for (var i = 0; i < Game.Map.Size; i++)
+            for (var i = 0; i < Game.Instance.Map.Size; i++)
             {
-                for (var k = 0; k < Game.Map.Size; k++)
+                for (var k = 0; k < Game.Instance.Map.Size; k++)
                 {
-                     Game.Map.MakeChunk(new Chunk((Game.Map.Origin.X / Game.Map.ChunkSize) + i,
-                                                  (Game.Map.Origin.Y / Game.Map.ChunkSize) + k));
+                     Game.Instance.Map.MakeChunk(new Chunk((Game.Instance.Map.Origin.X / Game.Instance.Map.ChunkSize) + i,
+                                                  (Game.Instance.Map.Origin.Y / Game.Instance.Map.ChunkSize) + k));
 
                 }
             }
@@ -115,7 +115,7 @@ public class MapGenerator
         {
             foreach (var chunk in SaveManager.SaveToLoad.Chunks)
             {
-                Game.Map.MakeChunk(chunk);
+                Game.Instance.Map.MakeChunk(chunk);
             }
         }
 
@@ -124,19 +124,19 @@ public class MapGenerator
 
     public IEnumerator xWork()
     {
-        Game.Map.Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
+        Game.Instance.Map.Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
 
         var counter = 1f;
-        var total = Game.Map.Size * Game.Map.Size * 1f;
+        var total = Game.Instance.Map.Size * Game.Instance.Map.Size * 1f;
         Game.Instance.SetLoadStatus("Create Map", 0);
         if (SaveManager.SaveToLoad == null)
         {
-            for (var i = 0; i < Game.Map.Size; i++)
+            for (var i = 0; i < Game.Instance.Map.Size; i++)
             {
-                for (var k = 0; k < Game.Map.Size; k++)
+                for (var k = 0; k < Game.Instance.Map.Size; k++)
                 {
-                     Game.Map.MakeChunk(new Chunk((Game.Map.Origin.X / Game.Map.ChunkSize) + i,
-                                                  (Game.Map.Origin.Y / Game.Map.ChunkSize) + k));
+                     Game.Instance.Map.MakeChunk(new Chunk((Game.Instance.Map.Origin.X / Game.Instance.Map.ChunkSize) + i,
+                                                  (Game.Instance.Map.Origin.Y / Game.Instance.Map.ChunkSize) + k));
 
                     Game.Instance.SetLoadStatus($"Create Chunk {counter}", counter / total);
                     counter++;
@@ -150,7 +150,7 @@ public class MapGenerator
             foreach (var chunk in SaveManager.SaveToLoad.Chunks)
             {
                 counter++;
-                Game.Map.MakeChunk(chunk);
+                Game.Instance.Map.MakeChunk(chunk);
                 Game.Instance.SetLoadStatus($"Load Chunk {counter}", step * counter);
                 yield return null;
             }

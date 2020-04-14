@@ -17,7 +17,7 @@ public class FileController : MonoBehaviour
     public string BiomeFolder = "Biomes";
     public string ItemFolder = "Items";
 
-    public void Load()
+    public void Awake()
     {
         StructureJson = Resources.LoadAll<TextAsset>(StructureFolder);
         ConstructFiles = Resources.LoadAll<TextAsset>(ConstructFolder);

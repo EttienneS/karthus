@@ -12,7 +12,7 @@ public class CreatureController : MonoBehaviour
 
     public CreatureRenderer GetCreatureAtPoint(Vector2 point)
     {
-        foreach (var creature in Game.IdService.CreatureLookup.Values)
+        foreach (var creature in Game.Instance.IdService.CreatureLookup.Values)
         {
             var rect = new Rect(creature.CreatureRenderer.transform.position.x - 0.5f, creature.CreatureRenderer.transform.position.y - 0.5f, 1f, 1f);
             if (rect.Contains(point))
@@ -24,9 +24,9 @@ public class CreatureController : MonoBehaviour
         return null;
     }
 
-    public void Awake()
+    public void Start()
     {
-        foreach (var creatureFile in Game.FileController.CreatureFiles)
+        foreach (var creatureFile in Game.Instance.FileController.CreatureFiles)
         {
             try
             {
@@ -48,8 +48,8 @@ public class CreatureController : MonoBehaviour
             if (creature.Data.Task != null)
                 creature.Data.AbandonTask();
 
-            Game.FactionController.Factions[creature.Data.FactionName].Creatures.Remove(creature.Data);
-            Game.IdService.RemoveEntity(creature.Data);
+            Game.Instance.FactionController.Factions[creature.Data.FactionName].Creatures.Remove(creature.Data);
+            Game.Instance.IdService.RemoveEntity(creature.Data);
             Game.Instance.AddItemToDestroy(creature.gameObject);
         }
     }
@@ -85,8 +85,8 @@ public class CreatureController : MonoBehaviour
     {
         if (creatureData.Sprite == "Composite")
         {
-            creatureData.CharacterSpriteSheet = new LPC.Spritesheet.Generator.CharacterSpriteSheet(Game.SpriteStore.GetCreatureSprite(creatureData.Race, creatureData.Gender));
-            creatureData.CharacterSpriteSheet.SetClothes(Game.SpriteStore.GetClothesSprite(creatureData.Gender));
+            creatureData.CharacterSpriteSheet = new LPC.Spritesheet.Generator.CharacterSpriteSheet(Game.Instance.SpriteStore.GetCreatureSprite(creatureData.Race, creatureData.Gender));
+            creatureData.CharacterSpriteSheet.SetClothes(Game.Instance.SpriteStore.GetClothesSprite(creatureData.Gender));
         }
 
         var creature = Instantiate(CreaturePrefab, transform);
@@ -94,7 +94,7 @@ public class CreatureController : MonoBehaviour
         creature.Data = creatureData;
         creature.Data.CreatureRenderer = creature;
 
-        Game.IdService.EnrollEntity(creature.Data);
+        Game.Instance.IdService.EnrollEntity(creature.Data);
         creature.name = $"{creature.Data.Name} ({creature.Data.Id})";
 
         creature.Data.Gender = Random.value > 0.5f ? Gender.Male : Gender.Female;
@@ -103,13 +103,13 @@ public class CreatureController : MonoBehaviour
         creature.Data.Y = cell.Vector.y + Random.Range(-0.25f, 0.25f);
         creature.UpdatePosition();
 
-        creature.Data.InternalTick = Random.Range(0, Game.TimeManager.CreatureTick);
+        creature.Data.InternalTick = Random.Range(0, Game.Instance.TimeManager.CreatureTick);
 
         creature.Data.GetBehaviourTask = Behaviours.GetBehaviourFor(creature.Data.BehaviourName);
 
         creature.Data.Needs = Behaviours.GetNeedsFor(creature.Data.BehaviourName);
 
-        creature.MainRenderer.color = Color.white;
+        creature.MainRenderer.color = ColorConstants.WhiteBase;
         faction.AddCreature(creatureData);
 
         return creature;

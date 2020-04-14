@@ -11,7 +11,7 @@ public class ZoneInfoPanel : MonoBehaviour
 
     public void DeleteZone()
     {
-        Game.ZoneController.Delete(CurrentZone);
+        Game.Instance.ZoneController.Delete(CurrentZone);
         Hide();
     }
 
@@ -30,7 +30,7 @@ public class ZoneInfoPanel : MonoBehaviour
     {
         Game.Instance.Typing = true;
         CurrentZone.Name = Name.text;
-        Game.ZoneController.Refresh(CurrentZone);
+        Game.Instance.ZoneController.Refresh(CurrentZone);
     }
 
     internal void Show(ZoneBase selectedZone)

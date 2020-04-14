@@ -26,7 +26,7 @@ public class Chunk
     {
         get
         {
-            return Game.Map.Chunks[Coords];
+            return Game.Instance.Map.Chunks[Coords];
         }
     }
 }

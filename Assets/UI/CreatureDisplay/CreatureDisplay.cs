@@ -16,14 +16,14 @@ public class CreatureDisplay : MonoBehaviour
         {
             IconLookup = new Dictionary<Creature, CreatureIcon>();
 
-            foreach (var creature in Game.FactionController.PlayerFaction.Creatures)
+            foreach (var creature in Game.Instance.FactionController.PlayerFaction.Creatures)
             {
                 AddIcon(creature);
             }
         }
         else
         {
-            foreach (var creature in Game.FactionController.PlayerFaction.Creatures)
+            foreach (var creature in Game.Instance.FactionController.PlayerFaction.Creatures)
             {
                 if (!IconLookup.ContainsKey(creature))
                 {
@@ -33,7 +33,7 @@ public class CreatureDisplay : MonoBehaviour
 
             foreach (var creature in IconLookup.Keys.ToList())
             {
-                if (!Game.FactionController.PlayerFaction.Creatures.Contains(creature))
+                if (!Game.Instance.FactionController.PlayerFaction.Creatures.Contains(creature))
                 {
                     IconLookup.Remove(creature);
                 }

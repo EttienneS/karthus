@@ -77,15 +77,14 @@ public class TimeManager : MonoBehaviour
     public void Awake()
     {
         TimeStep = TimeStep.Normal;
-        var nightColor = ColorExtensions.GetColorFromHex("#474B7E");
 
         ColorZones = new List<(int min, int max, Color start, Color end)>
         {
-            (0,4, nightColor, nightColor),
-            (4,7, nightColor, Color.white),
-            (7,17, Color.white, Color.white),
-            (17,22, Color.white, nightColor),
-            (22,24, nightColor, nightColor)
+            (0,4, ColorConstants.DarkBlueAccent, ColorConstants.DarkBlueAccent),
+            (4,7, ColorConstants.DarkBlueAccent, ColorConstants.WhiteAccent),
+            (7,17, ColorConstants.WhiteAccent, ColorConstants.WhiteAccent),
+            (17,22, ColorConstants.WhiteAccent, ColorConstants.DarkBlueAccent),
+            (22,24, ColorConstants.DarkBlueAccent, ColorConstants.DarkBlueAccent)
         };
     }
 
@@ -129,6 +128,6 @@ public class TimeManager : MonoBehaviour
         var range = max - min;
         var total = range * 60f;
         var current = ((Data.Hour - min) * 60) + Data.Minute;
-        Game.Map.GlobalLight.color = Color.Lerp(start, end, current / total);
+        Game.Instance.Map.GlobalLight.color = Color.Lerp(start, end, current / total);
     }
 }

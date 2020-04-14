@@ -58,17 +58,17 @@ namespace Structures.Work
                 if (PlantEffect == null)
                 {
                     _lastGrowthIndex = GrowthIndex;
-                    PlantEffect = Game.VisualEffectController.SpawnSpriteEffect(this, Vector, Sprite + "_" + _lastGrowthIndex, 10);
+                    PlantEffect = Game.Instance.VisualEffectController.SpawnSpriteEffect(this, Vector, Sprite + "_" + _lastGrowthIndex, 10);
                 }
                 else if (GrowthIndex != _lastGrowthIndex)
                 {
                     _lastGrowthIndex = GrowthIndex;
-                    PlantEffect.Sprite.sprite = Game.SpriteStore.GetSprite(Sprite + "_" + _lastGrowthIndex);
+                    PlantEffect.Sprite.sprite = Game.Instance.SpriteStore.GetSprite(Sprite + "_" + _lastGrowthIndex);
                 }
 
                 if (CurrentGrowth >= MaxGrowth)
                 {
-                    Game.ItemController.SpawnItem(PlantName, Cell, (int)Quality);
+                    Game.Instance.ItemController.SpawnItem(PlantName, Cell, (int)Quality);
                     CurrentGrowth = 0;
                 }
             }

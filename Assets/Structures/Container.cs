@@ -25,7 +25,7 @@ namespace Structures
                 return null;
             }
 
-            return Game.ItemController.ItemDataReference[ItemType];
+            return Game.Instance.ItemController.ItemDataReference[ItemType];
         }
 
         public void ClearItem()
@@ -89,8 +89,8 @@ namespace Structures
             {
                 ItemType = item.Name;
                 Count = item.Amount;
-                Game.ItemController.DestroyItem(item);
-                ContainedItemEffect = Game.VisualEffectController.SpawnSpriteEffect(this, Vector, item.SpriteName, float.MaxValue);
+                Game.Instance.ItemController.DestroyItem(item);
+                ContainedItemEffect = Game.Instance.VisualEffectController.SpawnSpriteEffect(this, Vector, item.SpriteName, float.MaxValue);
                 return true;
             }
             else
@@ -103,7 +103,7 @@ namespace Structures
                 if (item.Amount < RemainingCapacity)
                 {
                     Count += item.Amount;
-                    Game.ItemController.DestroyItem(item);
+                    Game.Instance.ItemController.DestroyItem(item);
                     return true;
                 }
                 else
@@ -139,7 +139,7 @@ namespace Structures
                 amount = Count;
             }
 
-            var item = Game.ItemController.SpawnItem(ItemType, Cell, amount);
+            var item = Game.Instance.ItemController.SpawnItem(ItemType, Cell, amount);
             Count -= amount;
 
             if (Count <= 0)

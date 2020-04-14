@@ -35,9 +35,9 @@ namespace UI
         {
             foreach (var structure in Structures)
             {
-                if (!Game.FactionController.PlayerFaction.AvailableTasks.OfType<RemoveStructure>().Any(r => r.StructureToRemove == structure))
+                if (!Game.Instance.FactionController.PlayerFaction.AvailableTasks.OfType<RemoveStructure>().Any(r => r.StructureToRemove == structure))
                 {
-                    Game.FactionController.PlayerFaction.AddTask(new RemoveStructure(structure))
+                    Game.Instance.FactionController.PlayerFaction.AddTask(new RemoveStructure(structure))
                                                         .AddCellBadge(structure.Cell, OrderSelectionController.DefaultRemoveIcon);
                 }
                 else
@@ -157,9 +157,9 @@ namespace UI
         {
             foreach (var prefab in ActivePrefabs)
             {
-                prefab.Background.color = Color.white;
+                prefab.Background.color = ColorConstants.WhiteBase;
             }
-            selected.Background.color = Color.green;
+            selected.Background.color = ColorConstants.GreenBase;
 
             Selected = selected;
             AddButton.enabled = true;

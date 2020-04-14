@@ -19,9 +19,9 @@ public class DeveloperConsole : MonoBehaviour
     public string Expand()
     {
         var expansions = string.Empty;
-        foreach (var chunk in Game.Map.Chunks.ToList())
+        foreach (var chunk in Game.Instance.Map.Chunks.ToList())
         {
-            Game.Map.ExpandChunksAround(chunk.Value.Cells[0]);
+            Game.Instance.Map.ExpandChunksAround(chunk.Value.Cells[0]);
 
             expansions += $"Expanding {chunk.Key.x}:{chunk.Key.y}\n";
         }
@@ -34,7 +34,7 @@ public class DeveloperConsole : MonoBehaviour
         var entity = id.GetEntity();
         if (entity == null)
         {
-            entity = Game.IdService.CreatureLookup.Values.ToList().Find(c => c.Name.Equals(id, StringComparison.OrdinalIgnoreCase));
+            entity = Game.Instance.IdService.CreatureLookup.Values.ToList().Find(c => c.Name.Equals(id, StringComparison.OrdinalIgnoreCase));
         }
         return entity;
     }
@@ -52,35 +52,35 @@ public class DeveloperConsole : MonoBehaviour
         switch (type.ToLower())
         {
             case "items":
-                foreach (var item in Game.IdService.ItemIdLookup)
+                foreach (var item in Game.Instance.IdService.ItemIdLookup)
                 {
                     list += $"{item.Key}: {item.Value.Name}\n";
                 }
                 break;
 
             case "creatures":
-                foreach (var creature in Game.IdService.CreatureIdLookup)
+                foreach (var creature in Game.Instance.IdService.CreatureIdLookup)
                 {
                     list += $"{creature.Key}: {creature.Value.Name}\n";
                 }
                 break;
 
             case "structures":
-                foreach (var structure in Game.IdService.StructureIdLookup)
+                foreach (var structure in Game.Instance.IdService.StructureIdLookup)
                 {
                     list += $"{structure.Key}: {structure.Value.Name}\n";
                 }
                 break;
 
             case "factions":
-                foreach (var faction in Game.FactionController.Factions)
+                foreach (var faction in Game.Instance.FactionController.Factions)
                 {
                     list += $"{faction.Key}\n";
                 }
                 break;
 
             case "zones":
-                foreach (var zone in Game.ZoneController.Zones)
+                foreach (var zone in Game.Instance.ZoneController.Zones)
                 {
                     list += $"{zone.Key.Name}: {zone.Key.FactionName}\n";
                 }
@@ -110,7 +110,7 @@ public class DeveloperConsole : MonoBehaviour
     public void Show()
     {
         gameObject.SetActive(true);
-        Game.TimeManager.Pause();
+        Game.Instance.TimeManager.Pause();
         Game.Instance.Typing = true;
 
         EventSystem.current.SetSelectedGameObject(InputField.gameObject, null);
@@ -127,9 +127,9 @@ public class DeveloperConsole : MonoBehaviour
         Commands.Add("SetTime", (args) =>
         {
             var split = args.Split(':');
-            Game.TimeManager.Data.Hour = int.Parse(split[0]);
-            Game.TimeManager.Data.Minute = int.Parse(split[1]);
-            return $"Time Set To: {Game.TimeManager.Data.Hour}:{Game.TimeManager.Data.Minute}";
+            Game.Instance.TimeManager.Data.Hour = int.Parse(split[0]);
+            Game.Instance.TimeManager.Data.Minute = int.Parse(split[1]);
+            return $"Time Set To: {Game.Instance.TimeManager.Data.Hour}:{Game.Instance.TimeManager.Data.Minute}";
         });
         Commands.Add("Load", (args) =>
         {
@@ -151,7 +151,7 @@ public class DeveloperConsole : MonoBehaviour
             var parts = args.Split(' ');
             var entity = GetEntity(parts[0]);
 
-            var cell = Game.Map.GetCellAtCoordinate(float.Parse(parts[1]), float.Parse(parts[2]));
+            var cell = Game.Instance.Map.GetCellAtCoordinate(float.Parse(parts[1]), float.Parse(parts[2]));
             if (entity is Creature creature)
             {
                 creature.X = cell.X;

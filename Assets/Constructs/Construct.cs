@@ -148,7 +148,7 @@ public class Construct
                         continue;
                     }
 
-                    var structure = Game.StructureController.StructureDataReference[GetStructure(character)];
+                    var structure = Game.Instance.StructureController.StructureDataReference[GetStructure(character)];
                     cost = Cost.AddCost(cost, structure.Cost);
                 }
             }
@@ -180,8 +180,8 @@ public class Construct
                 }
                 else
                 {
-                    var structure = Game.StructureController.StructureDataReference.Values.First(s => s.Name == GetStructure(character));
-                    sourceTexture = Game.SpriteStore.GetSprite(structure.SpriteName).texture;
+                    var structure = Game.Instance.StructureController.StructureDataReference.Values.First(s => s.Name == GetStructure(character));
+                    sourceTexture = Game.Instance.SpriteStore.GetSprite(structure.SpriteName).texture;
                 }
                 var constructTexture = sourceTexture.Clone();
                 constructTexture.ScaleToGridSize(1, 1);
@@ -230,7 +230,7 @@ public class Construct
                     x++;
                     continue;
                 }
-                var cell = Game.Map.GetCellAtCoordinate(cellData.X + x, cellData.Y + y);
+                var cell = Game.Instance.Map.GetCellAtCoordinate(cellData.X + x, cellData.Y + y);
 
                 if (cell.TravelCost > 0)
                 {
@@ -267,15 +267,15 @@ public class Construct
                     continue;
                 }
 
-                var cell = Game.Map.GetCellAtCoordinate(origin.X + x, origin.Y + y);
+                var cell = Game.Instance.Map.GetCellAtCoordinate(origin.X + x, origin.Y + y);
 
                 if (cell.TravelCost > 0 && cell.Structure == null)
                 {
-                    var structure = Game.StructureController.GetStructureBluePrint(GetStructure(character), cell, faction);
+                    var structure = Game.Instance.StructureController.GetStructureBluePrint(GetStructure(character), cell, faction);
 
                     if (!structure.IsWall() && !structure.IsFloor() && !string.IsNullOrEmpty(Floor))
                     {
-                        Game.StructureController.GetStructureBluePrint(Floor, cell, faction);
+                        Game.Instance.StructureController.GetStructureBluePrint(Floor, cell, faction);
                     }
                 }
 

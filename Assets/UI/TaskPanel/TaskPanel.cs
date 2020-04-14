@@ -16,8 +16,8 @@ namespace Assets.UI.TaskPanel
 
         private void Update()
         {
-            var tasks = Game.FactionController.PlayerFaction.AssignedTasks.Keys.ToList();
-            tasks.AddRange(Game.FactionController.PlayerFaction.AvailableTasks);
+            var tasks = Game.Instance.FactionController.PlayerFaction.AssignedTasks.Keys.ToList();
+            tasks.AddRange(Game.Instance.FactionController.PlayerFaction.AvailableTasks);
 
             foreach (var task in tasks)
             {

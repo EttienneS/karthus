@@ -44,13 +44,4 @@ public static class ColorExtensions
         throw new Exception("Unable to parse color");
     }
 
-    internal static Color GetRandomHairColor()
-    {
-        return ColorConstants.HairArray[Random.Range(0, ColorConstants.HairArray.Length - 1)];
-    }
-
-    internal static Color GetRandomSkinColor()
-    {
-        return ColorConstants.SkinArray[Random.Range(0, ColorConstants.SkinArray.Length - 1)];
-    }
 }

@@ -33,7 +33,7 @@ public class EmptyContainer : CreatureTask
             {
                 var item = container.GetItem(container.Count);
                 AddSubTask(new Pickup(item));
-                AddSubTask(new Drop(Game.Map.GetNearestEmptyCell(creature.Cell)));
+                AddSubTask(new Drop(Game.Instance.Map.GetNearestEmptyCell(creature.Cell)));
             }
         }
 

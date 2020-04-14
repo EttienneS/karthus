@@ -2,63 +2,43 @@
 
 public static class ColorConstants
 {
-    public static Color AbyssColor = Color.magenta;
-    public static Color BluePrintColor = new Color(0.3f, 1f, 1f, 0.4f);
+    public static Color BluePrintColor { get; } = BlueBase;
 
-    public static Color UISuspended = new Color(1f, 0.7f, 0f, 0.6f);
-    public static Color UIDefault = new Color(1f, 1f, 1f, 0.6f);
+    public static Color UISuspended { get; } = GreyBase;
+    public static Color UIDefault { get; } = WhiteBase;
 
-    public static Color InvalidColor = Color.red;
+    public static Color InvalidColor { get; } = RedBase;
 
-    public static Color[] SkinArray = new[]
-    {
-        // https://www.schemecolor.com/skin-shades-color-scheme.php
-        ColorExtensions.GetColorFromHex("#553827"),
-        ColorExtensions.GetColorFromHex("#935934"),
-        ColorExtensions.GetColorFromHex("#bd804a"),
-        ColorExtensions.GetColorFromHex("#F4C7B1"),
-        ColorExtensions.GetColorFromHex("#e6a17d"),
-        ColorExtensions.GetColorFromHex("#be7f5e"),
-    };
+    // palette: https://flatuicolors.com/palette/gb
+    public static Color BlueBase { get; } = ColorExtensions.GetColorFromHex("#00a8ff");
+    public static Color BlueAccent { get; } = ColorExtensions.GetColorFromHex("#0097e6");
 
-    public static Color[] HairArray = new[]
-    {
-        // https://www.schemecolor.com/chairing-the-meeting.php
-        ColorExtensions.GetColorFromHex("#b8aca7"),
-        ColorExtensions.GetColorFromHex("#E9E3DF"),
-        ColorExtensions.GetColorFromHex("#DED4BB"),
-        ColorExtensions.GetColorFromHex("#9a765f"),
-        ColorExtensions.GetColorFromHex("#5d3721"),
-        ColorExtensions.GetColorFromHex("#492a18"),
-    };
-}
+    public static Color PurpleBase { get; } = ColorExtensions.GetColorFromHex("#9c88ff");
+    public static Color PurpleAccent { get; } = ColorExtensions.GetColorFromHex("#8c7ae6");
 
-public static class GameConstants
-{
-    public static float ChannelDuration = 0.5f;
-}
+    public static Color YellowBase { get; } = ColorExtensions.GetColorFromHex("#fbc531");
+    public static Color YellowAccent { get; } = ColorExtensions.GetColorFromHex("#e1b12c");
 
-public static class ControllerConstants
-{
-    public const string UI = "UI";
-    public const string MainMenu = "MainMenu";
-    public const string LoadPanel = "LoadPanel";
-    public const string CameraController = "Main Camera";
-    public const string PhysicsController = "PhysicsController";
-    public const string CreatureController = "CreatureController";
-    public const string GameController = "GameController";
-    public const string ItemController = "ItemController";
-    public const string MapController = "Map";
-    public const string OrderSelectionController = "OrderPanel";
-    public const string SpriteController = "SpriteStore";
-    public const string StructureController = "StructureController";
-    public const string TimeController = "TimeManager";
-    public const string ManaDisplay = "ManaDisplay";
-    public const string MaterialController = "MaterialController";
-    public const string LeyLineController = "LeyLineController";
-    public const string MagicController = "MagicController";
-    public const string VisualEffectController = "VisualEffectController";
-    public const string DeveloperConsole = "DeveloperConsole";
+    public static Color GreenBase { get; } = ColorExtensions.GetColorFromHex("#4cd137");
+    public static Color GreenAccent { get; } = ColorExtensions.GetColorFromHex("#44bd32");
+
+    public static Color GreyBlueBase { get; } = ColorExtensions.GetColorFromHex("#487eb0");
+    public static Color GreyBlueAccent { get; } = ColorExtensions.GetColorFromHex("#40739e");
+
+    public static Color RedBase { get; } = ColorExtensions.GetColorFromHex("#e84118");
+    public static Color RedAccent { get; } = ColorExtensions.GetColorFromHex("#c23616");
+
+    public static Color WhiteBase { get; } = ColorExtensions.GetColorFromHex("#f5f6fa");
+    public static Color WhiteAccent { get; } = ColorExtensions.GetColorFromHex("#dcdde1");
+
+    public static Color GreyBase { get; } = ColorExtensions.GetColorFromHex("#7f8fa6");
+    public static Color GreyAccent { get; } = ColorExtensions.GetColorFromHex("#718093");
+
+    public static Color DarkBlueBase { get; } = ColorExtensions.GetColorFromHex("#273c75");
+    public static Color DarkBlueAccent { get; } = ColorExtensions.GetColorFromHex("#192a56");
+
+    public static Color BlackBase { get; } = ColorExtensions.GetColorFromHex("#353b48");
+    public static Color BlackAccent { get; } = ColorExtensions.GetColorFromHex("#2f3640");
 }
 
 public static class LayerConstants

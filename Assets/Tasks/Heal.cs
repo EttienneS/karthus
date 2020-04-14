@@ -17,19 +17,12 @@ public class Heal : CreatureTask
     {
         if (SubTasksComplete(creature))
         {
-            var white = creature.ManaPool[ManaColor.White].Total;
-            if (white < 2)
-            {
-                AddSubTask(new Attune(new Dictionary<ManaColor, float> { { ManaColor.White, 2 } }));
-                return false;
-            }
 
             var wound = creature.GetWorstWound();
             if (wound != null)
             {
-                Game.VisualEffectController.SpawnLightEffect(creature, creature.Vector, Color.white, 2, 1, 1).Fades();
+                Game.Instance.VisualEffectController.SpawnLightEffect(creature, creature.Vector, ColorConstants.WhiteAccent, 2, 1, 1).Fades();
 
-                creature.ManaPool.BurnMana(ManaColor.White, 2);
                 wound.Treated = true;
                 wound.HealRate /= 2;
             }

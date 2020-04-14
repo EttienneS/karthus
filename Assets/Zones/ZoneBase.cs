@@ -45,7 +45,7 @@ public abstract class ZoneBase
             foreach (var xy in value.Split(','))
             {
                 var split = xy.Split(':').Select(i => float.Parse(i)).ToList();
-                _cells.Add(Game.Map.GetCellAtCoordinate(split[0], split.Last()));
+                _cells.Add(Game.Instance.Map.GetCellAtCoordinate(split[0], split.Last()));
             }
         }
     }
@@ -59,7 +59,7 @@ public abstract class ZoneBase
     {
         get
         {
-            return Game.IdService.ItemLookup.Values.Where(i => _cells.Contains(i.Cell)).ToList();
+            return Game.Instance.IdService.ItemLookup.Values.Where(i => _cells.Contains(i.Cell)).ToList();
         }
     }
 
@@ -91,9 +91,9 @@ public abstract class ZoneBase
         {
             var structures = new List<Structure>();
 
-            foreach (var cell in _cells.Where(c => Game.IdService.StructureCellLookup.ContainsKey(c)))
+            foreach (var cell in _cells.Where(c => Game.Instance.IdService.StructureCellLookup.ContainsKey(c)))
             {
-                structures.AddRange(Game.IdService.StructureCellLookup[cell]);
+                structures.AddRange(Game.Instance.IdService.StructureCellLookup[cell]);
             }
 
             return structures;

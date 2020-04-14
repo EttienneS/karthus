@@ -38,7 +38,7 @@ public class ItemRenderer : MonoBehaviour
     {
         if (Data.Amount <= 0)
         {
-            Game.ItemController.DestroyItem(Data);
+            Game.Instance.ItemController.DestroyItem(Data);
         }
         else
         {

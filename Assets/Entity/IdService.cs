@@ -88,17 +88,17 @@ public class IdService
     {
         if (StructureLookup.ContainsKey(entity))
         {
-            Game.StructureController.DestroyStructure(entity as Structure);
+            Game.Instance.StructureController.DestroyStructure(entity as Structure);
         }
 
         if (CreatureLookup.ContainsKey(entity))
         {
-            Game.CreatureController.DestroyCreature((entity as Creature).CreatureRenderer);
+            Game.Instance.CreatureController.DestroyCreature((entity as Creature).CreatureRenderer);
         }
 
         if (ItemLookup.ContainsKey(entity))
         {
-            Game.ItemController.DestroyItem(entity as Item);
+            Game.Instance.ItemController.DestroyItem(entity as Item);
         }
     }
 
@@ -130,7 +130,7 @@ public static class IdExtensions
 {
     public static Creature GetCreature(this string id)
     {
-        if (!Game.IdService.CreatureIdLookup.TryGetValue(id, out var creature))
+        if (!Game.Instance.IdService.CreatureIdLookup.TryGetValue(id, out var creature))
         {
             return null;
         }
@@ -139,7 +139,7 @@ public static class IdExtensions
 
     public static Item GetItem(this string id)
     {
-        if (!Game.IdService.ItemIdLookup.TryGetValue(id, out var item))
+        if (!Game.Instance.IdService.ItemIdLookup.TryGetValue(id, out var item))
         {
             return null;
         }
@@ -148,7 +148,7 @@ public static class IdExtensions
 
     public static Structure GetStructure(this string id)
     {
-        if (Game.IdService.StructureIdLookup.TryGetValue(id, out var structure))
+        if (Game.Instance.IdService.StructureIdLookup.TryGetValue(id, out var structure))
         {
             return structure;
         }
@@ -162,15 +162,15 @@ public static class IdExtensions
 
     internal static IEntity GetEntity(this string id)
     {
-        if (Game.IdService.IsCreature(id))
+        if (Game.Instance.IdService.IsCreature(id))
         {
             return GetCreature(id);
         }
-        if (Game.IdService.IsStructure(id))
+        if (Game.Instance.IdService.IsStructure(id))
         {
             return GetStructure(id);
         }
-        if (Game.IdService.IsItem(id))
+        if (Game.Instance.IdService.IsItem(id))
         {
             return GetItem(id);
         }

@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering.Universal;
-using UnityEngine.Tilemaps;
 
 namespace Structures
 {
@@ -21,7 +19,12 @@ namespace Structures
         {
             get
             {
-                return _structureTypes == null ? ReflectionHelper.GetAllTypes(typeof(Structure)) : _structureTypes;
+                if (_structureTypes == null)
+                {
+                    _structureTypes = ReflectionHelper.GetAllTypes(typeof(Structure));
+                }
+
+                return _structureTypes;
             }
         }
 
@@ -42,7 +45,7 @@ namespace Structures
                 {
                     _structureTypeFileMap = new Dictionary<string, string>();
                     _structureDataReference = new Dictionary<string, Structure>();
-                    foreach (var structureFile in Game.FileController.StructureJson)
+                    foreach (var structureFile in Game.Instance.FileController.StructureJson)
                     {
                         try
                         {
@@ -108,7 +111,7 @@ namespace Structures
 
             var structure = GetFromJson(structureData);
             var renderer = Instantiate(StructureRendererPrefab, transform);
-            renderer.SpriteRenderer.sortingOrder = Game.Map.MaxSize - cell.Y;
+            renderer.SpriteRenderer.sortingOrder = Game.Instance.Map.MaxSize - cell.Y;
             renderer.transform.name = structure.Name + " " + structure.Id;
             structure.Renderer = renderer;
             renderer.Data = structure;
@@ -124,7 +127,7 @@ namespace Structures
 
             if (structure is Container container)
             {
-                var zone = Game.ZoneController.GetZoneForCell(cell);
+                var zone = Game.Instance.ZoneController.GetZoneForCell(cell);
 
                 if (zone != null && zone is StorageZone store)
                 {
@@ -142,17 +145,17 @@ namespace Structures
             if (!Game.Instance.Ready)
                 return;
 
-            if (Game.TimeManager.Paused)
+            if (Game.Instance.TimeManager.Paused)
                 return;
 
             _lastUpdate += Time.deltaTime;
 
-            if (_lastUpdate > Game.TimeManager.CreatureTick)
+            if (_lastUpdate > Game.Instance.TimeManager.CreatureTick)
             {
                 _lastUpdate = 0;
-                foreach (var structure in Game.IdService.StructureLookup.Values.OfType<WorkStructureBase>().Where(s => !s.IsBluePrint))
+                foreach (var structure in Game.Instance.IdService.StructureLookup.Values.OfType<WorkStructureBase>().Where(s => !s.IsBluePrint))
                 {
-                    structure.Process(Game.TimeManager.CreatureTick);
+                    structure.Process(Game.Instance.TimeManager.CreatureTick);
                 }
             }
         }
@@ -170,8 +173,8 @@ namespace Structures
                     Debug.Log("Unbound structure");
                 }
 
-                Game.IdService.RemoveEntity(structure);
-                Game.FactionController.Factions[structure.FactionName].Structures.Remove(structure);
+                Game.Instance.IdService.RemoveEntity(structure);
+                Game.Instance.FactionController.Factions[structure.FactionName].Structures.Remove(structure);
 
                 Game.Instance.AddItemToDestroy(structure.Renderer.gameObject);
             }
@@ -187,7 +190,7 @@ namespace Structures
 
         private void IndexStructure(Structure structure)
         {
-            Game.IdService.EnrollEntity(structure);
+            Game.Instance.IdService.EnrollEntity(structure);
         }
     }
 }

@@ -20,7 +20,7 @@ public class Badge : MonoBehaviour
 
     internal void SetSprite(string iconName)
     {
-        SpriteRenderer.sprite = Game.SpriteStore.GetSprite(iconName);
+        SpriteRenderer.sprite = Game.Instance.SpriteStore.GetSprite(iconName);
     }
 
     internal void Destroy()

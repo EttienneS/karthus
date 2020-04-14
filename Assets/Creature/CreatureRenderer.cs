@@ -22,7 +22,7 @@ public class CreatureRenderer : MonoBehaviour
     public void ShowText(string text, float duration)
     {
         Text.text = text;
-        Text.color = Color.white;
+        Text.color = ColorConstants.WhiteBase;
 
         RemainingTextDuration = duration;
     }
@@ -38,7 +38,7 @@ public class CreatureRenderer : MonoBehaviour
 
         if (Data.Update(Time.deltaTime))
         {
-            if (Game.TimeManager.Data.Hour < 6 || Game.TimeManager.Data.Hour > 18)
+            if (Game.Instance.TimeManager.Data.Hour < 6 || Game.Instance.TimeManager.Data.Hour > 18)
             {
                 EnableLight();
             }
@@ -79,12 +79,12 @@ public class CreatureRenderer : MonoBehaviour
     {
         if (Data.UnableToFindPath)
         {
-            Gizmos.color = Color.red;
+            Gizmos.color = ColorConstants.RedBase;
 
         }
         else
         {
-            Gizmos.color = Color.green;
+            Gizmos.color = ColorConstants.GreenBase;
         }
 
         if (Data.Path != null)
@@ -100,7 +100,7 @@ public class CreatureRenderer : MonoBehaviour
             }
         }
 
-        Gizmos.DrawCube(Game.Map.GetCellAtCoordinate(Data.TargetCoordinate).Vector + new Vector3(0, 0, 5), new Vector3(0.1f, 0.1f, 0.1f));
+        Gizmos.DrawCube(Game.Instance.Map.GetCellAtCoordinate(Data.TargetCoordinate).Vector + new Vector3(0, 0, 5), new Vector3(0.1f, 0.1f, 0.1f));
     }
 
     internal void DisableLight()

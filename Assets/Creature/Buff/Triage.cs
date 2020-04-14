@@ -8,12 +8,6 @@ public class Triage : BuffBase
 
     public override int EstimateBuffEffect()
     {
-        if (Owner.ManaPool[ManaColor.White].Total < 3)
-        {
-            // not enough mana!
-            return int.MinValue;
-        }
-
         var wound = Owner.GetWorstWound();
         if (wound == null)
         {
@@ -41,9 +35,7 @@ public class Triage : BuffBase
 
     internal override void StartBuff()
     {
-        Game.VisualEffectController.SpawnLightEffect(Owner, Owner.Vector, Color.white, 2, 1, 1).Fades();
-
-        Owner.ManaPool.BurnMana(ManaColor.White, 3);
+        Game.Instance.VisualEffectController.SpawnLightEffect(Owner, Owner.Vector, ColorConstants.WhiteBase, 2, 1, 1).Fades();
 
         Owner.Log($"{Owner.Name} channels some magic to .");
     }

@@ -29,7 +29,7 @@ public static class Behaviours
         CreatureTask task;
         if (rand > 0.8f)
         {
-            task = new Move(Game.Map.GetCircle(creature.Cell, WanderRange).GetRandomItem());
+            task = new Move(Game.Instance.Map.GetCircle(creature.Cell, WanderRange).GetRandomItem());
         }
         else
         {
@@ -54,26 +54,10 @@ public static class Behaviours
         {
             task = new Heal();
         }
-        else if (creature.ManaPool.Any(m => m.Value.Unbalanced()))
-        {
-            foreach (var mana in creature.ManaPool)
-            {
-                if (mana.Value.OverAttuned() || mana.Value.OverDesired())
-                {
-                    task = new Vent(mana.Key, mana.Value.Total - Mathf.Min(mana.Value.Desired, mana.Value.Attunement));
-                    break;
-                }
-                else if (mana.Value.UnderDesired())
-                {
-                    task = new Attune(mana.Key, mana.Value.Desired);
-                    break;
-                }
-            }
-        }
         else if (creature.Cell.Creatures.Count > 1)
         {
             // split up
-            task = new Move(Game.Map.GetPathableNeighbour(creature.Cell));
+            task = new Move(Game.Instance.Map.GetPathableNeighbour(creature.Cell));
         }
 
         return task;
@@ -130,7 +114,7 @@ public static class Behaviours
 
     private static Creature FindEnemy(Creature creature)
     {
-        return Game.IdService.CreatureIdLookup.Values.FirstOrDefault(c => c.FactionName != creature.FactionName
+        return Game.Instance.IdService.CreatureIdLookup.Values.FirstOrDefault(c => c.FactionName != creature.FactionName
         && creature.Awareness.Contains(c.Cell));
     }
 }

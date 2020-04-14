@@ -81,7 +81,7 @@ public class Creature : IEntity
         {
             if (_awareness == null && Cell != null)
             {
-                _awareness = Game.Map.GetCircle(Cell, Perception);
+                _awareness = Game.Instance.Map.GetCircle(Cell, Perception);
             }
 
             return _awareness;
@@ -95,7 +95,7 @@ public class Creature : IEntity
     {
         get
         {
-            return Game.Map.GetCellAtCoordinate(X, Y);
+            return Game.Instance.Map.GetCellAtCoordinate(X, Y);
         }
         set
         {
@@ -120,7 +120,7 @@ public class Creature : IEntity
         {
             if (_faction == null)
             {
-                _faction = Game.FactionController.Factions[FactionName];
+                _faction = Game.Instance.FactionController.Factions[FactionName];
             }
 
             return _faction;
@@ -171,8 +171,6 @@ public class Creature : IEntity
     public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
 
     public List<string> LogHistory { get; set; }
-
-    public ManaPool ManaPool { get; set; }
 
     [JsonIgnore]
     public int Mood
@@ -486,7 +484,7 @@ public class Creature : IEntity
                 else
                 {
                     HeldItem.Amount += item.Amount;
-                    Game.ItemController.DestroyItem(item);
+                    Game.Instance.ItemController.DestroyItem(item);
                 }
             }
         }
@@ -584,11 +582,11 @@ public class Creature : IEntity
             CreatureRenderer.MainRenderer.flipX = Facing == Direction.W || Facing == Direction.NE || Facing == Direction.SW;
             if (!Sprite.Contains("_"))
             {
-                CreatureRenderer.MainRenderer.sprite = Game.SpriteStore.GetCreatureSprite(Sprite, ref Frame);
+                CreatureRenderer.MainRenderer.sprite = Game.Instance.SpriteStore.GetCreatureSprite(Sprite, ref Frame);
             }
             else
             {
-                CreatureRenderer.MainRenderer.sprite = Game.SpriteStore.GetSprite(Sprite);
+                CreatureRenderer.MainRenderer.sprite = Game.Instance.SpriteStore.GetSprite(Sprite);
             }
         }
     }
@@ -618,7 +616,7 @@ public class Creature : IEntity
         {
             if (Task is Build build)
             {
-                Game.StructureController.DestroyStructure(build.TargetStructure);
+                Game.Instance.StructureController.DestroyStructure(build.TargetStructure);
             }
 
             DropItem(Cell);
@@ -732,7 +730,6 @@ public class Creature : IEntity
 
         LogHistory = new List<string>();
 
-        ManaPool.EntityId = Id;
         TargetCoordinate = (Cell.X, Cell.Y);
     }
 
@@ -741,18 +738,18 @@ public class Creature : IEntity
         if (!Game.Instance.Ready)
             return false;
 
-        if (Game.TimeManager.Paused)
+        if (Game.Instance.TimeManager.Paused)
             return false;
 
         InternalTick += timeDelta;
-        if (InternalTick >= Game.TimeManager.CreatureTick)
+        if (InternalTick >= Game.Instance.TimeManager.CreatureTick)
         {
             _selfTicks++;
             if (_selfTicks > SelfTickCount)
             {
                 _selfTicks = 0;
                 Perceive();
-                ProcessSelf(Game.TimeManager.CreatureTick * SelfTickCount);
+                ProcessSelf(Game.Instance.TimeManager.CreatureTick * SelfTickCount);
             }
 
             UpdateSprite();
@@ -946,8 +943,8 @@ public class Creature : IEntity
 
         if (Path == null || Path.Count == 0)
         {
-            Path = Pathfinder.FindPath(Game.Map.GetCellAtCoordinate(X, Y),
-                                       Game.Map.GetCellAtCoordinate(TargetCoordinate.x, TargetCoordinate.y),
+            Path = Pathfinder.FindPath(Game.Instance.Map.GetCellAtCoordinate(X, Y),
+                                       Game.Instance.Map.GetCellAtCoordinate(TargetCoordinate.x, TargetCoordinate.y),
                                        Mobility);
             Path?.Reverse();
         }
@@ -1132,7 +1129,7 @@ public class Creature : IEntity
                 {
                     // unstuck
                     Debug.LogError("Unstuck!");
-                    var c = Game.Map.GetNearestPathableCell(Cell, Mobility, 10);
+                    var c = Game.Instance.Map.GetNearestPathableCell(Cell, Mobility, 10);
 
                     X = c.X;
                     Y = c.Y;

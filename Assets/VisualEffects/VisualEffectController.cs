@@ -14,7 +14,6 @@ public enum EffectType
 public class VisualEffectController : MonoBehaviour
 {
     public Badge BadgePrefab;
-    public ChannelLine ChannelLinePrefab;
     public VisualEffect EffectPrefab;
 
     private List<Badge> _activeBadges = new List<Badge>();
@@ -43,14 +42,7 @@ public class VisualEffectController : MonoBehaviour
         return effect;
     }
 
-    public ChannelLine MakeChannellingLine(IEntity source, IEntity target, int intensity, float duration, ManaColor manaColor)
-    {
-        var line = Instantiate(ChannelLinePrefab, transform);
-        line.name = $"Channel: {manaColor}";
-        line.SetProperties(source, target, intensity, duration, manaColor);
 
-        return line;
-    }
 
     public Badge Spawn()
     {
@@ -104,7 +96,7 @@ public class VisualEffectController : MonoBehaviour
 
     public VisualEffect SpawnSpriteEffect(IEntity holder, Vector2 vector, string sprite, float lifeSpan)
     {
-        return SpawnSpriteEffect(holder, vector, sprite, lifeSpan, Color.white);
+        return SpawnSpriteEffect(holder, vector, sprite, lifeSpan, ColorConstants.WhiteBase);
     }
 
     public void Update()

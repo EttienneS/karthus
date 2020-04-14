@@ -26,7 +26,7 @@ public class Move : CreatureTask
     {
         get
         {
-            return Game.Map.GetCellAtCoordinate(TargetX, TargetY);
+            return Game.Instance.Map.GetCellAtCoordinate(TargetX, TargetY);
         }
     }
 
@@ -43,7 +43,7 @@ public class Move : CreatureTask
         if (creature.X == TargetX && creature.Y == TargetY)
         {
             // dynamic map expansion
-            // Game.Map.ExpandChunksAround(creature.Cell);
+            // Game.Instance.Map.ExpandChunksAround(creature.Cell);
             return true;
         }
         return false;

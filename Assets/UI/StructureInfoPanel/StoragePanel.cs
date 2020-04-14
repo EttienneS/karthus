@@ -51,7 +51,7 @@ public class StoragePanel : MonoBehaviour
     public void FilterChanged()
     {
         Game.Instance.Typing = true;
-        Game.ZoneController.Refresh(Zone);
+        Game.Instance.ZoneController.Refresh(Zone);
     }
 
     public void DoneEditing()

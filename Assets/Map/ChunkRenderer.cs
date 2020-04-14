@@ -22,20 +22,20 @@ public class ChunkRenderer : MonoBehaviour
             Chunk = Data
         };
 
-        Game.Map.CellLookup.Add((x, y), cell);
+        Game.Instance.Map.CellLookup.Add((x, y), cell);
 
         return cell;
     }
 
     public Vector3Int GetChunkCoordinate(Cell cell)
     {
-        return new Vector3Int(cell.X % Game.Map.ChunkSize, cell.Y % Game.Map.ChunkSize, 0);
+        return new Vector3Int(cell.X % Game.Instance.Map.ChunkSize, cell.Y % Game.Instance.Map.ChunkSize, 0);
     }
 
     public void LinkToChunk(ChunkRenderer chunk)
     {
         // link edges to the given chunk edges
-        var size = Game.Map.ChunkSize;
+        var size = Game.Instance.Map.ChunkSize;
 
         var firstX = (Data.X * size);
         var firstY = (Data.Y * size);
@@ -45,7 +45,7 @@ public class ChunkRenderer : MonoBehaviour
             // link to chunk on the left (west)
             foreach (var cell in Cells.Where(c => c.X == firstX))
             {
-                cell.SetNeighbor(Direction.W, Game.Map.CellLookup[(cell.X - 1, cell.Y)]);
+                cell.SetNeighbor(Direction.W, Game.Instance.Map.CellLookup[(cell.X - 1, cell.Y)]);
             }
         }
         else if (chunk.Data.X > Data.X)
@@ -53,7 +53,7 @@ public class ChunkRenderer : MonoBehaviour
             // link to chunk on the right (east)
             foreach (var cell in Cells.Where(c => c.X == firstX + size))
             {
-                cell.SetNeighbor(Direction.E, Game.Map.CellLookup[(cell.X + 1, cell.Y)]);
+                cell.SetNeighbor(Direction.E, Game.Instance.Map.CellLookup[(cell.X + 1, cell.Y)]);
             }
         }
         else if (chunk.Data.Y < Data.Y)
@@ -61,7 +61,7 @@ public class ChunkRenderer : MonoBehaviour
             // link to chunk below (south)
             foreach (var cell in Cells.Where(c => c.Y == firstY))
             {
-                cell.SetNeighbor(Direction.S, Game.Map.CellLookup[(cell.X, cell.Y - 1)]);
+                cell.SetNeighbor(Direction.S, Game.Instance.Map.CellLookup[(cell.X, cell.Y - 1)]);
             }
         }
         else if (chunk.Data.Y > Data.Y)
@@ -69,14 +69,14 @@ public class ChunkRenderer : MonoBehaviour
             // link to chunk above (north)
             foreach (var cell in Cells.Where(c => c.Y == firstY))
             {
-                cell.SetNeighbor(Direction.N, Game.Map.CellLookup[(cell.X, cell.Y + 1)]);
+                cell.SetNeighbor(Direction.N, Game.Instance.Map.CellLookup[(cell.X, cell.Y + 1)]);
             }
         }
     }
 
     public void Start()
     {
-        transform.position = new Vector3(Data.X * Game.Map.ChunkSize, Data.Y * Game.Map.ChunkSize);
+        transform.position = new Vector3(Data.X * Game.Instance.Map.ChunkSize, Data.Y * Game.Instance.Map.ChunkSize);
         DrawGround();
         Populate();
     }
@@ -93,7 +93,7 @@ public class ChunkRenderer : MonoBehaviour
 
     internal void MakeCells()
     {
-        var size = Game.Map.ChunkSize;
+        var size = Game.Instance.Map.ChunkSize;
 
         var firstX = (Data.X * size);
         var firstY = (Data.Y * size);
@@ -113,25 +113,25 @@ public class ChunkRenderer : MonoBehaviour
         {
             for (var x = firstX; x < firstX + size; x++)
             {
-                var cell = Game.Map.CellLookup[(x, y)];
+                var cell = Game.Instance.Map.CellLookup[(x, y)];
                 if (x > firstX)
                 {
-                    cell.SetNeighbor(Direction.W, Game.Map.CellLookup[(x - 1, y)]);
+                    cell.SetNeighbor(Direction.W, Game.Instance.Map.CellLookup[(x - 1, y)]);
 
                     if (y > firstY)
                     {
-                        cell.SetNeighbor(Direction.SW, Game.Map.CellLookup[(x - 1, y - 1)]);
+                        cell.SetNeighbor(Direction.SW, Game.Instance.Map.CellLookup[(x - 1, y - 1)]);
 
                         if (x < firstX - 1)
                         {
-                            cell.SetNeighbor(Direction.SE, Game.Map.CellLookup[(x + 1, y - 1)]);
+                            cell.SetNeighbor(Direction.SE, Game.Instance.Map.CellLookup[(x + 1, y - 1)]);
                         }
                     }
                 }
 
                 if (y > firstY)
                 {
-                    cell.SetNeighbor(Direction.S, Game.Map.CellLookup[(x, y - 1)]);
+                    cell.SetNeighbor(Direction.S, Game.Instance.Map.CellLookup[(x, y - 1)]);
                 }
             }
         }
@@ -145,7 +145,7 @@ public class ChunkRenderer : MonoBehaviour
 
     internal void SetTile(int x, int y, Tile tile)
     {
-        var pos = new Vector3Int(x % Game.Map.ChunkSize, y % Game.Map.ChunkSize, 0);
+        var pos = new Vector3Int(x % Game.Instance.Map.ChunkSize, y % Game.Instance.Map.ChunkSize, 0);
 
         GroundMap.SetTile(pos, null);
         GroundMap.SetTile(pos, tile);

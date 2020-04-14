@@ -13,7 +13,7 @@
             {
                 return;
             }
-            Game.ItemController.SpawnItem(Option.Name, Structure.Cell, 1);
+            Game.Instance.ItemController.SpawnItem(Option.Name, Structure.Cell, 1);
         }
     }
 }

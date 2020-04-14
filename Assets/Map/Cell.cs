@@ -27,7 +27,7 @@ public class Cell : IEquatable<Cell>
         {
             if (_biomeRegion == null)
             {
-                _biomeRegion = Game.MapGenerator.GetBiome(X,Y).GetRegion(Height);
+                _biomeRegion = Game.Instance.MapGenerator.GetBiome(X,Y).GetRegion(Height);
             }
             return _biomeRegion;
         }
@@ -47,7 +47,7 @@ public class Cell : IEquatable<Cell>
     {
         get
         {
-            return Game.IdService.CreatureLookup.Values.Where(c => c.Cell == this).ToList();
+            return Game.Instance.IdService.CreatureLookup.Values.Where(c => c.Cell == this).ToList();
         }
     }
 
@@ -59,7 +59,7 @@ public class Cell : IEquatable<Cell>
     {
         get
         {
-            return Game.IdService.StructureCellLookup.ContainsKey(this) ? Game.IdService.StructureCellLookup[this].Find(s => s.IsFloor()) : null;
+            return Game.Instance.IdService.StructureCellLookup.ContainsKey(this) ? Game.Instance.IdService.StructureCellLookup[this].Find(s => s.IsFloor()) : null;
         }
     }
 
@@ -75,7 +75,7 @@ public class Cell : IEquatable<Cell>
 
             if (Floor != null)
             {
-                tile.sprite = Game.SpriteStore.GetSprite(Floor.SpriteName);
+                tile.sprite = Game.Instance.SpriteStore.GetSprite(Floor.SpriteName);
 
                 if (Floor.IsBluePrint)
                 {
@@ -88,7 +88,7 @@ public class Cell : IEquatable<Cell>
             }
             else
             {
-                tile.sprite = Game.SpriteStore.GetSpriteForTerrainType(BiomeRegion.SpriteName);
+                tile.sprite = Game.Instance.SpriteStore.GetSpriteForTerrainType(BiomeRegion.SpriteName);
                 tile.color = Color;
             }
 
@@ -101,7 +101,7 @@ public class Cell : IEquatable<Cell>
     {
         get
         {
-            return Game.Map.GetCellHeight(X, Y);
+            return Game.Instance.Map.GetCellHeight(X, Y);
         }
     }
 
@@ -110,7 +110,7 @@ public class Cell : IEquatable<Cell>
     {
         get
         {
-            return Game.IdService.ItemLookup.Values.Where(i => i.Cell == this);
+            return Game.Instance.IdService.ItemLookup.Values.Where(i => i.Cell == this);
         }
     }
 
@@ -143,7 +143,7 @@ public class Cell : IEquatable<Cell>
     {
         get
         {
-            return Game.IdService.StructureCellLookup.ContainsKey(this) ? Game.IdService.StructureCellLookup[this].Find(s => !s.IsFloor()) : null;
+            return Game.Instance.IdService.StructureCellLookup.ContainsKey(this) ? Game.Instance.IdService.StructureCellLookup[this].Find(s => !s.IsFloor()) : null;
         }
     }
 
@@ -169,7 +169,7 @@ public class Cell : IEquatable<Cell>
     {
         // add half a unit to each position to account for offset (cells are at point 0,0 in the very center)
         position += new Vector2(0.5f, 0.5f);
-        return Game.Map.GetCellAtCoordinate(Mathf.FloorToInt(position.x), Mathf.FloorToInt(position.y));
+        return Game.Instance.Map.GetCellAtCoordinate(Mathf.FloorToInt(position.x), Mathf.FloorToInt(position.y));
     }
 
     public static bool operator !=(Cell obj1, Cell obj2)
@@ -273,7 +273,7 @@ public class Cell : IEquatable<Cell>
 
     public void RefreshTile()
     {
-        Game.Map.SetTile(this, GroundTile);
+        Game.Instance.Map.SetTile(this, GroundTile);
     }
 
     public void SetNeighbor(Direction direction, Cell cell)
@@ -296,18 +296,18 @@ public class Cell : IEquatable<Cell>
     {
         if (Structure != null)
         {
-            Game.StructureController.DestroyStructure(Structure);
+            Game.Instance.StructureController.DestroyStructure(Structure);
         }
 
         if (Floor != null)
         {
-            Game.StructureController.DestroyStructure(Floor);
+            Game.Instance.StructureController.DestroyStructure(Floor);
         }
     }
 
     internal Structure CreateStructure(string structureName, string faction = FactionConstants.World)
     {
-        var structure = Game.StructureController.SpawnStructure(structureName, this, Game.FactionController.Factions[faction]);
+        var structure = Game.Instance.StructureController.SpawnStructure(structureName, this, Game.Instance.FactionController.Factions[faction]);
         return structure;
     }
 
@@ -341,7 +341,7 @@ public class Cell : IEquatable<Cell>
 
         if (Structure?.Name == "Reserved")
         {
-            Game.StructureController.DestroyStructure(Structure);
+            Game.Instance.StructureController.DestroyStructure(Structure);
         }
 
         if (!Empty())
@@ -353,17 +353,17 @@ public class Cell : IEquatable<Cell>
 
         if (!string.IsNullOrEmpty(content))
         {
-            if (Game.StructureController.StructureTypeFileMap.ContainsKey(content))
+            if (Game.Instance.StructureController.StructureTypeFileMap.ContainsKey(content))
             {
-                var structure = Game.StructureController
+                var structure = Game.Instance.StructureController
                                     .SpawnStructure(content,
                                                     this,
-                                                    Game.FactionController.Factions[FactionConstants.World],
+                                                    Game.Instance.FactionController.Factions[FactionConstants.World],
                                                     false);
             }
             else
             {
-                Game.ItemController.SpawnItem(content, this);
+                Game.Instance.ItemController.SpawnItem(content, this);
             }
         }
     }

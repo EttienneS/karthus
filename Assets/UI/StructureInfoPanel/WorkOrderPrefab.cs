@@ -18,7 +18,7 @@ namespace UI
 
         public void Click()
         {
-            Game.StructureInfoPanel.SetSelected(this);
+            Game.Instance.StructureInfoPanel.SetSelected(this);
         }
 
         internal void Load(WorkStructureBase structure, WorkDefinition definition, WorkOption option)
@@ -27,7 +27,7 @@ namespace UI
             Definition = definition;
             Option = option;
 
-            Image.sprite = Game.SpriteStore.GetSprite(Option.Sprite);
+            Image.sprite = Game.Instance.SpriteStore.GetSprite(Option.Sprite);
             Title.text = $"{definition.Name}: {option.Name}";
             Description.text = option.Description;
         }

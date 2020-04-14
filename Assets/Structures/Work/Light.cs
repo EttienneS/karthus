@@ -13,11 +13,11 @@ namespace Structures.Work
 
         public override void Update(float delta)
         {
-            if (Game.TimeManager.Data.Hour < 6 || Game.TimeManager.Data.Hour > 18)
+            if (Game.Instance.TimeManager.Data.Hour < 6 || Game.Instance.TimeManager.Data.Hour > 18)
             {
                 if (LightEffect == null)
                 {
-                    LightEffect = Game.VisualEffectController.SpawnLightEffect(this, Cell.Vector, ColorHex.GetColorFromHex(), Radius, Intensity, float.MaxValue);
+                    LightEffect = Game.Instance.VisualEffectController.SpawnLightEffect(this, Cell.Vector, ColorHex.GetColorFromHex(), Radius, Intensity, float.MaxValue);
                 }
             }
             else

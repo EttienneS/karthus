@@ -78,7 +78,6 @@ public static class ContestHelper
         var diff = attacker - defender;
         if (diff > 10)
         {
-            Console.ForegroundColor = ConsoleColor.Green;
             return OutcomeLevel.Critical;
         }
         else if (diff >= 0)
@@ -87,7 +86,6 @@ public static class ContestHelper
         }
         else if (diff < -10)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
             return OutcomeLevel.Catastrophe;
         }
 

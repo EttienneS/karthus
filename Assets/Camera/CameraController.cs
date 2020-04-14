@@ -72,9 +72,9 @@ public class CameraController : MonoBehaviour
             float mouseWheel = Input.GetAxis("Mouse ScrollWheel");
             if (horizontal != 0 || vertical != 0 || mouseWheel != 0)
             {
-                var step = Mathf.Clamp((int)Game.TimeManager.TimeStep, 1, 8);
-                var x = Mathf.Clamp(transform.position.x + (horizontal * Speed * step), Game.Map.MinX, Game.Map.MaxX);
-                var y = Mathf.Clamp(transform.position.y + (vertical * Speed * step), Game.Map.MinY, Game.Map.MaxY);
+                var step = Mathf.Clamp((int)Game.Instance.TimeManager.TimeStep, 1, 8);
+                var x = Mathf.Clamp(transform.position.x + (horizontal * Speed * step), Game.Instance.Map.MinX, Game.Instance.Map.MaxX);
+                var y = Mathf.Clamp(transform.position.y + (vertical * Speed * step), Game.Instance.Map.MinY, Game.Instance.Map.MaxY);
                 transform.position = new Vector3(x, y, transform.position.z);
 
                 Camera.orthographicSize = Mathf.Clamp(Camera.orthographicSize - (mouseWheel * ZoomStep),
@@ -85,7 +85,7 @@ public class CameraController : MonoBehaviour
 
                 // expand the map as the camera reaches the edges
                 //var point = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2));
-                //Game.Map.ExpandChunks(Game.Instance.GetSelectedCells(point, point).First());
+                //Game.Instance.Map.ExpandChunks(Game.Instance.GetSelectedCells(point, point).First());
             }
         }
     }

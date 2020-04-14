@@ -11,7 +11,7 @@ public class ConstructController
             if (_constructs == null)
             {
                 _constructs = new List<Construct>();
-                foreach (var constructFile in Game.FileController.ConstructFiles)
+                foreach (var constructFile in Game.Instance.FileController.ConstructFiles)
                 {
                     _constructs.Add(constructFile.text.LoadJson<Construct>());
                 }

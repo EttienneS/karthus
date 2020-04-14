@@ -35,7 +35,7 @@ public class Wash : CreatureTask
         {
             var need = creature.GetNeed<Hygiene>();
             creature.SetAnimation(Animation.Thrust, 1);
-            creature.Face(Game.Map.GetCellAtCoordinate(WashCoords));
+            creature.Face(Game.Instance.Map.GetCellAtCoordinate(WashCoords));
             need.CurrentChangeRate = RecoveryRate;
 
             if (need.Current > 99f)

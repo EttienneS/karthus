@@ -51,9 +51,9 @@ public class DoWork : CreatureTask
             {
                 Structure.Reserve(creature);
 
-                creature.SetAnimation(LPC.Spritesheet.Generator.Interfaces.Animation.Thrust, Game.TimeManager.CreatureTick);
+                creature.SetAnimation(LPC.Spritesheet.Generator.Interfaces.Animation.Thrust, Game.Instance.TimeManager.CreatureTick);
                 creature.Face(Structure.Cell);
-                Order.Progress += Game.TimeManager.CreatureTick;
+                Order.Progress += Game.Instance.TimeManager.CreatureTick;
 
                 if (Order.Progress >= Order.Option.TimeToComplete)
                 {

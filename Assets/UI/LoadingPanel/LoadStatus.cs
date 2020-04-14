@@ -27,11 +27,11 @@ public class LoadStatus : MonoBehaviour
 
     public void Start()
     {
-        Colors.Add(ManaColor.Blue.GetActualColor());
-        Colors.Add(ManaColor.Red.GetActualColor());
-        Colors.Add(ManaColor.Green.GetActualColor());
-        Colors.Add(ManaColor.White.GetActualColor());
-        Colors.Add(ManaColor.Black.GetActualColor());
+        Colors.Add(ColorConstants.BlueAccent);
+        Colors.Add(ColorConstants.RedAccent);
+        Colors.Add(ColorConstants.GreenAccent);
+        Colors.Add(ColorConstants.PurpleAccent);
+        Colors.Add(ColorConstants.YellowAccent);
 
         CurrentColor = Colors.GetRandomItem();
         TargetColor = Colors.GetRandomItem();

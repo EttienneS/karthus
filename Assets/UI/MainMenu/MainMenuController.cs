@@ -19,7 +19,7 @@ public class MainMenuController : MonoBehaviour
 
         if (MainMenuActive)
         {
-            Game.TimeManager.Pause();
+            Game.Instance.TimeManager.Pause();
         }
     }
 
@@ -30,7 +30,7 @@ public class MainMenuController : MonoBehaviour
 
     public void Load()
     {
-        Game.LoadPanel.Show();
+        Game.Instance.LoadPanel.Show();
     }
 
     public void Save()

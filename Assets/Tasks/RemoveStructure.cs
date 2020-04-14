@@ -19,8 +19,8 @@ public class RemoveStructure : CreatureTask
     {
         StructureToRemove = structure;
 
-        AddSubTask(new Move(Game.Map.GetPathableNeighbour(StructureToRemove.Cell)));
-        AddSubTask(new Wait(structure.Cost.Items.Sum(c => c.Value) + structure.Cost.Mana.Sum(c => c.Value), "De-constructing..."));
+        AddSubTask(new Move(Game.Instance.Map.GetPathableNeighbour(StructureToRemove.Cell)));
+        AddSubTask(new Wait(structure.Cost.Items.Sum(c => c.Value) , "Deconstructing..."));
 
         Message = $"Removing {StructureToRemove.Name} at {StructureToRemove.Cell}";
     }
@@ -31,7 +31,7 @@ public class RemoveStructure : CreatureTask
         {
             foreach (var item in StructureToRemove.Cost.Items)
             {
-                var spawnedItem = Game.ItemController.SpawnItem(item.Key, StructureToRemove.Cell);
+                var spawnedItem = Game.Instance.ItemController.SpawnItem(item.Key, StructureToRemove.Cell);
                 spawnedItem.Amount = item.Value;
                 spawnedItem.FactionName = creature.FactionName;
 
@@ -39,7 +39,7 @@ public class RemoveStructure : CreatureTask
                 creature.ClaimEntityForFaction(spawnedItem);
             }
 
-            Game.StructureController.DestroyStructure(StructureToRemove);
+            Game.Instance.StructureController.DestroyStructure(StructureToRemove);
 
             return true;
         }

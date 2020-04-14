@@ -18,7 +18,7 @@ public class Item : IEntity
     {
         get
         {
-            return Game.Map.GetCellAtCoordinate(Coords);
+            return Game.Instance.Map.GetCellAtCoordinate(Coords);
         }
         set
         {
@@ -129,13 +129,13 @@ public class Item : IEntity
     }
     internal void ShowOutline()
     {
-        _outline = Game.VisualEffectController
+        _outline = Game.Instance.VisualEffectController
                        .SpawnSpriteEffect(this, Vector, "CellOutline", float.MaxValue);
         _outline.Regular();
     }
     internal Item Split(int amount)
     {
         Amount -= amount;
-        return Game.ItemController.SpawnItem(Name, Cell, amount);
+        return Game.Instance.ItemController.SpawnItem(Name, Cell, amount);
     }
 }

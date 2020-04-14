@@ -12,7 +12,7 @@ public class HealthPanel : MonoBehaviour
 
     private void Update()
     {
-        var creature = Game.CreatureInfoPanel.CurrentCreatures.OfType<Creature>().FirstOrDefault();
+        var creature = Game.Instance.CreatureInfoPanel.CurrentCreatures.OfType<Creature>().FirstOrDefault();
 
         if (creature == null)
         {

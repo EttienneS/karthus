@@ -8,25 +8,25 @@ public partial class OrderSelectionController //.Zone
 
     public void AddZoneClicked(Purpose purpose)
     {
-        var sprite = Game.ZoneController.ZoneSprite;
+        var sprite = Game.Instance.ZoneController.ZoneSprite;
 
         switch (purpose)
         {
             case Purpose.Room:
-                Game.OrderInfoPanel.Title = "Define Room";
+                Game.Instance.OrderInfoPanel.Title = "Define Room";
                 sprite = "Room";
-                Game.OrderInfoPanel.Description = "Select a location to place the Room, must be enclosed by walls.";
+                Game.Instance.OrderInfoPanel.Description = "Select a location to place the Room, must be enclosed by walls.";
                 break;
 
             case Purpose.Area:
-                Game.OrderInfoPanel.Title = "Define Area";
-                Game.OrderInfoPanel.Description = "Select a location to place the Area.  Can be used to limit access to locations or designate areas for certain uses.";
+                Game.Instance.OrderInfoPanel.Title = "Define Area";
+                Game.Instance.OrderInfoPanel.Description = "Select a location to place the Area.  Can be used to limit access to locations or designate areas for certain uses.";
                 break;
 
             case Purpose.Storage:
-                Game.OrderInfoPanel.Title = "Define Storage";
+                Game.Instance.OrderInfoPanel.Title = "Define Storage";
                 sprite = "Storage";
-                Game.OrderInfoPanel.Description = "Select a location to place the store.  Can be used to designate an area for storage of certain items.";
+                Game.Instance.OrderInfoPanel.Description = "Select a location to place the store.  Can be used to designate an area for storage of certain items.";
                 break;
         }
 
@@ -34,11 +34,11 @@ public partial class OrderSelectionController //.Zone
 
         Game.Instance.SelectionPreference = SelectionPreference.Cell;
 
-        Game.OrderInfoPanel.Show();
+        Game.Instance.OrderInfoPanel.Show();
 
         CellClickOrder = cells =>
         {
-            var newZone = Game.ZoneController.Create(purpose, FactionConstants.Player, cells.Where(c => CanAddCellToZone(c)).ToArray());
+            var newZone = Game.Instance.ZoneController.Create(purpose, FactionConstants.Player, cells.Where(c => CanAddCellToZone(c)).ToArray());
             Game.Instance.SelectZone(newZone);
         };
     }
@@ -50,7 +50,7 @@ public partial class OrderSelectionController //.Zone
 
     public void ZoneTypeClicked()
     {
-        if (Game.OrderTrayController.gameObject.activeInHierarchy)
+        if (Game.Instance.OrderTrayController.gameObject.activeInHierarchy)
         {
             DisableAndReset();
         }

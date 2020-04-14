@@ -28,7 +28,7 @@ public class ItemController : MonoBehaviour
             {
                 _itemTypeFileMap = new Dictionary<string, string>();
                 _itemDataReference = new Dictionary<string, Item>();
-                foreach (var itemFile in Game.FileController.ItemFiles)
+                foreach (var itemFile in Game.Instance.FileController.ItemFiles)
                 {
                     try
                     {
@@ -66,14 +66,14 @@ public class ItemController : MonoBehaviour
         if (item != null)
         {
             Debug.Log($"Destroying: {item.Name}");
-            Game.IdService.RemoveEntity(item);
+            Game.Instance.IdService.RemoveEntity(item);
             Game.Instance.AddItemToDestroy(item.Renderer.gameObject);
         }
     }
 
     private void IndexItem(Item item)
     {
-        Game.IdService.EnrollEntity(item);
+        Game.Instance.IdService.EnrollEntity(item);
     }
 
     internal void SpawnItem(Item data)
@@ -83,11 +83,11 @@ public class ItemController : MonoBehaviour
         renderer.Data = data;
         data.Renderer = renderer;
 
-        renderer.SpriteRenderer.sprite = Game.SpriteStore.GetSprite(data.SpriteName);
+        renderer.SpriteRenderer.sprite = Game.Instance.SpriteStore.GetSprite(data.SpriteName);
         renderer.UpdatePosition();
 
         IndexItem(data);
 
-        data.Cell = Game.Map.GetCellAtCoordinate(new Vector2(data.Coords.X, data.Coords.Y));
+        data.Cell = Game.Instance.Map.GetCellAtCoordinate(new Vector2(data.Coords.X, data.Coords.Y));
     }
 }

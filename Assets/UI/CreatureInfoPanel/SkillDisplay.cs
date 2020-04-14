@@ -8,8 +8,6 @@ public class SkillDisplay : MonoBehaviour
     public Text Title;
     public Text Level;
 
-    public Text Description;
-
     public Toggle Toggle;
 
     public Slider Slider;
@@ -34,6 +32,5 @@ public class SkillDisplay : MonoBehaviour
         Slider.value = skill.Priority;
 
         Title.text = Skill.Name;
-        Description.text = Skill.Description;
     }
 }

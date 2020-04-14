@@ -14,7 +14,7 @@ public class CreatureIcon : MonoBehaviour
     {
         if (Creature != null)
         {
-            Game.CameraController.MoveToCell(Creature.Cell);
+            Game.Instance.CameraController.MoveToCell(Creature.Cell);
             Game.Instance.SelectedCreatures = new List<CreatureRenderer> { Creature.CreatureRenderer };
             Game.Instance.SelectCreature();
         }
@@ -22,8 +22,8 @@ public class CreatureIcon : MonoBehaviour
 
     public void Start()
     {
-        Image.sprite = Game.SpriteStore.GetSprite("Blank");
-        Clothes.sprite = Game.SpriteStore.GetSprite("Blank");
+        Image.sprite = Game.Instance.SpriteStore.GetSprite("Blank");
+        Clothes.sprite = Game.Instance.SpriteStore.GetSprite("Blank");
         Text.text = "__";
     }
 

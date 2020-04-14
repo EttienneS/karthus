@@ -443,31 +443,31 @@ public class Map : MonoBehaviour
         chunk.Data = data;
         chunk.MakeCells();
 
-        if (Game.Map.Chunks.ContainsKey((data.X - 1, data.Y)))
+        if (Game.Instance.Map.Chunks.ContainsKey((data.X - 1, data.Y)))
         {
-            chunk.LinkToChunk(Game.Map.Chunks[(data.X - 1, data.Y)]);
+            chunk.LinkToChunk(Game.Instance.Map.Chunks[(data.X - 1, data.Y)]);
         }
-        if (Game.Map.Chunks.ContainsKey((data.X + 1, data.Y)))
+        if (Game.Instance.Map.Chunks.ContainsKey((data.X + 1, data.Y)))
         {
-            chunk.LinkToChunk(Game.Map.Chunks[(data.X + 1, data.Y)]);
+            chunk.LinkToChunk(Game.Instance.Map.Chunks[(data.X + 1, data.Y)]);
         }
-        if (Game.Map.Chunks.ContainsKey((data.X, data.Y - 1)))
+        if (Game.Instance.Map.Chunks.ContainsKey((data.X, data.Y - 1)))
         {
-            chunk.LinkToChunk(Game.Map.Chunks[(data.X, data.Y - 1)]);
+            chunk.LinkToChunk(Game.Instance.Map.Chunks[(data.X, data.Y - 1)]);
         }
-        if (Game.Map.Chunks.ContainsKey((data.X, data.Y + 1)))
+        if (Game.Instance.Map.Chunks.ContainsKey((data.X, data.Y + 1)))
         {
-            chunk.LinkToChunk(Game.Map.Chunks[(data.X, data.Y + 1)]);
+            chunk.LinkToChunk(Game.Instance.Map.Chunks[(data.X, data.Y + 1)]);
         }
 
-        Game.Map.Chunks.Add((data.X, data.Y), chunk);
+        Game.Instance.Map.Chunks.Add((data.X, data.Y), chunk);
 
-        if (Game.Map.Chunks.Count > 1)
+        if (Game.Instance.Map.Chunks.Count > 1)
         {
-            MinX = Game.Map.Chunks.Min(c => c.Key.x) * Game.Map.ChunkSize;
-            MinY = Game.Map.Chunks.Min(c => c.Key.y) * Game.Map.ChunkSize;
-            MaxX = (Game.Map.Chunks.Max(c => c.Key.x) * Game.Map.ChunkSize) + Game.Map.ChunkSize;
-            MaxY = (Game.Map.Chunks.Max(c => c.Key.y) * Game.Map.ChunkSize) + Game.Map.ChunkSize;
+            MinX = Game.Instance.Map.Chunks.Min(c => c.Key.x) * Game.Instance.Map.ChunkSize;
+            MinY = Game.Instance.Map.Chunks.Min(c => c.Key.y) * Game.Instance.Map.ChunkSize;
+            MaxX = (Game.Instance.Map.Chunks.Max(c => c.Key.x) * Game.Instance.Map.ChunkSize) + Game.Instance.Map.ChunkSize;
+            MaxY = (Game.Instance.Map.Chunks.Max(c => c.Key.y) * Game.Instance.Map.ChunkSize) + Game.Instance.Map.ChunkSize;
         }
 
         return chunk;
@@ -481,7 +481,7 @@ public class Map : MonoBehaviour
     {
         if (cell.Structure != null)
         {
-            Game.StructureController.DestroyStructure(cell.Structure);
+            Game.Instance.StructureController.DestroyStructure(cell.Structure);
         }
     }
 

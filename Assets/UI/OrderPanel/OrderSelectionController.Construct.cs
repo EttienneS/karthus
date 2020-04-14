@@ -14,11 +14,11 @@ public partial class OrderSelectionController //.Construct
         Game.Instance.SetConstructSprite(constuct.Texture, constuct.Width, constuct.Height,
                                        cell => constuct.ValidateStartPos(cell));
 
-        Game.OrderInfoPanel.Title = $"Place {constuct.Name}";
-        Game.OrderInfoPanel.Description = "Select a location to place the construct, rotate with E or Q.  A construct is a predefined collection of structures and is built by a creature with the build skill.";
-        Game.OrderInfoPanel.Detail = constuct.Description;
-        Game.OrderInfoPanel.Cost = $"{constuct.TotalCost}";
-        Game.OrderInfoPanel.Show();
+        Game.Instance.OrderInfoPanel.Title = $"Place {constuct.Name}";
+        Game.Instance.OrderInfoPanel.Description = "Select a location to place the construct, rotate with E or Q.  A construct is a predefined collection of structures and is built by a creature with the build skill.";
+        Game.Instance.OrderInfoPanel.Detail = constuct.Description;
+        Game.Instance.OrderInfoPanel.Cost = $"{constuct.TotalCost}";
+        Game.Instance.OrderInfoPanel.Show();
 
         Game.Instance.RotateMouseRight += () =>
         {
@@ -38,7 +38,7 @@ public partial class OrderSelectionController //.Construct
         {
             if (constuct.ValidateStartPos(cells[0]))
             {
-                constuct.Place(cells[0], Game.FactionController.PlayerFaction);
+                constuct.Place(cells[0], Game.Instance.FactionController.PlayerFaction);
             }
         };
     }
@@ -46,7 +46,7 @@ public partial class OrderSelectionController //.Construct
     private void ConstructTypeClicked()
     {
         Game.Instance.SelectionPreference = SelectionPreference.Cell;
-        if (Game.OrderTrayController.gameObject.activeInHierarchy)
+        if (Game.Instance.OrderTrayController.gameObject.activeInHierarchy)
         {
             DisableAndReset();
             ConstructButton.Text = DefaultConstructText;
@@ -55,7 +55,7 @@ public partial class OrderSelectionController //.Construct
         {
             EnableAndClear();
 
-            foreach (var construct in Game.ConstructController.Constructs)
+            foreach (var construct in Game.Instance.ConstructController.Constructs)
             {
                 var title = $"{construct.Name} ({construct.Height}x{construct.Width})";
                 var button = CreateOrderButton(title, () => ConstructClicked(construct), construct.Sprite);

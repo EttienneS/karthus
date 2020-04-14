@@ -89,7 +89,7 @@ public class Build : CreatureTask
 
             foreach (var item in GetContainedItems())
             {
-                Game.ItemController.DestroyItem(item);
+                Game.Instance.ItemController.DestroyItem(item);
             }
             if (TargetStructure.Properties.ContainsKey(NamedProperties.ContainedItemIds))
             {

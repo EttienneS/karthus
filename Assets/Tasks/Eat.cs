@@ -73,7 +73,7 @@ public class Eat : CreatureTask
                 {
                     ChairId.GetStructure().Free();
                 }
-                Game.IdService.DestroyEntity(food);
+                Game.Instance.IdService.DestroyEntity(food);
                 Ate = true;
 
                 if (creature.GetNeed<Hunger>().Current < 60)

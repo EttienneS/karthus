@@ -2,7 +2,7 @@
 {
     public static Faction GetFaction(this IEntity entity)
     {
-        return Game.FactionController.Factions[entity.FactionName];
+        return Game.Instance.FactionController.Factions[entity.FactionName];
     }
 
     public static bool IsPlayerControlled(this IEntity entity)

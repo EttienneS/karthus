@@ -38,7 +38,7 @@ public class Faction
     {
         get
         {
-            return Game.ZoneController.StorageZones.Where(z => z.FactionName == FactionName);
+            return Game.Instance.ZoneController.StorageZones.Where(z => z.FactionName == FactionName);
         }
     }
 
@@ -58,11 +58,6 @@ public class Faction
             {
                 if (creature.CanDo(availableTask))
                 {
-                    if (!creature.ManaPool.HasMana(availableTask.TotalCost.Mana))
-                    {
-                        Debug.Log($"Not enough mana available for task: {availableTask}");
-                        continue;
-                    }
                     var priority = creature.GetPriority(availableTask);
                     if (priority > highestPriority)
                     {
@@ -84,7 +79,7 @@ public class Faction
     {
         if (!Game.Instance.Ready)
             return;
-        if (Game.TimeManager.Paused)
+        if (Game.Instance.TimeManager.Paused)
         {
             return;
         }
@@ -126,7 +121,7 @@ public class Faction
                 }
 
                 var emptyTasks = AvailableTasks.OfType<EmptyContainer>().ToList();
-                foreach (var zone in Game.ZoneController.StorageZones.Where(z => z.FactionName == FactionName))
+                foreach (var zone in Game.Instance.ZoneController.StorageZones.Where(z => z.FactionName == FactionName))
                 {
                     foreach (var container in zone.Containers)
                     {
@@ -147,7 +142,7 @@ public class Faction
                 // lost
                 if (creature.Cell == null)
                 {
-                    creature.Cell = Game.Map.Center;
+                    creature.Cell = Game.Instance.Map.Center;
                 }
             }
         }
@@ -196,7 +191,7 @@ public class Faction
         }
         structure.FactionName = FactionName;
 
-        HomeCells.AddRange(Game.Map.GetCircle(structure.Cell, 5));
+        HomeCells.AddRange(Game.Instance.Map.GetCircle(structure.Cell, 5));
         HomeCells = HomeCells.Distinct().ToList();
     }
 
@@ -204,7 +199,7 @@ public class Faction
     {
         foreach (var structure in Structures)
         {
-            HomeCells.AddRange(Game.Map.GetCircle(structure.Cell, 5));
+            HomeCells.AddRange(Game.Instance.Map.GetCircle(structure.Cell, 5));
         }
         HomeCells = HomeCells.Distinct().ToList();
     }
@@ -237,7 +232,7 @@ public class Faction
     public Item FindItem(string criteria, Creature creature)
     {
         var items = HomeCells.SelectMany(c => c?.Items.Where(item => item.IsType(criteria) && !item.InUseByAnyone)).ToList();
-        items.AddRange(Game.IdService.ItemLookup.Values.Where(i => i.FactionName == FactionName && i.IsType(criteria)));
+        items.AddRange(Game.Instance.IdService.ItemLookup.Values.Where(i => i.FactionName == FactionName && i.IsType(criteria)));
 
         Item targetItem = null;
         var bestDistance = float.MaxValue;

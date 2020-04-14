@@ -53,7 +53,7 @@ namespace Structures
             {
                 if (_cell == null && Coords.X >= 0 && Coords.Y >= 0)
                 {
-                    _cell = Game.Map.GetCellAtCoordinate(Coords.X, Coords.Y);
+                    _cell = Game.Instance.Map.GetCellAtCoordinate(Coords.X, Coords.Y);
                 }
                 return _cell;
             }
@@ -79,7 +79,7 @@ namespace Structures
             {
                 if (_faction == null)
                 {
-                    _faction = Game.FactionController.Factions[FactionName];
+                    _faction = Game.Instance.FactionController.Factions[FactionName];
                 }
                 return _faction;
             }
@@ -148,11 +148,11 @@ namespace Structures
             Sprite sprite;
             if (IsWall())
             {
-                sprite = Game.SpriteStore.GetInterlockingSprite(this);
+                sprite = Game.Instance.SpriteStore.GetInterlockingSprite(this);
             }
             else
             {
-                sprite = Game.SpriteStore.GetSprite(SpriteName);
+                sprite = Game.Instance.SpriteStore.GetSprite(SpriteName);
             }
 
             if (IsBluePrint)
@@ -205,7 +205,7 @@ namespace Structures
 
         public void Refresh()
         {
-            Game.StructureController.RefreshStructure(this);
+            Game.Instance.StructureController.RefreshStructure(this);
         }
 
         public void RotateCCW()
@@ -217,7 +217,7 @@ namespace Structures
         public void RotateCW()
         {
             Rotation = Rotation.Rotate90CW();
-            Game.StructureController.RefreshStructure(this);
+            Game.Instance.StructureController.RefreshStructure(this);
             Refresh();
         }
 
@@ -305,7 +305,7 @@ namespace Structures
 
         internal void ShowOutline()
         {
-            _outline = Game.VisualEffectController
+            _outline = Game.Instance.VisualEffectController
                            .SpawnSpriteEffect(this, Vector, "CellOutline", float.MaxValue);
             _outline.Regular();
         }

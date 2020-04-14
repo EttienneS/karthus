@@ -11,7 +11,7 @@ public static class SaveManager
     {
         get
         {
-            return $"Saves\\{Game.Map.Seed}\\";
+            return $"Saves\\{Game.Instance.Map.Seed}\\";
         }
     }
 
@@ -19,7 +19,7 @@ public static class SaveManager
 
     public static void Load(string saveFile)
     {
-        Game.TimeManager.Pause();
+        Game.Instance.TimeManager.Pause();
 
         if (string.IsNullOrEmpty(saveFile))
         {
@@ -39,15 +39,15 @@ public static class SaveManager
     {
         return new Save
         {
-            Seed = Game.Map.Seed,
-            Factions = Game.FactionController.Factions.Values.ToList(),
-            Time = Game.TimeManager.Data,
-            Items = Game.IdService.ItemLookup.Values.ToList(),
-            CameraData = new CameraData(Game.CameraController.Camera),
-            Rooms = Game.ZoneController.RoomZones,
-            Stores = Game.ZoneController.StorageZones,
-            Areas = Game.ZoneController.AreaZones,
-            Chunks = Game.Map.Chunks.Values.Select(s => s.Data).ToList(),
+            Seed = Game.Instance.Map.Seed,
+            Factions = Game.Instance.FactionController.Factions.Values.ToList(),
+            Time = Game.Instance.TimeManager.Data,
+            Items = Game.Instance.IdService.ItemLookup.Values.ToList(),
+            CameraData = new CameraData(Game.Instance.CameraController.Camera),
+            Rooms = Game.Instance.ZoneController.RoomZones,
+            Stores = Game.Instance.ZoneController.StorageZones,
+            Areas = Game.Instance.ZoneController.AreaZones,
+            Chunks = Game.Instance.Map.Chunks.Values.Select(s => s.Data).ToList(),
         };
     }
 
@@ -99,8 +99,8 @@ public static class SaveManager
 
     private static void GetSaveScreenshot(string file)
     {
-        Game.UI.SetActive(false);
+        Game.Instance.UI.SetActive(false);
         ScreenCapture.CaptureScreenshot($"{file}.png");
-        Game.UI.SetActive(true);
+        Game.Instance.UI.SetActive(true);
     }
 }

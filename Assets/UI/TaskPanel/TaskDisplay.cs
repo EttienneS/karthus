@@ -17,16 +17,16 @@ namespace Assets.UI.TaskPanel
         {
             if (_task is Build build)
             {
-                Game.StructureController.DestroyStructure(build.TargetStructure);
+                Game.Instance.StructureController.DestroyStructure(build.TargetStructure);
             }
 
-            if (Game.FactionController.PlayerFaction.AssignedTasks.ContainsKey(_task))
+            if (Game.Instance.FactionController.PlayerFaction.AssignedTasks.ContainsKey(_task))
             {
-                Game.FactionController.PlayerFaction.AssignedTasks[_task].CancelTask();
+                Game.Instance.FactionController.PlayerFaction.AssignedTasks[_task].CancelTask();
             }
             else
             {
-                Game.FactionController.PlayerFaction.AvailableTasks.Remove(_task);
+                Game.Instance.FactionController.PlayerFaction.AvailableTasks.Remove(_task);
             }
             _task.Destroy();
         }
@@ -38,24 +38,24 @@ namespace Assets.UI.TaskPanel
 
         public void MoveUp()
         {
-            if (Game.FactionController.PlayerFaction.AvailableTasks.Contains(_task))
+            if (Game.Instance.FactionController.PlayerFaction.AvailableTasks.Contains(_task))
             {
-                Game.FactionController.PlayerFaction.AvailableTasks.Remove(_task);
-                Game.FactionController.PlayerFaction.AvailableTasks.Insert(0, _task);
+                Game.Instance.FactionController.PlayerFaction.AvailableTasks.Remove(_task);
+                Game.Instance.FactionController.PlayerFaction.AvailableTasks.Insert(0, _task);
 
-                Game.TaskPanel.Reload();
+                Game.Instance.TaskPanel.Reload();
             }
         }
 
         public void Suspend()
         {
-            if (Game.FactionController.PlayerFaction.AvailableTasks.Contains(_task))
+            if (Game.Instance.FactionController.PlayerFaction.AvailableTasks.Contains(_task))
             {
                 _task.Suspend();
-                Game.FactionController.PlayerFaction.AvailableTasks.Remove(_task);
-                Game.FactionController.PlayerFaction.AvailableTasks.Add(_task);
+                Game.Instance.FactionController.PlayerFaction.AvailableTasks.Remove(_task);
+                Game.Instance.FactionController.PlayerFaction.AvailableTasks.Add(_task);
 
-                Game.TaskPanel.Reload();
+                Game.Instance.TaskPanel.Reload();
             }
         }
 
@@ -63,9 +63,9 @@ namespace Assets.UI.TaskPanel
         {
             Title.text = _task.Message;
 
-            if (Game.FactionController.PlayerFaction.AssignedTasks.ContainsKey(_task))
+            if (Game.Instance.FactionController.PlayerFaction.AssignedTasks.ContainsKey(_task))
             {
-                CreatureIcon.Creature = Game.FactionController.PlayerFaction.AssignedTasks[_task];
+                CreatureIcon.Creature = Game.Instance.FactionController.PlayerFaction.AssignedTasks[_task];
                 NowButton.gameObject.SetActive(false);
                 SuspendButton.gameObject.SetActive(false);
             }
