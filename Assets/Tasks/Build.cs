@@ -36,10 +36,18 @@ public class Build : CreatureTask
         }
         AddSubTask(new Move(structure.Cell.GetPathableNeighbour()));
 
-        Message = $"Building {structure.Name} at {structure.Cell}";
+
     }
 
     public bool Built = false;
+
+    public override string Message
+    {
+        get
+        {
+            return $"Building {TargetStructure.Name} at {TargetStructure.Cell}";
+        }
+    }
 
     public override bool Done(Creature creature)
     {

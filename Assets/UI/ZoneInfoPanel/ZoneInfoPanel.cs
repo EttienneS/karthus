@@ -12,7 +12,7 @@ public class ZoneInfoPanel : MonoBehaviour
     public void DeleteZone()
     {
         Game.Instance.ZoneController.Delete(CurrentZone);
-        Hide();
+        Destroy();
     }
 
     public void DoneEditing()
@@ -20,9 +20,9 @@ public class ZoneInfoPanel : MonoBehaviour
         Game.Instance.Typing = false;
     }
 
-    public void Hide()
+    public void Destroy()
     {
-        gameObject.SetActive(false);
+        Destroy(gameObject);
         Game.Instance.Typing = false;
     }
 

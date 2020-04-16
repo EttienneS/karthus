@@ -18,7 +18,6 @@ public class CreatureInfoPanel : MonoBehaviour
     public ImageButton AddButton(string title, string spriteName)
     {
         var button = Instantiate(ImageButtonPrefab, ButtonPanel.transform);
-        button.SetText(title);
         button.SetImage(Game.Instance.SpriteStore.GetSprite(spriteName));
 
         _contextButtons.Add(button);
@@ -26,9 +25,9 @@ public class CreatureInfoPanel : MonoBehaviour
         return button;
     }
 
-    public void Hide()
+    public void Destroy()
     {
-        gameObject.SetActive(false);
+        Destroy(gameObject);
     }
 
     public void Show(IEnumerable<Creature> entities)
@@ -115,9 +114,6 @@ public class CreatureInfoPanel : MonoBehaviour
                         {
                             Log.text += $"{line}\n";
                         }
-
-                        var rt = Log.GetComponent(typeof(RectTransform)) as RectTransform;
-                        rt.sizeDelta = new Vector2(530, creature.LogHistory.Count * 20);
 
                         PropertiesPanel.text += $"\nMood: {creature.MoodString} ({creature.Mood})\n";
 

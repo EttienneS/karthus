@@ -11,16 +11,16 @@ public class SkillsPanel : MonoBehaviour
 
     private void Update()
     {
-        var creature = Game.Instance.CreatureInfoPanel.CurrentCreatures.Where(f => f != null).FirstOrDefault();
+        var creature = Game.Instance.SelectedCreatures.FirstOrDefault();
 
         if (creature == null)
         {
             return;
         }
 
-        if (Current != creature)
+        if (Current != creature.Data)
         {
-            Current = creature;
+            Current = creature.Data;
 
             foreach (var prefab in SkillLinks.Values.ToList())
             {

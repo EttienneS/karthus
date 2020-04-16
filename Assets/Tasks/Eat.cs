@@ -8,6 +8,15 @@ public class Eat : CreatureTask
 
     public const string FoodCriteria = "Food";
 
+    public override string Message
+    {
+        get
+        {
+            return Eating ? $"Eating {FoodCriteria}" : $"Getting {FoodCriteria} to eat";
+        }
+    }
+
+
     public Eat()
     {
     }

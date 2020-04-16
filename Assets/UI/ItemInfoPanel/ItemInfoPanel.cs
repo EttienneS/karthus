@@ -36,9 +36,9 @@ namespace UI
 
         }
 
-        public void Hide()
+        public void Destroy()
         {
-            gameObject.SetActive(false);
+            Destroy(gameObject);
         }
     }
 }

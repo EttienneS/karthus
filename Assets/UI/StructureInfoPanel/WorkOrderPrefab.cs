@@ -7,7 +7,6 @@ namespace UI
     public class WorkOrderPrefab : MonoBehaviour
     {
         public Image Background;
-        public Text Description;
         public Image Image;
         public Text Title;
 
@@ -16,20 +15,22 @@ namespace UI
 
         public WorkStructureBase Structure { get; set; }
 
+        public StructureInfoPanel Panel { get; set; }
+
         public void Click()
         {
-            Game.Instance.StructureInfoPanel.SetSelected(this);
+            Panel.SetSelected(this);
         }
 
-        internal void Load(WorkStructureBase structure, WorkDefinition definition, WorkOption option)
+        internal void Load(WorkStructureBase structure, WorkDefinition definition, WorkOption option, StructureInfoPanel panel)
         {
+            Panel = panel;
             Structure = structure;
             Definition = definition;
             Option = option;
 
             Image.sprite = Game.Instance.SpriteStore.GetSprite(Option.Sprite);
             Title.text = $"{definition.Name}: {option.Name}";
-            Description.text = option.Description;
         }
     }
 }

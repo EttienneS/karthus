@@ -66,22 +66,27 @@ namespace Assets.UI.TaskPanel
             if (Game.Instance.FactionController.PlayerFaction.AssignedTasks.ContainsKey(_task))
             {
                 CreatureIcon.Creature = Game.Instance.FactionController.PlayerFaction.AssignedTasks[_task];
-                NowButton.gameObject.SetActive(false);
-                SuspendButton.gameObject.SetActive(false);
+                NowButton.enabled = false;
+                NowButton.image.color = ColorConstants.GreyAccent;
+                SuspendButton.enabled = false;
+                SuspendButton.image.color = ColorConstants.GreyAccent;
             }
             else
             {
-                NowButton.gameObject.SetActive(true);
-                SuspendButton.gameObject.SetActive(true);
+                NowButton.enabled = true;
+                NowButton.image.color = ColorConstants.GreenAccent;
+                SuspendButton.enabled = true;
+                SuspendButton.image.color = ColorConstants.YellowAccent;
             }
 
             if (_task.Suspended)
             {
-                Background.color = ColorConstants.UISuspended;
+                Background.color = ColorConstants.YellowAccent;
+                Title.text = "Suspended: " + Title.text;
             }
             else
             {
-                Background.color = ColorConstants.UIDefault;
+                Background.color = ColorConstants.WhiteAccent;
             }
         }
     }

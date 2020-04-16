@@ -5,6 +5,14 @@ public class RemoveStructure : CreatureTask
 {
     public Structure StructureToRemove;
 
+    public override string Message
+    {
+        get
+        {
+            return $"Remove {StructureToRemove.Name} at {StructureToRemove.Cell}";
+        }
+    }
+
     public RemoveStructure()
     {
         RequiredSkill = SkillConstants.Build;
@@ -21,8 +29,6 @@ public class RemoveStructure : CreatureTask
 
         AddSubTask(new Move(Game.Instance.Map.GetPathableNeighbour(StructureToRemove.Cell)));
         AddSubTask(new Wait(structure.Cost.Items.Sum(c => c.Value) , "Deconstructing..."));
-
-        Message = $"Removing {StructureToRemove.Name} at {StructureToRemove.Cell}";
     }
 
     public override bool Done(Creature creature)

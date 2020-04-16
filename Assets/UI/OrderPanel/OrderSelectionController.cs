@@ -42,7 +42,6 @@ public partial class OrderSelectionController : MonoBehaviour
         // create a top level button for an order type
         var button = Instantiate(OrderButtonPrefab, isSubButton ? Game.Instance.OrderTrayController.transform : transform);
         button.Button.onClick.AddListener(action);
-        button.Text = text;
         button.Button.image.sprite = sprite;
 
         return button;
@@ -51,7 +50,6 @@ public partial class OrderSelectionController : MonoBehaviour
     private void Start()
     {
         Game.Instance.OrderTrayController.gameObject.SetActive(false);
-        Game.Instance.CreatureInfoPanel.gameObject.SetActive(false);
         Game.Instance.OrderInfoPanel.Hide();
 
         BuildButton = CreateOrderButton(DefaultBuildText, BuildTypeClicked, "hammer", false);

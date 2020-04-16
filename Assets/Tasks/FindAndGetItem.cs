@@ -6,6 +6,14 @@ public class FindAndGetItem : CreatureTask
     internal int Amount;
     internal string TargetId;
 
+    public override string Message
+    {
+        get
+        {
+            return $"Find and pick up {Amount} of {ItemCriteria}";
+        }
+    }
+
     public FindAndGetItem(string itemType, int amount)
     {
         ItemCriteria = itemType;

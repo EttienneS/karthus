@@ -13,16 +13,16 @@ public class NeedsPanel : MonoBehaviour
 
     private void Update()
     {
-        var creature = Game.Instance.CreatureInfoPanel.CurrentCreatures.OfType<Creature>().FirstOrDefault();
+        var creature = Game.Instance.SelectedCreatures.FirstOrDefault();
 
         if (creature == null)
         {
             return;
         }
 
-        if (Current != creature)
+        if (Current != creature.Data)
         {
-            Current = creature;
+            Current = creature.Data;
 
             foreach (var prefab in NeedProgressLinks.Values.ToList())
             {
@@ -39,7 +39,7 @@ public class NeedsPanel : MonoBehaviour
             }
         }
 
-        foreach (var need in creature.Needs)
+        foreach (var need in Current.Needs)
         {
             NeedProgressLinks[need].SetProgress(need.Current / need.Max);
         }

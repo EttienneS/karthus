@@ -18,13 +18,13 @@ public class Game : MonoBehaviour
     public CameraController CameraController;
     public ConstructController ConstructController;
     public CreatureController CreatureController;
-    public CreatureInfoPanel CreatureInfoPanel;
+    public CreatureInfoPanel CreatureInfoPanelPrefab;
     public DeveloperConsole DeveloperConsole;
     public FactionController FactionController;
     public FileController FileController;
     public IdService IdService;
     public ItemController ItemController;
-    public ItemInfoPanel ItemInfoPanel;
+    public ItemInfoPanel ItemInfoPanelPrefab;
     public LoadStatus LoadingPanel;
     public LoadPanel LoadPanel;
     public MainMenuController MainMenuController;
@@ -37,7 +37,7 @@ public class Game : MonoBehaviour
     public RectTransform selectSquareImage;
     public SpriteStore SpriteStore;
     public StructureController StructureController;
-    public StructureInfoPanel StructureInfoPanel;
+    public StructureInfoPanel StructureInfoPanelPrefab;
     public TaskPanel TaskPanel;
     public TimeManager TimeManager;
     public Tooltip Tooltip;
@@ -47,7 +47,7 @@ public class Game : MonoBehaviour
     public VisualEffectController VisualEffectController;
     public Tooltip WorldTooltip;
     public ZoneController ZoneController;
-    public ZoneInfoPanel ZoneInfoPanel;
+    public ZoneInfoPanel ZoneInfoPanelPrefab;
     internal SelectionPreference LastSelection = SelectionPreference.Creature;
     internal LineRenderer LineRenderer;
     internal float LoadProgress;
@@ -68,6 +68,10 @@ public class Game : MonoBehaviour
 
     private bool _constructMode;
 
+    private CreatureInfoPanel _currentCreatureInfoPanel;
+    private ItemInfoPanel _currentItemInfoPanel;
+    private StructureInfoPanel _currentStructureInfoPanel;
+    private ZoneInfoPanel _currentZoneInfoPanel;
     private List<GameObject> _destroyCache = new List<GameObject>();
 
     private bool _finalizationStarted;
@@ -95,6 +99,7 @@ public class Game : MonoBehaviour
             _instance = value;
         }
     }
+
     public float MaxTimeToClick { get; set; } = 0.60f;
     public float MinTimeToClick { get; set; } = 0.05f;
     public bool Paused { get; set; }
@@ -157,7 +162,10 @@ public class Game : MonoBehaviour
         {
             creature.DisableHightlight();
         }
-        CreatureInfoPanel.Hide();
+        if (_currentCreatureInfoPanel != null)
+        {
+            _currentCreatureInfoPanel.Destroy();
+        }
         SelectedCreatures.Clear();
     }
 
@@ -169,7 +177,10 @@ public class Game : MonoBehaviour
             item.HideOutline();
         }
         SelectedItems.Clear();
-        ItemInfoPanel.Hide();
+        if (_currentItemInfoPanel != null)
+        {
+            _currentItemInfoPanel.Destroy();
+        }
     }
 
     public void DeselectStructure(bool stopGhost)
@@ -184,13 +195,19 @@ public class Game : MonoBehaviour
         {
             structure.HideOutline();
         }
-        StructureInfoPanel.Hide();
+        if (_currentStructureInfoPanel != null)
+        {
+            _currentStructureInfoPanel.Destroy();
+        }
         SelectedStructures.Clear();
     }
 
     public void DeselectZone()
     {
-        ZoneInfoPanel.Hide();
+        if (_currentZoneInfoPanel != null)
+        {
+            _currentZoneInfoPanel.Destroy();
+        }
     }
 
     public void DestroyItemsInCache()
@@ -275,7 +292,8 @@ public class Game : MonoBehaviour
             DeselectItem();
             DeselectZone();
 
-            CreatureInfoPanel.Show(SelectedCreatures.Select(c => c.Data).ToList());
+            _currentCreatureInfoPanel = Instantiate(CreatureInfoPanelPrefab, UI.transform);
+            _currentCreatureInfoPanel.Show(SelectedCreatures.Select(c => c.Data).ToList());
             return true;
         }
 
@@ -319,7 +337,8 @@ public class Game : MonoBehaviour
         DeselectStructure(true);
         DeselectItem();
 
-        ZoneInfoPanel.Show(zone);
+        _currentZoneInfoPanel = Instantiate(ZoneInfoPanelPrefab, UI.transform);
+        _currentZoneInfoPanel.Show(zone);
     }
 
     private void FinalizeStartup()
@@ -492,10 +511,7 @@ public class Game : MonoBehaviour
         else if (!_shownOnce)
         {
             UIController.Show();
-            StructureInfoPanel.Hide();
-            ItemInfoPanel.Hide();
-            CreatureInfoPanel.Hide();
-            ZoneInfoPanel.Hide();
+
             OrderSelectionController.DisableAndReset();
             LoadingPanel.Hide();
             LoadPanel.Hide();
@@ -680,7 +696,8 @@ public class Game : MonoBehaviour
             DeselectCreature();
             DeselectZone();
 
-            ItemInfoPanel.Show(SelectedItems);
+            _currentItemInfoPanel = Instantiate(ItemInfoPanelPrefab, UI.transform);
+            _currentItemInfoPanel.Show(SelectedItems);
             return true;
         }
         return false;
@@ -700,7 +717,8 @@ public class Game : MonoBehaviour
             DeselectCreature();
             DeselectZone();
 
-            StructureInfoPanel.Show(SelectedStructures.ToList());
+            _currentStructureInfoPanel = Instantiate(StructureInfoPanelPrefab, UI.transform);
+            _currentStructureInfoPanel.Show(SelectedStructures.ToList());
             return true;
         }
         return false;
@@ -773,10 +791,6 @@ public class Game : MonoBehaviour
         {
             // right mouse deselect all
             DeselectAll();
-            StructureInfoPanel.Hide();
-            ItemInfoPanel.Hide();
-            CreatureInfoPanel.Hide();
-            ZoneInfoPanel.Hide();
             DisableMouseSprite();
             OrderSelectionController.DisableAndReset();
         }
@@ -861,6 +875,7 @@ public class Game : MonoBehaviour
         }
         DestroyItemsInCache();
     }
+
     private void UpdateMouseOverTooltip(Vector3 mousePosition)
     {
         if (!MouseOverUi())

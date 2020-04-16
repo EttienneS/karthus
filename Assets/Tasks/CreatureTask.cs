@@ -10,7 +10,7 @@ public abstract class CreatureTask
     public string BusyEmote;
     public bool Destroyed;
     public string DoneEmote;
-    public string Message;
+    public abstract string Message { get; }
 
     [JsonIgnore]
     public CreatureTask Parent;
@@ -114,5 +114,5 @@ public abstract class CreatureTask
         Suspended = !Suspended;
     }
 
-    
+
 }

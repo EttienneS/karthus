@@ -5,6 +5,14 @@ public class Pickup : CreatureTask
     public int Amount;
     public string ItemId;
 
+    public override string Message
+    {
+        get
+        {
+            return $"Pickup to {Amount} of {ItemId.GetItem().Name}";
+        }
+    }
+
     public Pickup()
     {
     }

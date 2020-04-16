@@ -7,6 +7,14 @@ public class Wash : CreatureTask
     public float RecoveryRate = 0.25f;
     public (float X, float Y) WashCoords;
 
+    public override string Message
+    {
+        get
+        {
+            return $"Wash at {WashCoords.X}:{WashCoords.Y}";
+        }
+    }
+
     public Wash()
     {
         BusyEmote = "**Scrub, scrub, scrub**";

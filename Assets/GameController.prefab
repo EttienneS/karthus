@@ -126,7 +126,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c9319c38c3fa594db9dd4391edf4906, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TaskPanel: {fileID: 0}
   CameraController: {fileID: 0}
   CreatureController: {fileID: 0}
   CreatureInfoPanel: {fileID: 0}
@@ -134,27 +133,28 @@ MonoBehaviour:
   FactionController: {fileID: 0}
   FileController: {fileID: 0}
   ItemController: {fileID: 0}
+  ItemInfoPanel: {fileID: 0}
   LoadingPanel: {fileID: 0}
   LoadPanel: {fileID: 0}
   MainMenuController: {fileID: 0}
   Map: {fileID: 0}
+  MouseSpriteRenderer: {fileID: 4395502561622324067}
   OrderInfoPanel: {fileID: 0}
   OrderSelectionController: {fileID: 0}
   OrderTrayController: {fileID: 0}
+  selectSquareImage: {fileID: 0}
   SpriteStore: {fileID: 0}
   StructureController: {fileID: 0}
   StructureInfoPanel: {fileID: 0}
-  ItemInfoPanel: {fileID: 0}
+  TaskPanel: {fileID: 0}
   TimeManager: {fileID: 0}
+  Tooltip: {fileID: 0}
   UI: {fileID: 0}
   UIController: {fileID: 0}
   VisualEffectController: {fileID: 0}
+  WorldTooltip: {fileID: 0}
   ZoneController: {fileID: 0}
   ZoneInfoPanel: {fileID: 0}
-  MouseSpriteRenderer: {fileID: 4395502561622324067}
-  selectSquareImage: {fileID: 0}
-  Tooltip: {fileID: 0}
-  WorldTooltip: {fileID: 0}
 --- !u!120 &1817309255
 LineRenderer:
   m_ObjectHideFlags: 0

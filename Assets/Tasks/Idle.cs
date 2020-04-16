@@ -3,6 +3,14 @@ using UnityEngine;
 
 public class Idle : CreatureTask
 {
+    public override string Message
+    {
+        get
+        {
+            return "Idle...";
+        }
+    }
+
     public Idle()
     {
     }
@@ -25,8 +33,6 @@ public class Idle : CreatureTask
         {
             AddSubTask(new Wait(0.1f, "Wait"));
         }
-
-        Message = "Idle...";
     }
 
     public override bool Done(Creature Creature)

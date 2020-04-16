@@ -3,6 +3,14 @@ using UnityEngine;
 
 public class Heal : CreatureTask
 {
+    public override string Message
+    {
+        get
+        {
+            return $"Tend to wounds";
+        }
+    }
+
     public Heal()
     {
         RequiredSkill = SkillConstants.Healing;
@@ -17,7 +25,6 @@ public class Heal : CreatureTask
     {
         if (SubTasksComplete(creature))
         {
-
             var wound = creature.GetWorstWound();
             if (wound != null)
             {

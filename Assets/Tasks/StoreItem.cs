@@ -5,6 +5,14 @@ public class StoreItem : CreatureTask
     public string ItemToStoreId { get; set; }
     public string StorageStructureId { get; set; }
 
+    public override string Message
+    {
+        get
+        {
+            return $"Store {ItemToStoreId.GetItem().Name} in {StorageStructureId.GetStructure().Name}";
+        }
+    }
+
     public StoreItem()
     {
         RequiredSkill = SkillConstants.Haul;

@@ -4,6 +4,14 @@ public class EmptyContainer : CreatureTask
 {
     public string ContainerId;
 
+    public override string Message
+    {
+        get
+        {
+            return $"Empty container {ContainerId}";
+        }
+    }
+
     public EmptyContainer()
     {
     }

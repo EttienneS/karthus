@@ -11,8 +11,9 @@ namespace UI
     {
         public Button AddButton;
         public OrderDetailItem OrderDetailPrefab;
-        public GameObject OrderItemListPanel;
-        public GameObject OrderPanel;
+        public GameObject CurrentOrdersPanel;
+        public GameObject OrderOptionsPanel;
+        public GameObject WorkDetailPanel;
         public Text StructureInfo;
         public Text Title;
         public WorkOrderPrefab WorkOrderPrefab;
@@ -26,9 +27,9 @@ namespace UI
             Selected.Structure.AddWorkOrder(1, Selected.Option);
         }
 
-        public void Hide()
+        public void Destroy()
         {
-            gameObject.SetActive(false);
+            Destroy(gameObject);
         }
 
         public void Remove()
@@ -51,39 +52,44 @@ namespace UI
 
         public void Show(List<Structure> structures)
         {
-            gameObject.SetActive(true);
-
             Structures = structures;
             ResetPanel();
 
-            AddButton.gameObject.SetActive(false);
-            if (structures[0] is WorkStructureBase workStructure && structures.All(s => s.Name == structures[0].Name))
+            WorkDetailPanel.SetActive(false);
+            if (structures[0] is WorkStructureBase workStructure && structures.All(s => s.Name == structures[0].Name && !s.IsBluePrint))
             {
                 ActivePrefabs = new List<WorkOrderPrefab>();
 
                 foreach (var option in workStructure.Definition.Options)
                 {
-                    var prefab = Instantiate(WorkOrderPrefab, OrderPanel.transform);
-                    prefab.Load(workStructure, workStructure.Definition, option);
+                    var prefab = Instantiate(WorkOrderPrefab, OrderOptionsPanel.transform);
+                    prefab.Load(workStructure, workStructure.Definition, option, this);
                     ActivePrefabs.Add(prefab);
                 }
 
                 if (ActivePrefabs.Count > 0)
                 {
                     SetSelected(ActivePrefabs[0]);
-
-                    AddButton.gameObject.SetActive(true);
                     if (workStructure.Definition.Auto)
                     {
                         AddButton.GetComponentInChildren<Text>().text = "Select";
                     }
                 }
+
+                WorkDetailPanel.SetActive(true);
             }
         }
 
-        public void Start()
+        public void Claim()
         {
-            AddButton.enabled = false;
+            foreach (var structure in Structures)
+            {
+                structure.FactionName = Game.Instance.FactionController.PlayerFaction.FactionName;
+                if (!Game.Instance.FactionController.PlayerFaction.Structures.Contains(structure))
+                {
+                    Game.Instance.FactionController.PlayerFaction.Structures.Add(structure);
+                }
+            }
         }
 
         public void Update()
@@ -98,6 +104,7 @@ namespace UI
             else
             {
                 Title.text = $"{Current.Name}";
+
                 if (Current.InUseByAnyone)
                 {
                     StructureInfo.text += $"In use by:\t{Current.InUseBy.Name}\n";
@@ -144,7 +151,7 @@ namespace UI
                     {
                         if (!DetailItems.Any(d => d.WorkOrder == order))
                         {
-                            var detailItem = Instantiate(OrderDetailPrefab, OrderItemListPanel.transform);
+                            var detailItem = Instantiate(OrderDetailPrefab, CurrentOrdersPanel.transform);
                             detailItem.Load(order);
                             DetailItems.Add(detailItem);
                         }
@@ -162,16 +169,15 @@ namespace UI
             selected.Background.color = ColorConstants.GreenBase;
 
             Selected = selected;
-            AddButton.enabled = true;
         }
 
         private void ResetPanel()
         {
-            foreach (Transform detailItem in OrderItemListPanel.transform)
+            foreach (Transform detailItem in CurrentOrdersPanel.transform)
             {
                 Destroy(detailItem.gameObject);
             }
-            foreach (Transform orderItem in OrderPanel.transform)
+            foreach (Transform orderItem in OrderOptionsPanel.transform)
             {
                 Destroy(orderItem.gameObject);
             }

@@ -5,6 +5,14 @@ public class Move : CreatureTask
     public float TargetX;
     public float TargetY;
 
+    public override string Message
+    {
+        get
+        {
+            return $"Move to {TargetX}:{TargetY}";
+        }
+    }
+
     public Move()
     {
     }
@@ -17,8 +25,6 @@ public class Move : CreatureTask
     {
         TargetX = targetCoordinates.Vector.x;
         TargetY = targetCoordinates.Vector.y;
-
-        Message = $"Moving to {TargetX}:{TargetY}";
     }
 
     [JsonIgnore]

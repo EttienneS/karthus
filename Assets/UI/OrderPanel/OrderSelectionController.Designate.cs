@@ -21,7 +21,6 @@ public partial class OrderSelectionController //.Designate
         if (Game.Instance.OrderTrayController.gameObject.activeInHierarchy)
         {
             DisableAndReset();
-            TaskButton.Text = DefaultDesignateText;
         }
         else
         {
@@ -47,7 +46,6 @@ public partial class OrderSelectionController //.Designate
 
     private void RemoveStructureClicked()
     {
-        BuildButton.Text = DefaultRemoveText;
         Game.Instance.SelectionPreference = SelectionPreference.Cell;
         Game.Instance.SetMouseSprite(DefaultRemoveIcon, (cell) => cell.Structure != null);
 

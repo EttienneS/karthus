@@ -9,6 +9,8 @@ namespace Assets.UI.TaskPanel
         public TaskDisplay TaskDisplayPrefab;
         public Dictionary<CreatureTask, TaskDisplay> Tasks = new Dictionary<CreatureTask, TaskDisplay>();
 
+        public GameObject TaskView;
+
         private void Start()
         {
             gameObject.SetActive(false);
@@ -23,7 +25,7 @@ namespace Assets.UI.TaskPanel
             {
                 if (!Tasks.ContainsKey(task))
                 {
-                    var taskDisplay = Instantiate(TaskDisplayPrefab, transform);
+                    var taskDisplay = Instantiate(TaskDisplayPrefab, TaskView.transform);
                     taskDisplay.Load(task);
                     Tasks.Add(task, taskDisplay);
                 }

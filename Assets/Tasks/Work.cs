@@ -9,6 +9,14 @@ public class DoWork : CreatureTask
 
     private Structure _structure;
 
+    public override string Message
+    {
+        get
+        {
+            return $"{Order.Name} at {_structure.Name}";
+        }
+    }
+
     public DoWork()
     {
     }
@@ -17,7 +25,7 @@ public class DoWork : CreatureTask
     {
         _structure = structure;
         StructureId = structure.Id;
-
+        Order = order;
         RequiredSkill = order.Skill;
         RequiredSkillLevel = order.Option.RequiredSkillLevel;
     }

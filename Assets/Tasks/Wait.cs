@@ -10,6 +10,14 @@ public class Wait : CreatureTask
 
     private bool _hasRunOnce;
 
+    public override string Message
+    {
+        get
+        {
+            return $"{Reason} {Duration}";
+        }
+    }
+
     public Wait()
     {
     }
@@ -23,7 +31,6 @@ public class Wait : CreatureTask
         Duration = duration;
         Reason = reason;
         ElapsedTime = 0;
-        Message = $"{Reason} {Duration}";
         Animation = animation;
     }
 

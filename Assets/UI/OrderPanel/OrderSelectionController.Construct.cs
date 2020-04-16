@@ -9,8 +9,6 @@ public partial class OrderSelectionController //.Construct
     {
         Debug.Log($"Construct clicked {constuct.Name}");
 
-        ConstructButton.Text = DefaultConstructText;
-
         Game.Instance.SetConstructSprite(constuct.Texture, constuct.Width, constuct.Height,
                                        cell => constuct.ValidateStartPos(cell));
 
@@ -49,7 +47,6 @@ public partial class OrderSelectionController //.Construct
         if (Game.Instance.OrderTrayController.gameObject.activeInHierarchy)
         {
             DisableAndReset();
-            ConstructButton.Text = DefaultConstructText;
         }
         else
         {
@@ -60,7 +57,6 @@ public partial class OrderSelectionController //.Construct
                 var title = $"{construct.Name} ({construct.Height}x{construct.Width})";
                 var button = CreateOrderButton(title, () => ConstructClicked(construct), construct.Sprite);
                 button.name = title;
-                button.Text = title;
             }
         }
     }

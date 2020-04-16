@@ -12,6 +12,15 @@ public class FindAndHaulItem : CreatureTask
 
     internal string DestinationEntityId;
 
+
+    public override string Message
+    {
+        get
+        {
+            return $"Find and move {Amount} of {ItemType} to {TargetX}:{TargetY}";
+        }
+    }
+
     public override void Complete()
     {
     }

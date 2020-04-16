@@ -2,7 +2,7 @@
 
 public static class ColorConstants
 {
-    public static Color BluePrintColor { get; } = BlueBase;
+    public static Color BluePrintColor { get; } = new Color(0.3f, 1f, 1f, 0.3f);
 
     public static Color UISuspended { get; } = GreyBase;
     public static Color UIDefault { get; } = WhiteBase;

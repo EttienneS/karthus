@@ -8,6 +8,14 @@ public class Sleep : CreatureTask
     public string BedId;
     public float RecoveryRate = 1.25f;
 
+    public override string Message
+    {
+        get
+        {
+            return $"Sleep at {BedId}";
+        }
+    }
+
     public Sleep()
     {
         BusyEmote = "Zzzz...";
