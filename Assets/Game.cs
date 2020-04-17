@@ -6,6 +6,7 @@ using System.Linq;
 using UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Experimental.Rendering.Universal;
 using Debug = UnityEngine.Debug;
 
 public enum SelectionPreference
@@ -19,6 +20,7 @@ public class Game : MonoBehaviour
     public ConstructController ConstructController;
     public CreatureController CreatureController;
     public CreatureInfoPanel CreatureInfoPanelPrefab;
+    public Light2D CursorLight;
     public DeveloperConsole DeveloperConsole;
     public FactionController FactionController;
     public FileController FileController;
@@ -27,6 +29,7 @@ public class Game : MonoBehaviour
     public ItemInfoPanel ItemInfoPanelPrefab;
     public LoadStatus LoadingPanel;
 
+    public LoadPanel LoadPanel;
     public MainMenuController MainMenuController;
     public Map Map;
     public MapGenerator MapGenerator;
@@ -70,6 +73,7 @@ public class Game : MonoBehaviour
     private CreatureInfoPanel _currentCreatureInfoPanel;
     private ItemInfoPanel _currentItemInfoPanel;
     private StructureInfoPanel _currentStructureInfoPanel;
+    private Tooltip _currentTooltip;
     private ZoneInfoPanel _currentZoneInfoPanel;
     private List<GameObject> _destroyCache = new List<GameObject>();
 
@@ -240,7 +244,7 @@ public class Game : MonoBehaviour
 
     public void DisableMouseSprite()
     {
-        MouseSpriteRenderer.gameObject.SetActive(false);
+        MouseSpriteRenderer.sprite = null;
         MouseSpriteRenderer.size = Vector2.one;
         ValidateMouse = null;
         RotateMouseRight = null;
@@ -315,7 +319,6 @@ public class Game : MonoBehaviour
         var mouseTex = texture.Clone();
         mouseTex.ScaleToGridSize(width, height);
 
-        MouseSpriteRenderer.gameObject.SetActive(true);
         MouseSpriteRenderer.sprite = Sprite.Create(mouseTex,
                                                    new Rect(0, 0, width * Map.PixelsPerCell, height * Map.PixelsPerCell),
                                                    new Vector2(0, 0), Map.PixelsPerCell);
@@ -333,10 +336,17 @@ public class Game : MonoBehaviour
     public void SetMouseSprite(string spriteName, ValidateMouseSpriteDelegate validation)
     {
         _constructMode = false;
-        MouseSpriteRenderer.gameObject.SetActive(true);
         MouseSpriteRenderer.sprite = SpriteStore.GetSprite(spriteName);
         MouseSpriteName = spriteName;
         ValidateMouse = validation;
+    }
+
+    internal void HideTooltip()
+    {
+        if (_currentTooltip != null)
+        {
+            Destroy(_currentTooltip.gameObject);
+        }
     }
 
     internal void SelectZone(ZoneBase zone)
@@ -348,6 +358,13 @@ public class Game : MonoBehaviour
 
         _currentZoneInfoPanel = Instantiate(ZoneInfoPanelPrefab, UI.transform);
         _currentZoneInfoPanel.Show(zone);
+    }
+
+    internal Tooltip ShowTooltip(string tooltipTitle, string tooltipText)
+    {
+        _currentTooltip = Instantiate(TooltipPrefab, UI.transform);
+        _currentTooltip.Load(tooltipTitle, tooltipText);
+        return _currentTooltip;
     }
 
     private void FinalizeStartup()
@@ -556,6 +573,8 @@ public class Game : MonoBehaviour
 
     private void MoveMouseSprite(Vector3 mousePosition)
     {
+        CursorLight.gameObject.SetActive(Instance.TimeManager.Data.Hour > 17 || Instance.TimeManager.Data.Hour < 5);
+
         if (MouseSpriteRenderer.gameObject.activeInHierarchy)
         {
             var cell = Map.GetCellAtPoint(Camera.main.ScreenToWorldPoint(mousePosition));
@@ -576,31 +595,34 @@ public class Game : MonoBehaviour
 
             MouseSpriteRenderer.transform.position = new Vector2(x, y);
 
-            if (ValidateMouse != null)
+            if (MouseSpriteRenderer.sprite != null)
             {
-                if (!ValidateMouse(cell))
+                if (ValidateMouse != null)
                 {
-                    MouseSpriteRenderer.color = ColorConstants.RedBase;
-                }
-                else
-                {
-                    MouseSpriteRenderer.color = ColorConstants.BluePrintColor;
-                }
-            }
-
-            if (SelectionStartWorld != Vector3.zero && !_constructMode)
-            {
-                MouseSpriteRenderer.color = new Color(0, 0, 0, 0);
-                ClearGhostEffects();
-                foreach (var c in GetSelectedCells(SelectionStartWorld, Camera.main.ScreenToWorldPoint(mousePosition)))
-                {
-                    var color = ColorConstants.BluePrintColor;
-                    if (ValidateMouse != null && !ValidateMouse(c))
+                    if (!ValidateMouse(cell))
                     {
-                        color = ColorConstants.RedBase;
+                        MouseSpriteRenderer.color = ColorConstants.RedBase;
                     }
+                    else
+                    {
+                        MouseSpriteRenderer.color = ColorConstants.BluePrintColor;
+                    }
+                }
 
-                    _ghostEffects.Add(VisualEffectController.SpawnSpriteEffect(null, c.Vector, MouseSpriteName, float.MaxValue, color));
+                if (SelectionStartWorld != Vector3.zero && !_constructMode)
+                {
+                    MouseSpriteRenderer.color = new Color(0, 0, 0, 0);
+                    ClearGhostEffects();
+                    foreach (var c in GetSelectedCells(SelectionStartWorld, Camera.main.ScreenToWorldPoint(mousePosition)))
+                    {
+                        var color = ColorConstants.BluePrintColor;
+                        if (ValidateMouse != null && !ValidateMouse(c))
+                        {
+                            color = ColorConstants.RedBase;
+                        }
+
+                        _ghostEffects.Add(VisualEffectController.SpawnSpriteEffect(null, c.Vector, MouseSpriteName, float.MaxValue, color));
+                    }
                 }
             }
         }
@@ -730,7 +752,6 @@ public class Game : MonoBehaviour
         }
         return false;
     }
-
     private void Start()
     {
         Debug.Log("Start game");
@@ -743,7 +764,6 @@ public class Game : MonoBehaviour
         MouseSpriteRenderer.size = Vector2.one;
 
         selectSquareImage.gameObject.SetActive(false);
-        MouseSpriteRenderer.gameObject.SetActive(false);
 
         if (SaveManager.SaveToLoad != null)
         {
@@ -922,25 +942,6 @@ public class Game : MonoBehaviour
 
                 //WorldTooltip.Show(MouseOverCell.BiomeRegion.SpriteName, content, new Vector3(125, Screen.height - 100));
             }
-        }
-    }
-
-    private Tooltip _currentTooltip;
-
-    internal Tooltip ShowTooltip(string tooltipTitle, string tooltipText)
-    {
-        _currentTooltip = Instantiate(TooltipPrefab, UI.transform);
-        _currentTooltip.Load(tooltipTitle, tooltipText);
-        return _currentTooltip;
-    }
-
-    public LoadPanel LoadPanel;
-
-    internal void HideTooltip()
-    {
-        if (_currentTooltip != null)
-        {
-            Destroy(_currentTooltip.gameObject);
         }
     }
 }

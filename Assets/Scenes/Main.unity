@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -336,6 +336,22 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: f05fc6d848b0b6c4c8b613023b0a1166, type: 2}
+    - target: {fileID: 1910422789, guid: 8d3d47b53068341448ff13732aef998e, type: 3}
+      propertyPath: m_PointLightOuterRadius
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1910422789, guid: 8d3d47b53068341448ff13732aef998e, type: 3}
+      propertyPath: m_Color.r
+      value: 0.8627451
+      objectReference: {fileID: 0}
+    - target: {fileID: 1910422789, guid: 8d3d47b53068341448ff13732aef998e, type: 3}
+      propertyPath: m_Color.g
+      value: 0.8666667
+      objectReference: {fileID: 0}
+    - target: {fileID: 1910422789, guid: 8d3d47b53068341448ff13732aef998e, type: 3}
+      propertyPath: m_Color.b
+      value: 0.88235295
+      objectReference: {fileID: 0}
     - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
       propertyPath: CameraController
@@ -446,6 +462,11 @@ PrefabInstance:
       propertyPath: LoadPanel
       value: 
       objectReference: {fileID: 2060796752}
+    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: CursorLight
+      value: 
+      objectReference: {fileID: 1910422789}
     - target: {fileID: 4791717066980201731, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
       propertyPath: m_Name
@@ -508,6 +529,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8d3d47b53068341448ff13732aef998e, type: 3}
+--- !u!114 &1910422789 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1910422789, guid: 8d3d47b53068341448ff13732aef998e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1910422787}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 073797afb82c5a1438f328866b10b3f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1922741280 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7702933895562079566, guid: 21216dc22b576ec4785cf4c518463eaa,
@@ -1704,7 +1737,7 @@ PrefabInstance:
     - target: {fileID: 6198119545509704615, guid: 21216dc22b576ec4785cf4c518463eaa,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.0003834124
+      value: 0.000035937315
       objectReference: {fileID: 0}
     - target: {fileID: 6198119545509704615, guid: 21216dc22b576ec4785cf4c518463eaa,
         type: 3}
