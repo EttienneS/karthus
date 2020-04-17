@@ -593,9 +593,12 @@ public class Creature : IEntity
 
     internal void AbandonTask()
     {
-        Log($"Abandoned task: {Task.Message}");
         Faction.AvailableTasks.Add(Task);
         DropItem(Cell);
+
+        Debug.Log($"{Task.GetType().Name}");
+        Log($"Abandoned task: {Task.Message}");
+
         Task = null;
     }
 

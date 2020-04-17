@@ -291,6 +291,7 @@ public class Game : MonoBehaviour
             DeselectStructure(true);
             DeselectItem();
             DeselectZone();
+            DeselectCreature();
 
             _currentCreatureInfoPanel = Instantiate(CreatureInfoPanelPrefab, UI.transform);
             _currentCreatureInfoPanel.Show(SelectedCreatures.Select(c => c.Data).ToList());
