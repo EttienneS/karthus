@@ -26,13 +26,13 @@ namespace UI
         {
             if (!string.IsNullOrEmpty(TooltipTitle))
             {
-                Game.Instance.Tooltip.Show(TooltipTitle, TooltipText);
+                Game.Instance.ShowTooltip(TooltipTitle, TooltipText);
             }
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            Game.Instance.Tooltip.Hide();
+            Game.Instance.HideTooltip();
         }
 
         public void SetProgress(float progress)

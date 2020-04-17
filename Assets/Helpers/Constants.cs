@@ -4,11 +4,6 @@ public static class ColorConstants
 {
     public static Color BluePrintColor { get; } = new Color(0.3f, 1f, 1f, 0.3f);
 
-    public static Color UISuspended { get; } = GreyBase;
-    public static Color UIDefault { get; } = WhiteBase;
-
-    public static Color InvalidColor { get; } = RedBase;
-
     // palette: https://flatuicolors.com/palette/gb
     public static Color BlueBase { get; } = ColorExtensions.GetColorFromHex("#00a8ff");
     public static Color BlueAccent { get; } = ColorExtensions.GetColorFromHex("#0097e6");

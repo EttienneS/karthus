@@ -2,7 +2,6 @@
 
 public partial class OrderSelectionController //.Construct
 {
-    public const string DefaultConstructText = "Place Construct";
     internal OrderButton ConstructButton;
 
     private void ConstructClicked(Construct constuct)
@@ -11,12 +10,7 @@ public partial class OrderSelectionController //.Construct
 
         Game.Instance.SetConstructSprite(constuct.Texture, constuct.Width, constuct.Height,
                                        cell => constuct.ValidateStartPos(cell));
-
-        Game.Instance.OrderInfoPanel.Title = $"Place {constuct.Name}";
-        Game.Instance.OrderInfoPanel.Description = "Select a location to place the construct, rotate with E or Q.  A construct is a predefined collection of structures and is built by a creature with the build skill.";
-        Game.Instance.OrderInfoPanel.Detail = constuct.Description;
-        Game.Instance.OrderInfoPanel.Cost = $"{constuct.TotalCost}";
-        Game.Instance.OrderInfoPanel.Show();
+        ShowConstructInfo(constuct);
 
         Game.Instance.RotateMouseRight += () =>
         {
@@ -41,6 +35,16 @@ public partial class OrderSelectionController //.Construct
         };
     }
 
+    private static void ShowConstructInfo(Construct constuct)
+    {
+        Game.Instance.OrderInfoPanel.Show(
+             $"Place {constuct.Name}",
+             "Select a location to place the construct, rotate with E or Q.  A construct is a predefined collection of structures and is built by a creature with the build skill.",
+             constuct.Description,
+             $"{constuct.TotalCost}"
+            );
+    }
+
     private void ConstructTypeClicked()
     {
         Game.Instance.SelectionPreference = SelectionPreference.Cell;
@@ -55,7 +59,9 @@ public partial class OrderSelectionController //.Construct
             foreach (var construct in Game.Instance.ConstructController.Constructs)
             {
                 var title = $"{construct.Name} ({construct.Height}x{construct.Width})";
-                var button = CreateOrderButton(title, () => ConstructClicked(construct), construct.Sprite);
+                var button = CreateOrderButton(() => ConstructClicked(construct),
+                                               () => ShowConstructInfo(construct),
+                                               construct.Sprite);
                 button.name = title;
             }
         }

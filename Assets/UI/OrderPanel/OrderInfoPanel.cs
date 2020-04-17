@@ -61,8 +61,12 @@ public class OrderInfoPanel : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void Show()
+    public void Show(string title, string description, string detail = "", string cost = "")
     {
+        Title = title;
+        Description = description;
+        Detail = detail;
+        Cost = cost;
         gameObject.SetActive(true);
     }
 }

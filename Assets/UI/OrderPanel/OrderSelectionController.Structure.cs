@@ -1,4 +1,6 @@
-﻿public partial class OrderSelectionController //.Structure
+﻿using Structures;
+
+public partial class OrderSelectionController //.Structure
 {
     internal const string DefaultBuildText = "Select Building";
 
@@ -10,12 +12,7 @@
         Game.Instance.SelectionPreference = SelectionPreference.Cell;
         Game.Instance.SetMouseSprite(structure.SpriteName,
                                       (cell) => structure.ValidateCellLocationForStructure(cell));
-
-        Game.Instance.OrderInfoPanel.Title = $"Build {structureName}";
-        Game.Instance.OrderInfoPanel.Description = "Select a location to place the structure.  A creature with the build skill will gather the required cost of material and then make the structure.";
-        Game.Instance.OrderInfoPanel.Detail = structure.Description;
-        Game.Instance.OrderInfoPanel.Cost = $"{structure.Cost}";
-        Game.Instance.OrderInfoPanel.Show();
+        UpdateStuctureOrder(structureName);
 
         CellClickOrder = cells =>
         {
@@ -29,6 +26,16 @@
             }
         };
     }
+
+    public void UpdateStuctureOrder(string structureName)
+    {
+        var structure = Game.Instance.StructureController.StructureDataReference[structureName];
+        Game.Instance.OrderInfoPanel.Show($"Build {structureName}",
+                                           "Select a location to place the structure.  A creature with the build skill will gather the required cost of material and then make the structure.",
+                                           structure.Description,
+                                           $"{structure.Cost}");
+    }
+
 
     public void BuildTypeClicked()
     {
@@ -44,7 +51,7 @@
             {
                 if (!structureData.Buildable) continue;
 
-                var button = CreateOrderButton(structureData.Name, () => BuildClicked(structureData.Name), structureData.SpriteName);
+                var button = CreateOrderButton(() => BuildClicked(structureData.Name), () => UpdateStuctureOrder(structureData.Name), structureData.SpriteName);
             }
         }
     }

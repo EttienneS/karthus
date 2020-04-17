@@ -3,16 +3,8 @@
 public partial class OrderSelectionController //.Designate
 {
     internal const string AttackIcon = "war_t";
-    internal const string AttackText = "Attack";
-    internal const string CancelText = "Cancel";
-
-    internal const string DefaultDesignateText = "Designate";
-
     internal const string DefaultRemoveIcon = "cancel";
-    internal const string DefaultRemoveText = "Remove Building";
-
     internal const string MoveIcon = "location_t";
-    internal const string MoveText = "Move";
 
     internal OrderButton TaskButton;
 
@@ -26,8 +18,12 @@ public partial class OrderSelectionController //.Designate
         {
             EnableAndClear();
 
-            CreateOrderButton(MoveText, MoveClicked, MoveIcon);
-            CreateOrderButton(DefaultRemoveText, RemoveStructureClicked, DefaultRemoveIcon);
+            CreateOrderButton(MoveClicked,
+                              () => Game.Instance.OrderInfoPanel.Show("Move to Cell","Place a move order, a creature will take the order and move to the cell."),
+                              MoveIcon);
+            CreateOrderButton(RemoveStructureClicked,
+                              () => Game.Instance.OrderInfoPanel.Show("Remove structures", "Designate structures to be removed."),
+                              DefaultRemoveIcon);
         }
     }
 

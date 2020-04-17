@@ -26,7 +26,7 @@ public class Game : MonoBehaviour
     public ItemController ItemController;
     public ItemInfoPanel ItemInfoPanelPrefab;
     public LoadStatus LoadingPanel;
-    public LoadPanel LoadPanel;
+
     public MainMenuController MainMenuController;
     public Map Map;
     public MapGenerator MapGenerator;
@@ -40,12 +40,11 @@ public class Game : MonoBehaviour
     public StructureInfoPanel StructureInfoPanelPrefab;
     public TaskPanel TaskPanel;
     public TimeManager TimeManager;
-    public Tooltip Tooltip;
+    public Tooltip TooltipPrefab;
     public GameObject UI;
     public UIController UIController;
     public ValidateMouseSpriteDelegate ValidateMouse;
     public VisualEffectController VisualEffectController;
-    public Tooltip WorldTooltip;
     public ZoneController ZoneController;
     public ZoneInfoPanel ZoneInfoPanelPrefab;
     internal SelectionPreference LastSelection = SelectionPreference.Creature;
@@ -115,8 +114,8 @@ public class Game : MonoBehaviour
 
     public void AddLine(Cell start, Cell end)
     {
-        LineRenderer.startColor = ColorConstants.InvalidColor;
-        LineRenderer.endColor = ColorConstants.InvalidColor;
+        LineRenderer.startColor = ColorConstants.RedBase;
+        LineRenderer.endColor = ColorConstants.RedBase;
 
         LineRenderer.positionCount += 3;
 
@@ -162,9 +161,15 @@ public class Game : MonoBehaviour
         {
             creature.DisableHightlight();
         }
+
         if (_currentCreatureInfoPanel != null)
         {
             _currentCreatureInfoPanel.Destroy();
+        }
+
+        if (_currentTooltip != null)
+        {
+            _currentTooltip.Destroy();
         }
         SelectedCreatures.Clear();
     }
@@ -282,7 +287,7 @@ public class Game : MonoBehaviour
     {
         foreach (var creature in SelectedCreatures)
         {
-            creature.EnableHighlight(ColorConstants.InvalidColor);
+            creature.EnableHighlight(ColorConstants.GreenAccent);
         }
 
         if (SelectedCreatures?.Count > 0)
@@ -291,8 +296,11 @@ public class Game : MonoBehaviour
             DeselectStructure(true);
             DeselectItem();
             DeselectZone();
-            DeselectCreature();
 
+            if (_currentCreatureInfoPanel != null)
+            {
+                _currentCreatureInfoPanel.Destroy();
+            }
             _currentCreatureInfoPanel = Instantiate(CreatureInfoPanelPrefab, UI.transform);
             _currentCreatureInfoPanel.Show(SelectedCreatures.Select(c => c.Data).ToList());
             return true;
@@ -516,8 +524,6 @@ public class Game : MonoBehaviour
             OrderSelectionController.DisableAndReset();
             LoadingPanel.Hide();
             LoadPanel.Hide();
-            Tooltip.Hide();
-            WorldTooltip.Hide();
             TaskPanel.Hide();
 
             DeveloperConsole.gameObject.SetActive(false);
@@ -574,7 +580,7 @@ public class Game : MonoBehaviour
             {
                 if (!ValidateMouse(cell))
                 {
-                    MouseSpriteRenderer.color = ColorConstants.InvalidColor;
+                    MouseSpriteRenderer.color = ColorConstants.RedBase;
                 }
                 else
                 {
@@ -591,7 +597,7 @@ public class Game : MonoBehaviour
                     var color = ColorConstants.BluePrintColor;
                     if (ValidateMouse != null && !ValidateMouse(c))
                     {
-                        color = ColorConstants.InvalidColor;
+                        color = ColorConstants.RedBase;
                     }
 
                     _ghostEffects.Add(VisualEffectController.SpawnSpriteEffect(null, c.Vector, MouseSpriteName, float.MaxValue, color));
@@ -914,8 +920,27 @@ public class Game : MonoBehaviour
                     content = content.Trim(',') + "\n";
                 }
 
-                WorldTooltip.Show(MouseOverCell.BiomeRegion.SpriteName, content, new Vector3(125, Screen.height - 100));
+                //WorldTooltip.Show(MouseOverCell.BiomeRegion.SpriteName, content, new Vector3(125, Screen.height - 100));
             }
+        }
+    }
+
+    private Tooltip _currentTooltip;
+
+    internal Tooltip ShowTooltip(string tooltipTitle, string tooltipText)
+    {
+        _currentTooltip = Instantiate(TooltipPrefab, UI.transform);
+        _currentTooltip.Load(tooltipTitle, tooltipText);
+        return _currentTooltip;
+    }
+
+    public LoadPanel LoadPanel;
+
+    internal void HideTooltip()
+    {
+        if (_currentTooltip != null)
+        {
+            Destroy(_currentTooltip.gameObject);
         }
     }
 }

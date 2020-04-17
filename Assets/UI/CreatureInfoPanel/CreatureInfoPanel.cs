@@ -15,7 +15,7 @@ public class CreatureInfoPanel : MonoBehaviour
     public GameObject TabPanel;
     private List<ImageButton> _contextButtons = new List<ImageButton>();
 
-    public ImageButton AddButton(string title, string spriteName)
+    public ImageButton AddButton(string spriteName)
     {
         var button = Instantiate(ImageButtonPrefab, ButtonPanel.transform);
         button.SetImage(Game.Instance.SpriteStore.GetSprite(spriteName));
@@ -55,27 +55,19 @@ public class CreatureInfoPanel : MonoBehaviour
             // creatures
             var creatures = entities.OfType<Creature>();
 
-            AddButton(OrderSelectionController.MoveText,
-                      OrderSelectionController.MoveIcon)
-                        .SetOnClick(() => MoveClicked(creatures));
-
-            AddButton(OrderSelectionController.AttackText,
-                      OrderSelectionController.AttackIcon)
-                        .SetOnClick(() => AttackClicked(creatures));
-
-            AddButton(OrderSelectionController.CancelText,
-                      OrderSelectionController.DefaultRemoveIcon)
-                        .SetOnClick(() =>
-                        {
-                            foreach (var c in creatures)
-                            {
-                                if (c.InCombat)
-                                {
-                                    c.Combatants.Clear();
-                                }
-                                c.AbandonTask();
-                            }
-                        });
+            AddButton(OrderSelectionController.MoveIcon).SetOnClick(() => MoveClicked(creatures));
+            AddButton(OrderSelectionController.AttackIcon).SetOnClick(() => AttackClicked(creatures));
+            AddButton(OrderSelectionController.DefaultRemoveIcon).SetOnClick(() =>
+            {
+                foreach (var c in creatures)
+                {
+                    if (c.InCombat)
+                    {
+                        c.Combatants.Clear();
+                    }
+                    c.AbandonTask();
+                }
+            });
         }
     }
 

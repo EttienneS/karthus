@@ -128,14 +128,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CameraController: {fileID: 0}
   CreatureController: {fileID: 0}
-  CreatureInfoPanel: {fileID: 0}
+  CreatureInfoPanelPrefab: {fileID: 1526732850936286135, guid: 78582b738b61cbe499b41a29e3f79da7,
+    type: 3}
   DeveloperConsole: {fileID: 0}
   FactionController: {fileID: 0}
   FileController: {fileID: 0}
   ItemController: {fileID: 0}
-  ItemInfoPanel: {fileID: 0}
+  ItemInfoPanelPrefab: {fileID: 8070986180317268848, guid: be3395e59bbffef40ba189c06e55c4c6,
+    type: 3}
   LoadingPanel: {fileID: 0}
-  LoadPanel: {fileID: 0}
   MainMenuController: {fileID: 0}
   Map: {fileID: 0}
   MouseSpriteRenderer: {fileID: 4395502561622324067}
@@ -145,16 +146,19 @@ MonoBehaviour:
   selectSquareImage: {fileID: 0}
   SpriteStore: {fileID: 0}
   StructureController: {fileID: 0}
-  StructureInfoPanel: {fileID: 0}
+  StructureInfoPanelPrefab: {fileID: 7669023713727672724, guid: c79f6ed3be40f1d4c9a0537ef36d2828,
+    type: 3}
   TaskPanel: {fileID: 0}
   TimeManager: {fileID: 0}
-  Tooltip: {fileID: 0}
+  TooltipPrefab: {fileID: 7554671541487698571, guid: 5dcc672705c467847af5264efd228893,
+    type: 3}
   UI: {fileID: 0}
   UIController: {fileID: 0}
   VisualEffectController: {fileID: 0}
-  WorldTooltip: {fileID: 0}
   ZoneController: {fileID: 0}
-  ZoneInfoPanel: {fileID: 0}
+  ZoneInfoPanelPrefab: {fileID: 6224699677946717344, guid: 7e644716772d30044a157517133287c5,
+    type: 3}
+  LoadPanel: {fileID: 0}
 --- !u!120 &1817309255
 LineRenderer:
   m_ObjectHideFlags: 0

@@ -6,6 +6,26 @@ public partial class OrderSelectionController //.Zone
 
     internal OrderButton ZonesButton;
 
+    public void ShowRoomInfo()
+    {
+        Game.Instance.OrderInfoPanel.Show("Define Room", "Select a location to place the Room, must be enclosed by walls.");
+    }
+
+    public void ShowAreaInfo()
+    {
+        Game.Instance.OrderInfoPanel.Show("Define Area", "Select a location to place the Area.  Can be used to limit access to locations or designate areas for certain uses.");
+    }
+
+    public void ShowZoneInfo()
+    {
+        Game.Instance.OrderInfoPanel.Show("Define Room", "Select a location to place the Room, must be enclosed by walls.");
+    }
+
+    public void ShowStorageInfo()
+    {
+        Game.Instance.OrderInfoPanel.Show("Define Storage", "Select a location to place the store.  Can be used to designate an area for storage of certain items.");
+    }
+
     public void AddZoneClicked(Purpose purpose)
     {
         var sprite = Game.Instance.ZoneController.ZoneSprite;
@@ -13,28 +33,22 @@ public partial class OrderSelectionController //.Zone
         switch (purpose)
         {
             case Purpose.Room:
-                Game.Instance.OrderInfoPanel.Title = "Define Room";
                 sprite = "Room";
-                Game.Instance.OrderInfoPanel.Description = "Select a location to place the Room, must be enclosed by walls.";
+                ShowRoomInfo();
                 break;
 
             case Purpose.Area:
-                Game.Instance.OrderInfoPanel.Title = "Define Area";
-                Game.Instance.OrderInfoPanel.Description = "Select a location to place the Area.  Can be used to limit access to locations or designate areas for certain uses.";
+                ShowAreaInfo();
                 break;
 
             case Purpose.Storage:
-                Game.Instance.OrderInfoPanel.Title = "Define Storage";
                 sprite = "Storage";
-                Game.Instance.OrderInfoPanel.Description = "Select a location to place the store.  Can be used to designate an area for storage of certain items.";
+                ShowStorageInfo();
                 break;
         }
 
         Game.Instance.SetMouseSprite(sprite, (cell) => CanAddCellToZone(cell));
-
         Game.Instance.SelectionPreference = SelectionPreference.Cell;
-
-        Game.Instance.OrderInfoPanel.Show();
 
         CellClickOrder = cells =>
         {
@@ -58,9 +72,9 @@ public partial class OrderSelectionController //.Zone
         {
             EnableAndClear();
 
-            CreateOrderButton("Add Room", () => AddZoneClicked(Purpose.Room), "beer_t");
-            CreateOrderButton("Add Storage", () => AddZoneClicked(Purpose.Storage), "box");
-            CreateOrderButton("Add Zone", () => AddZoneClicked(Purpose.Area), "plate_t");
+            CreateOrderButton(() => AddZoneClicked(Purpose.Room), () => ShowRoomInfo(), "beer_t");
+            CreateOrderButton(() => AddZoneClicked(Purpose.Storage), () => ShowStorageInfo(), "box");
+            CreateOrderButton(() => AddZoneClicked(Purpose.Area), () => ShowAreaInfo(), "plate_t");
         }
     }
 }

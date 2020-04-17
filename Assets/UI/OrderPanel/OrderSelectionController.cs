@@ -32,16 +32,17 @@ public partial class OrderSelectionController : MonoBehaviour
         }
     }
 
-    private OrderButton CreateOrderButton(string text, UnityAction action, string sprite, bool isSubButton = true)
+    private OrderButton CreateOrderButton(UnityAction action, UnityAction onHover, string sprite, bool isSubButton = true)
     {
-        return CreateOrderButton(text, action, Game.Instance.SpriteStore.GetSprite(sprite), isSubButton);
+        return CreateOrderButton(action, onHover, Game.Instance.SpriteStore.GetSprite(sprite), isSubButton);
     }
 
-    private OrderButton CreateOrderButton(string text, UnityAction action, Sprite sprite, bool isSubButton = true)
+    private OrderButton CreateOrderButton(UnityAction action, UnityAction onHover, Sprite sprite, bool isSubButton = true)
     {
         // create a top level button for an order type
         var button = Instantiate(OrderButtonPrefab, isSubButton ? Game.Instance.OrderTrayController.transform : transform);
         button.Button.onClick.AddListener(action);
+        button.OnMouseEnter = onHover;
         button.Button.image.sprite = sprite;
 
         return button;
@@ -52,9 +53,9 @@ public partial class OrderSelectionController : MonoBehaviour
         Game.Instance.OrderTrayController.gameObject.SetActive(false);
         Game.Instance.OrderInfoPanel.Hide();
 
-        BuildButton = CreateOrderButton(DefaultBuildText, BuildTypeClicked, "hammer", false);
-        ZonesButton = CreateOrderButton(DefaultZoneText, ZoneTypeClicked, "plus_t", false);
-        TaskButton = CreateOrderButton(DefaultDesignateText, DesignateTypeClicked, "designate", false);
-        ConstructButton = CreateOrderButton(DefaultConstructText, ConstructTypeClicked, "construct", false);
+        BuildButton = CreateOrderButton(BuildTypeClicked, null, "hammer", false);
+        ZonesButton = CreateOrderButton(ZoneTypeClicked, null, "plus_t", false);
+        TaskButton = CreateOrderButton(DesignateTypeClicked, null, "designate", false);
+        ConstructButton = CreateOrderButton(ConstructTypeClicked, null, "construct", false);
     }
 }

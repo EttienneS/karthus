@@ -80,7 +80,6 @@ public class CreatureRenderer : MonoBehaviour
         if (Data.UnableToFindPath)
         {
             Gizmos.color = ColorConstants.RedBase;
-
         }
         else
         {
