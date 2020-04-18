@@ -35,8 +35,6 @@ public class Build : CreatureTask
             AddSubTask(new FindAndHaulItem(item.Key, item.Value, structure.Cell, structure));
         }
         AddSubTask(new Move(structure.Cell.GetPathableNeighbour()));
-
-
     }
 
     public bool Built = false;
@@ -79,43 +77,48 @@ public class Build : CreatureTask
                 return false;
             }
 
-            TargetStructure.IsBluePrint = false;
-            TargetStructure.Refresh();
-
-            if (TargetStructure.IsInterlocking())
-            {
-                foreach (var neighbour in TargetStructure.Cell.NonNullNeighbors)
-                {
-                    if (neighbour.Structure != null)
-                    {
-                        neighbour.Structure.Refresh();
-                    }
-                }
-            }
-
-            creature.GetFaction().AddStructure(TargetStructure);
-
-            foreach (var item in GetContainedItems())
-            {
-                Game.Instance.ItemController.DestroyItem(item);
-            }
-            if (TargetStructure.Properties.ContainsKey(NamedProperties.ContainedItemIds))
-            {
-                TargetStructure.Properties.Remove(NamedProperties.ContainedItemIds);
-            }
-
-            if (TargetStructure.IsShadowCaster())
-            {
-                TargetStructure.Renderer.EnableShadow();
-            }
-            else
-            {
-                TargetStructure.Renderer.DisableShadow();
-            }
+            FinishStructure(creature.GetFaction());
 
             return true;
         }
         return false;
+    }
+
+    public void FinishStructure(Faction faction)
+    {
+        TargetStructure.IsBluePrint = false;
+        TargetStructure.Refresh();
+
+        if (TargetStructure.IsInterlocking())
+        {
+            foreach (var neighbour in TargetStructure.Cell.NonNullNeighbors)
+            {
+                if (neighbour.Structure != null)
+                {
+                    neighbour.Structure.Refresh();
+                }
+            }
+        }
+
+        faction.AddStructure(TargetStructure);
+
+        foreach (var item in GetContainedItems())
+        {
+            Game.Instance.ItemController.DestroyItem(item);
+        }
+        if (TargetStructure.Properties.ContainsKey(NamedProperties.ContainedItemIds))
+        {
+            TargetStructure.Properties.Remove(NamedProperties.ContainedItemIds);
+        }
+
+        if (TargetStructure.IsShadowCaster())
+        {
+            TargetStructure.Renderer.EnableShadow();
+        }
+        else
+        {
+            TargetStructure.Renderer.DisableShadow();
+        }
     }
 
     private List<Item> GetContainedItems()

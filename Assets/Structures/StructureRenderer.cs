@@ -25,16 +25,25 @@ public class StructureRenderer : MonoBehaviour
         }
     }
 
+
+
+
     public void DisableShadow()
     {
-        ShadowCaster.enabled = false;
-        CompositeCaster.enabled = false;
+        if (Game.Instance.EnableShadows)
+        {
+            ShadowCaster.enabled = false;
+            CompositeCaster.enabled = false;
+        }
     }
 
     public void EnableShadow()
     {
-        ShadowCaster.enabled = true;
-        CompositeCaster.enabled = true;
+        if (Game.Instance.EnableShadows)
+        {
+            ShadowCaster.enabled = true;
+            CompositeCaster.enabled = true;
+        }
     }
 
     public void Start()

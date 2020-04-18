@@ -144,6 +144,22 @@ public class DeveloperConsole : MonoBehaviour
         Commands.Add("Zones", (_) => List("Zones"));
         Commands.Add("Factions", (_) => List("Factions"));
 
+        Commands.Add("CompleteStructures", (args) =>
+        {
+            var ids = "";
+            foreach (var build in Game.Instance.FactionController
+                                                   .PlayerFaction
+                                                   .AvailableTasks.OfType<Build>().ToList())
+            {
+                build.FinishStructure(Game.Instance.FactionController.PlayerFaction);
+                ids += $"{build.TargetStructure.Id},";
+
+                Game.Instance.FactionController.PlayerFaction.AvailableTasks.Remove(build);
+            }
+            return ids.Trim(',');
+        });
+
+
         Commands.Add("List", List);
         Commands.Add("Inspect", (args) => GetEntity(args).ToString());
         Commands.Add("Move", (args) =>

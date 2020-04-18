@@ -107,6 +107,7 @@ public class Game : MonoBehaviour
     public float MinTimeToClick { get; set; } = 0.05f;
     public bool Paused { get; set; }
     public bool Typing { get; set; }
+    public bool EnableShadows;
 
     public void AddItemToDestroy(GameObject gameObject)
     {
