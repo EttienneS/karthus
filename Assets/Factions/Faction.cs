@@ -1,12 +1,13 @@
 ﻿using Newtonsoft.Json;
+using Structures;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Structures;
 
 public class Faction
 {
     public List<CreatureTask> AvailableTasks = new List<CreatureTask>();
+
     public Dictionary<CreatureTask, Creature> AssignedTasks
     {
         get
@@ -191,8 +192,11 @@ public class Faction
         }
         structure.FactionName = FactionName;
 
-        HomeCells.AddRange(Game.Instance.Map.GetCircle(structure.Cell, 5));
-        HomeCells = HomeCells.Distinct().ToList();
+        if (FactionName != FactionConstants.World)
+        {
+            HomeCells.AddRange(Game.Instance.Map.GetCircle(structure.Cell, 5));
+            HomeCells = HomeCells.Distinct().ToList();
+        }
     }
 
     public void LoadHomeCells()

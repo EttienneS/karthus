@@ -97,17 +97,21 @@ public class MapGenerator
 
     public void Work()
     {
+        var sw = new System.Diagnostics.Stopwatch();
+        sw.Start();
+        Debug.Log("Start mapgen");
+
         Game.Instance.Map.Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
 
-        if (SaveManager.SaveToLoad == null)
+        if (SaveManager.SaveToLoad == null) 
         {
             for (var i = 0; i < Game.Instance.Map.Size; i++)
+
             {
                 for (var k = 0; k < Game.Instance.Map.Size; k++)
                 {
-                     Game.Instance.Map.MakeChunk(new Chunk((Game.Instance.Map.Origin.X / Game.Instance.Map.ChunkSize) + i,
+                    Game.Instance.Map.MakeChunk(new Chunk((Game.Instance.Map.Origin.X / Game.Instance.Map.ChunkSize) + i,
                                                   (Game.Instance.Map.Origin.Y / Game.Instance.Map.ChunkSize) + k));
-
                 }
             }
         }
@@ -120,6 +124,7 @@ public class MapGenerator
         }
 
         Done = true;
+        Debug.Log($"End mapgen {sw.ElapsedMilliseconds}");
     }
 
     public IEnumerator xWork()
@@ -135,8 +140,8 @@ public class MapGenerator
             {
                 for (var k = 0; k < Game.Instance.Map.Size; k++)
                 {
-                     Game.Instance.Map.MakeChunk(new Chunk((Game.Instance.Map.Origin.X / Game.Instance.Map.ChunkSize) + i,
-                                                  (Game.Instance.Map.Origin.Y / Game.Instance.Map.ChunkSize) + k));
+                    Game.Instance.Map.MakeChunk(new Chunk((Game.Instance.Map.Origin.X / Game.Instance.Map.ChunkSize) + i,
+                                                 (Game.Instance.Map.Origin.Y / Game.Instance.Map.ChunkSize) + k));
 
                     Game.Instance.SetLoadStatus($"Create Chunk {counter}", counter / total);
                     counter++;

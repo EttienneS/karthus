@@ -530,9 +530,7 @@ public class Game : MonoBehaviour
             {
                 CameraController.Camera.transform.position = new Vector3(25, 25, -1);
                 CameraController.Camera.orthographicSize = 5;
-                Debug.Log("Start map gen");
                 MapGenerator.Work();
-                Debug.Log("Map gen complete");
             }
         }
         else if (!_shownOnce)
@@ -755,7 +753,7 @@ public class Game : MonoBehaviour
     }
     private void Start()
     {
-        Debug.Log("Start game");
+
         LoadingPanel.LoadingTextBox.text = "Initializing...";
 
         UIController.Hide();
