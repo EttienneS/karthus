@@ -27,14 +27,36 @@ public class RemoveStructure : CreatureTask
     {
         StructureToRemove = structure;
 
-        AddSubTask(new Move(Game.Instance.Map.GetPathableNeighbour(StructureToRemove.Cell)));
-        AddSubTask(new Wait(structure.Cost.Items.Sum(c => c.Value) , "Deconstructing..."));
     }
+
+    public bool Decontructed;
 
     public override bool Done(Creature creature)
     {
         if (SubTasksComplete(creature))
         {
+            if (!creature.Cell.Neighbors.Contains(StructureToRemove.Cell))
+            {
+                var pathable = Game.Instance.Map.TryGetPathableNeighbour(StructureToRemove.Cell);
+
+                if (pathable != null)
+                {
+                    AddSubTask(new Move(pathable));
+                }
+                else
+                {
+                    creature.SuspendTask();
+                    return false;
+                }
+            }
+
+            if (!Decontructed)
+            {
+                AddSubTask(new Wait(StructureToRemove.Cost.Items.Sum(c => c.Value), "Deconstructing..."));
+                Decontructed = true;
+                return false;
+            }
+
             foreach (var item in StructureToRemove.Cost.Items)
             {
                 var spawnedItem = Game.Instance.ItemController.SpawnItem(item.Key, StructureToRemove.Cell);
@@ -46,7 +68,7 @@ public class RemoveStructure : CreatureTask
             }
 
             Game.Instance.StructureController.DestroyStructure(StructureToRemove);
-
+            StructureToRemove = null;
             return true;
         }
 

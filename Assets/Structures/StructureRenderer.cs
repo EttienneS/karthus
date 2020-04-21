@@ -8,6 +8,7 @@ public class StructureRenderer : MonoBehaviour
     public CompositeShadowCaster2D CompositeCaster;
     public ShadowCaster2D ShadowCaster;
     internal Structure Data;
+
     [JsonIgnore]
     private SpriteRenderer _spriteRenderer;
 
@@ -24,9 +25,6 @@ public class StructureRenderer : MonoBehaviour
             return _spriteRenderer;
         }
     }
-
-
-
 
     public void DisableShadow()
     {

@@ -57,7 +57,7 @@ public static class Behaviours
         else if (creature.Cell.Creatures.Count > 1)
         {
             // split up
-            task = new Move(Game.Instance.Map.GetPathableNeighbour(creature.Cell));
+            task = new Move(Game.Instance.Map.TryGetPathableNeighbour(creature.Cell));
         }
 
         return task;

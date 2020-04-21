@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,17 +9,16 @@ public abstract class CreatureTask
     public string BusyEmote;
     public bool Destroyed;
     public string DoneEmote;
-    public abstract string Message { get; }
-
     [JsonIgnore]
     public CreatureTask Parent;
 
     public Queue<CreatureTask> SubTasks = new Queue<CreatureTask>();
+    public bool AutoRetry { get; set; }
     [JsonIgnore]
     public List<Badge> Badges { get; set; } = new List<Badge>();
 
     public Cost Cost { get; set; } = new Cost();
-
+    public abstract string Message { get; }
     public string RequiredSkill { get; set; }
 
     public float RequiredSkillLevel { get; set; }
@@ -42,6 +40,7 @@ public abstract class CreatureTask
             return total;
         }
     }
+
     public void AddCellBadge(Cell cell, string badgeIcon)
     {
         Badges.Add(Game.Instance.VisualEffectController.AddBadge(cell, badgeIcon));
@@ -109,10 +108,9 @@ public abstract class CreatureTask
         return false;
     }
 
-    internal void Suspend()
+    internal void ToggleSuspended(bool autoRetry)
     {
         Suspended = !Suspended;
+        AutoRetry = true;
     }
-
-
 }

@@ -581,12 +581,17 @@ public class Map : MonoBehaviour
                            .First();
     }
 
-    internal Cell GetPathableNeighbour(Cell coordinates)
+    internal Cell TryGetPathableNeighbour(Cell coordinates)
     {
-        return coordinates.NonNullNeighbors
-                          .Where(c => c.TravelCost > 0)
-                          .ToList()
-                          .GetRandomItem();
+        var pathables = coordinates.NonNullNeighbors
+                     .Where(c => c.TravelCost > 0)
+                     .ToList();
+
+        if (pathables.Count > 0)
+        {
+            return pathables.GetRandomItem();
+        }
+        return null;
     }
 
     internal Cell GetRandomEmptyCell()

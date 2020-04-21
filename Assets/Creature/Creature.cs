@@ -70,7 +70,6 @@ public class Creature : IEntity
 
     private int _selfTicks;
 
-    private CreatureTask _task;
 
     public float Aggression { get; set; }
 
@@ -235,18 +234,7 @@ public class Creature : IEntity
 
     public int Strenght { get; set; }
 
-    public CreatureTask Task
-    {
-        get
-        {
-            return _task;
-        }
-        set
-        {
-            _task?.Destroy();
-            _task = value;
-        }
-    }
+    public CreatureTask Task { get; set; }
 
     public Dictionary<string, float> ValueProperties { get; set; } = new Dictionary<string, float>();
 
@@ -624,9 +612,24 @@ public class Creature : IEntity
 
             DropItem(Cell);
             Log($"Canceled {Task} task");
+            
             Faction.RemoveTask(Task);
             Task.Complete();
             Task.Destroy();
+            Task = null;
+        }
+    }
+
+    internal void SuspendTask(bool autoRetry = true)
+    {
+        if (Task != null)
+        {
+            DropItem(Cell);
+            Log($"Suspended {Task} task");
+
+            Task.ToggleSuspended(autoRetry);
+            Faction.AddTask(Task);
+
             Task = null;
         }
     }

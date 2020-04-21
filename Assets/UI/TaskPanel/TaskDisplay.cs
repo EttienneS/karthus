@@ -51,7 +51,7 @@ namespace Assets.UI.TaskPanel
         {
             if (Game.Instance.FactionController.PlayerFaction.AvailableTasks.Contains(_task))
             {
-                _task.Suspend();
+                _task.ToggleSuspended(false);
                 Game.Instance.FactionController.PlayerFaction.AvailableTasks.Remove(_task);
                 Game.Instance.FactionController.PlayerFaction.AvailableTasks.Add(_task);
 

@@ -173,12 +173,6 @@ namespace Structures
                     Debug.Log("Unbound structure");
                 }
 
-                Game.Instance.IdService.RemoveEntity(structure);
-                Game.Instance.FactionController.Factions[structure.FactionName].Structures.Remove(structure);
-
-                Game.Instance.AddItemToDestroy(structure.Renderer.gameObject);
-
-                
                 if (structure.IsInterlocking())
                 {
                     var cell = structure.Cell;
@@ -188,6 +182,10 @@ namespace Structures
                         interlocked.UpdateInterlocking();
                     }
                 }
+
+                Game.Instance.IdService.RemoveEntity(structure);
+                Game.Instance.FactionController.Factions[structure.FactionName].Structures.Remove(structure);
+                Game.Instance.AddItemToDestroy(structure.Renderer.gameObject);
             }
         }
 

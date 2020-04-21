@@ -4,14 +4,13 @@
       "Content": {
         "Rock":  1.0
       },
-      "TravelCost": -1,
       "Max": 1.0,
       "Min": 0.6,
       "SpriteName": "Stone"
     },
     {
       "Content": {
-        "Medium Rock": 0.05
+        "Medium Rock": 0.1
       },
       "Max": 0.6,
       "Min": 0.3,
@@ -19,7 +18,7 @@
     },
     {
       "Content": {
-        "Medium Rock": 0.02
+        "Medium Rock": 0.05
       },
       "Max": 0.3,
       "Min": 0.0,

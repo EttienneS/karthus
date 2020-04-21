@@ -19,6 +19,7 @@ public class Faction
     public List<Creature> Creatures = new List<Creature>();
     public string FactionName;
     public float LastUpdate;
+    public float LastRetry;
     public List<Structure> Structures = new List<Structure>();
 
     public IEnumerable<Container> Containers
@@ -145,6 +146,16 @@ public class Faction
                 {
                     creature.Cell = Game.Instance.Map.Center;
                 }
+            }
+        }
+
+        LastRetry += Time.deltaTime;
+        if (LastRetry > UpdateTick * 10)
+        {
+            LastRetry = 0;
+            foreach (var task in AvailableTasks.Where(t => t.Suspended && t.AutoRetry))
+            {
+                task.ToggleSuspended(false);
             }
         }
     }
