@@ -121,6 +121,17 @@ namespace Structures
             }
         }
 
+        internal void UpdateInterlocking()
+        {
+            foreach (var neighbour in Cell.NonNullNeighbors)
+            {
+                if (neighbour.Structure?.IsInterlocking() == true)
+                {
+                    neighbour.Structure.Refresh();
+                }
+            }
+        }
+
         [JsonIgnore]
         public bool InUseByAnyone
         {
@@ -146,7 +157,7 @@ namespace Structures
         public Sprite GetSprite()
         {
             Sprite sprite;
-            if (IsWall())
+            if (IsInterlocking())
             {
                 sprite = Game.Instance.SpriteStore.GetInterlockingSprite(this);
             }
@@ -262,6 +273,7 @@ namespace Structures
         {
             return ValueProperties.ContainsKey(v);
         }
+
         internal void HideOutline()
         {
             if (_outline != null)

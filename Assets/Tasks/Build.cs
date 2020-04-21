@@ -91,13 +91,7 @@ public class Build : CreatureTask
 
         if (TargetStructure.IsInterlocking())
         {
-            foreach (var neighbour in TargetStructure.Cell.NonNullNeighbors)
-            {
-                if (neighbour.Structure != null)
-                {
-                    neighbour.Structure.Refresh();
-                }
-            }
+           TargetStructure.UpdateInterlocking();
         }
 
         faction.AddStructure(TargetStructure);
@@ -120,6 +114,8 @@ public class Build : CreatureTask
             TargetStructure.Renderer.DisableShadow();
         }
     }
+
+    
 
     private List<Item> GetContainedItems()
     {

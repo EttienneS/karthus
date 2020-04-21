@@ -76,20 +76,22 @@ public class ChunkRenderer : MonoBehaviour
 
     public void Start()
     {
-        transform.position = new Vector3(Data.X * Game.Instance.Map.ChunkSize, Data.Y * Game.Instance.Map.ChunkSize);
-        DrawGround();
-        Populate();
+        using (var sw = new Instrumenter(nameof(ChunkRenderer)))
+        {
+            transform.position = new Vector3(Data.X * Game.Instance.Map.ChunkSize, Data.Y * Game.Instance.Map.ChunkSize);
+            DrawGround();
+            Populate();
+            UpdateInterlocked();
+        }
     }
 
-    //public void Update()
-    //{
-    //    if (!GroundDrawn)
-    //    {
-    //    }
-    //    else if (!Data.Populated)
-    //    {
-    //    }
-    //}
+    private void UpdateInterlocked()
+    {
+        foreach (var wall in Cells.Where(c => c.Structure?.IsInterlocking() == true).Select(c => c.Structure))
+        {
+            wall.UpdateInterlocking();
+        }
+    }
 
     internal void MakeCells()
     {

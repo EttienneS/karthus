@@ -177,6 +177,17 @@ namespace Structures
                 Game.Instance.FactionController.Factions[structure.FactionName].Structures.Remove(structure);
 
                 Game.Instance.AddItemToDestroy(structure.Renderer.gameObject);
+
+                
+                if (structure.IsInterlocking())
+                {
+                    var cell = structure.Cell;
+                    structure.Cell = null;
+                    foreach (var interlocked in cell.NonNullNeighbors.Where(c => c.Structure?.IsInterlocking() == true).Select(c => c.Structure))
+                    {
+                        interlocked.UpdateInterlocking();
+                    }
+                }
             }
         }
 

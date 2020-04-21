@@ -32,7 +32,8 @@ public class MapGenerator
     {
         if (_biome == null)
         {
-            _biome = BiomeTemplates.First(b => b.Name == "Default");
+            // _biome = BiomeTemplates.First(b => b.Name == "Default");
+            _biome = BiomeTemplates.First(b => b.Name == "Mountain");
         }
         return _biome;
         //var value = Game.Instance.Map.WorldNoiseMap[x, y];
@@ -97,34 +98,32 @@ public class MapGenerator
 
     public void Work()
     {
-        var sw = new System.Diagnostics.Stopwatch();
-        sw.Start();
-        Debug.Log("Start mapgen");
-
-        Game.Instance.Map.Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
-
-        if (SaveManager.SaveToLoad == null) 
+        using (var sw = new Instrumenter(nameof(MapGenerator)))
         {
-            for (var i = 0; i < Game.Instance.Map.Size; i++)
+            Game.Instance.Map.Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
 
+            if (SaveManager.SaveToLoad == null)
             {
-                for (var k = 0; k < Game.Instance.Map.Size; k++)
+                for (var i = 0; i < Game.Instance.Map.Size; i++)
+
                 {
-                    Game.Instance.Map.MakeChunk(new Chunk((Game.Instance.Map.Origin.X / Game.Instance.Map.ChunkSize) + i,
-                                                  (Game.Instance.Map.Origin.Y / Game.Instance.Map.ChunkSize) + k));
+                    for (var k = 0; k < Game.Instance.Map.Size; k++)
+                    {
+                        Game.Instance.Map.MakeChunk(new Chunk((Game.Instance.Map.Origin.X / Game.Instance.Map.ChunkSize) + i,
+                                                      (Game.Instance.Map.Origin.Y / Game.Instance.Map.ChunkSize) + k));
+                    }
                 }
             }
-        }
-        else
-        {
-            foreach (var chunk in SaveManager.SaveToLoad.Chunks)
+            else
             {
-                Game.Instance.Map.MakeChunk(chunk);
+                foreach (var chunk in SaveManager.SaveToLoad.Chunks)
+                {
+                    Game.Instance.Map.MakeChunk(chunk);
+                }
             }
-        }
 
-        Done = true;
-        Debug.Log($"End mapgen {sw.ElapsedMilliseconds}");
+            Done = true;
+        }
     }
 
     public IEnumerator xWork()

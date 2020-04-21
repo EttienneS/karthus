@@ -2,11 +2,12 @@
   "BiomeRegions": [
     {
       "Content": {
+        "Rock":  1.0
       },
       "TravelCost": -1,
       "Max": 1.0,
       "Min": 0.6,
-      "SpriteName": "Rock"
+      "SpriteName": "Stone"
     },
     {
       "Content": {

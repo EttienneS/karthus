@@ -2,7 +2,7 @@
   "Name": "Rock",
   "SpriteName": "Rock",
   "TravelCost": "-1",
-  "Buildable": "False",
+  "Buildable": "true",
   "Cost": {
     "Items": {
       "Stone": "10"

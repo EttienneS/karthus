@@ -146,7 +146,11 @@ public class SpriteStore : MonoBehaviour
         var e = structure.Cell.IsInterlocking(Direction.E);
         var w = structure.Cell.IsInterlocking(Direction.W);
 
-        if (n && e && s && w)
+        if (!n && !e && !s && !w)
+        {
+            type = "";
+        }
+        else if (n && e && s && w)
         {
             // _X == ┼
             type = "_X";

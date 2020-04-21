@@ -38,7 +38,7 @@ public class Map : MonoBehaviour
     {
         get
         {
-            return CellLookup[((Size * Size) / 2,  (Size * Size) / 2)];
+            return CellLookup[((Size * Size) / 2, (Size * Size) / 2)];
         }
     }
 
@@ -471,10 +471,6 @@ public class Map : MonoBehaviour
         }
 
         return chunk;
-    }
-
-    public void Update()
-    {
     }
 
     internal void DestroyCell(Cell cell)
