@@ -7,25 +7,6 @@ public static class Pathfinder
     private static CellPriorityQueue _searchFrontier;
     private static int _searchFrontierPhase;
 
-    internal static float Distance(Cell fromCell, Cell toCell, Mobility mobility)
-    {
-        var distance = 0f;
-
-        try
-        {
-            foreach (var cell in FindPath(fromCell, toCell, mobility))
-            {
-                distance += cell.TravelCost;
-            }
-
-            return distance;
-        }
-        catch
-        {
-            return float.MaxValue;
-        }
-    }
-
     public static List<Cell> FindPath(Cell fromCell, Cell toCell, Mobility mobility)
     {
         if (fromCell != null && toCell != null)
@@ -81,6 +62,25 @@ public static class Pathfinder
         reachableCells.Remove(startPoint);
 
         return reachableCells;
+    }
+
+    internal static float Distance(Cell fromCell, Cell toCell, Mobility mobility)
+    {
+        var distance = 0f;
+
+        try
+        {
+            foreach (var cell in FindPath(fromCell, toCell, mobility))
+            {
+                distance += cell.TravelCost;
+            }
+
+            return distance;
+        }
+        catch
+        {
+            return float.MaxValue;
+        }
     }
 
     internal static float GetPathCost(Cell fromCell, Cell toCell, Mobility mobility)

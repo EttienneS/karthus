@@ -76,7 +76,7 @@ public class ChunkRenderer : MonoBehaviour
 
     public void Start()
     {
-        using (var sw = new Instrumenter(nameof(ChunkRenderer)))
+        //using (var sw = new Instrumenter(nameof(ChunkRenderer)))
         {
             transform.position = new Vector3(Data.X * Game.Instance.Map.ChunkSize, Data.Y * Game.Instance.Map.ChunkSize);
             DrawGround();

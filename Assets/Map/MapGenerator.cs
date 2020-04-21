@@ -98,7 +98,7 @@ public class MapGenerator
 
     public void Work()
     {
-        using (var sw = new Instrumenter(nameof(MapGenerator)))
+        using (Instrumenter.Init())
         {
             Game.Instance.Map.Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
 

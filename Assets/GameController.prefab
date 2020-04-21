@@ -110,7 +110,7 @@ MonoBehaviour:
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 1
-  m_PointLightOuterRadius: 5
+  m_PointLightOuterRadius: 3
   m_PointLightDistance: 3
   m_PointLightQuality: 1
   m_ShapeLightParametricSides: 5
@@ -172,6 +172,7 @@ MonoBehaviour:
   CreatureController: {fileID: 0}
   CreatureInfoPanelPrefab: {fileID: 1526732850936286135, guid: 78582b738b61cbe499b41a29e3f79da7,
     type: 3}
+  CursorLight: {fileID: 1910422789}
   DeveloperConsole: {fileID: 0}
   FactionController: {fileID: 0}
   FileController: {fileID: 0}
@@ -179,6 +180,7 @@ MonoBehaviour:
   ItemInfoPanelPrefab: {fileID: 8070986180317268848, guid: be3395e59bbffef40ba189c06e55c4c6,
     type: 3}
   LoadingPanel: {fileID: 0}
+  LoadPanel: {fileID: 0}
   MainMenuController: {fileID: 0}
   Map: {fileID: 0}
   MouseSpriteRenderer: {fileID: 4395502561622324067}
@@ -200,7 +202,7 @@ MonoBehaviour:
   ZoneController: {fileID: 0}
   ZoneInfoPanelPrefab: {fileID: 6224699677946717344, guid: 7e644716772d30044a157517133287c5,
     type: 3}
-  LoadPanel: {fileID: 0}
+  EnableShadows: 0
 --- !u!120 &1817309255
 LineRenderer:
   m_ObjectHideFlags: 0
