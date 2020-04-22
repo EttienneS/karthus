@@ -7,18 +7,18 @@ public class MapGenerator
 {
     public bool Done;
     public string Status;
-    private List<Biome> _biomeTemplates;
+    private Dictionary<string, Biome> _biomeTemplates;
 
-    public List<Biome> BiomeTemplates
+    public Dictionary<string, Biome> BiomeTemplates
     {
         get
         {
             if (_biomeTemplates == null)
             {
-                _biomeTemplates = new List<Biome>();
+                _biomeTemplates = new Dictionary<string, Biome>();
                 foreach (var biomeFile in Game.Instance.FileController.BiomeFiles)
                 {
-                    _biomeTemplates.Add(biomeFile.text.LoadJson<Biome>());
+                    _biomeTemplates.Add(biomeFile.name, biomeFile.text.LoadJson<Biome>());
                 }
             }
 
@@ -26,22 +26,38 @@ public class MapGenerator
         }
     }
 
-    private Biome _biome;
+  public float max = -100f;
+  public float min = 100f;
 
     public Biome GetBiome(int x, int y)
     {
-        if (_biome == null)
-        {
-            // _biome = BiomeTemplates.First(b => b.Name == "Default");
-            _biome = BiomeTemplates.First(b => b.Name == "Mountain");
-        }
-        return _biome;
-        //var value = Game.Instance.Map.WorldNoiseMap[x, y];
-        //if (value > 0.5f)
+        //if (_biome == null)
         //{
-        //    return BiomeTemplates[0];
+        //    // _biome = BiomeTemplates.First(b => b.Name == "Default");
+        //    _biome = BiomeTemplates.First(b => b.Name == "Mountain");
         //}
-        //return BiomeTemplates[1];
+        //return _biome;
+       
+        var value = Game.Instance.Map.WorldNoiseMap[x, y];
+
+        if (value > max)
+        {
+            max = value;
+        }
+        if (value < min)
+        {
+            min = value;
+        }
+
+        if (value > 0.7f)
+        {
+            return BiomeTemplates["Mountain"];
+        }
+        if (value < 0.3f)
+        {
+            return BiomeTemplates["Water"];
+        }
+        return BiomeTemplates["Default"];
     }
 
     public (Cell bottomLeft, Cell bottomRight, Cell topLeft, Cell topRight) GetCorners(List<Cell> square)
@@ -124,6 +140,7 @@ public class MapGenerator
 
             Done = true;
         }
+
     }
 
     public IEnumerator xWork()

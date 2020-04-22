@@ -1,33 +1,19 @@
 {
   "BiomeRegions": [
     {
-      "Content": {},
-      "Min": 0.0,
-      "Max": 0.27,
-      "TravelCost": -1,
-      "SpriteName": "Water"
-    },
-    {
-      "Content": {
-      },
-      "Min": 0.27,
-      "Max": 0.3,
-      "SpriteName": "Sand"
-    },
-    {
       "Content": {
         "Medium Rock": 0.05
       },
-      "Min": 0.3,
-      "Max": 0.35,
+      "Min": 0.0,
+      "Max": 0.3,
       "SpriteName": "Dirt"
     },
     {
       "Content": {
         "Medium Rock": 0.03
       },
-      "Min": 0.35,
-      "Max": 0.4,
+      "Min": 0.3,
+      "Max": 0.35,
       "SpriteName": "PatchyGrass"
     },
     {
@@ -36,7 +22,7 @@
         "Bush": 0.05,
         "Verdant Pyre": 0.01
       },
-      "Min": 0.4,
+      "Min": 0.35,
       "Max": 0.7,
       "SpriteName": "Grass"
     },

@@ -357,6 +357,10 @@ public class Game : MonoBehaviour
         DeselectStructure(true);
         DeselectItem();
 
+        if (_currentZoneInfoPanel != null)
+        {
+            _currentZoneInfoPanel.Destroy();
+        }
         _currentZoneInfoPanel = Instantiate(ZoneInfoPanelPrefab, UI.transform);
         _currentZoneInfoPanel.Show(zone);
     }
@@ -550,7 +554,12 @@ public class Game : MonoBehaviour
             CameraController.transform.position = FactionController.PlayerFaction.Creatures[0].Cell.Vector;
 
             MainMenuController.Toggle();
+
+
+            Debug.Log($"Max: {MapGenerator.max}, Min: {MapGenerator.min}");
         }
+
+
     }
 
     private bool MouseOverUi()
@@ -724,6 +733,10 @@ public class Game : MonoBehaviour
             DeselectCreature();
             DeselectZone();
 
+            if (_currentItemInfoPanel != null)
+            {
+                _currentItemInfoPanel.Destroy();
+            }
             _currentItemInfoPanel = Instantiate(ItemInfoPanelPrefab, UI.transform);
             _currentItemInfoPanel.Show(SelectedItems);
             return true;
@@ -745,6 +758,10 @@ public class Game : MonoBehaviour
             DeselectCreature();
             DeselectZone();
 
+            if (_currentStructureInfoPanel != null)
+            {
+                _currentStructureInfoPanel.Destroy();
+            }
             _currentStructureInfoPanel = Instantiate(StructureInfoPanelPrefab, UI.transform);
             _currentStructureInfoPanel.Show(SelectedStructures.ToList());
             return true;
