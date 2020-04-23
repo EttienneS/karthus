@@ -49,11 +49,11 @@ public class MapGenerator
             min = value;
         }
 
-        if (value > 0.7f)
+        if (value > 0.65f)
         {
             return BiomeTemplates["Mountain"];
         }
-        if (value < 0.3f)
+        if (value < 0.25f)
         {
             return BiomeTemplates["Water"];
         }

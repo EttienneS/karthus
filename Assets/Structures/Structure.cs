@@ -27,6 +27,17 @@ namespace Structures
 
         public string Type;
 
+        [JsonIgnore]
+        public Color Color
+        {
+            get
+            {
+                return ColorHex.GetColorFromHex();
+            }
+        }
+
+        public string ColorHex = "#ffffff";
+
         private Cell _cell;
 
         private Faction _faction;
@@ -172,7 +183,7 @@ namespace Structures
             }
             else
             {
-                Renderer.SpriteRenderer.color = Cell.Color;
+                Renderer.SpriteRenderer.color = Cell.Color * Color;
             }
 
             return sprite;

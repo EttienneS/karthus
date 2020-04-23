@@ -32,9 +32,11 @@ public partial class OrderSelectionController : MonoBehaviour
         }
     }
 
-    private OrderButton CreateOrderButton(UnityAction action, UnityAction onHover, string sprite, bool isSubButton = true)
+    private OrderButton CreateOrderButton(UnityAction action, UnityAction onHover, string spriteName, string colorHex = "#ffffff", bool isSubButton = true)
     {
-        return CreateOrderButton(action, onHover, Game.Instance.SpriteStore.GetSprite(sprite), isSubButton);
+        var btn = CreateOrderButton(action, onHover, Game.Instance.SpriteStore.GetSprite(spriteName), isSubButton);
+        btn.Button.image.color = colorHex.GetColorFromHex();
+        return btn;
     }
 
     private OrderButton CreateOrderButton(UnityAction action, UnityAction onHover, Sprite sprite, bool isSubButton = true)
@@ -53,9 +55,9 @@ public partial class OrderSelectionController : MonoBehaviour
         Game.Instance.OrderTrayController.gameObject.SetActive(false);
         Game.Instance.OrderInfoPanel.Hide();
 
-        BuildButton = CreateOrderButton(BuildTypeClicked, null, "hammer", false);
-        ZonesButton = CreateOrderButton(ZoneTypeClicked, null, "plus_t", false);
-        TaskButton = CreateOrderButton(DesignateTypeClicked, null, "designate", false);
-        ConstructButton = CreateOrderButton(ConstructTypeClicked, null, "construct", false);
+        BuildButton = CreateOrderButton(BuildTypeClicked, null, "hammer", "#ffffff", false);
+        ZonesButton = CreateOrderButton(ZoneTypeClicked, null, "plus_t", "#ffffff", false);
+        TaskButton = CreateOrderButton(DesignateTypeClicked, null, "designate", "#ffffff", false);
+        ConstructButton = CreateOrderButton(ConstructTypeClicked, null, "construct", "#ffffff", false);
     }
 }

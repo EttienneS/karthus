@@ -1,8 +1,9 @@
 {
-  "Name": "Rock",
+  "Name": "Ore",
   "SpriteName": "Rock",
   "TravelCost": "-1",
   "Buildable": "False",
+  "ColorHex": "#fbc531",
   "Cost": {
     "Items": {
       "Stone": "10"

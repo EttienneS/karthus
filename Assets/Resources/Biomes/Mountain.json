@@ -2,25 +2,27 @@
   "BiomeRegions": [
     {
       "Content": {
-        "Rock":  1.0
+        "Rock": 1.0,
+        "Ore": 0.2
       },
-      "Max": 1.0,
-      "Min": 0.6,
+      "Max": 1,
+      "Min": 0.7,
+      "SpriteName": "Stone"
+    },
+    {
+      "Content": {
+        "Rock": 1,
+        "Ore": 0.1
+      },
+      "Max": 0.7,
+      "Min": 0.4,
       "SpriteName": "Stone"
     },
     {
       "Content": {
         "Medium Rock": 0.1
       },
-      "Max": 0.6,
-      "Min": 0.3,
-      "SpriteName": "Stone"
-    },
-    {
-      "Content": {
-        "Medium Rock": 0.05
-      },
-      "Max": 0.3,
+      "Max": 0.4,
       "Min": 0.0,
       "SpriteName": "Dirt"
     }

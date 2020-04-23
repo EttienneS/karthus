@@ -29,13 +29,11 @@ public static class ColorExtensions
     {
         return $"{color.r},{color.g},{color.b},{color.a}";
     }
+
     internal static Color GetColorFromHex(this string hexString)
     {
         Color col;
-        if (!hexString.StartsWith("#"))
-        {
-            hexString = "#" + hexString;
-        }
+        hexString = "#" + hexString.Trim('#');
         if (ColorUtility.TryParseHtmlString(hexString, out col))
         {
             return col;

@@ -1,0 +1,14 @@
+{
+  "Name": "Wood Wall",
+  "SpriteName": "StoneWall",
+  "Description": "Wall made from wood, not much to look at but keeps the bad things out (or in..)",
+  "TravelCost": "-1",
+  "Cost": {
+    "Items": {
+      "Wood": "1"
+    }
+  },
+  "Buildable": "True",
+  "ColorHex": "#fbc531",
+  "Type": "Wall"
+}
