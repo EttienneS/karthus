@@ -581,7 +581,7 @@ public class Game : MonoBehaviour
 
     private void MoveMouseSprite(Vector3 mousePosition)
     {
-        CursorLight.gameObject.SetActive(Instance.TimeManager.Data.Hour > 17 || Instance.TimeManager.Data.Hour < 5);
+        CursorLight.enabled = Instance.TimeManager.Data.Hour > 17 || Instance.TimeManager.Data.Hour < 5;
 
         if (MouseSpriteRenderer.gameObject.activeInHierarchy)
         {

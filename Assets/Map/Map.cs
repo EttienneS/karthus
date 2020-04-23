@@ -20,6 +20,9 @@ public class Map : MonoBehaviour
     public NoiseSettings LocalNoise;
     public int MaxSize = 1000;
 
+    [Range(1, 10)]
+    public int CreaturesToSpawn = 3;
+
     [Range(0.001f, 0.2f)]
     public float Scaler = 0.1f;
 
