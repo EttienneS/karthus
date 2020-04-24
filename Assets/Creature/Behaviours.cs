@@ -68,21 +68,19 @@ public static class Behaviours
     {
         CreatureTask task = null;
 
-        var enemy = FindEnemy(creature);
+        var creatures = creature.Awareness.SelectMany(c => c.Creatures);
 
-        var wound = creature.GetWorstWound();
-        if (enemy != null)
+        var enemies = creatures.Where(c => c.FactionName != creature.FactionName);
+        var herd = creatures.Where(c => c.FactionName == creature.FactionName);
+
+        if (enemies.Any())
         {
-            creature.Combatants.Add(enemy);
+            var target = Game.Instance.Map.GetCellAttRadian(enemies.GetRandomItem().Cell, 10, Random.Range(1, 360));
+            task = new Move(target);
         }
-        else if (wound != null)
+        else if (herd.Any())
         {
-            task = new Heal();
-        }
-        else if (creature.Cell.Creatures.Count > 1)
-        {
-            // split up
-            task = new Move(Game.Instance.Map.TryGetPathableNeighbour(creature.Cell));
+            task = new Move(Game.Instance.Map.GetCircle(herd.GetRandomItem().Cell, 5).GetRandomItem());
         }
 
         return task;
