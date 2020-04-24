@@ -1,0 +1,124 @@
+﻿{
+  "Name": "Cow",
+  "ValueProperties": {
+  },
+  "Speed": 0.1,
+  "Aggression": 0,
+
+  "Strenght": 14,
+  "Perception": 3,
+  "Dexterity": 10,
+  "Vitality": 16,
+
+  "Sprite": "Cow-X",
+  "BehaviourName": "Grazer",
+  "Mobility": "Walk",
+  "Limbs": [
+    {
+      "Resistance": {
+        "Bludgeoning": 1
+      },
+      "DefensiveActions": [
+        {
+          "$type": "Brace, Assembly-CSharp",
+          "Name": "brace torso",
+          "ActivationTIme": 0.3
+        }
+      ],
+      "BuffActions": [],
+      "Name": "Torso",
+      "OffensiveActions": [],
+      "Vital": false,
+      "MaxHP": 60
+    },
+    {
+      "Resistance": {
+        "Bludgeoning": 1
+      },
+      "DefensiveActions": [
+        {
+          "$type": "Brace, Assembly-CSharp",
+          "Name": "brace head",
+          "ActivationTIme": 0.3
+        }
+      ],
+      "BuffActions": [],
+      "Name": "Head",
+      "OffensiveActions": [
+        {
+          "$type": "Strike, Assembly-CSharp",
+          "DiceSize": 4,
+          "DamageType": 2,
+          "Range": 1,
+          "Name": "Headbut",
+          "ActivationTime": 1.0,
+          "Progress": 0.0
+        }
+      ],
+      "Vital": true,
+      "MaxHP": 25
+    },
+    {
+      "Resistance": {
+        "Bludgeoning": 1
+      },
+      "DefensiveActions": [
+        {
+          "$type": "Dodge, Assembly-CSharp",
+          "Name": "dodge left",
+          "ActivationTIme": 0.5
+        }
+      ],
+      "BuffActions": [],
+      "Name": "Front Left Leg",
+      "OffensiveActions": [],
+      "Vital": false,
+      "MaxHP": 20
+    },
+    {
+      "Resistance": {
+        "Bludgeoning": 1
+      },
+      "DefensiveActions": [
+        {
+          "$type": "Dodge, Assembly-CSharp",
+          "Name": "dodge left",
+          "ActivationTIme": 0.5
+        }
+      ],
+      "BuffActions": [],
+      "Name": "Front Right Leg",
+      "OffensiveActions": [],
+      "Vital": false,
+      "MaxHP": 20
+    },
+    {
+      "Resistance": {
+        "Bludgeoning": 1
+      },
+      "DefensiveActions": [],
+      "BuffActions": [],
+      "Name": "Back Left Leg",
+      "OffensiveActions": [],
+      "Vital": false,
+      "MaxHP": 20
+    },
+    {
+      "Resistance": {
+        "Bludgeoning": 1
+      },
+      "DefensiveActions": [],
+      "BuffActions": [],
+      "Name": "Back Right Leg",
+      "OffensiveActions": [],
+      "Vital": false,
+      "MaxHP": 20
+    }
+  ],
+  "ManaPool": {
+    "Blue": {
+      "Color": "Green",
+      "Total": 2
+    }
+  }
+}

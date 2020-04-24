@@ -12,7 +12,8 @@ public static class Behaviours
     {
         { "Monster", Monster },
         { "Person", Person },
-        { "Skeleton", Skeleton }
+        { "Skeleton", Skeleton },
+        { "Grazer", Grazer }
     };
 
     public delegate CreatureTask GetBehaviourTaskDelegate(Creature creature);
@@ -40,6 +41,30 @@ public static class Behaviours
     }
 
     public static CreatureTask Person(Creature creature)
+    {
+        CreatureTask task = null;
+
+        var enemy = FindEnemy(creature);
+
+        var wound = creature.GetWorstWound();
+        if (enemy != null)
+        {
+            creature.Combatants.Add(enemy);
+        }
+        else if (wound != null)
+        {
+            task = new Heal();
+        }
+        else if (creature.Cell.Creatures.Count > 1)
+        {
+            // split up
+            task = new Move(Game.Instance.Map.TryGetPathableNeighbour(creature.Cell));
+        }
+
+        return task;
+    }
+
+    public static CreatureTask Grazer(Creature creature)
     {
         CreatureTask task = null;
 

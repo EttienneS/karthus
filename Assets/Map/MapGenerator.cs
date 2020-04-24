@@ -93,12 +93,12 @@ public class MapGenerator
     {
         foreach (var monster in Game.Instance.CreatureController.Beastiary)
         {
-            if (monster.Key != "Skeleton")
+            if (monster.Key == "Skeleton" || monster.Key == "Person")
             {
                 continue;
             }
 
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < 3; i++)
             {
                 var creature = Game.Instance.CreatureController.GetCreatureOfType(monster.Key);
 
