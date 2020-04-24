@@ -532,8 +532,7 @@ public class Game : MonoBehaviour
             }
             else
             {
-                CameraController.Camera.transform.position = new Vector3(25, 25, -1);
-                CameraController.Camera.orthographicSize = 5;
+                CameraController.Camera.transform.position = new Vector3(25, 25, -15);
                 MapGenerator.Work();
             }
         }

@@ -26,8 +26,8 @@ public class MapGenerator
         }
     }
 
-  public float max = -100f;
-  public float min = 100f;
+    public float max = -100f;
+    public float min = 100f;
 
     public Biome GetBiome(int x, int y)
     {
@@ -37,7 +37,7 @@ public class MapGenerator
         //    _biome = BiomeTemplates.First(b => b.Name == "Mountain");
         //}
         //return _biome;
-       
+
         var value = Game.Instance.Map.WorldNoiseMap[x, y];
 
         if (value > max)
@@ -93,12 +93,12 @@ public class MapGenerator
     {
         foreach (var monster in Game.Instance.CreatureController.Beastiary)
         {
-            if (monster.Key == "Skeleton" || monster.Key == "Person")
+            if (monster.Key == "Person")
             {
                 continue;
             }
 
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < Game.Instance.Map.CreaturesToSpawn; i++)
             {
                 var creature = Game.Instance.CreatureController.GetCreatureOfType(monster.Key);
 
