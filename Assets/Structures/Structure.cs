@@ -183,7 +183,7 @@ namespace Structures
             }
             else
             {
-                Renderer.SpriteRenderer.color = Cell.Color * Color;
+                Renderer.SpriteRenderer.color =  Color;
             }
 
             return sprite;

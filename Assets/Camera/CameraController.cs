@@ -83,7 +83,7 @@ public class CameraController : MonoBehaviour
                 ZoomStep = Mathf.Max(2f, Camera.transform.position.z / 2f);
 
                 // expand the map as the camera reaches the edges
-                //var point = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2));
+                //var point = Instance.CameraController.Camera.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2));
                 //Game.Instance.Map.ExpandChunks(Game.Instance.GetSelectedCells(point, point).First());
             }
         }

@@ -584,7 +584,7 @@ public class Game : MonoBehaviour
 
         if (MouseSpriteRenderer.gameObject.activeInHierarchy)
         {
-            var cell = Map.GetCellAtPoint(Camera.main.ScreenToWorldPoint(mousePosition));
+            var cell = Map.GetCellAtPoint(Instance.CameraController.Camera.ScreenToWorldPoint(mousePosition));
 
             if (cell == null)
             {
@@ -620,7 +620,7 @@ public class Game : MonoBehaviour
                 {
                     MouseSpriteRenderer.color = new Color(0, 0, 0, 0);
                     ClearGhostEffects();
-                    foreach (var c in GetSelectedCells(SelectionStartWorld, Camera.main.ScreenToWorldPoint(mousePosition)))
+                    foreach (var c in GetSelectedCells(SelectionStartWorld, Instance.CameraController.Camera.ScreenToWorldPoint(mousePosition)))
                     {
                         var color = ColorConstants.BluePrintColor;
                         if (ValidateMouse != null && !ValidateMouse(c))
@@ -846,7 +846,7 @@ public class Game : MonoBehaviour
                 {
                     return;
                 }
-                SelectionStartWorld = Camera.main.ScreenToWorldPoint(mousePosition);
+                SelectionStartWorld = Instance.CameraController.Camera.ScreenToWorldPoint(mousePosition);
             }
 
             if (Input.GetMouseButtonUp(0))
@@ -865,7 +865,7 @@ public class Game : MonoBehaviour
 
                 selectSquareImage.gameObject.SetActive(false);
 
-                SelectedCells = GetSelectedCells(SelectionStartWorld, Camera.main.ScreenToWorldPoint(mousePosition));
+                SelectedCells = GetSelectedCells(SelectionStartWorld, Instance.CameraController.Camera.ScreenToWorldPoint(mousePosition));
 
                 ZoneBase selectedZone = null;
                 foreach (var cell in SelectedCells)
@@ -904,7 +904,7 @@ public class Game : MonoBehaviour
 
                 SelectionEndScreen = mousePosition;
 
-                var start = Camera.main.WorldToScreenPoint(SelectionStartWorld);
+                var start = Instance.CameraController.Camera.WorldToScreenPoint(SelectionStartWorld);
                 start.z = 0f;
 
                 selectSquareImage.position = (start + SelectionEndScreen) / 2;
@@ -922,7 +922,7 @@ public class Game : MonoBehaviour
     {
         if (!MouseOverUi())
         {
-            MouseOverCell = Map.GetCellAtPoint(Camera.main.ScreenToWorldPoint(mousePosition));
+            MouseOverCell = Map.GetCellAtPoint(Instance.CameraController.Camera.ScreenToWorldPoint(mousePosition));
             if (MouseOverCell != null)
             {
                 var content = "";
