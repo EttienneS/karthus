@@ -3,14 +3,101 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class ChunkRenderer : MonoBehaviour
 {
+    #region Mesh
+
+    private List<Vector3> vertices = new List<Vector3>();
+    private Mesh mesh;
+    private List<int> triangles = new List<int>();
+    private List<Color> colors = new List<Color>();
+
+    private void Awake()
+    {
+        GetComponent<MeshFilter>().mesh = mesh = new Mesh();
+        mesh.name = $"Mesh {name}";
+    }
+
+    public void Triangulate()
+    {
+        mesh.Clear();
+        vertices.Clear();
+        triangles.Clear();
+        colors.Clear();
+        for (int i = 0; i < Cells.Count; i++)
+        {
+            Triangulate(Cells[i]);
+        }
+        mesh.vertices = vertices.ToArray();
+        mesh.colors = colors.ToArray();
+        mesh.triangles = triangles.ToArray();
+        mesh.RecalculateNormals();
+    }
+
+    private void AddTriangle(Vector3 v1, Vector3 v2, Vector3 v3)
+    {
+        int vertexIndex = vertices.Count;
+        vertices.Add(v1);
+        vertices.Add(v2);
+        vertices.Add(v3);
+        triangles.Add(vertexIndex);
+        triangles.Add(vertexIndex + 1);
+        triangles.Add(vertexIndex + 2);
+    }
+
+    private void Triangulate(Cell cell)
+    {
+        var color = GetColor(cell);
+        var corner = new Vector3(cell.X % Game.Instance.Map.ChunkSize, cell.Y % Game.Instance.Map.ChunkSize);
+        // var corner = new Vector3(cell.X % Game.Instance.Map.ChunkSize, cell.Y % Game.Instance.Map.ChunkSize, cell.Height);
+        AddTriangle(corner, corner + new Vector3(0, 1), corner + new Vector3(1, 0));
+        AddTriangleColor(color);
+        AddTriangle(corner + new Vector3(1, 0), corner + new Vector3(0, 1), corner + new Vector3(1, 1));
+        AddTriangleColor(color);
+    }
+
+    public Color GetColor(Cell cell)
+    {
+        switch (cell.BiomeRegion.SpriteName)
+        {
+            case "Dirt":
+                return ColorConstants.YellowAccent;
+
+            case "PatchyGrass":
+                return ColorConstants.GreenAccent;
+
+            case "Grass":
+                return ColorConstants.GreenAccent;
+
+            case "Forest":
+                return ColorConstants.GreenBase;
+
+            case "Sand":
+                return ColorConstants.YellowAccent;
+
+            case "Stone":
+                return ColorConstants.GreyAccent;
+
+            case "Water":
+                return ColorConstants.BlueAccent;
+
+            default:
+                return ColorConstants.WhiteAccent;
+        }
+    }
+
+    private void AddTriangleColor(Color color)
+    {
+        colors.Add(color);
+        colors.Add(color);
+        colors.Add(color);
+    }
+
+    #endregion Mesh
+
     public List<Cell> Cells;
-
     public Chunk Data;
-
-    public bool GroundDrawn;
-    public Tilemap GroundMap;
 
     public Cell CreateCell(int x, int y)
     {
@@ -79,10 +166,11 @@ public class ChunkRenderer : MonoBehaviour
         //using (var sw = new Instrumenter(nameof(ChunkRenderer)))
         {
             transform.position = new Vector3(Data.X * Game.Instance.Map.ChunkSize, Data.Y * Game.Instance.Map.ChunkSize);
-            DrawGround();
+            //DrawGround();
             Populate();
             UpdateInterlocked();
         }
+        Triangulate();
     }
 
     private void UpdateInterlocked()
@@ -148,18 +236,5 @@ public class ChunkRenderer : MonoBehaviour
     internal void SetTile(int x, int y, Tile tile)
     {
         var pos = new Vector3Int(x % Game.Instance.Map.ChunkSize, y % Game.Instance.Map.ChunkSize, 0);
-
-        GroundMap.SetTile(pos, null);
-        GroundMap.SetTile(pos, tile);
-    }
-
-    private void DrawGround()
-    {
-        var groundTiles = Cells.Select(c => c.GroundTile).ToArray();
-        var groundCoords = Cells.Select(GetChunkCoordinate).ToArray();
-
-        GroundMap.SetTiles(groundCoords, null);
-        GroundMap.SetTiles(groundCoords, groundTiles);
-        GroundDrawn = true;
     }
 }

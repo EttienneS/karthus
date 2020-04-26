@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CreatureRenderer : MonoBehaviour
 {
-    public UnityEngine.Experimental.Rendering.Universal.Light2D Light;
+    public Light Light;
     internal Creature Data = new Creature();
     public SpriteRenderer Highlight;
     public SpriteRenderer MainRenderer;

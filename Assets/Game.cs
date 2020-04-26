@@ -20,7 +20,7 @@ public class Game : MonoBehaviour
     public ConstructController ConstructController;
     public CreatureController CreatureController;
     public CreatureInfoPanel CreatureInfoPanelPrefab;
-    public Light2D CursorLight;
+    public Light CursorLight;
     public DeveloperConsole DeveloperConsole;
     public FactionController FactionController;
     public FileController FileController;

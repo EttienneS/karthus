@@ -4,7 +4,6 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering.Universal;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
@@ -15,7 +14,7 @@ public class Map : MonoBehaviour
     public ChunkRenderer ChunkPrefab;
 
     public int ChunkSize = 5;
-    public Light2D GlobalLight;
+    public Light GlobalLight;
 
     public NoiseSettings LocalNoise;
     public int MaxSize = 1000;

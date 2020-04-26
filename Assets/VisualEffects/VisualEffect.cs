@@ -6,7 +6,7 @@ public class VisualEffect : MonoBehaviour
 {
     public VisualEffectData Data;
 
-    public UnityEngine.Experimental.Rendering.Universal.Light2D Light;
+    public Light Light;
 
     public ParticleSystem ParticleSystem;
 
@@ -20,7 +20,7 @@ public class VisualEffect : MonoBehaviour
 
         if ((Data.EffectType & EffectType.Light) == EffectType.Light)
         {
-            Light = lightObject.GetComponent<UnityEngine.Experimental.Rendering.Universal.Light2D>();
+            Light = lightObject.GetComponent<Light>();
         }
         else
         {

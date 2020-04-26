@@ -11,7 +11,7 @@ public class SunController : MonoBehaviour
     internal const float DayLightHours = Sunset - Sunrise;
 
     internal float IntensityPerHour = MaxIntensity / (DayLightHours / 2);
-    internal UnityEngine.Experimental.Rendering.Universal.Light2D Sun;
+    internal Light Sun;
     internal int MidDay = Sunrise + Mathf.FloorToInt(DayLightHours / 2);
     internal DayState State = DayState.Night;
 
@@ -55,6 +55,6 @@ public class SunController : MonoBehaviour
     private void Start()
     {
         transform.position = new Vector3(0, 0);
-        Sun = GetComponent<UnityEngine.Experimental.Rendering.Universal.Light2D>();
+        Sun = GetComponent<Light>();
     }
 }
