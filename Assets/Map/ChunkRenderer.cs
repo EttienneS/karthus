@@ -12,11 +12,13 @@ public class ChunkRenderer : MonoBehaviour
     private Mesh mesh;
     private List<int> triangles = new List<int>();
     private List<Color> colors = new List<Color>();
+    private MeshCollider meshCollider;
 
     private void Awake()
     {
         GetComponent<MeshFilter>().mesh = mesh = new Mesh();
         mesh.name = $"Mesh {name}";
+        meshCollider = gameObject.AddComponent<MeshCollider>();
     }
 
     public void Triangulate()
@@ -33,6 +35,8 @@ public class ChunkRenderer : MonoBehaviour
         mesh.colors = colors.ToArray();
         mesh.triangles = triangles.ToArray();
         mesh.RecalculateNormals();
+
+        meshCollider.sharedMesh = mesh;
     }
 
     private void AddTriangle(Vector3 v1, Vector3 v2, Vector3 v3)

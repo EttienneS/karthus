@@ -22,6 +22,7 @@ public class Game : MonoBehaviour
     public CreatureInfoPanel CreatureInfoPanelPrefab;
     public Light CursorLight;
     public DeveloperConsole DeveloperConsole;
+    public bool EnableShadows;
     public FactionController FactionController;
     public FileController FileController;
     public IdService IdService;
@@ -107,8 +108,6 @@ public class Game : MonoBehaviour
     public float MinTimeToClick { get; set; } = 0.05f;
     public bool Paused { get; set; }
     public bool Typing { get; set; }
-    public bool EnableShadows;
-
     public void AddItemToDestroy(GameObject gameObject)
     {
         lock (_destroyCache)
@@ -286,6 +285,16 @@ public class Game : MonoBehaviour
         }
 
         return cells.Distinct().ToList();
+    }
+
+    public Vector3? GetWorldMousePosition()
+    {
+        var inputRay = Instance.CameraController.Camera.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(inputRay, out RaycastHit hit))
+        {
+            return hit.point;
+        }
+        return null;
     }
 
     public bool SelectCreature()
@@ -554,11 +563,8 @@ public class Game : MonoBehaviour
 
             MainMenuController.Toggle();
 
-
             Debug.Log($"Max: {MapGenerator.max}, Min: {MapGenerator.min}");
         }
-
-
     }
 
     private bool MouseOverUi()
@@ -578,57 +584,62 @@ public class Game : MonoBehaviour
         return overUI;
     }
 
-    private void MoveMouseSprite(Vector3 mousePosition)
+    private void MoveMouseSprite()
     {
         CursorLight.enabled = Instance.TimeManager.Data.Hour > 17 || Instance.TimeManager.Data.Hour < 5;
 
         if (MouseSpriteRenderer.gameObject.activeInHierarchy)
         {
-            var cell = Map.GetCellAtPoint(Instance.CameraController.Camera.ScreenToWorldPoint(mousePosition));
+            var pos = GetWorldMousePosition();
 
-            if (cell == null)
+            if (pos != null)
             {
-                return;
-            }
+                var cell = Map.GetCellAtPoint(pos.Value);
 
-            float x = cell.X;
-            float y = cell.Y;
-
-            if (!_constructMode)
-            {
-                x += 0.5f;
-                y += 0.5f;
-            }
-
-            MouseSpriteRenderer.transform.position = new Vector2(x, y);
-
-            if (MouseSpriteRenderer.sprite != null)
-            {
-                if (ValidateMouse != null)
+                if (cell == null)
                 {
-                    if (!ValidateMouse(cell))
-                    {
-                        MouseSpriteRenderer.color = ColorConstants.RedBase;
-                    }
-                    else
-                    {
-                        MouseSpriteRenderer.color = ColorConstants.BluePrintColor;
-                    }
+                    return;
                 }
 
-                if (SelectionStartWorld != Vector3.zero && !_constructMode)
-                {
-                    MouseSpriteRenderer.color = new Color(0, 0, 0, 0);
-                    ClearGhostEffects();
-                    foreach (var c in GetSelectedCells(SelectionStartWorld, Instance.CameraController.Camera.ScreenToWorldPoint(mousePosition)))
-                    {
-                        var color = ColorConstants.BluePrintColor;
-                        if (ValidateMouse != null && !ValidateMouse(c))
-                        {
-                            color = ColorConstants.RedBase;
-                        }
+                float x = cell.X;
+                float y = cell.Y;
 
-                        _ghostEffects.Add(VisualEffectController.SpawnSpriteEffect(null, c.Vector, MouseSpriteName, float.MaxValue, color));
+                if (!_constructMode)
+                {
+                    x += 0.5f;
+                    y += 0.5f;
+                }
+
+                MouseSpriteRenderer.transform.position = new Vector2(x, y);
+
+                if (MouseSpriteRenderer.sprite != null)
+                {
+                    if (ValidateMouse != null)
+                    {
+                        if (!ValidateMouse(cell))
+                        {
+                            MouseSpriteRenderer.color = ColorConstants.RedBase;
+                        }
+                        else
+                        {
+                            MouseSpriteRenderer.color = ColorConstants.BluePrintColor;
+                        }
+                    }
+
+                    if (SelectionStartWorld != Vector3.zero && !_constructMode)
+                    {
+                        MouseSpriteRenderer.color = new Color(0, 0, 0, 0);
+                        ClearGhostEffects();
+                        foreach (var c in GetSelectedCells(SelectionStartWorld, GetWorldMousePosition().Value))
+                        {
+                            var color = ColorConstants.BluePrintColor;
+                            if (ValidateMouse != null && !ValidateMouse(c))
+                            {
+                                color = ColorConstants.RedBase;
+                            }
+
+                            _ghostEffects.Add(VisualEffectController.SpawnSpriteEffect(null, c.Vector, MouseSpriteName, float.MaxValue, color));
+                        }
                     }
                 }
             }
@@ -767,9 +778,9 @@ public class Game : MonoBehaviour
         }
         return false;
     }
+
     private void Start()
     {
-
         LoadingPanel.LoadingTextBox.text = "Initializing...";
 
         UIController.Hide();
@@ -824,10 +835,8 @@ public class Game : MonoBehaviour
             SaveManager.Save();
         }
 
-        var mousePosition = Input.mousePosition;
-
         HandleHotkeys();
-        MoveMouseSprite(mousePosition);
+        MoveMouseSprite();
 
         if (Input.GetMouseButton(1))
         {
@@ -838,91 +847,94 @@ public class Game : MonoBehaviour
         }
         else
         {
-            UpdateMouseOverTooltip(mousePosition);
+            var mousePosition = GetWorldMousePosition();
 
-            if (Input.GetMouseButtonDown(0))
+            if (mousePosition != null)
             {
-                if (MouseOverUi())
+                UpdateMouseOverTooltip(mousePosition.Value);
+
+                if (Input.GetMouseButtonDown(0))
                 {
-                    return;
-                }
-                SelectionStartWorld = Instance.CameraController.Camera.ScreenToWorldPoint(mousePosition);
-            }
-
-            if (Input.GetMouseButtonUp(0))
-            {
-                if (MouseOverUi())
-                {
-                    return;
-                }
-
-                if (!Input.GetKey(KeyCode.LeftShift)
-                    && !Input.GetKey(KeyCode.RightShift)
-                    && OrderSelectionController.CellClickOrder == null)
-                {
-                    DeselectAll();
-                }
-
-                selectSquareImage.gameObject.SetActive(false);
-
-                SelectedCells = GetSelectedCells(SelectionStartWorld, Instance.CameraController.Camera.ScreenToWorldPoint(mousePosition));
-
-                ZoneBase selectedZone = null;
-                foreach (var cell in SelectedCells)
-                {
-                    if (cell.Structure != null)
+                    if (MouseOverUi())
                     {
-                        SelectedStructures.Add(cell.Structure);
+                        return;
                     }
-                    SelectedItems.AddRange(cell.Items);
-                    SelectedCreatures.AddRange(cell.Creatures.Select(c => c.CreatureRenderer));
+                    SelectionStartWorld = GetWorldMousePosition().Value;
+                }
 
-                    var zone = Game.Instance.ZoneController.GetZoneForCell(cell);
-                    if (zone != null)
+                if (Input.GetMouseButtonUp(0))
+                {
+                    if (MouseOverUi())
                     {
-                        selectedZone = zone;
+                        return;
                     }
+
+                    if (!Input.GetKey(KeyCode.LeftShift)
+                        && !Input.GetKey(KeyCode.RightShift)
+                        && OrderSelectionController.CellClickOrder == null)
+                    {
+                        DeselectAll();
+                    }
+
+                    selectSquareImage.gameObject.SetActive(false);
+
+                    SelectedCells = GetSelectedCells(SelectionStartWorld, GetWorldMousePosition().Value);
+
+                    ZoneBase selectedZone = null;
+                    foreach (var cell in SelectedCells)
+                    {
+                        if (cell.Structure != null)
+                        {
+                            SelectedStructures.Add(cell.Structure);
+                        }
+                        SelectedItems.AddRange(cell.Items);
+                        SelectedCreatures.AddRange(cell.Creatures.Select(c => c.CreatureRenderer));
+
+                        var zone = Game.Instance.ZoneController.GetZoneForCell(cell);
+                        if (zone != null)
+                        {
+                            selectedZone = zone;
+                        }
+                    }
+
+                    Select(selectedZone, SelectionPreference);
+
+                    SelectionStartWorld = Vector3.zero;
+                    ClearGhostEffects();
                 }
 
-                Select(selectedZone, SelectionPreference);
-
-                SelectionStartWorld = Vector3.zero;
-                ClearGhostEffects();
-            }
-
-            if (Input.GetMouseButton(0))
-            {
-                if (MouseOverUi())
+                if (Input.GetMouseButton(0))
                 {
-                    return;
+                    if (MouseOverUi())
+                    {
+                        return;
+                    }
+
+                    if (!selectSquareImage.gameObject.activeInHierarchy)
+                    {
+                        selectSquareImage.gameObject.SetActive(true);
+                    }
+
+                    SelectionEndScreen = Input.mousePosition;
+                    var start = Instance.CameraController.Camera.WorldToScreenPoint(SelectionStartWorld);
+                    start.z = 0f;
+
+                    selectSquareImage.position = (start + SelectionEndScreen) / 2;
+
+                    var sizeX = Mathf.Abs(start.x - SelectionEndScreen.x);
+                    var sizeY = Mathf.Abs(start.y - SelectionEndScreen.y);
+
+                    selectSquareImage.sizeDelta = new Vector2(sizeX, sizeY);
                 }
-
-                if (!selectSquareImage.gameObject.activeInHierarchy)
-                {
-                    selectSquareImage.gameObject.SetActive(true);
-                }
-
-                SelectionEndScreen = mousePosition;
-
-                var start = Instance.CameraController.Camera.WorldToScreenPoint(SelectionStartWorld);
-                start.z = 0f;
-
-                selectSquareImage.position = (start + SelectionEndScreen) / 2;
-
-                var sizeX = Mathf.Abs(start.x - SelectionEndScreen.x);
-                var sizeY = Mathf.Abs(start.y - SelectionEndScreen.y);
-
-                selectSquareImage.sizeDelta = new Vector2(sizeX, sizeY);
             }
         }
         DestroyItemsInCache();
     }
-
     private void UpdateMouseOverTooltip(Vector3 mousePosition)
     {
         if (!MouseOverUi())
         {
-            MouseOverCell = Map.GetCellAtPoint(Instance.CameraController.Camera.ScreenToWorldPoint(mousePosition));
+            MouseOverCell = Map.GetCellAtPoint(GetWorldMousePosition().Value);
             if (MouseOverCell != null)
             {
                 var content = "";
