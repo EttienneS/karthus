@@ -6,7 +6,6 @@ using System.Linq;
 using UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Experimental.Rendering.Universal;
 using Debug = UnityEngine.Debug;
 
 public enum SelectionPreference
@@ -108,6 +107,7 @@ public class Game : MonoBehaviour
     public float MinTimeToClick { get; set; } = 0.05f;
     public bool Paused { get; set; }
     public bool Typing { get; set; }
+
     public void AddItemToDestroy(GameObject gameObject)
     {
         lock (_destroyCache)
@@ -559,7 +559,8 @@ public class Game : MonoBehaviour
             _shownOnce = true;
 
             CameraController.Camera.orthographicSize = 10;
-            CameraController.transform.position = FactionController.PlayerFaction.Creatures[0].Cell.Vector;
+            CameraController.transform.position = new Vector3((Instance.Map.ChunkSize * Instance.Map.Size) / 2,
+                                                              (Instance.Map.ChunkSize * Instance.Map.Size) / 2, -10);
 
             MainMenuController.Toggle();
 
@@ -930,6 +931,7 @@ public class Game : MonoBehaviour
         }
         DestroyItemsInCache();
     }
+
     private void UpdateMouseOverTooltip(Vector3 mousePosition)
     {
         if (!MouseOverUi())

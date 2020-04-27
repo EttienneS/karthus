@@ -8,58 +8,14 @@ public class ChunkRenderer : MonoBehaviour
 {
     #region Mesh
 
-    private List<Vector3> vertices = new List<Vector3>();
-    private Mesh mesh;
-    private List<int> triangles = new List<int>();
+    private const float Bridge = 0.1f;
+    private const float Core = 1f - (2 * Bridge);
     private List<Color> colors = new List<Color>();
+    private Mesh mesh;
     private MeshCollider meshCollider;
-
-    private void Awake()
-    {
-        GetComponent<MeshFilter>().mesh = mesh = new Mesh();
-        mesh.name = $"Mesh {name}";
-        meshCollider = gameObject.AddComponent<MeshCollider>();
-    }
-
-    public void Triangulate()
-    {
-        mesh.Clear();
-        vertices.Clear();
-        triangles.Clear();
-        colors.Clear();
-        for (int i = 0; i < Cells.Count; i++)
-        {
-            Triangulate(Cells[i]);
-        }
-        mesh.vertices = vertices.ToArray();
-        mesh.colors = colors.ToArray();
-        mesh.triangles = triangles.ToArray();
-        mesh.RecalculateNormals();
-
-        meshCollider.sharedMesh = mesh;
-    }
-
-    private void AddTriangle(Vector3 v1, Vector3 v2, Vector3 v3)
-    {
-        int vertexIndex = vertices.Count;
-        vertices.Add(v1);
-        vertices.Add(v2);
-        vertices.Add(v3);
-        triangles.Add(vertexIndex);
-        triangles.Add(vertexIndex + 1);
-        triangles.Add(vertexIndex + 2);
-    }
-
-    private void Triangulate(Cell cell)
-    {
-        var color = GetColor(cell);
-        var corner = new Vector3(cell.X % Game.Instance.Map.ChunkSize, cell.Y % Game.Instance.Map.ChunkSize);
-        // var corner = new Vector3(cell.X % Game.Instance.Map.ChunkSize, cell.Y % Game.Instance.Map.ChunkSize, cell.Height);
-        AddTriangle(corner, corner + new Vector3(0, 1), corner + new Vector3(1, 0));
-        AddTriangleColor(color);
-        AddTriangle(corner + new Vector3(1, 0), corner + new Vector3(0, 1), corner + new Vector3(1, 1));
-        AddTriangleColor(color);
-    }
+    private List<int> triangles = new List<int>();
+    private List<Vector2> uvs = new List<Vector2>();
+    private List<Vector3> vertices = new List<Vector3>();
 
     public Color GetColor(Cell cell)
     {
@@ -69,7 +25,7 @@ public class ChunkRenderer : MonoBehaviour
                 return ColorConstants.YellowAccent;
 
             case "PatchyGrass":
-                return ColorConstants.GreenAccent;
+                return Color.green;
 
             case "Grass":
                 return ColorConstants.GreenAccent;
@@ -91,11 +47,90 @@ public class ChunkRenderer : MonoBehaviour
         }
     }
 
-    private void AddTriangleColor(Color color)
+    public void Triangulate()
     {
+        mesh.Clear();
+        vertices.Clear();
+        triangles.Clear();
+        colors.Clear();
+        for (int i = 0; i < Cells.Count; i++)
+        {
+            AddCellToMesh(Cells[i]);
+        }
+        mesh.vertices = vertices.ToArray();
+        mesh.colors = colors.ToArray();
+        mesh.triangles = triangles.ToArray();
+        mesh.uv = uvs.ToArray();
+        mesh.RecalculateNormals();
+
+        meshCollider.sharedMesh = mesh;
+    }
+
+    private void AddCellToMesh(Cell cell)
+    {
+        var corner = new Vector3(cell.X % Game.Instance.Map.ChunkSize, cell.Y % Game.Instance.Map.ChunkSize);
+
+        var uvOffset = new Vector2(cell.X, cell.Y);
+        var color = GetColor(cell);
+
+        // corner bottom left
+        AddQuad(corner, Bridge, Bridge, uvOffset, GetColorNeighbourColor(cell, Direction.SW));
+        // side bottom
+        AddQuad(corner + new Vector3(Bridge, 0), Core, Bridge, uvOffset, GetColorNeighbourColor(cell, Direction.S));
+        // corner bottom right
+        AddQuad(corner + new Vector3(Bridge + Core, 0), Bridge, Bridge, uvOffset, GetColorNeighbourColor(cell, Direction.SE));
+        // side left
+        AddQuad(corner + new Vector3(0, Bridge), Bridge, Core, uvOffset, GetColorNeighbourColor(cell, Direction.W));
+        // corner top left
+        AddQuad(corner + new Vector3(0, Bridge + Core), Bridge, Bridge, uvOffset, GetColorNeighbourColor(cell, Direction.NW));
+        // core
+        AddQuad(corner + new Vector3(Bridge, Bridge), Core, Core, uvOffset, color);
+        // side top
+        AddQuad(corner + new Vector3(Bridge, Bridge + Core), Core, Bridge, uvOffset, GetColorNeighbourColor(cell, Direction.N));
+        // corner top right
+        AddQuad(corner + new Vector3(Bridge + Core, Bridge + Core), Bridge, Bridge, uvOffset, GetColorNeighbourColor(cell, Direction.NE));
+        // side right
+        AddQuad(corner + new Vector3(Bridge + Core, Bridge), Bridge, Core, uvOffset, GetColorNeighbourColor(cell, Direction.E));
+    }
+
+    private Color GetColorNeighbourColor(Cell cell, Direction direction)
+    {
+        var neighbour = cell.GetNeighbor(direction);
+        var cellColor = GetColor(cell);
+        return neighbour != null ? (cellColor + GetColor(neighbour)) * 0.5f : cellColor;
+    }
+
+    private void AddQuad(Vector3 c, float width, float height, Vector2 uvOffset, Color color)
+    {
+        AddTriangle(c, c + new Vector3(0, height), c + new Vector3(width, 0), uvOffset, color);
+        AddTriangle(c + new Vector3(width, 0), c + new Vector3(0, height), c + new Vector3(width, height), uvOffset, color);
+    }
+
+    private void AddTriangle(Vector3 v1, Vector3 v2, Vector3 v3, Vector2 uvOffeset, Color color)
+    {
+        int vertexIndex = vertices.Count;
+        vertices.Add(v1);
+        vertices.Add(v2);
+        vertices.Add(v3);
+
+        uvs.Add(new Vector2(v1.x - uvOffeset.x - (Data.X * Game.Instance.Map.ChunkSize), v1.y - uvOffeset.y - (Data.Y * Game.Instance.Map.ChunkSize)));
+        uvs.Add(new Vector2(v2.x - uvOffeset.x - (Data.X * Game.Instance.Map.ChunkSize), v2.y - uvOffeset.y - (Data.Y * Game.Instance.Map.ChunkSize)));
+        uvs.Add(new Vector2(v3.x - uvOffeset.x - (Data.X * Game.Instance.Map.ChunkSize), v3.y - uvOffeset.y - (Data.Y * Game.Instance.Map.ChunkSize)));
+
+        triangles.Add(vertexIndex);
+        triangles.Add(vertexIndex + 1);
+        triangles.Add(vertexIndex + 2);
+
         colors.Add(color);
         colors.Add(color);
         colors.Add(color);
+    }
+
+    private void Awake()
+    {
+        GetComponent<MeshFilter>().mesh = mesh = new Mesh();
+        mesh.name = $"Mesh {name}";
+        meshCollider = gameObject.AddComponent<MeshCollider>();
     }
 
     #endregion Mesh
@@ -177,14 +212,6 @@ public class ChunkRenderer : MonoBehaviour
         Triangulate();
     }
 
-    private void UpdateInterlocked()
-    {
-        foreach (var wall in Cells.Where(c => c.Structure?.IsInterlocking() == true).Select(c => c.Structure))
-        {
-            wall.UpdateInterlocking();
-        }
-    }
-
     internal void MakeCells()
     {
         var size = Game.Instance.Map.ChunkSize;
@@ -240,5 +267,13 @@ public class ChunkRenderer : MonoBehaviour
     internal void SetTile(int x, int y, Tile tile)
     {
         var pos = new Vector3Int(x % Game.Instance.Map.ChunkSize, y % Game.Instance.Map.ChunkSize, 0);
+    }
+
+    private void UpdateInterlocked()
+    {
+        foreach (var wall in Cells.Where(c => c.Structure?.IsInterlocking() == true).Select(c => c.Structure))
+        {
+            wall.UpdateInterlocking();
+        }
     }
 }
