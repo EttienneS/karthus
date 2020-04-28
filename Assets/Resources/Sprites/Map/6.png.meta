@@ -1,57 +1,105 @@
 fileFormatVersion: 2
-guid: 800fd27c3c63fce4b9cd6e3662d3fe60
+guid: 838cafd29cad7cb4f92ad9ae603591f0
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8399011212269539787
-    second: Stone_0
+      213: 8725025614339217806
+    second: Water_256_0
   - first:
-      213: -6471164996032937220
-    second: Stone_1
+      213: -3868438808684676825
+    second: Water_256_1
   - first:
-      213: -2685253163611956912
-    second: Stone_2
+      213: 1098631949575617602
+    second: Water_256_2
   - first:
-      213: -2657622170025962153
-    second: Stone_3
+      213: -4197653148569230083
+    second: Water_256_3
   - first:
-      213: 1779410674617963968
-    second: Stone_4
+      213: 6295557044453678077
+    second: Water_256_4
   - first:
-      213: 7490473108122916349
-    second: Stone_5
+      213: -2312112538145280274
+    second: Water_256_5
   - first:
-      213: 6323242447520240221
-    second: Stone_6
+      213: 5146876089812797924
+    second: Water_256_6
   - first:
-      213: -8333429442432275572
-    second: Stone_7
+      213: -857314742780509860
+    second: Water_256_7
   - first:
-      213: 2298672418588489181
-    second: Stone_8
+      213: 4321867972252084191
+    second: Water_256_8
   - first:
-      213: 8046235658175446820
-    second: Stone_9
+      213: -1473644546878687890
+    second: Water_256_9
   - first:
-      213: -5830470386656693240
-    second: Stone_10
+      213: 2394916119709102009
+    second: Water_256_10
   - first:
-      213: -5184741500812026564
-    second: Stone_11
+      213: -4500121660316408693
+    second: Water_256_11
   - first:
-      213: -1027907969340813705
-    second: Stone_12
+      213: 6349909417398807389
+    second: Water_256_12
   - first:
-      213: -5405743311011831707
-    second: Stone_13
+      213: -8461321038169741195
+    second: Water_256_13
   - first:
-      213: 6153560468827928664
-    second: Stone_14
+      213: 4903326085939362
+    second: Water_256_14
   - first:
-      213: -7423293838942054712
-    second: Stone_15
+      213: -6652954314870795142
+    second: Water_256_15
+  - first:
+      213: 6049605792901559095
+    second: Water_0
+  - first:
+      213: -5882170695943828418
+    second: Water_1
+  - first:
+      213: 7591774343886807129
+    second: Water_2
+  - first:
+      213: 8088830456793213489
+    second: Water_3
+  - first:
+      213: 4177692092066526168
+    second: Water_4
+  - first:
+      213: 8954592487278907307
+    second: Water_5
+  - first:
+      213: -4906324669642958461
+    second: Water_6
+  - first:
+      213: -4272997025716492783
+    second: Water_7
+  - first:
+      213: -7504709878752999052
+    second: Water_8
+  - first:
+      213: -770516762760482041
+    second: Water_9
+  - first:
+      213: -3028715903928053223
+    second: Water_10
+  - first:
+      213: 2664101274904992878
+    second: Water_11
+  - first:
+      213: 2845312742926433610
+    second: Water_12
+  - first:
+      213: -8438048412923043348
+    second: Water_13
+  - first:
+      213: 3162826104367349501
+    second: Water_14
+  - first:
+      213: -6761020084298933573
+    second: Water_15
   externalObjects: {}
-  serializedVersion: 10
+  serializedVersion: 11
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -105,6 +153,7 @@ TextureImporter:
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
+  applyGammaDecoding: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -182,7 +231,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Stone_0
+      name: Water_0
       rect:
         serializedVersion: 2
         x: 0
@@ -190,20 +239,20 @@ TextureImporter:
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1d440eef7f561194e8c21d6faa53c0f8
-      internalID: 8399011212269539787
+      spriteID: 0fbdf4ed5e9a9424186b352325b3a4a5
+      internalID: 6049605792901559095
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Stone_1
+      name: Water_1
       rect:
         serializedVersion: 2
         x: 64
@@ -211,20 +260,20 @@ TextureImporter:
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d0654cce0a5e3b0419ddc1ed912396a1
-      internalID: -6471164996032937220
+      spriteID: ecdd95adfe93c244ebce49690b071aa4
+      internalID: -5882170695943828418
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Stone_2
+      name: Water_2
       rect:
         serializedVersion: 2
         x: 128
@@ -232,20 +281,20 @@ TextureImporter:
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 082c85c1435070c4f8a11c803b20113f
-      internalID: -2685253163611956912
+      spriteID: 959ad488c7f887c45a2ef4851461e6cb
+      internalID: 7591774343886807129
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Stone_3
+      name: Water_3
       rect:
         serializedVersion: 2
         x: 192
@@ -253,20 +302,20 @@ TextureImporter:
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f5002c224a0154a45b6e3233f014ccff
-      internalID: -2657622170025962153
+      spriteID: 2d6b667d9efe0004a933019bd8efe04b
+      internalID: 8088830456793213489
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Stone_4
+      name: Water_4
       rect:
         serializedVersion: 2
         x: 0
@@ -274,20 +323,20 @@ TextureImporter:
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2f08b8d981d8f7c4492aee82a9dfb5f4
-      internalID: 1779410674617963968
+      spriteID: 76f47e0ff5fba3448a01535ac17a8035
+      internalID: 4177692092066526168
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Stone_5
+      name: Water_5
       rect:
         serializedVersion: 2
         x: 64
@@ -295,20 +344,20 @@ TextureImporter:
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6960eb6e48a676d449ec1b398f9e44e6
-      internalID: 7490473108122916349
+      spriteID: 10dfbcb980000954fb70a8c975ea2023
+      internalID: 8954592487278907307
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Stone_6
+      name: Water_6
       rect:
         serializedVersion: 2
         x: 128
@@ -316,20 +365,20 @@ TextureImporter:
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ba67b3aaf6e278a4c90b099680cfae73
-      internalID: 6323242447520240221
+      spriteID: 4dbe37b32a417244e8f924336bc18335
+      internalID: -4906324669642958461
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Stone_7
+      name: Water_7
       rect:
         serializedVersion: 2
         x: 192
@@ -337,20 +386,20 @@ TextureImporter:
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 169ea74113c31ba46b341bea939f7cac
-      internalID: -8333429442432275572
+      spriteID: 7c0fcf75275a3104ba34593611785143
+      internalID: -4272997025716492783
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Stone_8
+      name: Water_8
       rect:
         serializedVersion: 2
         x: 0
@@ -358,20 +407,20 @@ TextureImporter:
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 16774e2c77d6971499f89814cdbbc460
-      internalID: 2298672418588489181
+      spriteID: ee4a484e003292d4992cacef0f613898
+      internalID: -7504709878752999052
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Stone_9
+      name: Water_9
       rect:
         serializedVersion: 2
         x: 64
@@ -379,20 +428,20 @@ TextureImporter:
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1bf7ffedde8523c499d59cd6614f2376
-      internalID: 8046235658175446820
+      spriteID: 91c421de7bb92bf49891cc5f03ada745
+      internalID: -770516762760482041
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Stone_10
+      name: Water_10
       rect:
         serializedVersion: 2
         x: 128
@@ -400,20 +449,20 @@ TextureImporter:
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ae9565dc01941024cbc394d6bf21ba0f
-      internalID: -5830470386656693240
+      spriteID: d8c50deefde35a74485b31fd25fef90f
+      internalID: -3028715903928053223
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Stone_11
+      name: Water_11
       rect:
         serializedVersion: 2
         x: 192
@@ -421,20 +470,20 @@ TextureImporter:
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6fe769fdebd194a46aaa4f1b27cee3b7
-      internalID: -5184741500812026564
+      spriteID: a7d04cd4c77fcb4428ee2825289b2c8c
+      internalID: 2664101274904992878
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Stone_12
+      name: Water_12
       rect:
         serializedVersion: 2
         x: 0
@@ -442,20 +491,20 @@ TextureImporter:
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e9c326a4ae4c0bd488289996b563bb20
-      internalID: -1027907969340813705
+      spriteID: 2661a31eaed5ff54caa95ef0e24b6750
+      internalID: 2845312742926433610
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Stone_13
+      name: Water_13
       rect:
         serializedVersion: 2
         x: 64
@@ -463,20 +512,20 @@ TextureImporter:
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9f756a74ed86a3241805a8f58194f1e0
-      internalID: -5405743311011831707
+      spriteID: be5ad15af352e9541a31e599b6109a42
+      internalID: -8438048412923043348
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Stone_14
+      name: Water_14
       rect:
         serializedVersion: 2
         x: 128
@@ -484,20 +533,20 @@ TextureImporter:
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 93c50114369108f46a830dbc5abdf54f
-      internalID: 6153560468827928664
+      spriteID: a4d74818bcd272d40acde49caffc67fd
+      internalID: 3162826104367349501
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Stone_15
+      name: Water_15
       rect:
         serializedVersion: 2
         x: 192
@@ -505,14 +554,14 @@ TextureImporter:
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8377e2576f5517840a71320c6fbc3d9a
-      internalID: -7423293838942054712
+      spriteID: 0eb55bada30e1224db5af3ced58cebb1
+      internalID: -6761020084298933573
       vertices: []
       indices: 
       edges: []
@@ -520,7 +569,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: a9a673db62c4aa040b1e9d450e0ea887
+    spriteID: 166409286d62f9348a2fbc81557ad781
     internalID: 0
     vertices: []
     indices: 

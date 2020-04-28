@@ -17,87 +17,110 @@ public class ChunkRenderer : MonoBehaviour
     private List<Vector2> uvs = new List<Vector2>();
     private List<Vector3> vertices = new List<Vector3>();
 
-    public Color GetColor(Cell cell)
+    public float GetColor(Cell cell)
     {
         switch (cell.BiomeRegion.SpriteName)
         {
             case "Dirt":
-                return ColorConstants.YellowAccent;
-
-            case "PatchyGrass":
-                return Color.green;
-
-            case "Grass":
-                return ColorConstants.GreenAccent;
+                return 0f;
 
             case "Forest":
-                return ColorConstants.GreenBase;
+                return 0.1f;
+
+            case "Grass":
+                return 0.2f;
+
+            case "PatchyGrass":
+                return 0.3f;
 
             case "Sand":
-                return ColorConstants.YellowAccent;
+                return 0.4f;
 
             case "Stone":
-                return ColorConstants.GreyAccent;
+                return 0.5f;
 
             case "Water":
-                return ColorConstants.BlueAccent;
+                return 0.6f;
 
             default:
-                return ColorConstants.WhiteAccent;
+                throw new KeyNotFoundException(cell.BiomeRegion.SpriteName + " not found");
         }
     }
 
     public void Triangulate()
     {
-        mesh.Clear();
-        vertices.Clear();
-        triangles.Clear();
-        colors.Clear();
-        for (int i = 0; i < Cells.Count; i++)
+        using (Instrumenter.Init())
         {
-            AddCellToMesh(Cells[i]);
-        }
-        mesh.vertices = vertices.ToArray();
-        mesh.colors = colors.ToArray();
-        mesh.triangles = triangles.ToArray();
-        mesh.uv = uvs.ToArray();
-        mesh.RecalculateNormals();
+            mesh.Clear();
+            vertices.Clear();
+            triangles.Clear();
+            colors.Clear();
+            for (int i = 0; i < Cells.Count; i++)
+            {
+                AddCellToMesh(Cells[i]);
+            }
+            mesh.vertices = vertices.ToArray();
+            mesh.colors = colors.ToArray();
+            mesh.triangles = triangles.ToArray();
+            mesh.uv = uvs.ToArray();
+            mesh.RecalculateNormals();
 
-        meshCollider.sharedMesh = mesh;
+            meshCollider.sharedMesh = mesh;
+        }
     }
 
     private void AddCellToMesh(Cell cell)
     {
         var corner = new Vector3(cell.X % Game.Instance.Map.ChunkSize, cell.Y % Game.Instance.Map.ChunkSize);
 
-        var uvOffset = new Vector2(cell.X, cell.Y);
-        var color = GetColor(cell);
+        var uvOffset = new Vector2(cell.X - (Data.X * Game.Instance.Map.ChunkSize), cell.Y - (Data.Y * Game.Instance.Map.ChunkSize));
 
         // corner bottom left
-        AddQuad(corner, Bridge, Bridge, uvOffset, GetColorNeighbourColor(cell, Direction.SW));
+        AddQuad(corner, Bridge, Bridge, uvOffset, GetNeighbourColorBlen(cell, Direction.SW, Direction.S, Direction.W));
         // side bottom
-        AddQuad(corner + new Vector3(Bridge, 0), Core, Bridge, uvOffset, GetColorNeighbourColor(cell, Direction.S));
+        AddQuad(corner + new Vector3(Bridge, 0), Core, Bridge, uvOffset, GetNeighbourColorBlen(cell, Direction.S));
         // corner bottom right
-        AddQuad(corner + new Vector3(Bridge + Core, 0), Bridge, Bridge, uvOffset, GetColorNeighbourColor(cell, Direction.SE));
+        AddQuad(corner + new Vector3(Bridge + Core, 0), Bridge, Bridge, uvOffset, GetNeighbourColorBlen(cell, Direction.SE, Direction.S, Direction.E));
         // side left
-        AddQuad(corner + new Vector3(0, Bridge), Bridge, Core, uvOffset, GetColorNeighbourColor(cell, Direction.W));
+        AddQuad(corner + new Vector3(0, Bridge), Bridge, Core, uvOffset, GetNeighbourColorBlen(cell, Direction.W));
         // corner top left
-        AddQuad(corner + new Vector3(0, Bridge + Core), Bridge, Bridge, uvOffset, GetColorNeighbourColor(cell, Direction.NW));
+        AddQuad(corner + new Vector3(0, Bridge + Core), Bridge, Bridge, uvOffset, GetNeighbourColorBlen(cell, Direction.NW, Direction.N, Direction.W));
         // core
-        AddQuad(corner + new Vector3(Bridge, Bridge), Core, Core, uvOffset, color);
+        AddQuad(corner + new Vector3(Bridge, Bridge), Core, Core, uvOffset, new Color(0, 0, 0, GetColor(cell)));
         // side top
-        AddQuad(corner + new Vector3(Bridge, Bridge + Core), Core, Bridge, uvOffset, GetColorNeighbourColor(cell, Direction.N));
+        AddQuad(corner + new Vector3(Bridge, Bridge + Core), Core, Bridge, uvOffset, GetNeighbourColorBlen(cell, Direction.N));
         // corner top right
-        AddQuad(corner + new Vector3(Bridge + Core, Bridge + Core), Bridge, Bridge, uvOffset, GetColorNeighbourColor(cell, Direction.NE));
+        AddQuad(corner + new Vector3(Bridge + Core, Bridge + Core), Bridge, Bridge, uvOffset, GetNeighbourColorBlen(cell, Direction.NE, Direction.N, Direction.E));
         // side right
-        AddQuad(corner + new Vector3(Bridge + Core, Bridge), Bridge, Core, uvOffset, GetColorNeighbourColor(cell, Direction.E));
+        AddQuad(corner + new Vector3(Bridge + Core, Bridge), Bridge, Core, uvOffset, GetNeighbourColorBlen(cell, Direction.E));
     }
 
-    private Color GetColorNeighbourColor(Cell cell, Direction direction)
+    private Color GetNeighbourColorBlen(Cell cell, params Direction[] directions)
     {
-        var neighbour = cell.GetNeighbor(direction);
-        var cellColor = GetColor(cell);
-        return neighbour != null ? (cellColor + GetColor(neighbour)) * 0.5f : cellColor;
+        var colors = new List<float> { GetColor(cell) };
+        foreach (var direction in directions)
+        {
+            var neighbour = cell.GetNeighbor(direction);
+            if (neighbour != null)
+            {
+                colors.Add(GetColor(neighbour));
+            }
+        }
+
+        if (colors.Count == 2)
+        {
+            return new Color(colors[1], 0, 0, colors[0]);
+        }
+        if (colors.Count == 3)
+        {
+            return new Color(colors[1], colors[2], 0, colors[0]);
+        }
+        if (colors.Count == 4)
+        {
+            return new Color(colors[1], colors[2], colors[3], colors[0]);
+        }
+
+        return new Color(0, 0, 0, colors[0]);
     }
 
     private void AddQuad(Vector3 c, float width, float height, Vector2 uvOffset, Color color)
@@ -113,9 +136,9 @@ public class ChunkRenderer : MonoBehaviour
         vertices.Add(v2);
         vertices.Add(v3);
 
-        uvs.Add(new Vector2(v1.x - uvOffeset.x - (Data.X * Game.Instance.Map.ChunkSize), v1.y - uvOffeset.y - (Data.Y * Game.Instance.Map.ChunkSize)));
-        uvs.Add(new Vector2(v2.x - uvOffeset.x - (Data.X * Game.Instance.Map.ChunkSize), v2.y - uvOffeset.y - (Data.Y * Game.Instance.Map.ChunkSize)));
-        uvs.Add(new Vector2(v3.x - uvOffeset.x - (Data.X * Game.Instance.Map.ChunkSize), v3.y - uvOffeset.y - (Data.Y * Game.Instance.Map.ChunkSize)));
+        uvs.Add(new Vector2(v1.x - uvOffeset.x, v1.y - uvOffeset.y));
+        uvs.Add(new Vector2(v2.x - uvOffeset.x, v2.y - uvOffeset.y));
+        uvs.Add(new Vector2(v3.x - uvOffeset.x, v3.y - uvOffeset.y));
 
         triangles.Add(vertexIndex);
         triangles.Add(vertexIndex + 1);
@@ -209,6 +232,8 @@ public class ChunkRenderer : MonoBehaviour
             Populate();
             UpdateInterlocked();
         }
+
+        GetComponent<MeshRenderer>().materials[0].SetTexture("_MainTex", Game.Instance.SpriteStore.MapTextureArray);
         Triangulate();
     }
 

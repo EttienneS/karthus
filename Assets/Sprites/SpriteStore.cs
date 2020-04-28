@@ -9,35 +9,37 @@ public class SpriteStore : MonoBehaviour
 {
     public Dictionary<string, Sprite> CreatureSprites = new Dictionary<string, Sprite>();
 
+    private Dictionary<(Race, Gender), List<Sprite>> _characterSprites;
+    private Dictionary<Gender, List<Sprite>> _clothesSprites;
     private Dictionary<string, Sprite> _itemSprites;
 
     private Dictionary<string, Sprite> _mapSprites;
 
-    internal Dictionary<string, Sprite> ItemSprites
+    private Texture2DArray _mapTextureArray;
+
+    public Texture2DArray MapTextureArray
     {
         get
         {
-            if (_itemSprites == null)
+            if (_mapTextureArray == null)
             {
-                //Debug.Log("load item sprites");
-
-                _itemSprites = new Dictionary<string, Sprite>();
-
-                var sprites = Resources.LoadAll<Sprite>("Sprites/Item").ToList();
-                sprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Gui"));
-
-                foreach (var sprite in sprites)
+                var tex = MapSpriteTypeDictionary.Values.Select(s => s.texture).ToArray();
+                _mapTextureArray = new Texture2DArray(tex[0].width, tex[0].height, tex.Length, TextureFormat.RGBA32, true, false)
                 {
-                    _itemSprites.Add(sprite.name, sprite);
-                }
-                // Debug.Log("load item sprites");
-            }
+                    filterMode = FilterMode.Bilinear,
+                    wrapMode = TextureWrapMode.Repeat
+                };
 
-            return _itemSprites;
+                for (int i = 0; i < tex.Length; i++)
+                {
+                    _mapTextureArray.SetPixels(tex[i].GetPixels(0),
+                        i, 0);
+                }
+                _mapTextureArray.Apply();
+            }
+            return _mapTextureArray;
         }
     }
-
-    private Dictionary<(Race, Gender), List<Sprite>> _characterSprites;
 
     internal Dictionary<(Race, Gender), List<Sprite>> CharacterSprites
     {
@@ -70,8 +72,6 @@ public class SpriteStore : MonoBehaviour
         }
     }
 
-    private Dictionary<Gender, List<Sprite>> _clothesSprites;
-
     internal Dictionary<Gender, List<Sprite>> ClothesSprites
     {
         get
@@ -91,6 +91,30 @@ public class SpriteStore : MonoBehaviour
             }
 
             return _clothesSprites;
+        }
+    }
+
+    internal Dictionary<string, Sprite> ItemSprites
+    {
+        get
+        {
+            if (_itemSprites == null)
+            {
+                //Debug.Log("load item sprites");
+
+                _itemSprites = new Dictionary<string, Sprite>();
+
+                var sprites = Resources.LoadAll<Sprite>("Sprites/Item").ToList();
+                sprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Gui"));
+
+                foreach (var sprite in sprites)
+                {
+                    _itemSprites.Add(sprite.name, sprite);
+                }
+                // Debug.Log("load item sprites");
+            }
+
+            return _itemSprites;
         }
     }
 
@@ -134,6 +158,53 @@ public class SpriteStore : MonoBehaviour
         }
 
         //  Debug.Log("load creature sprites");
+    }
+
+    internal bool FacingUp(Direction facing)
+    {
+        switch (facing)
+        {
+            case Direction.NW:
+            case Direction.NE:
+            case Direction.N:
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+    internal Sprite GetClothesSprite(Gender gender)
+    {
+        return ClothesSprites[gender].GetRandomItem();
+    }
+
+    internal Sprite GetCreatureSprite(Race race, Gender gender)
+    {
+        return CharacterSprites[(race, gender)].GetRandomItem();
+    }
+
+    internal Sprite GetCreatureSprite(string spriteName, ref int index)
+    {
+        if (spriteName.Contains("-X"))
+        {
+            index++;
+            var tempName = spriteName.Replace("-X", $"-{index}");
+
+            if (!CreatureSprites.ContainsKey(tempName))
+            {
+                index = 1;
+                tempName = spriteName.Replace("-X", $"-{index}");
+            }
+            spriteName = tempName;
+        }
+
+        if (CreatureSprites.ContainsKey(spriteName))
+        {
+            return CreatureSprites[spriteName];
+        }
+
+        return GetPlaceholder();
     }
 
     internal Sprite GetInterlockingSprite(Structure structure)
@@ -207,53 +278,6 @@ public class SpriteStore : MonoBehaviour
         }
 
         return GetSprite(structure.SpriteName + type);
-    }
-
-    internal Sprite GetCreatureSprite(Race race, Gender gender)
-    {
-        return CharacterSprites[(race, gender)].GetRandomItem();
-    }
-
-    internal Sprite GetClothesSprite( Gender gender)
-    {
-        return ClothesSprites[gender].GetRandomItem();
-    }
-
-    internal bool FacingUp(Direction facing)
-    {
-        switch (facing)
-        {
-            case Direction.NW:
-            case Direction.NE:
-            case Direction.N:
-                return true;
-
-            default:
-                return false;
-        }
-    }
-
-    internal Sprite GetCreatureSprite(string spriteName, ref int index)
-    {
-        if (spriteName.Contains("-X"))
-        {
-            index++;
-            var tempName = spriteName.Replace("-X", $"-{index}");
-
-            if (!CreatureSprites.ContainsKey(tempName))
-            {
-                index = 1;
-                tempName = spriteName.Replace("-X", $"-{index}");
-            }
-            spriteName = tempName;
-        }
-
-        if (CreatureSprites.ContainsKey(spriteName))
-        {
-            return CreatureSprites[spriteName];
-        }
-
-        return GetPlaceholder();
     }
 
     internal Sprite GetPlaceholder()
