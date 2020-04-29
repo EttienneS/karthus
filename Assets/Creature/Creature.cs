@@ -239,11 +239,11 @@ public class Creature : IEntity
     public Dictionary<string, float> ValueProperties { get; set; } = new Dictionary<string, float>();
 
     [JsonIgnore]
-    public Vector2 Vector
+    public Vector3 Vector
     {
         get
         {
-            return new Vector2(X, Y);
+            return new Vector3(X, Y, Cell.RenderHeight);
         }
     }
 

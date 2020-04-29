@@ -192,7 +192,7 @@ namespace Structures
         public Dictionary<string, float> ValueProperties { get; set; } = new Dictionary<string, float>();
 
         [JsonIgnore]
-        public Vector2 Vector
+        public Vector3 Vector
         {
             get
             {

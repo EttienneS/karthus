@@ -8,14 +8,13 @@ public class ChunkRenderer : MonoBehaviour
 {
     #region Mesh
 
-    private const float Bridge = 0.1f;
-    private const float Core = 1f - (2 * Bridge);
-    private List<Color> colors = new List<Color>();
     private Mesh mesh;
     private MeshCollider meshCollider;
-    private List<int> triangles = new List<int>();
-    private List<Vector2> uvs = new List<Vector2>();
-    private List<Vector3> vertices = new List<Vector3>();
+
+    private int[] triangles;
+    private Vector2[] uvs;
+    private Vector3[] vertices;
+    private Color[] colors;
 
     public float GetColor(Cell cell)
     {
@@ -47,106 +46,58 @@ public class ChunkRenderer : MonoBehaviour
         }
     }
 
+    private int triangleIndex;
+
+    public void AddTriangle(int a, int b, int c, Color color)
+    {
+        triangles[triangleIndex] = a;
+        triangles[triangleIndex + 1] = b;
+        triangles[triangleIndex + 2] = c;
+
+        triangleIndex += 3;
+    }
+
     public void Triangulate()
     {
         using (Instrumenter.Init())
         {
             mesh.Clear();
-            vertices.Clear();
-            triangles.Clear();
-            colors.Clear();
-            for (int i = 0; i < Cells.Count; i++)
+
+            var width = Game.Instance.Map.ChunkSize;
+            var height = Game.Instance.Map.ChunkSize;
+
+            uvs = new Vector2[width * height];
+            vertices = new Vector3[width * height];
+            triangles = new int[(width - 1) * (height - 1) * 6];
+            colors = new Color[width * height];
+
+            var vertIndex = 0;
+            for (int y = 0; y < height; y++)
             {
-                AddCellToMesh(Cells[i]);
+                for (int x = 0; x < width; x++)
+                {
+                    var cell = Game.Instance.Map.GetCellAtCoordinate(x + (Data.X * width), y + (Data.Y * height));
+                    vertices[vertIndex] = new Vector3(x, y, cell.RenderHeight);
+                    colors[vertIndex] = new Color(GetColor(cell), 0, 0);
+
+                    uvs[vertIndex] = new Vector2(x / (float)width, y / (float)height);
+                    if (x < width - 1 && y < height - 1)
+                    {
+                        AddTriangle(vertIndex + width, vertIndex + width + 1, vertIndex, cell.Color);
+                        AddTriangle(vertIndex + 1, vertIndex, vertIndex + width + 1, cell.Color);
+                    }
+                    vertIndex++;
+                }
             }
-            mesh.vertices = vertices.ToArray();
-            mesh.colors = colors.ToArray();
-            mesh.triangles = triangles.ToArray();
-            mesh.uv = uvs.ToArray();
+
+            mesh.vertices = vertices;
+            mesh.colors = colors;
+            mesh.triangles = triangles;
+            mesh.uv = uvs;
             mesh.RecalculateNormals();
 
             meshCollider.sharedMesh = mesh;
         }
-    }
-
-    private void AddCellToMesh(Cell cell)
-    {
-        var corner = new Vector3(cell.X % Game.Instance.Map.ChunkSize, cell.Y % Game.Instance.Map.ChunkSize);
-
-        var uvOffset = new Vector2(cell.X - (Data.X * Game.Instance.Map.ChunkSize), cell.Y - (Data.Y * Game.Instance.Map.ChunkSize));
-
-        // corner bottom left
-        AddQuad(corner, Bridge, Bridge, uvOffset, GetNeighbourColorBlen(cell, Direction.SW, Direction.S, Direction.W));
-        // side bottom
-        AddQuad(corner + new Vector3(Bridge, 0), Core, Bridge, uvOffset, GetNeighbourColorBlen(cell, Direction.S));
-        // corner bottom right
-        AddQuad(corner + new Vector3(Bridge + Core, 0), Bridge, Bridge, uvOffset, GetNeighbourColorBlen(cell, Direction.SE, Direction.S, Direction.E));
-        // side left
-        AddQuad(corner + new Vector3(0, Bridge), Bridge, Core, uvOffset, GetNeighbourColorBlen(cell, Direction.W));
-        // corner top left
-        AddQuad(corner + new Vector3(0, Bridge + Core), Bridge, Bridge, uvOffset, GetNeighbourColorBlen(cell, Direction.NW, Direction.N, Direction.W));
-        // core
-        AddQuad(corner + new Vector3(Bridge, Bridge), Core, Core, uvOffset, new Color(0, 0, 0, GetColor(cell)));
-        // side top
-        AddQuad(corner + new Vector3(Bridge, Bridge + Core), Core, Bridge, uvOffset, GetNeighbourColorBlen(cell, Direction.N));
-        // corner top right
-        AddQuad(corner + new Vector3(Bridge + Core, Bridge + Core), Bridge, Bridge, uvOffset, GetNeighbourColorBlen(cell, Direction.NE, Direction.N, Direction.E));
-        // side right
-        AddQuad(corner + new Vector3(Bridge + Core, Bridge), Bridge, Core, uvOffset, GetNeighbourColorBlen(cell, Direction.E));
-    }
-
-    private Color GetNeighbourColorBlen(Cell cell, params Direction[] directions)
-    {
-        var colors = new List<float> { GetColor(cell) };
-        foreach (var direction in directions)
-        {
-            var neighbour = cell.GetNeighbor(direction);
-            if (neighbour != null)
-            {
-                colors.Add(GetColor(neighbour));
-            }
-        }
-
-        if (colors.Count == 2)
-        {
-            return new Color(colors[1], 0, 0, colors[0]);
-        }
-        if (colors.Count == 3)
-        {
-            return new Color(colors[1], colors[2], 0, colors[0]);
-        }
-        if (colors.Count == 4)
-        {
-            return new Color(colors[1], colors[2], colors[3], colors[0]);
-        }
-
-        return new Color(0, 0, 0, colors[0]);
-    }
-
-    private void AddQuad(Vector3 c, float width, float height, Vector2 uvOffset, Color color)
-    {
-        AddTriangle(c, c + new Vector3(0, height), c + new Vector3(width, 0), uvOffset, color);
-        AddTriangle(c + new Vector3(width, 0), c + new Vector3(0, height), c + new Vector3(width, height), uvOffset, color);
-    }
-
-    private void AddTriangle(Vector3 v1, Vector3 v2, Vector3 v3, Vector2 uvOffeset, Color color)
-    {
-        int vertexIndex = vertices.Count;
-        vertices.Add(v1);
-        vertices.Add(v2);
-        vertices.Add(v3);
-
-        uvs.Add(new Vector2(v1.x - uvOffeset.x, v1.y - uvOffeset.y));
-        uvs.Add(new Vector2(v2.x - uvOffeset.x, v2.y - uvOffeset.y));
-        uvs.Add(new Vector2(v3.x - uvOffeset.x, v3.y - uvOffeset.y));
-
-        triangles.Add(vertexIndex);
-        triangles.Add(vertexIndex + 1);
-        triangles.Add(vertexIndex + 2);
-
-        colors.Add(color);
-        colors.Add(color);
-        colors.Add(color);
     }
 
     private void Awake()

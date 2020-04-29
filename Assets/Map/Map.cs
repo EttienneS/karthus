@@ -13,21 +13,29 @@ public class Map : MonoBehaviour
     public Dictionary<(int x, int y), Cell> CellLookup = new Dictionary<(int x, int y), Cell>();
     public ChunkRenderer ChunkPrefab;
 
+    [Range(10, 250)]
     public int ChunkSize = 5;
-    public Light GlobalLight;
-
-    public NoiseSettings LocalNoise;
-    public int MaxSize = 1000;
 
     [Range(0, 10)]
     public int CreaturesToSpawn = 3;
+
+    public Light GlobalLight;
+
+    public AnimationCurve HeightCurve;
+
+    [Range(1, 10)]
+    public float HeightScale;
+
+    public NoiseSettings LocalNoise;
+    public int MaxSize = 1000;
 
     [Range(0.001f, 0.2f)]
     public float Scaler = 0.1f;
 
     public string Seed;
-    public int Size = 3;
+    public int Size = 1;
     public NoiseSettings WorldNoise;
+
     internal Dictionary<(int x, int y), ChunkRenderer> Chunks;
     internal (int X, int Y) Origin = (0, 0);
     private float[,] _localNoiseMap;
@@ -583,19 +591,6 @@ public class Map : MonoBehaviour
                            .First();
     }
 
-    internal Cell TryGetPathableNeighbour(Cell coordinates)
-    {
-        var pathables = coordinates.NonNullNeighbors
-                     .Where(c => c.TravelCost > 0)
-                     .ToList();
-
-        if (pathables.Count > 0)
-        {
-            return pathables.GetRandomItem();
-        }
-        return null;
-    }
-
     internal Cell GetRandomEmptyCell()
     {
         Cell cell = null;
@@ -622,8 +617,26 @@ public class Map : MonoBehaviour
         return GetCellAtCoordinate(mineX, mineY);
     }
 
+    internal float GetRenderHeight(float height)
+    {
+        return -(Game.Instance.Map.HeightCurve.Evaluate(height) * HeightScale);
+    }
+
     internal void SetTile(Cell cell, Tile tile)
     {
         Chunks[cell.Chunk.Coords].SetTile(cell.X, cell.Y, tile);
+    }
+
+    internal Cell TryGetPathableNeighbour(Cell coordinates)
+    {
+        var pathables = coordinates.NonNullNeighbors
+                     .Where(c => c.TravelCost > 0)
+                     .ToList();
+
+        if (pathables.Count > 0)
+        {
+            return pathables.GetRandomItem();
+        }
+        return null;
     }
 }

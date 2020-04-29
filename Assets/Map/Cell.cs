@@ -27,7 +27,7 @@ public class Cell : IEquatable<Cell>
         {
             if (_biomeRegion == null)
             {
-                _biomeRegion = Game.Instance.MapGenerator.GetBiome(X,Y).GetRegion(Height);
+                _biomeRegion = Game.Instance.MapGenerator.GetBiome(X, Y).GetRegion(Height);
             }
             return _biomeRegion;
         }
@@ -157,11 +157,20 @@ public class Cell : IEquatable<Cell>
     }
 
     [JsonIgnore]
+    public float RenderHeight
+    {
+        get
+        {
+            return Game.Instance.Map.GetRenderHeight(Height);
+        }
+    }
+
+    [JsonIgnore]
     public Vector3 Vector
     {
         get
         {
-            return new Vector3(X + 0.5f, Y + 0.5f, -1);
+            return new Vector3(X + 0.5f, Y + 0.5f, RenderHeight);
         }
     }
 

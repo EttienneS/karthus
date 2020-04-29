@@ -10,7 +10,7 @@ public interface IEntity
     string Name { get; set; }
     Dictionary<string, string> Properties { get; set; }
     Dictionary<string, float> ValueProperties { get; set; }
-    Vector2 Vector { get; }
+    Vector3 Vector { get; }
 }
 
 public static class EntityExtensions
