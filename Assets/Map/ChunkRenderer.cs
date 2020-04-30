@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Sprites;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -16,30 +17,30 @@ public class ChunkRenderer : MonoBehaviour
     private Vector3[] vertices;
     private Color[] colors;
 
-    public float GetColor(Cell cell)
+    public Color GetColor(Cell cell)
     {
         switch (cell.BiomeRegion.SpriteName)
         {
             case "Dirt":
-                return 0f;
+                return ColorConstants.YellowBase;
 
             case "Forest":
-                return 0.1f;
+                return ColorConstants.GreenBase;
 
             case "Grass":
-                return 0.2f;
+                return ColorConstants.GreenAccent;
 
             case "PatchyGrass":
-                return 0.3f;
+                return ColorConstants.GreenBase;
 
             case "Sand":
-                return 0.4f;
+                return ColorConstants.YellowAccent;
 
             case "Stone":
-                return 0.5f;
+                return ColorConstants.GreyBase;
 
             case "Water":
-                return 0.6f;
+                return ColorConstants.BlueBase;
 
             default:
                 throw new KeyNotFoundException(cell.BiomeRegion.SpriteName + " not found");
@@ -69,17 +70,17 @@ public class ChunkRenderer : MonoBehaviour
             uvs = new Vector2[width * height];
             vertices = new Vector3[width * height];
             triangles = new int[(width - 1) * (height - 1) * 6];
-            colors = new Color[width * height];
 
+            var colors = new Color[width, height];
             var vertIndex = 0;
             for (int y = 0; y < height; y++)
             {
                 for (int x = 0; x < width; x++)
                 {
                     var cell = Game.Instance.Map.GetCellAtCoordinate(x + (Data.X * width), y + (Data.Y * height));
-                    vertices[vertIndex] = new Vector3(x, y, cell.RenderHeight);
-                    colors[vertIndex] = new Color(GetColor(cell), 0, 0);
+                    colors[x, y] = GetColor(cell);
 
+                    vertices[vertIndex] = new Vector3(x, y, cell.RenderHeight);
                     uvs[vertIndex] = new Vector2(x / (float)width, y / (float)height);
                     if (x < width - 1 && y < height - 1)
                     {
@@ -91,12 +92,14 @@ public class ChunkRenderer : MonoBehaviour
             }
 
             mesh.vertices = vertices;
-            mesh.colors = colors;
             mesh.triangles = triangles;
             mesh.uv = uvs;
             mesh.RecalculateNormals();
 
             meshCollider.sharedMesh = mesh;
+
+            var renderer = GetComponent<MeshRenderer>();
+            renderer.sharedMaterial.mainTexture = TextureCreator.CreateTextureFromColorMap(width, height, colors);
         }
     }
 
@@ -184,7 +187,6 @@ public class ChunkRenderer : MonoBehaviour
             UpdateInterlocked();
         }
 
-        GetComponent<MeshRenderer>().materials[0].SetTexture("_MainTex", Game.Instance.SpriteStore.MapTextureArray);
         Triangulate();
     }
 

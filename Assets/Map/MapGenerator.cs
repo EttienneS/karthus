@@ -38,25 +38,25 @@ public class MapGenerator
         //}
         //return _biome;
 
-        var value = Game.Instance.Map.WorldNoiseMap[x, y];
+        //var value = Game.Instance.Map.WorldNoiseMap[x, y];
 
-        if (value > max)
-        {
-            max = value;
-        }
-        if (value < min)
-        {
-            min = value;
-        }
+        //if (value > max)
+        //{
+        //    max = value;
+        //}
+        //if (value < min)
+        //{
+        //    min = value;
+        //}
 
-        if (value > 0.65f)
-        {
-            return BiomeTemplates["Mountain"];
-        }
-        if (value < 0.25f)
-        {
-            return BiomeTemplates["Water"];
-        }
+        //if (value > 0.65f)
+        //{
+        //    return BiomeTemplates["Mountain"];
+        //}
+        //if (value < 0.25f)
+        //{
+        //    return BiomeTemplates["Water"];
+        //}
         return BiomeTemplates["Default"];
     }
 

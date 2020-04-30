@@ -611,7 +611,7 @@ public class Game : MonoBehaviour
                     y += 0.5f;
                 }
 
-                MouseSpriteRenderer.transform.position = new Vector2(x, y);
+                MouseSpriteRenderer.transform.position = new Vector3(x, y, cell.RenderHeight - 0.2f);
 
                 if (MouseSpriteRenderer.sprite != null)
                 {
