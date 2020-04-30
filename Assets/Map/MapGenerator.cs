@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.Helpers;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -26,9 +27,6 @@ public class MapGenerator
         }
     }
 
-    public float max = -100f;
-    public float min = 100f;
-
     public Biome GetBiome(int x, int y)
     {
         //if (_biome == null)
@@ -39,15 +37,6 @@ public class MapGenerator
         //return _biome;
 
         //var value = Game.Instance.Map.WorldNoiseMap[x, y];
-
-        //if (value > max)
-        //{
-        //    max = value;
-        //}
-        //if (value < min)
-        //{
-        //    min = value;
-        //}
 
         //if (value > 0.65f)
         //{
@@ -116,7 +105,7 @@ public class MapGenerator
 
     public void Work()
     {
-        using (Instrumenter.Init())
+        using (Instrumenter.Start())
         {
             Game.Instance.Map.Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
 

@@ -563,8 +563,6 @@ public class Game : MonoBehaviour
                                                               (Instance.Map.ChunkSize * Instance.Map.Size) / 2, -10);
 
             MainMenuController.Toggle();
-
-            Debug.Log($"Max: {MapGenerator.max}, Min: {MapGenerator.min}");
         }
     }
 

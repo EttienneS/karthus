@@ -112,7 +112,7 @@ public class CreatureRenderer : MonoBehaviour
 
     internal void UpdatePosition()
     {
-        transform.position = new Vector2(Data.X, Data.Y);
+        transform.position = new Vector3(Data.X, Data.Y, Data.Cell.RenderHeight - 0.5f);
 
         Data.UpdateSprite();
     }

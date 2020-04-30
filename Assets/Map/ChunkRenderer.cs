@@ -1,4 +1,5 @@
-﻿using Assets.Sprites;
+﻿using Assets.Helpers;
+using Assets.Sprites;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -7,15 +8,44 @@ using UnityEngine.Tilemaps;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class ChunkRenderer : MonoBehaviour
 {
-    #region Mesh
-
+    public List<Cell> Cells;
+    public Chunk Data;
+    private Color[] colors;
     private Mesh mesh;
     private MeshCollider meshCollider;
 
+    private int triangleIndex;
     private int[] triangles;
     private Vector2[] uvs;
     private Vector3[] vertices;
-    private Color[] colors;
+    public void AddTriangle(int a, int b, int c, Color color)
+    {
+        triangles[triangleIndex] = a;
+        triangles[triangleIndex + 1] = b;
+        triangles[triangleIndex + 2] = c;
+
+        triangleIndex += 3;
+    }
+
+    public Cell CreateCell(int x, int y)
+    {
+        var cell = new Cell
+        {
+            X = x,
+            Y = y,
+            SearchPhase = 0,
+            Chunk = Data
+        };
+
+        Game.Instance.Map.CellLookup.Add((x, y), cell);
+
+        return cell;
+    }
+
+    public Vector3Int GetChunkCoordinate(Cell cell)
+    {
+        return new Vector3Int(cell.X % Game.Instance.Map.ChunkSize, cell.Y % Game.Instance.Map.ChunkSize, 0);
+    }
 
     public Color GetColor(Cell cell)
     {
@@ -46,95 +76,6 @@ public class ChunkRenderer : MonoBehaviour
                 throw new KeyNotFoundException(cell.BiomeRegion.SpriteName + " not found");
         }
     }
-
-    private int triangleIndex;
-
-    public void AddTriangle(int a, int b, int c, Color color)
-    {
-        triangles[triangleIndex] = a;
-        triangles[triangleIndex + 1] = b;
-        triangles[triangleIndex + 2] = c;
-
-        triangleIndex += 3;
-    }
-
-    public void Triangulate()
-    {
-        using (Instrumenter.Init())
-        {
-            mesh.Clear();
-
-            var width = Game.Instance.Map.ChunkSize;
-            var height = Game.Instance.Map.ChunkSize;
-
-            uvs = new Vector2[width * height];
-            vertices = new Vector3[width * height];
-            triangles = new int[(width - 1) * (height - 1) * 6];
-
-            var colors = new Color[width, height];
-            var vertIndex = 0;
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    var cell = Game.Instance.Map.GetCellAtCoordinate(x + (Data.X * width), y + (Data.Y * height));
-                    colors[x, y] = GetColor(cell);
-
-                    vertices[vertIndex] = new Vector3(x, y, cell.RenderHeight);
-                    uvs[vertIndex] = new Vector2(x / (float)width, y / (float)height);
-                    if (x < width - 1 && y < height - 1)
-                    {
-                        AddTriangle(vertIndex + width, vertIndex + width + 1, vertIndex, cell.Color);
-                        AddTriangle(vertIndex + 1, vertIndex, vertIndex + width + 1, cell.Color);
-                    }
-                    vertIndex++;
-                }
-            }
-
-            mesh.vertices = vertices;
-            mesh.triangles = triangles;
-            mesh.uv = uvs;
-            mesh.RecalculateNormals();
-
-            meshCollider.sharedMesh = mesh;
-
-            var renderer = GetComponent<MeshRenderer>();
-            renderer.sharedMaterial.mainTexture = TextureCreator.CreateTextureFromColorMap(width, height, colors);
-        }
-    }
-
-    private void Awake()
-    {
-        GetComponent<MeshFilter>().mesh = mesh = new Mesh();
-        mesh.name = $"Mesh {name}";
-        meshCollider = gameObject.AddComponent<MeshCollider>();
-    }
-
-    #endregion Mesh
-
-    public List<Cell> Cells;
-    public Chunk Data;
-
-    public Cell CreateCell(int x, int y)
-    {
-        var cell = new Cell
-        {
-            X = x,
-            Y = y,
-            SearchPhase = 0,
-            Chunk = Data
-        };
-
-        Game.Instance.Map.CellLookup.Add((x, y), cell);
-
-        return cell;
-    }
-
-    public Vector3Int GetChunkCoordinate(Cell cell)
-    {
-        return new Vector3Int(cell.X % Game.Instance.Map.ChunkSize, cell.Y % Game.Instance.Map.ChunkSize, 0);
-    }
-
     public void LinkToChunk(ChunkRenderer chunk)
     {
         // link edges to the given chunk edges
@@ -179,15 +120,59 @@ public class ChunkRenderer : MonoBehaviour
 
     public void Start()
     {
-        //using (var sw = new Instrumenter(nameof(ChunkRenderer)))
+        using (Instrumenter.Start())
         {
             transform.position = new Vector3(Data.X * Game.Instance.Map.ChunkSize, Data.Y * Game.Instance.Map.ChunkSize);
-            //DrawGround();
             Populate();
             UpdateInterlocked();
         }
 
         Triangulate();
+    }
+
+    public void Triangulate()
+    {
+        using (Instrumenter.Start())
+        {
+            mesh.Clear();
+
+            var width = Game.Instance.Map.ChunkSize;
+            var height = Game.Instance.Map.ChunkSize;
+
+            uvs = new Vector2[width * height];
+            vertices = new Vector3[width * height];
+            triangles = new int[(width - 1) * (height - 1) * 6];
+
+            var colors = new Color[width, height];
+            var vertIndex = 0;
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    var cell = Game.Instance.Map.GetCellAtCoordinate(x + (Data.X * width), y + (Data.Y * height));
+                    colors[x, y] = GetColor(cell);
+
+                    vertices[vertIndex] = new Vector3(x, y, cell.RenderHeight);
+                    uvs[vertIndex] = new Vector2(x / (float)width, y / (float)height);
+                    if (x < width - 1 && y < height - 1)
+                    {
+                        AddTriangle(vertIndex + width, vertIndex + width + 1, vertIndex, cell.Color);
+                        AddTriangle(vertIndex + 1, vertIndex, vertIndex + width + 1, cell.Color);
+                    }
+                    vertIndex++;
+                }
+            }
+
+            mesh.vertices = vertices;
+            mesh.triangles = triangles;
+            mesh.uv = uvs;
+            mesh.RecalculateNormals();
+
+            meshCollider.sharedMesh = mesh;
+
+            var renderer = GetComponent<MeshRenderer>();
+            renderer.sharedMaterial.mainTexture = TextureCreator.CreateTextureFromColorMap(width, height, colors);
+        }
     }
 
     internal void MakeCells()
@@ -247,6 +232,12 @@ public class ChunkRenderer : MonoBehaviour
         var pos = new Vector3Int(x % Game.Instance.Map.ChunkSize, y % Game.Instance.Map.ChunkSize, 0);
     }
 
+    private void Awake()
+    {
+        GetComponent<MeshFilter>().mesh = mesh = new Mesh();
+        mesh.name = $"Mesh {name}";
+        meshCollider = gameObject.AddComponent<MeshCollider>();
+    }
     private void UpdateInterlocked()
     {
         foreach (var wall in Cells.Where(c => c.Structure?.IsInterlocking() == true).Select(c => c.Structure))

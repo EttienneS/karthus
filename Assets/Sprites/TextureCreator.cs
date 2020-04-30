@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Helpers;
+using UnityEngine;
 
 namespace Assets.Sprites
 {
@@ -20,7 +21,7 @@ namespace Assets.Sprites
 
         public static Texture2D CreateTextureFromColorMap(int width, int height, Color[,] color)
         {
-            using (Instrumenter.Init())
+            using (Instrumenter.Start())
             {
                 var texture = new Texture2D(width, height)
                 {
