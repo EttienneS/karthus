@@ -17,7 +17,7 @@ public class ChunkRenderer : MonoBehaviour
     private int[] triangles;
     private Vector2[] uvs;
     private Vector3[] vertices;
-    public int MeshVertexWidth => Game.Instance.Map.ChunkSize + 1;
+    public int MeshVertexWidth => Game.Instance.ChunkSize + 1;
 
     public void AddTriangle(int a, int b, int c)
     {
@@ -70,11 +70,11 @@ public class ChunkRenderer : MonoBehaviour
 
         using (Instrumenter.Start())
         {
-            transform.position = new Vector3(Data.X * Game.Instance.Map.ChunkSize, Data.Y * Game.Instance.Map.ChunkSize);
-            Populate(Game.Instance.Map.GetRectangle(Data.X * Game.Instance.Map.ChunkSize,
-                                                    Data.Y * Game.Instance.Map.ChunkSize,
-                                                    Game.Instance.Map.ChunkSize,
-                                                    Game.Instance.Map.ChunkSize));
+            transform.position = new Vector3(Data.X * Game.Instance.ChunkSize, Data.Y * Game.Instance.ChunkSize);
+            Populate(Game.Instance.Map.GetRectangle(Data.X * Game.Instance.ChunkSize,
+                                                    Data.Y * Game.Instance.ChunkSize,
+                                                    Game.Instance.ChunkSize,
+                                                    Game.Instance.ChunkSize));
         }
     }
 

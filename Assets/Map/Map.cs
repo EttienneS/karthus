@@ -4,17 +4,14 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
 public class Map : MonoBehaviour
 {
     public const int PixelsPerCell = 64;
     public Dictionary<(int x, int y), Cell> CellLookup = new Dictionary<(int x, int y), Cell>();
+    public List<Cell> Cells = new List<Cell>();
     public ChunkRenderer ChunkPrefab;
-
-    [Range(5, 250)]
-    public int ChunkSize = 5;
 
     [Range(0, 10)]
     public int CreaturesToSpawn = 3;
@@ -27,13 +24,11 @@ public class Map : MonoBehaviour
     public float HeightScale;
 
     public NoiseSettings LocalNoise;
-    public int MaxSize = 1000;
 
     [Range(0.001f, 0.2f)]
     public float Scaler = 0.1f;
 
     public string Seed;
-    public int Size = 1;
     public NoiseSettings WorldNoise;
 
     internal Dictionary<(int x, int y), ChunkRenderer> Chunks;
@@ -47,7 +42,7 @@ public class Map : MonoBehaviour
     {
         get
         {
-            return CellLookup[((Size * Size) / 2, (Size * Size) / 2)];
+            return CellLookup[((Game.Instance.Size * Game.Instance.ChunkSize) / 2, (Game.Instance.Size * Game.Instance.ChunkSize) / 2)];
         }
     }
 
@@ -57,30 +52,15 @@ public class Map : MonoBehaviour
         {
             if (_localNoiseMap == null)
             {
-                _localNoiseMap = Noise.GenerateNoiseMap(SeedValue, MaxSize, MaxSize, LocalNoise, Vector2.zero);
+                _localNoiseMap = Noise.GenerateNoiseMap(SeedValue, Game.Instance.MaxSize, Game.Instance.MaxSize, LocalNoise, Vector2.zero);
             }
             return _localNoiseMap;
         }
     }
 
-    public float[,] WorldNoiseMap
-    {
-        get
-        {
-            if (_worldNoiseMap == null)
-            {
-                _worldNoiseMap = Noise.GenerateNoiseMap(SeedValue, MaxSize, MaxSize, WorldNoise, Vector2.zero);
-            }
-            return _worldNoiseMap;
-        }
-    }
-
-    internal int MaxX => Game.Instance.Map.ChunkSize * Game.Instance.Map.Size;
-
-    internal int MaxY => Game.Instance.Map.ChunkSize * Game.Instance.Map.Size;
-
+    internal int MaxX => Game.Instance.MaxSize;
+    internal int MaxY => Game.Instance.MaxSize;
     internal int MinX => 0;
-
     internal int MinY => 0;
 
     internal int SeedValue
@@ -133,7 +113,6 @@ public class Map : MonoBehaviour
         return newGroup.Distinct().ToList();
     }
 
-  
     public List<Cell> GetBorder(List<Cell> square)
     {
         var frame = square.ToList();
@@ -425,14 +404,10 @@ public class Map : MonoBehaviour
                             minMax.maxy - minMax.miny - 1);
     }
 
-    public List<Cell> Cells = new List<Cell>();
-
-  
-
     public ChunkRenderer MakeChunk(Chunk data)
     {
         var chunk = Instantiate(ChunkPrefab, transform);
-        chunk.transform.position = new Vector2(data.X * Game.Instance.Map.ChunkSize, data.Y * Game.Instance.Map.ChunkSize);
+        chunk.transform.position = new Vector2(data.X * Game.Instance.ChunkSize, data.Y * Game.Instance.ChunkSize);
         chunk.name = $"Chunk: {data.X}_{data.Y}";
         chunk.Data = data;
 

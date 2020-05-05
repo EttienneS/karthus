@@ -158,15 +158,15 @@ public class MapGenerator
     {
         using (Instrumenter.Start())
         {
-            var size = Game.Instance.Map.ChunkSize * Game.Instance.Map.Size;
+            var size = Game.Instance.MaxSize;
             MakeCells(size);
             Game.Instance.Map.Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
 
             if (SaveManager.SaveToLoad == null)
             {
-                for (var x = 0; x < Game.Instance.Map.Size; x++)
+                for (var x = 0; x < Game.Instance.Size; x++)
                 {
-                    for (var y = 0; y < Game.Instance.Map.Size; y++)
+                    for (var y = 0; y < Game.Instance.Size; y++)
                     {
                         Game.Instance.Map.MakeChunk(new Chunk(x, y));
                     }
@@ -187,12 +187,12 @@ public class MapGenerator
         Game.Instance.Map.Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
 
         var counter = 1f;
-        var total = Game.Instance.Map.Size * Game.Instance.Map.Size * 1f;
+        var total = Game.Instance.Size * Game.Instance.Size * 1f;
         if (SaveManager.SaveToLoad == null)
         {
-            for (var x = 0; x < Game.Instance.Map.Size; x++)
+            for (var x = 0; x < Game.Instance.Size; x++)
             {
-                for (var y = 0; y < Game.Instance.Map.Size; y++)
+                for (var y = 0; y < Game.Instance.Size; y++)
                 {
                     Game.Instance.Map.MakeChunk(new Chunk(x, y));
                     counter++;

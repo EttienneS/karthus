@@ -298,6 +298,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameController
       objectReference: {fileID: 0}
+    - target: {fileID: 7490961206102362172, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: m_Shadows.m_Type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7490961206102362172, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: m_CullingMask.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 9043323423647380584, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
       propertyPath: m_LocalPosition.x

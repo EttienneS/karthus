@@ -16,70 +16,113 @@ public enum SelectionPreference
 public class Game : MonoBehaviour
 {
     public CameraController CameraController;
+    public int ChunkSize = 120;
     public ConstructController ConstructController;
     public CreatureController CreatureController;
     public CreatureInfoPanel CreatureInfoPanelPrefab;
+    public LoadPanel CurrentLoadPanel;
     public Light CursorLight;
     public DeveloperConsole DeveloperConsole;
-
-    public LoadPanel CurrentLoadPanel;
-    internal void ShowLoadPanel()
-    {
-        CurrentLoadPanel = Instantiate(LoadPanelPrefab, UI.transform);
-    }
-
     public bool EnableShadows;
+
     public FactionController FactionController;
+
     public FileController FileController;
+
     public IdService IdService;
+
     public ItemController ItemController;
+
     public ItemInfoPanel ItemInfoPanelPrefab;
 
     public LoadPanel LoadPanelPrefab;
+
     public MainMenuController MainMenuController;
+
     public Map Map;
+
     public MapGenerator MapGenerator;
+
     public SpriteRenderer MouseSpriteRenderer;
+
     public OrderInfoPanel OrderInfoPanel;
+
     public OrderSelectionController OrderSelectionController;
+
     public OrderTrayController OrderTrayController;
+
     public RectTransform selectSquareImage;
+
+    public int Size = 2;
+
     public SpriteStore SpriteStore;
+
     public StructureController StructureController;
+
     public StructureInfoPanel StructureInfoPanelPrefab;
+
     public TaskPanel TaskPanel;
+
     public TimeManager TimeManager;
+
     public Tooltip TooltipPrefab;
+
     public GameObject UI;
+
     public UIController UIController;
+
     public ValidateMouseSpriteDelegate ValidateMouse;
+
     public VisualEffectController VisualEffectController;
+
     public ZoneController ZoneController;
+
     public ZoneInfoPanel ZoneInfoPanelPrefab;
+
     internal SelectionPreference LastSelection = SelectionPreference.Creature;
+
     internal LineRenderer LineRenderer;
+
     internal float LoadProgress;
+
     internal string LoadStatus;
+
     internal Cell MouseOverCell;
+
     internal string MouseSpriteName;
+
     internal Rotate RotateMouseLeft;
+
     internal Rotate RotateMouseRight;
+
     internal List<Cell> SelectedCells = new List<Cell>();
+
     internal List<CreatureRenderer> SelectedCreatures = new List<CreatureRenderer>();
+
     internal List<Item> SelectedItems = new List<Item>();
+
     internal List<Structure> SelectedStructures = new List<Structure>();
+
     internal Vector3 SelectionEndScreen;
+
     internal SelectionPreference SelectionPreference;
+
     internal Vector3 SelectionStartWorld;
+
     private static Game _instance;
 
     private bool _constructMode;
 
     private CreatureInfoPanel _currentCreatureInfoPanel;
+
     private ItemInfoPanel _currentItemInfoPanel;
+
     private StructureInfoPanel _currentStructureInfoPanel;
+
     private Tooltip _currentTooltip;
+
     private ZoneInfoPanel _currentZoneInfoPanel;
+
     private List<GameObject> _destroyCache = new List<GameObject>();
 
     private bool _finalizationStarted;
@@ -108,9 +151,10 @@ public class Game : MonoBehaviour
         }
     }
 
-    public float MaxTimeToClick { get; set; } = 0.60f;
-    public float MinTimeToClick { get; set; } = 0.05f;
+    public int MaxSize => Size * ChunkSize;
+
     public bool Paused { get; set; }
+
     public bool Typing { get; set; }
 
     public void AddItemToDestroy(GameObject gameObject)
@@ -341,7 +385,6 @@ public class Game : MonoBehaviour
         ValidateMouse = validation;
     }
 
-
     public void SetMouseSprite(string spriteName, ValidateMouseSpriteDelegate validation)
     {
         _constructMode = false;
@@ -371,6 +414,11 @@ public class Game : MonoBehaviour
         }
         _currentZoneInfoPanel = Instantiate(ZoneInfoPanelPrefab, UI.transform);
         _currentZoneInfoPanel.Show(zone);
+    }
+
+    internal void ShowLoadPanel()
+    {
+        CurrentLoadPanel = Instantiate(LoadPanelPrefab, UI.transform);
     }
 
     internal Tooltip ShowTooltip(string tooltipTitle, string tooltipText)
@@ -608,6 +656,27 @@ public class Game : MonoBehaviour
                     }
                 }
             }
+        }
+    }
+
+    private void OnFirstRun()
+    {
+        if (!_shownOnce)
+        {
+            UIController.Show();
+
+            OrderSelectionController.DisableAndReset();
+            TaskPanel.Hide();
+
+            DeveloperConsole.gameObject.SetActive(false);
+
+            _shownOnce = true;
+
+            CameraController.Camera.orthographicSize = 10;
+            CameraController.transform.position = new Vector3((Instance.ChunkSize * Instance.Size) / 2,
+                                                              (Instance.ChunkSize * Instance.Size) / 2, -15);
+
+            MainMenuController.Toggle();
         }
     }
 
@@ -887,27 +956,6 @@ public class Game : MonoBehaviour
             }
         }
         DestroyItemsInCache();
-    }
-
-    private void OnFirstRun()
-    {
-        if (!_shownOnce)
-        {
-            UIController.Show();
-
-            OrderSelectionController.DisableAndReset();
-            TaskPanel.Hide();
-
-            DeveloperConsole.gameObject.SetActive(false);
-
-            _shownOnce = true;
-
-            CameraController.Camera.orthographicSize = 10;
-            CameraController.transform.position = new Vector3((Instance.Map.ChunkSize * Instance.Map.Size) / 2,
-                                                              (Instance.Map.ChunkSize * Instance.Map.Size) / 2, -15);
-
-            MainMenuController.Toggle();
-        }
     }
 
     private void UpdateMouseOverTooltip(Vector3 mousePosition)
