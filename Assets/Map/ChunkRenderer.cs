@@ -84,15 +84,17 @@ public class ChunkRenderer : MonoBehaviour
         {
             mesh.Clear();
 
+            var maxMeshVertexes = MeshVertexWidth - 1;
             uvs = new Vector2[MeshVertexWidth * MeshVertexWidth];
             vertices = new Vector3[MeshVertexWidth * MeshVertexWidth];
-            triangles = new int[(MeshVertexWidth - 1) * (MeshVertexWidth - 1) * 6];
+            triangles = new int[maxMeshVertexes * maxMeshVertexes * 6];
 
             var vertIndex = 0;
             var height = 0f;
-            for (int y = 0; y < MeshVertexWidth; y++)
+
+            for (var y = 0; y < MeshVertexWidth; y++)
             {
-                for (int x = 0; x < MeshVertexWidth; x++)
+                for (var x = 0; x < MeshVertexWidth; x++)
                 {
                     var cell = Game.Instance.Map.GetCellAtCoordinate(x + (Data.X * MeshVertexWidth), y + (Data.Y * MeshVertexWidth));
                     if (cell != null)
@@ -102,7 +104,7 @@ public class ChunkRenderer : MonoBehaviour
 
                     vertices[vertIndex] = new Vector3(x, y, height);
                     uvs[vertIndex] = new Vector2(x / (float)MeshVertexWidth, y / (float)MeshVertexWidth);
-                    if (x < MeshVertexWidth - 1 && y < MeshVertexWidth - 1)
+                    if (x < maxMeshVertexes && y < maxMeshVertexes)
                     {
                         AddTriangle(vertIndex + MeshVertexWidth, vertIndex + MeshVertexWidth + 1, vertIndex);
                         AddTriangle(vertIndex + 1, vertIndex, vertIndex + MeshVertexWidth + 1);
