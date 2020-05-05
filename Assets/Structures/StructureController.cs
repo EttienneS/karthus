@@ -82,28 +82,14 @@ namespace Structures
             return StructureTypes.Find(w => w.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
 
-        public void ClearStructure(Structure structure)
-        {
-            if (structure.IsFloor())
-            {
-                structure.Cell.RefreshTile();
-            }
-        }
-
         public void RefreshStructure(Structure structure)
         {
             if (structure.Cell == null)
             {
                 return;
             }
-            if (structure.IsFloor())
-            {
-                structure.Cell.RefreshTile();
-            }
-            else
-            {
-                structure.Renderer.SpriteRenderer.sprite = structure.GetSprite();
-            }
+            structure.Renderer.SpriteRenderer.sprite = structure.GetSprite();
+
         }
 
         public Structure SpawnStructure(string name, Cell cell, Faction faction, bool draw = true)
@@ -142,7 +128,7 @@ namespace Structures
 
         public void Update()
         {
-           
+
             if (Game.Instance.TimeManager.Paused)
                 return;
 
@@ -162,11 +148,7 @@ namespace Structures
         {
             if (structure != null)
             {
-                if (structure.Cell != null)
-                {
-                    ClearStructure(structure);
-                }
-                else
+                if (structure.Cell == null)
                 {
                     Debug.Log("Unbound structure");
                 }

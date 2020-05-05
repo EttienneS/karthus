@@ -37,7 +37,6 @@ public class Map : MonoBehaviour
     public NoiseSettings WorldNoise;
 
     internal Dictionary<(int x, int y), ChunkRenderer> Chunks;
-    internal (int X, int Y) Origin = (0, 0);
     private float[,] _localNoiseMap;
     private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
     private int _searchFrontierPhase;
@@ -76,13 +75,13 @@ public class Map : MonoBehaviour
         }
     }
 
-    internal int MaxX { get; set; }
+    internal int MaxX => Game.Instance.Map.ChunkSize * Game.Instance.Map.Size;
 
-    internal int MaxY { get; set; }
+    internal int MaxY => Game.Instance.Map.ChunkSize * Game.Instance.Map.Size;
 
-    internal int MinX { get; set; }
+    internal int MinX => 0;
 
-    internal int MinY { get; set; }
+    internal int MinY => 0;
 
     internal int SeedValue
     {
@@ -134,27 +133,7 @@ public class Map : MonoBehaviour
         return newGroup.Distinct().ToList();
     }
 
-    public void ExpandChunksAround(Cell cell)
-    {
-        if (cell == null)
-        {
-            return;
-        }
-
-        for (var i = -1; i <= 1; i++)
-        {
-            for (var j = -1; j <= 1; j++)
-            {
-                var x = cell.Chunk.X + i;
-                var y = cell.Chunk.Y + j;
-                if (!Chunks.ContainsKey((x, y)))
-                {
-                    MakeChunk(new Chunk(x, y));
-                }
-            }
-        }
-    }
-
+  
     public List<Cell> GetBorder(List<Cell> square)
     {
         var frame = square.ToList();
@@ -446,39 +425,18 @@ public class Map : MonoBehaviour
                             minMax.maxy - minMax.miny - 1);
     }
 
+    public List<Cell> Cells = new List<Cell>();
+
+  
+
     public ChunkRenderer MakeChunk(Chunk data)
     {
         var chunk = Instantiate(ChunkPrefab, transform);
+        chunk.transform.position = new Vector2(data.X * Game.Instance.Map.ChunkSize, data.Y * Game.Instance.Map.ChunkSize);
         chunk.name = $"Chunk: {data.X}_{data.Y}";
         chunk.Data = data;
-        chunk.MakeCells();
-
-        if (Game.Instance.Map.Chunks.ContainsKey((data.X - 1, data.Y)))
-        {
-            chunk.LinkToChunk(Game.Instance.Map.Chunks[(data.X - 1, data.Y)]);
-        }
-        if (Game.Instance.Map.Chunks.ContainsKey((data.X + 1, data.Y)))
-        {
-            chunk.LinkToChunk(Game.Instance.Map.Chunks[(data.X + 1, data.Y)]);
-        }
-        if (Game.Instance.Map.Chunks.ContainsKey((data.X, data.Y - 1)))
-        {
-            chunk.LinkToChunk(Game.Instance.Map.Chunks[(data.X, data.Y - 1)]);
-        }
-        if (Game.Instance.Map.Chunks.ContainsKey((data.X, data.Y + 1)))
-        {
-            chunk.LinkToChunk(Game.Instance.Map.Chunks[(data.X, data.Y + 1)]);
-        }
 
         Game.Instance.Map.Chunks.Add((data.X, data.Y), chunk);
-
-        if (Game.Instance.Map.Chunks.Count > 1)
-        {
-            MinX = Game.Instance.Map.Chunks.Min(c => c.Key.x) * Game.Instance.Map.ChunkSize;
-            MinY = Game.Instance.Map.Chunks.Min(c => c.Key.y) * Game.Instance.Map.ChunkSize;
-            MaxX = (Game.Instance.Map.Chunks.Max(c => c.Key.x) * Game.Instance.Map.ChunkSize) + Game.Instance.Map.ChunkSize;
-            MaxY = (Game.Instance.Map.Chunks.Max(c => c.Key.y) * Game.Instance.Map.ChunkSize) + Game.Instance.Map.ChunkSize;
-        }
 
         return chunk;
     }
@@ -620,11 +578,6 @@ public class Map : MonoBehaviour
     internal float GetRenderHeight(float height)
     {
         return -(Game.Instance.Map.HeightCurve.Evaluate(height) * HeightScale);
-    }
-
-    internal void SetTile(Cell cell, Tile tile)
-    {
-        Chunks[cell.Chunk.Coords].SetTile(cell.X, cell.Y, tile);
     }
 
     internal Cell TryGetPathableNeighbour(Cell coordinates)

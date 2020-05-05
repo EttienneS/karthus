@@ -227,7 +227,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 17666008, guid: 8d3d47b53068341448ff13732aef998e, type: 3}
       propertyPath: ChunkSize
-      value: 55
+      value: 120
       objectReference: {fileID: 0}
     - target: {fileID: 1817309255, guid: 8d3d47b53068341448ff13732aef998e, type: 3}
       propertyPath: m_Materials.Array.data[0]

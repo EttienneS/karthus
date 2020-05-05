@@ -8,7 +8,6 @@ using UnityEngine.Tilemaps;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class ChunkRenderer : MonoBehaviour
 {
-    public List<Cell> Cells;
     public Chunk Data;
     public MeshRenderer MeshRenderer;
     private Mesh mesh;
@@ -18,7 +17,7 @@ public class ChunkRenderer : MonoBehaviour
     private int[] triangles;
     private Vector2[] uvs;
     private Vector3[] vertices;
-    public int ChunkSize => Game.Instance.Map.ChunkSize;
+    public int MeshVertexWidth => Game.Instance.Map.ChunkSize + 1;
 
     public void AddTriangle(int a, int b, int c)
     {
@@ -29,28 +28,13 @@ public class ChunkRenderer : MonoBehaviour
         triangleIndex += 3;
     }
 
-    public Cell CreateCell(int x, int y)
-    {
-        var cell = new Cell
-        {
-            X = x,
-            Y = y,
-            SearchPhase = 0,
-            Chunk = Data
-        };
-
-        Game.Instance.Map.CellLookup.Add((x, y), cell);
-
-        return cell;
-    }
-
-    public Vector3Int GetChunkCoordinate(Cell cell)
-    {
-        return new Vector3Int(cell.X % Game.Instance.Map.ChunkSize, cell.Y % Game.Instance.Map.ChunkSize, 0);
-    }
-
     public Color GetColor(Cell cell)
     {
+        if (cell == null)
+        {
+            return new Color(0,0,0,0);
+        }
+
         switch (cell.BiomeRegion.SpriteName)
         {
             case "Dirt":
@@ -79,59 +63,19 @@ public class ChunkRenderer : MonoBehaviour
         }
     }
 
-    public void LinkToChunk(ChunkRenderer chunk)
-    {
-        // link edges to the given chunk edges
-        var size = Game.Instance.Map.ChunkSize;
-
-        var firstX = (Data.X * size);
-        var firstY = (Data.Y * size);
-
-        if (chunk.Data.X < Data.X)
-        {
-            // link to chunk on the left (west)
-            foreach (var cell in Cells.Where(c => c.X == firstX))
-            {
-                cell.SetNeighbor(Direction.W, Game.Instance.Map.CellLookup[(cell.X - 1, cell.Y)]);
-            }
-        }
-        else if (chunk.Data.X > Data.X)
-        {
-            // link to chunk on the right (east)
-            foreach (var cell in Cells.Where(c => c.X == firstX + size))
-            {
-                cell.SetNeighbor(Direction.E, Game.Instance.Map.CellLookup[(cell.X + 1, cell.Y)]);
-            }
-        }
-        else if (chunk.Data.Y < Data.Y)
-        {
-            // link to chunk below (south)
-            foreach (var cell in Cells.Where(c => c.Y == firstY))
-            {
-                cell.SetNeighbor(Direction.S, Game.Instance.Map.CellLookup[(cell.X, cell.Y - 1)]);
-            }
-        }
-        else if (chunk.Data.Y > Data.Y)
-        {
-            // link to chunk above (north)
-            foreach (var cell in Cells.Where(c => c.Y == firstY))
-            {
-                cell.SetNeighbor(Direction.N, Game.Instance.Map.CellLookup[(cell.X, cell.Y + 1)]);
-            }
-        }
-    }
-
     public void Start()
     {
+        Triangulate();
+        UpdateTexture();
+
         using (Instrumenter.Start())
         {
             transform.position = new Vector3(Data.X * Game.Instance.Map.ChunkSize, Data.Y * Game.Instance.Map.ChunkSize);
-            Populate();
-            UpdateInterlocked();
+            Populate(Game.Instance.Map.GetRectangle(Data.X * Game.Instance.Map.ChunkSize,
+                                                    Data.Y * Game.Instance.Map.ChunkSize,
+                                                    Game.Instance.Map.ChunkSize,
+                                                    Game.Instance.Map.ChunkSize));
         }
-
-        Triangulate();
-        UpdateTexture();
     }
 
     public void Triangulate()
@@ -140,23 +84,28 @@ public class ChunkRenderer : MonoBehaviour
         {
             mesh.Clear();
 
-            uvs = new Vector2[ChunkSize * ChunkSize];
-            vertices = new Vector3[ChunkSize * ChunkSize];
-            triangles = new int[(ChunkSize - 1) * (ChunkSize - 1) * 6];
+            uvs = new Vector2[MeshVertexWidth * MeshVertexWidth];
+            vertices = new Vector3[MeshVertexWidth * MeshVertexWidth];
+            triangles = new int[(MeshVertexWidth - 1) * (MeshVertexWidth - 1) * 6];
 
             var vertIndex = 0;
-            for (int y = 0; y < ChunkSize; y++)
+            var height = 0f;
+            for (int y = 0; y < MeshVertexWidth; y++)
             {
-                for (int x = 0; x < ChunkSize; x++)
+                for (int x = 0; x < MeshVertexWidth; x++)
                 {
-                    var cell = Game.Instance.Map.GetCellAtCoordinate(x + (Data.X * ChunkSize), y + (Data.Y * ChunkSize));
-
-                    vertices[vertIndex] = new Vector3(x, y, cell.RenderHeight);
-                    uvs[vertIndex] = new Vector2(x / (float)ChunkSize, y / (float)ChunkSize);
-                    if (x < ChunkSize - 1 && y < ChunkSize - 1)
+                    var cell = Game.Instance.Map.GetCellAtCoordinate(x + (Data.X * MeshVertexWidth), y + (Data.Y * MeshVertexWidth));
+                    if (cell != null)
                     {
-                        AddTriangle(vertIndex + ChunkSize, vertIndex + ChunkSize + 1, vertIndex);
-                        AddTriangle(vertIndex + 1, vertIndex, vertIndex + ChunkSize + 1);
+                        height = cell.RenderHeight;
+                    }
+
+                    vertices[vertIndex] = new Vector3(x, y, height);
+                    uvs[vertIndex] = new Vector2(x / (float)MeshVertexWidth, y / (float)MeshVertexWidth);
+                    if (x < MeshVertexWidth - 1 && y < MeshVertexWidth - 1)
+                    {
+                        AddTriangle(vertIndex + MeshVertexWidth, vertIndex + MeshVertexWidth + 1, vertIndex);
+                        AddTriangle(vertIndex + 1, vertIndex, vertIndex + MeshVertexWidth + 1);
                     }
                     vertIndex++;
                 }
@@ -171,77 +120,25 @@ public class ChunkRenderer : MonoBehaviour
     }
     public void UpdateTexture()
     {
-        var colors = new Color[ChunkSize, ChunkSize];
-        for (int y = 0; y < ChunkSize; y++)
+        var colors = new Color[MeshVertexWidth, MeshVertexWidth];
+        for (int y = 0; y < MeshVertexWidth; y++)
         {
-            for (int x = 0; x < ChunkSize; x++)
+            for (int x = 0; x < MeshVertexWidth; x++)
             {
-                var cell = Game.Instance.Map.GetCellAtCoordinate(x + (Data.X * ChunkSize), y + (Data.Y * ChunkSize));
+                var cell = Game.Instance.Map.GetCellAtCoordinate(x + (Data.X * MeshVertexWidth), y + (Data.Y * MeshVertexWidth));
                 colors[x, y] = GetColor(cell);
             }
         }
 
         var mats = MeshRenderer.materials;
-        mats[0].mainTexture = TextureCreator.CreateTextureFromColorMap(ChunkSize, ChunkSize, colors);
+        mats[0].mainTexture = TextureCreator.CreateTextureFromColorMap(MeshVertexWidth, MeshVertexWidth, colors);
         MeshRenderer.materials = mats;
     }
-
-
-    internal void MakeCells()
+    
+    internal void Populate(List<Cell> cells)
     {
-        var size = Game.Instance.Map.ChunkSize;
-
-        var firstX = (Data.X * size);
-        var firstY = (Data.Y * size);
-
-        Cells = new List<Cell>();
-
-        for (var y = firstY; y < firstY + size; y++)
-        {
-            for (var x = firstX; x < firstX + size; x++)
-            {
-                Cells.Add(CreateCell(x, y));
-            }
-        }
-
-        // link cell to the others in the chunk
-        for (var y = firstY; y < firstY + size; y++)
-        {
-            for (var x = firstX; x < firstX + size; x++)
-            {
-                var cell = Game.Instance.Map.CellLookup[(x, y)];
-                if (x > firstX)
-                {
-                    cell.SetNeighbor(Direction.W, Game.Instance.Map.CellLookup[(x - 1, y)]);
-
-                    if (y > firstY)
-                    {
-                        cell.SetNeighbor(Direction.SW, Game.Instance.Map.CellLookup[(x - 1, y - 1)]);
-
-                        if (x < firstX - 1)
-                        {
-                            cell.SetNeighbor(Direction.SE, Game.Instance.Map.CellLookup[(x + 1, y - 1)]);
-                        }
-                    }
-                }
-
-                if (y > firstY)
-                {
-                    cell.SetNeighbor(Direction.S, Game.Instance.Map.CellLookup[(x, y - 1)]);
-                }
-            }
-        }
-    }
-
-    internal void Populate()
-    {
-        Cells.ForEach(c => c.Populate());
+        cells.ForEach(c => c.Populate());
         Data.Populated = true;
-    }
-
-    internal void SetTile(int x, int y, Tile tile)
-    {
-        var pos = new Vector3Int(x % Game.Instance.Map.ChunkSize, y % Game.Instance.Map.ChunkSize, 0);
     }
 
     private void Awake()
@@ -251,11 +148,5 @@ public class ChunkRenderer : MonoBehaviour
         meshCollider = gameObject.AddComponent<MeshCollider>();
     }
 
-    private void UpdateInterlocked()
-    {
-        foreach (var wall in Cells.Where(c => c.Structure?.IsInterlocking() == true).Select(c => c.Structure))
-        {
-            wall.UpdateInterlocking();
-        }
-    }
+  
 }

@@ -16,18 +16,7 @@ public class DeveloperConsole : MonoBehaviour
 
     public delegate string Execute(string args);
 
-    public string Expand()
-    {
-        var expansions = string.Empty;
-        foreach (var chunk in Game.Instance.Map.Chunks.ToList())
-        {
-            Game.Instance.Map.ExpandChunksAround(chunk.Value.Cells[0]);
-
-            expansions += $"Expanding {chunk.Key.x}:{chunk.Key.y}\n";
-        }
-
-        return expansions;
-    }
+   
 
     public IEntity GetEntity(string id)
     {
@@ -136,7 +125,6 @@ public class DeveloperConsole : MonoBehaviour
             SaveManager.Load(args);
             return "Loading...";
         });
-        Commands.Add("Expand", (_) => Expand());
 
         Commands.Add("Creatures", (_) => List("Creatures"));
         Commands.Add("Items", (_) => List("Items"));

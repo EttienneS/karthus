@@ -341,12 +341,6 @@ public class Game : MonoBehaviour
         ValidateMouse = validation;
     }
 
-    public void SetLoadStatus(string message, float progress)
-    {
-        LoadStatus = message;
-        Debug.Log(LoadStatus);
-        Instance.LoadProgress = progress;
-    }
 
     public void SetMouseSprite(string spriteName, ValidateMouseSpriteDelegate validation)
     {
@@ -439,14 +433,12 @@ public class Game : MonoBehaviour
             }
             if (SaveManager.SaveToLoad.Areas != null)
             {
-                SetLoadStatus($"Loading Areas", 0.97f);
                 foreach (var zone in SaveManager.SaveToLoad.Areas)
                 {
                     ZoneController.Load(zone);
                 }
             }
 
-            SetLoadStatus($"Loading Camera", 0.99f);
             SaveManager.SaveToLoad.CameraData.Load(CameraController.Camera);
             SaveManager.SaveToLoad = null;
         }
@@ -767,12 +759,6 @@ public class Game : MonoBehaviour
         }
         else
         {
-            // set initial bound values
-            Map.MinX = Map.Origin.X;
-            Map.MinY = Map.Origin.Y;
-            Map.MaxX = Map.Origin.X + Map.ChunkSize;
-            Map.MaxY = Map.Origin.Y + Map.ChunkSize;
-
             if (string.IsNullOrEmpty(Map.Seed))
             {
                 Map.Seed = NameHelper.GetRandomName() + " " + NameHelper.GetRandomName();

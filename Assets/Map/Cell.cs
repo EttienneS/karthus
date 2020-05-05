@@ -9,8 +9,6 @@ using Random = UnityEngine.Random;
 
 public class Cell : IEquatable<Cell>
 {
-    public Chunk Chunk;
-
     [JsonIgnore]
     public Cell[] Neighbors = new Cell[8];
 
@@ -278,11 +276,6 @@ public class Cell : IEquatable<Cell>
         var scaled = Helpers.Scale(BiomeRegion.Min, BiomeRegion.Max, 0f, maxShade, Height);
 
         Color = new Color(baseColor.r - scaled, baseColor.g - scaled, baseColor.b - scaled, baseColor.a);
-    }
-
-    public void RefreshTile()
-    {
-        Game.Instance.Map.SetTile(this, GroundTile);
     }
 
     public void SetNeighbor(Direction direction, Cell cell)

@@ -100,20 +100,75 @@ public class MapGenerator
         }
     }
 
+    public Cell CreateCell(int x, int y)
+    {
+        var cell = new Cell
+        {
+            X = x,
+            Y = y,
+            SearchPhase = 0
+        };
+
+        Game.Instance.Map.CellLookup.Add((x, y), cell);
+
+        return cell;
+    }
+
+    internal void MakeCells(int size)
+    {
+        Game.Instance.Map.Cells = new List<Cell>();
+        for (var y = 0; y < 0 + size; y++)
+        {
+            for (var x = 0; x < 0 + size; x++)
+            {
+                Game.Instance.Map.Cells.Add(CreateCell(x, y));
+            }
+        }
+
+        // link cell to the others in the chunk
+        for (var y = 0; y < 0 + size; y++)
+        {
+            for (var x = 0; x < 0 + size; x++)
+            {
+                var cell = Game.Instance.Map.CellLookup[(x, y)];
+                if (x > 0)
+                {
+                    cell.SetNeighbor(Direction.W, Game.Instance.Map.CellLookup[(x - 1, y)]);
+
+                    if (y > 0)
+                    {
+                        cell.SetNeighbor(Direction.SW, Game.Instance.Map.CellLookup[(x - 1, y - 1)]);
+
+                        if (x < 0 - 1)
+                        {
+                            cell.SetNeighbor(Direction.SE, Game.Instance.Map.CellLookup[(x + 1, y - 1)]);
+                        }
+                    }
+                }
+
+                if (y > 0)
+                {
+                    cell.SetNeighbor(Direction.S, Game.Instance.Map.CellLookup[(x, y - 1)]);
+                }
+            }
+        }
+    }
+
     public void GenerateMap()
     {
         using (Instrumenter.Start())
         {
+            var size = Game.Instance.Map.ChunkSize * Game.Instance.Map.Size;
+            MakeCells(size);
             Game.Instance.Map.Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
 
             if (SaveManager.SaveToLoad == null)
             {
-                for (var i = 0; i < Game.Instance.Map.Size; i++)
+                for (var x = 0; x < Game.Instance.Map.Size; x++)
                 {
-                    for (var k = 0; k < Game.Instance.Map.Size; k++)
+                    for (var y = 0; y < Game.Instance.Map.Size; y++)
                     {
-                        Game.Instance.Map.MakeChunk(new Chunk((Game.Instance.Map.Origin.X / Game.Instance.Map.ChunkSize) + i,
-                                                              (Game.Instance.Map.Origin.Y / Game.Instance.Map.ChunkSize) + k));
+                        Game.Instance.Map.MakeChunk(new Chunk(x, y));
                     }
                 }
             }
@@ -127,23 +182,19 @@ public class MapGenerator
         }
     }
 
-    public IEnumerator xWork()
+    public IEnumerator Work()
     {
         Game.Instance.Map.Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
 
         var counter = 1f;
         var total = Game.Instance.Map.Size * Game.Instance.Map.Size * 1f;
-        Game.Instance.SetLoadStatus("Create Map", 0);
         if (SaveManager.SaveToLoad == null)
         {
-            for (var i = 0; i < Game.Instance.Map.Size; i++)
+            for (var x = 0; x < Game.Instance.Map.Size; x++)
             {
-                for (var k = 0; k < Game.Instance.Map.Size; k++)
+                for (var y = 0; y < Game.Instance.Map.Size; y++)
                 {
-                    Game.Instance.Map.MakeChunk(new Chunk((Game.Instance.Map.Origin.X / Game.Instance.Map.ChunkSize) + i,
-                                                 (Game.Instance.Map.Origin.Y / Game.Instance.Map.ChunkSize) + k));
-
-                    Game.Instance.SetLoadStatus($"Create Chunk {counter}", counter / total);
+                    Game.Instance.Map.MakeChunk(new Chunk(x, y));
                     counter++;
                     yield return null;
                 }
@@ -156,7 +207,6 @@ public class MapGenerator
             {
                 counter++;
                 Game.Instance.Map.MakeChunk(chunk);
-                Game.Instance.SetLoadStatus($"Load Chunk {counter}", step * counter);
                 yield return null;
             }
         }
