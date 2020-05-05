@@ -90,10 +90,6 @@ public class TimeManager : MonoBehaviour
 
     public void Update()
     {
-        if (!Game.Instance.Ready)
-        {
-            return;
-        }
 
         _timeTicks += Time.deltaTime;
 

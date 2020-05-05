@@ -6,13 +6,20 @@
       "Min": 0.0,
       "Max": 0.3,
       "TravelCost": -1,
-      "SpriteName": "Water"
+      "SpriteName": "Sand"
+    },
+    {
+      "Content": {
+      },
+      "Min": 0.3,
+      "Max": 0.35,
+      "SpriteName": "Sand"
     },
     {
       "Content": {
         "Medium Rock": 0.05
       },
-      "Min": 0.3,
+      "Min": 0.35,
       "Max": 0.4,
       "SpriteName": "Sand"
     },

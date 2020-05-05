@@ -2,12 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 public class MapGenerator
 {
-    public bool Done;
-    public string Status;
     private Dictionary<string, Biome> _biomeTemplates;
 
     public Dictionary<string, Biome> BiomeTemplates
@@ -103,7 +100,7 @@ public class MapGenerator
         }
     }
 
-    public void Work()
+    public void GenerateMap()
     {
         using (Instrumenter.Start())
         {
@@ -112,12 +109,11 @@ public class MapGenerator
             if (SaveManager.SaveToLoad == null)
             {
                 for (var i = 0; i < Game.Instance.Map.Size; i++)
-
                 {
                     for (var k = 0; k < Game.Instance.Map.Size; k++)
                     {
                         Game.Instance.Map.MakeChunk(new Chunk((Game.Instance.Map.Origin.X / Game.Instance.Map.ChunkSize) + i,
-                                                      (Game.Instance.Map.Origin.Y / Game.Instance.Map.ChunkSize) + k));
+                                                              (Game.Instance.Map.Origin.Y / Game.Instance.Map.ChunkSize) + k));
                     }
                 }
             }
@@ -128,10 +124,7 @@ public class MapGenerator
                     Game.Instance.Map.MakeChunk(chunk);
                 }
             }
-
-            Done = true;
         }
-
     }
 
     public IEnumerator xWork()
@@ -167,7 +160,5 @@ public class MapGenerator
                 yield return null;
             }
         }
-
-        Done = true;
     }
 }

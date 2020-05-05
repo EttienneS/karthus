@@ -7,7 +7,6 @@ namespace Assets.Sprites
     {
         public static Texture2D CreateTextureFromHeightMap(int width, int height, float[,] heights)
         {
-
             var colors = new Color[width, height];
             for (var y = 0; y < height; y++)
             {
@@ -21,7 +20,7 @@ namespace Assets.Sprites
 
         public static Texture2D CreateTextureFromColorMap(int width, int height, Color[,] color)
         {
-            using (Instrumenter.Start())
+            //using (Instrumenter.Start())
             {
                 var texture = new Texture2D(width, height)
                 {

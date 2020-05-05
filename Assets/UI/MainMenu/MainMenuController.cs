@@ -30,7 +30,7 @@ public class MainMenuController : MonoBehaviour
 
     public void Load()
     {
-        Game.Instance.LoadPanel.Show();
+        Game.Instance.ShowLoadPanel();
     }
 
     public void Save()

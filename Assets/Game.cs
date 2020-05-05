@@ -21,15 +21,21 @@ public class Game : MonoBehaviour
     public CreatureInfoPanel CreatureInfoPanelPrefab;
     public Light CursorLight;
     public DeveloperConsole DeveloperConsole;
+
+    public LoadPanel CurrentLoadPanel;
+    internal void ShowLoadPanel()
+    {
+        CurrentLoadPanel = Instantiate(LoadPanelPrefab, UI.transform);
+    }
+
     public bool EnableShadows;
     public FactionController FactionController;
     public FileController FileController;
     public IdService IdService;
     public ItemController ItemController;
     public ItemInfoPanel ItemInfoPanelPrefab;
-    public LoadStatus LoadingPanel;
 
-    public LoadPanel LoadPanel;
+    public LoadPanel LoadPanelPrefab;
     public MainMenuController MainMenuController;
     public Map Map;
     public MapGenerator MapGenerator;
@@ -56,7 +62,6 @@ public class Game : MonoBehaviour
     internal string LoadStatus;
     internal Cell MouseOverCell;
     internal string MouseSpriteName;
-    internal bool Ready;
     internal Rotate RotateMouseLeft;
     internal Rotate RotateMouseRight;
     internal List<Cell> SelectedCells = new List<Cell>();
@@ -381,7 +386,7 @@ public class Game : MonoBehaviour
         return _currentTooltip;
     }
 
-    private void FinalizeStartup()
+    private void FinalizeMap()
     {
         if (SaveManager.SaveToLoad == null)
         {
@@ -445,7 +450,6 @@ public class Game : MonoBehaviour
             SaveManager.SaveToLoad.CameraData.Load(CameraController.Camera);
             SaveManager.SaveToLoad = null;
         }
-        Ready = true;
     }
 
     private void HandleHotkeys()
@@ -532,38 +536,8 @@ public class Game : MonoBehaviour
 
     private void Initialize()
     {
-        if (!Ready)
-        {
-            if (MapGenerator.Done && !_finalizationStarted)
-            {
-                _finalizationStarted = true;
-                FinalizeStartup();
-            }
-            else
-            {
-                CameraController.Camera.transform.position = new Vector3(25, 25, -15);
-                MapGenerator.Work();
-            }
-        }
-        else if (!_shownOnce)
-        {
-            UIController.Show();
-
-            OrderSelectionController.DisableAndReset();
-            LoadingPanel.Hide();
-            LoadPanel.Hide();
-            TaskPanel.Hide();
-
-            DeveloperConsole.gameObject.SetActive(false);
-
-            _shownOnce = true;
-
-            CameraController.Camera.orthographicSize = 10;
-            CameraController.transform.position = new Vector3((Instance.Map.ChunkSize * Instance.Map.Size) / 2,
-                                                              (Instance.Map.ChunkSize * Instance.Map.Size) / 2, -10);
-
-            MainMenuController.Toggle();
-        }
+        MapGenerator.GenerateMap();
+        FinalizeMap();
     }
 
     private bool MouseOverUi()
@@ -780,10 +754,7 @@ public class Game : MonoBehaviour
 
     private void Start()
     {
-        LoadingPanel.LoadingTextBox.text = "Initializing...";
-
         UIController.Hide();
-        LoadingPanel.Show();
 
         LineRenderer = GetComponent<LineRenderer>();
         MouseSpriteRenderer.size = Vector2.one;
@@ -811,11 +782,13 @@ public class Game : MonoBehaviour
         IdService = new IdService();
         MapGenerator = new MapGenerator();
         ConstructController = new ConstructController();
+
+        Initialize();
     }
 
     private void Update()
     {
-        Initialize();
+        OnFirstRun();
 
         if (MainMenuController.MainMenuActive)
         {
@@ -928,6 +901,27 @@ public class Game : MonoBehaviour
             }
         }
         DestroyItemsInCache();
+    }
+
+    private void OnFirstRun()
+    {
+        if (!_shownOnce)
+        {
+            UIController.Show();
+
+            OrderSelectionController.DisableAndReset();
+            TaskPanel.Hide();
+
+            DeveloperConsole.gameObject.SetActive(false);
+
+            _shownOnce = true;
+
+            CameraController.Camera.orthographicSize = 10;
+            CameraController.transform.position = new Vector3((Instance.Map.ChunkSize * Instance.Map.Size) / 2,
+                                                              (Instance.Map.ChunkSize * Instance.Map.Size) / 2, -15);
+
+            MainMenuController.Toggle();
+        }
     }
 
     private void UpdateMouseOverTooltip(Vector3 mousePosition)

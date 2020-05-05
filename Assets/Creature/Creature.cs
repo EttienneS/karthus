@@ -741,8 +741,6 @@ public class Creature : IEntity
 
     internal bool Update(float timeDelta)
     {
-        if (!Game.Instance.Ready)
-            return false;
 
         if (Game.Instance.TimeManager.Paused)
             return false;

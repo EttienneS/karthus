@@ -10,15 +10,14 @@ public class LoadPanel : MonoBehaviour
 
     private List<SaveInfo> _infos;
 
-    public void Show()
+    public void Start()
     {
-        gameObject.SetActive(true);
         Load();
     }
 
     public void Hide()
     {
-        gameObject.SetActive(false);
+        Destroy(gameObject);
     }
 
     public void SetSelected(string path)

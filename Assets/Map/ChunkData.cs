@@ -1,7 +1,11 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 public class Chunk
 {
+    public List<Cell> Cells;
+
+
     public Chunk(int x, int y)
     {
         X = x;

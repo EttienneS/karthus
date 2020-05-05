@@ -13,7 +13,7 @@ public class Map : MonoBehaviour
     public Dictionary<(int x, int y), Cell> CellLookup = new Dictionary<(int x, int y), Cell>();
     public ChunkRenderer ChunkPrefab;
 
-    [Range(10, 250)]
+    [Range(5, 250)]
     public int ChunkSize = 5;
 
     [Range(0, 10)]

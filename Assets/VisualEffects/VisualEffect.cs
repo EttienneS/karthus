@@ -99,8 +99,6 @@ public class VisualEffect : MonoBehaviour
 
     private void Update()
     {
-        if (!Game.Instance.Ready)
-            return;
         if (Game.Instance.TimeManager.Paused)
             return;
 
