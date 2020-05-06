@@ -1,6 +1,6 @@
 {
   "Name": "Rock",
-  "SpriteName": "Rock",
+  "SpriteName": "stone_small5",
   "TravelCost": "-1",
   "Buildable": "False",
   "Cost": {

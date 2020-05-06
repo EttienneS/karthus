@@ -87,12 +87,6 @@ public class Build : CreatureTask
     public void FinishStructure(Faction faction)
     {
         TargetStructure.IsBluePrint = false;
-        TargetStructure.Refresh();
-
-        if (TargetStructure.IsInterlocking())
-        {
-           TargetStructure.UpdateInterlocking();
-        }
 
         faction.AddStructure(TargetStructure);
 
@@ -105,14 +99,7 @@ public class Build : CreatureTask
             TargetStructure.Properties.Remove(NamedProperties.ContainedItemIds);
         }
 
-        if (TargetStructure.IsShadowCaster())
-        {
-            TargetStructure.Renderer.EnableShadow();
-        }
-        else
-        {
-            TargetStructure.Renderer.DisableShadow();
-        }
+      
     }
 
     

@@ -1,6 +1,6 @@
 {
   "Name": "Tree",
-  "SpriteName": "Tree",
+  "SpriteName": "tree_pineSmall_square1",
   "TravelCost": "7",
   "Buildable": "False",
   "Layer": "Tree",

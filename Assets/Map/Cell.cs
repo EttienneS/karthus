@@ -360,8 +360,7 @@ public class Cell : IEquatable<Cell>
                 var structure = Game.Instance.StructureController
                                     .SpawnStructure(content,
                                                     this,
-                                                    Game.Instance.FactionController.Factions[FactionConstants.World],
-                                                    false);
+                                                    Game.Instance.FactionController.Factions[FactionConstants.World]);
             }
             else
             {
