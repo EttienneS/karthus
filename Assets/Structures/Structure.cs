@@ -185,7 +185,7 @@ namespace Structures
         {
             get
             {
-                return Cell.Vector + new Vector3(0,0, -0.5f);
+                return Cell.Vector;
             }
         }
 
