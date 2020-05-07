@@ -90,7 +90,6 @@ public class TimeManager : MonoBehaviour
 
     public void Update()
     {
-
         _timeTicks += Time.deltaTime;
 
         if (_timeTicks >= (CreatureTick * 5))
@@ -108,7 +107,6 @@ public class TimeManager : MonoBehaviour
                     Data.Hour = 0;
                 }
             }
-
             UpdateGlobalLight();
         }
     }
@@ -125,5 +123,17 @@ public class TimeManager : MonoBehaviour
         var total = range * 60f;
         var current = ((Data.Hour - min) * 60) + Data.Minute;
         Game.Instance.Map.GlobalLight.color = Color.Lerp(start, end, current / total);
+
+        var y = -35f;
+        var minx = -30f;
+        var maxx = -100f;
+        if (Data.Hour < 4 || Data.Hour > 20)
+        {
+            Game.Instance.Map.GlobalLight.transform.localEulerAngles = new Vector3(maxx, y, 0);
+        }
+        else
+        {
+            Game.Instance.Map.GlobalLight.transform.localEulerAngles = new Vector3(Mathf.Lerp(minx, maxx, ((Data.Hour * 60) + Data.Minute) / 1440f), y, 0);
+        }
     }
 }

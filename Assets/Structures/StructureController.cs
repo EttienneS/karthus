@@ -87,8 +87,7 @@ namespace Structures
             var structureData = StructureTypeFileMap[name];
 
             var structure = GetFromJson(structureData);
-
-            var mesh = Game.Instance.FileController.GetMesh(structure.SpriteName);
+            var mesh = Game.Instance.FileController.GetMesh(structure.SpriteName.Split(',').GetRandomItem());
             var renderer = Instantiate(mesh, transform).gameObject.AddComponent<StructureRenderer>();
             renderer.transform.name = structure.Name + " " + structure.Id;
             renderer.transform.Rotate(new Vector3(-90f, 0, 0));

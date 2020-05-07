@@ -6,22 +6,34 @@
       "Min": 0.0,
       "Max": 0.3,
       "TravelCost": -1,
-      "SpriteName": "Sand"
+      "SpriteName": "Sand",
+      "Color": "#ffffb3"
     },
     {
       "Content": {
       },
       "Min": 0.3,
-      "Max": 0.35,
-      "SpriteName": "Sand"
+      "Max": 0.33,
+      "SpriteName": "Sand",
+      "Color": "#ffff99"
     },
     {
       "Content": {
         "Medium Rock": 0.05
       },
-      "Min": 0.35,
-      "Max": 0.4,
-      "SpriteName": "Sand"
+      "Min": 0.33,
+      "Max": 0.37,
+      "SpriteName": "Sand",
+      "Color": "#ffff80"
+    },
+    {
+      "Content": {
+        "Medium Rock": 0.03
+      },
+      "Min": 0.37,
+      "Max": 0.40,
+      "SpriteName": "Dirt",
+      "Color": "#cc9966"
     },
     {
       "Content": {
@@ -29,7 +41,8 @@
       },
       "Min": 0.4,
       "Max": 0.45,
-      "SpriteName": "PatchyGrass"
+      "SpriteName": "PatchyGrass",
+      "Color": "#888844"
     },
     {
       "Content": {
@@ -39,7 +52,8 @@
       },
       "Min": 0.45,
       "Max": 0.6,
-      "SpriteName": "Grass"
+      "SpriteName": "Grass",
+      "Color": "#99cc00"
     },
     {
       "Content": {
@@ -47,7 +61,8 @@
       },
       "Min": 0.6,
       "Max": 0.7,
-      "SpriteName": "Forest"
+      "SpriteName": "Forest",
+      "Color": "#558000"
     },
     {
       "Content": {
@@ -55,7 +70,8 @@
       "Min": 0.7,
       "Max": 1,
       "SpriteName": "Stone",
-      "TravelCost": -1
+      "TravelCost": -1,
+      "Color": "#4d4d4d"
     }
   ],
   "Name": "Default",

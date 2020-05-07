@@ -1,9 +1,7 @@
 ﻿using Assets.Helpers;
 using Assets.Sprites;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class ChunkRenderer : MonoBehaviour
@@ -32,35 +30,10 @@ public class ChunkRenderer : MonoBehaviour
     {
         if (cell == null)
         {
-            return new Color(0,0,0,0);
+            return new Color(0, 0, 0, 0);
         }
 
-        switch (cell.BiomeRegion.SpriteName)
-        {
-            case "Dirt":
-                return ColorConstants.YellowBase;
-
-            case "Forest":
-                return ColorConstants.GreenBase;
-
-            case "Grass":
-                return ColorConstants.GreenAccent;
-
-            case "PatchyGrass":
-                return ColorConstants.GreenBase;
-
-            case "Sand":
-                return ColorConstants.YellowAccent;
-
-            case "Stone":
-                return ColorConstants.GreyBase;
-
-            case "Water":
-                return ColorConstants.BlueBase;
-
-            default:
-                throw new KeyNotFoundException(cell.BiomeRegion.SpriteName + " not found");
-        }
+        return ColorExtensions.GetColorFromHex(cell.BiomeRegion.Color);
     }
 
     public void Start()
@@ -75,6 +48,16 @@ public class ChunkRenderer : MonoBehaviour
                                                     Data.Y * Game.Instance.ChunkSize,
                                                     Game.Instance.ChunkSize,
                                                     Game.Instance.ChunkSize));
+        }
+        var waterSize = 25;
+        var waterLevel = -1.5f;
+        for (int y = 1; y <= Game.Instance.ChunkSize / waterSize; y++)
+        {
+            for (int x = 1; x <= Game.Instance.ChunkSize / waterSize; x++)
+            {
+                var water = Instantiate(Game.Instance.Map.WaterPrefab, transform);
+                water.transform.position = new Vector3(x * waterSize, y * waterSize, waterLevel);
+            }
         }
     }
 
@@ -120,6 +103,7 @@ public class ChunkRenderer : MonoBehaviour
             meshCollider.sharedMesh = mesh;
         }
     }
+
     public void UpdateTexture()
     {
         var colors = new Color[MeshVertexWidth, MeshVertexWidth];
@@ -136,7 +120,7 @@ public class ChunkRenderer : MonoBehaviour
         mats[0].mainTexture = TextureCreator.CreateTextureFromColorMap(MeshVertexWidth, MeshVertexWidth, colors);
         MeshRenderer.materials = mats;
     }
-    
+
     internal void Populate(List<Cell> cells)
     {
         cells.ForEach(c => c.Populate());
@@ -149,6 +133,4 @@ public class ChunkRenderer : MonoBehaviour
         mesh.name = $"Mesh {name}";
         meshCollider = gameObject.AddComponent<MeshCollider>();
     }
-
-  
 }

@@ -13,6 +13,8 @@ public class Map : MonoBehaviour
     public List<Cell> Cells = new List<Cell>();
     public ChunkRenderer ChunkPrefab;
 
+    public GameObject WaterPrefab;
+
     [Range(0, 10)]
     public int CreaturesToSpawn = 3;
 

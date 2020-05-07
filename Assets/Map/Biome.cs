@@ -19,6 +19,7 @@ public class Biome
     public string Name { get; set; }
     public float Rarity { get; set; }
 
+
     public BiomeRegion GetRegion(float value)
     {
         var regions = new List<BiomeRegion>();
@@ -51,6 +52,7 @@ public class BiomeRegion
     public BiomeRegion()
     {
     }
+    public string Color { get; set; } = "#ff00ff";
 
     public BiomeRegion(float min, float max, string spriteName, float travelCost, params (string structure, float probablity)[] contents)
     {
