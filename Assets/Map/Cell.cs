@@ -9,8 +9,6 @@ using Random = UnityEngine.Random;
 
 public class Cell : IEquatable<Cell>
 {
-    public Chunk Chunk;
-
     [JsonIgnore]
     public Cell[] Neighbors = new Cell[8];
 
@@ -27,7 +25,7 @@ public class Cell : IEquatable<Cell>
         {
             if (_biomeRegion == null)
             {
-                _biomeRegion = Game.Instance.MapGenerator.GetBiome(X,Y).GetRegion(Height);
+                _biomeRegion = Game.Instance.MapGenerator.GetBiome(X, Y).GetRegion(Height);
             }
             return _biomeRegion;
         }
@@ -157,11 +155,20 @@ public class Cell : IEquatable<Cell>
     }
 
     [JsonIgnore]
+    public float RenderHeight
+    {
+        get
+        {
+            return Game.Instance.Map.GetRenderHeight(Height);
+        }
+    }
+
+    [JsonIgnore]
     public Vector3 Vector
     {
         get
         {
-            return new Vector3(X + 0.5f, Y + 0.5f, -1);
+            return new Vector3(X + 0.5f, Y + 0.5f, RenderHeight);
         }
     }
 
@@ -271,11 +278,6 @@ public class Cell : IEquatable<Cell>
         Color = new Color(baseColor.r - scaled, baseColor.g - scaled, baseColor.b - scaled, baseColor.a);
     }
 
-    public void RefreshTile()
-    {
-        Game.Instance.Map.SetTile(this, GroundTile);
-    }
-
     public void SetNeighbor(Direction direction, Cell cell)
     {
         Neighbors[(int)direction] = cell;
@@ -358,8 +360,7 @@ public class Cell : IEquatable<Cell>
                 var structure = Game.Instance.StructureController
                                     .SpawnStructure(content,
                                                     this,
-                                                    Game.Instance.FactionController.Factions[FactionConstants.World],
-                                                    false);
+                                                    Game.Instance.FactionController.Factions[FactionConstants.World]);
             }
             else
             {

@@ -30,7 +30,7 @@ public class SaveInfo : MonoBehaviour
 
     public void Select()
     {
-        Game.Instance.LoadPanel.SetSelected(_saveFile);
+        Game.Instance.CurrentLoadPanel.SetSelected(_saveFile);
         This.GetComponent<Image>().color = new Color(1, 0, 0, 0.3f);
     }
 

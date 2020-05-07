@@ -2,19 +2,47 @@
   "BiomeRegions": [
     {
       "Content": {
-        "Medium Rock": 0.05
       },
       "Min": 0.0,
       "Max": 0.3,
-      "SpriteName": "Dirt"
+      "TravelCost": -1,
+      "SpriteName": "Sand",
+      "Color": "#ffffb3"
+    },
+    {
+      "Content": {
+      },
+      "Min": 0.3,
+      "Max": 0.33,
+      "SpriteName": "Sand",
+      "Color": "#ffff99"
+    },
+    {
+      "Content": {
+        "Medium Rock": 0.05
+      },
+      "Min": 0.33,
+      "Max": 0.37,
+      "SpriteName": "Sand",
+      "Color": "#ffff80"
     },
     {
       "Content": {
         "Medium Rock": 0.03
       },
-      "Min": 0.3,
-      "Max": 0.35,
-      "SpriteName": "PatchyGrass"
+      "Min": 0.37,
+      "Max": 0.40,
+      "SpriteName": "Dirt",
+      "Color": "#cc9966"
+    },
+    {
+      "Content": {
+        "Medium Rock": 0.03
+      },
+      "Min": 0.4,
+      "Max": 0.45,
+      "SpriteName": "PatchyGrass",
+      "Color": "#888844"
     },
     {
       "Content": {
@@ -22,33 +50,28 @@
         "Bush": 0.05,
         "Verdant Pyre": 0.01
       },
-      "Min": 0.35,
-      "Max": 0.7,
-      "SpriteName": "Grass"
+      "Min": 0.45,
+      "Max": 0.6,
+      "SpriteName": "Grass",
+      "Color": "#99cc00"
     },
     {
       "Content": {
         "Tree": 0.45
       },
+      "Min": 0.6,
+      "Max": 0.7,
+      "SpriteName": "Forest",
+      "Color": "#558000"
+    },
+    {
+      "Content": {
+      },
       "Min": 0.7,
-      "Max": 0.8,
-      "SpriteName": "Forest"
-    },
-    {
-      "Content": {
-        "Tree": 0.75
-      },
-      "Min": 0.8,
-      "Max": 0.9,
-      "SpriteName": "Forest"
-    },
-    {
-      "Content": {
-        "Tree": 1
-      },
-      "Min": 0.9,
-      "Max": 1.0,
-      "SpriteName": "Forest"
+      "Max": 1,
+      "SpriteName": "Stone",
+      "TravelCost": -1,
+      "Color": "#4d4d4d"
     }
   ],
   "Name": "Default",

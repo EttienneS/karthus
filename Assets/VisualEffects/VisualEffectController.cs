@@ -71,7 +71,7 @@ public class VisualEffectController : MonoBehaviour
 
         effect.Light.color = color;
         effect.Data.Intensity = intensity;
-        effect.Light.pointLightOuterRadius = radius;
+        //effect.Light.pointLightOuterRadius = radius;
         effect.Data.LifeSpan = lifeSpan;
 
         effect.Data.SetProperty("X", vector.x.ToString());

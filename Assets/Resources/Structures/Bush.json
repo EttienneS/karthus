@@ -1,6 +1,6 @@
 {
   "Name": "Bush",
-  "SpriteName": "Bush2",
+  "SpriteName": "plant_bush,plant_bushDetailed,plant_bushLarge,plant_bushSmall",
   "TravelCost": "3",
   "Buildable": "False"
 }

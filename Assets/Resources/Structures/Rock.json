@@ -1,6 +1,6 @@
 {
   "Name": "Rock",
-  "SpriteName": "Rock",
+  "SpriteName": "stone_large1,stone_large2,stone_large3,stone_large4,stone_large5,stone_large6,stone_small1,stone_small2,stone_small3,stone_small4,stone_small5,stone_small6,stone_small7,stone_small8,stone_small9,stone_smallFlat1,stone_smallFlat2,stone_smallFlat3,stone_smallTop1,stone_smallTop2,stone_statue,stone_tall1,stone_tall10,stone_tall2,stone_tall3,stone_tall4,stone_tall5,stone_tall6,stone_tall7,stone_tall8,stone_tall9",
   "TravelCost": "-1",
   "Buildable": "False",
   "Cost": {

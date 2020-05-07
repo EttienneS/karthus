@@ -79,8 +79,7 @@ public class Faction
 
     public void Update()
     {
-        if (!Game.Instance.Ready)
-            return;
+        
         if (Game.Instance.TimeManager.Paused)
         {
             return;

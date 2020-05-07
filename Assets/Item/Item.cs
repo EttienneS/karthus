@@ -70,11 +70,11 @@ public class Item : IEntity
     public Dictionary<string, float> ValueProperties { get; set; } = new Dictionary<string, float>();
 
     [JsonIgnore]
-    public Vector2 Vector
+    public Vector3 Vector
     {
         get
         {
-            return new Vector2(Coords.X, Coords.Y);
+            return new Vector3(Coords.X, Coords.Y, Cell.RenderHeight);
         }
     }
 

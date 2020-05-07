@@ -175,7 +175,7 @@ public class TownGenerator
                 biggest.ForEach(c => c.CreateStructure("Stone Wall"));
                 buildings.Add(biggest);
 
-                var avgHeight = biggest.Average(c => c.Height);
+                var avgHeight = biggest.Average(c => c.RenderHeight);
                 foreach (var buffer in Grow(biggest, Random.Range(1, 3)))
                 {
                     if (buffer.Structure == null && buffer.Floor == null)

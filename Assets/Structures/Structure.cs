@@ -132,17 +132,6 @@ namespace Structures
             }
         }
 
-        internal void UpdateInterlocking()
-        {
-            foreach (var neighbour in Cell.NonNullNeighbors)
-            {
-                if (neighbour.Structure?.IsInterlocking() == true)
-                {
-                    neighbour.Structure.Refresh();
-                }
-            }
-        }
-
         [JsonIgnore]
         public bool InUseByAnyone
         {
@@ -179,11 +168,11 @@ namespace Structures
 
             if (IsBluePrint)
             {
-                Renderer.SpriteRenderer.color = ColorConstants.BluePrintColor;
+                Renderer.MeshRenderer.color = ColorConstants.BluePrintColor;
             }
             else
             {
-                Renderer.SpriteRenderer.color = Cell.Color * Color;
+                Renderer.MeshRenderer.color =  Color;
             }
 
             return sprite;
@@ -192,7 +181,7 @@ namespace Structures
         public Dictionary<string, float> ValueProperties { get; set; } = new Dictionary<string, float>();
 
         [JsonIgnore]
-        public Vector2 Vector
+        public Vector3 Vector
         {
             get
             {
@@ -225,23 +214,6 @@ namespace Structures
             return IsWall();
         }
 
-        public void Refresh()
-        {
-            Game.Instance.StructureController.RefreshStructure(this);
-        }
-
-        public void RotateCCW()
-        {
-            Rotation = Rotation.Rotate90CCW();
-            Refresh();
-        }
-
-        public void RotateCW()
-        {
-            Rotation = Rotation.Rotate90CW();
-            Game.Instance.StructureController.RefreshStructure(this);
-            Refresh();
-        }
 
         public override string ToString()
         {

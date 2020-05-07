@@ -82,48 +82,23 @@ namespace Structures
             return StructureTypes.Find(w => w.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
 
-        public void ClearStructure(Structure structure)
-        {
-            if (structure.IsFloor())
-            {
-                structure.Cell.RefreshTile();
-            }
-        }
-
-        public void RefreshStructure(Structure structure)
-        {
-            if (structure.Cell == null)
-            {
-                return;
-            }
-            if (structure.IsFloor())
-            {
-                structure.Cell.RefreshTile();
-            }
-            else
-            {
-                structure.Renderer.SpriteRenderer.sprite = structure.GetSprite();
-            }
-        }
-
-        public Structure SpawnStructure(string name, Cell cell, Faction faction, bool draw = true)
+        public Structure SpawnStructure(string name, Cell cell, Faction faction)
         {
             var structureData = StructureTypeFileMap[name];
 
             var structure = GetFromJson(structureData);
-            var renderer = Instantiate(StructureRendererPrefab, transform);
-            renderer.SpriteRenderer.sortingOrder = Game.Instance.Map.MaxSize - cell.Y;
+            var mesh = Game.Instance.FileController.GetMesh(structure.SpriteName.Split(',').GetRandomItem());
+            var renderer = Instantiate(mesh, transform).gameObject.AddComponent<StructureRenderer>();
             renderer.transform.name = structure.Name + " " + structure.Id;
+            renderer.transform.Rotate(new Vector3(-90f, 0, 0));
+            var scale = UnityEngine.Random.Range(0.05f, 0.08f);
+            renderer.transform.localScale = new Vector3(scale, scale, scale);
             structure.Renderer = renderer;
             renderer.Data = structure;
 
             structure.Cell = cell;
             IndexStructure(structure);
 
-            if (draw)
-            {
-                structure.Refresh();
-            }
             faction?.AddStructure(structure);
 
             if (structure is Container container)
@@ -136,14 +111,11 @@ namespace Structures
                 }
             }
 
-            RefreshStructure(structure);
             return structure;
         }
 
         public void Update()
         {
-            if (!Game.Instance.Ready)
-                return;
 
             if (Game.Instance.TimeManager.Paused)
                 return;
@@ -164,23 +136,9 @@ namespace Structures
         {
             if (structure != null)
             {
-                if (structure.Cell != null)
-                {
-                    ClearStructure(structure);
-                }
-                else
+                if (structure.Cell == null)
                 {
                     Debug.Log("Unbound structure");
-                }
-
-                if (structure.IsInterlocking())
-                {
-                    var cell = structure.Cell;
-                    structure.Cell = null;
-                    foreach (var interlocked in cell.NonNullNeighbors.Where(c => c.Structure?.IsInterlocking() == true).Select(c => c.Structure))
-                    {
-                        interlocked.UpdateInterlocking();
-                    }
                 }
 
                 Game.Instance.IdService.RemoveEntity(structure);
@@ -193,7 +151,6 @@ namespace Structures
         {
             var structure = SpawnStructure(name, cell, faction);
             structure.IsBluePrint = true;
-            structure.Refresh();
             return structure;
         }
 

@@ -52,7 +52,7 @@ public class CameraController : MonoBehaviour
 
             var lerp = Vector3.Lerp(_panSource, _panDesitnation, fracJourney);
 
-            transform.position = new Vector3(lerp.x, lerp.y, -10);
+            transform.position = new Vector3(lerp.x, lerp.y, -15);
 
             if (transform.position.x == _panDesitnation.x
                 && transform.position.y == _panDesitnation.y)
@@ -75,17 +75,12 @@ public class CameraController : MonoBehaviour
                 var step = Mathf.Clamp((int)Game.Instance.TimeManager.TimeStep, 1, 8);
                 var x = Mathf.Clamp(transform.position.x + (horizontal * Speed * step), Game.Instance.Map.MinX, Game.Instance.Map.MaxX);
                 var y = Mathf.Clamp(transform.position.y + (vertical * Speed * step), Game.Instance.Map.MinY, Game.Instance.Map.MaxY);
-                transform.position = new Vector3(x, y, transform.position.z);
+                var z = Mathf.Clamp(Camera.transform.position.z + (mouseWheel * ZoomStep), ZoomMin, ZoomMax);
 
-                Camera.orthographicSize = Mathf.Clamp(Camera.orthographicSize - (mouseWheel * ZoomStep),
-                    ZoomMin, ZoomMax);
+                Camera.transform.position = new Vector3(x, y, z);
 
                 Speed = Helpers.ScaleValueInRange(SpeedMin, SpeedMax, ZoomMin, ZoomMax, Camera.orthographicSize);
-                ZoomStep = Mathf.Max(2f, Camera.orthographicSize / 2f);
-
-                // expand the map as the camera reaches the edges
-                //var point = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2));
-                //Game.Instance.Map.ExpandChunks(Game.Instance.GetSelectedCells(point, point).First());
+                ZoomStep = Mathf.Max(2f, Camera.transform.position.z / 2f);
             }
         }
     }
