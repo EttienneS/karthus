@@ -49,7 +49,7 @@ public class ChunkRenderer : MonoBehaviour
                                                     Game.Instance.ChunkSize,
                                                     Game.Instance.ChunkSize));
         }
-        var waterSize = 25;
+        var waterSize = 50;
         var waterLevel = -1.5f;
         for (int y = 1; y <= Game.Instance.ChunkSize / waterSize; y++)
         {

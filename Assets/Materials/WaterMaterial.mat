@@ -115,7 +115,7 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 0
     m_Colors:
-    - Color_2E58E082: {r: 13.433962, g: 32, b: 31.437346, a: 0}
+    - Color_2E58E082: {r: 3.135271, g: 6.2345047, b: 7.1354446, a: 0}
     - Color_71FCA94B: {r: 0, g: 0.8317747, b: 1, a: 1}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
