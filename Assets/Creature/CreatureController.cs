@@ -118,7 +118,6 @@ public class CreatureController : MonoBehaviour
 
         creature.Data.Needs = Behaviours.GetNeedsFor(creature.Data.BehaviourName);
 
-        creature.MainRenderer.color = ColorConstants.WhiteBase;
         faction.AddCreature(creatureData);
 
         return creature;

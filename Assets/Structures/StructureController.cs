@@ -91,7 +91,7 @@ namespace Structures
             var renderer = Instantiate(mesh, transform).gameObject.AddComponent<StructureRenderer>();
             renderer.transform.name = structure.Name + " " + structure.Id;
             renderer.transform.Rotate(new Vector3(-90f, 0, 0));
-            var scale = UnityEngine.Random.Range(0.05f, 0.08f);
+            var scale = 0.05f;
             renderer.transform.localScale = new Vector3(scale, scale, scale);
             structure.Renderer = renderer;
             renderer.Data = structure;

@@ -540,44 +540,6 @@ public class Creature : IEntity
         return text;
     }
 
-    public void UpdateSprite()
-    {
-        if (Sprite == "Composite")
-        {
-            if (FixedAnimation != null)
-            {
-                if (FixedFrame.HasValue)
-                {
-                    Frame = FixedFrame.Value;
-                }
-                SetSprite(FixedAnimation.Value);
-            }
-            else
-            {
-                if (Animation == Animation.Walk && !Moving)
-                {
-                    // standing still, stay on frame 0
-                    Frame = 0;
-                }
-                SetSprite(Animation);
-            }
-        }
-        else
-        {
-            CreatureRenderer.ClothesRenderer.gameObject.SetActive(false);
-            CreatureRenderer.WeaponRenderer.gameObject.SetActive(false);
-
-            CreatureRenderer.MainRenderer.flipX = Facing == Direction.W || Facing == Direction.NE || Facing == Direction.SW;
-            if (!Sprite.Contains("_"))
-            {
-                CreatureRenderer.MainRenderer.sprite = Game.Instance.SpriteStore.GetCreatureSprite(Sprite, ref Frame);
-            }
-            else
-            {
-                CreatureRenderer.MainRenderer.sprite = Game.Instance.SpriteStore.GetSprite(Sprite);
-            }
-        }
-    }
 
     internal void AbandonTask()
     {
@@ -756,7 +718,6 @@ public class Creature : IEntity
                 ProcessSelf(Game.Instance.TimeManager.CreatureTick * SelfTickCount);
             }
 
-            UpdateSprite();
             Move();
 
             InternalTick = 0;
@@ -1168,8 +1129,6 @@ public class Creature : IEntity
     private void SetSprite(Animation animation)
     {
         var frame = CharacterSpriteSheet.GetFrame(animation, GetOrientation(), ref Frame);
-        CreatureRenderer.MainRenderer.sprite = frame.body;
-        CreatureRenderer.ClothesRenderer.sprite = frame.clothes;
     }
 
     private void UpdateLimbs(float timeDelta)

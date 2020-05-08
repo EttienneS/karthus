@@ -78,13 +78,15 @@ public class TimeManager : MonoBehaviour
     {
         TimeStep = TimeStep.Normal;
 
+        var light = Color.white;
+        var dark = ColorConstants.DarkBlueAccent;
         ColorZones = new List<(int min, int max, Color start, Color end)>
         {
-            (0,4, ColorConstants.DarkBlueAccent, ColorConstants.DarkBlueAccent),
-            (4,7, ColorConstants.DarkBlueAccent, ColorConstants.WhiteAccent),
-            (7,17, ColorConstants.WhiteAccent, ColorConstants.WhiteAccent),
-            (17,22, ColorConstants.WhiteAccent, ColorConstants.DarkBlueAccent),
-            (22,24, ColorConstants.DarkBlueAccent, ColorConstants.DarkBlueAccent)
+            (0,4, dark, dark),
+            (4,7, dark, light),
+            (7,17, light, light),
+            (17,22, light, dark),
+            (22,24, dark, dark)
         };
     }
 

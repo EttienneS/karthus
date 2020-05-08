@@ -31,8 +31,6 @@ public class CreatureIcon : MonoBehaviour
     {
         if (Creature?.CreatureRenderer != null)
         {
-            Image.sprite = Creature.CreatureRenderer.MainRenderer.sprite;
-            Clothes.sprite = Creature.CreatureRenderer.ClothesRenderer.sprite;
             Text.text = Creature.Name;
         }
     }

@@ -8,9 +8,6 @@ public class CreatureRenderer : MonoBehaviour
     public Light Light;
     internal Creature Data = new Creature();
     public SpriteRenderer Highlight;
-    public SpriteRenderer MainRenderer;
-    public SpriteRenderer ClothesRenderer;
-    public SpriteRenderer WeaponRenderer;
     internal float RemainingTextDuration;
     public TextMeshPro Text;
 
@@ -113,8 +110,6 @@ public class CreatureRenderer : MonoBehaviour
     internal void UpdatePosition()
     {
         transform.position = new Vector3(Data.X, Data.Y, Data.Cell.RenderHeight - 0.5f);
-
-        Data.UpdateSprite();
     }
 
     private void UpdateFloatingText()

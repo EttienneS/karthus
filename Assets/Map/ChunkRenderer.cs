@@ -51,9 +51,10 @@ public class ChunkRenderer : MonoBehaviour
         }
         var waterSize = 50;
         var waterLevel = -1.5f;
-        for (int y = 1; y <= Game.Instance.ChunkSize / waterSize; y++)
+
+        for (int y = 0; y <= Game.Instance.ChunkSize / waterSize; y++)
         {
-            for (int x = 1; x <= Game.Instance.ChunkSize / waterSize; x++)
+            for (int x = 0; x <= Game.Instance.ChunkSize / waterSize; x++)
             {
                 var water = Instantiate(Game.Instance.Map.WaterPrefab, transform);
                 water.transform.position = new Vector3(x * waterSize, y * waterSize, waterLevel);
