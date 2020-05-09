@@ -64,7 +64,7 @@ public class ZoneController : MonoBehaviour
     {
         foreach (var cell in zone.Cells)
         {
-            ZoneTilemap.SetTile(new Vector3Int(cell.X, cell.Y, 0), null);
+            ZoneTilemap.SetTile(new Vector3Int(cell.X, cell.Z, 0), null);
         }
         Destroy(Zones[zone].gameObject);
         Zones.Remove(zone);
@@ -121,7 +121,7 @@ public class ZoneController : MonoBehaviour
 
         var (bottomLeft, bottomRight, topLeft, topRight) = Game.Instance.MapGenerator.GetCorners(newZone.Cells);
         label.transform.position = new Vector3((bottomLeft.X + bottomRight.X + topLeft.X + topRight.X) / 4f,
-                                               (bottomLeft.Y + bottomRight.Y + topLeft.Y + topRight.Y) / 4f, 0);
+                                               (bottomLeft.Z + bottomRight.Z + topLeft.Z + topRight.Z) / 4f, 0);
         label.transform.position += new Vector3(0.5f, 0.5f);
         return label;
     }
@@ -132,7 +132,7 @@ public class ZoneController : MonoBehaviour
         tile.sprite = Game.Instance.SpriteStore.GetSprite(sprite);
         tile.color = newZone.Color.ToColor();
 
-        ZoneTilemap.SetTile(new Vector3Int(cell.X, cell.Y, 0), tile);
+        ZoneTilemap.SetTile(new Vector3Int(cell.X, cell.Z, 0), tile);
     }
 
     internal void Load(ZoneBase zone)

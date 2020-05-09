@@ -243,7 +243,7 @@ public class Creature : IEntity
     {
         get
         {
-            return new Vector3(X, Y, Cell.RenderHeight);
+            return new Vector3(X, Y, Cell.Y);
         }
     }
 
@@ -281,11 +281,11 @@ public class Creature : IEntity
 
     public void Face(Cell cell)
     {
-        if (cell.Y < Cell.Y)
+        if (cell.Z < Cell.Z)
         {
             Facing = Direction.S;
         }
-        else if (cell.Y > Cell.Y)
+        else if (cell.Z > Cell.Z)
         {
             Facing = Direction.N;
         }
@@ -698,7 +698,7 @@ public class Creature : IEntity
 
         LogHistory = new List<string>();
 
-        TargetCoordinate = (Cell.X, Cell.Y);
+        TargetCoordinate = (Cell.X, Cell.Z);
     }
 
     internal bool Update(float timeDelta)
@@ -1097,7 +1097,7 @@ public class Creature : IEntity
                     var c = Game.Instance.Map.GetNearestPathableCell(Cell, Mobility, 10);
 
                     X = c.X;
-                    Y = c.Y;
+                    Y = c.Z;
                     CreatureRenderer.UpdatePosition();
                 }
                 else

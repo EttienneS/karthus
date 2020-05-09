@@ -230,7 +230,7 @@ public class Construct
                     x++;
                     continue;
                 }
-                var cell = Game.Instance.Map.GetCellAtCoordinate(cellData.X + x, cellData.Y + y);
+                var cell = Game.Instance.Map.GetCellAtCoordinate(cellData.X + x, cellData.Z + y);
 
                 if (cell.TravelCost > 0)
                 {
@@ -267,7 +267,7 @@ public class Construct
                     continue;
                 }
 
-                var cell = Game.Instance.Map.GetCellAtCoordinate(origin.X + x, origin.Y + y);
+                var cell = Game.Instance.Map.GetCellAtCoordinate(origin.X + x, origin.Z + y);
 
                 if (cell.TravelCost > 0 && cell.Structure == null)
                 {

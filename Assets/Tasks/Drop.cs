@@ -17,7 +17,7 @@
     public Drop(Cell target)
     {
         TargetX = target.X;
-        TargetY = target.Y;
+        TargetY = target.Z;
         AddSubTask(new Move(target));
     }
 

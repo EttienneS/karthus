@@ -304,13 +304,18 @@ public class Game : MonoBehaviour
         var cells = new List<Cell>();
 
         var startX = Mathf.Clamp(Mathf.Min(worldStartPoint.x, worldEndPoint.x), Map.MinX, Map.MaxX);
-        var startY = Mathf.Clamp(Mathf.Min(worldStartPoint.y, worldEndPoint.y), Map.MinY, Map.MaxY);
         var endX = Mathf.Clamp(Mathf.Max(worldStartPoint.x, worldEndPoint.x), Map.MinX, Map.MaxX);
-        var endY = Mathf.Clamp(Mathf.Max(worldStartPoint.y, worldEndPoint.y), Map.MinX, Map.MaxY);
 
-        if (startX == endX && startY == endY)
+        var startZ = Mathf.Clamp(Mathf.Min(worldStartPoint.z, worldEndPoint.z), Map.MinZ, Map.MaxZ);
+        var endZ = Mathf.Clamp(Mathf.Max(worldStartPoint.z, worldEndPoint.z), Map.MinX, Map.MaxZ);
+
+        // not currently used
+        var startY = Mathf.Min(worldStartPoint.y, worldEndPoint.y);
+        var endY = Mathf.Max(worldStartPoint.y, worldEndPoint.y);
+
+        if (startX == endX && startZ == endZ)
         {
-            var point = new Vector3(startX, endY);
+            var point = new Vector3(startX, startY, startZ);
 
             var clickedCell = Map.GetCellAtPoint(point);
             if (clickedCell != null)
@@ -324,9 +329,9 @@ public class Game : MonoBehaviour
 
             for (var selX = startX; selX < endX; selX += pollStep)
             {
-                for (var selY = startY; selY < endY; selY += pollStep)
+                for (var selZ = startZ; selZ < endZ; selZ += pollStep)
                 {
-                    var point = new Vector3(selX, selY);
+                    var point = new Vector3(selX, startY, selZ);
 
                     cells.Add(Map.GetCellAtPoint(point));
                 }
@@ -615,15 +620,15 @@ public class Game : MonoBehaviour
                 }
 
                 float x = cell.X;
-                float y = cell.Y;
+                float z = cell.Z;
 
                 if (!_constructMode)
                 {
                     x += 0.5f;
-                    y += 0.5f;
+                    z += 0.5f;
                 }
 
-                MouseSpriteRenderer.transform.position = new Vector3(x, y, cell.RenderHeight - 0.2f);
+                MouseSpriteRenderer.transform.position = new Vector3(x, cell.Y + 0.5f, z);
 
                 if (MouseSpriteRenderer.sprite != null)
                 {
@@ -672,9 +677,9 @@ public class Game : MonoBehaviour
 
             _shownOnce = true;
 
-            CameraController.Camera.orthographicSize = 10;
-            CameraController.transform.position = new Vector3((Instance.ChunkSize * Instance.Size) / 2,
-                                                              (Instance.ChunkSize * Instance.Size) / 2, -15);
+            CameraController.transform.position = new Vector3((Instance.ChunkSize * Instance.Size) / 2, 
+                                                               20,
+                                                              (Instance.ChunkSize * Instance.Size) / 2);
 
             MainMenuController.Toggle();
         }

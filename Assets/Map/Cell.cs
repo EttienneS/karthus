@@ -13,23 +13,10 @@ public class Cell : IEquatable<Cell>
     public Cell[] Neighbors = new Cell[8];
 
     public int X;
-    public int Y;
-    internal Color Color;
-
-    private BiomeRegion _biomeRegion;
+    public int Z;
 
     [JsonIgnore]
-    public BiomeRegion BiomeRegion
-    {
-        get
-        {
-            if (_biomeRegion == null)
-            {
-                _biomeRegion = Game.Instance.MapGenerator.GetBiome(X, Y).GetRegion(Height);
-            }
-            return _biomeRegion;
-        }
-    }
+    public BiomeRegion BiomeRegion;
 
     [JsonIgnore]
     public bool Buildable
@@ -69,8 +56,6 @@ public class Cell : IEquatable<Cell>
             var tile = ScriptableObject.CreateInstance<Tile>();
             tile.RotateRandom90();
 
-            RefreshColor();
-
             if (Floor != null)
             {
                 tile.sprite = Game.Instance.SpriteStore.GetSprite(Floor.SpriteName);
@@ -79,27 +64,13 @@ public class Cell : IEquatable<Cell>
                 {
                     tile.color = ColorConstants.BluePrintColor;
                 }
-                else
-                {
-                    tile.color = Color;
-                }
             }
             else
             {
                 tile.sprite = Game.Instance.SpriteStore.GetSpriteForTerrainType(BiomeRegion.SpriteName);
-                tile.color = Color;
             }
 
             return tile;
-        }
-    }
-
-    [JsonIgnore]
-    public float Height
-    {
-        get
-        {
-            return Game.Instance.Map.GetCellHeight(X, Y);
         }
     }
 
@@ -155,28 +126,22 @@ public class Cell : IEquatable<Cell>
     }
 
     [JsonIgnore]
-    public float RenderHeight
-    {
-        get
-        {
-            return Game.Instance.Map.GetRenderHeight(Height);
-        }
-    }
-
-    [JsonIgnore]
     public Vector3 Vector
     {
         get
         {
-            return new Vector3(X + 0.5f, Y + 0.5f, RenderHeight);
+            return new Vector3(X + 0.5f, Y, Z + 0.5f);
         }
     }
 
-    public static Cell FromPosition(Vector2 position)
+    [JsonIgnore]
+    public float Y;
+
+    public static Cell FromPosition(Vector3 position)
     {
         // add half a unit to each position to account for offset (cells are at point 0,0 in the very center)
-        position += new Vector2(0.5f, 0.5f);
-        return Game.Instance.Map.GetCellAtCoordinate(Mathf.FloorToInt(position.x), Mathf.FloorToInt(position.y));
+        position += new Vector3(0.5f, 0, 0.5f);
+        return Game.Instance.Map.GetCellAtCoordinate(Mathf.FloorToInt(position.x), Mathf.FloorToInt(position.z));
     }
 
     public static bool operator !=(Cell obj1, Cell obj2)
@@ -202,7 +167,7 @@ public class Cell : IEquatable<Cell>
     public int DistanceTo(Cell other)
     {
         return (X < other.X ? other.X - X : X - other.X)
-                + (Y < other.Y ? other.Y - Y : Y - other.Y);
+                + (Z < other.Z ? other.Z - Z : Z - other.Z);
     }
 
     public bool Equals(Cell other)
@@ -212,7 +177,7 @@ public class Cell : IEquatable<Cell>
             return false;
         }
 
-        return X == other.X && Y == other.Y;
+        return X == other.X && Z == other.Z;
     }
 
     public override bool Equals(object obj)
@@ -228,7 +193,7 @@ public class Cell : IEquatable<Cell>
 
     public override int GetHashCode()
     {
-        return $"{X}:{Y}".GetHashCode();
+        return $"{X}:{Z}".GetHashCode();
     }
 
     public Cell GetNeighbor(Direction direction)
@@ -267,16 +232,6 @@ public class Cell : IEquatable<Cell>
         return false;
     }
 
-    public void RefreshColor()
-    {
-        const float totalShade = 1f;
-        const float maxShade = 0.25f;
-        var baseColor = new Color(totalShade, totalShade, totalShade, 1f);
-
-        var scaled = Helpers.Scale(BiomeRegion.Min, BiomeRegion.Max, 0f, maxShade, Height);
-
-        Color = new Color(baseColor.r - scaled, baseColor.g - scaled, baseColor.b - scaled, baseColor.a);
-    }
 
     public void SetNeighbor(Direction direction, Cell cell)
     {
@@ -286,12 +241,12 @@ public class Cell : IEquatable<Cell>
 
     public override string ToString()
     {
-        return $"{BiomeRegion.SpriteName} ({X},{Y})";
+        return $"{BiomeRegion.SpriteName} ({X},{Z})";
     }
 
     public string ToStringOnSeparateLines()
     {
-        return $"X: {X}\nY: {Y}";
+        return $"X: {X}\nY: {Z}";
     }
 
     internal void Clear()

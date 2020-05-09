@@ -37,7 +37,7 @@ public abstract class ZoneBase
     {
         get
         {
-            return _cells.Select(c => c.X + ":" + c.Y).Aggregate((s1, s2) => s1 + "," + s2);
+            return _cells.Select(c => c.X + ":" + c.Z).Aggregate((s1, s2) => s1 + "," + s2);
         }
         set
         {

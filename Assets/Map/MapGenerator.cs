@@ -100,16 +100,23 @@ public class MapGenerator
         }
     }
 
-    public Cell CreateCell(int x, int y)
+    public Cell CreateCell(int x, int z)
     {
+        var noiseMapHeight = Game.Instance.Map.GetNoiseMapPoint(x, z);
+        var biome = Game.Instance.MapGenerator.GetBiome(x, z).GetRegion(noiseMapHeight);
+
+        var y = Game.Instance.Map.GetRenderHeight(noiseMapHeight);
+
         var cell = new Cell
         {
             X = x,
+            BiomeRegion = biome,
             Y = y,
+            Z = z,
             SearchPhase = 0
         };
 
-        Game.Instance.Map.CellLookup.Add((x, y), cell);
+        Game.Instance.Map.CellLookup.Add((x, z), cell);
 
         return cell;
     }

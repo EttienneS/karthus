@@ -70,14 +70,14 @@ public class TownGenerator
                 for (int y = -size; y <= size; y++)
                 {
                     var tx = cell.X + x;
-                    var ty = cell.Y + y;
+                    var ty = cell.Z + y;
 
-                    if (group.Any(g => g.X == tx && g.Y == ty))
+                    if (group.Any(g => g.X == tx && g.Z == ty))
                     {
                         continue;
                     }
 
-                    if (tx >= Game.Instance.Map.MinX && tx < Game.Instance.Map.MaxX && ty >= Game.Instance.Map.MinY && ty < Game.Instance.Map.MaxY)
+                    if (tx >= Game.Instance.Map.MinX && tx < Game.Instance.Map.MaxX && ty >= Game.Instance.Map.MinZ && ty < Game.Instance.Map.MaxZ)
                     {
                         group.Add(Game.Instance.Map.GetCellAtCoordinate(tx, ty));
                     }
@@ -109,10 +109,10 @@ public class TownGenerator
             var neighbours = new List<Cell>
                     {
                         cell,
-                        Game.Instance.Map.GetCellAtCoordinate(cell.X + 1, cell.Y),
-                        Game.Instance.Map.GetCellAtCoordinate(cell.X - 1, cell.Y),
-                        Game.Instance.Map.GetCellAtCoordinate(cell.X, cell.Y + 1),
-                        Game.Instance.Map.GetCellAtCoordinate(cell.X, cell.Y - 1),
+                        Game.Instance.Map.GetCellAtCoordinate(cell.X + 1, cell.Z),
+                        Game.Instance.Map.GetCellAtCoordinate(cell.X - 1, cell.Z),
+                        Game.Instance.Map.GetCellAtCoordinate(cell.X, cell.Z + 1),
+                        Game.Instance.Map.GetCellAtCoordinate(cell.X, cell.Z - 1),
                     };
 
             foreach (var neighbour in neighbours)
@@ -122,7 +122,7 @@ public class TownGenerator
                 {
                     for (int height = -maxHeight; height < maxHeight; height++)
                     {
-                        var structure = Game.Instance.Map.GetRectangle(neighbour.X, neighbour.Y, width, height);
+                        var structure = Game.Instance.Map.GetRectangle(neighbour.X, neighbour.Z, width, height);
                         var measure = Game.Instance.Map.GetWidthAndHeight(structure);
 
                         if (measure.Item1 < minWidth)
@@ -175,7 +175,7 @@ public class TownGenerator
                 biggest.ForEach(c => c.CreateStructure("Stone Wall"));
                 buildings.Add(biggest);
 
-                var avgHeight = biggest.Average(c => c.RenderHeight);
+                var avgHeight = biggest.Average(c => c.Y);
                 foreach (var buffer in Grow(biggest, Random.Range(1, 3)))
                 {
                     if (buffer.Structure == null && buffer.Floor == null)

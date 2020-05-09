@@ -10,7 +10,7 @@ public class CameraController : MonoBehaviour
     public float SpeedMax = 2f;
     public int ZoomMax = 15;
     public int ZoomMin = 2;
-    public float ZoomStep = 5;
+    public float ZoomSpeed = 5;
 
     public float RenderHeight = 2.5f;
     public float RenderWidth = 4f;
@@ -52,10 +52,10 @@ public class CameraController : MonoBehaviour
 
             var lerp = Vector3.Lerp(_panSource, _panDesitnation, fracJourney);
 
-            transform.position = new Vector3(lerp.x, lerp.y, -15);
+            transform.position = new Vector3(lerp.x,  -15, lerp.y);
 
             if (transform.position.x == _panDesitnation.x
-                && transform.position.y == _panDesitnation.y)
+                && transform.position.z == _panDesitnation.z)
             {
                 _panning = false;
             }
@@ -73,14 +73,17 @@ public class CameraController : MonoBehaviour
             if (horizontal != 0 || vertical != 0 || mouseWheel != 0)
             {
                 var step = Mathf.Clamp((int)Game.Instance.TimeManager.TimeStep, 1, 8);
+
                 var x = Mathf.Clamp(transform.position.x + (horizontal * Speed * step), Game.Instance.Map.MinX, Game.Instance.Map.MaxX);
-                var y = Mathf.Clamp(transform.position.y + (vertical * Speed * step), Game.Instance.Map.MinY, Game.Instance.Map.MaxY);
-                var z = Mathf.Clamp(Camera.transform.position.z + (mouseWheel * ZoomStep), ZoomMin, ZoomMax);
+                var z = Mathf.Clamp(transform.position.z + (vertical * Speed * step), Game.Instance.Map.MinZ, Game.Instance.Map.MaxZ);
+
+                var y = Mathf.Clamp(Camera.transform.position.y - (mouseWheel * ZoomSpeed), ZoomMin, ZoomMax);
 
                 Camera.transform.position = new Vector3(x, y, z);
 
                 Speed = Helpers.ScaleValueInRange(SpeedMin, SpeedMax, ZoomMin, ZoomMax, Camera.orthographicSize);
-                ZoomStep = Mathf.Max(2f, Camera.transform.position.z / 2f);
+
+                ZoomSpeed = Mathf.Clamp(ZoomSpeed, 2, 10);
             }
         }
     }

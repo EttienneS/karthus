@@ -28,13 +28,13 @@ public class Wash : CreatureTask
     {
         RecoveryRate = bath.GetValue("Hygiene");
         AddSubTask(new Move(bath.Cell.GetPathableNeighbour()));
-        WashCoords = (bath.Cell.X, bath.Cell.Y);
+        WashCoords = (bath.Cell.X, bath.Cell.Z);
     }
 
     public Wash(Cell cell) : this()
     {
         AddSubTask(new Move(cell.GetPathableNeighbour()));
-        WashCoords = (cell.X, cell.Y);
+        WashCoords = (cell.X, cell.Z);
     }
 
     public override bool Done(Creature creature)

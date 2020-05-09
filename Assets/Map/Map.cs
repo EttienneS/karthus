@@ -61,9 +61,9 @@ public class Map : MonoBehaviour
     }
 
     internal int MaxX => Game.Instance.MaxSize;
-    internal int MaxY => Game.Instance.MaxSize;
+    internal int MaxZ => Game.Instance.MaxSize;
     internal int MinX => 0;
-    internal int MinY => 0;
+    internal int MinZ => 0;
 
     internal int SeedValue
     {
@@ -134,7 +134,7 @@ public class Map : MonoBehaviour
         var intx = Mathf.RoundToInt(x - 0.001f);
         var inty = Mathf.RoundToInt(y - 0.001f);
 
-        if (intx < MinX || inty < MinY || intx >= MaxX || inty >= MaxY)
+        if (intx < MinX || inty < MinZ || intx >= MaxX || inty >= MaxZ)
         {
             return null;
         }
@@ -148,15 +148,15 @@ public class Map : MonoBehaviour
         var cell = Cell.FromPosition(position - new Vector3(0.5f, 0.5f));
 
         if (cell == null ||
-            cell.X < MinX || cell.Y < MinY ||
-            cell.X >= MaxX || cell.Y >= MaxY)
+            cell.X < MinX || cell.Z < MinZ ||
+            cell.X >= MaxX || cell.Z >= MaxZ)
         {
             return null;
         }
-        return CellLookup[(cell.X, cell.Y)];
+        return CellLookup[(cell.X, cell.Z)];
     }
 
-    public float GetCellHeight(float x, float y)
+    public float GetNoiseMapPoint(float x, float y)
     {
         return LocalNoiseMap[(int)x, (int)y];
         //return Mathf.PerlinNoise((SeedValue + x) * Scaler, (SeedValue + y) * Scaler);
@@ -167,7 +167,7 @@ public class Map : MonoBehaviour
         var cells = new List<Cell>();
 
         var centerX = center.X;
-        var centerY = center.Y;
+        var centerY = center.Z;
 
         for (var x = centerX - radius; x <= centerX; x++)
         {
@@ -190,7 +190,7 @@ public class Map : MonoBehaviour
     public float GetDegreesBetweenPoints(Cell point1, Cell point2)
     {
         var deltaX = point1.X - point2.X;
-        var deltaY = point1.Y - point2.Y;
+        var deltaY = point1.Z - point2.Z;
 
         var radAngle = Math.Atan2(deltaY, deltaX);
         var degreeAngle = radAngle * 180.0 / Math.PI;
@@ -212,9 +212,9 @@ public class Map : MonoBehaviour
         var line = new List<Cell>();
 
         var x = a.X;
-        var y = a.Y;
+        var y = a.Z;
         var x2 = b.X;
-        var y2 = b.Y;
+        var y2 = b.Z;
 
         var w = x2 - x;
         var h = y2 - y;
@@ -272,13 +272,13 @@ public class Map : MonoBehaviour
             {
                 minx = cell.X;
             }
-            if (cell.Y > maxy)
+            if (cell.Z > maxy)
             {
-                maxy = cell.Y;
+                maxy = cell.Z;
             }
-            if (cell.Y < miny)
+            if (cell.Z < miny)
             {
-                miny = cell.Y;
+                miny = cell.Z;
             }
         }
 
@@ -291,11 +291,11 @@ public class Map : MonoBehaviour
 
         // cater for right angle scenarios
         var tX = origin.X;
-        var tY = origin.Y;
+        var tY = origin.Z;
 
         if (angle != 0 && angle != 180)
         {
-            tY = (int)((Math.Sin(-radians) * distance) + origin.Y);
+            tY = (int)((Math.Sin(-radians) * distance) + origin.Z);
         }
 
         if (angle != 90 && angle != 270)
@@ -309,7 +309,7 @@ public class Map : MonoBehaviour
 
     public Cell GetRandomCell()
     {
-        return CellLookup[((int)(Random.value * (MaxX - 1)), (int)(Random.value * (MaxY - 1)))];
+        return CellLookup[((int)(Random.value * (MaxX - 1)), (int)(Random.value * (MaxZ - 1)))];
     }
 
     public List<Cell> GetRandomChunk(int chunkSize, Cell origin)
@@ -364,9 +364,9 @@ public class Map : MonoBehaviour
     public List<Cell> GetRectangle(Cell cell1, Cell cell2)
     {
         var x = cell1.X;
-        var y = cell1.Y;
+        var y = cell1.Z;
         var w = x - cell2.X;
-        var h = y - cell2.Y;
+        var h = y - cell2.Z;
 
         return GetRectangle(x, y, w, h);
     }
@@ -401,7 +401,7 @@ public class Map : MonoBehaviour
     {
         var minMax = GetMinMax(square);
         var src = GetCellAtCoordinate(minMax.minx + 1, minMax.miny + 1);
-        return GetRectangle(src.X, src.Y,
+        return GetRectangle(src.X, src.Z,
                             minMax.maxx - minMax.minx - 1,
                             minMax.maxy - minMax.miny - 1);
     }
@@ -428,7 +428,7 @@ public class Map : MonoBehaviour
 
     internal float GetAngle(Cell c1, Cell c2)
     {
-        return Mathf.Atan2(c2.X - c1.X, c2.Y - c1.Y) * 180.0f / Mathf.PI;
+        return Mathf.Atan2(c2.X - c1.X, c2.Z - c1.Z) * 180.0f / Mathf.PI;
     }
 
     internal Cell GetCellAtCoordinate(Vector3 pos)
@@ -444,7 +444,7 @@ public class Map : MonoBehaviour
     internal Cell GetCellAttRadian(Cell center, int radius, int angle)
     {
         var mineX = Mathf.Clamp(Mathf.FloorToInt(center.X + (radius * Mathf.Cos(angle))), 0, MaxX);
-        var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Y + (radius * Mathf.Sin(angle))), 0, MaxY);
+        var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Z + (radius * Mathf.Sin(angle))), 0, MaxZ);
 
         return GetCellAtCoordinate(mineX, mineY);
     }
@@ -456,7 +456,7 @@ public class Map : MonoBehaviour
         if (fromCell != null && toCell != null)
         {
             var x = fromCell.X - toCell.X;
-            var y = fromCell.Y - toCell.Y;
+            var y = fromCell.Z - toCell.Z;
 
             if (x < 0 && y == 0)
             {
@@ -547,14 +547,14 @@ public class Map : MonoBehaviour
     {
         var angle = Random.Range(0, 360);
         var mineX = Mathf.Clamp(Mathf.FloorToInt(center.X + (radius * Mathf.Cos(angle))), 0, MaxX);
-        var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Y + (radius * Mathf.Sin(angle))), 0, MaxY);
+        var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Z + (radius * Mathf.Sin(angle))), 0, MaxZ);
 
         return GetCellAtCoordinate(mineX, mineY);
     }
 
     internal float GetRenderHeight(float height)
     {
-        return -(Game.Instance.Map.HeightCurve.Evaluate(height) * HeightScale);
+        return Game.Instance.Map.HeightCurve.Evaluate(height) * HeightScale;
     }
 
     internal Cell TryGetPathableNeighbour(Cell coordinates)

@@ -73,7 +73,7 @@ namespace Structures
                 if (value != null)
                 {
                     _cell = value;
-                    Coords = (_cell.X, _cell.Y);
+                    Coords = (_cell.X, _cell.Z);
                     Renderer.UpdatePosition();
                 }
             }

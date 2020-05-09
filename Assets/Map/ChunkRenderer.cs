@@ -50,14 +50,14 @@ public class ChunkRenderer : MonoBehaviour
                                                     Game.Instance.ChunkSize));
         }
         var waterSize = 50;
-        var waterLevel = -1.5f;
+        var waterLevel = 1.5f;
 
         for (int y = 0; y <= Game.Instance.ChunkSize / waterSize; y++)
         {
             for (int x = 0; x <= Game.Instance.ChunkSize / waterSize; x++)
             {
                 var water = Instantiate(Game.Instance.Map.WaterPrefab, transform);
-                water.transform.position = new Vector3(x * waterSize, y * waterSize, waterLevel);
+                water.transform.position = new Vector3(x * waterSize,  waterLevel, y * waterSize);
             }
         }
     }
@@ -83,10 +83,10 @@ public class ChunkRenderer : MonoBehaviour
                     var cell = Game.Instance.Map.GetCellAtCoordinate(x + (Data.X * MeshVertexWidth), y + (Data.Y * MeshVertexWidth));
                     if (cell != null)
                     {
-                        height = cell.RenderHeight;
+                        height = cell.Y;
                     }
 
-                    vertices[vertIndex] = new Vector3(x, y, height);
+                    vertices[vertIndex] = new Vector3(x, height, y);
                     uvs[vertIndex] = new Vector2(x / (float)MeshVertexWidth, y / (float)MeshVertexWidth);
                     if (x < maxMeshVertexes && y < maxMeshVertexes)
                     {

@@ -3,13 +3,13 @@
 public class Move : CreatureTask
 {
     public float TargetX;
-    public float TargetY;
+    public float TargetZ;
 
     public override string Message
     {
         get
         {
-            return $"Move to {TargetX}:{TargetY}";
+            return $"Move to {TargetX}:{TargetZ}";
         }
     }
 
@@ -24,7 +24,7 @@ public class Move : CreatureTask
     public Move(Cell targetCoordinates) : this()
     {
         TargetX = targetCoordinates.Vector.x;
-        TargetY = targetCoordinates.Vector.y;
+        TargetZ = targetCoordinates.Vector.z;
     }
 
     [JsonIgnore]
@@ -32,21 +32,21 @@ public class Move : CreatureTask
     {
         get
         {
-            return Game.Instance.Map.GetCellAtCoordinate(TargetX, TargetY);
+            return Game.Instance.Map.GetCellAtCoordinate(TargetX, TargetZ);
         }
     }
 
     public override bool Done(Creature creature)
     {
-        if (creature.TargetCoordinate.x != TargetX || creature.TargetCoordinate.y != TargetY)
+        if (creature.TargetCoordinate.x != TargetX || creature.TargetCoordinate.y != TargetZ)
         {
-            creature.SetTargetCoordinate(TargetX, TargetY);
+            creature.SetTargetCoordinate(TargetX, TargetZ);
         }
         if (creature.UnableToFindPath)
         {
             throw new TaskFailedException("Unable to find path");
         }
-        if (creature.X == TargetX && creature.Y == TargetY)
+        if (creature.X == TargetX && creature.Y == TargetZ)
         {
             // dynamic map expansion
             // Game.Instance.Map.ExpandChunksAround(creature.Cell);
