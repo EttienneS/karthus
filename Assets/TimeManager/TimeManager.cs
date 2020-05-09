@@ -27,8 +27,10 @@ public class TimeManager : MonoBehaviour
         Minute = 0
     };
 
-    public float MaxLightAngle = 100f;
-    public float MinLightAngle = 30f;
+    public float MaxLightAngle = 160f;
+    public float MinLightAngle = 20f;
+    public float LightAngleY = 30f;
+    public float LightAngleZ = 30f;
     internal float CreatureTick = 0.1f;
 
     private TimeStep _timeStep;
@@ -128,14 +130,13 @@ public class TimeManager : MonoBehaviour
         var current = ((Data.Hour - min) * 60) + Data.Minute;
         Game.Instance.Map.GlobalLight.color = Color.Lerp(start, end, current / total);
 
-        var y = 35f;
         if (Data.Hour < 4 || Data.Hour > 20)
         {
-            Game.Instance.Map.GlobalLight.transform.localEulerAngles = new Vector3(MaxLightAngle, y, 0);
+            Game.Instance.Map.GlobalLight.transform.localEulerAngles = new Vector3(MaxLightAngle, LightAngleY, LightAngleZ);
         }
         else
         {
-            Game.Instance.Map.GlobalLight.transform.localEulerAngles = new Vector3(Mathf.Lerp(MinLightAngle, MaxLightAngle, ((Data.Hour * 60) + Data.Minute) / 1440f), y, 0);
+            Game.Instance.Map.GlobalLight.transform.localEulerAngles = new Vector3(Mathf.Lerp(MinLightAngle, MaxLightAngle, ((Data.Hour * 60) + Data.Minute) / 1440f), LightAngleY, LightAngleZ);
         }
     }
 }

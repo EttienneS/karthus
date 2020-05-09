@@ -269,6 +269,14 @@ PrefabInstance:
       propertyPath: HeightCurve.m_Curve.Array.data[0].time
       value: -0.001663208
       objectReference: {fileID: 0}
+    - target: {fileID: 211605833, guid: 8d3d47b53068341448ff13732aef998e, type: 3}
+      propertyPath: MinLightAngle
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 211605833, guid: 8d3d47b53068341448ff13732aef998e, type: 3}
+      propertyPath: MaxLightAngle
+      value: 160
+      objectReference: {fileID: 0}
     - target: {fileID: 1611348141, guid: 8d3d47b53068341448ff13732aef998e, type: 3}
       propertyPath: m_LocalRotation.x
       value: 0.08715578
@@ -369,7 +377,7 @@ PrefabInstance:
     - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
       propertyPath: ChunkSize
-      value: 50
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 4791717066980201731, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
