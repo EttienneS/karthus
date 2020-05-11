@@ -50,7 +50,7 @@ public class Creature : IEntity
     public Race Race;
     public List<Relationship> Relationships = new List<Relationship>();
 
-    public (float x, float y) TargetCoordinate;
+    public (float x, float z) TargetCoordinate;
 
     public bool UnableToFindPath;
 
@@ -94,12 +94,12 @@ public class Creature : IEntity
     {
         get
         {
-            return Game.Instance.Map.GetCellAtCoordinate(X, Y);
+            return Game.Instance.Map.GetCellAtCoordinate(X, Z);
         }
         set
         {
             X = Cell.Vector.x;
-            Y = Cell.Vector.y;
+            Z = Cell.Vector.y;
 
             CreatureRenderer?.UpdatePosition();
         }
@@ -243,7 +243,7 @@ public class Creature : IEntity
     {
         get
         {
-            return new Vector3(X, Y, Cell.Y);
+            return new Vector3(X, Cell.Y, Z);
         }
     }
 
@@ -251,7 +251,7 @@ public class Creature : IEntity
 
     public float X { get; set; }
 
-    public float Y { get; set; }
+    public float Z { get; set; }
 
     public void AddLimb(Limb limb)
     {
@@ -512,12 +512,12 @@ public class Creature : IEntity
         FixedFrame = fixedFrame;
     }
 
-    public void SetTargetCoordinate(float targetX, float targetY)
+    public void SetTargetCoordinate(float targetX, float targetZ)
     {
         // only change the path and reset if the coords do not match
-        if (TargetCoordinate.x != targetX || TargetCoordinate.y != targetY)
+        if (TargetCoordinate.x != targetX || TargetCoordinate.z != targetZ)
         {
-            TargetCoordinate = (targetX, targetY);
+            TargetCoordinate = (targetX, targetZ);
             Path = null;
             UnableToFindPath = false;
         }
@@ -574,7 +574,7 @@ public class Creature : IEntity
 
             DropItem(Cell);
             Log($"Canceled {Task} task");
-            
+
             Faction.RemoveTask(Task);
             Task.Complete();
             Task.Destroy();
@@ -738,7 +738,7 @@ public class Creature : IEntity
             if (HeldItem != null)
             {
                 HeldItem.Renderer.SpriteRenderer.sortingLayerName = LayerConstants.CarriedItem;
-                HeldItem.Coords = (X, Y);
+                HeldItem.Coords = (X, Z);
             }
 
             return true;
@@ -899,7 +899,7 @@ public class Creature : IEntity
 
     private void Move()
     {
-        if (X == TargetCoordinate.x && Y == TargetCoordinate.y)
+        if (X == TargetCoordinate.x && Z == TargetCoordinate.z)
         {
             // no need to move
             Moving = false;
@@ -908,8 +908,8 @@ public class Creature : IEntity
 
         if (Path == null || Path.Count == 0)
         {
-            Path = Pathfinder.FindPath(Game.Instance.Map.GetCellAtCoordinate(X, Y),
-                                       Game.Instance.Map.GetCellAtCoordinate(TargetCoordinate.x, TargetCoordinate.y),
+            Path = Pathfinder.FindPath(Game.Instance.Map.GetCellAtCoordinate(X, Z),
+                                       Game.Instance.Map.GetCellAtCoordinate(TargetCoordinate.x, TargetCoordinate.z),
                                        Mobility);
             Path?.Reverse();
         }
@@ -923,7 +923,7 @@ public class Creature : IEntity
 
         var nextCell = Path[0];
         var targetX = nextCell.Vector.x;
-        var targetY = nextCell.Vector.y;
+        var targetZ = nextCell.Vector.z;
 
         if (!nextCell.Pathable(Mobility))
         {
@@ -932,7 +932,7 @@ public class Creature : IEntity
             return;
         }
 
-        if (X == targetX && Y == targetY)
+        if (X == targetX && Z == targetZ)
         {
             // reached the cell
             Path.RemoveAt(0);
@@ -944,21 +944,21 @@ public class Creature : IEntity
         var maxX = Mathf.Max(targetX, X);
         var minX = Mathf.Min(targetX, X);
 
-        var maxY = Mathf.Max(targetY, Y);
-        var minY = Mathf.Min(targetY, Y);
+        var maxZ = Mathf.Max(targetZ, Z);
+        var minZ = Mathf.Min(targetZ, Z);
 
-        var yspeed = Mathf.Min(Speed + Random.Range(0f, 0.01f), maxY - minY);
+        var yspeed = Mathf.Min(Speed + Random.Range(0f, 0.01f), maxZ - minZ);
         var xspeed = Mathf.Min(Speed + Random.Range(0f, 0.01f), maxX - minX);
 
-        if (targetY > Y)
+        if (targetZ > Z)
         {
             Facing = Direction.N;
-            Y += yspeed;
+            Z += yspeed;
         }
-        else if (targetY < Y)
+        else if (targetZ < Z)
         {
             Facing = Direction.S;
-            Y -= yspeed;
+            Z -= yspeed;
         }
 
         if (targetX > X)
@@ -1017,7 +1017,7 @@ public class Creature : IEntity
                 {
                     if (Cell.DistanceTo(combatant.Cell) > minRange)
                     {
-                        SetTargetCoordinate(combatant.X, combatant.Y);
+                        SetTargetCoordinate(combatant.X, combatant.Z);
                         break;
                     }
                 }
@@ -1097,7 +1097,7 @@ public class Creature : IEntity
                     var c = Game.Instance.Map.GetNearestPathableCell(Cell, Mobility, 10);
 
                     X = c.X;
-                    Y = c.Z;
+                    Z = c.Z;
                     CreatureRenderer.UpdatePosition();
                 }
                 else

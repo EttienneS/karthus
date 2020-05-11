@@ -117,7 +117,7 @@ public class CreatureInfoPanel : MonoBehaviour
                         LogTask(creature);
                     }
 
-                    PropertiesPanel.text += $"\nLocation:\t{creature.X:F1}:{creature.Y:F1}\n\n";
+                    PropertiesPanel.text += $"\nLocation:\t{creature.X:F1}:{creature.Z:F1}\n\n";
                 }
             }
             else

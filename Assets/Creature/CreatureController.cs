@@ -109,7 +109,7 @@ public class CreatureController : MonoBehaviour
         }
 
         creature.Data.X = cell.Vector.x + Random.Range(-0.25f, 0.25f);
-        creature.Data.Y = cell.Vector.y + Random.Range(-0.25f, 0.25f);
+        creature.Data.Z = cell.Vector.y + Random.Range(-0.25f, 0.25f);
         creature.UpdatePosition();
 
         creature.Data.InternalTick = Random.Range(0, Game.Instance.TimeManager.CreatureTick);

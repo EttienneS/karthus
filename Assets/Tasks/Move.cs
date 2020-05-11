@@ -38,7 +38,7 @@ public class Move : CreatureTask
 
     public override bool Done(Creature creature)
     {
-        if (creature.TargetCoordinate.x != TargetX || creature.TargetCoordinate.y != TargetZ)
+        if (creature.TargetCoordinate.x != TargetX || creature.TargetCoordinate.z != TargetZ)
         {
             creature.SetTargetCoordinate(TargetX, TargetZ);
         }
@@ -46,7 +46,7 @@ public class Move : CreatureTask
         {
             throw new TaskFailedException("Unable to find path");
         }
-        if (creature.X == TargetX && creature.Y == TargetZ)
+        if (creature.X == TargetX && creature.Z == TargetZ)
         {
             // dynamic map expansion
             // Game.Instance.Map.ExpandChunksAround(creature.Cell);

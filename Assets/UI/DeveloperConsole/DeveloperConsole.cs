@@ -159,7 +159,7 @@ public class DeveloperConsole : MonoBehaviour
             if (entity is Creature creature)
             {
                 creature.X = cell.X;
-                creature.Y = cell.Z;
+                creature.Z = cell.Z;
                 creature.CreatureRenderer.UpdatePosition();
             }
             else
