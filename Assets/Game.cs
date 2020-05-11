@@ -15,68 +15,41 @@ public enum SelectionPreference
 
 public class Game : MonoBehaviour
 {
-    public CameraController CameraController;
     public int ChunkSize = 120;
+    public int Size = 2;
+
+    public CameraController CameraController;
     public ConstructController ConstructController;
     public CreatureController CreatureController;
     public CreatureInfoPanel CreatureInfoPanelPrefab;
     public LoadPanel CurrentLoadPanel;
     public Light CursorLight;
     public DeveloperConsole DeveloperConsole;
-    public bool EnableShadows;
-
     public FactionController FactionController;
-
     public FileController FileController;
-
     public IdService IdService;
-
     public ItemController ItemController;
-
     public ItemInfoPanel ItemInfoPanelPrefab;
-
     public LoadPanel LoadPanelPrefab;
-
     public MainMenuController MainMenuController;
-
     public Map Map;
-
     public MapGenerator MapGenerator;
-
     public SpriteRenderer MouseSpriteRenderer;
-
     public OrderInfoPanel OrderInfoPanel;
-
     public OrderSelectionController OrderSelectionController;
-
     public OrderTrayController OrderTrayController;
-
     public RectTransform selectSquareImage;
-
-    public int Size = 2;
-
     public SpriteStore SpriteStore;
-
     public StructureController StructureController;
-
     public StructureInfoPanel StructureInfoPanelPrefab;
-
     public TaskPanel TaskPanel;
-
     public TimeManager TimeManager;
-
     public Tooltip TooltipPrefab;
-
     public GameObject UI;
-
     public UIController UIController;
-
     public ValidateMouseSpriteDelegate ValidateMouse;
-
     public VisualEffectController VisualEffectController;
-
     public ZoneController ZoneController;
-
     public ZoneInfoPanel ZoneInfoPanelPrefab;
 
     internal SelectionPreference LastSelection = SelectionPreference.Creature;
@@ -677,7 +650,7 @@ public class Game : MonoBehaviour
 
             _shownOnce = true;
 
-            CameraController.transform.position = new Vector3((Instance.ChunkSize * Instance.Size) / 2, 
+            CameraController.transform.position = new Vector3((Instance.ChunkSize * Instance.Size) / 2,
                                                                20,
                                                               (Instance.ChunkSize * Instance.Size) / 2);
 

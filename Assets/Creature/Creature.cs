@@ -23,9 +23,6 @@ public class Creature : IEntity
     public float AnimationDelta = 0f;
 
     [JsonIgnore]
-    public CharacterSpriteSheet CharacterSpriteSheet;
-
-    [JsonIgnore]
     public List<Creature> Combatants = new List<Creature>();
 
     public Direction Facing = Direction.S;
@@ -1126,10 +1123,7 @@ public class Creature : IEntity
         }
     }
 
-    private void SetSprite(Animation animation)
-    {
-        var frame = CharacterSpriteSheet.GetFrame(animation, GetOrientation(), ref Frame);
-    }
+   
 
     private void UpdateLimbs(float timeDelta)
     {

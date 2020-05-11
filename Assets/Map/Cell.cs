@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
 public class Cell : IEquatable<Cell>
@@ -45,32 +44,6 @@ public class Cell : IEquatable<Cell>
         get
         {
             return Game.Instance.IdService.StructureCellLookup.ContainsKey(this) ? Game.Instance.IdService.StructureCellLookup[this].Find(s => s.IsFloor()) : null;
-        }
-    }
-
-    [JsonIgnore]
-    public Tile GroundTile
-    {
-        get
-        {
-            var tile = ScriptableObject.CreateInstance<Tile>();
-            tile.RotateRandom90();
-
-            if (Floor != null)
-            {
-                tile.sprite = Game.Instance.SpriteStore.GetSprite(Floor.SpriteName);
-
-                if (Floor.IsBluePrint)
-                {
-                    tile.color = ColorConstants.BluePrintColor;
-                }
-            }
-            else
-            {
-                tile.sprite = Game.Instance.SpriteStore.GetSpriteForTerrainType(BiomeRegion.SpriteName);
-            }
-
-            return tile;
         }
     }
 

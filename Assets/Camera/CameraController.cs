@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
@@ -52,7 +51,7 @@ public class CameraController : MonoBehaviour
 
             var lerp = Vector3.Lerp(_panSource, _panDesitnation, fracJourney);
 
-            transform.position = new Vector3(lerp.x,  -15, lerp.y);
+            transform.position = new Vector3(lerp.x, -15, lerp.y);
 
             if (transform.position.x == _panDesitnation.x
                 && transform.position.z == _panDesitnation.z)
@@ -72,18 +71,14 @@ public class CameraController : MonoBehaviour
             float mouseWheel = Input.GetAxis("Mouse ScrollWheel");
             if (horizontal != 0 || vertical != 0 || mouseWheel != 0)
             {
-                var step = Mathf.Clamp((int)Game.Instance.TimeManager.TimeStep, 1, 8);
+                var y = Mathf.Clamp(Camera.transform.position.y - (mouseWheel * ZoomSpeed * Time.deltaTime), ZoomMin, ZoomMax);
+                Speed = Helpers.ScaleValueInRange(SpeedMin, SpeedMax, ZoomMin, ZoomMax, y);
 
-                var x = Mathf.Clamp(transform.position.x + (horizontal * Speed * step), Game.Instance.Map.MinX, Game.Instance.Map.MaxX);
-                var z = Mathf.Clamp(transform.position.z + (vertical * Speed * step), Game.Instance.Map.MinZ, Game.Instance.Map.MaxZ);
+                var x = Mathf.Clamp(transform.position.x + (horizontal * Speed * Time.deltaTime), Game.Instance.Map.MinX, Game.Instance.Map.MaxX);
+                var z = Mathf.Clamp(transform.position.z + (vertical * Speed * Time.deltaTime), Game.Instance.Map.MinZ, Game.Instance.Map.MaxZ);
 
-                var y = Mathf.Clamp(Camera.transform.position.y - (mouseWheel * ZoomSpeed), ZoomMin, ZoomMax);
 
                 Camera.transform.position = new Vector3(x, y, z);
-
-                Speed = Helpers.ScaleValueInRange(SpeedMin, SpeedMax, ZoomMin, ZoomMax, Camera.orthographicSize);
-
-                ZoomSpeed = Mathf.Clamp(ZoomSpeed, 2, 10);
             }
         }
     }

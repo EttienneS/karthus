@@ -154,29 +154,6 @@ namespace Structures
         [JsonIgnore]
         public StructureRenderer Renderer { get; set; }
 
-        public Sprite GetSprite()
-        {
-            Sprite sprite;
-            if (IsInterlocking())
-            {
-                sprite = Game.Instance.SpriteStore.GetInterlockingSprite(this);
-            }
-            else
-            {
-                sprite = Game.Instance.SpriteStore.GetSprite(SpriteName);
-            }
-
-            if (IsBluePrint)
-            {
-                Renderer.MeshRenderer.color = ColorConstants.BluePrintColor;
-            }
-            else
-            {
-                Renderer.MeshRenderer.color =  Color;
-            }
-
-            return sprite;
-        }
 
         public Dictionary<string, float> ValueProperties { get; set; } = new Dictionary<string, float>();
 

@@ -83,12 +83,6 @@ public class CreatureController : MonoBehaviour
 
     internal CreatureRenderer SpawnCreature(Creature creatureData, Cell cell, Faction faction)
     {
-        if (creatureData.Sprite == "Composite")
-        {
-            creatureData.CharacterSpriteSheet = new LPC.Spritesheet.Generator.CharacterSpriteSheet(Game.Instance.SpriteStore.GetCreatureSprite(creatureData.Race, creatureData.Gender));
-            creatureData.CharacterSpriteSheet.SetClothes(Game.Instance.SpriteStore.GetClothesSprite(creatureData.Gender));
-        }
-
         var creature = Instantiate(CreaturePrefab, transform);
 
         creature.Data = creatureData;

@@ -409,11 +409,11 @@ public class Map : MonoBehaviour
     public ChunkRenderer MakeChunk(Chunk data)
     {
         var chunk = Instantiate(ChunkPrefab, transform);
-        chunk.transform.position = new Vector2(data.X * Game.Instance.ChunkSize, data.Y * Game.Instance.ChunkSize);
-        chunk.name = $"Chunk: {data.X}_{data.Y}";
+        chunk.transform.position = new Vector2(data.X * Game.Instance.ChunkSize, data.Z * Game.Instance.ChunkSize);
+        chunk.name = $"Chunk: {data.X}_{data.Z}";
         chunk.Data = data;
 
-        Game.Instance.Map.Chunks.Add((data.X, data.Y), chunk);
+        Game.Instance.Map.Chunks.Add((data.X, data.Z), chunk);
 
         return chunk;
     }

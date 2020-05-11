@@ -43,21 +43,22 @@ public class ChunkRenderer : MonoBehaviour
 
         using (Instrumenter.Start())
         {
-            transform.position = new Vector3(Data.X * Game.Instance.ChunkSize, Data.Y * Game.Instance.ChunkSize);
+            transform.position = new Vector3(Data.X * Game.Instance.ChunkSize, 0, Data.Z * Game.Instance.ChunkSize);
             Populate(Game.Instance.Map.GetRectangle(Data.X * Game.Instance.ChunkSize,
-                                                    Data.Y * Game.Instance.ChunkSize,
+                                                    Data.Z * Game.Instance.ChunkSize,
                                                     Game.Instance.ChunkSize,
                                                     Game.Instance.ChunkSize));
         }
         var waterSize = 50;
+        var offset = waterSize / 2;
         var waterLevel = 1.5f;
 
-        for (int y = 0; y <= Game.Instance.ChunkSize / waterSize; y++)
+        for (int y = 0; y < Game.Instance.ChunkSize / waterSize; y++)
         {
-            for (int x = 0; x <= Game.Instance.ChunkSize / waterSize; x++)
+            for (int x = 0; x < Game.Instance.ChunkSize / waterSize; x++)
             {
                 var water = Instantiate(Game.Instance.Map.WaterPrefab, transform);
-                water.transform.position = new Vector3(x * waterSize,  waterLevel, y * waterSize);
+                water.transform.localPosition = new Vector3((x * waterSize) + offset, waterLevel, (y * waterSize) + offset);
             }
         }
     }
@@ -80,7 +81,7 @@ public class ChunkRenderer : MonoBehaviour
             {
                 for (var x = 0; x < MeshVertexWidth; x++)
                 {
-                    var cell = Game.Instance.Map.GetCellAtCoordinate(x + (Data.X * MeshVertexWidth), y + (Data.Y * MeshVertexWidth));
+                    var cell = Game.Instance.Map.GetCellAtCoordinate(x + (Data.X * MeshVertexWidth), y + (Data.Z * MeshVertexWidth));
                     if (cell != null)
                     {
                         height = cell.Y;
@@ -112,7 +113,7 @@ public class ChunkRenderer : MonoBehaviour
         {
             for (int x = 0; x < MeshVertexWidth; x++)
             {
-                var cell = Game.Instance.Map.GetCellAtCoordinate(x + (Data.X * MeshVertexWidth), y + (Data.Y * MeshVertexWidth));
+                var cell = Game.Instance.Map.GetCellAtCoordinate(x + (Data.X * MeshVertexWidth), y + (Data.Z * MeshVertexWidth));
                 colors[x, y] = GetColor(cell);
             }
         }

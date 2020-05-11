@@ -9,7 +9,7 @@ public class Chunk
     public Chunk(int x, int y)
     {
         X = x;
-        Y = y;
+        Z = y;
     }
 
     [JsonIgnore]
@@ -17,12 +17,12 @@ public class Chunk
     {
         get
         {
-            return (X, Y);
+            return (X, Z);
         }
     }
 
     public int X { get; set; }
-    public int Y { get; set; }
+    public int Z { get; set; }
     public bool Populated { get; set; }
 
     [JsonIgnore]
