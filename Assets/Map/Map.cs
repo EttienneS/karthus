@@ -20,11 +20,6 @@ public class Map : MonoBehaviour
 
     public Light GlobalLight;
 
-    public AnimationCurve HeightCurve;
-
-    [Range(1, 10)]
-    public float HeightScale;
-
     public NoiseSettings LocalNoise;
 
     [Range(0.001f, 0.2f)]
@@ -44,7 +39,7 @@ public class Map : MonoBehaviour
     {
         get
         {
-            return CellLookup[((Game.Instance.Size * Game.Instance.ChunkSize) / 2, (Game.Instance.Size * Game.Instance.ChunkSize) / 2)];
+            return CellLookup[((Game.Instance.MapData.Size * Game.Instance.MapData.ChunkSize) / 2, (Game.Instance.MapData.Size * Game.Instance.MapData.ChunkSize) / 2)];
         }
     }
 
@@ -409,7 +404,7 @@ public class Map : MonoBehaviour
     public ChunkRenderer MakeChunk(Chunk data)
     {
         var chunk = Instantiate(ChunkPrefab, transform);
-        chunk.transform.position = new Vector2(data.X * Game.Instance.ChunkSize, data.Z * Game.Instance.ChunkSize);
+        chunk.transform.position = new Vector2(data.X * Game.Instance.MapData.ChunkSize, data.Z * Game.Instance.MapData.ChunkSize);
         chunk.name = $"Chunk: {data.X}_{data.Z}";
         chunk.Data = data;
 
@@ -552,10 +547,7 @@ public class Map : MonoBehaviour
         return GetCellAtCoordinate(mineX, mineY);
     }
 
-    internal float GetRenderHeight(float height)
-    {
-        return Game.Instance.Map.HeightCurve.Evaluate(height) * HeightScale;
-    }
+    
 
     internal Cell TryGetPathableNeighbour(Cell coordinates)
     {

@@ -9,13 +9,17 @@ using Random = UnityEngine.Random;
 public class Cell : IEquatable<Cell>
 {
     [JsonIgnore]
+    public BiomeRegion BiomeRegion;
+
+    [JsonIgnore]
     public Cell[] Neighbors = new Cell[8];
 
     public int X;
-    public int Z;
 
     [JsonIgnore]
-    public BiomeRegion BiomeRegion;
+    public float Y;
+
+    public int Z;
 
     [JsonIgnore]
     public bool Buildable
@@ -106,9 +110,6 @@ public class Cell : IEquatable<Cell>
             return new Vector3(X + 0.5f, Y, Z + 0.5f);
         }
     }
-
-    [JsonIgnore]
-    public float Y;
 
     public static Cell FromPosition(Vector3 position)
     {
@@ -204,7 +205,6 @@ public class Cell : IEquatable<Cell>
 
         return false;
     }
-
 
     public void SetNeighbor(Direction direction, Cell cell)
     {

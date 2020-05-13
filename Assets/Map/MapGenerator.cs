@@ -105,7 +105,7 @@ public class MapGenerator
         var noiseMapHeight = Game.Instance.Map.GetNoiseMapPoint(x, z);
         var biome = Game.Instance.MapGenerator.GetBiome(x, z).GetRegion(noiseMapHeight);
 
-        var y = Game.Instance.Map.GetRenderHeight(noiseMapHeight);
+        var y = Game.Instance.MapData.HeightCurve.Evaluate(noiseMapHeight) * Game.Instance.MapData.HeightScale;
 
         var cell = new Cell
         {
@@ -171,9 +171,9 @@ public class MapGenerator
 
             if (SaveManager.SaveToLoad == null)
             {
-                for (var x = 0; x < Game.Instance.Size; x++)
+                for (var x = 0; x < Game.Instance.MapData.Size; x++)
                 {
-                    for (var y = 0; y < Game.Instance.Size; y++)
+                    for (var y = 0; y < Game.Instance.MapData.Size; y++)
                     {
                         Game.Instance.Map.MakeChunk(new Chunk(x, y));
                     }
@@ -194,12 +194,12 @@ public class MapGenerator
         Game.Instance.Map.Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
 
         var counter = 1f;
-        var total = Game.Instance.Size * Game.Instance.Size * 1f;
+        var total = Game.Instance.MapData.Size * Game.Instance.MapData.Size * 1f;
         if (SaveManager.SaveToLoad == null)
         {
-            for (var x = 0; x < Game.Instance.Size; x++)
+            for (var x = 0; x < Game.Instance.MapData.Size; x++)
             {
-                for (var y = 0; y < Game.Instance.Size; y++)
+                for (var y = 0; y < Game.Instance.MapData.Size; y++)
                 {
                     Game.Instance.Map.MakeChunk(new Chunk(x, y));
                     counter++;

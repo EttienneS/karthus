@@ -47,8 +47,7 @@
     {
       "Content": {
         "Medium Rock": 0.01,
-        "Bush": 0.05,
-        "Verdant Pyre": 0.01
+        "Bush": 0.05
       },
       "Min": 0.45,
       "Max": 0.6,
@@ -57,17 +56,17 @@
     },
     {
       "Content": {
-        "Tree": 0.45
+        "Tree": 0.35
       },
       "Min": 0.6,
-      "Max": 0.7,
+      "Max": 0.75,
       "SpriteName": "Forest",
       "Color": "#558000"
     },
     {
       "Content": {
       },
-      "Min": 0.7,
+      "Min": 0.75,
       "Max": 1,
       "SpriteName": "Stone",
       "TravelCost": -1,

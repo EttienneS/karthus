@@ -15,7 +15,7 @@ public class ChunkRenderer : MonoBehaviour
     private int[] triangles;
     private Vector2[] uvs;
     private Vector3[] vertices;
-    public int MeshVertexWidth => Game.Instance.ChunkSize + 1;
+    public int MeshVertexWidth => Game.Instance.MapData.ChunkSize + 1;
 
     public void AddTriangle(int a, int b, int c)
     {
@@ -38,61 +38,83 @@ public class ChunkRenderer : MonoBehaviour
 
     public void Start()
     {
-        Triangulate();
+        transform.position = new Vector3(Data.X * Game.Instance.MapData.ChunkSize, 0, Data.Z * Game.Instance.MapData.ChunkSize);
+
+        CreateMesh();
         UpdateTexture();
 
+        if (Game.Instance.MapData.Populate)
+        {
+            using (Instrumenter.Start())
+            {
+                Populate(Game.Instance.Map.GetRectangle(Data.X * Game.Instance.MapData.ChunkSize,
+                                                        Data.Z * Game.Instance.MapData.ChunkSize,
+                                                        Game.Instance.MapData.ChunkSize,
+                                                        Game.Instance.MapData.ChunkSize));
+            }
+        }
+        if (Game.Instance.MapData.CreateWater)
+        {
+            AddWaterLevel();
+        }
+    }
+
+    private void AddWaterLevel()
+    {
         using (Instrumenter.Start())
         {
-            transform.position = new Vector3(Data.X * Game.Instance.ChunkSize, 0, Data.Z * Game.Instance.ChunkSize);
-            Populate(Game.Instance.Map.GetRectangle(Data.X * Game.Instance.ChunkSize,
-                                                    Data.Z * Game.Instance.ChunkSize,
-                                                    Game.Instance.ChunkSize,
-                                                    Game.Instance.ChunkSize));
-        }
-        var waterSize = 50;
-        var offset = waterSize / 2;
-        var waterLevel = 1.5f;
+            var waterSize = Game.Instance.Map.WaterPrefab.transform.localScale.x * 10;
+            var offset = waterSize / 2;
+            var waterLevel = Game.Instance.MapData.WaterLevel;
 
-        for (int y = 0; y < Game.Instance.ChunkSize / waterSize; y++)
-        {
-            for (int x = 0; x < Game.Instance.ChunkSize / waterSize; x++)
+            for (int y = 0; y < Game.Instance.MapData.ChunkSize / waterSize; y++)
             {
-                var water = Instantiate(Game.Instance.Map.WaterPrefab, transform);
-                water.transform.localPosition = new Vector3((x * waterSize) + offset, waterLevel, (y * waterSize) + offset);
+                for (int x = 0; x < Game.Instance.MapData.ChunkSize / waterSize; x++)
+                {
+                    var water = Instantiate(Game.Instance.Map.WaterPrefab, transform);
+                    water.transform.localPosition = new Vector3((x * waterSize) + offset, waterLevel, (y * waterSize) + offset);
+                }
             }
         }
     }
 
-    public void Triangulate()
+    public void CreateMesh()
     {
         using (Instrumenter.Start())
         {
             mesh.Clear();
 
+            var lod = Game.Instance.MapData.LOD * 2;
+
             var maxMeshVertexes = MeshVertexWidth - 1;
-            uvs = new Vector2[MeshVertexWidth * MeshVertexWidth];
-            vertices = new Vector3[MeshVertexWidth * MeshVertexWidth];
-            triangles = new int[maxMeshVertexes * maxMeshVertexes * 6];
+            uvs = new Vector2[MeshVertexWidth * MeshVertexWidth / lod];
+            vertices = new Vector3[MeshVertexWidth * MeshVertexWidth / lod];
+            triangles = new int[maxMeshVertexes * maxMeshVertexes * 6 / lod];
 
             var vertIndex = 0;
             var height = 0f;
 
-            for (var y = 0; y < MeshVertexWidth; y++)
+            var offset = (MeshVertexWidth / lod) + 1;
+
+            for (var z = 0; z < MeshVertexWidth; z += lod)
             {
-                for (var x = 0; x < MeshVertexWidth; x++)
+                for (var x = 0; x < MeshVertexWidth; x += lod)
                 {
-                    var cell = Game.Instance.Map.GetCellAtCoordinate(x + (Data.X * MeshVertexWidth), y + (Data.Z * MeshVertexWidth));
-                    if (cell != null)
+                    if (!Game.Instance.MapData.Flat)
                     {
-                        height = cell.Y;
+                        var cell = Game.Instance.Map.GetCellAtCoordinate(x + (Data.X * MeshVertexWidth), z + (Data.Z * MeshVertexWidth));
+                        if (cell != null)
+                        {
+                            height = cell.Y;
+                        }
                     }
 
-                    vertices[vertIndex] = new Vector3(x, height, y);
-                    uvs[vertIndex] = new Vector2(x / (float)MeshVertexWidth, y / (float)MeshVertexWidth);
-                    if (x < maxMeshVertexes && y < maxMeshVertexes)
+                    vertices[vertIndex] = new Vector3(x, height, z);
+                    uvs[vertIndex] = new Vector2(x / (float)MeshVertexWidth, z / (float)MeshVertexWidth);
+                    if (x < maxMeshVertexes && z < maxMeshVertexes)
                     {
-                        AddTriangle(vertIndex + MeshVertexWidth, vertIndex + MeshVertexWidth + 1, vertIndex);
-                        AddTriangle(vertIndex + 1, vertIndex, vertIndex + MeshVertexWidth + 1);
+                        AddTriangle(vertIndex + offset, vertIndex + offset + 1, vertIndex);
+                        AddTriangle(vertIndex + 1, vertIndex, vertIndex + offset + 1);
                     }
                     vertIndex++;
                 }

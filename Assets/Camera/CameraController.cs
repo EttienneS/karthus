@@ -74,8 +74,8 @@ public class CameraController : MonoBehaviour
                 var y = Mathf.Clamp(Camera.transform.position.y - (mouseWheel * ZoomSpeed * Time.deltaTime), ZoomMin, ZoomMax);
                 Speed = Helpers.ScaleValueInRange(SpeedMin, SpeedMax, ZoomMin, ZoomMax, y);
 
-                var x = Mathf.Clamp(transform.position.x + (horizontal * Speed * Time.deltaTime), Game.Instance.Map.MinX, Game.Instance.Map.MaxX);
-                var z = Mathf.Clamp(transform.position.z + (vertical * Speed * Time.deltaTime), Game.Instance.Map.MinZ, Game.Instance.Map.MaxZ);
+                var x = Mathf.Clamp(transform.position.x + (horizontal * Speed * Time.deltaTime), Game.Instance.Map.MinX - 12, Game.Instance.Map.MaxX);
+                var z = Mathf.Clamp(transform.position.z + (vertical * Speed * Time.deltaTime), Game.Instance.Map.MinZ - 12, Game.Instance.Map.MaxZ);
 
 
                 Camera.transform.position = new Vector3(x, y, z);

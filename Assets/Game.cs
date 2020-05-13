@@ -15,8 +15,7 @@ public enum SelectionPreference
 
 public class Game : MonoBehaviour
 {
-    public int ChunkSize = 120;
-    public int Size = 2;
+    public MapData MapData;
 
     public CameraController CameraController;
     public ConstructController ConstructController;
@@ -51,6 +50,8 @@ public class Game : MonoBehaviour
     public VisualEffectController VisualEffectController;
     public ZoneController ZoneController;
     public ZoneInfoPanel ZoneInfoPanelPrefab;
+
+   
 
     internal SelectionPreference LastSelection = SelectionPreference.Creature;
 
@@ -124,7 +125,7 @@ public class Game : MonoBehaviour
         }
     }
 
-    public int MaxSize => Size * ChunkSize;
+    public int MaxSize => MapData.Size * MapData.ChunkSize;
 
     public bool Paused { get; set; }
 
@@ -650,9 +651,9 @@ public class Game : MonoBehaviour
 
             _shownOnce = true;
 
-            CameraController.transform.position = new Vector3((Instance.ChunkSize * Instance.Size) / 2,
+            CameraController.transform.position = new Vector3((Instance.MapData.ChunkSize * Instance.MapData.Size) / 2,
                                                                20,
-                                                              (Instance.ChunkSize * Instance.Size) / 2);
+                                                              (Instance.MapData.ChunkSize * Instance.MapData.Size) / 2);
 
             MainMenuController.Toggle();
         }
