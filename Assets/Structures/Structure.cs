@@ -52,6 +52,27 @@ namespace Structures
             }
         }
 
+        public string Offset;
+
+        [JsonIgnore]
+        private Vector3 _offsetVector;
+
+        [JsonIgnore]
+        public Vector3 OffsetVector
+        {
+            get
+            {
+                if (_offsetVector == Vector3.zero)
+                {
+                    if (!string.IsNullOrEmpty(Offset))
+                    {
+                        _offsetVector = Offset.ToVector3();
+                    }
+                }
+                return _offsetVector;
+            }
+        }
+
         [JsonIgnore]
         public Color Color
         {
@@ -186,7 +207,7 @@ namespace Structures
         {
             get
             {
-                return Cell.Vector;
+                return Cell.Vector + OffsetVector;
             }
         }
 

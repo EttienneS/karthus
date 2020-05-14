@@ -1,8 +1,10 @@
 {
   "Name": "Stone Wall",
-  "SpriteName": "stone_block",
+  "SpriteName": "ModularStoneWall_top",
   "Description": "Wall made from stone blocks, not much to look at but keeps the bad things out (or in..)",
   "TravelCost": "-1",
+  "Scale": "1",
+  "Offset": "0,0.5,0",
   "Cost": {
     "Items": {
       "Stone": "1"
