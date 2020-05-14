@@ -27,6 +27,31 @@ namespace Structures
 
         public string Type;
 
+        public string Scale;
+
+        [JsonIgnore]
+        private Vector3 _scaleVector;
+
+        [JsonIgnore]
+        public Vector3 ScaleVector
+        {
+            get
+            {
+                if (_scaleVector == Vector3.zero)
+                {
+                    if (string.IsNullOrEmpty(Scale))
+                    {
+                        _scaleVector = new Vector3(0.05f, 0.05f, 0.05f);
+                    }
+                    else
+                    {
+                        _scaleVector = Scale.ToVector3();
+                    }
+                }
+                return _scaleVector;
+            }
+        }
+
         [JsonIgnore]
         public Color Color
         {
@@ -154,7 +179,6 @@ namespace Structures
         [JsonIgnore]
         public StructureRenderer Renderer { get; set; }
 
-
         public Dictionary<string, float> ValueProperties { get; set; } = new Dictionary<string, float>();
 
         [JsonIgnore]
@@ -190,7 +214,6 @@ namespace Structures
         {
             return IsWall();
         }
-
 
         public override string ToString()
         {

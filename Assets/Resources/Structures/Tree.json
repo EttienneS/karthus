@@ -1,9 +1,9 @@
 {
   "Name": "Tree",
-  "SpriteName": "tree_blocks,tree_blocks_dark,tree_default,tree_default_dark,tree_detailed,tree_detailed_dark,tree_oak,tree_oak_dark,tree_pineSmall_round1,tree_pineSmall_round2,tree_pineSmall_round3,tree_pineSmall_round4,tree_pineSmall_round5,tree_pineSmall_square1,tree_pineSmall_square2,tree_pineSmall_square3,tree_pine_short,tree_pine_shortSquare,tree_pine_shortSquare_detailed,tree_pine_short_detailed,tree_pine_tall,tree_pine_tallSquare,tree_pine_tallSquare_detailed,tree_pine_tall_detailed,tree_plateau,tree_plateau_dark,tree_short,tree_short_dark,tree_simple,tree_simple_dark,tree_small,tree_small_dark,tree_tall,tree_tall_dark,tree_thin,tree_thin_dark",
+  "SpriteName": "Tree_1,Tree_2,Tree_3,Tree_4,Tree_5,Tree_6,Tree_7,Tree_8,Tree_9,Tree_10",
   "TravelCost": "7",
   "Buildable": "False",
-  "Layer": "Tree",
+  "Scale": "0.5,0.5,0.5",
   "Cost": {
     "Items": {
       "Wood": "15"

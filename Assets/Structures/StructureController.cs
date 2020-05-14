@@ -90,8 +90,7 @@ namespace Structures
             var mesh = Game.Instance.FileController.GetMesh(structure.SpriteName.Split(',').GetRandomItem());
             var renderer = Instantiate(mesh, transform).gameObject.AddComponent<StructureRenderer>();
             renderer.transform.name = structure.Name + " " + structure.Id;
-            var scale = 0.05f;
-            renderer.transform.localScale = new Vector3(scale, scale, scale);
+            renderer.transform.localScale = structure.ScaleVector;
             structure.Renderer = renderer;
             renderer.Data = structure;
 

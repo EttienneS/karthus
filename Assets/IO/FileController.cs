@@ -32,6 +32,11 @@ public class FileController : MonoBehaviour
 
         foreach (var mesh in Meshes)
         {
+            if (MeshLookup.ContainsKey(mesh.name))
+            {
+                Debug.LogError($"Dupe mesh: {mesh.name}");
+                continue;
+            }
             MeshLookup.Add(mesh.name, mesh);
         }
     }
@@ -42,6 +47,6 @@ public class FileController : MonoBehaviour
         {
             return MeshLookup[name];
         }
-        return MeshLookup.First().Value;
+        return MeshLookup["DefaultCube"];
     }
 }
