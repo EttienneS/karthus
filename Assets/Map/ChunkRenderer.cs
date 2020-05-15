@@ -105,18 +105,21 @@ public class ChunkRenderer : MonoBehaviour
 
     public void UpdateTexture()
     {
-        var colors = new Color[MeshVertexWidth, MeshVertexWidth];
-        for (int y = 0; y < MeshVertexWidth; y++)
+        var scale = 10;
+        var colors = new Color[MeshVertexWidth * scale, MeshVertexWidth * scale];
+        for (int y = 0; y < MeshVertexWidth * scale; y++)
         {
-            for (int x = 0; x < MeshVertexWidth; x++)
+            for (int x = 0; x < MeshVertexWidth * scale; x++)
             {
-                var cell = Game.Instance.Map.GetCellAtCoordinate(x + (Data.X * MeshVertexWidth), y + (Data.Z * MeshVertexWidth));
+                var cell = Game.Instance.Map.GetCellAtCoordinate(Mathf.Floor((x + (Data.X * MeshVertexWidth)) / scale),
+                                                                 Mathf.Floor((y + (Data.Z * MeshVertexWidth)) / scale));
                 colors[x, y] = GetColor(cell);
             }
         }
 
         var mats = MeshRenderer.materials;
-        mats[0].mainTexture = TextureCreator.CreateTextureFromColorMap(MeshVertexWidth, MeshVertexWidth, colors);
+        mats[0].mainTexture = TextureCreator.CreateTextureFromColorMap(MeshVertexWidth * scale, MeshVertexWidth * scale, colors);
+
         MeshRenderer.materials = mats;
     }
 

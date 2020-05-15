@@ -22,8 +22,7 @@ namespace Assets.Sprites
 
         public static Texture2D CreateTextureFromColorMap(int width, int height, Color[,] color)
         {
-
-            //using (Instrumenter.Start())
+            using (Instrumenter.Start())
             {
                 var texture = new Texture2D(width, height)
                 {
@@ -43,7 +42,7 @@ namespace Assets.Sprites
                 }
                 texture.SetPixels(pixels);
                 texture.Apply();
-
+                File.WriteAllBytes($@"C:\ext\tex\{DateTime.Now.Ticks}.png", texture.EncodeToPNG());
 
                 return texture;
             }

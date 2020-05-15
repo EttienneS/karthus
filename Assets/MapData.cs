@@ -4,7 +4,7 @@ using UnityEngine;
 [Serializable]
 public class MapData
 {
-    internal int ChunkSize = 240;
+    public int ChunkSize = 240;
     public bool CreateWater = true;
     public bool Flat = false;
 
