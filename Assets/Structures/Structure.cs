@@ -41,7 +41,7 @@ namespace Structures
                 {
                     if (string.IsNullOrEmpty(Scale))
                     {
-                        _scaleVector = new Vector3(0.05f, 0.05f, 0.05f);
+                        _scaleVector = Vector3.one;
                     }
                     else
                     {

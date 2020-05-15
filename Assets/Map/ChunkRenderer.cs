@@ -8,6 +8,8 @@ public class ChunkRenderer : MonoBehaviour
 {
     public Chunk Data;
     public MeshRenderer MeshRenderer;
+    public int MeshVertexWidth => Game.Instance.MapData.ChunkSize + 1;
+
     private Mesh mesh;
     private MeshCollider meshCollider;
 
@@ -15,7 +17,6 @@ public class ChunkRenderer : MonoBehaviour
     private int[] triangles;
     private Vector2[] uvs;
     private Vector3[] vertices;
-    public int MeshVertexWidth => Game.Instance.MapData.ChunkSize + 1;
 
     public void AddTriangle(int a, int b, int c)
     {
@@ -24,6 +25,49 @@ public class ChunkRenderer : MonoBehaviour
         triangles[triangleIndex + 2] = c;
 
         triangleIndex += 3;
+    }
+
+    public void CreateMesh()
+    {
+        using (Instrumenter.Start())
+        {
+            mesh.Clear();
+
+            var maxMeshVertexes = MeshVertexWidth - 1;
+            uvs = new Vector2[MeshVertexWidth * MeshVertexWidth];
+            vertices = new Vector3[MeshVertexWidth * MeshVertexWidth];
+            triangles = new int[maxMeshVertexes * maxMeshVertexes * 6];
+
+            var vertIndex = 0;
+            var height = 0f;
+
+            for (var y = 0; y < MeshVertexWidth; y++)
+            {
+                for (var x = 0; x < MeshVertexWidth; x++)
+                {
+                    var cell = Game.Instance.Map.GetCellAtCoordinate(x + (Data.X * MeshVertexWidth), y + (Data.Z * MeshVertexWidth));
+                    if (cell != null)
+                    {
+                        height = cell.Y;
+                    }
+
+                    vertices[vertIndex] = new Vector3(x, height, y);
+                    uvs[vertIndex] = new Vector2(x / (float)MeshVertexWidth, y / (float)MeshVertexWidth);
+                    if (x < maxMeshVertexes && y < maxMeshVertexes)
+                    {
+                        AddTriangle(vertIndex + MeshVertexWidth, vertIndex + MeshVertexWidth + 1, vertIndex);
+                        AddTriangle(vertIndex + 1, vertIndex, vertIndex + MeshVertexWidth + 1);
+                    }
+                    vertIndex++;
+                }
+            }
+
+            mesh.vertices = vertices;
+            mesh.triangles = triangles;
+            mesh.uv = uvs;
+            mesh.RecalculateNormals();
+            meshCollider.sharedMesh = mesh;
+        }
     }
 
     public Color GetColor(Cell cell)
@@ -59,75 +103,6 @@ public class ChunkRenderer : MonoBehaviour
         }
     }
 
-    private void AddWaterLevel()
-    {
-        using (Instrumenter.Start())
-        {
-            var waterSize = Game.Instance.Map.WaterPrefab.transform.localScale.x * 10;
-            var offset = waterSize / 2;
-            var waterLevel = Game.Instance.MapData.WaterLevel;
-
-            for (int y = 0; y < Game.Instance.MapData.ChunkSize / waterSize; y++)
-            {
-                for (int x = 0; x < Game.Instance.MapData.ChunkSize / waterSize; x++)
-                {
-                    var water = Instantiate(Game.Instance.Map.WaterPrefab, transform);
-                    water.transform.localPosition = new Vector3((x * waterSize) + offset, waterLevel, (y * waterSize) + offset);
-                }
-            }
-        }
-    }
-
-    public void CreateMesh()
-    {
-        using (Instrumenter.Start())
-        {
-            mesh.Clear();
-
-            var lod = Game.Instance.MapData.LOD * 2;
-
-            var maxMeshVertexes = MeshVertexWidth - 1;
-            uvs = new Vector2[MeshVertexWidth * MeshVertexWidth / lod];
-            vertices = new Vector3[MeshVertexWidth * MeshVertexWidth / lod];
-            triangles = new int[maxMeshVertexes * maxMeshVertexes * 6 / lod];
-
-            var vertIndex = 0;
-            var height = 0f;
-
-            var offset = (MeshVertexWidth / lod) + 1;
-
-            for (var z = 0; z < MeshVertexWidth; z += lod)
-            {
-                for (var x = 0; x < MeshVertexWidth; x += lod)
-                {
-                    if (!Game.Instance.MapData.Flat)
-                    {
-                        var cell = Game.Instance.Map.GetCellAtCoordinate(x + (Data.X * MeshVertexWidth), z + (Data.Z * MeshVertexWidth));
-                        if (cell != null)
-                        {
-                            height = cell.Y;
-                        }
-                    }
-
-                    vertices[vertIndex] = new Vector3(x, height, z);
-                    uvs[vertIndex] = new Vector2(x / (float)MeshVertexWidth, z / (float)MeshVertexWidth);
-                    if (x < maxMeshVertexes && z < maxMeshVertexes)
-                    {
-                        AddTriangle(vertIndex + offset, vertIndex + offset + 1, vertIndex);
-                        AddTriangle(vertIndex + 1, vertIndex, vertIndex + offset + 1);
-                    }
-                    vertIndex++;
-                }
-            }
-
-            mesh.vertices = vertices;
-            mesh.triangles = triangles;
-            mesh.uv = uvs;
-            mesh.RecalculateNormals();
-            meshCollider.sharedMesh = mesh;
-        }
-    }
-
     public void UpdateTexture()
     {
         var colors = new Color[MeshVertexWidth, MeshVertexWidth];
@@ -149,6 +124,25 @@ public class ChunkRenderer : MonoBehaviour
     {
         cells.ForEach(c => c.Populate());
         Data.Populated = true;
+    }
+
+    private void AddWaterLevel()
+    {
+        using (Instrumenter.Start())
+        {
+            var waterSize = Game.Instance.Map.WaterPrefab.transform.localScale.x * 10;
+            var offset = waterSize / 2;
+            var waterLevel = Game.Instance.MapData.WaterLevel;
+
+            for (int y = 0; y < Game.Instance.MapData.ChunkSize / waterSize; y++)
+            {
+                for (int x = 0; x < Game.Instance.MapData.ChunkSize / waterSize; x++)
+                {
+                    var water = Instantiate(Game.Instance.Map.WaterPrefab, transform);
+                    water.transform.localPosition = new Vector3((x * waterSize) + offset, waterLevel, (y * waterSize) + offset);
+                }
+            }
+        }
     }
 
     private void Awake()

@@ -13,13 +13,16 @@ public class MapData
     [Range(1, 20)]
     public float HeightScale;
 
-    [Range(1, 6)]
-    public int LOD = 1;
-
     public bool Populate = true;
 
     [Range(1, 10)]
     public int Size = 2;
 
     public float WaterLevel = 1.5f;
+
+    [Range(0, 10)]
+    public int CreaturesToSpawn = 3;
+
+    public string Seed;
+
 }

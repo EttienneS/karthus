@@ -67,7 +67,7 @@ public class MapGenerator
         Game.Instance.ItemController.SpawnItem("Wood", open.GetRandomItem(), 250);
         Game.Instance.ItemController.SpawnItem("Stone", open.GetRandomItem(), 250);
 
-        for (int i = 0; i < Game.Instance.Map.CreaturesToSpawn; i++)
+        for (int i = 0; i < Game.Instance.MapData.CreaturesToSpawn; i++)
         {
             var c = Game.Instance.CreatureController.SpawnCreature(Game.Instance.CreatureController.GetCreatureOfType("Person"),
                                                           Game.Instance.Map.GetNearestPathableCell(center, Mobility.Walk, 10),
@@ -86,7 +86,7 @@ public class MapGenerator
                 continue;
             }
 
-            for (int i = 0; i < Game.Instance.Map.CreaturesToSpawn; i++)
+            for (int i = 0; i < Game.Instance.MapData.CreaturesToSpawn; i++)
             {
                 var creature = Game.Instance.CreatureController.GetCreatureOfType(monster.Key);
 

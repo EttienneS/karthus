@@ -803,13 +803,13 @@ public class Game : MonoBehaviour
 
         if (SaveManager.SaveToLoad != null)
         {
-            Map.Seed = SaveManager.SaveToLoad.Seed;
+            MapData.Seed = SaveManager.SaveToLoad.Seed;
         }
         else
         {
-            if (string.IsNullOrEmpty(Map.Seed))
+            if (string.IsNullOrEmpty(MapData.Seed))
             {
-                Map.Seed = NameHelper.GetRandomName() + " " + NameHelper.GetRandomName();
+                MapData.Seed = NameHelper.GetRandomName() + " " + NameHelper.GetRandomName();
             }
             InitFactions();
         }

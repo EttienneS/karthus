@@ -11,7 +11,7 @@ public static class SaveManager
     {
         get
         {
-            return $"Saves\\{Game.Instance.Map.Seed}\\";
+            return $"Saves\\{Game.Instance.MapData.Seed}\\";
         }
     }
 
@@ -39,7 +39,7 @@ public static class SaveManager
     {
         return new Save
         {
-            Seed = Game.Instance.Map.Seed,
+            Seed = Game.Instance.MapData.Seed,
             Factions = Game.Instance.FactionController.Factions.Values.ToList(),
             Time = Game.Instance.TimeManager.Data,
             Items = Game.Instance.IdService.ItemLookup.Values.ToList(),

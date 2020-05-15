@@ -15,17 +15,10 @@ public class Map : MonoBehaviour
 
     public GameObject WaterPrefab;
 
-    [Range(0, 10)]
-    public int CreaturesToSpawn = 3;
-
     public Light GlobalLight;
 
     public NoiseSettings LocalNoise;
 
-    [Range(0.001f, 0.2f)]
-    public float Scaler = 0.1f;
-
-    public string Seed;
     public NoiseSettings WorldNoise;
 
     internal Dictionary<(int x, int y), ChunkRenderer> Chunks;
@@ -67,7 +60,7 @@ public class Map : MonoBehaviour
             if (!_seedValue.HasValue)
             {
                 var md5Hasher = MD5.Create();
-                var hashed = md5Hasher.ComputeHash(Encoding.UTF8.GetBytes(Seed));
+                var hashed = md5Hasher.ComputeHash(Encoding.UTF8.GetBytes(Game.Instance.MapData.Seed));
                 _seedValue = BitConverter.ToInt32(hashed, 0);
             }
             return _seedValue.Value;
