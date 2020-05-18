@@ -6,16 +6,16 @@
       "Min": 0.0,
       "Max": 0.3,
       "TravelCost": -1,
-      "SpriteName": "Sand",
-      "Color": "#ffffb3"
+      "Name": "Sand",
+      "Color": "#ff0000"
     },
     {
       "Content": {
       },
       "Min": 0.3,
       "Max": 0.33,
-      "SpriteName": "Sand",
-      "Color": "#ffff99"
+      "Name": "Sand",
+      "Color": "#ff0000"
     },
     {
       "Content": {
@@ -23,8 +23,8 @@
       },
       "Min": 0.33,
       "Max": 0.37,
-      "SpriteName": "Sand",
-      "Color": "#ffff80"
+      "Name": "Sand",
+      "Color": "#ff0000"
     },
     {
       "Content": {
@@ -32,8 +32,8 @@
       },
       "Min": 0.37,
       "Max": 0.40,
-      "SpriteName": "Dirt",
-      "Color": "#cc9966"
+      "Name": "Dirt",
+      "Color": "#ffff00"
     },
     {
       "Content": {
@@ -41,8 +41,8 @@
       },
       "Min": 0.4,
       "Max": 0.45,
-      "SpriteName": "PatchyGrass",
-      "Color": "#888844"
+      "Name": "PatchyGrass",
+      "Color": "#ffff00"
     },
     {
       "Content": {
@@ -53,8 +53,8 @@
       },
       "Min": 0.45,
       "Max": 0.6,
-      "SpriteName": "Grass",
-      "Color": "#99cc00"
+      "Name": "Grass",
+      "Color": "#00ff00"
     },
     {
       "Content": {
@@ -62,17 +62,17 @@
       },
       "Min": 0.6,
       "Max": 0.75,
-      "SpriteName": "Forest",
-      "Color": "#558000"
+      "Name": "Forest",
+      "Color": "#00ff00"
     },
     {
       "Content": {
       },
       "Min": 0.75,
       "Max": 1,
-      "SpriteName": "Stone",
+      "Name": "Stone",
       "TravelCost": -1,
-      "Color": "#4d4d4d"
+      "Color": "#0000ff"
     }
   ],
   "Name": "Default",

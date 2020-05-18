@@ -42,7 +42,7 @@ public class Biome
 
     internal (float, float) GetCellTypeRange(string cellType)
     {
-        var region = BiomeRegions.First(r => r.SpriteName == cellType);
+        var region = BiomeRegions.First(r => r.Name == cellType);
         return (region.Min, region.Max);
     }
 }
@@ -66,13 +66,13 @@ public class BiomeRegion
             Content.Add(structure, probablity);
         }
 
-        SpriteName = spriteName;
+        Name = spriteName;
     }
 
     public Dictionary<string, float> Content { get; set; }
     public float Max { get; set; }
     public float Min { get; set; }
-    public string SpriteName { get; set; }
+    public string Name { get; set; }
     public float TravelCost { get; set; } = 1f;
 
     internal string GetContent()

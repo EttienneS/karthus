@@ -17,6 +17,7 @@ public class ChunkRenderer : MonoBehaviour
     private int[] triangles;
     private Vector2[] uvs;
     private Vector3[] vertices;
+    private Color[] colors;
 
     public void AddTriangle(int a, int b, int c)
     {
@@ -36,6 +37,7 @@ public class ChunkRenderer : MonoBehaviour
             var maxMeshVertexes = MeshVertexWidth - 1;
             uvs = new Vector2[MeshVertexWidth * MeshVertexWidth];
             vertices = new Vector3[MeshVertexWidth * MeshVertexWidth];
+            colors = new Color[MeshVertexWidth * MeshVertexWidth];
             triangles = new int[maxMeshVertexes * maxMeshVertexes * 6];
 
             var vertIndex = 0;
@@ -51,6 +53,7 @@ public class ChunkRenderer : MonoBehaviour
                         height = cell.Y;
                     }
 
+                    colors[vertIndex] = GetColor(cell);
                     vertices[vertIndex] = new Vector3(x, height, y);
                     uvs[vertIndex] = new Vector2(x / (float)MeshVertexWidth, y / (float)MeshVertexWidth);
                     if (x < maxMeshVertexes && y < maxMeshVertexes)
@@ -63,6 +66,7 @@ public class ChunkRenderer : MonoBehaviour
             }
 
             mesh.vertices = vertices;
+            mesh.colors = colors;
             mesh.triangles = triangles;
             mesh.uv = uvs;
             mesh.RecalculateNormals();
@@ -85,7 +89,7 @@ public class ChunkRenderer : MonoBehaviour
         transform.position = new Vector3(Data.X * Game.Instance.MapData.ChunkSize, 0, Data.Z * Game.Instance.MapData.ChunkSize);
 
         CreateMesh();
-        UpdateTexture();
+        //UpdateTexture();
 
         if (Game.Instance.MapData.Populate)
         {

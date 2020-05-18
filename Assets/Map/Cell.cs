@@ -214,7 +214,7 @@ public class Cell : IEquatable<Cell>
 
     public override string ToString()
     {
-        return $"{BiomeRegion.SpriteName} ({X},{Z})";
+        return $"{BiomeRegion.Name} ({X},{Z})";
     }
 
     public string ToStringOnSeparateLines()

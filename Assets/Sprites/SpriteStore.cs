@@ -1,6 +1,4 @@
-﻿using LPC.Spritesheet.Generator.Enums;
-using Structures;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -33,14 +31,6 @@ public class SpriteStore : MonoBehaviour
         }
     }
 
-
-
-    public void Awake()
-    {
-    }
-
-  
-
     internal bool FacingUp(Direction facing)
     {
         switch (facing)
@@ -54,8 +44,6 @@ public class SpriteStore : MonoBehaviour
                 return false;
         }
     }
-
-
 
     internal Sprite GetPlaceholder()
     {
@@ -82,5 +70,4 @@ public class SpriteStore : MonoBehaviour
             throw new Exception($"No sprite found with name: {spriteName}");
         }
     }
-
 }
