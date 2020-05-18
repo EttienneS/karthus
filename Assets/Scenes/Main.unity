@@ -412,7 +412,7 @@ PrefabInstance:
     - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
       propertyPath: MapData.Populate
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
@@ -587,7 +587,7 @@ PrefabInstance:
     - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
       propertyPath: MapData.Seed
-      value: 1
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 4791717066980201731, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
@@ -2394,71 +2394,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Main Camera
-      objectReference: {fileID: 0}
-    - target: {fileID: 5246461426590746730, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
-        type: 3}
-      propertyPath: ZoomMin
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 5246461426590746730, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
-        type: 3}
-      propertyPath: ZoomMax
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 5246461426590746730, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
-        type: 3}
-      propertyPath: ZoomStep
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5246461426590746730, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
-        type: 3}
-      propertyPath: SpeedMax
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 5246461426590746730, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
-        type: 3}
-      propertyPath: SpeedMin
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 5246461426590746730, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
-        type: 3}
-      propertyPath: ZoomSpeed
-      value: 500
-      objectReference: {fileID: 0}
-    - target: {fileID: 5246461426590746731, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
-        type: 3}
-      propertyPath: orthographic size
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 5246461426590746731, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
-        type: 3}
-      propertyPath: orthographic
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5246461426590746731, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
-        type: 3}
-      propertyPath: m_BackGroundColor.r
-      value: 0.18431373
-      objectReference: {fileID: 0}
-    - target: {fileID: 5246461426590746731, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
-        type: 3}
-      propertyPath: m_BackGroundColor.g
-      value: 0.21176471
-      objectReference: {fileID: 0}
-    - target: {fileID: 5246461426590746731, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
-        type: 3}
-      propertyPath: m_BackGroundColor.b
-      value: 0.2509804
-      objectReference: {fileID: 0}
-    - target: {fileID: 5246461426590746731, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
-        type: 3}
-      propertyPath: m_BackGroundColor.a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5246461426590746731, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
-        type: 3}
-      propertyPath: far clip plane
-      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 5246461426590746772, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
         type: 3}

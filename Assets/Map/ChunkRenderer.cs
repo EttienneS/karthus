@@ -1,6 +1,7 @@
 ﻿using Assets.Helpers;
 using Assets.Sprites;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
@@ -56,6 +57,7 @@ public class ChunkRenderer : MonoBehaviour
                     colors[vertIndex] = GetColor(cell);
                     vertices[vertIndex] = new Vector3(x, height, y);
                     uvs[vertIndex] = new Vector2(x / (float)MeshVertexWidth, y / (float)MeshVertexWidth);
+                    
                     if (x < maxMeshVertexes && y < maxMeshVertexes)
                     {
                         AddTriangle(vertIndex + MeshVertexWidth, vertIndex + MeshVertexWidth + 1, vertIndex);
@@ -81,7 +83,16 @@ public class ChunkRenderer : MonoBehaviour
             return new Color(0, 0, 0, 0);
         }
 
-        return ColorExtensions.GetColorFromHex(cell.BiomeRegion.Color);
+        var biomes = cell.NonNullNeighbors.Select(c => c.BiomeRegion).ToList();
+        biomes.Add(cell.BiomeRegion); 
+        
+
+        var red = biomes.Average(b => b.Red);
+        var green = biomes.Average(b => b.Green);
+        var blue = biomes.Average(b => b.Blue);
+        var alpha = biomes.Average(b => b.Alpha);
+
+        return new Color(red, green, blue, alpha);
     }
 
     public void Start()
