@@ -13,8 +13,6 @@ namespace Assets
         public RotateDelegate RotateRight;
         public ValidateMouseDelegate Validate;
 
-        public Material BlueprintMaterial;
-
         public delegate void RotateDelegate();
 
         public delegate bool ValidateMouseDelegate(Cell cell);
@@ -31,6 +29,13 @@ namespace Assets
         {
         }
 
+        private void Start()
+        {
+            _blueprintMaterial = Game.Instance.FileController.GetMaterial("BlueprintMaterial");
+        }
+
+        private Material _blueprintMaterial;
+
         public void SetMesh(string name, ValidateMouseDelegate validationFunction)
         {
             if (MouseMeshRenderer != null)
@@ -43,7 +48,7 @@ namespace Assets
             var mats = new List<Material>();
             for (var i = 0; i < MouseMeshRenderer.materials.Length; i++)
             {
-                mats.Add(BlueprintMaterial);
+                mats.Add(_blueprintMaterial);
             }
             _offset = structure.structure.OffsetVector;
             MouseMeshRenderer.materials = mats.ToArray();

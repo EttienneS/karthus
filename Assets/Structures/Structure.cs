@@ -19,6 +19,8 @@ namespace Structures
 
         public float Rotation;
 
+        public string Materials;
+
         public string Size;
 
         public float TravelCost;

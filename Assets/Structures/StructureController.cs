@@ -100,6 +100,13 @@ namespace Structures
             structureRenderer.transform.name = structure.Name + " " + structure.Id;
             structure.Renderer = structureRenderer;
             structureRenderer.Data = structure;
+            structureRenderer.Renderer = renderer;
+
+            var mats = Game.Instance.FileController.GetMaterials(structure.Materials);
+            if (mats != null)
+            {
+                structureRenderer.Renderer.materials = mats;
+            }
 
             structure.Cell = cell;
             IndexStructure(structure);

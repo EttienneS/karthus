@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -11,10 +12,12 @@ public class FileController : MonoBehaviour
     internal TextAsset[] ItemFiles;
 
     public MeshRenderer[] Meshes;
+    public Material[] Materials;
 
     public Dictionary<string, TextAsset> ItemLookup;
 
     internal Dictionary<string, MeshRenderer> MeshLookup = new Dictionary<string, MeshRenderer>();
+    internal Dictionary<string, Material> MaterialLookup = new Dictionary<string, Material>();
 
     public string StructureFolder = "Structures";
     public string ConstructFolder = "Constructs";
@@ -39,6 +42,16 @@ public class FileController : MonoBehaviour
             }
             MeshLookup.Add(mesh.name, mesh);
         }
+
+        foreach (var material in Materials)
+        {
+            if (MaterialLookup.ContainsKey(material.name))
+            {
+                Debug.LogError($"Dupe material: {material.name}");
+                continue;
+            }
+            MaterialLookup.Add(material.name, material);
+        }
     }
 
     internal MeshRenderer GetMesh(string name)
@@ -48,5 +61,26 @@ public class FileController : MonoBehaviour
             return MeshLookup[name];
         }
         return MeshLookup["DefaultCube"];
+    }
+
+    internal Material GetMaterial(string name)
+    {
+        if (MaterialLookup.ContainsKey(name))
+        {
+            return MaterialLookup[name];
+        }
+        return MaterialLookup["DefaultMaterial"];
+    }
+
+    internal Material[] GetMaterials(string materials)
+    {
+        if (string.IsNullOrEmpty(materials))
+        {
+            return null;
+        }
+        else
+        {
+            return materials.Split(',').Select(GetMaterial).ToArray();
+        }
     }
 }
