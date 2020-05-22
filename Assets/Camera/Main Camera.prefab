@@ -99,7 +99,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Camera: {fileID: 5246461426590746731}
   MaxAngle: 90
-  MinAngle: 15
+  MinAngle: 35
   SpeedMax: 5
   SpeedMin: 1
   ZoomMax: 100

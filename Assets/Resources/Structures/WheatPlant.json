@@ -1,6 +1,6 @@
 {
   "Name": "WheatPlant",
-  "SpriteName": "WheatPlant",
+  "Mesh": "WheatPlant",
   "TravelCost": "3",
   "Buildable": "False",
   "Cost": {

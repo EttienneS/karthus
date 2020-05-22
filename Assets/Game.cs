@@ -1,4 +1,5 @@
-﻿using Assets.UI.TaskPanel;
+﻿using Assets;
+using Assets.UI.TaskPanel;
 using Structures;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ public class Game : MonoBehaviour
     public CreatureController CreatureController;
     public CreatureInfoPanel CreatureInfoPanelPrefab;
     public LoadPanel CurrentLoadPanel;
-    public Light CursorLight;
+    public CursorController Cursor;
     public DeveloperConsole DeveloperConsole;
     public FactionController FactionController;
     public FileController FileController;
@@ -33,7 +34,6 @@ public class Game : MonoBehaviour
     public MainMenuController MainMenuController;
     public Map Map;
     public MapGenerator MapGenerator;
-    public SpriteRenderer MouseSpriteRenderer;
     public OrderInfoPanel OrderInfoPanel;
     public OrderSelectionController OrderSelectionController;
     public OrderTrayController OrderTrayController;
@@ -46,7 +46,6 @@ public class Game : MonoBehaviour
     public Tooltip TooltipPrefab;
     public GameObject UI;
     public UIController UIController;
-    public ValidateMouseSpriteDelegate ValidateMouse;
     public VisualEffectController VisualEffectController;
     public ZoneController ZoneController;
     public ZoneInfoPanel ZoneInfoPanelPrefab;
@@ -55,19 +54,9 @@ public class Game : MonoBehaviour
 
     internal SelectionPreference LastSelection = SelectionPreference.Creature;
 
-    internal LineRenderer LineRenderer;
-
-    internal float LoadProgress;
-
-    internal string LoadStatus;
-
     internal Cell MouseOverCell;
 
     internal string MouseSpriteName;
-
-    internal Rotate RotateMouseLeft;
-
-    internal Rotate RotateMouseRight;
 
     internal List<Cell> SelectedCells = new List<Cell>();
 
@@ -85,8 +74,6 @@ public class Game : MonoBehaviour
 
     private static Game _instance;
 
-    private bool _constructMode;
-
     private CreatureInfoPanel _currentCreatureInfoPanel;
 
     private ItemInfoPanel _currentItemInfoPanel;
@@ -99,9 +86,6 @@ public class Game : MonoBehaviour
 
     private List<GameObject> _destroyCache = new List<GameObject>();
 
-    private bool _finalizationStarted;
-
-    private List<VisualEffect> _ghostEffects = new List<VisualEffect>();
 
     private DateTime? _lastAutoSave = null;
 
@@ -109,9 +93,7 @@ public class Game : MonoBehaviour
 
     private bool _shownOnce;
 
-    public delegate void Rotate();
 
-    public delegate bool ValidateMouseSpriteDelegate(Cell cell);
 
     public static Game Instance
     {
@@ -137,35 +119,6 @@ public class Game : MonoBehaviour
         {
             _destroyCache.Add(gameObject);
         }
-    }
-
-    public void AddLine(Cell start, Cell end)
-    {
-        LineRenderer.startColor = ColorConstants.RedBase;
-        LineRenderer.endColor = ColorConstants.RedBase;
-
-        LineRenderer.positionCount += 3;
-
-        LineRenderer.SetPosition(LineRenderer.positionCount - 3, start.Vector);
-        LineRenderer.SetPosition(LineRenderer.positionCount - 2, end.Vector);
-        LineRenderer.SetPosition(LineRenderer.positionCount - 1, start.Vector);
-
-        LineRenderer.startWidth = 0.1f;
-        LineRenderer.endWidth = 0.1f;
-    }
-
-    public void ClearGhostEffects()
-    {
-        foreach (var effect in _ghostEffects)
-        {
-            effect.DestroySelf();
-        }
-        _ghostEffects.Clear();
-    }
-
-    public void ClearLine()
-    {
-        LineRenderer.positionCount = 0;
     }
 
     public void DeselectAll()
@@ -203,7 +156,6 @@ public class Game : MonoBehaviour
 
     public void DeselectItem()
     {
-        ClearLine();
         foreach (var item in SelectedItems)
         {
             item.HideOutline();
@@ -219,10 +171,9 @@ public class Game : MonoBehaviour
     {
         if (stopGhost)
         {
-            DisableMouseSprite();
+            Cursor.Disable();
         }
 
-        ClearLine();
         foreach (var structure in SelectedStructures)
         {
             structure.HideOutline();
@@ -265,13 +216,6 @@ public class Game : MonoBehaviour
         }
     }
 
-    public void DisableMouseSprite()
-    {
-        MouseSpriteRenderer.sprite = null;
-        MouseSpriteRenderer.size = Vector2.one;
-        ValidateMouse = null;
-        RotateMouseRight = null;
-    }
 
     public List<Cell> GetSelectedCells(Vector3 worldStartPoint, Vector3 worldEndPoint)
     {
@@ -349,27 +293,6 @@ public class Game : MonoBehaviour
         }
 
         return false;
-    }
-
-    public void SetConstructSprite(Texture2D texture, int width, int height, ValidateMouseSpriteDelegate validation)
-    {
-        _constructMode = true;
-        var mouseTex = texture.Clone();
-        mouseTex.ScaleToGridSize(width, height);
-
-        MouseSpriteRenderer.sprite = Sprite.Create(mouseTex,
-                                                   new Rect(0, 0, width * Map.PixelsPerCell, height * Map.PixelsPerCell),
-                                                   new Vector2(0, 0), Map.PixelsPerCell);
-
-        ValidateMouse = validation;
-    }
-
-    public void SetMouseSprite(string spriteName, ValidateMouseSpriteDelegate validation)
-    {
-        _constructMode = false;
-        MouseSpriteRenderer.sprite = SpriteStore.GetSprite(spriteName);
-        MouseSpriteName = spriteName;
-        ValidateMouse = validation;
     }
 
     internal void HideTooltip()
@@ -528,11 +451,11 @@ public class Game : MonoBehaviour
         }
         else if (Input.GetKeyDown("e"))
         {
-            RotateMouseRight?.Invoke();
+            Cursor.RotateRight?.Invoke();
         }
         else if (Input.GetKeyDown("q"))
         {
-            RotateMouseLeft?.Invoke();
+            Cursor.RotateLeft?.Invoke();
         }
     }
 
@@ -576,67 +499,7 @@ public class Game : MonoBehaviour
         return overUI;
     }
 
-    private void MoveMouseSprite()
-    {
-        CursorLight.enabled = Instance.TimeManager.Data.Hour > 17 || Instance.TimeManager.Data.Hour < 5;
-
-        if (MouseSpriteRenderer.gameObject.activeInHierarchy)
-        {
-            var pos = GetWorldMousePosition();
-
-            if (pos != null)
-            {
-                var cell = Map.GetCellAtPoint(pos.Value);
-
-                if (cell == null)
-                {
-                    return;
-                }
-
-                float x = cell.X;
-                float z = cell.Z;
-
-                if (!_constructMode)
-                {
-                    x += 0.5f;
-                    z += 0.5f;
-                }
-
-                MouseSpriteRenderer.transform.position = new Vector3(x, cell.Y + 0.5f, z);
-
-                if (MouseSpriteRenderer.sprite != null)
-                {
-                    if (ValidateMouse != null)
-                    {
-                        if (!ValidateMouse(cell))
-                        {
-                            MouseSpriteRenderer.color = ColorConstants.RedBase;
-                        }
-                        else
-                        {
-                            MouseSpriteRenderer.color = ColorConstants.BluePrintColor;
-                        }
-                    }
-
-                    if (SelectionStartWorld != Vector3.zero && !_constructMode)
-                    {
-                        MouseSpriteRenderer.color = new Color(0, 0, 0, 0);
-                        ClearGhostEffects();
-                        foreach (var c in GetSelectedCells(SelectionStartWorld, GetWorldMousePosition().Value))
-                        {
-                            var color = ColorConstants.BluePrintColor;
-                            if (ValidateMouse != null && !ValidateMouse(c))
-                            {
-                                color = ColorConstants.RedBase;
-                            }
-
-                            _ghostEffects.Add(VisualEffectController.SpawnSpriteEffect(null, c.Vector, MouseSpriteName, float.MaxValue, color));
-                        }
-                    }
-                }
-            }
-        }
-    }
+    
 
     private void OnFirstRun()
     {
@@ -796,9 +659,6 @@ public class Game : MonoBehaviour
     {
         UIController.Hide();
 
-        LineRenderer = GetComponent<LineRenderer>();
-        MouseSpriteRenderer.size = Vector2.one;
-
         selectSquareImage.gameObject.SetActive(false);
 
         if (SaveManager.SaveToLoad != null)
@@ -842,13 +702,11 @@ public class Game : MonoBehaviour
         }
 
         HandleHotkeys();
-        MoveMouseSprite();
 
         if (Input.GetMouseButton(1))
         {
             // right mouse deselect all
             DeselectAll();
-            DisableMouseSprite();
             OrderSelectionController.DisableAndReset();
         }
         else
@@ -906,7 +764,6 @@ public class Game : MonoBehaviour
                     Select(selectedZone, SelectionPreference);
 
                     SelectionStartWorld = Vector3.zero;
-                    ClearGhostEffects();
                 }
 
                 if (Input.GetMouseButton(0))

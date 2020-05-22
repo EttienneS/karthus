@@ -1,6 +1,6 @@
 {
   "Name": "Table",
-  "SpriteName": "Table",
+  "Mesh": "Table",
   "TravelCost": "4",
   "Description": "A general purpose table, can be used as a place to eat or a workbench.",
   "Cost": {

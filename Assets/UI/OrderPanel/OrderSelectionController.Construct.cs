@@ -8,23 +8,10 @@ public partial class OrderSelectionController //.Construct
     {
         Debug.Log($"Construct clicked {constuct.Name}");
 
-        Game.Instance.SetConstructSprite(constuct.Texture, constuct.Width, constuct.Height,
-                                       cell => constuct.ValidateStartPos(cell));
+        Game.Instance.Cursor.ShowConstructGhost(constuct);
         ShowConstructInfo(constuct);
 
-        Game.Instance.RotateMouseRight += () =>
-        {
-            constuct.RotateRight();
-            Game.Instance.SetConstructSprite(constuct.GetTexture(), constuct.Width, constuct.Height,
-                                           cell => constuct.ValidateStartPos(cell));
-        };
 
-        Game.Instance.RotateMouseLeft += () =>
-        {
-            constuct.RotateLeft();
-            Game.Instance.SetConstructSprite(constuct.GetTexture(), constuct.Width, constuct.Height,
-                                           cell => constuct.ValidateStartPos(cell));
-        };
 
         CellClickOrder = cells =>
         {

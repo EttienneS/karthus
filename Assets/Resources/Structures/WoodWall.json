@@ -1,8 +1,10 @@
 {
   "Name": "Wood Wall",
-  "SpriteName": "stone_block",
+  "Mesh": "WallTest",
   "Description": "Wall made from wood, not much to look at but keeps the bad things out (or in..)",
   "TravelCost": "-1",
+  "Scale": "1,3,1",
+  "Offset": "0,1.5,0",
   "Cost": {
     "Items": {
       "Wood": "1"

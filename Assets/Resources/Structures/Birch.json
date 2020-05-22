@@ -1,6 +1,6 @@
 {
   "Name": "Birch",
-  "SpriteName": "Birch_1,Birch_2,Birch_3,Birch_4,Birch_5,Birch_6,Birch_7,Birch_8,Birch_9,Birch_10",
+  "Mesh": "Birch_1,Birch_2,Birch_3,Birch_4,Birch_5,Birch_6,Birch_7,Birch_8,Birch_9,Birch_10",
   "TravelCost": "7",
   "Buildable": "False",
   "Scale": "0.5,0.5,0.5",

@@ -13,7 +13,6 @@ public partial class OrderSelectionController : MonoBehaviour
     public void DisableAndReset()
     {
         Game.Instance.SelectionStartWorld = Vector3.zero;
-        Game.Instance.MouseSpriteRenderer.size = new Vector2(1, 1);
 
         Game.Instance.SelectionPreference = SelectionPreference.Anything;
 

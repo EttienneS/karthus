@@ -47,7 +47,7 @@ public partial class OrderSelectionController //.Zone
                 break;
         }
 
-        Game.Instance.SetMouseSprite(sprite, (cell) => CanAddCellToZone(cell));
+        Game.Instance.Cursor.SetSprite(Game.Instance.SpriteStore.GetSprite(sprite), (cell) => CanAddCellToZone(cell));
         Game.Instance.SelectionPreference = SelectionPreference.Cell;
 
         CellClickOrder = cells =>

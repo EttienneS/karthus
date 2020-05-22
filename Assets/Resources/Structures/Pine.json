@@ -1,6 +1,6 @@
 {
   "Name": "Pine",
-  "SpriteName": "Pine_1,Pine_2,Pine_3,Pine_4,Pine_5",
+  "Mesh": "Pine_1,Pine_2,Pine_3,Pine_4,Pine_5",
   "TravelCost": "7",
   "Buildable": "False",
   "Scale": "0.5,0.5,0.5",

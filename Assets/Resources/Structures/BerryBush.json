@@ -1,6 +1,6 @@
 {
   "Name": "BerryBush",
-  "SpriteName": "BerryBush",
+  "Mesh": "BerryBush",
   "TravelCost": "3",
   "Buildable": "False",
   "Cost": {

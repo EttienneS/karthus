@@ -181,7 +181,7 @@ public class Construct
                 else
                 {
                     var structure = Game.Instance.StructureController.StructureDataReference.Values.First(s => s.Name == GetStructure(character));
-                    sourceTexture = Game.Instance.SpriteStore.GetSprite(structure.SpriteName).texture;
+                    sourceTexture = Game.Instance.SpriteStore.GetSprite(structure.Mesh).texture;
                 }
                 var constructTexture = sourceTexture.Clone();
                 constructTexture.ScaleToGridSize(1, 1);

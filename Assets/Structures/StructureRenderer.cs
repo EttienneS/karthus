@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Structures;
+using System.Net.Sockets;
 using UnityEngine;
 
 public class StructureRenderer : MonoBehaviour
@@ -12,5 +13,6 @@ public class StructureRenderer : MonoBehaviour
     internal void UpdatePosition()
     {
         transform.position = Data.Vector;
+        transform.eulerAngles = new Vector3(transform.eulerAngles.x, Data.Rotation, transform.eulerAngles.z);
     }
 }

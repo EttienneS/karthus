@@ -82,17 +82,24 @@ namespace Structures
             return StructureTypes.Find(w => w.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
 
-        public Structure SpawnStructure(string name, Cell cell, Faction faction)
+        public (MeshRenderer renderer, Structure structure) GetMeshForStructure(string name, Transform parent)
         {
             var structureData = StructureTypeFileMap[name];
-
             var structure = GetFromJson(structureData);
-            var mesh = Game.Instance.FileController.GetMesh(structure.SpriteName.Split(',').GetRandomItem());
-            var renderer = Instantiate(mesh, transform).gameObject.AddComponent<StructureRenderer>();
-            renderer.transform.name = structure.Name + " " + structure.Id;
+            var mesh = Game.Instance.FileController.GetMesh(structure.Mesh.Split(',').GetRandomItem());
+            var renderer = Instantiate(mesh, parent);
             renderer.transform.localScale = structure.ScaleVector;
-            structure.Renderer = renderer;
-            renderer.Data = structure;
+
+            return (renderer, structure);
+        }
+
+        public Structure SpawnStructure(string name, Cell cell, Faction faction)
+        {
+            var (renderer, structure) = GetMeshForStructure(name, transform);
+            var structureRenderer = renderer.gameObject.AddComponent<StructureRenderer>();
+            structureRenderer.transform.name = structure.Name + " " + structure.Id;
+            structure.Renderer = structureRenderer;
+            structureRenderer.Data = structure;
 
             structure.Cell = cell;
             IndexStructure(structure);

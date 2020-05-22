@@ -10,8 +10,8 @@ public partial class OrderSelectionController //.Structure
     {
         var structure = Game.Instance.StructureController.StructureDataReference[structureName];
         Game.Instance.SelectionPreference = SelectionPreference.Cell;
-        Game.Instance.SetMouseSprite(structure.SpriteName,
-                                      (cell) => structure.ValidateCellLocationForStructure(cell));
+
+        Game.Instance.Cursor.SetMesh(structureName, (cell) => structure.ValidateCellLocationForStructure(cell));
         UpdateStuctureOrder(structureName);
 
         CellClickOrder = cells =>
@@ -51,7 +51,7 @@ public partial class OrderSelectionController //.Structure
             {
                 if (!structureData.Buildable) continue;
 
-                var button = CreateOrderButton(() => BuildClicked(structureData.Name), () => UpdateStuctureOrder(structureData.Name), structureData.SpriteName, structureData.ColorHex);
+                var button = CreateOrderButton(() => BuildClicked(structureData.Name), () => UpdateStuctureOrder(structureData.Name), structureData.Mesh, structureData.ColorHex);
             }
         }
     }

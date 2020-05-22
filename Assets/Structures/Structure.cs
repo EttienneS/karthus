@@ -17,11 +17,9 @@ namespace Structures
 
         public string Layer;
 
-        public Direction Rotation;
+        public float Rotation;
 
         public string Size;
-
-        public string SpriteName;
 
         public float TravelCost;
 
@@ -97,10 +95,12 @@ namespace Structures
         {
         }
 
-        public Structure(string name, string sprite)
+        public string Mesh;
+
+        public Structure(string name, string mesh)
         {
             Name = name;
-            SpriteName = sprite;
+            Mesh = mesh;
         }
 
         [JsonIgnore]

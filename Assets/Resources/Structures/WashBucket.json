@@ -1,6 +1,6 @@
 {
   "Name": "WashBucket",
-  "SpriteName": "item_bucketWater",
+  "Mesh": "item_bucketWater",
   "TravelCost": "3",
   "Description": "A place to wash off the grime.",
   "Cost": {

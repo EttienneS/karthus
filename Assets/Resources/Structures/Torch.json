@@ -1,6 +1,6 @@
 {
   "Name": "Torch",
-  "SpriteName": "torch",
+  "Mesh": "torch",
   "TravelCost": "2",
   "Description": "A structure that emits light at night.",
   "Cost": {

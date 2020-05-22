@@ -130,7 +130,7 @@ public class CreatureInfoPanel : MonoBehaviour
     private void AttackClicked(IEnumerable<Creature> creatures)
     {
         Game.Instance.SelectionPreference = SelectionPreference.Cell;
-        Game.Instance.SetMouseSprite(OrderSelectionController.AttackIcon,
+        Game.Instance.Cursor.SetSprite(Game.Instance.SpriteStore.GetSprite(OrderSelectionController.AttackIcon),
                                         (cell) => cell.GetEnemyCreaturesOf(FactionConstants.Player).Any());
 
         Game.Instance.OrderSelectionController.CellClickOrder = cells =>
@@ -171,7 +171,7 @@ public class CreatureInfoPanel : MonoBehaviour
     private void MoveClicked(IEnumerable<Creature> creatures)
     {
         Game.Instance.SelectionPreference = SelectionPreference.Cell;
-        Game.Instance.SetMouseSprite(OrderSelectionController.MoveIcon, (cell) => cell.TravelCost > 0);
+        Game.Instance.Cursor.SetSprite(Game.Instance.SpriteStore.GetSprite(OrderSelectionController.MoveIcon), (cell) => cell.TravelCost > 0);
 
         Game.Instance.OrderSelectionController.CellClickOrder = cells =>
         {

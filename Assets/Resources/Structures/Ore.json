@@ -1,6 +1,6 @@
 {
   "Name": "Ore",
-  "SpriteName": "Rock",
+  "Mesh": "Rock",
   "TravelCost": "-1",
   "Buildable": "False",
   "ColorHex": "#fbc531",

@@ -1,6 +1,6 @@
 {
   "Name": "Mine",
-  "SpriteName": "mine",
+  "Mesh": "mine",
   "TravelCost": "10",
   "Description": "A structure where raw resources are removed from the earth.",
   "Cost": {

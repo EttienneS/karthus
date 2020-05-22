@@ -1,6 +1,6 @@
 {
   "Name": "FarmPlot",
-  "SpriteName": "FarmPlot",
+  "Mesh": "FarmPlot",
   "TravelCost": "10",
   "Description": "A structure where a plant can be grown and tended to by a farmer.",
   "Cost": {

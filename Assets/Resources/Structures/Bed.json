@@ -1,10 +1,10 @@
 {
   "Name": "Bed",
-  "SpriteName": "Bed",
+  "Mesh": "Bed",
   "TravelCost": "4",
   "Description": "A structure where a creature will sleep.  Sleeping in a bed recovers energy quicker.",
   "Cost": {
-    "Items": { 
+    "Items": {
       "Wood": "3"
     }
   },
