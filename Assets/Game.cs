@@ -50,8 +50,6 @@ public class Game : MonoBehaviour
     public ZoneController ZoneController;
     public ZoneInfoPanel ZoneInfoPanelPrefab;
 
-   
-
     internal SelectionPreference LastSelection = SelectionPreference.Creature;
 
     internal Cell MouseOverCell;
@@ -86,14 +84,11 @@ public class Game : MonoBehaviour
 
     private List<GameObject> _destroyCache = new List<GameObject>();
 
-
     private DateTime? _lastAutoSave = null;
 
     private TimeStep _oldTimeStep = TimeStep.Normal;
 
     private bool _shownOnce;
-
-
 
     public static Game Instance
     {
@@ -215,7 +210,6 @@ public class Game : MonoBehaviour
             Debug.Log($"Destroy failed: {ex}");
         }
     }
-
 
     public List<Cell> GetSelectedCells(Vector3 worldStartPoint, Vector3 worldEndPoint)
     {
@@ -498,8 +492,6 @@ public class Game : MonoBehaviour
 
         return overUI;
     }
-
-    
 
     private void OnFirstRun()
     {

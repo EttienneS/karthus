@@ -23,6 +23,8 @@ namespace Assets
             MouseSpriteRenderer.size = Vector2.one;
             //ValidateMouse = null;
             //RotateMouseRight = null;
+
+            DisableMesh();
         }
 
         public void Enable()
@@ -38,10 +40,7 @@ namespace Assets
 
         public void SetMesh(string name, ValidateMouseDelegate validationFunction)
         {
-            if (MouseMeshRenderer != null)
-            {
-                Destroy(MouseMeshRenderer.gameObject);
-            }
+            DisableMesh();
             var structure = Game.Instance.StructureController.GetMeshForStructure(name, transform);
             MouseMeshRenderer = structure.renderer;
 
@@ -52,6 +51,14 @@ namespace Assets
             }
             _offset = structure.structure.OffsetVector;
             MouseMeshRenderer.materials = mats.ToArray();
+        }
+
+        private void DisableMesh()
+        {
+            if (MouseMeshRenderer != null)
+            {
+                Destroy(MouseMeshRenderer.gameObject);
+            }
         }
 
         public void SetSprite(Sprite sprite, ValidateMouseDelegate validationFunction)
