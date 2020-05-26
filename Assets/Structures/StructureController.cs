@@ -97,7 +97,6 @@ namespace Structures
         {
             var (renderer, structure) = GetMeshForStructure(name, transform);
             var structureRenderer = renderer.gameObject.AddComponent<StructureRenderer>();
-            structureRenderer.transform.name = structure.Name + " " + structure.Id;
             structure.Renderer = structureRenderer;
             structureRenderer.Data = structure;
             structureRenderer.Renderer = renderer;
@@ -122,6 +121,8 @@ namespace Structures
                     container.Filter = store.Filter;
                 }
             }
+
+            structureRenderer.transform.name = structure.Name + " " + structure.Id;
 
             return structure;
         }

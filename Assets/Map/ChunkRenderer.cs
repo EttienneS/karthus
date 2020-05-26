@@ -100,18 +100,7 @@ public class ChunkRenderer : MonoBehaviour
         transform.position = new Vector3(Data.X * Game.Instance.MapData.ChunkSize, 0, Data.Z * Game.Instance.MapData.ChunkSize);
 
         CreateMesh();
-        //UpdateTexture();
 
-        if (Game.Instance.MapData.Populate)
-        {
-            using (Instrumenter.Start())
-            {
-                Populate(Game.Instance.Map.GetRectangle(Data.X * Game.Instance.MapData.ChunkSize,
-                                                        Data.Z * Game.Instance.MapData.ChunkSize,
-                                                        Game.Instance.MapData.ChunkSize,
-                                                        Game.Instance.MapData.ChunkSize));
-            }
-        }
         if (Game.Instance.MapData.CreateWater)
         {
             AddWaterLevel();
@@ -136,12 +125,6 @@ public class ChunkRenderer : MonoBehaviour
         mats[0].mainTexture = TextureCreator.CreateTextureFromColorMap(MeshVertexWidth * scale, MeshVertexWidth * scale, colors);
 
         MeshRenderer.materials = mats;
-    }
-
-    internal void Populate(List<Cell> cells)
-    {
-        cells.ForEach(c => c.Populate());
-        Data.Populated = true;
     }
 
     private void AddWaterLevel()

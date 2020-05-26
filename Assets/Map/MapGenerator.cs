@@ -123,39 +123,42 @@ public class MapGenerator
 
     internal void MakeCells(int size)
     {
-        Game.Instance.Map.Cells = new List<Cell>();
-        for (var y = 0; y < 0 + size; y++)
+        using (Instrumenter.Start())
         {
-            for (var x = 0; x < 0 + size; x++)
+            Game.Instance.Map.Cells = new List<Cell>();
+            for (var y = 0; y < 0 + size; y++)
             {
-                Game.Instance.Map.Cells.Add(CreateCell(x, y));
-            }
-        }
-
-        // link cell to the others in the chunk
-        for (var y = 0; y < 0 + size; y++)
-        {
-            for (var x = 0; x < 0 + size; x++)
-            {
-                var cell = Game.Instance.Map.CellLookup[(x, y)];
-                if (x > 0)
+                for (var x = 0; x < 0 + size; x++)
                 {
-                    cell.SetNeighbor(Direction.W, Game.Instance.Map.CellLookup[(x - 1, y)]);
+                    Game.Instance.Map.Cells.Add(CreateCell(x, y));
+                }
+            }
+
+            // link cell to the others in the chunk
+            for (var y = 0; y < 0 + size; y++)
+            {
+                for (var x = 0; x < 0 + size; x++)
+                {
+                    var cell = Game.Instance.Map.CellLookup[(x, y)];
+                    if (x > 0)
+                    {
+                        cell.SetNeighbor(Direction.W, Game.Instance.Map.CellLookup[(x - 1, y)]);
+
+                        if (y > 0)
+                        {
+                            cell.SetNeighbor(Direction.SW, Game.Instance.Map.CellLookup[(x - 1, y - 1)]);
+
+                            if (x < 0 - 1)
+                            {
+                                cell.SetNeighbor(Direction.SE, Game.Instance.Map.CellLookup[(x + 1, y - 1)]);
+                            }
+                        }
+                    }
 
                     if (y > 0)
                     {
-                        cell.SetNeighbor(Direction.SW, Game.Instance.Map.CellLookup[(x - 1, y - 1)]);
-
-                        if (x < 0 - 1)
-                        {
-                            cell.SetNeighbor(Direction.SE, Game.Instance.Map.CellLookup[(x + 1, y - 1)]);
-                        }
+                        cell.SetNeighbor(Direction.S, Game.Instance.Map.CellLookup[(x, y - 1)]);
                     }
-                }
-
-                if (y > 0)
-                {
-                    cell.SetNeighbor(Direction.S, Game.Instance.Map.CellLookup[(x, y - 1)]);
                 }
             }
         }
@@ -163,27 +166,39 @@ public class MapGenerator
 
     public void GenerateMap()
     {
-        using (Instrumenter.Start())
-        {
-            var size = Game.Instance.MaxSize;
-            MakeCells(size);
-            Game.Instance.Map.Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
+        var size = Game.Instance.MaxSize;
+        MakeCells(size);
+        Game.Instance.Map.Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
 
-            if (SaveManager.SaveToLoad == null)
+        if (SaveManager.SaveToLoad == null)
+        {
+            for (var x = 0; x < Game.Instance.MapData.Size; x++)
             {
-                for (var x = 0; x < Game.Instance.MapData.Size; x++)
+                for (var y = 0; y < Game.Instance.MapData.Size; y++)
                 {
-                    for (var y = 0; y < Game.Instance.MapData.Size; y++)
-                    {
-                        Game.Instance.Map.MakeChunk(new Chunk(x, y));
-                    }
+                    Game.Instance.Map.MakeChunk(new Chunk(x, y));
                 }
             }
-            else
+            PopulateCells();
+        }
+        else
+        {
+            foreach (var chunk in SaveManager.SaveToLoad.Chunks)
             {
-                foreach (var chunk in SaveManager.SaveToLoad.Chunks)
+                Game.Instance.Map.MakeChunk(chunk);
+            }
+        }
+    }
+
+    private static void PopulateCells()
+    {
+        using (Instrumenter.Start())
+        {
+            if (Game.Instance.MapData.Populate)
+            {
+                foreach (var cell in Game.Instance.Map.Cells)
                 {
-                    Game.Instance.Map.MakeChunk(chunk);
+                    cell.Populate();
                 }
             }
         }
