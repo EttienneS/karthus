@@ -1,5 +1,4 @@
-﻿using LPC.Spritesheet.Generator;
-using LPC.Spritesheet.Generator.Enums;
+﻿using LPC.Spritesheet.Generator.Enums;
 using Needs;
 using Newtonsoft.Json;
 using System;
@@ -66,7 +65,6 @@ public class Creature : IEntity
     private Faction _faction;
 
     private int _selfTicks;
-
 
     public float Aggression { get; set; }
 
@@ -240,7 +238,7 @@ public class Creature : IEntity
     {
         get
         {
-            return new Vector3(X, Cell.Y, Z);
+            return new Vector3(X, Cell.Y + 0.5f, Z);
         }
     }
 
@@ -537,7 +535,6 @@ public class Creature : IEntity
         return text;
     }
 
-
     internal void AbandonTask()
     {
         Faction.AvailableTasks.Add(Task);
@@ -700,7 +697,6 @@ public class Creature : IEntity
 
     internal bool Update(float timeDelta)
     {
-
         if (Game.Instance.TimeManager.Paused)
             return false;
 
@@ -1122,8 +1118,6 @@ public class Creature : IEntity
             }
         }
     }
-
-   
 
     private void UpdateLimbs(float timeDelta)
     {

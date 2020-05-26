@@ -16,9 +16,6 @@ public class VisualEffectController : MonoBehaviour
     public Badge BadgePrefab;
     public VisualEffect EffectPrefab;
 
-    private List<Badge> _activeBadges = new List<Badge>();
-    private List<VisualEffect> _activeVisualEffects = new List<VisualEffect>();
-
     public VisualEffect GetBase(EffectType effectType, IEntity holder)
     {
         var effect = Instantiate(EffectPrefab, transform);
@@ -42,8 +39,6 @@ public class VisualEffectController : MonoBehaviour
         return effect;
     }
 
-
-
     public Badge Spawn()
     {
         return Instantiate(BadgePrefab, transform);
@@ -54,18 +49,17 @@ public class VisualEffectController : MonoBehaviour
         return GetBase(data.EffectType, data.Holder);
     }
 
-
-
-    public VisualEffect SpawnEffect(IEntity holder, Vector2 vector, float lifeSpan)
+    public VisualEffect SpawnEffect(IEntity holder, Vector3 vector, float lifeSpan)
     {
         var effect = GetBase(EffectType.Particle, holder);
         effect.Data.LifeSpan = lifeSpan;
         effect.Data.SetProperty("X", vector.x.ToString());
         effect.Data.SetProperty("Y", vector.y.ToString());
+        effect.Data.SetProperty("Z", vector.z.ToString());
         return effect;
     }
 
-    public VisualEffect SpawnLightEffect(IEntity holder, Vector2 vector, Color color, float radius, float intensity, float lifeSpan)
+    public VisualEffect SpawnLightEffect(IEntity holder, Vector3 vector, Color color, float radius, float intensity, float lifeSpan)
     {
         var effect = GetBase(EffectType.Light, holder);
 
@@ -76,11 +70,12 @@ public class VisualEffectController : MonoBehaviour
 
         effect.Data.SetProperty("X", vector.x.ToString());
         effect.Data.SetProperty("Y", vector.y.ToString());
+        effect.Data.SetProperty("Z", vector.z.ToString());
 
         return effect;
     }
 
-    public VisualEffect SpawnSpriteEffect(IEntity holder, Vector2 vector, string sprite, float lifeSpan, Color color)
+    public VisualEffect SpawnSpriteEffect(IEntity holder, Vector3 vector, string sprite, float lifeSpan, Color color)
     {
         var effect = GetBase(EffectType.Sprite, holder);
 
@@ -90,11 +85,12 @@ public class VisualEffectController : MonoBehaviour
 
         effect.Data.SetProperty("X", vector.x.ToString());
         effect.Data.SetProperty("Y", vector.y.ToString());
+        effect.Data.SetProperty("Z", vector.z.ToString());
 
         return effect;
     }
 
-    public VisualEffect SpawnSpriteEffect(IEntity holder, Vector2 vector, string sprite, float lifeSpan)
+    public VisualEffect SpawnSpriteEffect(IEntity holder, Vector3 vector, string sprite, float lifeSpan)
     {
         return SpawnSpriteEffect(holder, vector, sprite, lifeSpan, ColorConstants.WhiteBase);
     }

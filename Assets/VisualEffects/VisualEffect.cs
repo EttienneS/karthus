@@ -56,7 +56,8 @@ public class VisualEffect : MonoBehaviour
 
         var x = float.Parse(Data.GetProperty("X"));
         var y = float.Parse(Data.GetProperty("Y"));
-        transform.position = new Vector2(x, y);
+        var z = float.Parse(Data.GetProperty("Z"));
+        transform.position = new Vector3(x, y, z);
     }
 
     internal void DestroySelf()

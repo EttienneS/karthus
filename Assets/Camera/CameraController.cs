@@ -10,24 +10,15 @@ public class CameraController : MonoBehaviour
     public int ZoomMax = 15;
     public int ZoomMin = 2;
     public float ZoomSpeed = 5;
-    
+
     internal float Speed;
-    
+
+    private const int _zoomBound = 12;
     private float _journeyLength;
     private Vector3 _panDesitnation;
     private bool _panning;
     private Vector3 _panSource;
     private float _startTime;
-
-    public void MoveToViewPoint(Vector3 panDesitnation)
-    {
-        _startTime = Time.time;
-        _panSource = transform.position;
-        _panDesitnation = panDesitnation;
-        _journeyLength = Vector3.Distance(_panSource, _panDesitnation);
-
-        _panning = true;
-    }
 
     public void Start()
     {
@@ -76,8 +67,8 @@ public class CameraController : MonoBehaviour
                 var y = Mathf.Clamp(Camera.transform.position.y - (mouseWheel * ZoomSpeed), ZoomMin, ZoomMax);
                 Speed = Helpers.ScaleValueInRange(SpeedMin, SpeedMax, ZoomMin, ZoomMax, y);
 
-                var x = Mathf.Clamp(transform.position.x + (horizontal * Speed), Game.Instance.Map.MinX - 12, Game.Instance.Map.MaxX);
-                var z = Mathf.Clamp(transform.position.z + (vertical * Speed), Game.Instance.Map.MinZ - 12, Game.Instance.Map.MaxZ);
+                var x = Mathf.Clamp(transform.position.x + (horizontal * Speed), Game.Instance.Map.MinX - _zoomBound, Game.Instance.Map.MaxX);
+                var z = Mathf.Clamp(transform.position.z + (vertical * Speed), Game.Instance.Map.MinZ - _zoomBound, Game.Instance.Map.MaxZ);
 
                 Camera.transform.position = new Vector3(x, y, z);
             }
@@ -86,9 +77,12 @@ public class CameraController : MonoBehaviour
             Camera.transform.eulerAngles = new Vector3(xrot, Camera.transform.eulerAngles.y, 0);
         }
     }
-
-    internal void MoveToCell(Cell cell)
+    public void ViewPoint(Vector3 point)
     {
-        MoveToViewPoint(cell.Vector);
+        var x = Mathf.Clamp(point.x, Game.Instance.Map.MinX - _zoomBound, Game.Instance.Map.MaxX);
+        var y = Mathf.Clamp(point.y, ZoomMin, ZoomMax);
+        var z = Mathf.Clamp(point.z - _zoomBound, Game.Instance.Map.MinZ - _zoomBound, Game.Instance.Map.MaxZ);
+
+        Camera.transform.position = new Vector3(x, y, z);
     }
 }
