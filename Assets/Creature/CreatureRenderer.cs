@@ -109,7 +109,7 @@ public class CreatureRenderer : MonoBehaviour
 
     internal void UpdatePosition()
     {
-        transform.position = new Vector3(Data.X, Data.Cell.Y, Data.Z);
+        transform.position = new Vector3(Data.X, Data.Cell.Y + 0.5f, Data.Z);
     }
 
     private void UpdateFloatingText()

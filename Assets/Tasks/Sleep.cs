@@ -52,7 +52,7 @@ public class Sleep : CreatureTask
         {
             if (string.IsNullOrEmpty(BedId) && !Sleeping)
             {
-                var bed = creature.Faction.Structures.Find(s => !s.IsBluePrint && !s.InUseByAnyone && s.ValueProperties.ContainsKey("RecoveryRate"));
+                var bed = creature.Faction.Structures.Find(s => !s.IsBlueprint && !s.InUseByAnyone && s.ValueProperties.ContainsKey("RecoveryRate"));
 
                 if (bed != null)
                 {

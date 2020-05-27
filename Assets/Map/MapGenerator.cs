@@ -58,7 +58,7 @@ public class MapGenerator
 
     public void MakeFactionBootStrap(Faction faction)
     {
-        var center = Game.Instance.Map.GetNearestPathableCell(Game.Instance.Map.Center, Mobility.Walk, 25);
+        var center = Game.Instance.Map.GetNearestPathableCell(Game.Instance.Map.Center, Mobility.Walk, 10);
 
         Game.Instance.FactionController.PlayerFaction.HomeCells.AddRange(Game.Instance.Map.GetCircle(Game.Instance.Map.Center, 15));
 
@@ -135,29 +135,29 @@ public class MapGenerator
             }
 
             // link cell to the others in the chunk
-            for (var y = 0; y < 0 + size; y++)
+            for (var z = 0; z < 0 + size; z++)
             {
                 for (var x = 0; x < 0 + size; x++)
                 {
-                    var cell = Game.Instance.Map.CellLookup[(x, y)];
+                    var cell = Game.Instance.Map.CellLookup[(x, z)];
                     if (x > 0)
                     {
-                        cell.SetNeighbor(Direction.W, Game.Instance.Map.CellLookup[(x - 1, y)]);
+                        cell.SetNeighbor(Direction.W, Game.Instance.Map.CellLookup[(x - 1, z)]);
 
-                        if (y > 0)
+                        if (z > 0)
                         {
-                            cell.SetNeighbor(Direction.SW, Game.Instance.Map.CellLookup[(x - 1, y - 1)]);
+                            cell.SetNeighbor(Direction.SW, Game.Instance.Map.CellLookup[(x - 1, z - 1)]);
 
                             if (x < 0 - 1)
                             {
-                                cell.SetNeighbor(Direction.SE, Game.Instance.Map.CellLookup[(x + 1, y - 1)]);
+                                cell.SetNeighbor(Direction.SE, Game.Instance.Map.CellLookup[(x + 1, z - 1)]);
                             }
                         }
                     }
 
-                    if (y > 0)
+                    if (z > 0)
                     {
-                        cell.SetNeighbor(Direction.S, Game.Instance.Map.CellLookup[(x, y - 1)]);
+                        cell.SetNeighbor(Direction.S, Game.Instance.Map.CellLookup[(x, z - 1)]);
                     }
                 }
             }

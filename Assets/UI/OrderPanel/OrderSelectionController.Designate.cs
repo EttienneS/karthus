@@ -53,7 +53,7 @@ public partial class OrderSelectionController //.Designate
                 {
                     var structure = cell.Structure;
 
-                    if (structure.IsBluePrint)
+                    if (structure.IsBlueprint)
                     {
                         var task = structure.Faction.AvailableTasks.OfType<Build>().FirstOrDefault(b => b.TargetStructure == structure);
                         if (task != null)

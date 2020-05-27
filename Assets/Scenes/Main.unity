@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17212406, g: 0.20595807, b: 0.24550024, a: 1}
+  m_IndirectSpecularColor: {r: 0.17893536, g: 0.22405472, b: 0.30589998, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -285,81 +285,6 @@ PrefabInstance:
       propertyPath: UIController
       value: 
       objectReference: {fileID: 1541317929}
-    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
-        type: 3}
-      propertyPath: MapData.HeightCurve.m_Curve.Array.data[3].inSlope
-      value: 0.041563552
-      objectReference: {fileID: 0}
-    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
-        type: 3}
-      propertyPath: MapData.HeightCurve.m_Curve.Array.data[3].outSlope
-      value: 0.041563552
-      objectReference: {fileID: 0}
-    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
-        type: 3}
-      propertyPath: MapData.HeightCurve.m_Curve.Array.data[3].outWeight
-      value: 0.58114636
-      objectReference: {fileID: 0}
-    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
-        type: 3}
-      propertyPath: MapData.HeightCurve.m_Curve.Array.data[2].inSlope
-      value: 0.0365741
-      objectReference: {fileID: 0}
-    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
-        type: 3}
-      propertyPath: MapData.HeightCurve.m_Curve.Array.data[2].outSlope
-      value: 0.0365741
-      objectReference: {fileID: 0}
-    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
-        type: 3}
-      propertyPath: MapData.HeightCurve.m_Curve.Array.data[2].outWeight
-      value: 0.16171475
-      objectReference: {fileID: 0}
-    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
-        type: 3}
-      propertyPath: MapData.HeightCurve.m_Curve.Array.data[2].value
-      value: 0.2021579
-      objectReference: {fileID: 0}
-    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
-        type: 3}
-      propertyPath: MapData.HeightCurve.m_Curve.Array.data[3].value
-      value: 0.2062244
-      objectReference: {fileID: 0}
-    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
-        type: 3}
-      propertyPath: MapData.HeightCurve.m_Curve.Array.data[3].time
-      value: 0.7284979
-      objectReference: {fileID: 0}
-    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
-        type: 3}
-      propertyPath: MapData.HeightCurve.m_Curve.Array.data[1].value
-      value: 0.11030155
-      objectReference: {fileID: 0}
-    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
-        type: 3}
-      propertyPath: MapData.HeightCurve.m_Curve.Array.data[1].time
-      value: 0.2509089
-      objectReference: {fileID: 0}
-    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
-        type: 3}
-      propertyPath: MapData.HeightCurve.m_Curve.Array.data[1].inSlope
-      value: 1.8228866
-      objectReference: {fileID: 0}
-    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
-        type: 3}
-      propertyPath: MapData.HeightCurve.m_Curve.Array.data[1].outSlope
-      value: 1.8228866
-      objectReference: {fileID: 0}
-    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
-        type: 3}
-      propertyPath: MapData.CreaturesToSpawn
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
-        type: 3}
-      propertyPath: MapData.ChunkSize
-      value: 120
-      objectReference: {fileID: 0}
     - target: {fileID: 4791717066980201731, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
       propertyPath: m_Name
@@ -468,7 +393,7 @@ PrefabInstance:
     - target: {fileID: 667879368938610748, guid: 50c5056d9f4c1364194358eaa321df8e,
         type: 3}
       propertyPath: Meshes.Array.size
-      value: 149
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 667879368938610748, guid: 50c5056d9f4c1364194358eaa321df8e,
         type: 3}
@@ -1288,7 +1213,8 @@ PrefabInstance:
         type: 3}
       propertyPath: Meshes.Array.data[149]
       value: 
-      objectReference: {fileID: 2300000, guid: d96efb5ea2debf74bbc927182ee72fcf, type: 3}
+      objectReference: {fileID: 7673039742280009554, guid: 499dad196edcc6c49856205dee958c39,
+        type: 3}
     - target: {fileID: 667879368938610748, guid: 50c5056d9f4c1364194358eaa321df8e,
         type: 3}
       propertyPath: Meshes.Array.data[150]

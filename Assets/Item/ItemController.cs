@@ -88,6 +88,6 @@ public class ItemController : MonoBehaviour
 
         IndexItem(data);
 
-        data.Cell = Game.Instance.Map.GetCellAtCoordinate(new Vector2(data.Coords.X, data.Coords.Y));
+        data.Cell = Game.Instance.Map.GetCellAtCoordinate(new Vector2(data.Coords.X, data.Coords.Z));
     }
 }

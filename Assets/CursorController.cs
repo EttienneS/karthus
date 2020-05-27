@@ -1,4 +1,5 @@
-﻿using Boo.Lang;
+﻿using Assets.Helpers;
+using Boo.Lang;
 using UnityEngine;
 
 namespace Assets
@@ -31,12 +32,7 @@ namespace Assets
         {
         }
 
-        private void Start()
-        {
-            _blueprintMaterial = Game.Instance.FileController.GetMaterial("BlueprintMaterial");
-        }
-
-        private Material _blueprintMaterial;
+        
 
         public void SetMesh(string name, ValidateMouseDelegate validationFunction)
         {
@@ -44,14 +40,12 @@ namespace Assets
             var structure = Game.Instance.StructureController.GetMeshForStructure(name, transform);
             MouseMeshRenderer = structure.renderer;
 
-            var mats = new List<Material>();
-            for (var i = 0; i < MouseMeshRenderer.materials.Length; i++)
-            {
-                mats.Add(_blueprintMaterial);
-            }
+            MouseMeshRenderer.SetAllMaterial(Game.Instance.FileController.BlueprintMaterial);
+
             _offset = structure.structure.OffsetVector;
-            MouseMeshRenderer.materials = mats.ToArray();
         }
+
+       
 
         private void DisableMesh()
         {

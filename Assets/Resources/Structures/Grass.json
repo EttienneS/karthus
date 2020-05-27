@@ -1,0 +1,7 @@
+{
+  "Name": "Grass",
+  "Mesh": "grass,grass_dense",
+  "TravelCost": "1",
+  "Buildable": "False",
+  "SpawnRotation": "1~360"
+}

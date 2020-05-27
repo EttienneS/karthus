@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Item : IEntity
 {
-    private (float X, float Y) _coords;
+    private (float X, float Z) _coords;
 
     private VisualEffect _outline;
 
@@ -22,11 +22,11 @@ public class Item : IEntity
         }
         set
         {
-            Coords = (value.Vector.x, value.Vector.y);
+            Coords = (value.Vector.x, value.Vector.z);
         }
     }
 
-    public (float X, float Y) Coords
+    public (float X, float Z) Coords
     {
         get
         {
@@ -74,7 +74,7 @@ public class Item : IEntity
     {
         get
         {
-            return new Vector3(Coords.X, Coords.Y + 0.5f, Cell.Y);
+            return new Vector3(Coords.X, Cell.Y + 0.5f, Coords.Z);
         }
     }
 

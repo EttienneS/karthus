@@ -92,7 +92,7 @@ public class Faction
 
             if (FactionName == FactionConstants.Player)
             {
-                foreach (var structure in Structures.Where(s => s.IsBluePrint))
+                foreach (var structure in Structures.Where(s => s.IsBlueprint))
                 {
                     if (!AvailableTasks.OfType<Build>().Any(t => t.TargetStructure == structure) &&
                         !Creatures.Any(t => t.Task is Build task && task.TargetStructure == structure))
@@ -163,7 +163,7 @@ public class Faction
     {
         var pendingStorage = AvailableTasks.OfType<StoreItem>().ToList();
         var options = new List<Container>();
-        foreach (var container in Containers.Where(s => !s.IsBluePrint))
+        foreach (var container in Containers.Where(s => !s.IsBlueprint))
         {
             if (pendingStorage.Any(p => p.StorageStructureId == container.Id))
             {

@@ -126,7 +126,7 @@ public class VisualEffectController : MonoBehaviour
     {
         var badge = Spawn();
         badge.SetSprite(iconName);
-        badge.transform.position = cell.Vector + new Vector3(0, 0, 5);
+        badge.transform.position = cell.Vector + new Vector3(0, 0.2f, 0);
 
         return badge;
     }

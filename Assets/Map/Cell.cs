@@ -99,7 +99,7 @@ public class Cell : IEquatable<Cell>
     {
         get
         {
-            return Structure?.IsBluePrint == false ? Structure.TravelCost : BiomeRegion.TravelCost;
+            return Structure?.IsBlueprint == false ? Structure.TravelCost : BiomeRegion.TravelCost;
         }
     }
 

@@ -1,4 +1,5 @@
-﻿using Structures.Work;
+﻿using Assets.Helpers;
+using Structures.Work;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -101,10 +102,20 @@ namespace Structures
             structureRenderer.Data = structure;
             structureRenderer.Renderer = renderer;
 
+            if (!string.IsNullOrEmpty(structure.SpawnRotation))
+            {
+                structure.Rotation = Helpers.GetValueFromFloatRange(structure.SpawnRotation);
+            }
+
             var mats = Game.Instance.FileController.GetMaterials(structure.Materials);
             if (mats != null)
             {
-                structureRenderer.Renderer.materials = mats;
+                structure.DefaultMaterials = mats;
+                structureRenderer.Renderer.SetMeshMaterial(structure.DefaultMaterials);
+            }
+            else
+            {
+                structure.DefaultMaterials = structureRenderer.Renderer.materials;
             }
 
             structure.Cell = cell;
@@ -138,7 +149,7 @@ namespace Structures
             if (_lastUpdate > Game.Instance.TimeManager.CreatureTick)
             {
                 _lastUpdate = 0;
-                foreach (var structure in Game.Instance.IdService.StructureLookup.Values.OfType<WorkStructureBase>().Where(s => !s.IsBluePrint))
+                foreach (var structure in Game.Instance.IdService.StructureLookup.Values.OfType<WorkStructureBase>().Where(s => !s.IsBlueprint))
                 {
                     structure.Process(Game.Instance.TimeManager.CreatureTick);
                 }
@@ -163,7 +174,7 @@ namespace Structures
         internal Structure GetStructureBluePrint(string name, Cell cell, Faction faction)
         {
             var structure = SpawnStructure(name, cell, faction);
-            structure.IsBluePrint = true;
+            structure.IsBlueprint = true;
             return structure;
         }
 

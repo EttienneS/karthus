@@ -83,10 +83,10 @@ public class Build : CreatureTask
         }
         return false;
     }
-
+    
     public void FinishStructure(Faction faction)
     {
-        TargetStructure.IsBluePrint = false;
+        TargetStructure.IsBlueprint = false;
 
         faction.AddStructure(TargetStructure);
 

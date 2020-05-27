@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 public class Map : MonoBehaviour
 {
     public const int PixelsPerCell = 64;
-    public Dictionary<(int x, int y), Cell> CellLookup = new Dictionary<(int x, int y), Cell>();
+    public Dictionary<(int x, int z), Cell> CellLookup = new Dictionary<(int x, int z), Cell>();
     public List<Cell> Cells = new List<Cell>();
     public ChunkRenderer ChunkPrefab;
 
@@ -26,13 +26,14 @@ public class Map : MonoBehaviour
     private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
     private int _searchFrontierPhase;
     private int? _seedValue;
-    private float[,] _worldNoiseMap;
 
     public Cell Center
     {
         get
         {
-            return CellLookup[((Game.Instance.MapData.Size * Game.Instance.MapData.ChunkSize) / 2, (Game.Instance.MapData.Size * Game.Instance.MapData.ChunkSize) / 2)];
+            var x = Game.Instance.MapData.Size * Game.Instance.MapData.ChunkSize / 2;
+            var z = Game.Instance.MapData.Size * Game.Instance.MapData.ChunkSize / 2;
+            return CellLookup[(x, z)];
         }
     }
 
@@ -67,11 +68,11 @@ public class Map : MonoBehaviour
         }
     }
 
-    public void AddCellIfValid(int x, int y, List<Cell> cells)
+    public void AddCellIfValid(int x, int z, List<Cell> cells)
     {
-        if (CellLookup.ContainsKey((x, y)))
+        if (CellLookup.ContainsKey((x, z)))
         {
-            cells.Add(CellLookup[(x, y)]);
+            cells.Add(CellLookup[(x, z)]);
         }
     }
 
@@ -117,17 +118,17 @@ public class Map : MonoBehaviour
         return GetCellAtCoordinate(coords.x, coords.y);
     }
 
-    public Cell GetCellAtCoordinate(float x, float y)
+    public Cell GetCellAtCoordinate(float x, float z)
     {
         var intx = Mathf.RoundToInt(x - 0.001f);
-        var inty = Mathf.RoundToInt(y - 0.001f);
+        var intz = Mathf.RoundToInt(z - 0.001f);
 
-        if (intx < MinX || inty < MinZ || intx >= MaxX || inty >= MaxZ)
+        if (intx < MinX || intz < MinZ || intx >= MaxX || intz >= MaxZ)
         {
             return null;
         }
 
-        return CellLookup[(intx, inty)];
+        return CellLookup[(intx, intz)];
     }
 
     public Cell GetCellAtPoint(Vector3 position)
@@ -540,7 +541,7 @@ public class Map : MonoBehaviour
         return GetCellAtCoordinate(mineX, mineY);
     }
 
-    
+
 
     internal Cell TryGetPathableNeighbour(Cell coordinates)
     {

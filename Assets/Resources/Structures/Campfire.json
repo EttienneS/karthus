@@ -1,6 +1,6 @@
 {
-  "Name": "Torch",
-  "Mesh": "torch",
+  "Name": "Campfire",
+  "Mesh": "campfireStones_rocks",
   "TravelCost": "2",
   "Description": "A structure that emits light at night.",
   "Cost": {
@@ -10,7 +10,7 @@
   },
   "Buildable": "True",
   "Type": "Light",
-  "ColorHex": "FFFFFF",
-  "Radius": 3,
-  "Intensity": 1
+  "ColorHex": "DE4D29",
+  "Radius": 5,
+  "Intensity": 2
 }

@@ -53,8 +53,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MapData:
-    ChunkSize: 240
+    ChunkSize: 120
     CreateWater: 1
+    CreaturesToSpawn: 1
     Flat: 0
     HeightCurve:
       serializedVersion: 2
@@ -69,32 +70,32 @@ MonoBehaviour:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.2784718
-        value: 0.028913304
-        inSlope: -0.017827086
-        outSlope: -0.017827086
+        time: 0.2509089
+        value: 0.11030155
+        inSlope: 1.8228866
+        outSlope: 1.8228866
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
         outWeight: 1
       - serializedVersion: 3
         time: 0.29177627
-        value: 0.17502737
-        inSlope: 0.7424353
-        outSlope: 0.7424353
+        value: 0.2021579
+        inSlope: 0.0365741
+        outSlope: 0.0365741
         tangentMode: 0
         weightedMode: 0
         inWeight: 1
-        outWeight: 0.14684002
+        outWeight: 0.16171475
       - serializedVersion: 3
-        time: 0.72364146
-        value: 0.24569505
-        inSlope: 0.42280948
-        outSlope: 0.42280948
+        time: 0.7284979
+        value: 0.2062244
+        inSlope: 0.041563552
+        outSlope: 0.041563552
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.27194336
-        outWeight: 0.37002262
+        outWeight: 0.58114636
       - serializedVersion: 3
         time: 0.8701121
         value: 0.90739703
@@ -118,10 +119,10 @@ MonoBehaviour:
       m_RotationOrder: 4
     HeightScale: 10
     Populate: 1
-    Size: 1
-    WaterLevel: 1.5
-    CreaturesToSpawn: 0
     Seed: 
+    Size: 1
+    StructureLevel: 2
+    WaterLevel: 1.5
   CameraController: {fileID: 0}
   CreatureController: {fileID: 6122762649674242587}
   CreatureInfoPanelPrefab: {fileID: 1526732850936286135, guid: 78582b738b61cbe499b41a29e3f79da7,
@@ -1063,22 +1064,22 @@ PrefabInstance:
     - target: {fileID: 7197091654747599498, guid: 51f8f7551b747f542986eafcecd157b5,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.08715578
+      value: 0.49023575
       objectReference: {fileID: 0}
     - target: {fileID: 7197091654747599498, guid: 51f8f7551b747f542986eafcecd157b5,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 0.106315576
       objectReference: {fileID: 0}
     - target: {fileID: 7197091654747599498, guid: 51f8f7551b747f542986eafcecd157b5,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: 0.10631558
       objectReference: {fileID: 0}
     - target: {fileID: 7197091654747599498, guid: 51f8f7551b747f542986eafcecd157b5,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9961947
+      value: 0.85852367
       objectReference: {fileID: 0}
     - target: {fileID: 7197091654747599498, guid: 51f8f7551b747f542986eafcecd157b5,
         type: 3}
@@ -1088,17 +1089,17 @@ PrefabInstance:
     - target: {fileID: 7197091654747599498, guid: 51f8f7551b747f542986eafcecd157b5,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 10
+      value: 55
       objectReference: {fileID: 0}
     - target: {fileID: 7197091654747599498, guid: 51f8f7551b747f542986eafcecd157b5,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 7197091654747599498, guid: 51f8f7551b747f542986eafcecd157b5,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
+      value: 30
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 51f8f7551b747f542986eafcecd157b5, type: 3}

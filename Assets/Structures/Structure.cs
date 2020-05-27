@@ -19,6 +19,8 @@ namespace Structures
 
         public float Rotation;
 
+        public string SpawnRotation;
+
         public string Materials;
 
         public string Size;
@@ -191,7 +193,21 @@ namespace Structures
 
         public string InUseById { get; set; }
 
-        public bool IsBluePrint { get; set; }
+        private bool _isBlueprint;
+        public bool IsBlueprint
+        {
+            get
+            {
+                return _isBlueprint;
+            }
+            set
+            {
+                _isBlueprint = value;
+
+                Renderer.UpdateMaterial();
+            }
+            
+        }
 
         public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
 
@@ -222,6 +238,8 @@ namespace Structures
                 return _width;
             }
         }
+
+        public Material[] DefaultMaterials { get; internal set; }
 
         public bool IsType(string name)
         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro.EditorUtilities;
 using UnityEngine;
 
 public class FileController : MonoBehaviour
@@ -24,6 +25,19 @@ public class FileController : MonoBehaviour
     public string CreatureFolder = "Creatures";
     public string BiomeFolder = "Biomes";
     public string ItemFolder = "Items";
+
+    private Material _blueprintMaterial;
+    public Material BlueprintMaterial
+    {
+        get
+        {
+            if (_blueprintMaterial == null)
+            {
+                _blueprintMaterial = GetMaterial("BlueprintMaterial");
+            }
+            return _blueprintMaterial;
+        }
+    }
 
     public void Awake()
     {

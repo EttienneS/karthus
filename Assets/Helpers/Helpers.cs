@@ -10,16 +10,16 @@ public static class Helpers
     {
         var scaleStringParts = GlobalizeFloatString(input).Split('~');
 
-        var scale = 1f;
+        var value = 0f;
         if (scaleStringParts.Length > 1)
         {
             var min = float.Parse(scaleStringParts[0]);
             var max = float.Parse(scaleStringParts[1]);
 
-            scale = Random.Range(min, max);
+            value = Random.Range(min, max);
         }
 
-        return scale;
+        return value;
     }
 
     public static string WildcardToRegex(string pattern)

@@ -49,7 +49,8 @@
     },
     {
       "Content": {
-        "Medium Rock": 0.03
+        "Medium Rock": 0.03,
+        "Grass": 0.05
       },
       "Min": 0.4,
       "Max": 0.45,
@@ -64,7 +65,8 @@
         "Medium Rock": 0.01,
         "Bush": 0.05,
         "Birch": 0.01,
-        "Tree": 0.01
+        "Tree": 0.01,
+        "Grass": 0.55
       },
       "Min": 0.45,
       "Max": 0.6,
