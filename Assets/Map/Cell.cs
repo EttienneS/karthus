@@ -27,7 +27,18 @@ public class Cell : IEquatable<Cell>
     {
         get
         {
-            return TravelCost > 0 && Structure == null;
+            if (TravelCost < 0)
+            {
+                return false;
+            }
+            if (Structure == null)
+            {
+                return true;
+            }
+            else
+            {
+                return !Structure.Buildable;
+            }
         }
     }
 

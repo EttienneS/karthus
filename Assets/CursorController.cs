@@ -1,5 +1,5 @@
 ﻿using Assets.Helpers;
-using Boo.Lang;
+using System.Linq;
 using UnityEngine;
 
 namespace Assets
@@ -13,6 +13,8 @@ namespace Assets
         public RotateDelegate RotateLeft;
         public RotateDelegate RotateRight;
         public ValidateMouseDelegate Validate;
+
+        private Vector3 _offset = Vector3.zero;
 
         public delegate void RotateDelegate();
 
@@ -32,8 +34,6 @@ namespace Assets
         {
         }
 
-        
-
         public void SetMesh(string name, ValidateMouseDelegate validationFunction)
         {
             DisableMesh();
@@ -47,21 +47,9 @@ namespace Assets
             Validate = validationFunction;
         }
 
-       
-
-        private void DisableMesh()
-        {
-            if (MouseMeshRenderer != null)
-            {
-                Destroy(MouseMeshRenderer.gameObject);
-            }
-        }
-
         public void SetSprite(Sprite sprite, ValidateMouseDelegate validationFunction)
         {
         }
-
-        private Vector3 _offset = Vector3.zero;
 
         public void Update()
         {
@@ -77,17 +65,20 @@ namespace Assets
                     return;
                 }
 
-                if (Validate?.Invoke(cell) == false)
+                if (MouseMeshRenderer != null)
                 {
-                    MouseMeshRenderer.SetAllMaterial(Game.Instance.FileController.InvalidBlueprintMaterial);
-                }
-                else
-                {
-                    MouseMeshRenderer.SetAllMaterial(Game.Instance.FileController.BlueprintMaterial);
+                    if (Validate?.Invoke(cell) == false)
+                    {
+                        MouseMeshRenderer.SetAllMaterial(Game.Instance.FileController.InvalidBlueprintMaterial);
+                    }
+                    else
+                    {
+                        MouseMeshRenderer.SetAllMaterial(Game.Instance.FileController.BlueprintMaterial);
+                    }
                 }
 
-                float x = cell.X;
-                float z = cell.Z;
+                var x = cell.X;
+                var z = cell.Z;
 
                 transform.position = new Vector3(x, cell.Y, z) + _offset + new Vector3(0.5f, 0, 0.5f);
 
@@ -129,6 +120,14 @@ namespace Assets
             RotateLeft = () => construct.RotateRight();
             RotateRight = () => construct.RotateLeft();
             Validate = (cell) => construct.ValidateStartPos(cell);
+        }
+
+        private void DisableMesh()
+        {
+            if (MouseMeshRenderer != null)
+            {
+                Destroy(MouseMeshRenderer.gameObject);
+            }
         }
     }
 }
