@@ -38,6 +38,18 @@ public class FileController : MonoBehaviour
             return _blueprintMaterial;
         }
     }
+    private Material _invalidBlueprintMaterial;
+    public Material InvalidBlueprintMaterial
+    {
+        get
+        {
+            if (_invalidBlueprintMaterial == null)
+            {
+                _invalidBlueprintMaterial = GetMaterial("InvalidBlueprintMaterial");
+            }
+            return _invalidBlueprintMaterial;
+        }
+    }
 
     public void Awake()
     {

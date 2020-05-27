@@ -43,6 +43,8 @@ namespace Assets
             MouseMeshRenderer.SetAllMaterial(Game.Instance.FileController.BlueprintMaterial);
 
             _offset = structure.structure.OffsetVector;
+
+            Validate = validationFunction;
         }
 
        
@@ -75,10 +77,19 @@ namespace Assets
                     return;
                 }
 
+                if (Validate?.Invoke(cell) == false)
+                {
+                    MouseMeshRenderer.SetAllMaterial(Game.Instance.FileController.InvalidBlueprintMaterial);
+                }
+                else
+                {
+                    MouseMeshRenderer.SetAllMaterial(Game.Instance.FileController.BlueprintMaterial);
+                }
+
                 float x = cell.X;
                 float z = cell.Z;
 
-                transform.position = new Vector3(x, cell.Y, z) + _offset + new Vector3(0.5f, 0.5f, 0.5f);
+                transform.position = new Vector3(x, cell.Y, z) + _offset + new Vector3(0.5f, 0, 0.5f);
 
                 //if (Cursor.MouseSpriteRenderer.sprite != null)
                 //{
