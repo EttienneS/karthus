@@ -22,25 +22,7 @@ public class Cell : IEquatable<Cell>
 
     public int Z;
 
-    [JsonIgnore]
-    public bool Buildable
-    {
-        get
-        {
-            if (TravelCost < 0)
-            {
-                return false;
-            }
-            if (Structure == null)
-            {
-                return true;
-            }
-            else
-            {
-                return !Structure.Buildable;
-            }
-        }
-    }
+   
 
     [JsonIgnore]
     public List<Creature> Creatures

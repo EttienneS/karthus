@@ -27,10 +27,11 @@ public class TimeManager : MonoBehaviour
         Minute = 0
     };
 
-    public float MaxLightAngle = 160f;
-    public float MinLightAngle = 20f;
     public float LightAngleY = 30f;
     public float LightAngleZ = 30f;
+    public float MaxLightAngle = 160f;
+    public float MinLightAngle = 20f;
+    public const float TimeScale = 5f;
     internal float CreatureTick = 0.1f;
 
     private TimeStep _timeStep;
@@ -98,7 +99,7 @@ public class TimeManager : MonoBehaviour
     {
         _timeTicks += Time.deltaTime;
 
-        if (_timeTicks >= (CreatureTick * 5))
+        if (_timeTicks >= TimeScale)
         {
             _timeTicks = 0;
             Data.Minute += 5;

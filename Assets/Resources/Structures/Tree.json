@@ -4,6 +4,7 @@
   "TravelCost": "7",
   "Buildable": "False",
   "Scale": "0.5,0.5,0.5",
+  "SpawnRotation": "True",
   "Cost": {
     "Items": {
       "Wood": "15"

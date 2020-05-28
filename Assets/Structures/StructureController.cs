@@ -102,9 +102,9 @@ namespace Structures
             structureRenderer.Data = structure;
             structureRenderer.Renderer = renderer;
 
-            if (!string.IsNullOrEmpty(structure.SpawnRotation))
+            if (structure.SpawnRotation)
             {
-                structure.Rotation = Helpers.GetValueFromFloatRange(structure.SpawnRotation);
+                structure.Rotation = Randomf.Range(1, 360);
             }
 
             var mats = Game.Instance.FileController.GetMaterials(structure.Materials);

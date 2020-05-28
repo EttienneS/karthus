@@ -23,6 +23,14 @@ public class Build : CreatureTask
     {
         TargetStructure = structure;
 
+        foreach (var cleanup in Game.Instance.IdService.StructureCellLookup[structure.Cell])
+        {
+            if (!cleanup.Buildable)
+            {
+                AddSubTask(new RemoveStructure(cleanup));
+            }
+        }
+
         foreach (var item in structure.Cell.Items)
         {
             item.InUseById = null;

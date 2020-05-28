@@ -3,5 +3,5 @@
   "Mesh": "grass,grass_dense",
   "TravelCost": "1",
   "Buildable": "False",
-  "SpawnRotation": "1~360"
+  "SpawnRotation": "True"
 }

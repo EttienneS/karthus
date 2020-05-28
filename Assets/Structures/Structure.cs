@@ -19,7 +19,7 @@ namespace Structures
 
         public float Rotation;
 
-        public string SpawnRotation;
+        public bool SpawnRotation;
 
         public string Materials;
 
@@ -261,13 +261,22 @@ namespace Structures
             return $"{Name}";
         }
 
+
         public bool ValidateCellLocationForStructure(Cell cell)
         {
-            if (!cell.Buildable)
+            // if the cell is empty or full of unbuildable stuff it is acceptable
+            if (IsFloor())
             {
-                return false;
+                return cell.Floor?.Buildable != true;
             }
-            return true;
+            else
+            {
+                if (cell.TravelCost < 0)
+                {
+                    return false;
+                }
+                return cell.Structure?.Buildable != true;
+            }
         }
 
         internal void Free()
