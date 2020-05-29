@@ -74,7 +74,7 @@ public class Item : IEntity
     {
         get
         {
-            return new Vector3(Coords.X, Cell.Y + 0.5f, Coords.Z);
+            return new Vector3(Coords.X, Cell.Y + 0.1f, Coords.Z);
         }
     }
 

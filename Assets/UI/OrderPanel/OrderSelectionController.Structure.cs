@@ -51,7 +51,7 @@ public partial class OrderSelectionController //.Structure
             {
                 if (!structureData.Buildable) continue;
 
-                var button = CreateOrderButton(() => BuildClicked(structureData.Name), () => UpdateStuctureOrder(structureData.Name), structureData.Mesh, structureData.ColorHex);
+                var button = CreateOrderButton(() => BuildClicked(structureData.Name), () => UpdateStuctureOrder(structureData.Name), structureData.Icon, structureData.ColorHex);
             }
         }
     }

@@ -269,7 +269,7 @@ public class Creature : IEntity
         var item = HeldItem;
 
         HeldItem.Free();
-        HeldItem.Coords = (cell.Vector.x, cell.Vector.y);
+        HeldItem.Cell = cell;
         HeldItem = null;
         return item;
     }

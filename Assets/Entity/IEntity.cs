@@ -20,8 +20,3 @@ public static class EntityExtensions
         entityToClaim.FactionName = claimer.FactionName;
     }
 }
-
-public static class NamedProperties
-{
-    public const string ContainedItemIds = "ContainedItemIds";
-}

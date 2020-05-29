@@ -1,6 +1,7 @@
 {
   "Name": "Campfire",
   "Mesh": "campfireStones_rocks",
+  "Icon": "campfireStones_rocks",
   "TravelCost": "2",
   "Description": "A structure that emits light at night.",
   "Cost": {

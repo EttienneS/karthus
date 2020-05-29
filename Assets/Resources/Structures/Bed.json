@@ -1,6 +1,7 @@
 {
   "Name": "Bed",
   "Mesh": "Bed",
+  "Icon": "Bed",
   "TravelCost": "4",
   "Description": "A structure where a creature will sleep.  Sleeping in a bed recovers energy quicker.",
   "Cost": {

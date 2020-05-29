@@ -22,27 +22,6 @@ public class Build : CreatureTask
     public Build(Structure structure) : this()
     {
         TargetStructure = structure;
-
-        foreach (var cleanup in Game.Instance.IdService.StructureCellLookup[structure.Cell])
-        {
-            if (!cleanup.Buildable)
-            {
-                AddSubTask(new RemoveStructure(cleanup));
-            }
-        }
-
-        foreach (var item in structure.Cell.Items)
-        {
-            item.InUseById = null;
-            AddSubTask(new Pickup(item));
-            AddSubTask(new Drop(structure.Cell.GetPathableNeighbour()));
-        }
-
-        foreach (var item in structure.Cost.Items)
-        {
-            AddSubTask(new FindAndHaulItem(item.Key, item.Value, structure.Cell, structure));
-        }
-        AddSubTask(new Move(structure.Cell.GetPathableNeighbour()));
     }
 
     public bool Built = false;
@@ -64,26 +43,11 @@ public class Build : CreatureTask
 
         if (SubTasksComplete(creature))
         {
-            creature.Face(TargetStructure.Cell);
-            if (TargetStructure.Cell.Creatures.Count > 0)
-            {
-                _waitCount++;
-
-                if (_waitCount > 10)
-                {
-                    throw new TaskFailedException("Cannot build, cell occupied");
-                }
-                AddSubTask(new Wait(0.5f, "Cell occupied", LPC.Spritesheet.Generator.Interfaces.Animation.Slash));
-                return false;
-            }
-
-            if (!Built)
-            {
-                var time = TargetStructure.Cost.Items.Sum(i => i.Value);
-                AddSubTask(new Wait(time, "Building", LPC.Spritesheet.Generator.Interfaces.Animation.Thrust));
-                Built = true;
-                return false;
-            }
+            if (!Clean()) return false;
+            if (!HasItems()) return false;
+            if (!InPosition(creature)) return false;
+            if (!CellOpen()) return false;
+            if (!BuildComplete(creature)) return false;
 
             FinishStructure(creature.GetFaction());
 
@@ -91,36 +55,119 @@ public class Build : CreatureTask
         }
         return false;
     }
-    
+
+    private bool BuildComplete(Creature creature)
+    {
+        if (!Built)
+        {
+            creature.Face(TargetStructure.Cell);
+            var time = TargetStructure.Cost.Items.Sum(i => i.Value);
+            AddSubTask(new Wait(time, "Building", LPC.Spritesheet.Generator.Interfaces.Animation.Thrust));
+            Built = true;
+            return false;
+        }
+        return true;
+    }
+
+    private bool CellOpen()
+    {
+        if (TargetStructure.Cell.Creatures.Count > 0)
+        {
+            _waitCount++;
+
+            if (_waitCount > 10)
+            {
+                throw new TaskFailedException("Cannot build, cell occupied");
+            }
+            AddSubTask(new Wait(1f, "Cell occupied", LPC.Spritesheet.Generator.Interfaces.Animation.Slash));
+            return false;
+        }
+        return true;
+    }
+
+    private bool InPosition(Creature creature)
+    {
+        if (!creature.Cell.NonNullNeighbors.Contains(TargetStructure.Cell))
+        {
+            AddSubTask(new Move(TargetStructure.Cell.GetPathableNeighbour()));
+            return false;
+        }
+        return true;
+    }
+
+    private bool HasItems()
+    {
+        var needed = GetNeededItems();
+
+        if (needed.Count > 0)
+        {
+            foreach (var item in needed)
+            {
+                AddSubTask(new FindAndHaulItem(item.Key, item.Value, TargetStructure.Cell, TargetStructure));
+            }
+            return false;
+        }
+        return true;
+    }
+
+    private bool Clean()
+    {
+        var nonStructureItems = TargetStructure.Cell.Items.Where(i => i.InUseById != TargetStructure.Id);
+        if (nonStructureItems.Any())
+        {
+            foreach (var item in nonStructureItems)
+            {
+                item.Free();
+                AddSubTask(new Pickup(item));
+                AddSubTask(new Drop(TargetStructure.Cell.GetPathableNeighbour()));
+            }
+
+            return false;
+        }
+
+        var structuresToClean = Game.Instance.IdService.StructureCellLookup[TargetStructure.Cell].Where(c => !c.Buildable);
+
+        if (structuresToClean.Any())
+        {
+            foreach (var structureToClean in structuresToClean)
+            {
+                AddSubTask(new RemoveStructure(structureToClean));
+            }
+            return false;
+        }
+        return true;
+    }
+
     public void FinishStructure(Faction faction)
     {
         TargetStructure.IsBlueprint = false;
 
         faction.AddStructure(TargetStructure);
 
-        foreach (var item in GetContainedItems())
+        foreach (var item in TargetStructure.Cell.Items.ToList())
         {
             Game.Instance.ItemController.DestroyItem(item);
         }
-        if (TargetStructure.Properties.ContainsKey(NamedProperties.ContainedItemIds))
-        {
-            TargetStructure.Properties.Remove(NamedProperties.ContainedItemIds);
-        }
-
-      
     }
 
-    
-
-    private List<Item> GetContainedItems()
+    public Dictionary<string, int> GetNeededItems()
     {
-        if (TargetStructure.Properties.ContainsKey(NamedProperties.ContainedItemIds))
+        var current = TargetStructure.Cell.Items.ToList();
+        var desired = new Dictionary<string, int>();
+        foreach (var item in TargetStructure.Cost.Items)
         {
-            return TargetStructure.Properties[NamedProperties.ContainedItemIds]
-                                  .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                                  .Select(i => i.GetItem()).ToList();
+            var desiredAmount = item.Value;
+            foreach (var existing in current.Where(i => i.Name.Equals(item.Key, StringComparison.OrdinalIgnoreCase)))
+            {
+                desiredAmount -= existing.Amount;
+            }
+
+            if (desiredAmount > 0)
+            {
+                desired.Add(item.Key, desiredAmount);
+            }
         }
 
-        return new List<Item>();
+        return desired;
     }
 }

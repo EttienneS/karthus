@@ -8,7 +8,7 @@ public class FindAndHaulItem : CreatureTask
 
     internal float TargetX;
 
-    internal float TargetY;
+    internal float TargetZ;
 
     internal string DestinationEntityId;
 
@@ -17,7 +17,7 @@ public class FindAndHaulItem : CreatureTask
     {
         get
         {
-            return $"Find and move {Amount} of {ItemType} to {TargetX}:{TargetY}";
+            return $"Find and move {Amount} of {ItemType} to {TargetX}:{TargetZ}";
         }
     }
 
@@ -34,7 +34,7 @@ public class FindAndHaulItem : CreatureTask
     public FindAndHaulItem(string itemType, int amount, Cell target, IEntity destinationEntity) : this()
     {
         TargetX = target.Vector.x;
-        TargetY = target.Vector.y;
+        TargetZ = target.Vector.z;
         if (destinationEntity != null)
         {
             DestinationEntityId = destinationEntity.Id;
@@ -50,7 +50,7 @@ public class FindAndHaulItem : CreatureTask
     {
         get
         {
-            return Game.Instance.Map.GetCellAtCoordinate(TargetX, TargetY);
+            return Game.Instance.Map.GetCellAtCoordinate(TargetX, TargetZ);
         }
     }
 
@@ -62,15 +62,7 @@ public class FindAndHaulItem : CreatureTask
 
             if (!string.IsNullOrEmpty(DestinationEntityId))
             {
-                var entity = DestinationEntityId.GetEntity();
-                item.Reserve(entity);
-
-                if (!entity.Properties.ContainsKey(NamedProperties.ContainedItemIds))
-                {
-                    entity.Properties.Add(NamedProperties.ContainedItemIds, "");
-                }
-
-                entity.Properties[NamedProperties.ContainedItemIds] += item.Id + ",";
+                item.Reserve(DestinationEntityId.GetEntity());
             }
             return true;
         }

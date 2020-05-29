@@ -80,38 +80,7 @@ namespace Assets
                 var x = cell.X;
                 var z = cell.Z;
 
-                transform.position = new Vector3(x, cell.Y, z) + _offset + new Vector3(0.5f, 0, 0.5f);
-
-                //if (Cursor.MouseSpriteRenderer.sprite != null)
-                //{
-                //    if (ValidateMouse != null)
-                //    {
-                //        if (!ValidateMouse(cell))
-                //        {
-                //            Cursor.MouseSpriteRenderer.color = ColorConstants.RedBase;
-                //        }
-                //        else
-                //        {
-                //            Cursor.MouseSpriteRenderer.color = ColorConstants.BluePrintColor;
-                //        }
-                //    }
-
-                //    if (SelectionStartWorld != Vector3.zero && !_constructMode)
-                //    {
-                //        Cursor.MouseSpriteRenderer.color = new Color(0, 0, 0, 0);
-                //        ClearGhostEffects();
-                //        foreach (var c in GetSelectedCells(SelectionStartWorld, GetWorldMousePosition().Value))
-                //        {
-                //            var color = ColorConstants.BluePrintColor;
-                //            if (ValidateMouse != null && !ValidateMouse(c))
-                //            {
-                //                color = ColorConstants.RedBase;
-                //            }
-
-                //            _ghostEffects.Add(VisualEffectController.SpawnSpriteEffect(null, c.Vector, MouseSpriteName, float.MaxValue, color));
-                //        }
-                //    }
-                //}
+                transform.position = new Vector3(x, Game.Instance.MapData.StructureLevel, z) + _offset + new Vector3(0.5f, 0, 0.5f);
             }
         }
 

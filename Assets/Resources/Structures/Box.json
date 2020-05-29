@@ -1,6 +1,7 @@
 {
   "Name": "Box",
   "Mesh": "Box",
+  "Icon": "Box",
   "TravelCost": "8",
   "Description": "A structure that can store items, set the filter and priority to determine item type.",
   "Cost": {

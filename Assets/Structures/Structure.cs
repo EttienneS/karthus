@@ -9,97 +9,45 @@ namespace Structures
     {
         public bool Buildable;
 
+        public string ColorHex = "#ffffff";
+
         [JsonIgnore]
         public VisualEffect ContainedItemEffect;
 
         // rather than serializing the cell object we keep this lazy link for load
         public (int X, int Y) Coords = (-1, -1);
 
+        public string Icon;
         public string Layer;
 
+        public string Materials;
+        public string Mesh;
+        public string Offset;
         public float Rotation;
 
-        public bool SpawnRotation;
-
-        public string Materials;
-
+        public string Scale;
         public string Size;
-
+        public bool SpawnRotation;
         public float TravelCost;
 
         public string Type;
-
-        public string Scale;
-
-        [JsonIgnore]
-        private Vector3 _scaleVector;
-
-        [JsonIgnore]
-        public Vector3 ScaleVector
-        {
-            get
-            {
-                if (_scaleVector == Vector3.zero)
-                {
-                    if (string.IsNullOrEmpty(Scale))
-                    {
-                        _scaleVector = Vector3.one;
-                    }
-                    else
-                    {
-                        _scaleVector = Scale.ToVector3();
-                    }
-                }
-                return _scaleVector;
-            }
-        }
-
-        public string Offset;
-
-        [JsonIgnore]
-        private Vector3 _offsetVector;
-
-        [JsonIgnore]
-        public Vector3 OffsetVector
-        {
-            get
-            {
-                if (_offsetVector == Vector3.zero)
-                {
-                    if (!string.IsNullOrEmpty(Offset))
-                    {
-                        _offsetVector = Offset.ToVector3();
-                    }
-                }
-                return _offsetVector;
-            }
-        }
-
-        [JsonIgnore]
-        public Color Color
-        {
-            get
-            {
-                return ColorHex.GetColorFromHex();
-            }
-        }
-
-        public string ColorHex = "#ffffff";
-
         private Cell _cell;
 
         private Faction _faction;
 
+        private bool _isBlueprint;
+
+        [JsonIgnore]
+        private Vector3 _offsetVector;
+
         private VisualEffect _outline;
 
         [JsonIgnore]
-        private int _width, _height = -1;
+        private Vector3 _scaleVector;
 
         public Structure()
         {
         }
-
-        public string Mesh;
 
         public Structure(string name, string mesh)
         {
@@ -129,7 +77,18 @@ namespace Structures
             }
         }
 
+        [JsonIgnore]
+        public Color Color
+        {
+            get
+            {
+                return ColorHex.GetColorFromHex();
+            }
+        }
+
         public Cost Cost { get; set; } = new Cost();
+
+        public Material[] DefaultMaterials { get; internal set; }
 
         public string Description { get; set; }
 
@@ -147,16 +106,6 @@ namespace Structures
         }
 
         public string FactionName { get; set; }
-
-        [JsonIgnore]
-        public int Height
-        {
-            get
-            {
-                ParseHeight();
-                return _width;
-            }
-        }
 
         public float HP { get; set; } = 5;
 
@@ -193,7 +142,6 @@ namespace Structures
 
         public string InUseById { get; set; }
 
-        private bool _isBlueprint;
         public bool IsBlueprint
         {
             get
@@ -206,17 +154,52 @@ namespace Structures
 
                 Renderer.UpdateMaterial();
             }
-            
         }
 
         public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
 
         public string Name { get; set; }
 
+        [JsonIgnore]
+        public Vector3 OffsetVector
+        {
+            get
+            {
+                if (_offsetVector == Vector3.zero)
+                {
+                    if (!string.IsNullOrEmpty(Offset))
+                    {
+                        _offsetVector = Offset.ToVector3();
+                    }
+                }
+                return _offsetVector;
+            }
+        }
+
         public Dictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
 
         [JsonIgnore]
         public StructureRenderer Renderer { get; set; }
+
+        [JsonIgnore]
+        public Vector3 ScaleVector
+        {
+            get
+            {
+                if (_scaleVector == Vector3.zero)
+                {
+                    if (string.IsNullOrEmpty(Scale))
+                    {
+                        _scaleVector = Vector3.one;
+                    }
+                    else
+                    {
+                        _scaleVector = Scale.ToVector3();
+                    }
+                }
+                return _scaleVector;
+            }
+        }
 
         public Dictionary<string, float> ValueProperties { get; set; } = new Dictionary<string, float>();
 
@@ -225,21 +208,14 @@ namespace Structures
         {
             get
             {
-                return Cell.Vector + OffsetVector;
+                return new Vector3(Cell.Vector.x, Game.Instance.MapData.StructureLevel, Cell.Vector.z) + OffsetVector;
             }
         }
 
-        [JsonIgnore]
-        public int Width
+        public bool IsShadowCaster()
         {
-            get
-            {
-                ParseHeight();
-                return _width;
-            }
+            return IsWall();
         }
-
-        public Material[] DefaultMaterials { get; internal set; }
 
         public bool IsType(string name)
         {
@@ -251,16 +227,10 @@ namespace Structures
             return IsType("Wall");
         }
 
-        public bool IsShadowCaster()
-        {
-            return IsWall();
-        }
-
         public override string ToString()
         {
             return $"{Name}";
         }
-
 
         public bool ValidateCellLocationForStructure(Cell cell)
         {
@@ -353,24 +323,6 @@ namespace Structures
             _outline = Game.Instance.VisualEffectController
                            .SpawnSpriteEffect(this, Vector, "CellOutline", float.MaxValue);
             _outline.Regular();
-        }
-
-        private void ParseHeight()
-        {
-            if (_width == -1 || _height == -1)
-            {
-                if (!string.IsNullOrEmpty(Size))
-                {
-                    var parts = Size.Split('x');
-                    _height = int.Parse(parts[0]);
-                    _width = int.Parse(parts[1]);
-                }
-                else
-                {
-                    _width = 1;
-                    _height = 1;
-                }
-            }
         }
     }
 }
