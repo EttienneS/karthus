@@ -16,8 +16,6 @@ public enum SelectionPreference
 
 public class Game : MonoBehaviour
 {
-    public MapData MapData;
-
     public CameraController CameraController;
     public ConstructController ConstructController;
     public CreatureController CreatureController;
@@ -33,6 +31,7 @@ public class Game : MonoBehaviour
     public LoadPanel LoadPanelPrefab;
     public MainMenuController MainMenuController;
     public Map Map;
+    public MapData MapData;
     public MapGenerator MapGenerator;
     public OrderInfoPanel OrderInfoPanel;
     public OrderSelectionController OrderSelectionController;

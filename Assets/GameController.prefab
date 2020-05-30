@@ -52,10 +52,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c9319c38c3fa594db9dd4391edf4906, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CameraController: {fileID: 0}
+  CreatureController: {fileID: 6122762649674242587}
+  CreatureInfoPanelPrefab: {fileID: 1526732850936286135, guid: 78582b738b61cbe499b41a29e3f79da7,
+    type: 3}
+  CurrentLoadPanel: {fileID: 0}
+  Cursor: {fileID: 4826167629218043048}
+  DeveloperConsole: {fileID: 0}
+  FactionController: {fileID: 413825939}
+  FileController: {fileID: 0}
+  ItemController: {fileID: 6196697}
+  ItemInfoPanelPrefab: {fileID: 8070986180317268848, guid: be3395e59bbffef40ba189c06e55c4c6,
+    type: 3}
+  LoadPanelPrefab: {fileID: 1995320794631331998, guid: e23b1cba055c1324f823db6d383df22d,
+    type: 3}
+  MainMenuController: {fileID: 0}
+  Map: {fileID: 17666008}
   MapData:
-    ChunkSize: 120
+    ChunkSize: 240
     CreateWater: 1
-    CreaturesToSpawn: 1
+    CreaturesToSpawn: 3
     Flat: 0
     HeightCurve:
       serializedVersion: 2
@@ -123,22 +139,6 @@ MonoBehaviour:
     Size: 1
     StructureLevel: 2
     WaterLevel: 1.5
-  CameraController: {fileID: 0}
-  CreatureController: {fileID: 6122762649674242587}
-  CreatureInfoPanelPrefab: {fileID: 1526732850936286135, guid: 78582b738b61cbe499b41a29e3f79da7,
-    type: 3}
-  CurrentLoadPanel: {fileID: 0}
-  Cursor: {fileID: 4826167629218043048}
-  DeveloperConsole: {fileID: 0}
-  FactionController: {fileID: 413825939}
-  FileController: {fileID: 0}
-  ItemController: {fileID: 6196697}
-  ItemInfoPanelPrefab: {fileID: 8070986180317268848, guid: be3395e59bbffef40ba189c06e55c4c6,
-    type: 3}
-  LoadPanelPrefab: {fileID: 1995320794631331998, guid: e23b1cba055c1324f823db6d383df22d,
-    type: 3}
-  MainMenuController: {fileID: 0}
-  Map: {fileID: 17666008}
   OrderInfoPanel: {fileID: 0}
   OrderSelectionController: {fileID: 0}
   OrderTrayController: {fileID: 0}
@@ -154,6 +154,7 @@ MonoBehaviour:
   UI: {fileID: 0}
   UIController: {fileID: 0}
   VisualEffectController: {fileID: 8296573314717617545}
+  WorldCanvas: {fileID: 0}
   ZoneController: {fileID: 3031215097329078977}
   ZoneInfoPanelPrefab: {fileID: 6224699677946717344, guid: 7e644716772d30044a157517133287c5,
     type: 3}

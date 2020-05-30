@@ -134,6 +134,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d598dcd5b30a4ba45aeaed1147f172bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &413805487 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4831760904217596557, guid: 8d3d47b53068341448ff13732aef998e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1910422787}
+  m_PrefabAsset: {fileID: 0}
+--- !u!223 &413805488 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 2646440792028607232, guid: 8d3d47b53068341448ff13732aef998e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1910422787}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &413805489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 413805487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 109a85baf9002c84aa70581c856cce22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WorldTextPrefab: {fileID: 5286363014988034143, guid: 2975e3e69d5061e48b58f27a63f52012,
+    type: 3}
+  Canvas: {fileID: 413805488}
+  ChunkRenderer: {fileID: 0}
 --- !u!114 &603724562 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7308512517502387629, guid: 5223a731d594e30499746cb45660fed3,
@@ -225,6 +253,56 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4644976692358395002, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 120
+      objectReference: {fileID: 0}
+    - target: {fileID: 4644976692358395002, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 2.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4644976692358395002, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 240
+      objectReference: {fileID: 0}
+    - target: {fileID: 4644976692358395002, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 240
+      objectReference: {fileID: 0}
+    - target: {fileID: 4644976692358395002, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 4644976692358395002, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4644976692358395002, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4644976692358395002, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 4644976692358395002, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 4644976692358395002, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 120
+      objectReference: {fileID: 0}
     - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
       propertyPath: CameraController
@@ -285,21 +363,6 @@ PrefabInstance:
       propertyPath: UIController
       value: 
       objectReference: {fileID: 1541317929}
-    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
-        type: 3}
-      propertyPath: MapData.Size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
-        type: 3}
-      propertyPath: MapData.ChunkSize
-      value: 120
-      objectReference: {fileID: 0}
-    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
-        type: 3}
-      propertyPath: MapData.CreaturesToSpawn
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 4791717066980201731, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
       propertyPath: m_Name

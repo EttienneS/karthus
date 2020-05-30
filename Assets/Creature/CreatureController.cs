@@ -8,7 +8,30 @@ public class CreatureController : MonoBehaviour
 {
     public CreatureRenderer CreaturePrefab;
 
-    internal Dictionary<string, Creature> Beastiary = new Dictionary<string, Creature>();
+    private Dictionary<string, Creature> _beastiary;
+    internal Dictionary<string, Creature> Beastiary
+    {
+        get
+        {
+            if (_beastiary == null)
+            {
+                _beastiary = new Dictionary<string, Creature>();
+                foreach (var creatureFile in Game.Instance.FileController.CreatureFiles)
+                {
+                    try
+                    {
+                        var creature = creatureFile.text.LoadJson<Creature>();
+                        _beastiary.Add(creature.Name, creature);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogError($"Unable to load creature {creatureFile}: {ex.Message}");
+                    }
+                }
+            }
+            return _beastiary;
+        }
+    }
 
     public CreatureRenderer GetCreatureAtPoint(Vector2 point)
     {
@@ -22,22 +45,6 @@ public class CreatureController : MonoBehaviour
         }
 
         return null;
-    }
-
-    public void Start()
-    {
-        foreach (var creatureFile in Game.Instance.FileController.CreatureFiles)
-        {
-            try
-            {
-                var creature = creatureFile.text.LoadJson<Creature>();
-                Beastiary.Add(creature.Name, creature);
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError($"Unable to load creature {creatureFile}: {ex.Message}");
-            }
-        }
     }
 
     internal void DestroyCreature(CreatureRenderer creature)

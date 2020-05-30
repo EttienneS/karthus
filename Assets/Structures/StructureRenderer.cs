@@ -1,8 +1,5 @@
 ﻿using Assets.Helpers;
-using Newtonsoft.Json;
 using Structures;
-using System;
-using System.Net.Sockets;
 using UnityEngine;
 
 public class StructureRenderer : MonoBehaviour
@@ -23,7 +20,6 @@ public class StructureRenderer : MonoBehaviour
 
     internal void UpdateMaterial()
     {
-        Debug.Log("Update material");
         if (Data.IsBlueprint)
         {
             Renderer.SetAllMaterial(Game.Instance.FileController.BlueprintMaterial);
