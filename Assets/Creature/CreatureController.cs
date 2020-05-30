@@ -1,5 +1,4 @@
-﻿using LPC.Spritesheet.Generator.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -97,8 +96,6 @@ public class CreatureController : MonoBehaviour
 
         Game.Instance.IdService.EnrollEntity(creature.Data);
         creature.name = $"{creature.Data.Name} ({creature.Data.Id})";
-
-        creature.Data.Gender = Random.value > 0.5f ? Gender.Male : Gender.Female;
 
         if (creatureData.BehaviourName == "Person")
         {

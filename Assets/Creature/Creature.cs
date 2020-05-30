@@ -1,11 +1,9 @@
-﻿using LPC.Spritesheet.Generator.Enums;
-using Needs;
+﻿using Needs;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Animation = LPC.Spritesheet.Generator.Interfaces.Animation;
 using Random = UnityEngine.Random;
 
 public enum Mobility
@@ -17,21 +15,12 @@ public class Creature : IEntity
 {
     public const string SelfKey = "Self";
 
-    public Animation Animation = Animation.Walk;
-
-    public float AnimationDelta = 0f;
-
     [JsonIgnore]
     public List<Creature> Combatants = new List<Creature>();
 
     public Direction Facing = Direction.S;
 
     public List<Feeling> Feelings = new List<Feeling>();
-    public Animation? FixedAnimation = null;
-
-    public int? FixedFrame;
-
-    public Gender Gender;
 
     [JsonIgnore]
     public Behaviours.GetBehaviourTaskDelegate GetBehaviourTask;
@@ -43,7 +32,6 @@ public class Creature : IEntity
     [JsonIgnore]
     public List<Cell> Path = new List<Cell>();
 
-    public Race Race;
     public List<Relationship> Relationships = new List<Relationship>();
 
     public (float x, float z) TargetCoordinate;
@@ -254,12 +242,6 @@ public class Creature : IEntity
         Limbs.Add(limb);
     }
 
-    public void ClearFixedAnimation()
-    {
-        FixedAnimation = null;
-        FixedFrame = null;
-    }
-
     public Item DropItem(Cell cell)
     {
         if (HeldItem == null)
@@ -365,31 +347,6 @@ public class Creature : IEntity
         return GetNeed<T>().Max;
     }
 
-    public Orientation GetOrientation()
-    {
-        switch (Facing)
-        {
-            case Direction.N:
-            case Direction.SE:
-            case Direction.NE:
-                return Orientation.Back;
-
-            case Direction.E:
-                return Orientation.Right;
-
-            case Direction.SW:
-            case Direction.NW:
-            case Direction.S:
-                return Orientation.Front;
-
-            case Direction.W:
-                return Orientation.Left;
-
-            default:
-                return Orientation.Front;
-        }
-    }
-
     public List<DefensiveActionBase> GetPossibleDefensiveActions(OffensiveActionBase action)
     {
         return GetDefensiveOptions().Where(d => d.ActivationTIme <= action.TimeToComplete()).ToList();
@@ -492,19 +449,6 @@ public class Creature : IEntity
         {
             CreatureRenderer.ShowText(message, duration);
         }
-    }
-
-    public void SetAnimation(Animation animation, float duration)
-    {
-        ClearFixedAnimation();
-        Animation = animation;
-        AnimationDelta = duration;
-    }
-
-    public void SetFixedAnimation(Animation animation, int? fixedFrame = null)
-    {
-        FixedAnimation = animation;
-        FixedFrame = fixedFrame;
     }
 
     public void SetTargetCoordinate(float targetX, float targetZ)
@@ -717,7 +661,6 @@ public class Creature : IEntity
 
             if (InCombat)
             {
-                ClearFixedAnimation();
                 ProcessCombat();
             }
             else
@@ -735,15 +678,6 @@ public class Creature : IEntity
             }
 
             return true;
-        }
-
-        if (AnimationDelta > 0)
-        {
-            AnimationDelta -= Time.deltaTime;
-        }
-        else
-        {
-            Animation = Animation.Walk;
         }
 
         return false;

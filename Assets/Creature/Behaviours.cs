@@ -93,16 +93,13 @@ public static class Behaviours
         var rand = Random.value;
         var targets = creature.Awareness.SelectMany(cell => cell.Creatures.Where(c => c.Faction != creature.Faction));
 
-        creature.SetFixedAnimation(LPC.Spritesheet.Generator.Interfaces.Animation.Die, 4);
-
         if (targets.Any())
         {
-            creature.ClearFixedAnimation();
             creature.Combatants.Add(targets.GetRandomItem());
         }
         else
         {
-            task = new Wait(Random.Range(3f, 6f), "Lingering..", null);
+            task = new Wait(Random.Range(3f, 6f), "Lingering..");
         }
 
         return task;

@@ -53,7 +53,7 @@ public class RemoveStructure : CreatureTask
             if (!Decontructed)
             {
                 creature.Face(StructureToRemove.Cell);
-                AddSubTask(new Wait(StructureToRemove.Cost.Items.Sum(c => c.Value) + 1, "Deconstructing...", LPC.Spritesheet.Generator.Interfaces.Animation.Thrust));
+                AddSubTask(new Wait(StructureToRemove.Cost.Items.Sum(c => c.Value) + 1, "Deconstructing..."));
                 Decontructed = true;
                 return false;
             }

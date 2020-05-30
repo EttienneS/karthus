@@ -1,7 +1,6 @@
 ﻿using Needs;
 using Newtonsoft.Json;
 using Structures;
-using Animation = LPC.Spritesheet.Generator.Interfaces.Animation;
 
 public class Sleep : CreatureTask
 {
@@ -63,7 +62,6 @@ public class Sleep : CreatureTask
                 }
             }
             Sleeping = true;
-            creature.SetFixedAnimation(Animation.Walk, 1);
             creature.GetNeed<Energy>().CurrentChangeRate = RecoveryRate;
 
             if (creature.GetCurrentNeed<Energy>() > 90f)

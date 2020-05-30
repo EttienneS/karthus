@@ -1,14 +1,10 @@
 ﻿using UnityEngine;
-using Animation = LPC.Spritesheet.Generator.Interfaces.Animation;
 
 public class Wait : CreatureTask
 {
     public float Duration;
     public float ElapsedTime;
     public string Reason;
-    public Animation? Animation;
-
-    private bool _hasRunOnce;
 
     public override string Message
     {
@@ -26,25 +22,15 @@ public class Wait : CreatureTask
     {
     }
 
-    public Wait(float duration, string reason, Animation? animation = LPC.Spritesheet.Generator.Interfaces.Animation.Walk) : this()
+    public Wait(float duration, string reason) : this()
     {
         Duration = duration;
         Reason = reason;
         ElapsedTime = 0;
-        Animation = animation;
     }
 
     public override bool Done(Creature creature)
     {
-        if (!_hasRunOnce)
-        {
-            if (Animation.HasValue)
-            {
-                creature.SetAnimation(Animation.Value, Duration);
-            }
-            _hasRunOnce = true;
-        }
-
         ElapsedTime += Time.deltaTime;
 
         if (ElapsedTime >= Duration)

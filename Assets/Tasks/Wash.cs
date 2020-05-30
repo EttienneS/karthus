@@ -1,7 +1,5 @@
 ﻿using Needs;
 using Structures;
-using Animation = LPC.Spritesheet.Generator.Interfaces.Animation;
-
 public class Wash : CreatureTask
 {
     public float RecoveryRate = 0.25f;
@@ -42,7 +40,6 @@ public class Wash : CreatureTask
         if (SubTasksComplete(creature))
         {
             var need = creature.GetNeed<Hygiene>();
-            creature.SetAnimation(Animation.Thrust, 1);
             creature.Face(Game.Instance.Map.GetCellAtCoordinate(WashCoords));
             need.CurrentChangeRate = RecoveryRate;
 

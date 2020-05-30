@@ -109,7 +109,8 @@ public class CreatureRenderer : MonoBehaviour
 
     internal void UpdatePosition()
     {
-        transform.position = new Vector3(Data.X, Data.Cell.Y + 0.5f, Data.Z);
+        transform.position = new Vector3(Data.X, Data.Cell.Y, Data.Z);
+        transform.eulerAngles = new Vector3(0, (int)Data.Facing * 45f, 0);
     }
 
     private void UpdateFloatingText()
