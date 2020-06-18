@@ -15,13 +15,14 @@ public class Creature : IEntity
 {
     public const string SelfKey = "Self";
 
+    public AnimationType Animation = AnimationType.Idle;
+
     [JsonIgnore]
     public List<Creature> Combatants = new List<Creature>();
 
     public Direction Facing = Direction.S;
 
     public List<Feeling> Feelings = new List<Feeling>();
-
     [JsonIgnore]
     public Behaviours.GetBehaviourTaskDelegate GetBehaviourTask;
 
@@ -520,20 +521,6 @@ public class Creature : IEntity
         }
     }
 
-    internal void SuspendTask(bool autoRetry = true)
-    {
-        if (Task != null)
-        {
-            DropItem(Cell);
-            Log($"Suspended {Task} task");
-
-            Task.ToggleSuspended(autoRetry);
-            Faction.AddTask(Task);
-
-            Task = null;
-        }
-    }
-
     internal bool CanDo(CreatureTask t)
     {
         if (string.IsNullOrEmpty(t.RequiredSkill))
@@ -639,6 +626,19 @@ public class Creature : IEntity
         TargetCoordinate = (Cell.X, Cell.Z);
     }
 
+    internal void SuspendTask(bool autoRetry = true)
+    {
+        if (Task != null)
+        {
+            DropItem(Cell);
+            Log($"Suspended {Task} task");
+
+            Task.ToggleSuspended(autoRetry);
+            Faction.AddTask(Task);
+
+            Task = null;
+        }
+    }
     internal bool Update(float timeDelta)
     {
         if (Game.Instance.TimeManager.Paused)
@@ -920,6 +920,11 @@ public class Creature : IEntity
             {
                 Facing = Direction.W;
             }
+        }
+
+        if (X > 0 || Z > 0)
+        {
+            Animation = AnimationType.Running;
         }
 
         CreatureRenderer.UpdatePosition();

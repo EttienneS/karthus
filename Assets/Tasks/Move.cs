@@ -50,6 +50,7 @@ public class Move : CreatureTask
         {
             // dynamic map expansion
             // Game.Instance.Map.ExpandChunksAround(creature.Cell);
+            creature.Animation = AnimationType.Idle;
             return true;
         }
         return false;

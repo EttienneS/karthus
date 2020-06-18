@@ -1,15 +1,20 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using TMPro;
 using UnityEngine;
 
+public enum AnimationType
+{
+    Idle, Running, Jumping
+}
+
 public class CreatureRenderer : MonoBehaviour
 {
-    public Light Light;
-    internal Creature Data = new Creature();
     public SpriteRenderer Highlight;
-    internal float RemainingTextDuration;
+    public Light Light;
     public TextMeshPro Text;
+    internal Creature Data = new Creature();
+    internal float RemainingTextDuration;
+    public Animator Animator;
 
     public void Awake()
     {
@@ -44,6 +49,14 @@ public class CreatureRenderer : MonoBehaviour
                 DisableLight();
             }
         }
+
+        if (Animator != null)
+        {
+            foreach (AnimationType animationState in Enum.GetValues(typeof(AnimationType)))
+            {
+                Animator.SetBool(animationState.ToString(), animationState == Data.Animation);
+            }
+        }
     }
 
     internal void DisableHightlight()
@@ -54,6 +67,13 @@ public class CreatureRenderer : MonoBehaviour
         }
     }
 
+    internal void DisableLight()
+    {
+        if (Light != null)
+        {
+            Light.gameObject.SetActive(false);
+        }
+    }
 
     internal void EnableHighlight(Color color)
     {
@@ -72,7 +92,13 @@ public class CreatureRenderer : MonoBehaviour
         }
     }
 
-    void OnDrawGizmos()
+    internal void UpdatePosition()
+    {
+        transform.position = new Vector3(Data.X, Data.Cell.Y, Data.Z);
+        transform.eulerAngles = new Vector3(0, (int)Data.Facing * 45f, 0);
+    }
+
+    private void OnDrawGizmos()
     {
         if (Data.UnableToFindPath)
         {
@@ -99,20 +125,6 @@ public class CreatureRenderer : MonoBehaviour
         Gizmos.DrawCube(Game.Instance.Map.GetCellAtCoordinate(Data.TargetCoordinate).Vector + new Vector3(0, 0, 5), new Vector3(0.1f, 0.1f, 0.1f));
     }
 
-    internal void DisableLight()
-    {
-        if (Light != null)
-        {
-            Light.gameObject.SetActive(false);
-        }
-    }
-
-    internal void UpdatePosition()
-    {
-        transform.position = new Vector3(Data.X, Data.Cell.Y, Data.Z);
-        transform.eulerAngles = new Vector3(0, (int)Data.Facing * 45f, 0);
-    }
-
     private void UpdateFloatingText()
     {
         if (RemainingTextDuration > 0)
@@ -129,5 +141,4 @@ public class CreatureRenderer : MonoBehaviour
             Text.text = "";
         }
     }
-
 }
