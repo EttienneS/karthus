@@ -10,5 +10,6 @@
     }
   },
   "Buildable": "True",
-  "Type": "Table"
+  "Type": "Table",
+  "Offset": "0,0.7,0"
 }
