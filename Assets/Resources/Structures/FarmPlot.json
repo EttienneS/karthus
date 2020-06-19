@@ -11,6 +11,7 @@
   },
   "Buildable": "True",
   "Type": "Farm",
+  "Offset": "0,0.5,0",
   "Definition": {
     "Name": "Farm",
     "RequiredSkillName": "Farming",
