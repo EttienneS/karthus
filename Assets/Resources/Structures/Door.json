@@ -1,0 +1,16 @@
+{
+  "Name": "Door",
+  "Mesh": "Door",
+  "Icon": "Door",
+  "Materials": "WoodMaterial",
+  "Description": "Door made of wood, creatures can pass through the door.",
+  "TravelCost": "1",
+  "Offset": "0,0.5,0",
+  "Cost": {
+    "Items": {
+      "Wood": "1"
+    }
+  },
+  "Buildable": "True",
+  "Type": "Door"
+}
