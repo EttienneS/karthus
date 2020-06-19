@@ -48,12 +48,12 @@ public class MapGenerator
 
     public (Cell bottomLeft, Cell bottomRight, Cell topLeft, Cell topRight) GetCorners(List<Cell> square)
     {
-        var minMax = Game.Instance.Map.GetMinMax(square);
+        var (minx, maxx, minz, maxz) = Game.Instance.Map.GetMinMax(square);
 
-        return (Game.Instance.Map.GetCellAtCoordinate(minMax.minx, minMax.miny),
-                Game.Instance.Map.GetCellAtCoordinate(minMax.maxx, minMax.miny),
-                Game.Instance.Map.GetCellAtCoordinate(minMax.minx, minMax.maxy),
-                Game.Instance.Map.GetCellAtCoordinate(minMax.maxx, minMax.maxy));
+        return (Game.Instance.Map.GetCellAtCoordinate(minx, minz),
+                Game.Instance.Map.GetCellAtCoordinate(maxx, minz),
+                Game.Instance.Map.GetCellAtCoordinate(minx, maxz),
+                Game.Instance.Map.GetCellAtCoordinate(maxx, maxz));
     }
 
     public void MakeFactionBootStrap(Faction faction)

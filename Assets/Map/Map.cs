@@ -243,13 +243,13 @@ public class Map : MonoBehaviour
         return line;
     }
 
-    public (int minx, int maxx, int miny, int maxy) GetMinMax(List<Cell> cells)
+    public (int minx, int maxx, int minz, int maxz) GetMinMax(List<Cell> cells)
     {
         var minx = int.MaxValue;
         var maxx = int.MinValue;
 
-        var miny = int.MaxValue;
-        var maxy = int.MinValue;
+        var minz = int.MaxValue;
+        var maxz = int.MinValue;
 
         foreach (var cell in cells)
         {
@@ -261,17 +261,17 @@ public class Map : MonoBehaviour
             {
                 minx = cell.X;
             }
-            if (cell.Z > maxy)
+            if (cell.Z > maxz)
             {
-                maxy = cell.Z;
+                maxz = cell.Z;
             }
-            if (cell.Z < miny)
+            if (cell.Z < minz)
             {
-                miny = cell.Z;
+                minz = cell.Z;
             }
         }
 
-        return (minx, maxx, miny, maxy);
+        return (minx, maxx, minz, maxz);
     }
 
     public Cell GetPointAtDistanceOnAngle(Cell origin, int distance, float angle)
@@ -383,16 +383,16 @@ public class Map : MonoBehaviour
     public (int, int) GetWidthAndHeight(List<Cell> cells)
     {
         var minMax = GetMinMax(cells);
-        return (minMax.maxx - minMax.minx, minMax.maxy - minMax.miny);
+        return (minMax.maxx - minMax.minx, minMax.maxz - minMax.minz);
     }
 
     public List<Cell> HollowSquare(List<Cell> square)
     {
         var minMax = GetMinMax(square);
-        var src = GetCellAtCoordinate(minMax.minx + 1, minMax.miny + 1);
+        var src = GetCellAtCoordinate(minMax.minx + 1, minMax.minz + 1);
         return GetRectangle(src.X, src.Z,
                             minMax.maxx - minMax.minx - 1,
-                            minMax.maxy - minMax.miny - 1);
+                            minMax.maxz - minMax.minz - 1);
     }
 
     public ChunkRenderer MakeChunk(Chunk data)
