@@ -2,15 +2,15 @@
 
 public class Wait : CreatureTask
 {
-    public float Duration;
-    public float ElapsedTime;
+    public int TimerId;
     public string Reason;
 
     public override string Message
     {
         get
         {
-            return $"{Reason} {Duration}";
+            var timer = GetTimer();
+            return $"{Reason}: {timer.Elapsed}/{timer.TotalMinutes}";
         }
     }
 
@@ -22,18 +22,20 @@ public class Wait : CreatureTask
     {
     }
 
-    public Wait(float duration, string reason) : this()
+    public Wait(int duration, string reason) : this()
     {
-        Duration = duration;
+        TimerId = Game.Instance.TimeManager.StartTimer(duration);
         Reason = reason;
-        ElapsedTime = 0;
+    }
+
+    public Timer GetTimer()
+    {
+        return Game.Instance.TimeManager.GetTimer(TimerId);
     }
 
     public override bool Done(Creature creature)
     {
-        ElapsedTime += Time.deltaTime;
-
-        if (ElapsedTime >= Duration)
+        if (GetTimer().IsDone())
         {
             ShowDoneEmote(creature);
             return true;

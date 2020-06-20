@@ -34,7 +34,7 @@ public static class Behaviours
         }
         else
         {
-            task = new Wait(Random.value * 2f, "Lingering..");
+            task = new Wait(Random.Range(1, 5), "Lingering..");
         }
 
         return task;
@@ -99,7 +99,7 @@ public static class Behaviours
         }
         else
         {
-            task = new Wait(Random.Range(3f, 6f), "Lingering..");
+            task = new Wait(Random.Range(3, 6), "Lingering..");
         }
 
         return task;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -9,12 +10,6 @@ public enum TimeStep
     Normal = 4,
     Fast = 12,
     Hyper = 50
-}
-
-public class TimeData
-{
-    public int Hour;
-    public int Minute;
 }
 
 public class TimeManager : MonoBehaviour
@@ -28,10 +23,13 @@ public class TimeManager : MonoBehaviour
     };
 
     public float LightAngleY = 30f;
+
     public float LightAngleZ = 30f;
+
     public float MaxLightAngle = 160f;
+
     public float MinLightAngle = 20f;
-    public const float TimeScale = 5f;
+
     internal float CreatureTick = 0.1f;
 
     private TimeStep _timeStep;
@@ -95,14 +93,21 @@ public class TimeManager : MonoBehaviour
         };
     }
 
+    public int StartTimer(int totalMinutes)
+    {
+        return Data.CreateTimer(totalMinutes);
+    }
+
     public void Update()
     {
         _timeTicks += Time.deltaTime;
 
-        if (_timeTicks >= TimeScale)
+        if (_timeTicks >= 1)
         {
             _timeTicks = 0;
-            Data.Minute += 5;
+
+            Data.Minute++;
+            Data.UpdateTimers();
 
             if (Data.Minute >= 60)
             {
@@ -118,6 +123,10 @@ public class TimeManager : MonoBehaviour
         }
     }
 
+    internal Timer GetTimer(int timerId)
+    {
+        return Data.GetTimer(timerId);
+    }
     internal void Pause()
     {
         TimeStep = TimeStep.Paused;

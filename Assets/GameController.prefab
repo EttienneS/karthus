@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9043323423647380584}
   - component: {fileID: 4716349726037566006}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: GameController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -69,7 +69,7 @@ MonoBehaviour:
   MainMenuController: {fileID: 0}
   Map: {fileID: 17666008}
   MapData:
-    ChunkSize: 240
+    ChunkSize: 120
     CreateWater: 1
     CreaturesToSpawn: 3
     Flat: 0
@@ -154,7 +154,6 @@ MonoBehaviour:
   UI: {fileID: 0}
   UIController: {fileID: 0}
   VisualEffectController: {fileID: 8296573314717617545}
-  WorldCanvas: {fileID: 0}
   ZoneController: {fileID: 3031215097329078977}
   ZoneInfoPanelPrefab: {fileID: 6224699677946717344, guid: 7e644716772d30044a157517133287c5,
     type: 3}
@@ -169,6 +168,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: CreatureController
+      objectReference: {fileID: 0}
+    - target: {fileID: 5086463626140959001, guid: ccde989a4fe5e06468d51aa2215cf400,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 5153914668851132815, guid: ccde989a4fe5e06468d51aa2215cf400,
         type: 3}
@@ -312,6 +316,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TimeManager
       objectReference: {fileID: 0}
+    - target: {fileID: 1145644537760836018, guid: 1f3bbfb9d49d8964c9a1953cac20d915,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1f3bbfb9d49d8964c9a1953cac20d915, type: 3}
 --- !u!4 &211605832 stripped
@@ -399,6 +408,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: StructureController
       objectReference: {fileID: 0}
+    - target: {fileID: 3791141133427796246, guid: 76c507a8465503244ba88812681253b8,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 76c507a8465503244ba88812681253b8, type: 3}
 --- !u!4 &5473618073953167089 stripped
@@ -446,10 +460,50 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -2
       objectReference: {fileID: 0}
+    - target: {fileID: 4483330911721906996, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 4483330911721906996, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4483330911721906996, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4483330911721906996, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 4483330911721906996, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4483330911721906996, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 5349786463878038654, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 5952559972800760937, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
         type: 3}
       propertyPath: m_Name
       value: Map
+      objectReference: {fileID: 0}
+    - target: {fileID: 5952559972800760937, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 5952559972800760938, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
         type: 3}
@@ -825,6 +879,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: FactionController
       objectReference: {fileID: 0}
+    - target: {fileID: 6063617172602361022, guid: 49a093d196298cc4c83d126a01132dbf,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49a093d196298cc4c83d126a01132dbf, type: 3}
 --- !u!4 &413825938 stripped
@@ -856,6 +915,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: VisualEffectController
+      objectReference: {fileID: 0}
+    - target: {fileID: 1699233023680752940, guid: ffe42bc49a7e309479ff71bc89d1d0bd,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 2872971961215447772, guid: ffe42bc49a7e309479ff71bc89d1d0bd,
         type: 3}
@@ -950,6 +1014,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: MouseCursor
       objectReference: {fileID: 0}
+    - target: {fileID: 3110035418348401182, guid: 77a1e169d62701b45bb52d6f1697a1a9,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 4961517542583564342, guid: 77a1e169d62701b45bb52d6f1697a1a9,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1005,6 +1074,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6984679303310983671, guid: 77a1e169d62701b45bb52d6f1697a1a9,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 77a1e169d62701b45bb52d6f1697a1a9, type: 3}
 --- !u!4 &2280500959476278093 stripped
@@ -1041,6 +1115,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7197091654747599496, guid: 51f8f7551b747f542986eafcecd157b5,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 7197091654747599497, guid: 51f8f7551b747f542986eafcecd157b5,
         type: 3}
@@ -1127,6 +1206,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ItemController
+      objectReference: {fileID: 0}
+    - target: {fileID: 9050621362957700920, guid: be4203b0b844b094d9fc6121743812ba,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 9050621362957700922, guid: be4203b0b844b094d9fc6121743812ba,
         type: 3}

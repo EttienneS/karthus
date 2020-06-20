@@ -31,7 +31,7 @@ public class Idle : CreatureTask
         }
         else
         {
-            AddSubTask(new Wait(0.1f, "Wait"));
+            AddSubTask(new Wait(1, "Wait"));
         }
     }
 

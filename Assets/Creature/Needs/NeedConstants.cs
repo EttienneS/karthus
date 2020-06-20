@@ -2,6 +2,6 @@
 {
     public static class NeedConstants
     {
-        public const float BaseDegrateRate = -1f / TimeManager.TimeScale;
+        public const float BaseDegrateRate = -0.2f;
     }
 }

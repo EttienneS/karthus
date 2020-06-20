@@ -1,0 +1,16 @@
+{
+  "Name": "Stone Floor",
+  "Mesh": "Floor",
+  "Icon": "Floor",
+  "Materials": "CobbleStone",
+  "TravelCost": "0.5",
+  "Scale": "1,0.1,1",
+  "Description": "Floor made from stone blocks. Move speed is much faster on roads and floors than other surfaces.",
+  "Cost": {
+    "Items": {
+      "Wood": "1"
+    }
+  },
+  "Buildable": "True",
+  "Type": "Floor"
+}
