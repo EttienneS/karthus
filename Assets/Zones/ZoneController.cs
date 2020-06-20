@@ -101,9 +101,11 @@ public class ZoneController : MonoBehaviour
     private ZoneLabel DrawZone(ZoneBase newZone)
     {
         var sprite = Game.Instance.ZoneController.ZoneSprite;
+        var room = false;
         if (newZone is RoomZone)
         {
             sprite = Game.Instance.ZoneController.RoomSprite;
+            room = true;
         }
         else if (newZone is StorageZone)
         {
@@ -113,6 +115,10 @@ public class ZoneController : MonoBehaviour
         foreach (var cell in newZone.Cells)
         {
             SetZoneCellTile(newZone, sprite, cell);
+            if (room)
+            {
+                Game.Instance.StructureController.CreateRoof(cell);
+            }
         }
 
         var label = Instantiate(ZoneLabelPrefab, transform);

@@ -533,7 +533,7 @@ PrefabInstance:
     - target: {fileID: 667879368938610748, guid: 50c5056d9f4c1364194358eaa321df8e,
         type: 3}
       propertyPath: Meshes.Array.size
-      value: 157
+      value: 158
       objectReference: {fileID: 0}
     - target: {fileID: 667879368938610748, guid: 50c5056d9f4c1364194358eaa321df8e,
         type: 3}
@@ -1401,7 +1401,8 @@ PrefabInstance:
         type: 3}
       propertyPath: Meshes.Array.data[157]
       value: 
-      objectReference: {fileID: 2300000, guid: 12ecefcb20dd3034b82ec7809e27bceb, type: 3}
+      objectReference: {fileID: 6781155970440307508, guid: a9b5992c96e305e4c923098e5c52f97b,
+        type: 3}
     - target: {fileID: 667879368938610748, guid: 50c5056d9f4c1364194358eaa321df8e,
         type: 3}
       propertyPath: Meshes.Array.data[158]

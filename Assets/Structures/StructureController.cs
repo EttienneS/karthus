@@ -17,6 +17,15 @@ namespace Structures
         private Dictionary<string, Structure> _structureDataReference;
         private Dictionary<string, string> _structureTypeFileMap;
 
+        public GameObject RoofPrefab;
+        public GameObject RoofContainer;
+
+        public void CreateRoof(Cell cell)
+        {
+            var roof = Instantiate(RoofPrefab, RoofContainer.transform);
+            roof.transform.position = new Vector3(cell.X, cell.Y, cell.Z) + new Vector3(0.5f, 2f, 0.5f);
+        }
+
         public static List<Type> StructureTypes
         {
             get
