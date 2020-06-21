@@ -68,6 +68,10 @@ namespace Assets
             if (pos != null)
             {
                 var startCell = Game.Instance.Map.GetCellAtCoordinate(pos.Value);
+                if (startCell == null)
+                {
+                    return;
+                }
                 var x = startCell.X;
                 var z = startCell.Z;
                 transform.position = new Vector3(x, Game.Instance.MapData.StructureLevel, z) + new Vector3(0.5f, 1, 0.5f);

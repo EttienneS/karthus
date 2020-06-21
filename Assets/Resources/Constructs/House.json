@@ -1,6 +1,6 @@
 {
   "Name": "House",
-  "Floor": "Wood Tile",
+  "Floor": "Wood Floor",
   "Key": {
     "W": "Stone Wall",
     "B": "Bed",
