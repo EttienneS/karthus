@@ -1,4 +1,5 @@
 ﻿using Assets.Helpers;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -7,12 +8,15 @@ namespace Assets
     public class CursorController : MonoBehaviour
     {
         public Light CursorLight;
-        public MeshRenderer MouseMeshRenderer;
         public SpriteRenderer MouseSpriteRenderer;
-
         public RotateDelegate RotateLeft;
         public RotateDelegate RotateRight;
         public ValidateMouseDelegate Validate;
+
+        internal MeshRenderer MeshRenderer;
+        private Sprite _currentSprite;
+        private Dictionary<Cell, MeshRenderer> _draggedRenderers = new Dictionary<Cell, MeshRenderer>();
+        private string _meshName;
 
         private Vector3 _offset = Vector3.zero;
 
@@ -37,18 +41,23 @@ namespace Assets
         public void SetMesh(string name, ValidateMouseDelegate validationFunction)
         {
             DisableMesh();
+            _meshName = name;
+
             var structure = Game.Instance.StructureController.GetMeshForStructure(name, transform);
-            MouseMeshRenderer = structure.renderer;
-
-            MouseMeshRenderer.SetAllMaterial(Game.Instance.FileController.BlueprintMaterial);
-
             _offset = structure.structure.OffsetVector;
 
+            structure.renderer.SetAllMaterial(Game.Instance.FileController.BlueprintMaterial);
+
+            MeshRenderer = structure.renderer;
             Validate = validationFunction;
         }
 
         public void SetSprite(Sprite sprite, ValidateMouseDelegate validationFunction)
         {
+            MouseSpriteRenderer.sprite = sprite;
+            Validate = validationFunction;
+
+            _currentSprite = sprite;
         }
 
         public void Update()
@@ -58,29 +67,65 @@ namespace Assets
             var pos = Game.Instance.GetWorldMousePosition();
             if (pos != null)
             {
-                var cell = Game.Instance.Map.GetCellAtPoint(pos.Value);
+                var startCell = Game.Instance.Map.GetCellAtCoordinate(pos.Value);
+                var x = startCell.X;
+                var z = startCell.Z;
+                transform.position = new Vector3(x, Game.Instance.MapData.StructureLevel, z) + new Vector3(0.5f, 1, 0.5f);
 
-                if (cell == null)
+                if (_currentSprite != null)
+                {
+                    if (Validate?.Invoke(startCell) == false)
+                    {
+                        MouseSpriteRenderer.color = ColorConstants.RedAccent;
+                    }
+                    else
+                    {
+                        MouseSpriteRenderer.color = ColorConstants.WhiteAccent;
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(_meshName))
+            {
+                var selectedCells = Game.Instance.GetSelectedCells();
+
+                if (selectedCells == null || selectedCells.Count == 0)
                 {
                     return;
                 }
 
-                if (MouseMeshRenderer != null)
+                foreach (var cell in selectedCells)
                 {
-                    if (Validate?.Invoke(cell) == false)
+                    MeshRenderer cellRenderer;
+                    if (!_draggedRenderers.ContainsKey(cell))
                     {
-                        MouseMeshRenderer.SetAllMaterial(Game.Instance.FileController.InvalidBlueprintMaterial);
+                        cellRenderer = Game.Instance.StructureController.GetMeshForStructure(_meshName, Game.Instance.Map.transform).renderer;
+                        cellRenderer.transform.position = new Vector3(cell.Vector.x, Game.Instance.MapData.StructureLevel, cell.Vector.z) + _offset;
+                        _draggedRenderers.Add(cell, cellRenderer);
                     }
                     else
                     {
-                        MouseMeshRenderer.SetAllMaterial(Game.Instance.FileController.BlueprintMaterial);
+                        cellRenderer = _draggedRenderers[cell];
+                    }
+
+                    if (Validate?.Invoke(cell) == false)
+                    {
+                        cellRenderer.SetAllMaterial(Game.Instance.FileController.InvalidBlueprintMaterial);
+                    }
+                    else
+                    {
+                        cellRenderer.SetAllMaterial(Game.Instance.FileController.BlueprintMaterial);
                     }
                 }
 
-                var x = cell.X;
-                var z = cell.Z;
-
-                transform.position = new Vector3(x, Game.Instance.MapData.StructureLevel, z) + _offset + new Vector3(0.5f, 0, 0.5f);
+                foreach (var cell in _draggedRenderers.Keys.ToList())
+                {
+                    if (!selectedCells.Contains(cell))
+                    {
+                        Destroy(_draggedRenderers[cell].gameObject);
+                        _draggedRenderers.Remove(cell);
+                    }
+                }
             }
         }
 
@@ -93,9 +138,20 @@ namespace Assets
 
         private void DisableMesh()
         {
-            if (MouseMeshRenderer != null)
+            if (MeshRenderer != null)
             {
-                Destroy(MouseMeshRenderer.gameObject);
+                foreach (var meshRenderer in _draggedRenderers.Values)
+                {
+                    Destroy(meshRenderer.gameObject);
+                }
+                _draggedRenderers.Clear();
+                _meshName = string.Empty;
+            }
+
+            if (_currentSprite != null)
+            {
+                MouseSpriteRenderer.sprite = null;
+                _currentSprite = null;
             }
         }
     }

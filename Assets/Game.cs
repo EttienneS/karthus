@@ -210,8 +210,15 @@ public class Game : MonoBehaviour
         }
     }
 
-    public List<Cell> GetSelectedCells(Vector3 worldStartPoint, Vector3 worldEndPoint)
+    public List<Cell> GetSelectedCells()
     {
+        if (SelectionStartWorld == Vector3.zero)
+        {
+            return new List<Cell>();
+        }
+        var worldStartPoint = SelectionStartWorld;
+        var worldEndPoint = GetWorldMousePosition().Value;
+
         var cells = new List<Cell>();
 
         var startX = Mathf.Clamp(Mathf.Min(worldStartPoint.x, worldEndPoint.x), Map.MinX, Map.MaxX);
@@ -733,7 +740,7 @@ public class Game : MonoBehaviour
 
                     selectSquareImage.gameObject.SetActive(false);
 
-                    SelectedCells = GetSelectedCells(SelectionStartWorld, GetWorldMousePosition().Value);
+                    SelectedCells = GetSelectedCells();
 
                     ZoneBase selectedZone = null;
                     foreach (var cell in SelectedCells)
