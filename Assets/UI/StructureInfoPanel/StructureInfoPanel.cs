@@ -24,7 +24,10 @@ namespace UI
 
         public void Add()
         {
-            Selected.Structure.AddWorkOrder(1, Selected.Option);
+            foreach (var structure in Structures.OfType<WorkStructureBase>())
+            {
+                structure.AddWorkOrder(1, Selected.Option);
+            }
         }
 
         public void Destroy()
