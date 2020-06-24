@@ -9,28 +9,44 @@ public enum AnimationType
 
 public class CreatureRenderer : MonoBehaviour
 {
-    public SpriteRenderer Highlight;
-    public Light Light;
-    public TextMeshPro Text;
     internal Creature Data = new Creature();
     internal float RemainingTextDuration;
-    public Animator Animator;
+    private Animator Animator;
+    private SpriteRenderer Highlight;
+    private TextMeshPro Text;
 
     public void Awake()
     {
-        Highlight.gameObject.SetActive(false);
+        Highlight?.gameObject.SetActive(false);
     }
 
     public void ShowText(string text, float duration)
     {
-        Text.text = text;
-        Text.color = ColorConstants.WhiteBase;
+        if (Text != null)
+        {
+            Text.text = text;
+            Text.color = ColorConstants.WhiteBase;
 
-        RemainingTextDuration = duration;
+            RemainingTextDuration = duration;
+        }
     }
 
     public void Start()
     {
+        Highlight = Instantiate(Game.Instance.CreatureController.HightlightPrefab, transform);
+        Highlight.gameObject.SetActive(false);
+        Text = GetComponent<TextMeshPro>();
+        if (Text == null)
+        {
+            Text = GetComponentInChildren<TextMeshPro>();
+        }
+
+        Animator = GetComponent<Animator>();
+        if (Animator == null)
+        {
+            Animator = GetComponentInChildren<Animator>();
+        }
+
         Data.Start();
     }
 
@@ -40,14 +56,6 @@ public class CreatureRenderer : MonoBehaviour
 
         if (Data.Update(Time.deltaTime))
         {
-            if (Game.Instance.TimeManager.Data.Hour < 6 || Game.Instance.TimeManager.Data.Hour > 18)
-            {
-                EnableLight();
-            }
-            else
-            {
-                DisableLight();
-            }
         }
 
         if (Animator != null)
@@ -67,28 +75,12 @@ public class CreatureRenderer : MonoBehaviour
         }
     }
 
-    internal void DisableLight()
-    {
-        if (Light != null)
-        {
-            Light.gameObject.SetActive(false);
-        }
-    }
-
     internal void EnableHighlight(Color color)
     {
         if (Highlight != null)
         {
             Highlight.color = color;
             Highlight.gameObject.SetActive(true);
-        }
-    }
-
-    internal void EnableLight()
-    {
-        if (Light != null)
-        {
-            Light.gameObject.SetActive(true);
         }
     }
 
@@ -127,18 +119,21 @@ public class CreatureRenderer : MonoBehaviour
 
     private void UpdateFloatingText()
     {
-        if (RemainingTextDuration > 0)
+        if (Text != null)
         {
-            RemainingTextDuration -= Time.deltaTime;
-
-            if (RemainingTextDuration < 1f)
+            if (RemainingTextDuration > 0)
             {
-                Text.color = new Color(Text.color.r, Text.color.g, Text.color.b, RemainingTextDuration);
+                RemainingTextDuration -= Time.deltaTime;
+
+                if (RemainingTextDuration < 1f)
+                {
+                    Text.color = new Color(Text.color.r, Text.color.g, Text.color.b, RemainingTextDuration);
+                }
             }
-        }
-        else
-        {
-            Text.text = "";
+            else
+            {
+                Text.text = "";
+            }
         }
     }
 }

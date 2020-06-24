@@ -15,6 +15,8 @@ public class Creature : IEntity
 {
     public const string SelfKey = "Self";
 
+    public string Model;
+
     public AnimationType Animation = AnimationType.Idle;
 
     [JsonIgnore]
@@ -23,6 +25,7 @@ public class Creature : IEntity
     public Direction Facing = Direction.S;
 
     public List<Feeling> Feelings = new List<Feeling>();
+
     [JsonIgnore]
     public Behaviours.GetBehaviourTaskDelegate GetBehaviourTask;
 
@@ -639,6 +642,7 @@ public class Creature : IEntity
             Task = null;
         }
     }
+
     internal bool Update(float timeDelta)
     {
         if (Game.Instance.TimeManager.Paused)

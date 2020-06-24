@@ -1,5 +1,7 @@
 ﻿{
   "Name": "Cow",
+  "Model": "Cow",
+
   "ValueProperties": {
   },
   "Speed": 0.1,

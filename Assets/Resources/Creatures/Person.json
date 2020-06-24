@@ -1,5 +1,6 @@
 ﻿{
   "Name": "Person",
+  "Model": "Character",
   "Speed": 0.1,
 
   "Strenght": 14,

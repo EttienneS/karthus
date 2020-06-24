@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class CreatureController : MonoBehaviour
 {
-    public CreatureRenderer CreaturePrefab;
+    //public CreatureRenderer CreaturePrefab;
+    public SpriteRenderer HightlightPrefab;
+    public List<CreatureRenderer> AllPrefabs;
 
     private Dictionary<string, Creature> _beastiary;
+
     internal Dictionary<string, Creature> Beastiary
     {
         get
@@ -89,7 +93,8 @@ public class CreatureController : MonoBehaviour
 
     internal CreatureRenderer SpawnCreature(Creature creatureData, Cell cell, Faction faction)
     {
-        var creature = Instantiate(CreaturePrefab, transform);
+        var prefab = AllPrefabs.First(c => c.name.Equals(creatureData.Model, StringComparison.OrdinalIgnoreCase));
+        var creature = Instantiate(prefab, transform);
 
         creature.Data = creatureData;
         creature.Data.CreatureRenderer = creature;

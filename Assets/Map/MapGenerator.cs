@@ -77,8 +77,6 @@ public class MapGenerator
 
     public void SpawnCreatures()
     {
-        return;
-
         foreach (var monster in Game.Instance.CreatureController.Beastiary)
         {
             if (monster.Key == "Person")

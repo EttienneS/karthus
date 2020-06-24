@@ -285,16 +285,28 @@ PrefabInstance:
       propertyPath: UIController
       value: 
       objectReference: {fileID: 1541317929}
-    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
-        type: 3}
-      propertyPath: MapData.ChunkSize
-      value: 120
-      objectReference: {fileID: 0}
     - target: {fileID: 4791717066980201731, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
       propertyPath: m_Name
       value: GameController
       objectReference: {fileID: 0}
+    - target: {fileID: 6122762649674242587, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: AllPrefabs.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6122762649674242587, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: AllPrefabs.Array.data[0]
+      value: 
+      objectReference: {fileID: -7664668194204859468, guid: b96441f556232954f9b163c51e6fba99,
+        type: 3}
+    - target: {fileID: 6122762649674242587, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: AllPrefabs.Array.data[1]
+      value: 
+      objectReference: {fileID: 4628280055276069757, guid: 037d3aabceb18cc458983da91425d3c6,
+        type: 3}
     - target: {fileID: 9043323423647380584, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
       propertyPath: m_LocalPosition.x
