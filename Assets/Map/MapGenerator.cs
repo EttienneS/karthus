@@ -43,7 +43,8 @@ public class MapGenerator
         //{
         //    return BiomeTemplates["Water"];
         //}
-        return BiomeTemplates["Default"];
+        return BiomeTemplates["Debug"];
+        //return BiomeTemplates["Default"];
     }
 
     public (Cell bottomLeft, Cell bottomRight, Cell topLeft, Cell topRight) GetCorners(List<Cell> square)

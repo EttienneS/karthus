@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum AnimationType
 {
-    Idle, Running, Jumping
+    Idle, Running, Dead
 }
 
 public class CreatureRenderer : MonoBehaviour
@@ -56,13 +56,12 @@ public class CreatureRenderer : MonoBehaviour
 
         if (Data.Update(Time.deltaTime))
         {
-        }
-
-        if (Animator != null)
-        {
-            foreach (AnimationType animationState in Enum.GetValues(typeof(AnimationType)))
+            if (Animator != null)
             {
-                Animator.SetBool(animationState.ToString(), animationState == Data.Animation);
+                foreach (AnimationType animationState in Enum.GetValues(typeof(AnimationType)))
+                {
+                    Animator.SetBool(animationState.ToString(), animationState == Data.Animation);
+                }
             }
         }
     }
@@ -108,13 +107,13 @@ public class CreatureRenderer : MonoBehaviour
             {
                 if (lastNode != null)
                 {
-                    Gizmos.DrawLine(lastNode.Vector + new Vector3(0, 0, 5), cell.Vector + new Vector3(0, 0, 5));
+                    Gizmos.DrawLine(lastNode.Vector + new Vector3(0, 1, 0), cell.Vector + new Vector3(0, 1, 0));
                 }
                 lastNode = cell;
             }
         }
 
-        Gizmos.DrawCube(Game.Instance.Map.GetCellAtCoordinate(Data.TargetCoordinate).Vector + new Vector3(0, 0, 5), new Vector3(0.1f, 0.1f, 0.1f));
+        Gizmos.DrawCube(Game.Instance.Map.GetCellAtCoordinate(Data.TargetCoordinate).Vector + new Vector3(0, 1, 0), new Vector3(0.1f, 0.1f, 0.1f));
     }
 
     private void UpdateFloatingText()

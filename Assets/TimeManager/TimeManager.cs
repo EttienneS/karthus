@@ -30,7 +30,7 @@ public class TimeManager : MonoBehaviour
 
     public float MinLightAngle = 20f;
 
-    internal float CreatureTick = 0.1f;
+    internal float CreatureTick = 0.05f;
 
     private TimeStep _timeStep;
 

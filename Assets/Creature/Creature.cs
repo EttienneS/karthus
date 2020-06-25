@@ -648,6 +648,12 @@ public class Creature : IEntity
         if (Game.Instance.TimeManager.Paused)
             return false;
 
+        if (Dead)
+        {
+            Animation = AnimationType.Dead;
+            return true;
+        }
+
         InternalTick += timeDelta;
         if (InternalTick >= Game.Instance.TimeManager.CreatureTick)
         {
@@ -867,7 +873,19 @@ public class Creature : IEntity
         {
             // reached the cell
             Path.RemoveAt(0);
-            return;
+
+            if (Path.Count > 0)
+            {
+                nextCell = Path[0];
+                targetX = nextCell.Vector.x;
+                targetZ = nextCell.Vector.z;
+            }
+            else
+            {
+                // reached end of path
+                return;
+            }
+
         }
 
         Moving = true;
@@ -934,6 +952,8 @@ public class Creature : IEntity
         CreatureRenderer.UpdatePosition();
     }
 
+    private bool _movingToEngage;
+
     private void ProcessCombat()
     {
         try
@@ -945,7 +965,7 @@ public class Creature : IEntity
             var (outgoingDamage, bestAttack) = GetOffense(target);
             var (boostEffect, bestBuff) = GetBestBuff();
 
-            if (bestAttack == null && bestDefense == null && bestBuff == null)
+            if (!_movingToEngage && bestAttack == null && bestDefense == null && bestBuff == null)
             {
                 var minRange = GetMinRange();
 
@@ -953,7 +973,9 @@ public class Creature : IEntity
                 {
                     if (Cell.DistanceTo(combatant.Cell) > minRange)
                     {
-                        SetTargetCoordinate(combatant.X, combatant.Z);
+                        var closestCell = combatant.Cell.NonNullNeighbors.OrderBy(c => c.DistanceTo(Cell)).First();
+                        SetTargetCoordinate(closestCell.X, closestCell.Z);
+                        _movingToEngage = true;
                         break;
                     }
                 }
@@ -961,6 +983,7 @@ public class Creature : IEntity
                 return;
             }
 
+            StopMoving();
             if (boostEffect > outgoingDamage && boostEffect > defendedDamage)
             {
                 bestBuff.Activate();
@@ -991,6 +1014,14 @@ public class Creature : IEntity
         {
             Debug.LogError(ex.ToString());
         }
+    }
+
+    private void StopMoving()
+    {
+        _movingToEngage = false;
+        Moving = false;
+        TargetCoordinate = (X, Z);
+        Path = null;
     }
 
     private void ProcessTask()

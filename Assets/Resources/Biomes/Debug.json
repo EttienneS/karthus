@@ -1,0 +1,16 @@
+{
+  "BiomeRegions": [
+    {
+      "Content": {},
+      "Min": 0.0,
+      "Max": 1,
+      "Name": "Grass",
+      "Red": 0,
+      "Green": 1,
+      "Blue": 0,
+      "Alpha": 0
+    }
+  ],
+  "Name": "Default",
+  "Rarity": 1
+}
