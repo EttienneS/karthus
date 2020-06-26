@@ -15,15 +15,12 @@ public class Creature : IEntity
 {
     public const string SelfKey = "Self";
 
-    public string Model;
-
     public AnimationType Animation = AnimationType.Idle;
 
     [JsonIgnore]
     public List<Creature> Combatants = new List<Creature>();
 
     public Direction Facing = Direction.S;
-
     public List<Feeling> Feelings = new List<Feeling>();
 
     [JsonIgnore]
@@ -31,7 +28,7 @@ public class Creature : IEntity
 
     public List<OffensiveActionBase> IncomingAttacks = new List<OffensiveActionBase>();
     public Mobility Mobility;
-    public bool Moving;
+    public string Model;
 
     [JsonIgnore]
     public List<Cell> Path = new List<Cell>();
@@ -41,7 +38,6 @@ public class Creature : IEntity
     public (float x, float z) TargetCoordinate;
 
     public bool UnableToFindPath;
-
     internal int Frame;
 
     internal float InternalTick = float.MaxValue;
@@ -54,6 +50,7 @@ public class Creature : IEntity
     [JsonIgnore]
     private List<Cell> _awareness;
 
+    private bool _combatMoving;
     private Faction _faction;
 
     private int _selfTicks;
@@ -457,12 +454,13 @@ public class Creature : IEntity
 
     public void SetTargetCoordinate(float targetX, float targetZ)
     {
+        UnableToFindPath = false;
+
         // only change the path and reset if the coords do not match
         if (TargetCoordinate.x != targetX || TargetCoordinate.z != targetZ)
         {
             TargetCoordinate = (targetX, targetZ);
             Path = null;
-            UnableToFindPath = false;
         }
     }
 
@@ -838,8 +836,7 @@ public class Creature : IEntity
     {
         if (X == TargetCoordinate.x && Z == TargetCoordinate.z)
         {
-            // no need to move
-            Moving = false;
+            StopMoving();
             return;
         }
 
@@ -853,7 +850,7 @@ public class Creature : IEntity
 
         if (Path == null || Path.Count == 0)
         {
-            UnableToFindPath = true;
+            StopMoving(true);
             Debug.LogWarning("Unable to find path!");
             return;
         }
@@ -864,7 +861,7 @@ public class Creature : IEntity
 
         if (!nextCell.Pathable(Mobility))
         {
-            Path = null;
+            StopMoving(true);
             Say("...", 5);
             return;
         }
@@ -885,10 +882,7 @@ public class Creature : IEntity
                 // reached end of path
                 return;
             }
-
         }
-
-        Moving = true;
 
         var maxX = Mathf.Max(targetX, X);
         var minX = Mathf.Min(targetX, X);
@@ -950,14 +944,22 @@ public class Creature : IEntity
         }
 
         CreatureRenderer.UpdatePosition();
-    }
 
-    private bool _movingToEngage;
+        if (X == TargetCoordinate.x && Z == TargetCoordinate.z)
+        {
+            StopMoving();
+        }
+    }
 
     private void ProcessCombat()
     {
         try
         {
+            if (_combatMoving)
+            {
+                return;
+            }
+
             var target = Combatants[0];
             var incomingAttack = GetMostDangerousUnblockedIncomingAttack();
 
@@ -965,7 +967,7 @@ public class Creature : IEntity
             var (outgoingDamage, bestAttack) = GetOffense(target);
             var (boostEffect, bestBuff) = GetBestBuff();
 
-            if (!_movingToEngage && bestAttack == null && bestDefense == null && bestBuff == null)
+            if (bestAttack == null && bestDefense == null && bestBuff == null)
             {
                 var minRange = GetMinRange();
 
@@ -974,8 +976,8 @@ public class Creature : IEntity
                     if (Cell.DistanceTo(combatant.Cell) > minRange)
                     {
                         var closestCell = combatant.Cell.NonNullNeighbors.OrderBy(c => c.DistanceTo(Cell)).First();
-                        SetTargetCoordinate(closestCell.X, closestCell.Z);
-                        _movingToEngage = true;
+                        SetTargetCoordinate(closestCell.Vector.x, closestCell.Vector.z);
+                        _combatMoving = true;
                         break;
                     }
                 }
@@ -983,7 +985,6 @@ public class Creature : IEntity
                 return;
             }
 
-            StopMoving();
             if (boostEffect > outgoingDamage && boostEffect > defendedDamage)
             {
                 bestBuff.Activate();
@@ -1014,14 +1015,6 @@ public class Creature : IEntity
         {
             Debug.LogError(ex.ToString());
         }
-    }
-
-    private void StopMoving()
-    {
-        _movingToEngage = false;
-        Moving = false;
-        TargetCoordinate = (X, Z);
-        Path = null;
     }
 
     private void ProcessTask()
@@ -1091,6 +1084,16 @@ public class Creature : IEntity
                 IncomingAttacks.Remove(attack);
             }
         }
+    }
+
+    private void StopMoving(bool failed = false)
+    {
+        Path = null;
+        TargetCoordinate = (X, Z);
+
+        _combatMoving = false;
+
+        UnableToFindPath = failed;
     }
 
     private void UpdateLimbs(float timeDelta)
