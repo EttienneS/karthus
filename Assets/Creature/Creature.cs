@@ -834,6 +834,14 @@ public class Creature : IEntity
 
     private void Move()
     {
+        if (Mobility != Mobility.Fly && Cell.TravelCost < 0)
+        {
+            Debug.LogError("Unstuck");
+
+            Cell = Cell.NonNullNeighbors.FirstOrDefault(c => c.TravelCost > 0);
+            return;
+        }
+
         if (X == TargetCoordinate.x && Z == TargetCoordinate.z)
         {
             StopMoving();
