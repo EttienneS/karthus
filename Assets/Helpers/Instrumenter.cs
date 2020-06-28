@@ -16,13 +16,18 @@ namespace Assets.Helpers
         public string Name { get; set; }
         public Stopwatch Stopwatch { get; set; }
 
-        public static Instrumenter Start()
+        public static Instrumenter Start(string info = "")
         {
             var stackTrace = new StackTrace();
             var frame = stackTrace.GetFrames()[1];
             var method = frame.GetMethod();
 
-            return new Instrumenter($"[{method.DeclaringType.Name}.{method.Name}]");
+            var name = $"[{method.DeclaringType.Name}.{method.Name}]";
+            if (!string.IsNullOrEmpty(info))
+            {
+                name += $" {info}";
+            }
+            return new Instrumenter(name);
         }
 
         public void Dispose()

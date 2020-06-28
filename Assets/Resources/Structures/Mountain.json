@@ -2,7 +2,7 @@
   "Name": "Mountain",
   "Mesh": "stone_tall1,stone_tall10,stone_tall2,stone_tall3,stone_tall4,stone_tall5,stone_tall6,stone_tall7,stone_tall8,stone_tall9",
   "Materials": "RockLight",
-  "TravelCost": "3",
+  "TravelCost": "-1",
   "Buildable": "False",
   "SpawnRotation": "True",
   "Cost": {

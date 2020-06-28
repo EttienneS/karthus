@@ -1,35 +1,52 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Helpers;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public static class Pathfinder
 {
+    private static Dictionary<string, List<Cell>> _pathCache = new Dictionary<string, List<Cell>>();
     private static CellPriorityQueue _searchFrontier;
     private static int _searchFrontierPhase;
 
     public static List<Cell> FindPath(Cell fromCell, Cell toCell, Mobility mobility)
     {
-        if (fromCell != null && toCell != null)
+        var id = $"{fromCell}_{toCell}_{mobility}";
+
+        using (Instrumenter.Start(id))
         {
-            if (Search(fromCell, toCell, mobility))
+            if (fromCell != null && toCell != null)
             {
-                var path = new List<Cell>
+                if (_pathCache.ContainsKey(id))
                 {
-                    toCell
-                };
-
-                var current = toCell;
-                while (current != fromCell)
-                {
-                    current = current.PathFrom;
-                    path.Add(current);
+                    Debug.Log("Use cached path");
+                    return _pathCache[id];
                 }
+                else
+                {
+                    if (Search(fromCell, toCell, mobility))
+                    {
+                        var path = new List<Cell> { toCell };
 
-                return path;
+                        var current = toCell;
+                        while (current != fromCell)
+                        {
+                            current = current.PathFrom;
+                            path.Add(current);
+                        }
+
+                        CachePath(fromCell, toCell, mobility, path);
+                        return path;
+                    }
+                    else
+                    {
+                        InvalidatePath(fromCell, toCell, mobility);
+                    }
+                }
             }
-        }
 
-        return null;
+            return null;
+        }
     }
 
     public static Cell GetClosestOpenCell(Cell[] map, Cell origin, Mobility mobility)
@@ -49,15 +66,9 @@ public static class Pathfinder
             return new List<Cell>();
         }
 
-        var reachableCells = (from cell in
-                    map.Where(c =>
-                        c != null && c.DistanceTo(startPoint) <= speed)
-                              let path = FindPath(startPoint, cell, mobility)
-                              let pathCost = GetPathCost(path) - startPoint.TravelCost
-                              where path.Count > 0 && pathCost <= speed
-                              select cell)
-            .Distinct()
-            .ToList();
+        var reachableCells = EnumerateCells(map, startPoint, speed, mobility)
+                                            .Distinct()
+                                            .ToList();
 
         reachableCells.Remove(startPoint);
 
@@ -95,6 +106,61 @@ public static class Pathfinder
         return GetPathCost(path);
     }
 
+    private static void CachePath(Cell fromCell, Cell toCell, Mobility mobility, List<Cell> path)
+    {
+        var id = $"{fromCell}_{toCell}_{mobility}";
+        var reverse = $"{toCell}_{fromCell}_{mobility}";
+
+        if (_pathCache.ContainsKey(id))
+        {
+            _pathCache[id] = path;
+        }
+        else
+        {
+            _pathCache.Add(id, path);
+        }
+
+        path.Reverse();
+        if (_pathCache.ContainsKey(reverse))
+        {
+            _pathCache[reverse] = path;
+        }
+        else
+        {
+            _pathCache.Add(reverse, path);
+        }
+    }
+
+    private static IEnumerable<Cell> EnumerateCells(Cell[] map, Cell startPoint, int speed, Mobility mobility)
+    {
+        foreach (var cell in map.Where(c => c != null &&
+                                            c.DistanceTo(startPoint) <= speed))
+        {
+            var path = FindPath(startPoint, cell, mobility);
+            var pathCost = GetPathCost(path) - startPoint.TravelCost;
+            if (path.Count > 0 && pathCost <= speed)
+            {
+                yield return cell;
+            }
+        }
+    }
+
+    private static void InvalidatePath(Cell fromCell, Cell toCell, Mobility mobility)
+    {
+        var id = $"{fromCell}_{toCell}_{mobility}";
+        var reverse = $"{toCell}_{fromCell}_{mobility}";
+
+        if (_pathCache.ContainsKey(id))
+        {
+            _pathCache.Remove(id);
+        }
+
+        if (_pathCache.ContainsKey(reverse))
+        {
+            _pathCache.Remove(reverse);
+        }
+    }
+
     private static bool Search(Cell fromCell, Cell toCell, Mobility mobility)
     {
         try
@@ -128,13 +194,12 @@ public static class Pathfinder
                 {
                     var neighbor = current.GetNeighbor(d);
 
-                    if (neighbor == null || !neighbor.Pathable(mobility))
+                    if (neighbor?.Pathable(mobility) != true)
                     {
                         continue;
                     }
 
                     var neighborTravelCost = 1f;
-
                     if (mobility != Mobility.Fly)
                     {
                         neighborTravelCost = neighbor.TravelCost;
