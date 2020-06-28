@@ -32,8 +32,8 @@ namespace Needs
                     _chatDelta = 0;
                     var friend = friends.GetRandomItem();
 
-                    Creature.Say($"Hey {friend.Name}!", 2);
-                    friend.Say($"Sup {Creature.Name}!", 2);
+                    Creature.Say($"Hey {friend.Name}!");
+                    friend.Say($"Sup {Creature.Name}!");
 
                     Creature.AddRelationshipEvent(friend, "Friendly Chat", 5);
                     Current += 25f;

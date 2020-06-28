@@ -444,7 +444,7 @@ public class Creature : IEntity
         HeldItem.Reserve(this);
     }
 
-    public void Say(string message, float duration = 1f)
+    public void Say(string message, float duration = 10f)
     {
         if (FactionName == FactionConstants.Player)
         {
@@ -862,7 +862,7 @@ public class Creature : IEntity
         if (!nextCell.Pathable(Mobility))
         {
             StopMoving(true);
-            Say("...", 5);
+            Say("...");
             return;
         }
 
