@@ -13,20 +13,18 @@ public class WorldCanvasController : MonoBehaviour
         rect.sizeDelta = new Vector2(Game.Instance.MapData.ChunkSize, Game.Instance.MapData.ChunkSize);
         transform.position = new Vector3(Game.Instance.MapData.ChunkSize / 2, 0, Game.Instance.MapData.ChunkSize / 2);
 
-        var startX = ChunkRenderer.Data.X * Game.Instance.MapData.ChunkSize;
-        var endX = startX + Game.Instance.MapData.ChunkSize;
-        var startZ = ChunkRenderer.Data.Z * Game.Instance.MapData.ChunkSize;
-        var endZ = startZ + Game.Instance.MapData.ChunkSize;
-
-        for (var x = startX; x < endX; x += 10)
-        {
-            for (var z = startZ; z < endZ; z += 10)
-            {
-                var cell = Game.Instance.Map.GetCellAtCoordinate(x, z);
-
-                AddCellLabel(cell, $"{x}\n{z}");
-            }
-        }
+        //var startX = ChunkRenderer.Data.X * Game.Instance.MapData.ChunkSize;
+        //var endX = startX + Game.Instance.MapData.ChunkSize;
+        //var startZ = ChunkRenderer.Data.Z * Game.Instance.MapData.ChunkSize;
+        //var endZ = startZ + Game.Instance.MapData.ChunkSize; 
+        //for (var x = startX; x < endX; x += 10)
+        //{
+        //    for (var z = startZ; z < endZ; z += 10)
+        //    {
+        //        var cell = Game.Instance.Map.GetCellAtCoordinate(x, z);
+        //        AddCellLabel(cell, $"{x}\n{z}");
+        //    }
+        //}
     }
 
     public void AddCellLabel(Cell cell, string text)

@@ -288,32 +288,67 @@ PrefabInstance:
     - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
       propertyPath: MapData.CreaturesToSpawn
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
       propertyPath: MapData.ChunkSize
-      value: 240
+      value: 120
       objectReference: {fileID: 0}
     - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
       propertyPath: MapData.HeightCurve.m_Curve.Array.data[5].value
-      value: 0.8766146
+      value: 0.2072617
       objectReference: {fileID: 0}
     - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
       propertyPath: MapData.HeightCurve.m_Curve.Array.data[5].time
-      value: 0.9891454
+      value: 0.998911
       objectReference: {fileID: 0}
     - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
       propertyPath: MapData.HeightCurve.m_Curve.Array.data[4].value
-      value: 0.6793239
+      value: 0.20497002
       objectReference: {fileID: 0}
     - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
       propertyPath: MapData.HeightCurve.m_Curve.Array.data[4].time
-      value: 0.85228986
+      value: 0.8199391
+      objectReference: {fileID: 0}
+    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: MapData.HeightScale
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: MapData.HeightCurve.m_Curve.Array.data[5].inSlope
+      value: 0.020941047
+      objectReference: {fileID: 0}
+    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: MapData.HeightCurve.m_Curve.Array.data[5].outSlope
+      value: 0.020941047
+      objectReference: {fileID: 0}
+    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: MapData.HeightCurve.m_Curve.Array.data[5].inWeight
+      value: 0.43634042
+      objectReference: {fileID: 0}
+    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: MapData.HeightCurve.m_Curve.Array.data[4].inSlope
+      value: -0.0118800355
+      objectReference: {fileID: 0}
+    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: MapData.HeightCurve.m_Curve.Array.data[4].outSlope
+      value: -0.0118800355
+      objectReference: {fileID: 0}
+    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: MapData.HeightCurve.m_Curve.Array.data[4].outWeight
+      value: 0.45458275
       objectReference: {fileID: 0}
     - target: {fileID: 4791717066980201731, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}

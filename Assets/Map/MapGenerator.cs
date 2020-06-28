@@ -72,8 +72,8 @@ public class MapGenerator
         for (int i = 0; i < Game.Instance.MapData.CreaturesToSpawn; i++)
         {
             var c = Game.Instance.CreatureController.SpawnCreature(Game.Instance.CreatureController.GetCreatureOfType("Person"),
-                                                          Game.Instance.Map.GetNearestPathableCell(center, Mobility.Walk, 10),
-                                                          faction);
+                                                                   Game.Instance.Map.GetNearestPathableCell(center, Mobility.Walk, 10),
+                                                                   faction);
         }
     }
 
