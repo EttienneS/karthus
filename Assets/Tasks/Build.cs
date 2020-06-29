@@ -62,7 +62,7 @@ public class Build : CreatureTask
         {
             creature.Face(TargetStructure.Cell);
             var time = TargetStructure.Cost.Items.Sum(i => i.Value) * 5;
-            AddSubTask(new Wait(time, "Building"));
+            AddSubTask(new Wait(time, "Building", AnimationType.Interact));
             Built = true;
             return false;
         }
@@ -79,7 +79,7 @@ public class Build : CreatureTask
             {
                 throw new TaskFailedException("Cannot build, cell occupied");
             }
-            AddSubTask(new Wait(1, "Cell occupied"));
+            AddSubTask(new Wait(1, "Cell occupied", AnimationType.Interact));
             return false;
         }
         return true;

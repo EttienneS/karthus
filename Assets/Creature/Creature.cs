@@ -15,19 +15,20 @@ public class Creature : IEntity
 {
     public const string SelfKey = "Self";
 
-    public AnimationType Animation = AnimationType.Idle;
-
     [JsonIgnore]
     public List<Creature> Combatants = new List<Creature>();
 
     public Direction Facing = Direction.S;
+
     public List<Feeling> Feelings = new List<Feeling>();
 
     [JsonIgnore]
     public Behaviours.GetBehaviourTaskDelegate GetBehaviourTask;
 
     public List<OffensiveActionBase> IncomingAttacks = new List<OffensiveActionBase>();
+
     public Mobility Mobility;
+
     public string Model;
 
     [JsonIgnore]
@@ -38,6 +39,7 @@ public class Creature : IEntity
     public (float x, float z) TargetCoordinate;
 
     public bool UnableToFindPath;
+
     internal int Frame;
 
     internal float InternalTick = float.MaxValue;
@@ -51,6 +53,7 @@ public class Creature : IEntity
     private List<Cell> _awareness;
 
     private bool _combatMoving;
+
     private Faction _faction;
 
     private int _selfTicks;
@@ -452,6 +455,11 @@ public class Creature : IEntity
         }
     }
 
+    public void SetAnimation(AnimationType animation)
+    {
+        CreatureRenderer?.SetAnimation(animation);
+    }
+
     public void SetTargetCoordinate(float targetX, float targetZ)
     {
         UnableToFindPath = false;
@@ -648,7 +656,7 @@ public class Creature : IEntity
 
         if (Dead)
         {
-            Animation = AnimationType.Dead;
+            SetAnimation(AnimationType.Dead);
             return true;
         }
 
@@ -834,32 +842,25 @@ public class Creature : IEntity
 
     private void Move()
     {
-        if (Mobility != Mobility.Fly && Cell.TravelCost < 0)
-        {
-            Debug.LogError("Unstuck");
-
-            Cell = Cell.NonNullNeighbors.FirstOrDefault(c => c.TravelCost > 0);
-            return;
-        }
-
         if (X == TargetCoordinate.x && Z == TargetCoordinate.z)
         {
             StopMoving();
             return;
         }
 
+        var src = Game.Instance.Map.GetCellAtCoordinate(X, Z);
+        var tgt = Game.Instance.Map.GetCellAtCoordinate(TargetCoordinate.x, TargetCoordinate.z);
         if (Path == null || Path.Count == 0)
         {
-            Path = Pathfinder.FindPath(Game.Instance.Map.GetCellAtCoordinate(X, Z),
-                                       Game.Instance.Map.GetCellAtCoordinate(TargetCoordinate.x, TargetCoordinate.z),
-                                       Mobility);
+            Path = Pathfinder.FindPath(src, tgt, Mobility);
             Path?.Reverse();
         }
 
         if (Path == null || Path.Count == 0)
         {
             StopMoving(true);
-            Debug.LogWarning("Unable to find path!");
+            
+            Debug.LogWarning($"Unable to find path! ({X}:{Z}) >> ({TargetCoordinate.x}:{TargetCoordinate.z})");
             return;
         }
 
@@ -948,7 +949,7 @@ public class Creature : IEntity
 
         if (X > 0 || Z > 0)
         {
-            Animation = AnimationType.Running;
+            SetAnimation(AnimationType.Running);
         }
 
         CreatureRenderer.UpdatePosition();
@@ -1001,6 +1002,7 @@ public class Creature : IEntity
             {
                 // aggro
                 Log($"{Name} launches a {bestAttack.Name} at {target.Name}'s {bestAttack.TargetLimb.Name}");
+                SetAnimation(AnimationType.Attack);
 
                 bestAttack.Reset();
 

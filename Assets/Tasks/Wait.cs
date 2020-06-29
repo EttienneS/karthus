@@ -4,6 +4,7 @@ public class Wait : CreatureTask
 {
     public int TimerId;
     public string Reason;
+    public AnimationType Animation;
 
     public override string Message
     {
@@ -22,8 +23,9 @@ public class Wait : CreatureTask
     {
     }
 
-    public Wait(int duration, string reason) : this()
+    public Wait(int duration, string reason, AnimationType animation = AnimationType.Idle) : this()
     {
+        Animation = animation;
         TimerId = Game.Instance.TimeManager.StartTimer(duration);
         Reason = reason;
     }
@@ -35,6 +37,7 @@ public class Wait : CreatureTask
 
     public override bool Done(Creature creature)
     {
+        creature.SetAnimation(Animation);
         if (GetTimer().IsDone())
         {
             ShowDoneEmote(creature);

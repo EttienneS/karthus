@@ -21,9 +21,9 @@ public class Idle : CreatureTask
 
     public Idle(Creature creature) : this()
     {
-        if (Random.value > 0.6)
+        if (Random.value > 0.7)
         {
-            var wanderCircle = Game.Instance.Map.GetCircle(creature.Cell, 2).Where(c => c.TravelCost == 1).ToList();
+            var wanderCircle = Game.Instance.Map.GetCircle(creature.Cell, 3).Where(c => c.TravelCost == 1).ToList();
             if (wanderCircle.Count > 0)
             {
                 AddSubTask(new Move(wanderCircle[Random.Range(0, wanderCircle.Count - 1)]));
@@ -31,7 +31,7 @@ public class Idle : CreatureTask
         }
         else
         {
-            AddSubTask(new Wait(1, "Wait"));
+            AddSubTask(new Wait(Random.Range(3, 10), "Wait"));
         }
     }
 

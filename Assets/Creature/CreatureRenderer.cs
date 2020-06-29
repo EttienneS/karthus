@@ -4,14 +4,14 @@ using UnityEngine;
 
 public enum AnimationType
 {
-    Idle, Running, Dead
+    Idle, Running, Dead, Attack, Interact
 }
 
 public class CreatureRenderer : MonoBehaviour
 {
+    internal Animator Animator;
     internal Creature Data = new Creature();
     internal float RemainingTextDuration;
-    private Animator Animator;
     private SpriteRenderer Highlight;
     private TextMeshPro Text;
 
@@ -56,13 +56,6 @@ public class CreatureRenderer : MonoBehaviour
 
         if (Data.Update(Time.deltaTime))
         {
-            if (Animator != null)
-            {
-                foreach (AnimationType animationState in Enum.GetValues(typeof(AnimationType)))
-                {
-                    Animator.SetBool(animationState.ToString(), animationState == Data.Animation);
-                }
-            }
         }
     }
 
@@ -83,6 +76,19 @@ public class CreatureRenderer : MonoBehaviour
         }
     }
 
+    internal void SetAnimation(AnimationType animation)
+    {
+        if (Animator != null)
+        {
+            foreach (AnimationType animationState in Enum.GetValues(typeof(AnimationType)))
+            {
+                if (animationState == AnimationType.Idle)
+                    continue;
+
+                Animator.SetBool(animationState.ToString(), animationState == animation);
+            }
+        }
+    }
     internal void UpdatePosition()
     {
         transform.position = new Vector3(Data.X, Data.Cell.Y, Data.Z);

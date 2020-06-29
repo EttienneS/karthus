@@ -148,7 +148,7 @@ public class MapGenerator
                         {
                             cell.SetNeighbor(Direction.SW, Game.Instance.Map.CellLookup[(x - 1, z - 1)]);
 
-                            if (x < 0 - 1)
+                            if (x < size - 1)
                             {
                                 cell.SetNeighbor(Direction.SE, Game.Instance.Map.CellLookup[(x + 1, z - 1)]);
                             }

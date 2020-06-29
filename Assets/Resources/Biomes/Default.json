@@ -5,7 +5,7 @@
       },
       "Min": 0.0,
       "Max": 0.3,
-      "TravelCost": -1,
+      "TravelCost": 50,
       "Name": "Sand",
       "Red": 1,
       "Green": 0,

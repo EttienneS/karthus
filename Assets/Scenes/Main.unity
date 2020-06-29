@@ -293,7 +293,7 @@ PrefabInstance:
     - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
       propertyPath: MapData.ChunkSize
-      value: 60
+      value: 120
       objectReference: {fileID: 0}
     - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
@@ -364,7 +364,7 @@ PrefabInstance:
         type: 3}
       propertyPath: AllPrefabs.Array.data[0]
       value: 
-      objectReference: {fileID: -7664668194204859468, guid: b96441f556232954f9b163c51e6fba99,
+      objectReference: {fileID: 624023238843509962, guid: 581f14dc84f8e664296d1fa3c5b82073,
         type: 3}
     - target: {fileID: 6122762649674242587, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}

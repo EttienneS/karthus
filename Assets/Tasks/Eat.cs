@@ -68,7 +68,7 @@ public class Eat : CreatureTask
 
             if (!Eating)
             {
-                AddSubTask(new Wait(2, "Eating..."));
+                AddSubTask(new Wait(2, "Eating...", AnimationType.Interact));
                 BusyEmote = "*munch, chomp*";
                 Eating = true;
             }

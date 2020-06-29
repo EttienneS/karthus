@@ -125,7 +125,7 @@ public class Map : MonoBehaviour
 
         if (intx < MinX || intz < MinZ || intx >= MaxX || intz >= MaxZ)
         {
-            return null;
+             return null;
         }
 
         return CellLookup[(intx, intz)];
