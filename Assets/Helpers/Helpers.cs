@@ -22,6 +22,12 @@ public static class Helpers
         return value;
     }
 
+    public static bool AlmostEquals(this float double1, float double2, float precision = 0.0001f)
+    {
+        // do not make precision lower (more?) than 0.0001f or certain things like movement will stop working
+        return Mathf.Abs(double1 - double2) <= precision;
+    }
+
     public static string WildcardToRegex(string pattern)
     {
         return Regex.Escape(pattern).Replace("*", ".*").Replace("?", ".");

@@ -190,7 +190,7 @@ public class MapGenerator
         }
     }
 
-    private static void PopulateCells()
+    private void PopulateCells()
     {
         using (Instrumenter.Start())
         {
@@ -200,6 +200,9 @@ public class MapGenerator
                 {
                     cell.Populate();
                 }
+
+                MakeFactionBootStrap(Game.Instance.FactionController.PlayerFaction);
+                SpawnCreatures();
             }
         }
     }

@@ -10,26 +10,23 @@ public static class Pathfinder
 
     public static List<Cell> FindPath(Cell fromCell, Cell toCell, Mobility mobility)
     {
-        using (Instrumenter.Start())
+        if (fromCell != null && toCell != null)
         {
-            if (fromCell != null && toCell != null)
+            if (Search(fromCell, toCell, mobility))
             {
-                if (Search(fromCell, toCell, mobility))
+                var path = new List<Cell> { toCell };
+
+                var current = toCell;
+                while (current != fromCell)
                 {
-                    var path = new List<Cell> { toCell };
-
-                    var current = toCell;
-                    while (current != fromCell)
-                    {
-                        current = current.PathFrom;
-                        path.Add(current);
-                    }
-
-                    return path;
+                    current = current.PathFrom;
+                    path.Add(current);
                 }
+
+                return path;
             }
         }
-         
+
         return null;
     }
 

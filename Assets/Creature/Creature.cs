@@ -13,7 +13,6 @@ public enum Mobility
 
 public class Creature : IEntity
 {
-    public const string SelfKey = "Self";
 
     [JsonIgnore]
     public List<Creature> Combatants = new List<Creature>();
@@ -106,6 +105,11 @@ public class Creature : IEntity
         {
             if (_faction == null)
             {
+                if (string.IsNullOrEmpty(FactionName))
+                {
+                    Debug.LogError($"Null faction: {Name}:{Id}");
+                }
+
                 _faction = Game.Instance.FactionController.Factions[FactionName];
             }
 
@@ -283,6 +287,7 @@ public class Creature : IEntity
             // default
             Facing = Direction.S;
         }
+        CreatureRenderer.UpdateRotation();
     }
 
     public void GainSkill(string skillName, float amount)
@@ -656,7 +661,6 @@ public class Creature : IEntity
 
         if (Dead)
         {
-            SetAnimation(AnimationType.Dead);
             return true;
         }
 
@@ -842,7 +846,7 @@ public class Creature : IEntity
 
     private void Move()
     {
-        if (X == TargetCoordinate.x && Z == TargetCoordinate.z)
+        if (X.AlmostEquals(TargetCoordinate.x) && Z.AlmostEquals(TargetCoordinate.z))
         {
             StopMoving();
             return;
@@ -858,8 +862,9 @@ public class Creature : IEntity
 
         if (Path == null || Path.Count == 0)
         {
-            StopMoving(true);
-            
+            UnableToFindPath = true;
+            StopMoving();
+
             Debug.LogWarning($"Unable to find path! ({X}:{Z}) >> ({TargetCoordinate.x}:{TargetCoordinate.z})");
             return;
         }
@@ -870,12 +875,14 @@ public class Creature : IEntity
 
         if (!nextCell.Pathable(Mobility))
         {
-            StopMoving(true);
+            UnableToFindPath = true;
+            StopMoving();
+
             Say("...");
             return;
         }
 
-        if (X == targetX && Z == targetZ)
+        if (X.AlmostEquals(targetX) && Z.AlmostEquals(targetZ))
         {
             // reached the cell
             Path.RemoveAt(0);
@@ -954,7 +961,7 @@ public class Creature : IEntity
 
         CreatureRenderer.UpdatePosition();
 
-        if (X == TargetCoordinate.x && Z == TargetCoordinate.z)
+        if (X.AlmostEquals(TargetCoordinate.x) && Z.AlmostEquals(TargetCoordinate.z))
         {
             StopMoving();
         }
@@ -976,26 +983,32 @@ public class Creature : IEntity
             var (outgoingDamage, bestAttack) = GetOffense(target);
             var (boostEffect, bestBuff) = GetBestBuff();
 
+            if (target.Cell == Cell)
+            {
+                var closestCell = target.Cell.NonNullNeighbors.Where(c => c != Cell).OrderBy(c => c.DistanceTo(Cell)).First();
+                SetTargetCoordinate(closestCell.Vector.x, closestCell.Vector.z);
+                _combatMoving = true;
+                return;
+            }
+
             if (bestAttack == null && bestDefense == null && bestBuff == null)
             {
                 var minRange = GetMinRange();
 
-                foreach (var combatant in Combatants)
+                if (Cell.DistanceTo(target.Cell) > minRange)
                 {
-                    if (Cell.DistanceTo(combatant.Cell) > minRange)
-                    {
-                        var closestCell = combatant.Cell.NonNullNeighbors.OrderBy(c => c.DistanceTo(Cell)).First();
-                        SetTargetCoordinate(closestCell.Vector.x, closestCell.Vector.z);
-                        _combatMoving = true;
-                        break;
-                    }
+                    var closestCell = target.Cell.NonNullNeighbors.OrderBy(c => c.DistanceTo(Cell)).First();
+                    SetTargetCoordinate(closestCell.Vector.x, closestCell.Vector.z);
+                    _combatMoving = true;
                 }
 
                 return;
             }
 
+            Face(target.Cell);
             if (boostEffect > outgoingDamage && boostEffect > defendedDamage)
             {
+                SetAnimation(AnimationType.Interact);
                 bestBuff.Activate();
             }
             else if (outgoingDamage > defendedDamage)
@@ -1014,6 +1027,8 @@ public class Creature : IEntity
             }
             else
             {
+                SetAnimation(AnimationType.Interact);
+
                 // defend
                 Log($"{Name} defends with a {bestDefense.Name} against {incomingAttack.Owner.Name}'s {incomingAttack.Name}");
 
@@ -1031,6 +1046,10 @@ public class Creature : IEntity
     {
         if (Task == null)
         {
+            if (Faction == null)
+            {
+                Debug.LogError($"Null  faction: {Name}:{Id}");
+            }
             var task = Faction.TakeTask(this);
 
             if (task != null)
@@ -1096,14 +1115,12 @@ public class Creature : IEntity
         }
     }
 
-    private void StopMoving(bool failed = false)
+    private void StopMoving()
     {
         Path = null;
         TargetCoordinate = (X, Z);
 
         _combatMoving = false;
-
-        UnableToFindPath = failed;
     }
 
     private void UpdateLimbs(float timeDelta)

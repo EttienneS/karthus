@@ -3,7 +3,7 @@
   "Model": "Character",
   "Speed": 0.2,
 
-  "Strenght": 14,
+  "Strenght": 16,
   "Perception": 5,
   "Dexterity": 14,
   "Vitality": 15,
@@ -113,19 +113,12 @@
           "ActivationTIme": 0.5
         }
       ],
-      "BuffActions": [
-        {
-          "$type": "SummonShield, Assembly-CSharp",
-          "Name": "shield",
-          "CooldownMax": 2.0,
-          "DurationMax": 10.0
-        }
-      ],
+      "BuffActions": [],
       "Name": "Left Arm",
       "OffensiveActions": [
         {
           "$type": "Strike, Assembly-CSharp",
-          "DiceSize": 4,
+          "DiceSize": 12,
           "DamageType": "Bludgeoning",
           "Range": 1,
           "Name": "left punch",
@@ -151,19 +144,12 @@
           "ActivationTIme": 0.5
         }
       ],
-      "BuffActions": [
-        {
-          "$type": "SummonSword, Assembly-CSharp",
-          "Name": "sword",
-          "CooldownMax": 2.0,
-          "DurationMax": 10.0
-        }
-      ],
+      "BuffActions": [],
       "Name": "Right Arm",
       "OffensiveActions": [
         {
           "$type": "Strike, Assembly-CSharp",
-          "DiceSize": 4,
+          "DiceSize": 12,
           "DamageType": "Bludgeoning",
           "Range": 1,
           "Name": "right punch",

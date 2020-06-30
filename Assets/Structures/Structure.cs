@@ -88,6 +88,7 @@ namespace Structures
 
         public Cost Cost { get; set; } = new Cost();
 
+        [JsonIgnore]
         public Material[] DefaultMaterials { get; internal set; }
 
         public string Description { get; set; }

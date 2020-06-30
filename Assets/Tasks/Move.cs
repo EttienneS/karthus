@@ -38,14 +38,18 @@ public class Move : CreatureTask
 
     public override bool Done(Creature creature)
     {
-        if (creature.TargetCoordinate.x != TargetX || creature.TargetCoordinate.z != TargetZ)
+        if (creature.UnableToFindPath)
+        {
+            // clear unable to find variable to ensure we can move again
+            creature.UnableToFindPath = false; 
+            throw new TaskFailedException("Unable to find path, cancel move.");
+        }
+
+        if (!creature.TargetCoordinate.x.AlmostEquals(TargetX) || !creature.TargetCoordinate.z.AlmostEquals(TargetZ))
         {
             creature.SetTargetCoordinate(TargetX, TargetZ);
         }
-        if (creature.UnableToFindPath)
-        {
-            throw new TaskFailedException("Unable to find path");
-        }
+       
         if (creature.X == TargetX && creature.Z == TargetZ)
         {
             // dynamic map expansion

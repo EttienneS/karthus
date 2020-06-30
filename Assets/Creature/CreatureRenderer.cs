@@ -57,6 +57,13 @@ public class CreatureRenderer : MonoBehaviour
         if (Data.Update(Time.deltaTime))
         {
         }
+
+        if (Data.Dead)
+        {
+            SetAnimation(AnimationType.Dead);
+            
+            Destroy(this);
+        }
     }
 
     internal void DisableHightlight()
@@ -71,7 +78,7 @@ public class CreatureRenderer : MonoBehaviour
     {
         if (Highlight != null)
         {
-            Highlight.color = color;
+            Highlight.color = color; 
             Highlight.gameObject.SetActive(true);
         }
     }
@@ -89,9 +96,15 @@ public class CreatureRenderer : MonoBehaviour
             }
         }
     }
+
     internal void UpdatePosition()
     {
         transform.position = new Vector3(Data.X, Data.Cell.Y, Data.Z);
+        UpdateRotation();
+    }
+
+    internal void UpdateRotation()
+    {
         transform.eulerAngles = new Vector3(0, (int)Data.Facing * 45f, 0);
     }
 

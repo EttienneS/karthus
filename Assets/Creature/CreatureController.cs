@@ -108,7 +108,7 @@ public class CreatureController : MonoBehaviour
         }
         else
         {
-            creature.Data.Name = creatureData.BehaviourName;
+            creature.Data.Name = creatureData.Name;
         }
 
         creature.Data.X = cell.Vector.x + Random.Range(-0.25f, 0.25f);

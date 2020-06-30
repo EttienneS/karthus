@@ -332,12 +332,7 @@ public class Game : MonoBehaviour
 
     private void FinalizeMap()
     {
-        if (SaveManager.SaveToLoad == null)
-        {
-            MapGenerator.MakeFactionBootStrap(Game.Instance.FactionController.PlayerFaction);
-            MapGenerator.SpawnCreatures();
-        }
-        else
+        if (SaveManager.SaveToLoad != null)
         {
             TimeManager.Data = SaveManager.SaveToLoad.Time;
             foreach (var item in SaveManager.SaveToLoad.Items)

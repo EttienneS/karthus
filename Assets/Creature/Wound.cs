@@ -108,7 +108,7 @@ public class Wound
         }
     }
 
-    public float HealRate { get; set; } = 5;
+    public float HealRate { get; set; } = 0.5f;
 
     public bool Infected
     {

@@ -5,7 +5,7 @@
       },
       "Min": 0.0,
       "Max": 0.3,
-      "TravelCost": 50,
+      "TravelCost": -1,
       "Name": "Sand",
       "Red": 1,
       "Green": 0,
@@ -69,7 +69,7 @@
         "Tree": 0.01
       },
       "Min": 0.45,
-      "Max": 0.6,
+      "Max": 0.65,
       "Name": "Grass",
       "Red": 0,
       "Green": 1,
@@ -80,8 +80,8 @@
       "Content": {
         "Pine": 0.20
       },
-      "Min": 0.6,
-      "Max": 0.75,
+      "Min": 0.65,
+      "Max": 0.85,
       "Name": "Forest",
       "Red": 0,
       "Green": 1,
@@ -92,7 +92,7 @@
       "Content": {
         "Mountain": 0.8
       },
-      "Min": 0.75,
+      "Min": 0.85,
       "Max": 1,
       "Name": "Stone",
       "Red": 0,
