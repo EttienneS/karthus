@@ -117,6 +117,7 @@ public class Game : MonoBehaviour
 
     public void DeselectAll()
     {
+        Cursor.Clear();
         DeselectCreature();
         DeselectCell();
         DeselectStructure(true);
@@ -699,6 +700,7 @@ public class Game : MonoBehaviour
         if (Input.GetMouseButton(1))
         {
             // right mouse deselect all
+
             DeselectAll();
             OrderSelectionController.DisableAndReset();
         }

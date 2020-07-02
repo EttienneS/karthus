@@ -983,13 +983,13 @@ public class Creature : IEntity
             var (outgoingDamage, bestAttack) = GetOffense(target);
             var (boostEffect, bestBuff) = GetBestBuff();
 
-            if (target.Cell == Cell)
-            {
-                var closestCell = target.Cell.NonNullNeighbors.Where(c => c != Cell).OrderBy(c => c.DistanceTo(Cell)).First();
-                SetTargetCoordinate(closestCell.Vector.x, closestCell.Vector.z);
-                _combatMoving = true;
-                return;
-            }
+            //if (target.Cell == Cell)
+            //{
+            //    var closestCell = target.Cell.NonNullNeighbors.Where(c => c != Cell).OrderBy(c => c.DistanceTo(Cell)).First();
+            //    SetTargetCoordinate(closestCell.Vector.x, closestCell.Vector.z);
+            //    _combatMoving = true;
+            //    return;
+            //}
 
             if (bestAttack == null && bestDefense == null && bestBuff == null)
             {

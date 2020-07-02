@@ -49,7 +49,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -8848810374240701247, guid: 5b7445dba668d524a871253d918f1b17, type: 3}
+  - {fileID: 2100000, guid: 65508a4179677d8499c30925658c75a8, type: 2}
   - {fileID: -1580535799172915004, guid: 5b7445dba668d524a871253d918f1b17, type: 3}
   - {fileID: -4318571312361772713, guid: 5b7445dba668d524a871253d918f1b17, type: 3}
   m_StaticBatchInfo:
@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 2823488177524838267}
   - component: {fileID: 4628280055276069757}
   m_Layer: 0
-  m_Name: CowPrefab
+  m_Name: Cow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -148,7 +148,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 307ce9d268284cc46bd1c0eb3c433f79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Highlight: {fileID: 0}
-  Light: {fileID: 0}
-  Text: {fileID: 0}
-  Animator: {fileID: 2823488177524838267}

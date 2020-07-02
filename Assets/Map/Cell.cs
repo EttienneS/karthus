@@ -134,8 +134,14 @@ public class Cell : IEquatable<Cell>
 
     public int DistanceTo(Cell other)
     {
-        return (X < other.X ? other.X - X : X - other.X)
-                + (Z < other.Z ? other.Z - Z : Z - other.Z);
+        // to handle cases where a diagonal does not count as adjecent
+        if (Neighbors.Contains(other))
+        {
+            return 1;
+        }
+
+        return (X < other.X ? other.X - X : X - other.X) + 
+               (Z < other.Z ? other.Z - Z : Z - other.Z);
     }
 
     public bool Equals(Cell other)

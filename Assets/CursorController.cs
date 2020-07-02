@@ -24,6 +24,14 @@ namespace Assets
 
         public delegate bool ValidateMouseDelegate(Cell cell);
 
+        public void Clear()
+        {
+            if (MeshRenderer != null)
+            {
+                Destroy(MeshRenderer.gameObject);
+            }
+        }
+
         public void Disable()
         {
             MouseSpriteRenderer.sprite = null;
@@ -42,6 +50,7 @@ namespace Assets
         {
             DisableMesh();
             _meshName = name;
+            Clear();
 
             var structure = Game.Instance.StructureController.GetMeshForStructure(name, transform);
             _offset = structure.structure.OffsetVector;
@@ -72,21 +81,11 @@ namespace Assets
                 {
                     return;
                 }
-                var x = startCell.X;
-                var z = startCell.Z;
-                transform.position = new Vector3(x, Game.Instance.MapData.StructureLevel, z) + new Vector3(0.5f, 1, 0.5f);
+                transform.position = new Vector3(startCell.Vector.x,
+                                                 Game.Instance.MapData.StructureLevel,
+                                                 startCell.Vector.z) + new Vector3(0, 0.25f, 0);
 
-                if (_currentSprite != null)
-                {
-                    if (Validate?.Invoke(startCell) == false)
-                    {
-                        MouseSpriteRenderer.color = ColorConstants.RedAccent;
-                    }
-                    else
-                    {
-                        MouseSpriteRenderer.color = ColorConstants.WhiteAccent;
-                    }
-                }
+                ValidateCursor(startCell);
             }
 
             if (!string.IsNullOrEmpty(_meshName))
@@ -156,6 +155,26 @@ namespace Assets
             {
                 MouseSpriteRenderer.sprite = null;
                 _currentSprite = null;
+            }
+        }
+
+        private void ValidateCursor(Cell startCell)
+        {
+            if (Validate?.Invoke(startCell) == false)
+            {
+                MeshRenderer?.SetAllMaterial(Game.Instance.FileController.InvalidBlueprintMaterial);
+                if (MouseSpriteRenderer != null)
+                {
+                    MouseSpriteRenderer.color = ColorConstants.RedAccent;
+                }
+            }
+            else
+            {
+                MeshRenderer?.SetAllMaterial(Game.Instance.FileController.BlueprintMaterial);
+                if (MouseSpriteRenderer != null)
+                {
+                    MouseSpriteRenderer.color = ColorConstants.WhiteAccent;
+                }
             }
         }
     }

@@ -422,7 +422,7 @@ public class Map : MonoBehaviour
 
     internal Cell GetCellAtCoordinate(Vector3 pos)
     {
-        return GetCellAtCoordinate(pos.x, pos.y);
+        return GetCellAtCoordinate(pos.x, pos.z);
     }
 
     internal Cell GetCellAtCoordinate(Vector2 pos)
@@ -445,33 +445,33 @@ public class Map : MonoBehaviour
         if (fromCell != null && toCell != null)
         {
             var x = fromCell.X - toCell.X;
-            var y = fromCell.Z - toCell.Z;
+            var z = fromCell.Z - toCell.Z;
 
-            if (x < 0 && y == 0)
+            if (x < 0 && z == 0)
             {
                 direction = Direction.E;
             }
-            else if (x < 0 && y > 0)
+            else if (x < 0 && z > 0)
             {
                 direction = Direction.NE;
             }
-            else if (x < 0 && y < 0)
+            else if (x < 0 && z < 0)
             {
                 direction = Direction.SE;
             }
-            else if (x > 0 && y == 0)
+            else if (x > 0 && z == 0)
             {
                 direction = Direction.W;
             }
-            else if (x > 0 && y > 0)
+            else if (x > 0 && z > 0)
             {
                 direction = Direction.NW;
             }
-            else if (x > 0 && y < 0)
+            else if (x > 0 && z < 0)
             {
                 direction = Direction.SW;
             }
-            else if (y < 0)
+            else if (z < 0)
             {
                 direction = Direction.N;
             }
