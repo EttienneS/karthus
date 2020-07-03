@@ -1,5 +1,6 @@
 ﻿using Assets;
 using Assets.UI.TaskPanel;
+using Camera;
 using Structures;
 using System;
 using System.Collections.Generic;
@@ -508,9 +509,7 @@ public class Game : MonoBehaviour
 
             _shownOnce = true;
 
-            CameraController.transform.position = new Vector3((Instance.MapData.ChunkSize * Instance.MapData.Size) / 2,
-                                                               20,
-                                                              (Instance.MapData.ChunkSize * Instance.MapData.Size) / 2);
+            CameraController.MoveToWorldCenter();
 
             MainMenuController.Toggle();
         }

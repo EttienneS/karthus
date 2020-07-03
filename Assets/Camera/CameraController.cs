@@ -1,48 +1,27 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
-public class CameraController : MonoBehaviour
+namespace Camera
 {
-    public Camera Camera;
-    public float MaxAngle = 90;
-    public float MinAngle = 20;
-    public float SpeedMax = 2f;
-    public float SpeedMin = 0.1f;
-    public int ZoomMax = 15;
-    public int ZoomMin = 2;
-    public float ZoomSpeed = 5;
-
-    internal float Speed;
-
-    private const int _zoomBound = 12;
-    private float _journeyLength;
-    private Vector3 _panDesitnation;
-    private bool _panning;
-    private Vector3 _panSource;
-    private float _startTime;
-
-    public void Start()
+    public class CameraController : MonoBehaviour
     {
-        Camera = GetComponent<Camera>();
-    }
+        public UnityEngine.Camera Camera;
+        public float MaxAngle = 90;
+        public float MinAngle = 20;
+        public float SpeedMax = 2f;
+        public float SpeedMin = 0.1f;
+        public int ZoomMax = 15;
+        public int ZoomMin = 2;
+        public float ZoomSpeed = 5;
 
-    public void Update()
-    {
-        if (_panning)
+        private const int _zoomBound = 12;
+
+        public void Start()
         {
-            var distCovered = (Time.time - _startTime) * 1000;
-            var fracJourney = distCovered / _journeyLength;
-
-            var lerp = Vector3.Lerp(_panSource, _panDesitnation, fracJourney);
-
-            transform.position = new Vector3(lerp.x, -15, lerp.y);
-
-            if (transform.position.x == _panDesitnation.x
-                && transform.position.z == _panDesitnation.z)
-            {
-                _panning = false;
-            }
+            Camera = GetComponent<UnityEngine.Camera>();
         }
-        else
+
+        public void Update()
         {
             if (Game.Instance == null || Game.Instance.Typing)
             {
@@ -59,30 +38,47 @@ public class CameraController : MonoBehaviour
                 Camera.transform.eulerAngles -= rotation;
             }
 
-            var horizontal = Input.GetAxis("Horizontal") / Time.timeScale;
-            var vertical = Input.GetAxis("Vertical") / Time.timeScale;
-            var mouseWheel = Input.GetAxis("Mouse ScrollWheel");
-            if (horizontal != 0 || vertical != 0 || mouseWheel != 0)
+            (float xAxisInput, float zAxisInput, float yAxisInput) = GetCameraInput();
+
+            if (xAxisInput != 0 || zAxisInput != 0 || yAxisInput != 0)
             {
-                var y = Mathf.Clamp(Camera.transform.position.y - (mouseWheel * ZoomSpeed), ZoomMin, ZoomMax);
-                Speed = Helpers.ScaleValueInRange(SpeedMin, SpeedMax, ZoomMin, ZoomMax, y);
+                var newY = Mathf.Clamp(Camera.transform.position.y - (yAxisInput * ZoomSpeed), ZoomMin, ZoomMax);
 
-                var x = Mathf.Clamp(transform.position.x + (horizontal * Speed), Game.Instance.Map.MinX - _zoomBound, Game.Instance.Map.MaxX);
-                var z = Mathf.Clamp(transform.position.z + (vertical * Speed), Game.Instance.Map.MinZ - _zoomBound, Game.Instance.Map.MaxZ);
+                var yScaledSpeed = Helpers.ScaleValueInRange(SpeedMin, SpeedMax, ZoomMin, ZoomMax, newY);
 
-                Camera.transform.position = new Vector3(x, y, z);
+                var newX = Mathf.Clamp(transform.position.x + (xAxisInput * yScaledSpeed), Game.Instance.Map.MinX - _zoomBound, Game.Instance.Map.MaxX);
+                var newZ = Mathf.Clamp(transform.position.z + (zAxisInput * yScaledSpeed), Game.Instance.Map.MinZ - _zoomBound, Game.Instance.Map.MaxZ);
+
+                Camera.transform.position = new Vector3(newX, newY, newZ);
             }
 
-            var xrot = Mathf.Lerp(MinAngle, MaxAngle, (transform.position.y - ZoomMin) / (ZoomMax - ZoomMin));
-            Camera.transform.eulerAngles = new Vector3(xrot, Camera.transform.eulerAngles.y, 0);
+            var scaledCameraTiltAngleX = Mathf.Lerp(MinAngle, MaxAngle, (transform.position.y - ZoomMin) / (ZoomMax - ZoomMin));
+            Camera.transform.eulerAngles = new Vector3(scaledCameraTiltAngleX, Camera.transform.eulerAngles.y, 0);
         }
-    }
-    public void ViewPoint(Vector3 point)
-    {
-        var x = Mathf.Clamp(point.x, Game.Instance.Map.MinX - _zoomBound, Game.Instance.Map.MaxX);
-        var y = Mathf.Clamp(point.y, ZoomMin, ZoomMax);
-        var z = Mathf.Clamp(point.z - _zoomBound, Game.Instance.Map.MinZ - _zoomBound, Game.Instance.Map.MaxZ);
 
-        Camera.transform.position = new Vector3(x, y, z);
+        private (float horizontal, float vertical, float zoom) GetCameraInput()
+        {
+            var horizontal = Input.GetAxis("Horizontal") / Time.timeScale;
+            var vertical = Input.GetAxis("Vertical") / Time.timeScale;
+            var zoom = Input.GetAxis("Mouse ScrollWheel");
+
+            return (horizontal, vertical, zoom);
+        }
+
+        public void ViewPoint(Vector3 point)
+        {
+            var x = Mathf.Clamp(point.x, Game.Instance.Map.MinX - _zoomBound, Game.Instance.Map.MaxX);
+            var y = Mathf.Clamp(point.y, ZoomMin, ZoomMax);
+            var z = Mathf.Clamp(point.z - _zoomBound, Game.Instance.Map.MinZ - _zoomBound, Game.Instance.Map.MaxZ);
+
+            Camera.transform.position = new Vector3(x, y, z);
+        }
+
+        internal void MoveToWorldCenter()
+        {
+            transform.position = new Vector3((Game.Instance.MapData.ChunkSize * Game.Instance.MapData.Size) / 2,
+                                              20,
+                                             (Game.Instance.MapData.ChunkSize * Game.Instance.MapData.Size) / 2);
+        }
     }
 }

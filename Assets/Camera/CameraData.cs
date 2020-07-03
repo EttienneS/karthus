@@ -12,7 +12,7 @@ public class CameraData
     {
     }
 
-    public CameraData(Camera c)
+    public CameraData(UnityEngine.Camera c)
     {
         X = c.transform.position.x;
         Y = c.transform.position.y;
@@ -21,7 +21,7 @@ public class CameraData
         Zoom = c.orthographicSize;
     }
 
-    public void Load(Camera c)
+    public void Load(UnityEngine.Camera c)
     {
         c.transform.position = new Vector3(X, Y, Z);
         c.orthographicSize = Zoom;
