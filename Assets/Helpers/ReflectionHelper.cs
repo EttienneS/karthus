@@ -16,10 +16,4 @@ public static class ReflectionHelper
 
         return types;
     }
-
-    public static object ChangeType(Type t, object value)
-    {
-        System.ComponentModel.TypeConverter tc = TypeDescriptor.GetConverter(t);
-        return tc.ConvertFrom(value);
-    }
 }

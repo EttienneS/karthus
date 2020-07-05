@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace Structures
@@ -34,35 +33,13 @@ namespace Structures
             ItemType = string.Empty;
         }
 
-        public bool FilterMatch(string name, string[] categories)
-        {
-            var filter = Helpers.WildcardToRegex(Filter);
-
-            if (Regex.IsMatch(name, filter))
-            {
-                return true;
-            }
-            if (categories != null)
-            {
-                foreach (var cat in categories)
-                {
-                    if (Regex.IsMatch(cat, filter))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
         public bool FilterValid()
         {
             if (string.IsNullOrEmpty(ItemType))
             {
                 return true;
             }
-            return FilterMatch(ItemType, GetContainedItemTemplate().Categories);
+            return StringHelper.FilterMatch(Filter, ItemType, GetContainedItemTemplate().Categories);
         }
 
         public int RemainingCapacity
@@ -129,7 +106,7 @@ namespace Structures
                 }
             }
 
-            return FilterMatch(item.Name, item.Categories);
+            return StringHelper.FilterMatch(Filter, item.Name, item.Categories);
         }
 
         internal Item GetItem(int amount)

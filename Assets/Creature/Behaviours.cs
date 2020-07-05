@@ -1,18 +1,13 @@
 ﻿using Needs;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using Random = UnityEngine.Random;
 
 public static class Behaviours
 {
-    public const int WanderRange = 10;
-
     public static Dictionary<string, GetBehaviourTaskDelegate> BehaviourTypes = new Dictionary<string, GetBehaviourTaskDelegate>
     {
-        { "Monster", Monster },
         { "Person", Person },
-        { "Skeleton", Skeleton },
         { "Grazer", Grazer }
     };
 
@@ -23,51 +18,8 @@ public static class Behaviours
         return BehaviourTypes[type];
     }
 
-    public static CreatureTask Monster(Creature creature)
-    {
-        var rand = Random.value;
-
-        CreatureTask task;
-        if (rand > 0.8f)
-        {
-            task = new Move(Game.Instance.Map.GetCircle(creature.Cell, WanderRange).GetRandomItem());
-        }
-        else
-        {
-            task = new Wait(Random.Range(1, 5), "Lingering..");
-        }
-
-        return task;
-    }
-
-    public static CreatureTask Person(Creature creature)
-    {
-        CreatureTask task = null;
-
-        var enemy = FindEnemy(creature);
-
-        var wound = creature.GetWorstWound();
-        if (enemy != null)
-        {
-            creature.Combatants.Add(enemy);
-        }
-        else if (wound != null)
-        {
-            task = new Heal();
-        }
-        else if (creature.Cell.Creatures.Count > 1)
-        {
-            // split up
-            task = new Move(Game.Instance.Map.TryGetPathableNeighbour(creature.Cell));
-        }
-
-        return task;
-    }
-
     public static CreatureTask Grazer(Creature creature)
     {
-        CreatureTask task = null;
-
         var creatures = creature.Awareness.SelectMany(c => c.Creatures);
 
         var enemies = creatures.Where(c => c.FactionName != creature.FactionName);
@@ -76,35 +28,31 @@ public static class Behaviours
         if (enemies.Any())
         {
             var target = Game.Instance.Map.GetCellAttRadian(enemies.GetRandomItem().Cell, 10, Random.Range(1, 360));
-            task = new Move(target);
+            return new Move(target);
         }
         else if (herd.Any())
         {
-            task = new Move(Game.Instance.Map.GetCircle(herd.GetRandomItem().Cell, 5).GetRandomItem());
+            return new Move(Game.Instance.Map.GetCircle(herd.GetRandomItem().Cell, 3).GetRandomItem());
         }
 
-        return task;
+        return null;
     }
 
-    public static CreatureTask Skeleton(Creature creature)
+    public static CreatureTask Person(Creature creature)
     {
-        CreatureTask task = null;
-
-        var rand = Random.value;
-        var targets = creature.Awareness.SelectMany(cell => cell.Creatures.Where(c => c.Faction != creature.Faction));
-
-        if (targets.Any())
+        var wound = creature.GetWorstWound();
+        if (wound != null)
         {
-            creature.Combatants.Add(targets.GetRandomItem());
+            return new Heal();
         }
-        else
+        else if (creature.Cell.Creatures.Count > 1)
         {
-            task = new Wait(Random.Range(3, 6), "Lingering..");
+            // split up
+            return new Move(Game.Instance.Map.TryGetPathableNeighbour(creature.Cell));
         }
 
-        return task;
+        return null;
     }
-
     internal static List<NeedBase> GetNeedsFor(string behaviourName)
     {
         var needs = new List<NeedBase>();
@@ -132,9 +80,5 @@ public static class Behaviours
         return needs;
     }
 
-    private static Creature FindEnemy(Creature creature)
-    {
-        return Game.Instance.IdService.CreatureIdLookup.Values.FirstOrDefault(c => c.FactionName != creature.FactionName
-        && creature.Awareness.Contains(c.Cell));
-    }
+    
 }

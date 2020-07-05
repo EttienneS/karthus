@@ -33,7 +33,6 @@ public class Game : MonoBehaviour
     public MainMenuController MainMenuController;
     public Map Map;
     public MapData MapData;
-    public MapGenerator MapGenerator;
     public OrderInfoPanel OrderInfoPanel;
     public OrderSelectionController OrderSelectionController;
     public OrderTrayController OrderTrayController;
@@ -475,7 +474,7 @@ public class Game : MonoBehaviour
 
     private void Initialize()
     {
-        MapGenerator.GenerateMap();
+        Map.GenerateMap();
         FinalizeMap();
     }
 
@@ -667,7 +666,6 @@ public class Game : MonoBehaviour
             InitFactions();
         }
         IdService = new IdService();
-        MapGenerator = new MapGenerator();
         ConstructController = new ConstructController();
 
         Initialize();

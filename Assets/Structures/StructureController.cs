@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
+using Random = UnityEngine.Random;
 
 namespace Structures
 {
@@ -113,7 +114,7 @@ namespace Structures
 
             if (structure.SpawnRotation)
             {
-                structure.Rotation = Randomf.Range(1, 360);
+                structure.Rotation = Random.Range(1, 360);
             }
 
             var mats = Game.Instance.FileController.GetMaterials(structure.Materials);

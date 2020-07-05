@@ -44,7 +44,7 @@ namespace Camera
             {
                 var newY = Mathf.Clamp(Camera.transform.position.y - (yAxisInput * ZoomSpeed), ZoomMin, ZoomMax);
 
-                var yScaledSpeed = Helpers.ScaleValueInRange(SpeedMin, SpeedMax, ZoomMin, ZoomMax, newY);
+                var yScaledSpeed = MathHelper.ScaleValueInRange(SpeedMin, SpeedMax, ZoomMin, ZoomMax, newY);
 
                 var newX = Mathf.Clamp(transform.position.x + (xAxisInput * yScaledSpeed), Game.Instance.Map.MinX - _zoomBound, Game.Instance.Map.MaxX);
                 var newZ = Mathf.Clamp(transform.position.z + (zAxisInput * yScaledSpeed), Game.Instance.Map.MinZ - _zoomBound, Game.Instance.Map.MaxZ);

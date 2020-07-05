@@ -9,7 +9,7 @@ public class Dodge : DefensiveActionBase
 
     public override int Defend(string attackName, int incomingDamage, DamageType damageType)
     {
-        var roll = Randomf.Roll(20) + (Owner.Dexterity / 2);
+        var roll = RandomHelper.Roll(20) + (Owner.Dexterity / 2);
 
         var message = $"{Owner.Name} {Name} to dodge the {attackName}";
 

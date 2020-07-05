@@ -125,7 +125,7 @@ public class ZoneController : MonoBehaviour
         label.name = newZone.Name;
         label.Text.text = newZone.Name;
 
-        var (bottomLeft, bottomRight, topLeft, topRight) = Game.Instance.MapGenerator.GetCorners(newZone.Cells);
+        var (bottomLeft, bottomRight, topLeft, topRight) = Game.Instance.Map.GetCorners(newZone.Cells);
         label.transform.localPosition = new Vector3((bottomLeft.X + bottomRight.X + topLeft.X + topRight.X) / 4f,
                                                     (bottomLeft.Z + bottomRight.Z + topLeft.Z + topRight.Z) / 4f, 0);
         label.transform.localPosition += new Vector3(0.5f, 0.5f);

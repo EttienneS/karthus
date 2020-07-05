@@ -35,17 +35,3 @@ public static class ColorConstants
     public static Color BlackBase { get; } = ColorExtensions.GetColorFromHex("#353b48");
     public static Color BlackAccent { get; } = ColorExtensions.GetColorFromHex("#2f3640");
 }
-
-public static class LayerConstants
-{
-    public const string Border = "Border";
-    public const string Bottom = "Default";
-    public const string Ground = "Ground";
-    public const string CarriedItem = "CarriedItem";
-    public const string Creature = "Creature";
-    public const string Fog = "Fog";
-    public const string Item = "Item";
-    public const string Zone = "Zone";
-    public const string Structure = "Structure";
-    public const string Tree = "Tree";
-}

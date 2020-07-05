@@ -693,7 +693,6 @@ public class Creature : IEntity
 
             if (HeldItem != null)
             {
-                HeldItem.Renderer.SpriteRenderer.sortingLayerName = LayerConstants.CarriedItem;
                 HeldItem.Coords = (X, Z);
             }
 

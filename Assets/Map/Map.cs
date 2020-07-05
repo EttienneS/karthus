@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Assets.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class Map : MonoBehaviour
 {
@@ -13,19 +13,32 @@ public class Map : MonoBehaviour
     public List<Cell> Cells = new List<Cell>();
     public ChunkRenderer ChunkPrefab;
 
-    public GameObject WaterPrefab;
-
     public Light GlobalLight;
-
     public NoiseSettings LocalNoise;
-
+    public GameObject WaterPrefab;
     public NoiseSettings WorldNoise;
 
     internal Dictionary<(int x, int y), ChunkRenderer> Chunks;
+    private Dictionary<string, Biome> _biomeTemplates;
     private float[,] _localNoiseMap;
-    private CellPriorityQueue _searchFrontier = new CellPriorityQueue();
-    private int _searchFrontierPhase;
     private int? _seedValue;
+
+    public Dictionary<string, Biome> BiomeTemplates
+    {
+        get
+        {
+            if (_biomeTemplates == null)
+            {
+                _biomeTemplates = new Dictionary<string, Biome>();
+                foreach (var biomeFile in Game.Instance.FileController.BiomeFiles)
+                {
+                    _biomeTemplates.Add(biomeFile.name, biomeFile.text.LoadJson<Biome>());
+                }
+            }
+
+            return _biomeTemplates;
+        }
+    }
 
     public Cell Center
     {
@@ -76,41 +89,57 @@ public class Map : MonoBehaviour
         }
     }
 
-    public List<Cell> BleedGroup(List<Cell> group, int count, float percentage = 0.7f)
+    public Cell CreateCell(int x, int z)
     {
-        for (var i = 0; i < count; i++)
-        {
-            group = BleedGroup(group.ToList(), percentage);
-        }
+        var noiseMapHeight = Game.Instance.Map.GetNoiseMapPoint(x, z);
+        var biome = Game.Instance.Map.GetBiome(x, z).GetRegion(noiseMapHeight);
 
-        return group;
+        var y = Game.Instance.MapData.HeightCurve.Evaluate(noiseMapHeight) * Game.Instance.MapData.HeightScale;
+
+        var cell = new Cell
+        {
+            X = x,
+            BiomeRegion = biome,
+            Y = y,
+            Z = z,
+            SearchPhase = 0
+        };
+
+        Game.Instance.Map.CellLookup.Add((x, z), cell);
+
+        return cell;
     }
 
-    public List<Cell> BleedGroup(List<Cell> group, float percentage = 0.7f)
+    public void GenerateMap()
     {
-        var newGroup = group.ToList();
+        var size = Game.Instance.MaxSize;
+        MakeCells(size);
+        Game.Instance.Map.Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
 
-        foreach (var cell in group)
+        if (SaveManager.SaveToLoad == null)
         {
-            foreach (var neighbour in cell.Neighbors.Where(n => n != null && !group.Contains(n)))
+            for (var x = 0; x < Game.Instance.MapData.Size; x++)
             {
-                if (Random.value > percentage)
+                for (var y = 0; y < Game.Instance.MapData.Size; y++)
                 {
-                    newGroup.Add(neighbour);
+                    Game.Instance.Map.MakeChunk(new Chunk(x, y));
                 }
             }
+            PopulateCells();
         }
-
-        return newGroup.Distinct().ToList();
+        else
+        {
+            foreach (var chunk in SaveManager.SaveToLoad.Chunks)
+            {
+                Game.Instance.Map.MakeChunk(chunk);
+            }
+        }
     }
 
-    public List<Cell> GetBorder(List<Cell> square)
+    public Biome GetBiome(int x, int y)
     {
-        var frame = square.ToList();
-        var hollow = HollowSquare(square);
-        frame.RemoveAll(c => hollow.Contains(c));
-
-        return frame;
+        //return BiomeTemplates["Debug"];
+        return BiomeTemplates["Default"];
     }
 
     public Cell GetCellAtCoordinate((float x, float y) coords)
@@ -125,7 +154,7 @@ public class Map : MonoBehaviour
 
         if (intx < MinX || intz < MinZ || intx >= MaxX || intz >= MaxZ)
         {
-             return null;
+            return null;
         }
 
         return CellLookup[(intx, intz)];
@@ -143,12 +172,6 @@ public class Map : MonoBehaviour
             return null;
         }
         return CellLookup[(cell.X, cell.Z)];
-    }
-
-    public float GetNoiseMapPoint(float x, float y)
-    {
-        return LocalNoiseMap[(int)x, (int)y];
-        //return Mathf.PerlinNoise((SeedValue + x) * Scaler, (SeedValue + y) * Scaler);
     }
 
     public List<Cell> GetCircle(Cell center, int radius)
@@ -176,71 +199,14 @@ public class Map : MonoBehaviour
         return cells;
     }
 
-    public float GetDegreesBetweenPoints(Cell point1, Cell point2)
+    public (Cell bottomLeft, Cell bottomRight, Cell topLeft, Cell topRight) GetCorners(List<Cell> square)
     {
-        var deltaX = point1.X - point2.X;
-        var deltaY = point1.Z - point2.Z;
+        var (minx, maxx, minz, maxz) = Game.Instance.Map.GetMinMax(square);
 
-        var radAngle = Math.Atan2(deltaY, deltaX);
-        var degreeAngle = radAngle * 180.0 / Math.PI;
-
-        return (float)(180.0 - degreeAngle);
-    }
-
-    public List<Cell> GetDiameterLine(Cell center, int lenght, int angle = 0)
-    {
-        return GetLine(GetPointAtDistanceOnAngle(center, lenght / 2, angle),
-                       GetPointAtDistanceOnAngle(center, lenght / 2, angle + 180));
-    }
-
-    public List<Cell> GetLine(Cell a, Cell b)
-    {
-        // Bresenham line algorithm [https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm]
-        // https://stackoverflow.com/questions/11678693/all-cases-covered-bresenhams-line-algorithm
-
-        var line = new List<Cell>();
-
-        var x = a.X;
-        var y = a.Z;
-        var x2 = b.X;
-        var y2 = b.Z;
-
-        var w = x2 - x;
-        var h = y2 - y;
-
-        int dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
-        if (w < 0) dx1 = -1; else if (w > 0) dx1 = 1;
-        if (h < 0) dy1 = -1; else if (h > 0) dy1 = 1;
-        if (w < 0) dx2 = -1; else if (w > 0) dx2 = 1;
-
-        var longest = Math.Abs(w);
-        var shortest = Math.Abs(h);
-        if (!(longest > shortest))
-        {
-            longest = Math.Abs(h);
-            shortest = Math.Abs(w);
-            if (h < 0) dy2 = -1; else if (h > 0) dy2 = 1;
-            dx2 = 0;
-        }
-        var numerator = longest >> 1;
-        for (var i = 0; i <= longest; i++)
-        {
-            line.Add(GetCellAtCoordinate(x, y));
-            numerator += shortest;
-            if (!(numerator < longest))
-            {
-                numerator -= longest;
-                x += dx1;
-                y += dy1;
-            }
-            else
-            {
-                x += dx2;
-                y += dy2;
-            }
-        }
-
-        return line;
+        return (Game.Instance.Map.GetCellAtCoordinate(minx, minz),
+                Game.Instance.Map.GetCellAtCoordinate(maxx, minz),
+                Game.Instance.Map.GetCellAtCoordinate(minx, maxz),
+                Game.Instance.Map.GetCellAtCoordinate(maxx, maxz));
     }
 
     public (int minx, int maxx, int minz, int maxz) GetMinMax(List<Cell> cells)
@@ -274,125 +240,9 @@ public class Map : MonoBehaviour
         return (minx, maxx, minz, maxz);
     }
 
-    public Cell GetPointAtDistanceOnAngle(Cell origin, int distance, float angle)
+    public float GetNoiseMapPoint(float x, float y)
     {
-        var radians = angle * Math.PI / 180.0;
-
-        // cater for right angle scenarios
-        var tX = origin.X;
-        var tY = origin.Z;
-
-        if (angle != 0 && angle != 180)
-        {
-            tY = (int)((Math.Sin(-radians) * distance) + origin.Z);
-        }
-
-        if (angle != 90 && angle != 270)
-        {
-            tX = (int)((Math.Cos(radians) * distance) + origin.X);
-        }
-
-        // add 1 to offset rounding errors
-        return GetCellAtCoordinate(tX, tY);
-    }
-
-    public Cell GetRandomCell()
-    {
-        return CellLookup[((int)(Random.value * (MaxX - 1)), (int)(Random.value * (MaxZ - 1)))];
-    }
-
-    public List<Cell> GetRandomChunk(int chunkSize, Cell origin)
-    {
-        _searchFrontierPhase++;
-        var firstCell = origin;
-        firstCell.SearchPhase = _searchFrontierPhase;
-        firstCell.Distance = 0;
-        firstCell.SearchHeuristic = 0;
-        _searchFrontier.Enqueue(firstCell);
-
-        var center = firstCell;
-        int size = 0;
-
-        var chunk = new List<Cell>();
-        while (size < chunkSize && _searchFrontier.Count > 0)
-        {
-            var current = _searchFrontier.Dequeue();
-            chunk.Add(current);
-            size++;
-
-            for (var d = Direction.N; d <= Direction.NW; d++)
-            {
-                var neighbor = current.GetNeighbor(d);
-                if (neighbor != null && neighbor.SearchPhase < _searchFrontierPhase)
-                {
-                    neighbor.SearchPhase = _searchFrontierPhase;
-                    neighbor.Distance = neighbor.DistanceTo(center);
-                    neighbor.SearchHeuristic = Random.value < 0.6f ? 1 : 0;
-                    _searchFrontier.Enqueue(neighbor);
-                }
-            }
-        }
-
-        _searchFrontier.Clear();
-
-        return chunk;
-    }
-
-    public Cell GetRandomPathableCell()
-    {
-        var cell = GetRandomCell();
-
-        while (cell.TravelCost < 1)
-        {
-            cell = GetRandomCell();
-        }
-
-        return cell;
-    }
-
-    public List<Cell> GetRectangle(Cell cell1, Cell cell2)
-    {
-        var x = cell1.X;
-        var y = cell1.Z;
-        var w = x - cell2.X;
-        var h = y - cell2.Z;
-
-        return GetRectangle(x, y, w, h);
-    }
-
-    public List<Cell> GetRectangle(int inX, int inY, int width, int height)
-    {
-        var cells = new List<Cell>();
-
-        var fromX = Math.Min(inX, inX + width);
-        var toX = Math.Max(inX, inX + width);
-        var fromY = Math.Min(inY, inY + height);
-        var toY = Math.Max(inY, inY + height);
-
-        for (var x = fromX; x < toX; x++)
-        {
-            for (var y = fromY; y < toY; y++)
-            {
-                AddCellIfValid(x, y, cells);
-            }
-        }
-
-        return cells;
-    }
-
-    public (int, int) GetWidthAndHeight(List<Cell> cells)
-    {
-        var minMax = GetMinMax(cells);
-        return (minMax.maxx - minMax.minx, minMax.maxz - minMax.minz);
-    }
-
-    public List<Cell> HollowSquare(List<Cell> square)
-    {
-        var minMax = GetMinMax(square);
-        var src = GetCellAtCoordinate(minMax.minx + 1, minMax.minz + 1);
-        return GetRectangle(src.X, src.Z,
-                            minMax.maxx - minMax.minx - 1,
-                            minMax.maxz - minMax.minz - 1);
+        return LocalNoiseMap[(int)x, (int)y];
     }
 
     public ChunkRenderer MakeChunk(Chunk data)
@@ -407,17 +257,46 @@ public class Map : MonoBehaviour
         return chunk;
     }
 
-    internal void DestroyCell(Cell cell)
+    public void MakeFactionBootStrap(Faction faction)
     {
-        if (cell.Structure != null)
+        var center = Game.Instance.Map.GetNearestPathableCell(Game.Instance.Map.Center, Mobility.Walk, 10);
+
+        Game.Instance.FactionController.PlayerFaction.HomeCells.AddRange(Game.Instance.Map.GetCircle(Game.Instance.Map.Center, 15));
+
+        var open = Game.Instance.Map.GetCircle(center, 10).Where(c => c.Pathable(Mobility.Walk) && c.Structure == null);
+        Game.Instance.ItemController.SpawnItem("Berries", open.GetRandomItem(), 250);
+        Game.Instance.ItemController.SpawnItem("Wood", open.GetRandomItem(), 250);
+        Game.Instance.ItemController.SpawnItem("Stone", open.GetRandomItem(), 250);
+
+        for (int i = 0; i < Game.Instance.MapData.CreaturesToSpawn; i++)
         {
-            Game.Instance.StructureController.DestroyStructure(cell.Structure);
+            var c = Game.Instance.CreatureController.SpawnCreature(Game.Instance.CreatureController.GetCreatureOfType("Person"),
+                                                                   Game.Instance.Map.GetNearestPathableCell(center, Mobility.Walk, 10),
+                                                                   faction);
         }
     }
 
-    internal float GetAngle(Cell c1, Cell c2)
+    public void SpawnCreatures()
     {
-        return Mathf.Atan2(c2.X - c1.X, c2.Z - c1.Z) * 180.0f / Mathf.PI;
+        foreach (var monster in Game.Instance.CreatureController.Beastiary)
+        {
+            if (monster.Key == "Person")
+            {
+                continue;
+            }
+
+            for (int i = 0; i < Game.Instance.MapData.CreaturesToSpawn; i++)
+            {
+                var creature = Game.Instance.CreatureController.GetCreatureOfType(monster.Key);
+
+                var spot = Game.Instance.Map.GetCircle(Game.Instance.Map.Center, 25).GetRandomItem();
+                if (spot.TravelCost <= 0 && creature.Mobility != Mobility.Fly)
+                {
+                    spot = Game.Instance.Map.CellLookup.Values.Where(c => c.TravelCost > 0).GetRandomItem();
+                }
+                Game.Instance.CreatureController.SpawnCreature(creature, spot, Game.Instance.FactionController.MonsterFaction);
+            }
+        }
     }
 
     internal Cell GetCellAtCoordinate(Vector3 pos)
@@ -436,53 +315,6 @@ public class Map : MonoBehaviour
         var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Z + (radius * Mathf.Sin(angle))), 0, MaxZ);
 
         return GetCellAtCoordinate(mineX, mineY);
-    }
-
-    internal Direction GetDirection(Cell fromCell, Cell toCell)
-    {
-        var direction = Direction.S;
-
-        if (fromCell != null && toCell != null)
-        {
-            var x = fromCell.X - toCell.X;
-            var z = fromCell.Z - toCell.Z;
-
-            if (x < 0 && z == 0)
-            {
-                direction = Direction.E;
-            }
-            else if (x < 0 && z > 0)
-            {
-                direction = Direction.NE;
-            }
-            else if (x < 0 && z < 0)
-            {
-                direction = Direction.SE;
-            }
-            else if (x > 0 && z == 0)
-            {
-                direction = Direction.W;
-            }
-            else if (x > 0 && z > 0)
-            {
-                direction = Direction.NW;
-            }
-            else if (x > 0 && z < 0)
-            {
-                direction = Direction.SW;
-            }
-            else if (z < 0)
-            {
-                direction = Direction.N;
-            }
-        }
-
-        return direction;
-    }
-
-    internal List<Cell> GetEdge(List<Cell> cells)
-    {
-        return cells.Where(c => c.Neighbors.Any(n => n != null && !cells.Contains(n))).ToList();
     }
 
     internal Cell GetNearestEmptyCell(Cell cell)
@@ -515,33 +347,48 @@ public class Map : MonoBehaviour
                            .First();
     }
 
-    internal Cell GetRandomEmptyCell()
+    internal void MakeCells(int size)
     {
-        Cell cell = null;
-
-        while (cell == null)
+        using (Instrumenter.Start())
         {
-            cell = GetRandomCell();
-
-            if (cell.Floor != null || cell.Structure != null)
+            Game.Instance.Map.Cells = new List<Cell>();
+            for (var y = 0; y < 0 + size; y++)
             {
-                cell = null;
+                for (var x = 0; x < 0 + size; x++)
+                {
+                    Game.Instance.Map.Cells.Add(CreateCell(x, y));
+                }
+            }
+
+            // link cell to the others in the chunk
+            for (var z = 0; z < 0 + size; z++)
+            {
+                for (var x = 0; x < 0 + size; x++)
+                {
+                    var cell = Game.Instance.Map.CellLookup[(x, z)];
+                    if (x > 0)
+                    {
+                        cell.SetNeighbor(Direction.W, Game.Instance.Map.CellLookup[(x - 1, z)]);
+
+                        if (z > 0)
+                        {
+                            cell.SetNeighbor(Direction.SW, Game.Instance.Map.CellLookup[(x - 1, z - 1)]);
+
+                            if (x < size - 1)
+                            {
+                                cell.SetNeighbor(Direction.SE, Game.Instance.Map.CellLookup[(x + 1, z - 1)]);
+                            }
+                        }
+                    }
+
+                    if (z > 0)
+                    {
+                        cell.SetNeighbor(Direction.S, Game.Instance.Map.CellLookup[(x, z - 1)]);
+                    }
+                }
             }
         }
-
-        return cell;
     }
-
-    internal Cell GetRandomRadian(Cell center, int radius)
-    {
-        var angle = Random.Range(0, 360);
-        var mineX = Mathf.Clamp(Mathf.FloorToInt(center.X + (radius * Mathf.Cos(angle))), 0, MaxX);
-        var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Z + (radius * Mathf.Sin(angle))), 0, MaxZ);
-
-        return GetCellAtCoordinate(mineX, mineY);
-    }
-
-
 
     internal Cell TryGetPathableNeighbour(Cell coordinates)
     {
@@ -554,5 +401,22 @@ public class Map : MonoBehaviour
             return pathables.GetRandomItem();
         }
         return null;
+    }
+
+    private void PopulateCells()
+    {
+        using (Instrumenter.Start())
+        {
+            if (Game.Instance.MapData.Populate)
+            {
+                foreach (var cell in Game.Instance.Map.Cells)
+                {
+                    cell.Populate();
+                }
+
+                MakeFactionBootStrap(Game.Instance.FactionController.PlayerFaction);
+                SpawnCreatures();
+            }
+        }
     }
 }
