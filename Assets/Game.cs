@@ -18,7 +18,6 @@ public enum SelectionPreference
 public class Game : MonoBehaviour
 {
     public CameraController CameraController;
-    public ConstructController ConstructController;
     public CreatureController CreatureController;
     public CreatureInfoPanel CreatureInfoPanelPrefab;
     public LoadPanel CurrentLoadPanel;
@@ -666,7 +665,6 @@ public class Game : MonoBehaviour
             InitFactions();
         }
         IdService = new IdService();
-        ConstructController = new ConstructController();
 
         Initialize();
     }

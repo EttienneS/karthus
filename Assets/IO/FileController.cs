@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Creature.Behaviour;
+using Assets.Structures;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class FileController : MonoBehaviour
 {
     internal TextAsset[] StructureJson;
-    internal TextAsset[] ConstructFiles;
     internal TextAsset[] CreatureFiles;
     internal TextAsset[] BiomeFiles;
     internal TextAsset[] ItemFiles;
@@ -49,10 +51,28 @@ public class FileController : MonoBehaviour
         }
     }
 
+    private List<Construct> _constructs;
+
+    public List<Construct> Constructs
+    {
+        get
+        {
+            if (_constructs == null)
+            {
+                _constructs = new List<Construct>();
+                foreach (var constructFile in Resources.LoadAll<TextAsset>(ConstructFolder))
+                {
+                    _constructs.Add(constructFile.text.LoadJson<Construct>());
+                }
+            }
+
+            return _constructs;
+        }
+    }
+
     public void Awake()
     {
         StructureJson = Resources.LoadAll<TextAsset>(StructureFolder);
-        ConstructFiles = Resources.LoadAll<TextAsset>(ConstructFolder);
         CreatureFiles = Resources.LoadAll<TextAsset>(CreatureFolder);
         BiomeFiles = Resources.LoadAll<TextAsset>(BiomeFolder);
         ItemFiles = Resources.LoadAll<TextAsset>(ItemFolder);
@@ -105,6 +125,21 @@ public class FileController : MonoBehaviour
         else
         {
             return materials.Split(',').Select(GetMaterial).ToArray();
+        }
+    }
+
+
+    private List<Type> _allBehaviours;
+
+    public List<Type> AllBehaviourTypes
+    {
+        get
+        {
+            if (_allBehaviours == null)
+            {
+                _allBehaviours = ReflectionHelper.GetAllTypes(typeof(IBehaviour));
+            }
+            return _allBehaviours;
         }
     }
 }

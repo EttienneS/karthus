@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Assets.Creature;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using Assets.Creature;
+using Assets.Creature.Behaviour;
 
 public class CreatureController : MonoBehaviour
 {
@@ -10,20 +13,20 @@ public class CreatureController : MonoBehaviour
     public SpriteRenderer HightlightPrefab;
     public List<CreatureRenderer> AllPrefabs;
 
-    private Dictionary<string, Creature> _beastiary;
+    private Dictionary<string, CreatureData> _beastiary;
 
-    internal Dictionary<string, Creature> Beastiary
+    internal Dictionary<string, CreatureData> Beastiary
     {
         get
         {
             if (_beastiary == null)
             {
-                _beastiary = new Dictionary<string, Creature>();
+                _beastiary = new Dictionary<string, CreatureData>();
                 foreach (var creatureFile in Game.Instance.FileController.CreatureFiles)
                 {
                     try
                     {
-                        var creature = creatureFile.text.LoadJson<Creature>();
+                        var creature = creatureFile.text.LoadJson<CreatureData>();
                         _beastiary.Add(creature.Name, creature);
                     }
                     catch (Exception ex)
@@ -64,7 +67,7 @@ public class CreatureController : MonoBehaviour
         }
     }
 
-    internal Creature GetCreatureOfType(string v)
+    internal CreatureData GetCreatureOfType(string v)
     {
         if (!Beastiary.ContainsKey(v))
         {
@@ -75,7 +78,7 @@ public class CreatureController : MonoBehaviour
         return Beastiary[v].CloneJson();
     }
 
-    public List<(Creature creature, Cell cell, Faction faction)> SpawnCache = new List<(Creature, Cell, Faction)>();
+    public List<(CreatureData creature, Cell cell, Faction faction)> SpawnCache = new List<(CreatureData, Cell, Faction)>();
 
     public void Update()
     {
@@ -86,12 +89,12 @@ public class CreatureController : MonoBehaviour
         SpawnCache.Clear();
     }
 
-    internal void CacheSpawn(Creature creatureData, Cell cell, Faction faction)
+    internal void CacheSpawn(CreatureData creatureData, Cell cell, Faction faction)
     {
         SpawnCache.Add((creatureData, cell, faction));
     }
 
-    internal CreatureRenderer SpawnCreature(Creature creatureData, Cell cell, Faction faction)
+    internal CreatureRenderer SpawnCreature(CreatureData creatureData, Cell cell, Faction faction)
     {
         var prefab = AllPrefabs.First(c => c.name.Equals(creatureData.Model, StringComparison.OrdinalIgnoreCase));
         var creature = Instantiate(prefab, transform);
@@ -117,9 +120,9 @@ public class CreatureController : MonoBehaviour
 
         creature.Data.InternalTick = Random.Range(0, Game.Instance.TimeManager.CreatureTick);
 
-        creature.Data.GetBehaviourTask = Behaviours.GetBehaviourFor(creature.Data.BehaviourName);
+        creature.Data.Behaviour = BehaviourController.GetBehaviour(creature.Data.BehaviourName);
 
-        creature.Data.Needs = Behaviours.GetNeedsFor(creature.Data.BehaviourName);
+        creature.Data.Needs = BehaviourController.GetNeedsFor(creature.Data.BehaviourName);
 
         faction.AddCreature(creatureData);
 

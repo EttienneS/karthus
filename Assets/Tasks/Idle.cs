@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using UnityEngine;
+using Assets.Creature;
 
 public class Idle : CreatureTask
 {
@@ -19,7 +20,7 @@ public class Idle : CreatureTask
     {
     }
 
-    public Idle(Creature creature) : this()
+    public Idle(CreatureData creature) : this()
     {
         if (Random.value > 0.7)
         {
@@ -35,7 +36,7 @@ public class Idle : CreatureTask
         }
     }
 
-    public override bool Done(Creature Creature)
+    public override bool Done(CreatureData Creature)
     {
         return SubTasksComplete(Creature);
     }

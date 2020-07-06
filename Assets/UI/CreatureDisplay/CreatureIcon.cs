@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Assets.Creature;
 
 public class CreatureIcon : MonoBehaviour
 {
@@ -8,7 +9,7 @@ public class CreatureIcon : MonoBehaviour
     public Image Clothes;
     public Text Text;
 
-    public Creature Creature { get; set; }
+    public CreatureData Creature { get; set; }
 
     public void CreatureClicked()
     {

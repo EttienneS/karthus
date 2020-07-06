@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Creature;
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -10,7 +11,7 @@ public enum AnimationType
 public class CreatureRenderer : MonoBehaviour
 {
     internal Animator Animator;
-    internal Creature Data = new Creature();
+    internal CreatureData Data = new CreatureData();
     internal float RemainingTextDuration;
     private SpriteRenderer Highlight;
     private TextMeshPro Text;

@@ -2,13 +2,14 @@
 using System.Linq;
 using UI;
 using UnityEngine;
+using Assets.Creature;
 
 public class HealthPanel : MonoBehaviour
 {
     public TitledProgressBar ProgressBarPrefab;
 
     internal Dictionary<Limb, TitledProgressBar> LimbLinks = new Dictionary<Limb, TitledProgressBar>();
-    internal Creature Current;
+    internal CreatureData Current;
 
     private void Update()
     {

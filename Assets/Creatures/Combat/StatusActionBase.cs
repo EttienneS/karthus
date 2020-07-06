@@ -1,8 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using Assets.Creature;
+using Newtonsoft.Json;
 
-public abstract class BuffBase
+public abstract class StatusActionBase
 {
-    protected BuffBase(string name, float cooldown, float duration)
+    protected StatusActionBase(string name, float cooldown, float duration)
     {
         Name = name;
         CooldownMax = cooldown;
@@ -29,7 +30,7 @@ public abstract class BuffBase
     public bool OnCoolDown { get; set; }
 
     [JsonIgnore]
-    public Creature Owner
+    public CreatureData Owner
     {
         get
         {

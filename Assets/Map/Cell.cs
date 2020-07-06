@@ -1,4 +1,5 @@
-﻿using Assets.Helpers;
+﻿using Assets.Creature;
+using Assets.Helpers;
 using Newtonsoft.Json;
 using Structures;
 using System;
@@ -25,7 +26,7 @@ public class Cell : IEquatable<Cell>
    
 
     [JsonIgnore]
-    public List<Creature> Creatures
+    public List<CreatureData> Creatures
     {
         get
         {
@@ -246,7 +247,7 @@ public class Cell : IEquatable<Cell>
         return Structure == null && Floor == null;
     }
 
-    internal IEnumerable<Creature> GetEnemyCreaturesOf(string faction)
+    internal IEnumerable<CreatureData> GetEnemyCreaturesOf(string faction)
     {
         return Creatures.Where(c => c.FactionName != faction);
     }

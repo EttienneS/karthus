@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Assets.Creature;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -75,9 +76,9 @@ public abstract class CreatureTask
         Destroyed = true;
     }
 
-    public abstract bool Done(Creature creature);
+    public abstract bool Done(CreatureData creature);
 
-    public void ShowBusyEmote(Creature creature)
+    public void ShowBusyEmote(CreatureData creature)
     {
         if (!string.IsNullOrEmpty(BusyEmote))
         {
@@ -85,7 +86,7 @@ public abstract class CreatureTask
         }
     }
 
-    public void ShowDoneEmote(Creature creature)
+    public void ShowDoneEmote(CreatureData creature)
     {
         if (!string.IsNullOrEmpty(DoneEmote))
         {
@@ -93,7 +94,7 @@ public abstract class CreatureTask
         }
     }
 
-    public bool SubTasksComplete(Creature creature)
+    public bool SubTasksComplete(CreatureData creature)
     {
         if (SubTasks == null || SubTasks.Count == 0)
         {

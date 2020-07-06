@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Triage : BuffBase
+public class Triage : StatusActionBase
 {
     public Triage(string name) : base(name, cooldown: 1f, duration: 0.5f)
     {

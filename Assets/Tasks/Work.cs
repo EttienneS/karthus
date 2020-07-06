@@ -1,6 +1,7 @@
 ﻿using Structures;
 using Structures.Work;
 using System.Linq;
+using Assets.Creature;
 
 public class DoWork : CreatureTask
 {
@@ -47,7 +48,7 @@ public class DoWork : CreatureTask
         Structure.Free();
     }
 
-    public override bool Done(Creature creature)
+    public override bool Done(CreatureData creature)
     {
         if (SubTasksComplete(creature))
         {

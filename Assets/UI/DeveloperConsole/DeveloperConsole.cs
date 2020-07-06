@@ -5,6 +5,7 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Assets.Creature;
 
 public class DeveloperConsole : MonoBehaviour
 {
@@ -156,7 +157,7 @@ public class DeveloperConsole : MonoBehaviour
             var entity = GetEntity(parts[0]);
 
             var cell = Game.Instance.Map.GetCellAtCoordinate(float.Parse(parts[1]), float.Parse(parts[2]));
-            if (entity is Creature creature)
+            if (entity is CreatureData creature)
             {
                 creature.X = cell.X;
                 creature.Z = cell.Z;
@@ -172,7 +173,7 @@ public class DeveloperConsole : MonoBehaviour
         Commands.Add("Set", (args) =>
         {
             var parts = args.Split(' ');
-            var entity = GetEntity(parts[0]) as Creature;
+            var entity = GetEntity(parts[0]) as CreatureData;
 
             var need = entity.Needs.Find(n => n.Name.Equals(parts[1], StringComparison.OrdinalIgnoreCase));
 

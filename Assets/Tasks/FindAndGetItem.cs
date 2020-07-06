@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Assets.Creature;
 
 public class FindAndGetItem : CreatureTask
 {
@@ -24,7 +25,7 @@ public class FindAndGetItem : CreatureTask
     {
     }
 
-    public override bool Done(Creature creature)
+    public override bool Done(CreatureData creature)
     {
         if (SubTasksComplete(creature))
         {

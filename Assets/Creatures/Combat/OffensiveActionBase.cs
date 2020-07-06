@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Assets.Creature;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.Collections.Generic;
 
@@ -42,7 +43,7 @@ public abstract class OffensiveActionBase
     public float Progress { get; set; }
 
     [JsonIgnore]
-    public Creature Owner
+    public CreatureData Owner
     {
         get
         {
@@ -50,7 +51,7 @@ public abstract class OffensiveActionBase
         }
     }
 
-    public int PredictDamage(Creature creature)
+    public int PredictDamage(CreatureData creature)
     {
         var iterations = 10;
         var total = 0;

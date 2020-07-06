@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using Assets.Creature;
 
 public class Heal : CreatureTask
 {
@@ -21,7 +22,7 @@ public class Heal : CreatureTask
     {
     }
 
-    public override bool Done(Creature creature)
+    public override bool Done(CreatureData creature)
     {
         if (SubTasksComplete(creature))
         {

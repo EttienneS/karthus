@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Assets.Creature;
+using Newtonsoft.Json;
 using Structures;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ public class Faction
 {
     public List<CreatureTask> AvailableTasks = new List<CreatureTask>();
 
-    public Dictionary<CreatureTask, Creature> AssignedTasks
+    public Dictionary<CreatureTask, CreatureData> AssignedTasks
     {
         get
         {
@@ -16,7 +17,7 @@ public class Faction
         }
     }
 
-    public List<Creature> Creatures = new List<Creature>();
+    public List<CreatureData> Creatures = new List<CreatureData>();
     public string FactionName;
     public float LastUpdate;
     public float LastRetry;
@@ -50,9 +51,9 @@ public class Faction
         return task;
     }
 
-    public CreatureTask TakeTask(Creature creature)
+    public CreatureTask TakeTask(CreatureData creature)
     {
-        var task = creature.GetBehaviourTask?.Invoke(creature);
+        var task = creature.Behaviour.GetTask(creature);
         if (task == null)
         {
             var highestPriority = int.MinValue;
@@ -185,7 +186,7 @@ public class Faction
         return null;
     }
 
-    internal void AddCreature(Creature data)
+    internal void AddCreature(CreatureData data)
     {
         if (!Creatures.Contains(data))
         {
@@ -231,7 +232,7 @@ public class Faction
         }
     }
 
-    public IEntity FindItemOrContainer(string criteria, Creature creature)
+    public IEntity FindItemOrContainer(string criteria, CreatureData creature)
     {
         IEntity entity = FindContainerWithItem(criteria, creature);
 
@@ -243,7 +244,7 @@ public class Faction
         return entity;
     }
 
-    public Item FindItem(string criteria, Creature creature)
+    public Item FindItem(string criteria, CreatureData creature)
     {
         var items = HomeCells.SelectMany(c => c?.Items.Where(item => item.IsType(criteria) && !item.InUseByAnyone)).ToList();
         items.AddRange(Game.Instance.IdService.ItemLookup.Values.Where(i => i.FactionName == FactionName && i.IsType(criteria)));
@@ -276,7 +277,7 @@ public class Faction
         return targetItem;
     }
 
-    public Structure FindContainerWithItem(string criteria, Creature creature)
+    public Structure FindContainerWithItem(string criteria, CreatureData creature)
     {
         var containers = StorageZones.SelectMany(zone => zone.Containers.Where(container => container.HasItemOfType(criteria) && !container.InUseByAnyone));
 

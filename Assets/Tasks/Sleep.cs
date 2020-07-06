@@ -1,6 +1,7 @@
 ﻿using Needs;
 using Newtonsoft.Json;
 using Structures;
+using Assets.Creature;
 
 public class Sleep : CreatureTask
 {
@@ -45,7 +46,7 @@ public class Sleep : CreatureTask
         }
     }
 
-    public override bool Done(Creature creature)
+    public override bool Done(CreatureData creature)
     {
         if (SubTasksComplete(creature))
         {

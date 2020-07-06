@@ -1,4 +1,5 @@
-﻿using Needs;
+﻿using Assets.Creature;
+using Needs;
 using System.Linq;
 
 public class Eat : CreatureTask
@@ -33,7 +34,7 @@ public class Eat : CreatureTask
     public bool FoundSeating;
     public string ChairId;
 
-    public override bool Done(Creature creature)
+    public override bool Done(CreatureData creature)
     {
         if (SubTasksComplete(creature))
         {

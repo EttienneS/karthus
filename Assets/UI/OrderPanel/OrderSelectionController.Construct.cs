@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Structures;
+using UnityEngine;
 
 public partial class OrderSelectionController //.Construct
 {
@@ -43,7 +44,7 @@ public partial class OrderSelectionController //.Construct
         {
             EnableAndClear();
 
-            foreach (var construct in Game.Instance.ConstructController.Constructs)
+            foreach (var construct in Game.Instance.FileController.Constructs)
             {
                 var title = $"{construct.Name} ({construct.Height}x{construct.Width})";
                 var button = CreateOrderButton(() => ConstructClicked(construct),

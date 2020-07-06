@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Structures;
+using Assets.Creature;
 
 public class IdService
 {
-    public Dictionary<string, Creature> CreatureIdLookup = new Dictionary<string, Creature>();
-    public Dictionary<IEntity, Creature> CreatureLookup = new Dictionary<IEntity, Creature>();
+    public Dictionary<string, CreatureData> CreatureIdLookup = new Dictionary<string, CreatureData>();
+    public Dictionary<IEntity, CreatureData> CreatureLookup = new Dictionary<IEntity, CreatureData>();
     public Dictionary<string, Item> ItemIdLookup = new Dictionary<string, Item>();
     public Dictionary<IEntity, Item> ItemLookup = new Dictionary<IEntity, Item>();
     public Dictionary<string, Structure> StructureIdLookup = new Dictionary<string, Structure>();
@@ -41,7 +42,7 @@ public class IdService
             }
             StructureCellLookup[structure.Cell].Add(structure);
         }
-        else if (entity is Creature creature)
+        else if (entity is CreatureData creature)
         {
             CreatureLookup.Add(entity, creature);
             CreatureIdLookup.Add(entity.Id, creature);
@@ -93,7 +94,7 @@ public class IdService
 
         if (CreatureLookup.ContainsKey(entity))
         {
-            Game.Instance.CreatureController.DestroyCreature((entity as Creature).CreatureRenderer);
+            Game.Instance.CreatureController.DestroyCreature((entity as CreatureData).CreatureRenderer);
         }
 
         if (ItemLookup.ContainsKey(entity))
@@ -128,7 +129,7 @@ public class IdService
 
 public static class IdExtensions
 {
-    public static Creature GetCreature(this string id)
+    public static CreatureData GetCreature(this string id)
     {
         if (!Game.Instance.IdService.CreatureIdLookup.TryGetValue(id, out var creature))
         {

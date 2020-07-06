@@ -1,11 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using Assets.Creature;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Needs
 {
-
     public abstract class NeedBase
     {
         [JsonIgnore]
@@ -14,7 +14,7 @@ namespace Needs
         public float BaselineChangeRate { get; set; } = NeedConstants.BaseDegrateRate;
 
         [JsonIgnore]
-        public Creature Creature { get; set; }
+        public CreatureData Creature { get; set; }
 
         public float Current { get; set; } = 100;
         public float CurrentChangeRate { get; set; } = NeedConstants.BaseDegrateRate;

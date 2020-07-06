@@ -1,4 +1,5 @@
 ﻿using Needs;
+using Assets.Creature;
 using Structures;
 public class Wash : CreatureTask
 {
@@ -35,7 +36,7 @@ public class Wash : CreatureTask
         WashCoords = (cell.X, cell.Z);
     }
 
-    public override bool Done(Creature creature)
+    public override bool Done(CreatureData creature)
     {
         if (SubTasksComplete(creature))
         {

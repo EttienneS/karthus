@@ -1,4 +1,6 @@
-﻿public class Drop : CreatureTask
+﻿using Assets.Creature;
+
+public class Drop : CreatureTask
 {
     public float TargetX;
     public float TargetY;
@@ -25,7 +27,7 @@
     {
     }
 
-    public override bool Done(Creature creature)
+    public override bool Done(CreatureData creature)
     {
         if (SubTasksComplete(creature))
         {

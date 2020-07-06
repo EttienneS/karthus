@@ -12,7 +12,7 @@
 
   "Aggression": 1,
   "Sprite": "Composite",
-  "BehaviourName": "Person",
+  "BehaviourName": "PersonBehavior",
   "Mobility": "Walk",
   "Skills": [
     {

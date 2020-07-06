@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Assets.Creature;
 
 public class Wait : CreatureTask
 {
@@ -35,7 +36,7 @@ public class Wait : CreatureTask
         return Game.Instance.TimeManager.GetTimer(TimerId);
     }
 
-    public override bool Done(Creature creature)
+    public override bool Done(CreatureData creature)
     {
         creature.SetAnimation(Animation);
         if (GetTimer().IsDone())

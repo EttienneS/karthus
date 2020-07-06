@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Assets.Creature;
 
 public class Pickup : CreatureTask
 {
@@ -27,7 +28,7 @@ public class Pickup : CreatureTask
         Amount = amount;
     }
 
-    public override bool Done(Creature creature)
+    public override bool Done(CreatureData creature)
     {
         var item = ItemId.GetItem();
         if (item == null)

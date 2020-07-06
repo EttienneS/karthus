@@ -13,7 +13,7 @@
   "Vitality": 16,
 
   "Sprite": "Cow-X",
-  "BehaviourName": "Grazer",
+  "BehaviourName": "GrazerBehavior",
   "Mobility": "Walk",
   "Limbs": [
     {

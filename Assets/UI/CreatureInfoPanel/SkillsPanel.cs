@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Assets.Creature;
 
 public class SkillsPanel : MonoBehaviour
 {
     public SkillDisplay SkillPrefab;
 
-    public Creature Current;
+    public CreatureData Current;
     internal Dictionary<Skill, SkillDisplay> SkillLinks = new Dictionary<Skill, SkillDisplay>();
 
     private void Update()

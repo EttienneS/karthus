@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Assets.Creature;
+using Newtonsoft.Json;
 using System;
 
 public abstract class DefensiveActionBase
@@ -32,7 +33,7 @@ public abstract class DefensiveActionBase
     }
 
     [JsonIgnore]
-    public Creature Owner
+    public CreatureData Owner
     {
         get
         {

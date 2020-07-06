@@ -1,5 +1,7 @@
 ﻿using Structures;
 using System.Linq;
+using Assets.Creature;
+using Assets.Creature;
 
 public class RemoveStructure : CreatureTask
 {
@@ -31,7 +33,7 @@ public class RemoveStructure : CreatureTask
 
     public bool Decontructed;
 
-    public override bool Done(Creature creature)
+    public override bool Done(CreatureData creature)
     {
         if (SubTasksComplete(creature))
         {

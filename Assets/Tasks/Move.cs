@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Assets.Creature;
 
 public class Move : CreatureTask
 {
@@ -36,7 +37,7 @@ public class Move : CreatureTask
         }
     }
 
-    public override bool Done(Creature creature)
+    public override bool Done(CreatureData creature)
     {
         if (creature.UnableToFindPath)
         {

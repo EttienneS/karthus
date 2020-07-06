@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Assets.Creature;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,12 +24,12 @@ public class Limb
 
         OffensiveActions = new List<OffensiveActionBase>();
         DefensiveActions = new List<DefensiveActionBase>();
-        BuffActions = new List<BuffBase>();
+        BuffActions = new List<StatusActionBase>();
         Wounds = new List<Wound>();
         DamageThreshold = new DamageThreshold();
     }
 
-    public List<BuffBase> BuffActions { get; set; }
+    public List<StatusActionBase> BuffActions { get; set; }
     public bool Busy { get; set; }
     public DamageThreshold DamageThreshold { get; set; }
     public List<DefensiveActionBase> DefensiveActions { get; set; }
@@ -41,7 +42,7 @@ public class Limb
     public List<OffensiveActionBase> OffensiveActions { get; set; }
 
     [JsonIgnore]
-    public Creature Owner { get; set; }
+    public CreatureData Owner { get; set; }
 
     public Dictionary<DamageType, int> Resistance { get; set; }
 
@@ -141,7 +142,7 @@ public class Limb
         return msg.Trim();
     }
 
-    internal void AddBoostAction(BuffBase boostAction)
+    internal void AddBoostAction(StatusActionBase boostAction)
     {
         boostAction.Limb = this;
         BuffActions.Add(boostAction);
@@ -180,7 +181,7 @@ public class Limb
         Owner.Aggression += (damage / 20.0f);
     }
 
-    internal void Link(Creature owner)
+    internal void Link(CreatureData owner)
     {
         Owner = owner;
 

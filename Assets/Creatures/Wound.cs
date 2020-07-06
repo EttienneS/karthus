@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Assets.Creature;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Random = UnityEngine.Random;
 
@@ -134,7 +135,7 @@ public class Wound
     public Limb Limb { get; set; }
 
     [JsonIgnore]
-    public Creature Owner
+    public CreatureData Owner
     {
         get
         {

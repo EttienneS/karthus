@@ -2,19 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Assets.Creature;
 
 public class CreatureDisplay : MonoBehaviour
 {
     public CreatureIcon CreatureIconPrefab;
 
-    public Dictionary<Creature, CreatureIcon> IconLookup;
+    public Dictionary<CreatureData, CreatureIcon> IconLookup;
 
     // Update is called once per frame
     void Update()
     {
         if (IconLookup == null)
         {
-            IconLookup = new Dictionary<Creature, CreatureIcon>();
+            IconLookup = new Dictionary<CreatureData, CreatureIcon>();
 
             foreach (var creature in Game.Instance.FactionController.PlayerFaction.Creatures)
             {
@@ -41,7 +42,7 @@ public class CreatureDisplay : MonoBehaviour
         }
     }
 
-    private void AddIcon(Creature creature)
+    private void AddIcon(CreatureData creature)
     {
         var icon = Instantiate(CreatureIconPrefab, transform);
         icon.Creature = creature;

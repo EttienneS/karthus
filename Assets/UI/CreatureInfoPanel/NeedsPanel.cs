@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using UI;
 using UnityEngine;
+using Assets.Creature;
 
 public class NeedsPanel : MonoBehaviour
 {
     public TitledProgressBar ProgressBarPrefab;
 
     internal Dictionary<NeedBase, TitledProgressBar> NeedProgressLinks = new Dictionary<NeedBase, TitledProgressBar>();
-    internal Creature Current;
+    internal CreatureData Current;
 
     private void Update()
     {

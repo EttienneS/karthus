@@ -1,4 +1,5 @@
-﻿using Structures;
+﻿using Assets.Creature;
+using Structures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +35,7 @@ public class Build : CreatureTask
         }
     }
 
-    public override bool Done(Creature creature)
+    public override bool Done(CreatureData creature)
     {
         if (TargetStructure == null)
         {
@@ -56,7 +57,7 @@ public class Build : CreatureTask
         return false;
     }
 
-    private bool BuildComplete(Creature creature)
+    private bool BuildComplete(CreatureData creature)
     {
         if (!Built)
         {
@@ -85,7 +86,7 @@ public class Build : CreatureTask
         return true;
     }
 
-    private bool InPosition(Creature creature)
+    private bool InPosition(CreatureData creature)
     {
         if (!creature.Cell.NonNullNeighbors.Contains(TargetStructure.Cell))
         {

@@ -2,12 +2,13 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using Assets.Creature;
 
 public class CreatureInfoPanel : MonoBehaviour
 {
     public GameObject ButtonPanel;
     public Text CreatureName;
-    public List<Creature> CurrentCreatures;
+    public List<CreatureData> CurrentCreatures;
     public Toggle FirstPanelToggle;
     public ImageButton ImageButtonPrefab;
     public Text Log;
@@ -30,7 +31,7 @@ public class CreatureInfoPanel : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void Show(IEnumerable<Creature> entities)
+    public void Show(IEnumerable<CreatureData> entities)
     {
         gameObject.SetActive(true);
 
@@ -50,10 +51,10 @@ public class CreatureInfoPanel : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        if (entities.First() is Creature creature && creature.IsPlayerControlled())
+        if (entities.First() is CreatureData creature && creature.IsPlayerControlled())
         {
             // creatures
-            var creatures = entities.OfType<Creature>();
+            var creatures = entities.OfType<CreatureData>();
 
             AddButton(OrderSelectionController.MoveIcon).SetOnClick(() => MoveClicked(creatures));
             AddButton(OrderSelectionController.AttackIcon).SetOnClick(() => AttackClicked(creatures));
@@ -96,7 +97,7 @@ public class CreatureInfoPanel : MonoBehaviour
                     PropertiesPanel.text += $"{property.Key}:\t{property.Value}\n";
                 }
 
-                if (currentEntity is Creature creature)
+                if (currentEntity is CreatureData creature)
                 {
                     if (creature.IsPlayerControlled())
                     {
@@ -127,7 +128,7 @@ public class CreatureInfoPanel : MonoBehaviour
         }
     }
 
-    private void AttackClicked(IEnumerable<Creature> creatures)
+    private void AttackClicked(IEnumerable<CreatureData> creatures)
     {
         Game.Instance.SelectionPreference = SelectionPreference.Cell;
         Game.Instance.Cursor.SetSprite(Game.Instance.SpriteStore.GetSprite(OrderSelectionController.AttackIcon),
@@ -149,7 +150,7 @@ public class CreatureInfoPanel : MonoBehaviour
         };
     }
 
-    private void LogTask(Creature creature)
+    private void LogTask(CreatureData creature)
     {
         if (creature.Task != null)
         {
@@ -168,7 +169,7 @@ public class CreatureInfoPanel : MonoBehaviour
         }
     }
 
-    private void MoveClicked(IEnumerable<Creature> creatures)
+    private void MoveClicked(IEnumerable<CreatureData> creatures)
     {
         Game.Instance.SelectionPreference = SelectionPreference.Cell;
         Game.Instance.Cursor.SetSprite(Game.Instance.SpriteStore.GetSprite(OrderSelectionController.MoveIcon), (cell) => cell.TravelCost > 0);
