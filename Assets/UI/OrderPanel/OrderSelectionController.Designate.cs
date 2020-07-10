@@ -53,31 +53,31 @@ public partial class OrderSelectionController //.Designate
                 {
                     var structure = cell.Structure;
 
-                    if (structure.IsBlueprint)
-                    {
-                        var task = structure.Faction.AvailableTasks.OfType<Build>().FirstOrDefault(b => b.TargetStructure == structure);
-                        if (task != null)
-                        {
-                            structure.Faction.RemoveTask(task);
-                            task.Destroy();
-                        }
-                        else
-                        {
-                            foreach (var creature in structure.Faction.Creatures)
-                            {
-                                if (creature.Task != null && task is Build build)
-                                {
-                                    if (build.TargetStructure == structure)
-                                    {
-                                        creature.CancelTask();
-                                    }
-                                }
-                            }
-                        }
+                    //if (structure.IsBlueprint)
+                    //{
+                    //    //var task = structure.Faction.AvailableTasks.OfType<Build>().FirstOrDefault(b => b.TargetStructure == structure);
+                    //    //if (task != null)
+                    //    //{
+                    //    //    structure.Faction.RemoveTask(task);
+                    //    //    task.Destroy();
+                    //    //}
+                    //    //else
+                    //    //{
+                    //    //    foreach (var creature in structure.Faction.Creatures)
+                    //    //    {
+                    //    //        if (creature.Task != null && task is Build build)
+                    //    //        {
+                    //    //            if (build.TargetStructure == structure)
+                    //    //            {
+                    //    //                creature.CancelTask();
+                    //    //            }
+                    //    //        }
+                    //    //    }
+                    //    //}
 
-                        Game.Instance.StructureController.DestroyStructure(structure);
-                    }
-                    else
+                    //    //Game.Instance.StructureController.DestroyStructure(structure);
+                    //}
+                    //else
                     {
                         if (Game.Instance.FactionController.PlayerFaction.AvailableTasks.OfType<RemoveStructure>().Any(t => t.StructureToRemove == structure))
                         {

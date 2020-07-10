@@ -13,6 +13,5 @@
   "Capacity": 100,
   "Priority": 5,
   "Filter": "-- Add to a storage zone --",
-  "Offset": "0,0.5,0",
   "Type": "Container"
 }

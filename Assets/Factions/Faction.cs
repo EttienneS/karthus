@@ -1,4 +1,5 @@
 ﻿using Assets.Creature;
+using Assets.Structures;
 using Newtonsoft.Json;
 using Structures;
 using System.Collections.Generic;
@@ -17,7 +18,19 @@ public class Faction
         }
     }
 
+    public List<CreatureTask> AllTasks
+    {
+        get
+        {
+            var allTasks = AvailableTasks.ToList();
+            allTasks.AddRange(AssignedTasks.Keys.ToList());
+
+            return allTasks;
+        }
+    }
+
     public List<CreatureData> Creatures = new List<CreatureData>();
+    public List<Blueprint> Blueprints = new List<Blueprint>();
     public string FactionName;
     public float LastUpdate;
     public float LastRetry;
@@ -80,7 +93,6 @@ public class Faction
 
     public void Update()
     {
-        
         if (Game.Instance.TimeManager.Paused)
         {
             return;
@@ -91,17 +103,16 @@ public class Faction
         {
             LastUpdate = 0;
 
+            foreach (var blueprint in Blueprints)
+            {
+                if (blueprint.AssociatedBuildTask == null)
+                {
+                    AddTask(new Build(blueprint));
+                }
+            }
+
             if (FactionName == FactionConstants.Player)
             {
-                foreach (var structure in Structures.Where(s => s.IsBlueprint))
-                {
-                    if (!AvailableTasks.OfType<Build>().Any(t => t.TargetStructure == structure) &&
-                        !Creatures.Any(t => t.Task is Build task && task.TargetStructure == structure))
-                    {
-                        AddTask(new Build(structure));
-                    }
-                }
-
                 var storageTasks = AvailableTasks.OfType<StoreItem>().ToList();
 
                 if (storageTasks.Count < 10)
@@ -164,7 +175,7 @@ public class Faction
     {
         var pendingStorage = AvailableTasks.OfType<StoreItem>().ToList();
         var options = new List<Container>();
-        foreach (var container in Containers.Where(s => !s.IsBlueprint))
+        foreach (var container in Containers)
         {
             if (pendingStorage.Any(p => p.StorageStructureId == container.Id))
             {
@@ -184,6 +195,14 @@ public class Faction
         }
 
         return null;
+    }
+
+    internal void AddBlueprint(Blueprint blueprint)
+    {
+        if (!Blueprints.Contains(blueprint))
+        {
+            Blueprints.Add(blueprint);
+        }
     }
 
     internal void AddCreature(CreatureData data)

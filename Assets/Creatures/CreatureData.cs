@@ -524,7 +524,7 @@ namespace Assets.Creature
             {
                 if (Task is Build build)
                 {
-                    Game.Instance.StructureController.DestroyStructure(build.TargetStructure);
+                    Game.Instance.StructureController.DestroyBlueprint(build.Blueprint);
                 }
 
                 DropItem(Cell);

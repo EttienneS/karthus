@@ -11,9 +11,6 @@ public class FindAndHaulItem : CreatureTask
 
     internal float TargetZ;
 
-    internal string DestinationEntityId;
-
-
     public override string Message
     {
         get
@@ -32,14 +29,11 @@ public class FindAndHaulItem : CreatureTask
         RequiredSkillLevel = 1;
     }
 
-    public FindAndHaulItem(string itemType, int amount, Cell target, IEntity destinationEntity) : this()
+    public FindAndHaulItem(string itemType, int amount, Cell target) : this()
     {
         TargetX = target.Vector.x;
         TargetZ = target.Vector.z;
-        if (destinationEntity != null)
-        {
-            DestinationEntityId = destinationEntity.Id;
-        }
+       
         ItemType = itemType;
         Amount = amount;
         AddSubTask(new FindAndGetItem(itemType, amount));
@@ -59,12 +53,8 @@ public class FindAndHaulItem : CreatureTask
     {
         if (SubTasksComplete(creature))
         {
-            var item = creature.DropItem(TargetCell);
+            creature.DropItem(TargetCell);
 
-            if (!string.IsNullOrEmpty(DestinationEntityId))
-            {
-                item.Reserve(DestinationEntityId.GetEntity());
-            }
             return true;
         }
         return false;

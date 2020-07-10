@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 81735117d4ef8004fb43991ac63afd63
 ModelImporter:
-  serializedVersion: 19300
+  serializedVersion: 19301
   internalIDToNameTable:
   - first:
       1: 100000
@@ -23,12 +23,12 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: natureKit-_defaultMat
-    second: {fileID: 2100000, guid: fcc4350bf1d0356469f2daafaaa755b7, type: 2}
+    second: {fileID: 2100000, guid: 2b225785c498bad4ea9292fe314c4758, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: natureKit-stone
-    second: {fileID: 2100000, guid: 29aabbe420f18164897798c5b8c13a29, type: 2}
+    second: {fileID: 2100000, guid: d7dd73235a7fcf94b9517a2627a38a7b, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
@@ -59,7 +59,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 0.05
+    globalScale: 0.3
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
@@ -68,6 +68,7 @@ ModelImporter:
     importBlendShapes: 1
     importCameras: 0
     importLights: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
@@ -105,7 +106,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 0.05
+    globalScale: 0.3
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0

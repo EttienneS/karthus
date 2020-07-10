@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 3c782bde709c8234b95693daa3087ef6
 ModelImporter:
-  serializedVersion: 19300
+  serializedVersion: 19301
   internalIDToNameTable:
   - first:
       1: 100000
@@ -23,12 +23,12 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: natureKit-wood
-    second: {fileID: 2100000, guid: 5f1194c80ea1de247a105fe249093bbe, type: 2}
+    second: {fileID: 2100000, guid: 3cee55f0cf45aba4cbfd0bf7f9a6a562, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: natureKit-woodLight
-    second: {fileID: 2100000, guid: 770dd589fafa6f84fb5263f79b7d6750, type: 2}
+    second: {fileID: 2100000, guid: a611ec937a1188f4ebd0e0ea959694c0, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
@@ -59,7 +59,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 0.05
+    globalScale: 0.25
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
@@ -68,6 +68,7 @@ ModelImporter:
     importBlendShapes: 1
     importCameras: 0
     importLights: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
@@ -105,7 +106,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 0.05
+    globalScale: 0.25
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0

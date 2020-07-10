@@ -273,12 +273,7 @@ namespace Assets.Structures
 
                     if (cell.TravelCost > 0 && cell.Structure == null)
                     {
-                        var structure = Game.Instance.StructureController.GetStructureBluePrint(GetStructure(character), cell, faction);
-
-                        if (!structure.IsWall() && !structure.IsFloor() && !string.IsNullOrEmpty(Floor))
-                        {
-                            Game.Instance.StructureController.GetStructureBluePrint(Floor, cell, faction);
-                        }
+                        Game.Instance.StructureController.SpawnBlueprint(GetStructure(character), cell, faction);
                     }
 
                     x++;

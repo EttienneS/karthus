@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Assets.Creature;
+using Structures;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Structures;
-using Assets.Creature;
 
 public class IdService
 {
@@ -124,6 +124,15 @@ public class IdService
             ItemLookup.Remove(entity);
             ItemIdLookup.Remove(entity.Id);
         }
+    }
+
+    internal IEnumerable<Structure> GetStructuresInCell(Cell cell)
+    {
+        if (Game.Instance.IdService.StructureCellLookup.ContainsKey(cell))
+        {
+            return Game.Instance.IdService.StructureCellLookup[cell];
+        }
+        return new List<Structure>();
     }
 }
 

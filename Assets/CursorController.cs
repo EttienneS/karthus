@@ -19,8 +19,6 @@ namespace Assets
         private Dictionary<Cell, MeshRenderer> _draggedRenderers = new Dictionary<Cell, MeshRenderer>();
         private string _meshName;
 
-        private Vector3 _offset = Vector3.zero;
-
         public delegate void RotateDelegate();
 
         public delegate bool ValidateMouseDelegate(Cell cell);
@@ -30,6 +28,7 @@ namespace Assets
             if (MeshRenderer != null)
             {
                 Destroy(MeshRenderer.gameObject);
+                MeshRenderer = null;
             }
         }
 
@@ -53,12 +52,10 @@ namespace Assets
             _meshName = name;
             Clear();
 
-            var structure = Game.Instance.StructureController.GetMeshForStructure(name, transform);
-            _offset = structure.structure.OffsetVector;
+            var structure = Game.Instance.StructureController.InstantiateNewStructureMeshRenderer(name, transform);
+            structure.SetAllMaterial(Game.Instance.FileController.BlueprintMaterial);
 
-            structure.renderer.SetAllMaterial(Game.Instance.FileController.BlueprintMaterial);
-
-            MeshRenderer = structure.renderer;
+            MeshRenderer = structure;
             Validate = validationFunction;
         }
 
@@ -103,8 +100,8 @@ namespace Assets
                     MeshRenderer cellRenderer;
                     if (!_draggedRenderers.ContainsKey(cell))
                     {
-                        cellRenderer = Game.Instance.StructureController.GetMeshForStructure(_meshName, Game.Instance.Map.transform).renderer;
-                        cellRenderer.transform.position = new Vector3(cell.Vector.x, Game.Instance.MapData.StructureLevel, cell.Vector.z) + _offset;
+                        cellRenderer = Game.Instance.StructureController.InstantiateNewStructureMeshRenderer(_meshName, Game.Instance.Map.transform);
+                        cellRenderer.transform.position = new Vector3(cell.Vector.x, Game.Instance.MapData.StructureLevel, cell.Vector.z);
                         _draggedRenderers.Add(cell, cellRenderer);
                     }
                     else

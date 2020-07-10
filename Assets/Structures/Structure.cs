@@ -20,13 +20,9 @@ namespace Structures
         public string Icon;
         public string Layer;
 
-        public string Materials;
         public string Mesh;
-        public string Offset;
         public float Rotation;
 
-        public string Scale;
-        public string Size;
         public bool SpawnRotation;
         public float TravelCost;
 
@@ -35,15 +31,7 @@ namespace Structures
 
         private Faction _faction;
 
-        private bool _isBlueprint;
-
-        [JsonIgnore]
-        private Vector3 _offsetVector;
-
         private VisualEffect _outline;
-
-        [JsonIgnore]
-        private Vector3 _scaleVector;
 
         public Structure()
         {
@@ -87,9 +75,6 @@ namespace Structures
         }
 
         public Cost Cost { get; set; } = new Cost();
-
-        [JsonIgnore]
-        public Material[] DefaultMaterials { get; internal set; }
 
         public string Description { get; set; }
 
@@ -143,64 +128,14 @@ namespace Structures
 
         public string InUseById { get; set; }
 
-        public bool IsBlueprint
-        {
-            get
-            {
-                return _isBlueprint;
-            }
-            set
-            {
-                _isBlueprint = value;
-
-                Renderer.UpdateMaterial();
-            }
-        }
-
         public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
 
         public string Name { get; set; }
-
-        [JsonIgnore]
-        public Vector3 OffsetVector
-        {
-            get
-            {
-                if (_offsetVector == Vector3.zero)
-                {
-                    if (!string.IsNullOrEmpty(Offset))
-                    {
-                        _offsetVector = Offset.ToVector3();
-                    }
-                }
-                return _offsetVector;
-            }
-        }
 
         public Dictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
 
         [JsonIgnore]
         public StructureRenderer Renderer { get; set; }
-
-        [JsonIgnore]
-        public Vector3 ScaleVector
-        {
-            get
-            {
-                if (_scaleVector == Vector3.zero)
-                {
-                    if (string.IsNullOrEmpty(Scale))
-                    {
-                        _scaleVector = Vector3.one;
-                    }
-                    else
-                    {
-                        _scaleVector = Scale.ToVector3();
-                    }
-                }
-                return _scaleVector;
-            }
-        }
 
         public Dictionary<string, float> ValueProperties { get; set; } = new Dictionary<string, float>();
 
@@ -209,7 +144,7 @@ namespace Structures
         {
             get
             {
-                return new Vector3(Cell.Vector.x, Game.Instance.MapData.StructureLevel, Cell.Vector.z) + OffsetVector;
+                return new Vector3(Cell.Vector.x, Game.Instance.MapData.StructureLevel, Cell.Vector.z);
             }
         }
 

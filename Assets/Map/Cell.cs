@@ -93,7 +93,11 @@ public class Cell : IEquatable<Cell>
     {
         get
         {
-            return Structure?.IsBlueprint == false ? Structure.TravelCost : BiomeRegion.TravelCost;
+            if (Structure == null)
+            {
+                return BiomeRegion.TravelCost;
+            }
+            return Structure.TravelCost;
         }
     }
 

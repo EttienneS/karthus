@@ -2,9 +2,7 @@
   "Name": "Road",
   "Mesh": "Floor",
   "Icon": "Road",
-  "Materials": "Dirt",
   "TravelCost": "0.1",
-  "Scale": "1,0.1,1",
   "Description": "Cheap structure generally used outdoors to connect larger constructs.  Move speed is much faster on roads and floors than other surfaces.",
   "Cost": {
     "Items": {

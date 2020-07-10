@@ -1,4 +1,5 @@
 ﻿using Assets.Creature;
+using Assets.Structures;
 using Structures;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 
 public class Build : CreatureTask
 {
-    public Structure TargetStructure;
+    public Blueprint Blueprint;
 
     private int _waitCount = 0;
 
@@ -20,9 +21,9 @@ public class Build : CreatureTask
         RequiredSkillLevel = 1;
     }
 
-    public Build(Structure structure) : this()
+    public Build(Blueprint blueprint) : this()
     {
-        TargetStructure = structure;
+        Blueprint = blueprint;
     }
 
     public bool Built = false;
@@ -31,13 +32,13 @@ public class Build : CreatureTask
     {
         get
         {
-            return $"Building {TargetStructure.Name} at {TargetStructure.Cell}";
+            return $"Building {Blueprint.StructureName} at {Blueprint.Cell}";
         }
     }
 
     public override bool Done(CreatureData creature)
     {
-        if (TargetStructure == null)
+        if (Blueprint == null)
         {
             throw new TaskFailedException();
         }
@@ -61,8 +62,8 @@ public class Build : CreatureTask
     {
         if (!Built)
         {
-            creature.Face(TargetStructure.Cell);
-            var time = TargetStructure.Cost.Items.Sum(i => i.Value) * 5;
+            creature.Face(Blueprint.Cell);
+            var time = Blueprint.Cost.Items.Sum(i => i.Value) * 5;
             AddSubTask(new Wait(time, "Building", AnimationType.Interact));
             Built = true;
             return false;
@@ -72,7 +73,7 @@ public class Build : CreatureTask
 
     private bool CellOpen()
     {
-        if (TargetStructure.Cell.Creatures.Count > 0)
+        if (Blueprint.Cell.Creatures.Count > 0)
         {
             _waitCount++;
 
@@ -88,9 +89,9 @@ public class Build : CreatureTask
 
     private bool InPosition(CreatureData creature)
     {
-        if (!creature.Cell.NonNullNeighbors.Contains(TargetStructure.Cell))
+        if (!creature.Cell.NonNullNeighbors.Contains(Blueprint.Cell))
         {
-            AddSubTask(new Move(TargetStructure.Cell.GetPathableNeighbour()));
+            AddSubTask(new Move(Blueprint.Cell.GetPathableNeighbour()));
             return false;
         }
         return true;
@@ -104,7 +105,7 @@ public class Build : CreatureTask
         {
             foreach (var item in needed)
             {
-                AddSubTask(new FindAndHaulItem(item.Key, item.Value, TargetStructure.Cell, TargetStructure));
+                AddSubTask(new FindAndHaulItem(item.Key, item.Value, Blueprint.Cell));
             }
             return false;
         }
@@ -113,20 +114,22 @@ public class Build : CreatureTask
 
     private bool Clean()
     {
-        var nonStructureItems = TargetStructure.Cell.Items.Where(i => i.InUseById != TargetStructure.Id);
+        var nonStructureItems = Blueprint.Cell.Items.Where(i => !Blueprint.Cost.Items.ContainsKey(i.Name));
         if (nonStructureItems.Any())
         {
             foreach (var item in nonStructureItems)
             {
                 item.Free();
                 AddSubTask(new Pickup(item));
-                AddSubTask(new Drop(TargetStructure.Cell.GetPathableNeighbour()));
+                AddSubTask(new Drop(Blueprint.Cell.GetPathableNeighbour()));
             }
 
             return false;
         }
 
-        var structuresToClean = Game.Instance.IdService.StructureCellLookup[TargetStructure.Cell].Where(c => !c.Buildable);
+        var structuresToClean = Game.Instance.IdService
+                                             .GetStructuresInCell(Blueprint.Cell)
+                                             .Where(c => !c.Buildable);
 
         if (structuresToClean.Any())
         {
@@ -141,21 +144,19 @@ public class Build : CreatureTask
 
     public void FinishStructure(Faction faction)
     {
-        TargetStructure.IsBlueprint = false;
-
-        faction.AddStructure(TargetStructure);
-
-        foreach (var item in TargetStructure.Cell.Items.ToList())
+        Game.Instance.StructureController.SpawnStructure(Blueprint.StructureName, Blueprint.Cell, Blueprint.Faction);
+        foreach (var item in Blueprint.Cell.Items.ToList())
         {
             Game.Instance.ItemController.DestroyItem(item);
         }
+        Game.Instance.StructureController.DestroyBlueprint(Blueprint);
     }
 
     public Dictionary<string, int> GetNeededItems()
     {
-        var current = TargetStructure.Cell.Items.ToList();
+        var current = Blueprint.Cell.Items.ToList();
         var desired = new Dictionary<string, int>();
-        foreach (var item in TargetStructure.Cost.Items)
+        foreach (var item in Blueprint.Cost.Items)
         {
             var desiredAmount = item.Value;
             foreach (var existing in current.Where(i => i.Name.Equals(item.Key, StringComparison.OrdinalIgnoreCase)))

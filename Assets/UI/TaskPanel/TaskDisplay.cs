@@ -17,7 +17,7 @@ namespace Assets.UI.TaskPanel
         {
             if (_task is Build build)
             {
-                Game.Instance.StructureController.DestroyStructure(build.TargetStructure);
+                Game.Instance.StructureController.DestroyBlueprint(build.Blueprint);
             }
 
             if (Game.Instance.FactionController.PlayerFaction.AssignedTasks.ContainsKey(_task))

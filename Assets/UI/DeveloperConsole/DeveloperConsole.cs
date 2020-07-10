@@ -1,11 +1,11 @@
 ﻿using Arg;
+using Assets.Creature;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using Assets.Creature;
 
 public class DeveloperConsole : MonoBehaviour
 {
@@ -16,8 +16,6 @@ public class DeveloperConsole : MonoBehaviour
     internal ArgsParser Parser;
 
     public delegate string Execute(string args);
-
-   
 
     public IEntity GetEntity(string id)
     {
@@ -141,13 +139,12 @@ public class DeveloperConsole : MonoBehaviour
                                                    .AvailableTasks.OfType<Build>().ToList())
             {
                 build.FinishStructure(Game.Instance.FactionController.PlayerFaction);
-                ids += $"{build.TargetStructure.Id},";
+                ids += $"{build.Blueprint.StructureName},";
 
                 Game.Instance.FactionController.PlayerFaction.AvailableTasks.Remove(build);
             }
             return ids.Trim(',');
         });
-
 
         Commands.Add("List", List);
         Commands.Add("Inspect", (args) => GetEntity(args).ToString());

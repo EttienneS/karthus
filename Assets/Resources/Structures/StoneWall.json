@@ -2,11 +2,8 @@
   "Name": "Stone Wall",
   "Mesh": "Wall",
   "Icon": "Wall",
-  "Materials": "CobbleStone",
   "Description": "Wall made from stone blocks, not much to look at but keeps the bad things out (or in..)",
   "TravelCost": "-1",
-  "Scale": "1,2,1",
-  "Offset": "0,1,0",
   "Cost": {
     "Items": {
       "Stone": "1"

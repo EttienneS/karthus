@@ -20,8 +20,7 @@ public partial class OrderSelectionController //.Structure
             {
                 if (structure.ValidateCellLocationForStructure(cell))
                 {
-                    var blueprint = Game.Instance.StructureController.GetStructureBluePrint(structureName, cell, Game.Instance.FactionController.PlayerFaction);
-                    Game.Instance.FactionController.PlayerFaction.AddTask(new Build(blueprint));
+                    Game.Instance.StructureController.SpawnBlueprint(structureName, cell, Game.Instance.FactionController.PlayerFaction);
                 }
             }
         };

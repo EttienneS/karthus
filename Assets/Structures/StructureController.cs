@@ -1,4 +1,5 @@
 ﻿using Assets.Helpers;
+using Assets.Structures;
 using Structures.Work;
 using System;
 using System.Collections.Generic;
@@ -11,21 +12,14 @@ namespace Structures
 {
     public class StructureController : MonoBehaviour
     {
+        public GameObject RoofContainer;
+        public GameObject RoofPrefab;
         public StructureRenderer StructureRendererPrefab;
 
         private static List<Type> _structureTypes;
         private float _lastUpdate;
         private Dictionary<string, Structure> _structureDataReference;
         private Dictionary<string, string> _structureTypeFileMap;
-
-        public GameObject RoofPrefab;
-        public GameObject RoofContainer;
-
-        public void CreateRoof(Cell cell)
-        {
-            var roof = Instantiate(RoofPrefab, RoofContainer.transform);
-            roof.transform.position = new Vector3(cell.X, cell.Y, cell.Z) + new Vector3(0.5f, 2f, 0.5f);
-        }
 
         public static List<Type> StructureTypes
         {
@@ -61,7 +55,7 @@ namespace Structures
                     {
                         try
                         {
-                            var data = GetFromJson(structureFile.text);
+                            var data = LoadStructureFromJson(structureFile.text);
                             _structureTypeFileMap.Add(data.Name, structureFile.text);
                             _structureDataReference.Add(data.Name, data);
                         }
@@ -75,7 +69,12 @@ namespace Structures
             }
         }
 
-        public static Structure GetFromJson(string json)
+        public static Type GetTypeFor(string name)
+        {
+            return StructureTypes.Find(w => w.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public static Structure LoadStructureFromJson(string json)
         {
             var structure = json.LoadJson<Structure>();
             var type = GetTypeFor(structure.Type);
@@ -88,25 +87,61 @@ namespace Structures
             return structure;
         }
 
-        public static Type GetTypeFor(string name)
+        public void CreateRoof(Cell cell)
         {
-            return StructureTypes.Find(w => w.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            var roof = Instantiate(RoofPrefab, RoofContainer.transform);
+            roof.transform.position = new Vector3(cell.X, cell.Y, cell.Z) + new Vector3(0.5f, 2f, 0.5f);
         }
 
-        public (MeshRenderer renderer, Structure structure) GetMeshForStructure(string name, Transform parent)
+        public MeshRenderer GetMeshForStructure(string name)
         {
-            var structureData = StructureTypeFileMap[name];
-            var structure = GetFromJson(structureData);
-            var mesh = Game.Instance.FileController.GetMesh(structure.Mesh.Split(',').GetRandomItem());
-            var renderer = Instantiate(mesh, parent);
-            renderer.transform.localScale = structure.ScaleVector;
+            return GetMeshForStructure(_structureDataReference[name]);
+        }
 
-            return (renderer, structure);
+        public MeshRenderer GetMeshForStructure(Structure structure)
+        {
+            return Game.Instance.FileController.GetMesh(structure.Mesh.Split(',').GetRandomItem());
+        }
+
+        public Structure CreateNewStructure(string structureName)
+        {
+            return LoadStructureFromJson(StructureTypeFileMap[structureName]);
+        }
+
+        public MeshRenderer InstantiateNewStructureMeshRenderer(string structureName, Transform parent)
+        {
+            return InstantiateNewStructureMeshRenderer(CreateNewStructure(structureName), parent);
+        }
+
+        public MeshRenderer InstantiateNewStructureMeshRenderer(Structure structure, Transform parent)
+        {
+            return InstantiateNewStructureMeshRenderer(GetMeshForStructure(structure), parent);
+        }
+
+        public MeshRenderer InstantiateNewStructureMeshRenderer(MeshRenderer mesh, Transform parent)
+        {
+            return Instantiate(mesh, parent);
+        }
+
+        public BlueprintRenderer SpawnBlueprint(string name, Cell cell, Faction faction)
+        {
+            var meshRenderer = InstantiateNewStructureMeshRenderer(name, transform);
+            meshRenderer.SetAllMaterial(Game.Instance.FileController.BlueprintMaterial);
+            meshRenderer.transform.name = $"Blueprint: {name}";
+
+            var blueprintRenderer = meshRenderer.gameObject.AddComponent<BlueprintRenderer>();
+            var blueprint = new Blueprint(name, cell, faction);
+            faction.AddBlueprint(blueprint);
+
+            blueprintRenderer.Load(blueprint);
+            return blueprintRenderer;
         }
 
         public Structure SpawnStructure(string name, Cell cell, Faction faction)
         {
-            var (renderer, structure) = GetMeshForStructure(name, transform);
+            var structure = CreateNewStructure(name);
+            var renderer = InstantiateNewStructureMeshRenderer(structure, transform);
+
             var structureRenderer = renderer.gameObject.AddComponent<StructureRenderer>();
             structure.Renderer = structureRenderer;
             structureRenderer.Data = structure;
@@ -115,17 +150,6 @@ namespace Structures
             if (structure.SpawnRotation)
             {
                 structure.Rotation = Random.Range(1, 360);
-            }
-
-            var mats = Game.Instance.FileController.GetMaterials(structure.Materials);
-            if (mats != null)
-            {
-                structure.DefaultMaterials = mats;
-                structureRenderer.Renderer.SetMeshMaterial(structure.DefaultMaterials);
-            }
-            else
-            {
-                structure.DefaultMaterials = structureRenderer.Renderer.materials;
             }
 
             structure.Cell = cell;
@@ -150,7 +174,6 @@ namespace Structures
 
         public void Update()
         {
-
             if (Game.Instance.TimeManager.Paused)
                 return;
 
@@ -159,9 +182,26 @@ namespace Structures
             if (_lastUpdate > Game.Instance.TimeManager.CreatureTick)
             {
                 _lastUpdate = 0;
-                foreach (var structure in Game.Instance.IdService.StructureLookup.Values.OfType<WorkStructureBase>().Where(s => !s.IsBlueprint))
+                foreach (var structure in Game.Instance.IdService.StructureLookup.Values.OfType<WorkStructureBase>())
                 {
                     structure.Process(Game.Instance.TimeManager.CreatureTick);
+                }
+            }
+        }
+
+        internal void DestroyBlueprint(Blueprint blueprint)
+        {
+            if (blueprint.BlueprintRenderer != null)
+            {
+                Game.Instance.AddItemToDestroy(blueprint.BlueprintRenderer.transform.gameObject);
+
+                foreach (var faction in Game.Instance.FactionController.Factions.Values)
+                {
+                    if (faction.Blueprints.Contains(blueprint))
+                    {
+                        faction.Blueprints.Remove(blueprint);
+                        return;
+                    }
                 }
             }
         }
@@ -181,11 +221,9 @@ namespace Structures
             }
         }
 
-        internal Structure GetStructureBluePrint(string name, Cell cell, Faction faction)
+        internal Cost GetStructureCost(string structureName)
         {
-            var structure = SpawnStructure(name, cell, faction);
-            structure.IsBlueprint = true;
-            return structure;
+            return _structureDataReference[structureName].Cost;
         }
 
         private void IndexStructure(Structure structure)

@@ -3,7 +3,6 @@
   "Mesh": "Tree_1,Tree_2,Tree_3,Tree_4,Tree_5,Tree_6,Tree_7,Tree_8,Tree_9,Tree_10",
   "TravelCost": "7",
   "Buildable": "False",
-  "Scale": "0.5,0.5,0.5",
   "SpawnRotation": "True",
   "Cost": {
     "Items": {

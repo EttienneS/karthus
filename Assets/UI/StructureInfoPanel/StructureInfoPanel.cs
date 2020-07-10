@@ -59,7 +59,7 @@ namespace UI
             ResetPanel();
 
             WorkDetailPanel.SetActive(false);
-            if (structures[0] is WorkStructureBase workStructure && structures.All(s => s.Name == structures[0].Name && !s.IsBlueprint))
+            if (structures[0] is WorkStructureBase workStructure && structures.All(s => s.Name == structures[0].Name))
             {
                 ActivePrefabs = new List<WorkOrderPrefab>();
 
@@ -111,10 +111,6 @@ namespace UI
                 if (Current.InUseByAnyone)
                 {
                     StructureInfo.text += $"In use by:\t{Current.InUseBy.Name}\n";
-                }
-                if (Current.IsBlueprint)
-                {
-                    StructureInfo.text += "\n** Blueprint, waiting for construction... **\n";
                 }
                 else if (Current is Container container)
                 {

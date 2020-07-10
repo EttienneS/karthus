@@ -113,22 +113,22 @@ MonoBehaviour:
         inWeight: 0.27194336
         outWeight: 0.58114636
       - serializedVersion: 3
-        time: 0.8701121
-        value: 0.90739703
-        inSlope: 2.9826295
-        outSlope: 2.9826295
+        time: 0.8199391
+        value: 0.20497002
+        inSlope: -0.0118800355
+        outSlope: -0.0118800355
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
-        outWeight: 0.23409106
+        outWeight: 0.45458275
       - serializedVersion: 3
-        time: 0.99079335
-        value: 1.0427103
-        inSlope: -0.3357052
-        outSlope: -0.3357052
+        time: 0.998911
+        value: 0.2072617
+        inSlope: 0.020941047
+        outSlope: 0.020941047
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0.653712
+        inWeight: 0.43634042
         outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
@@ -231,9 +231,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6670817098503653708, guid: ccde989a4fe5e06468d51aa2215cf400,
         type: 3}
+      propertyPath: AllPrefabs.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6670817098503653708, guid: ccde989a4fe5e06468d51aa2215cf400,
+        type: 3}
       propertyPath: HightlightPrefab
       value: 
       objectReference: {fileID: 1505846906418770625, guid: 453606b4dd152a444b3811497c59f3b7,
+        type: 3}
+    - target: {fileID: 6670817098503653708, guid: ccde989a4fe5e06468d51aa2215cf400,
+        type: 3}
+      propertyPath: AllPrefabs.Array.data[0]
+      value: 
+      objectReference: {fileID: 624023238843509962, guid: 581f14dc84f8e664296d1fa3c5b82073,
+        type: 3}
+    - target: {fileID: 6670817098503653708, guid: ccde989a4fe5e06468d51aa2215cf400,
+        type: 3}
+      propertyPath: AllPrefabs.Array.data[1]
+      value: 
+      objectReference: {fileID: 4628280055276069757, guid: 037d3aabceb18cc458983da91425d3c6,
         type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ccde989a4fe5e06468d51aa2215cf400, type: 3}
@@ -354,6 +371,12 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 9043323423647380584}
     m_Modifications:
+    - target: {fileID: 283425574845151518, guid: 76c507a8465503244ba88812681253b8,
+        type: 3}
+      propertyPath: BlueprintPrefab
+      value: 
+      objectReference: {fileID: 7762678872286750400, guid: 878944fe014c65e479a377056e501583,
+        type: 3}
     - target: {fileID: 602403959117484798, guid: 76c507a8465503244ba88812681253b8,
         type: 3}
       propertyPath: m_LocalPosition.x
