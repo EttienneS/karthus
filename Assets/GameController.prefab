@@ -69,71 +69,10 @@ MonoBehaviour:
   MainMenuController: {fileID: 0}
   Map: {fileID: 17666008}
   MapData:
-    ChunkSize: 120
+    ChunkSize: 240
     CreateWater: 1
-    CreaturesToSpawn: 3
+    CreaturesToSpawn: 2
     Flat: 0
-    HeightCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 0.2509089
-        value: 0.11030155
-        inSlope: 1.8228866
-        outSlope: 1.8228866
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 1
-      - serializedVersion: 3
-        time: 0.29177627
-        value: 0.2021579
-        inSlope: 0.0365741
-        outSlope: 0.0365741
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 1
-        outWeight: 0.16171475
-      - serializedVersion: 3
-        time: 0.7284979
-        value: 0.2062244
-        inSlope: 0.041563552
-        outSlope: 0.041563552
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.27194336
-        outWeight: 0.58114636
-      - serializedVersion: 3
-        time: 0.8199391
-        value: 0.20497002
-        inSlope: -0.0118800355
-        outSlope: -0.0118800355
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.45458275
-      - serializedVersion: 3
-        time: 0.998911
-        value: 0.2072617
-        inSlope: 0.020941047
-        outSlope: 0.020941047
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.43634042
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    HeightScale: 10
     Populate: 1
     Seed: 
     Size: 1
@@ -512,7 +451,7 @@ PrefabInstance:
     - target: {fileID: 4483330911721906996, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.2
+      value: 2.1
       objectReference: {fileID: 0}
     - target: {fileID: 4483330911721906996, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
         type: 3}

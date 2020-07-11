@@ -285,21 +285,6 @@ PrefabInstance:
       propertyPath: UIController
       value: 
       objectReference: {fileID: 1541317929}
-    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
-        type: 3}
-      propertyPath: MapData.CreaturesToSpawn
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
-        type: 3}
-      propertyPath: MapData.ChunkSize
-      value: 240
-      objectReference: {fileID: 0}
-    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
-        type: 3}
-      propertyPath: MapData.Size
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4791717066980201731, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
       propertyPath: m_Name
