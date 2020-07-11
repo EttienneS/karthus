@@ -4,13 +4,17 @@
   "Key": {
     "W": "Stone Wall",
     "B": "Bed",
-    "T": "Table"
+    "T": "Table",
+    "C": "Chair",
+    "D": "Door"
   },
   "Plan": [
-    "WWWWW",
-    "W  BW",
-    "W   W",
-    "W  TW",
-    "WW WW"
+    "WWWWWWW",
+    "WC   BW",
+    "W     W",
+    "WWDWWWW",
+    "W    CW",
+    "W   CTW",
+    "WWDWWWW"
   ]
 }
