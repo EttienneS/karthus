@@ -25,10 +25,24 @@ namespace Assets
 
         public void Clear()
         {
+            foreach (var meshRenderer in _draggedRenderers.Values)
+            {
+                Destroy(meshRenderer.gameObject);
+            }
+            _draggedRenderers.Clear();
+
             if (MeshRenderer != null)
             {
                 Destroy(MeshRenderer.gameObject);
                 MeshRenderer = null;
+            }
+
+            _meshName = string.Empty;
+
+            if (_currentSprite != null)
+            {
+                MouseSpriteRenderer.sprite = null;
+                _currentSprite = null;
             }
         }
 
@@ -39,7 +53,7 @@ namespace Assets
             //ValidateMouse = null;
             //RotateMouseRight = null;
 
-            DisableMesh();
+            Clear();
         }
 
         public void Enable()
@@ -48,9 +62,8 @@ namespace Assets
 
         public void SetMesh(string name, ValidateMouseDelegate validationFunction)
         {
-            DisableMesh();
-            _meshName = name;
             Clear();
+            _meshName = name;
 
             var structure = Game.Instance.StructureController.InstantiateNewStructureMeshRenderer(name, transform);
             structure.SetAllMaterial(Game.Instance.FileController.BlueprintMaterial);
@@ -136,26 +149,6 @@ namespace Assets
             RotateRight = () => construct.RotateLeft();
             Validate = (cell) => construct.ValidateStartPos(cell);
         }
-
-        private void DisableMesh()
-        {
-            if (MeshRenderer != null)
-            {
-                foreach (var meshRenderer in _draggedRenderers.Values)
-                {
-                    Destroy(meshRenderer.gameObject);
-                }
-                _draggedRenderers.Clear();
-                _meshName = string.Empty;
-            }
-
-            if (_currentSprite != null)
-            {
-                MouseSpriteRenderer.sprite = null;
-                _currentSprite = null;
-            }
-        }
-
         private void ValidateCursor(Cell startCell)
         {
             if (Validate?.Invoke(startCell) == false)

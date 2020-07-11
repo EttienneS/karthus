@@ -69,7 +69,7 @@
         "Tree": 0.01
       },
       "Min": 0.45,
-      "Max": 0.65,
+      "Max": 0.75,
       "Name": "Grass",
       "Red": 0,
       "Green": 1,
@@ -80,26 +80,27 @@
       "Content": {
         "Pine": 0.20
       },
-      "Min": 0.65,
-      "Max": 0.85,
+      "Min": 0.75,
+      "Max": 1,
       "Name": "Forest",
       "Red": 0,
       "Green": 1,
       "Blue": 0,
       "Alpha": 1
-    },
-    {
-      "Content": {
-        "Mountain": 0.8
-      },
-      "Min": 0.85,
-      "Max": 1,
-      "Name": "Stone",
-      "Red": 0,
-      "Green": 0,
-      "Blue": 1,
-      "Alpha": 0
     }
+    //,
+    //{
+    //  "Content": {
+    //    "Mountain": 0.8
+    //  },
+    //  "Min": 0.85,
+    //  "Max": 1,
+    //  "Name": "Stone",
+    //  "Red": 0,
+    //  "Green": 0,
+    //  "Blue": 1,
+    //  "Alpha": 0
+    //}
   ],
   "Name": "Default",
   "Rarity": 1
