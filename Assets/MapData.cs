@@ -12,11 +12,6 @@ public class MapData
 
     public bool Flat = false;
 
-    public AnimationCurve HeightCurve;
-
-    [Range(1, 20)]
-    public float HeightScale;
-
     public bool Populate = true;
 
     public string Seed;

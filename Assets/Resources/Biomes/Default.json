@@ -4,19 +4,7 @@
       "Content": {
       },
       "Min": 0.0,
-      "Max": 0.3,
-      "TravelCost": -1,
-      "Name": "Sand",
-      "Red": 1,
-      "Green": 0,
-      "Blue": 0,
-      "Alpha": 0
-    },
-    {
-      "Content": {
-      },
-      "Min": 0.3,
-      "Max": 0.33,
+      "Max": 0.2,
       "Name": "Sand",
       "Red": 1,
       "Green": 0,
@@ -25,22 +13,21 @@
     },
     {
       "Content": {
-        "Rock": 0.05
       },
-      "Min": 0.33,
-      "Max": 0.37,
+      "Min": 0.2,
+      "Max": 0.25,
       "Name": "Sand",
-      "Red": 0.8,
+      "Red": 0.5,
       "Green": 0,
       "Blue": 0,
-      "Alpha": 0.4
+      "Alpha": 0.2
     },
     {
       "Content": {
-        "Rock": 0.03
+        "Rock": 0.01
       },
-      "Min": 0.37,
-      "Max": 0.40,
+      "Min": 0.25,
+      "Max": 0.35,
       "Name": "Dirt",
       "Red": 0,
       "Green": 0,
@@ -52,7 +39,7 @@
         "Rock": 0.03,
         "Grass": 0.05
       },
-      "Min": 0.4,
+      "Min": 0.35,
       "Max": 0.45,
       "Name": "PatchyGrass",
       "Red": 0,

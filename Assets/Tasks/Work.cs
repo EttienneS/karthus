@@ -1,7 +1,7 @@
-﻿using Structures;
+﻿using Assets.Creature;
+using Structures;
 using Structures.Work;
 using System.Linq;
-using Assets.Creature;
 
 public class DoWork : CreatureTask
 {
@@ -60,6 +60,7 @@ public class DoWork : CreatureTask
             {
                 Structure.Reserve(creature);
 
+                creature.SetAnimation(AnimationType.Interact);
                 creature.Face(Structure.Cell);
                 Order.Progress += Game.Instance.TimeManager.CreatureTick;
 
@@ -74,6 +75,7 @@ public class DoWork : CreatureTask
                 if (Order.Amount <= 0)
                 {
                     Order.OrderComplete();
+                    creature.SetAnimation(AnimationType.Idle);
                     return true;
                 }
             }
