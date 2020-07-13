@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Structures
+namespace Assets.Structures
 {
     public class Structure : IEntity
     {

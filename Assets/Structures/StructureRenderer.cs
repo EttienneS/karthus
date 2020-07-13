@@ -1,15 +1,16 @@
-﻿using Assets.Helpers;
-using Structures;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class StructureRenderer : MonoBehaviour
+namespace Assets.Structures
 {
-    internal Structure Data;
-    internal MeshRenderer Renderer;
-
-    internal void UpdatePosition()
+    public class StructureRenderer : MonoBehaviour
     {
-        transform.position = Data.Vector;
-        transform.eulerAngles = new Vector3(transform.eulerAngles.x, Data.Rotation, transform.eulerAngles.z);
+        internal Structure Data;
+        internal MeshRenderer Renderer;
+
+        internal void UpdatePosition()
+        {
+            transform.position = Data.Vector;
+            transform.eulerAngles = new Vector3(transform.eulerAngles.x, Data.Rotation, transform.eulerAngles.z);
+        }
     }
 }

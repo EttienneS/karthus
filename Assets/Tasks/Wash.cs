@@ -1,6 +1,7 @@
 ﻿using Needs;
 using Assets.Creature;
-using Structures;
+using Assets.Structures;
+
 public class Wash : CreatureTask
 {
     public float RecoveryRate = 0.25f;

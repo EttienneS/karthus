@@ -5,29 +5,29 @@ using UnityEngine;
 
 public class SpriteStore : MonoBehaviour
 {
-    private Dictionary<string, Sprite> _itemSprites;
+    private Dictionary<string, Sprite> _iconSprites;
 
-    internal Dictionary<string, Sprite> ItemSprites
+    internal Dictionary<string, Sprite> IconSprites
     {
         get
         {
-            if (_itemSprites == null)
+            if (_iconSprites == null)
             {
                 //Debug.Log("load item sprites");
 
-                _itemSprites = new Dictionary<string, Sprite>();
+                _iconSprites = new Dictionary<string, Sprite>();
 
-                var sprites = Resources.LoadAll<Sprite>("Sprites/Item").ToList();
+                var sprites = Resources.LoadAll<Sprite>("Sprites/Icons").ToList();
                 sprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Gui"));
 
                 foreach (var sprite in sprites)
                 {
-                    _itemSprites.Add(sprite.name, sprite);
+                    _iconSprites.Add(sprite.name, sprite);
                 }
                 // Debug.Log("load item sprites");
             }
 
-            return _itemSprites;
+            return _iconSprites;
         }
     }
 
@@ -54,15 +54,17 @@ public class SpriteStore : MonoBehaviour
     {
         try
         {
-            if (!ItemSprites.ContainsKey(spriteName))
+            if (!IconSprites.ContainsKey(spriteName))
             {
                 spriteName = spriteName.Replace(" ", "");
             }
 
-            if (ItemSprites.ContainsKey(spriteName))
+            if (IconSprites.ContainsKey(spriteName))
             {
-                return ItemSprites[spriteName];
+                return IconSprites[spriteName];
             }
+
+            Debug.LogWarning($"No sprite for: {spriteName}");
             return GetPlaceholder();
         }
         catch

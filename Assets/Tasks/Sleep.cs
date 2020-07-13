@@ -1,7 +1,7 @@
 ﻿using Needs;
 using Newtonsoft.Json;
-using Structures;
 using Assets.Creature;
+using Assets.Structures;
 
 public class Sleep : CreatureTask
 {

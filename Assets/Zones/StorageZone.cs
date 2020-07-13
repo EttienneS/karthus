@@ -1,7 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
-using Structures;
+using Assets.Structures;
+
 public class StorageZone : ZoneBase
 {
     public Dictionary<string, int> StorageDefinition = new Dictionary<string, int>();

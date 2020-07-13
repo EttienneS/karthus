@@ -7,26 +7,39 @@ using UnityEngine;
 
 public class FileController : MonoBehaviour
 {
-    internal TextAsset[] StructureJson;
-    internal TextAsset[] CreatureFiles;
-    internal TextAsset[] BiomeFiles;
-    internal TextAsset[] ItemFiles;
-
-    public MeshRenderer[] Meshes;
+    public Dictionary<string, TextAsset> ItemLookup;
     public Material[] Materials;
 
-    public Dictionary<string, TextAsset> ItemLookup;
+    internal const string BiomeFolder = "Biomes";
+    internal const string ConstructFolder = "Constructs";
+    internal const string CreatureFolder = "Creatures";
+    internal const string ItemsFolder = "Items";
+    internal const string StructureFolder = "Structures";
 
-    internal Dictionary<string, MeshRenderer> MeshLookup = new Dictionary<string, MeshRenderer>();
+    internal TextAsset[] BiomeFiles;
+    internal TextAsset[] CreatureFiles;
+    internal TextAsset[] ItemFiles;
     internal Dictionary<string, Material> MaterialLookup = new Dictionary<string, Material>();
-
-    public string StructureFolder = "Structures";
-    public string ConstructFolder = "Constructs";
-    public string CreatureFolder = "Creatures";
-    public string BiomeFolder = "Biomes";
-    public string ItemFolder = "Items";
-
+    internal TextAsset[] StructureJson;
+    private List<Type> _allBehaviours;
     private Material _blueprintMaterial;
+
+    private List<Construct> _constructs;
+
+    private Material _invalidBlueprintMaterial;
+
+    public List<Type> AllBehaviourTypes
+    {
+        get
+        {
+            if (_allBehaviours == null)
+            {
+                _allBehaviours = ReflectionHelper.GetAllTypes(typeof(IBehaviour));
+            }
+            return _allBehaviours;
+        }
+    }
+
     public Material BlueprintMaterial
     {
         get
@@ -38,20 +51,6 @@ public class FileController : MonoBehaviour
             return _blueprintMaterial;
         }
     }
-    private Material _invalidBlueprintMaterial;
-    public Material InvalidBlueprintMaterial
-    {
-        get
-        {
-            if (_invalidBlueprintMaterial == null)
-            {
-                _invalidBlueprintMaterial = GetMaterial("InvalidBlueprintMaterial");
-            }
-            return _invalidBlueprintMaterial;
-        }
-    }
-
-    private List<Construct> _constructs;
 
     public List<Construct> Constructs
     {
@@ -70,22 +69,24 @@ public class FileController : MonoBehaviour
         }
     }
 
+    public Material InvalidBlueprintMaterial
+    {
+        get
+        {
+            if (_invalidBlueprintMaterial == null)
+            {
+                _invalidBlueprintMaterial = GetMaterial("InvalidBlueprintMaterial");
+            }
+            return _invalidBlueprintMaterial;
+        }
+    }
+
     public void Awake()
     {
         StructureJson = Resources.LoadAll<TextAsset>(StructureFolder);
         CreatureFiles = Resources.LoadAll<TextAsset>(CreatureFolder);
         BiomeFiles = Resources.LoadAll<TextAsset>(BiomeFolder);
-        ItemFiles = Resources.LoadAll<TextAsset>(ItemFolder);
-
-        foreach (var mesh in Meshes)
-        {
-            if (MeshLookup.ContainsKey(mesh.name))
-            {
-                Debug.LogError($"Dupe mesh: {mesh.name}");
-                continue;
-            }
-            MeshLookup.Add(mesh.name, mesh);
-        }
+        ItemFiles = Resources.LoadAll<TextAsset>(ItemsFolder);
 
         foreach (var material in Materials)
         {
@@ -96,15 +97,6 @@ public class FileController : MonoBehaviour
             }
             MaterialLookup.Add(material.name, material);
         }
-    }
-
-    internal MeshRenderer GetMesh(string name)
-    {
-        if (MeshLookup.ContainsKey(name))
-        {
-            return MeshLookup[name];
-        }
-        return MeshLookup["DefaultCube"];
     }
 
     internal Material GetMaterial(string name)
@@ -125,21 +117,6 @@ public class FileController : MonoBehaviour
         else
         {
             return materials.Split(',').Select(GetMaterial).ToArray();
-        }
-    }
-
-
-    private List<Type> _allBehaviours;
-
-    public List<Type> AllBehaviourTypes
-    {
-        get
-        {
-            if (_allBehaviours == null)
-            {
-                _allBehaviours = ReflectionHelper.GetAllTypes(typeof(IBehaviour));
-            }
-            return _allBehaviours;
         }
     }
 }

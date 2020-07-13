@@ -1,5 +1,5 @@
 ﻿using Assets.Creature;
-using Structures;
+using Assets.Structures;
 using System;
 using System.Collections.Generic;
 using UnityEngine;

@@ -1,5 +1,5 @@
 ﻿using Assets.Creature;
-using Structures;
+using Assets.Structures;
 using Structures.Work;
 using System.Linq;
 

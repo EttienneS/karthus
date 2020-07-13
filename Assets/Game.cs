@@ -1,7 +1,8 @@
 ﻿using Assets;
+using Assets.Models;
+using Assets.Structures;
 using Assets.UI.TaskPanel;
 using Camera;
-using Structures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,7 @@ public class Game : MonoBehaviour
     public MainMenuController MainMenuController;
     public Map Map;
     public MapData MapData;
+    public MeshRendererFactory MeshRendererFactory;
     public OrderInfoPanel OrderInfoPanel;
     public OrderSelectionController OrderSelectionController;
     public OrderTrayController OrderTrayController;

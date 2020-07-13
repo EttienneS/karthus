@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Structures
+namespace Assets.Structures
 {
     public class Container : Structure
     {
@@ -67,7 +67,7 @@ namespace Structures
                 ItemType = item.Name;
                 Count = item.Amount;
                 Game.Instance.ItemController.DestroyItem(item);
-                ContainedItemEffect = Game.Instance.VisualEffectController.SpawnSpriteEffect(this, Vector, item.SpriteName, float.MaxValue);
+                //ContainedItemEffect = Game.Instance.VisualEffectController.SpawnSpriteEffect(this, Vector, item.SpriteName, float.MaxValue);
                 return true;
             }
             else

@@ -1,5 +1,4 @@
 ﻿using Assets.Helpers;
-using Assets.Structures;
 using Structures.Work;
 using System;
 using System.Collections.Generic;
@@ -8,13 +7,11 @@ using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
 
-namespace Structures
+namespace Assets.Structures
 {
     public class StructureController : MonoBehaviour
     {
         public GameObject RoofContainer;
-        public GameObject RoofPrefab;
-        public StructureRenderer StructureRendererPrefab;
 
         private static List<Type> _structureTypes;
         private float _lastUpdate;
@@ -89,8 +86,13 @@ namespace Structures
 
         public void CreateRoof(Cell cell)
         {
-            var roof = Instantiate(RoofPrefab, RoofContainer.transform);
-            roof.transform.position = new Vector3(cell.X, cell.Y, cell.Z) + new Vector3(0.5f, 2f, 0.5f);
+            var roof = Instantiate(Game.Instance.MeshRendererFactory.GetMesh("Roof"), RoofContainer.transform);
+            roof.transform.position = new Vector3(cell.X, cell.Y, cell.Z) + new Vector3(0.5f, 2.05f, 0.5f);
+        }
+
+        public Structure CreateNewStructure(string structureName)
+        {
+            return LoadStructureFromJson(StructureTypeFileMap[structureName]);
         }
 
         public MeshRenderer GetMeshForStructure(string name)
@@ -100,12 +102,7 @@ namespace Structures
 
         public MeshRenderer GetMeshForStructure(Structure structure)
         {
-            return Game.Instance.FileController.GetMesh(structure.Mesh.Split(',').GetRandomItem());
-        }
-
-        public Structure CreateNewStructure(string structureName)
-        {
-            return LoadStructureFromJson(StructureTypeFileMap[structureName]);
+            return Game.Instance.MeshRendererFactory.GetMesh(structure.Mesh.Split(',').GetRandomItem());
         }
 
         public MeshRenderer InstantiateNewStructureMeshRenderer(string structureName, Transform parent)

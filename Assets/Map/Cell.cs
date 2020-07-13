@@ -1,7 +1,7 @@
 ﻿using Assets.Creature;
 using Assets.Helpers;
+using Assets.Structures;
 using Newtonsoft.Json;
-using Structures;
 using System;
 using System.Collections.Generic;
 using System.Linq;

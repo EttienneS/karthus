@@ -65,8 +65,6 @@ public class Item : IEntity
     [JsonIgnore]
     public ItemRenderer Renderer { get; set; }
 
-    public string SpriteName { get; set; }
-
     public Dictionary<string, float> ValueProperties { get; set; } = new Dictionary<string, float>();
 
     [JsonIgnore]

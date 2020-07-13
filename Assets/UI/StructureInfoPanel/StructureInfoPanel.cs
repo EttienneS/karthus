@@ -1,4 +1,4 @@
-﻿using Structures;
+﻿using Assets.Structures;
 using Structures.Work;
 using System.Collections.Generic;
 using System.Linq;

@@ -83,7 +83,7 @@ public class ItemController : MonoBehaviour
         renderer.Data = data;
         data.Renderer = renderer;
 
-        renderer.SpriteRenderer.sprite = Game.Instance.SpriteStore.GetSprite(data.SpriteName);
+        //renderer.SpriteRenderer.sprite = Game.Instance.SpriteStore.GetSprite(data.SpriteName);
         renderer.UpdatePosition();
 
         IndexItem(data);

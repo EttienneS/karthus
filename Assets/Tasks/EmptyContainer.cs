@@ -1,5 +1,5 @@
-﻿using Structures;
-using Assets.Creature;
+﻿using Assets.Creature;
+using Assets.Structures;
 
 public class EmptyContainer : CreatureTask
 {
