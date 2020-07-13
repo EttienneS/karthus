@@ -222,7 +222,7 @@ namespace Assets.Structures
         internal bool ValidateStartPos(Cell cellData)
         {
             var x = 0;
-            var y = 0;
+            var z = 0;
             foreach (var line in FlippedPlan)
             {
                 foreach (var character in line)
@@ -232,13 +232,18 @@ namespace Assets.Structures
                         x++;
                         continue;
                     }
-                    var cell = Game.Instance.Map.GetCellAtCoordinate(cellData.X + x, cellData.Z + y);
+                    var cell = Game.Instance.Map.GetCellAtCoordinate(cellData.X + x, cellData.Z + z);
 
                     if (cell.TravelCost > 0)
                     {
-                        if (cell.Structure?.Name.Equals(GetStructure(character)) == false)
+                        var currentStructure = cell.Structure;
+                        if (currentStructure != null)
                         {
-                            return false;
+                            var characterStructure = GetStructure(character);
+                            if (currentStructure.Buildable || !currentStructure.Name.Equals(characterStructure))
+                            {
+                                return false;
+                            }
                         }
                     }
                     else
@@ -249,7 +254,7 @@ namespace Assets.Structures
                     x++;
                 }
                 x = 0;
-                y++;
+                z++;
             }
             return true;
         }

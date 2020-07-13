@@ -5,24 +5,6 @@ public partial class OrderSelectionController //.Construct
 {
     internal OrderButton ConstructButton;
 
-    private void ConstructClicked(Construct constuct)
-    {
-        Debug.Log($"Construct clicked {constuct.Name}");
-
-        Game.Instance.Cursor.ShowConstructGhost(constuct);
-        ShowConstructInfo(constuct);
-
-
-
-        CellClickOrder = cells =>
-        {
-            if (constuct.ValidateStartPos(cells[0]))
-            {
-                constuct.Place(cells[0], Game.Instance.FactionController.PlayerFaction);
-            }
-        };
-    }
-
     private static void ShowConstructInfo(Construct constuct)
     {
         Game.Instance.OrderInfoPanel.Show(
@@ -31,6 +13,22 @@ public partial class OrderSelectionController //.Construct
              constuct.Description,
              $"{constuct.TotalCost}"
             );
+    }
+
+    private void ConstructClicked(Construct constuct)
+    {
+        Debug.Log($"Construct clicked {constuct.Name}");
+
+        Game.Instance.Cursor.ShowConstructGhost(constuct);
+        ShowConstructInfo(constuct);
+
+        CellClickOrder = cells =>
+        {
+            if (constuct.ValidateStartPos(cells[0]))
+            {
+                constuct.Place(cells[0], Game.Instance.FactionController.PlayerFaction);
+            }
+        };
     }
 
     private void ConstructTypeClicked()

@@ -50,8 +50,6 @@ namespace Assets
         {
             MouseSpriteRenderer.sprite = null;
             MouseSpriteRenderer.size = Vector2.one;
-            //ValidateMouse = null;
-            //RotateMouseRight = null;
 
             Clear();
         }
@@ -148,7 +146,9 @@ namespace Assets
             RotateLeft = () => construct.RotateRight();
             RotateRight = () => construct.RotateLeft();
             Validate = (cell) => construct.ValidateStartPos(cell);
+            Game.Instance.Cursor.SetSprite(construct.Sprite, (cell) => construct.ValidateStartPos(cell));
         }
+
         private void ValidateCursor(Cell startCell)
         {
             if (Validate?.Invoke(startCell) == false)
