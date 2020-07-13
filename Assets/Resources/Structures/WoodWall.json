@@ -1,7 +1,7 @@
 {
   "Name": "Wood Wall",
   "Mesh": "Wall",
-  "Icon": "Wall",
+  "Icon": "WoodWall",
   "Description": "Wall made from wood, not much to look at but keeps the bad things out (or in..)",
   "TravelCost": "-1",
   "Cost": {

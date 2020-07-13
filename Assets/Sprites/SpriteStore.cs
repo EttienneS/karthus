@@ -13,8 +13,6 @@ public class SpriteStore : MonoBehaviour
         {
             if (_iconSprites == null)
             {
-                //Debug.Log("load item sprites");
-
                 _iconSprites = new Dictionary<string, Sprite>();
 
                 var sprites = Resources.LoadAll<Sprite>("Sprites/Icons").ToList();
@@ -24,7 +22,6 @@ public class SpriteStore : MonoBehaviour
                 {
                     _iconSprites.Add(sprite.name, sprite);
                 }
-                // Debug.Log("load item sprites");
             }
 
             return _iconSprites;

@@ -183,7 +183,7 @@ namespace Assets.Structures
                     else
                     {
                         var structure = Game.Instance.StructureController.StructureDataReference.Values.First(s => s.Name == GetStructure(character));
-                        sourceTexture = Game.Instance.SpriteStore.GetSprite(structure.Mesh).texture;
+                        sourceTexture = Game.Instance.SpriteStore.GetSprite(structure.Icon).texture;
                     }
                     var constructTexture = sourceTexture.Clone();
                     constructTexture.ScaleToGridSize(1, 1);

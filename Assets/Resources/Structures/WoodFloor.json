@@ -1,7 +1,7 @@
 {
   "Name": "Wood Floor",
   "Mesh": "Floor",
-  "Icon": "Floor",
+  "Icon": "WoodFloor",
   "TravelCost": "0.5",
   "Description": "Floor made from wood planks, visually appealing but flammable. Move speed is much faster on roads and floors than other surfaces.",
   "Cost": {

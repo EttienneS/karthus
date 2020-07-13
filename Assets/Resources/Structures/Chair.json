@@ -1,7 +1,7 @@
 {
   "Name": "Chair",
   "Mesh": "Chair",
-  "Icon": "stoolBar_NE",
+  "Icon": "Chair",
   "TravelCost": "3",
   "Description": "A place to sit, creatures will gain comfort when sitting while working and eating.",
   "Cost": {
@@ -13,5 +13,5 @@
   "ValueProperties": {
     "Comfort": 0.5
   },
-  "Type": "Chair",
+  "Type": "Chair"
 }
