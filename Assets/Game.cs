@@ -446,13 +446,17 @@ public class Game : MonoBehaviour
         {
             OrderSelectionController.ZoneTypeClicked();
         }
+        else if (Input.GetKeyDown("c"))
+        {
+            OrderSelectionController.ConstructTypeClicked();
+        }
         else if (Input.GetKeyDown("e"))
         {
-            Cursor.RotateRight?.Invoke();
+            Cursor.RotateRight();
         }
         else if (Input.GetKeyDown("q"))
         {
-            Cursor.RotateLeft?.Invoke();
+            Cursor.RotateLeft();
         }
     }
 

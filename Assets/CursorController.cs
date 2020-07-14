@@ -10,14 +10,13 @@ namespace Assets
     {
         public Light CursorLight;
         public SpriteRenderer MouseSpriteRenderer;
-        public RotateDelegate RotateLeft;
-        public RotateDelegate RotateRight;
         public ValidateMouseDelegate Validate;
-
         internal MeshRenderer MeshRenderer;
         private Sprite _currentSprite;
         private Dictionary<Cell, MeshRenderer> _draggedRenderers = new Dictionary<Cell, MeshRenderer>();
         private string _meshName;
+        private RotateDelegate _rotateLeft;
+        private RotateDelegate _rotateRight;
 
         public delegate void RotateDelegate();
 
@@ -54,8 +53,14 @@ namespace Assets
             Clear();
         }
 
-        public void Enable()
+        public void RotateLeft()
         {
+            _rotateLeft?.Invoke();
+        }
+
+        public void RotateRight()
+        {
+            _rotateRight?.Invoke();
         }
 
         public void SetMesh(string name, ValidateMouseDelegate validationFunction)
@@ -70,6 +75,16 @@ namespace Assets
             Validate = validationFunction;
         }
 
+        public void SetMultiSprite(Sprite sprite, ValidateMouseDelegate validationFunction)
+        {
+            SetSprite(sprite, validationFunction);
+
+            var offsetX = ((sprite.texture.width / Map.PixelsPerCell) - 1) / 2f;
+            var offsetZ = ((sprite.texture.height / Map.PixelsPerCell) - 1) / 2f;
+
+            MouseSpriteRenderer.transform.localPosition = new Vector3(offsetX, 0.1f, offsetZ);
+        }
+
         public void SetSprite(Sprite sprite, ValidateMouseDelegate validationFunction)
         {
             MouseSpriteRenderer.sprite = sprite;
@@ -78,16 +93,6 @@ namespace Assets
             _currentSprite = sprite;
 
             MouseSpriteRenderer.transform.localPosition = new Vector3(0f, 0.1f, 0f);
-        }
-
-        public void SetMultiSprite(Sprite sprite, ValidateMouseDelegate validationFunction)
-        {
-            SetSprite(sprite, validationFunction);
-
-            var offsetX = Mathf.Floor(((sprite.texture.width / Map.PixelsPerCell) - 1) / 2);
-            var offsetZ = Mathf.Floor(((sprite.texture.height / Map.PixelsPerCell) - 1) / 2);
-
-            MouseSpriteRenderer.transform.localPosition = new Vector3(offsetX, 0.1f, offsetZ);
         }
 
         public void Update()
@@ -155,11 +160,19 @@ namespace Assets
 
         internal void ShowConstructGhost(Construct construct)
         {
-            RotateLeft = () => construct.RotateRight();
-            RotateRight = () => construct.RotateLeft();
-            Validate = (cell) => construct.ValidateStartPos(cell);
+            _rotateLeft = () =>
+            {
+                construct.RotateRight();
+                Game.Instance.Cursor.SetMultiSprite(construct.GetSprite(), (cell) => construct.ValidateStartPos(cell));
+            };
+            _rotateRight = () =>
+            {
+                construct.RotateLeft();
+                Game.Instance.Cursor.SetMultiSprite(construct.GetSprite(), (cell) => construct.ValidateStartPos(cell));
+            };
 
-            Game.Instance.Cursor.SetMultiSprite(construct.Sprite, (cell) => construct.ValidateStartPos(cell));
+            Validate = (cell) => construct.ValidateStartPos(cell);
+            Game.Instance.Cursor.SetMultiSprite(construct.GetSprite(), (cell) => construct.ValidateStartPos(cell));
         }
 
         private void ValidateCursor(Cell startCell)

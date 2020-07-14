@@ -15,6 +15,8 @@ namespace Assets.Structures
         [JsonIgnore]
         private List<string> _currentPlan;
 
+        private Texture2D _texture;
+
         [JsonIgnore]
         public List<string> CurrentPlan
         {
@@ -33,30 +35,7 @@ namespace Assets.Structures
             }
         }
 
-        private List<string> ValidatePlan(List<string> plan)
-        {
-            var newPlan = plan.ToList();
-
-            var longest = 0;
-            for (var i = 0; i < newPlan.Count; i++)
-            {
-                if (newPlan[i].Length > longest)
-                {
-                    longest = newPlan[i].Length;
-                }
-
-                newPlan[i] = newPlan[i].PadRight(newPlan.Count, '.');
-            }
-
-            var lineCount = newPlan.Count;
-            for (var i = 0; i < longest - lineCount; i++)
-            {
-                var line = string.Empty.PadRight(longest, '.');
-                newPlan.Add(line);
-            }
-
-            return newPlan;
-        }
+        public string Description { get; set; }
 
         [JsonIgnore]
         public List<string> FlippedPlan
@@ -71,9 +50,6 @@ namespace Assets.Structures
         }
 
         [JsonIgnore]
-        private Texture2D _texture;
-
-        [JsonIgnore]
         public int Height
         {
             get
@@ -81,58 +57,6 @@ namespace Assets.Structures
                 return CurrentPlan.Count;
             }
         }
-
-        private Sprite _sprite;
-
-        [JsonIgnore]
-        public Sprite Sprite
-        {
-            get
-            {
-                if (_sprite == null)
-                {
-                    _sprite = Sprite.Create(Texture,
-                                            new Rect(0, 0, Texture.width, Texture.height),
-                                            new Vector2(0.5f, 0.5f), Map.PixelsPerCell);
-                }
-                return _sprite;
-            }
-        }
-
-        [JsonIgnore]
-        public int Width
-        {
-            get
-            {
-                var longest = 0;
-
-                foreach (var line in CurrentPlan)
-                {
-                    if (line.Length > longest)
-                    {
-                        longest = line.Length;
-                    }
-                }
-
-                return longest;
-            }
-        }
-
-        [JsonIgnore]
-        internal Texture2D Texture
-        {
-            get
-            {
-                if (_texture == null)
-                {
-                    _texture = GetTexture();
-                }
-
-                return _texture;
-            }
-        }
-
-        public string Description { get; set; }
 
         [JsonIgnore]
         public Cost TotalCost
@@ -159,53 +83,36 @@ namespace Assets.Structures
             }
         }
 
-        internal Texture2D GetTexture()
+        [JsonIgnore]
+        public int Width
         {
-            var texture = new Texture2D(Width * Map.PixelsPerCell, Height * Map.PixelsPerCell);
-
-            var y = 0;
-            var x = 0;
-
-            foreach (var line in FlippedPlan)
+            get
             {
-                foreach (var character in line)
+                var longest = 0;
+
+                foreach (var line in CurrentPlan)
                 {
-                    var startX = x * Map.PixelsPerCell;
-                    var startY = y * Map.PixelsPerCell;
-
-                    Texture2D sourceTexture;
-                    if (character == '.')
+                    if (line.Length > longest)
                     {
-                        sourceTexture = new Texture2D(1, 1);
-                        sourceTexture.SetPixel(0, 0, new Color(0, 0, 0, 0));
-                        sourceTexture.Apply();
+                        longest = line.Length;
                     }
-                    else
-                    {
-                        var structure = Game.Instance.StructureController.StructureDataReference.Values.First(s => s.Name == GetStructure(character));
-                        sourceTexture = Game.Instance.SpriteStore.GetSprite(structure.Icon).texture;
-                    }
-                    var constructTexture = sourceTexture.Clone();
-                    constructTexture.ScaleToGridSize(1, 1);
-
-                    for (var subTexX = 0; subTexX < Map.PixelsPerCell; subTexX++)
-                    {
-                        for (var subTexY = 0; subTexY < Map.PixelsPerCell; subTexY++)
-                        {
-                            var pixel = constructTexture.GetPixel(subTexX, subTexY);
-                            texture.SetPixel(startX + subTexX,
-                                             startY + subTexY,
-                                             pixel);
-                        }
-                    }
-
-                    x++;
                 }
-                y++;
-            }
-            texture.Apply();
 
-            return texture;
+                return longest;
+            }
+        }
+
+        public void ClearTexture()
+        {
+            _texture = null;
+        }
+
+        public Sprite GetSprite()
+        {
+            var texture = GetTexture();
+            return Sprite.Create(texture,
+                                 new Rect(0, 0, texture.width, texture.height),
+                                 new Vector2(0.5f, 0.5f), Map.PixelsPerCell);
         }
 
         public string GetStructure(char character)
@@ -217,72 +124,6 @@ namespace Assets.Structures
             }
 
             return structureName;
-        }
-
-        internal bool ValidateStartPos(Cell cellData)
-        {
-            var x = 0;
-            var z = 0;
-            foreach (var line in FlippedPlan)
-            {
-                foreach (var character in line)
-                {
-                    if (character == '.')
-                    {
-                        x++;
-                        continue;
-                    }
-                    var cell = Game.Instance.Map.GetCellAtCoordinate(cellData.X + x, cellData.Z + z);
-
-                    if (cell.TravelCost > 0)
-                    {
-                        var currentStructure = cell.Structure;
-                        if (currentStructure != null)
-                        {
-                            var characterStructure = GetStructure(character);
-                            if (currentStructure.Buildable && !currentStructure.Name.Equals(characterStructure))
-                            {
-                                return false;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        return false;
-                    }
-
-                    x++;
-                }
-                x = 0;
-                z++;
-            }
-            return true;
-        }
-
-        internal bool Place(Cell origin, Faction faction)
-        {
-            var x = 0;
-            var y = 0;
-
-            foreach (var line in FlippedPlan)
-            {
-                foreach (var character in line)
-                {
-                    if (character == '.')
-                    {
-                        x++;
-                        continue;
-                    }
-
-                    var cell = Game.Instance.Map.GetCellAtCoordinate(origin.X + x, origin.Z + y);
-
-                    Game.Instance.StructureController.SpawnBlueprint(GetStructure(character), cell, faction);
-                    x++;
-                }
-                x = 0;
-                y++;
-            }
-            return true;
         }
 
         public void RotateLeft()
@@ -330,6 +171,151 @@ namespace Assets.Structures
             }
 
             CurrentPlan = newPlan;
+            ClearTexture();
+        }
+
+        internal Texture2D GetTexture()
+        {
+            if (this._texture != null)
+            {
+                return this._texture;
+            }
+            _texture = new Texture2D(Width * Map.PixelsPerCell, Height * Map.PixelsPerCell);
+
+            var z = 0;
+            var x = 0;
+
+            foreach (var line in FlippedPlan)
+            {
+                foreach (var character in line)
+                {
+                    var startX = x * Map.PixelsPerCell;
+                    var startZ = z * Map.PixelsPerCell;
+
+                    Texture2D sourceTexture;
+                    if (character == '.')
+                    {
+                        sourceTexture = new Texture2D(1, 1);
+                        sourceTexture.SetPixel(0, 0, new Color(0, 0, 0, 0));
+                        sourceTexture.Apply();
+                    }
+                    else
+                    {
+                        var structure = Game.Instance.StructureController.StructureDataReference.Values.First(s => s.Name == GetStructure(character));
+                        sourceTexture = Game.Instance.SpriteStore.GetSprite(structure.Icon).texture;
+                    }
+                    var constructTexture = sourceTexture.Clone();
+                    constructTexture.ScaleToGridSize(1, 1);
+
+                    for (var subTexX = 0; subTexX < Map.PixelsPerCell; subTexX++)
+                    {
+                        for (var subTexY = 0; subTexY < Map.PixelsPerCell; subTexY++)
+                        {
+                            var pixel = constructTexture.GetPixel(subTexX, subTexY);
+                            _texture.SetPixel(startX + subTexX,
+                                             startZ + subTexY,
+                                             pixel);
+                        }
+                    }
+
+                    x++;
+                }
+                z++;
+            }
+            _texture.Apply();
+
+            return _texture;
+        }
+
+        internal bool Place(Cell origin, Faction faction)
+        {
+            var x = 0;
+            var y = 0;
+
+            foreach (var line in FlippedPlan)
+            {
+                foreach (var character in line)
+                {
+                    if (character == '.')
+                    {
+                        x++;
+                        continue;
+                    }
+
+                    var cell = Game.Instance.Map.GetCellAtCoordinate(origin.X + x, origin.Z + y);
+
+                    Game.Instance.StructureController.SpawnBlueprint(GetStructure(character), cell, faction);
+                    x++;
+                }
+                x = 0;
+                y++;
+            }
+            return true;
+        }
+
+        internal bool ValidateStartPos(Cell cellData)
+        {
+            var x = 0;
+            var z = 0;
+            foreach (var line in FlippedPlan)
+            {
+                foreach (var character in line)
+                {
+                    if (character == '.')
+                    {
+                        x++;
+                        continue;
+                    }
+                    var cell = Game.Instance.Map.GetCellAtCoordinate(cellData.X + x, cellData.Z + z);
+
+                    if (cell.TravelCost > 0)
+                    {
+                        var currentStructure = cell.Structure;
+                        if (currentStructure != null)
+                        {
+                            var characterStructure = GetStructure(character);
+                            if (currentStructure.Buildable && !currentStructure.Name.Equals(characterStructure))
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+                    x++;
+                }
+                x = 0;
+                z++;
+            }
+            return true;
+        }
+
+        private List<string> ValidatePlan(List<string> plan)
+        {
+            var newPlan = plan.ToList();
+
+            var longest = 0;
+            for (var i = 0; i < newPlan.Count; i++)
+            {
+                if (newPlan[i].Length > longest)
+                {
+                    longest = newPlan[i].Length;
+                }
+
+                newPlan[i] = newPlan[i].PadRight(newPlan.Count, '.');
+            }
+
+            var lineCount = newPlan.Count;
+            for (var i = 0; i < longest - lineCount; i++)
+            {
+                var line = string.Empty.PadRight(longest, '.');
+                newPlan.Add(line);
+            }
+
+            return newPlan;
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Camera
 {
@@ -28,15 +27,15 @@ namespace Camera
                 return;
             }
 
-            var rotation = new Vector3(0, 15, 0);
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                Camera.transform.eulerAngles += rotation;
-            }
-            else if (Input.GetKeyDown(KeyCode.Q))
-            {
-                Camera.transform.eulerAngles -= rotation;
-            }
+            //var rotation = new Vector3(0, 15, 0);
+            //if (Input.GetKeyDown(KeyCode.E))
+            //{
+            //    Camera.transform.eulerAngles += rotation;
+            //}
+            //else if (Input.GetKeyDown(KeyCode.Q))
+            //{
+            //    Camera.transform.eulerAngles -= rotation;
+            //}
 
             (float xAxisInput, float zAxisInput, float yAxisInput) = GetCameraInput();
 

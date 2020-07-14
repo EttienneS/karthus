@@ -31,7 +31,7 @@ public partial class OrderSelectionController //.Construct
         };
     }
 
-    private void ConstructTypeClicked()
+    public void ConstructTypeClicked()
     {
         Game.Instance.SelectionPreference = SelectionPreference.Cell;
         if (Game.Instance.OrderTrayController.gameObject.activeInHierarchy)
@@ -47,7 +47,7 @@ public partial class OrderSelectionController //.Construct
                 var title = $"{construct.Name} ({construct.Height}x{construct.Width})";
                 var button = CreateOrderButton(() => ConstructClicked(construct),
                                                () => ShowConstructInfo(construct),
-                                               construct.Sprite);
+                                               construct.GetSprite());
                 button.name = title;
             }
         }
