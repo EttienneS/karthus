@@ -76,6 +76,18 @@ namespace Assets
             Validate = validationFunction;
 
             _currentSprite = sprite;
+
+            MouseSpriteRenderer.transform.localPosition = new Vector3(0f, 0.1f, 0f);
+        }
+
+        public void SetMultiSprite(Sprite sprite, ValidateMouseDelegate validationFunction)
+        {
+            SetSprite(sprite, validationFunction);
+
+            var offsetX = Mathf.Floor(((sprite.texture.width / Map.PixelsPerCell) - 1) / 2);
+            var offsetZ = Mathf.Floor(((sprite.texture.height / Map.PixelsPerCell) - 1) / 2);
+
+            MouseSpriteRenderer.transform.localPosition = new Vector3(offsetX, 0.1f, offsetZ);
         }
 
         public void Update()
@@ -146,7 +158,8 @@ namespace Assets
             RotateLeft = () => construct.RotateRight();
             RotateRight = () => construct.RotateLeft();
             Validate = (cell) => construct.ValidateStartPos(cell);
-            Game.Instance.Cursor.SetSprite(construct.Sprite, (cell) => construct.ValidateStartPos(cell));
+
+            Game.Instance.Cursor.SetMultiSprite(construct.Sprite, (cell) => construct.ValidateStartPos(cell));
         }
 
         private void ValidateCursor(Cell startCell)

@@ -240,7 +240,7 @@ namespace Assets.Structures
                         if (currentStructure != null)
                         {
                             var characterStructure = GetStructure(character);
-                            if (currentStructure.Buildable || !currentStructure.Name.Equals(characterStructure))
+                            if (currentStructure.Buildable && !currentStructure.Name.Equals(characterStructure))
                             {
                                 return false;
                             }
@@ -276,11 +276,7 @@ namespace Assets.Structures
 
                     var cell = Game.Instance.Map.GetCellAtCoordinate(origin.X + x, origin.Z + y);
 
-                    if (cell.TravelCost > 0 && cell.Structure == null)
-                    {
-                        Game.Instance.StructureController.SpawnBlueprint(GetStructure(character), cell, faction);
-                    }
-
+                    Game.Instance.StructureController.SpawnBlueprint(GetStructure(character), cell, faction);
                     x++;
                 }
                 x = 0;
