@@ -22,11 +22,14 @@ namespace Assets
         private RotateDelegate _rotateLeft;
         private RotateDelegate _rotateRight;
         private SelectionPreference _selectionPreference;
-        private SelectionPreference LastSelection = SelectionPreference.Creature;
-        private List<Cell> SelectedCells = new List<Cell>();
+        private SelectionPreference _lastSelection = SelectionPreference.Creature;
+
+        //private List<Cell> SelectedCells = new List<Cell>();
         private List<CreatureRenderer> SelectedCreatures = new List<CreatureRenderer>();
+
         private List<Item> SelectedItems = new List<Item>();
-        private List<Structure> SelectedStructures = new List<Structure>();
+        //private List<Structure> SelectedStructures = new List<Structure>();
+
         private Vector3 SelectionEndScreen;
         private Vector3 SelectionStartWorld;
 
@@ -61,15 +64,9 @@ namespace Assets
         {
             Clear();
             DeselectCreature();
-            DeselectCell();
             DeselectStructure();
             DeselectItem();
             DeselectZone();
-        }
-
-        public void DeselectCell()
-        {
-            SelectedCells.Clear();
         }
 
         public void DeselectCreature()
@@ -98,12 +95,11 @@ namespace Assets
         {
             Disable();
 
-            foreach (var structure in SelectedStructures)
+            foreach (var structure in Game.Instance.IdService.StructureIdLookup.Values)
             {
                 structure.HideOutline();
             }
             Game.Instance.DestroyStructureInfoPanel();
-            SelectedStructures.Clear();
         }
 
         public void DeselectZone()
@@ -219,7 +215,8 @@ namespace Assets
                         }
 
                         selectSquareImage.gameObject.SetActive(false);
-                        GetSelectedThingsRefactorMeNow();
+
+                        Select(_selectionPreference, GetSelectedCells());
                     }
 
                     // dragging the mouse
@@ -269,7 +266,6 @@ namespace Assets
 
             if (SelectedCreatures?.Count > 0)
             {
-                DeselectCell();
                 DeselectStructure();
                 DeselectItem();
                 DeselectZone();
@@ -407,7 +403,6 @@ namespace Assets
 
         internal void SelectZone(ZoneBase zone)
         {
-            DeselectCell();
             DeselectCreature();
             DeselectStructure();
             DeselectItem();
@@ -430,19 +425,6 @@ namespace Assets
 
             Validate = (cell) => construct.ValidateStartPos(cell);
             Game.Instance.Cursor.SetMultiSprite(construct.GetSprite(), (cell) => construct.ValidateStartPos(cell));
-        }
-
-        private void GetSelectedThingsRefactorMeNow()
-        {
-            SelectedCells = GetSelectedCells();
-
-            var selectedZone = SelectZoneInCells(SelectedCells);
-            SelectedCreatures = SelectCreaturesInCells(SelectedCells);
-            SelectedStructures = SelectStructuresInCells(SelectedCells);
-            SelectedItems = SelectedItemsInCells(SelectedCells);
-
-            Select(selectedZone, _selectionPreference);
-            SelectionStartWorld = Vector3.zero;
         }
 
         private bool MouseOverUi()
@@ -474,33 +456,39 @@ namespace Assets
             Gizmos.DrawCube(pos, new Vector3(0.2f, 0.5f, 0.2f));
         }
 
-        private bool Select(ZoneBase selectedZone, SelectionPreference selection)
+        private bool Select(SelectionPreference selectionPreference, List<Cell> cells)
         {
-            switch (selection)
+            var selectedZone = SelectZoneInCells(cells);
+            SelectedCreatures = SelectCreaturesInCells(cells);
+            SelectedItems = SelectedItemsInCells(cells);
+
+            SelectionStartWorld = Vector3.zero;
+
+            switch (selectionPreference)
             {
                 case SelectionPreference.Anything:
 
                     for (int i = 0; i < 5; i++)
                     {
-                        switch (LastSelection)
+                        switch (_lastSelection)
                         {
                             case SelectionPreference.Creature:
-                                LastSelection = SelectionPreference.Structure;
+                                _lastSelection = SelectionPreference.Structure;
                                 break;
 
                             case SelectionPreference.Structure:
-                                LastSelection = SelectionPreference.Item;
+                                _lastSelection = SelectionPreference.Item;
                                 break;
 
                             case SelectionPreference.Item:
-                                LastSelection = SelectionPreference.Zone;
+                                _lastSelection = SelectionPreference.Zone;
                                 break;
 
                             case SelectionPreference.Zone:
-                                LastSelection = SelectionPreference.Creature;
+                                _lastSelection = SelectionPreference.Creature;
                                 break;
                         }
-                        if (Select(selectedZone, LastSelection))
+                        if (Select(_lastSelection, cells))
                         {
                             break;
                         }
@@ -508,29 +496,32 @@ namespace Assets
                     break;
 
                 case SelectionPreference.Cell:
-                    if (SelectedCells.Count > 0)
+                    if (cells.Count > 0)
                     {
-                        SelectCell();
+                        if (Game.Instance.OrderSelectionController.CellClickOrder != null)
+                        {
+                            Game.Instance.OrderSelectionController.CellClickOrder.Invoke(cells);
+                        }
                         return true;
                     }
                     break;
 
                 case SelectionPreference.Item:
-                    if (SelectedCells.Count > 0)
+                    if (cells.Count > 0)
                     {
                         return SelectItem();
                     }
                     break;
 
                 case SelectionPreference.Structure:
-                    if (SelectedCells.Count > 0)
+                    if (cells.Count > 0)
                     {
-                        return SelectStructure();
+                        return SelectStructure(SelectStructuresInCells(cells));
                     }
                     break;
 
                 case SelectionPreference.Creature:
-                    if (SelectedCells.Count > 0)
+                    if (cells.Count > 0)
                     {
                         return SelectCreature();
                     }
@@ -545,16 +536,6 @@ namespace Assets
                     break;
             }
             return false;
-        }
-
-        private void SelectCell()
-        {
-            if (Game.Instance.OrderSelectionController.CellClickOrder != null)
-            {
-                //Debug.Log($"Clicked: {SelectedCells.Count}: {SelectedCells[0]}");
-                Game.Instance.OrderSelectionController.CellClickOrder.Invoke(SelectedCells);
-                DeselectCell();
-            }
         }
 
         private List<CreatureRenderer> SelectCreaturesInCells(List<Cell> cells)
@@ -588,7 +569,6 @@ namespace Assets
 
             if (SelectedItems?.Count > 0)
             {
-                DeselectCell();
                 DeselectStructure();
                 DeselectCreature();
                 DeselectZone();
@@ -599,21 +579,20 @@ namespace Assets
             return false;
         }
 
-        private bool SelectStructure()
+        private bool SelectStructure(List<Structure> structures)
         {
-            foreach (var structure in SelectedStructures)
+            foreach (var structure in structures)
             {
                 structure.ShowOutline();
             }
 
-            if (SelectedStructures?.Count > 0)
+            if (structures.Count > 0)
             {
-                DeselectCell();
                 DeselectItem();
                 DeselectCreature();
                 DeselectZone();
 
-                Game.Instance.ShowStructureInfoPanel(SelectedStructures);
+                Game.Instance.ShowStructureInfoPanel(structures);
                 return true;
             }
             return false;
