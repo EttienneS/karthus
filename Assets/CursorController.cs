@@ -85,6 +85,18 @@ namespace Assets
             MouseSpriteRenderer.transform.localPosition = new Vector3(offsetX, 0.1f, offsetZ);
         }
 
+        private void OnDrawGizmos()
+        {
+            var pos = Game.Instance.GetWorldMousePosition().Value;
+
+            Gizmos.color = ColorConstants.GreenAccent;
+            var cell = Game.Instance.Map.GetCellAtCoordinate(pos);
+            Gizmos.DrawCube(cell.Vector, new Vector3(1f, 0.01f, 1f));
+
+            Gizmos.color = ColorConstants.RedAccent;
+            Gizmos.DrawCube(pos, new Vector3(0.2f, 0.5f, 0.2f));
+        }
+
         public void SetSprite(Sprite sprite, ValidateMouseDelegate validationFunction)
         {
             MouseSpriteRenderer.sprite = sprite;

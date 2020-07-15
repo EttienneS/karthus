@@ -151,7 +151,6 @@ public class Map : MonoBehaviour
     {
         var intx = Mathf.RoundToInt(x - 0.001f);
         var intz = Mathf.RoundToInt(z - 0.001f);
-
         if (intx < MinX || intz < MinZ || intx >= MaxX || intz >= MaxZ)
         {
             return null;
