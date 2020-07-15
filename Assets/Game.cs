@@ -8,13 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UI;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using Debug = UnityEngine.Debug;
 
-public enum SelectionPreference
-{
-    Anything, Cell, Item, Structure, Creature, Zone
-}
 
 public class Game : MonoBehaviour
 {
@@ -37,7 +32,6 @@ public class Game : MonoBehaviour
     public OrderInfoPanel OrderInfoPanel;
     public OrderSelectionController OrderSelectionController;
     public OrderTrayController OrderTrayController;
-    public RectTransform selectSquareImage;
     public SpriteStore SpriteStore;
     public StructureController StructureController;
     public StructureInfoPanel StructureInfoPanelPrefab;
@@ -282,7 +276,6 @@ public class Game : MonoBehaviour
     {
         UIController.Hide();
 
-        selectSquareImage.gameObject.SetActive(false);
 
         if (SaveManager.SaveToLoad != null)
         {
@@ -301,115 +294,27 @@ public class Game : MonoBehaviour
         Initialize();
     }
 
-    private void Update()
+    internal void DestroyToolTip()
     {
-        OnFirstRun();
-
-        if (MainMenuController.MainMenuActive)
-        {
-            return;
-        }
-
-        if (_lastAutoSave == null)
-        {
-            // make the first autosave actually happen 2 mins after the game starts not on the first call
-            _lastAutoSave = DateTime.Now;
-        }
-        else if ((DateTime.Now - _lastAutoSave.Value).TotalSeconds > 120)
-        {
-            // autosave every two minutes
-            _lastAutoSave = DateTime.Now;
-            SaveManager.Save();
-        }
-
-        HandleHotkeys();
-
-        HandleMouseInput();
-
-        DestroyItemsInCache();
-    }
-
-    #region selection logic isoloated for refactoring
-
-    internal SelectionPreference LastSelection = SelectionPreference.Creature;
-    internal List<Cell> SelectedCells = new List<Cell>();
-    internal List<CreatureRenderer> SelectedCreatures = new List<CreatureRenderer>();
-    internal List<Item> SelectedItems = new List<Item>();
-    internal List<Structure> SelectedStructures = new List<Structure>();
-    internal Vector3 SelectionEndScreen;
-    internal SelectionPreference SelectionPreference;
-    internal Vector3 SelectionStartWorld;
-
-    public void DeselectAll()
-    {
-        Cursor.Clear();
-        DeselectCreature();
-        DeselectCell();
-        DeselectStructure(true);
-        DeselectItem();
-        DeselectZone();
-    }
-
-    public void DeselectCell()
-    {
-        SelectedCells.Clear();
-    }
-
-    public void DeselectCreature()
-    {
-        foreach (var creature in SelectedCreatures)
-        {
-            creature.DisableHightlight();
-        }
-
-        if (_currentCreatureInfoPanel != null)
-        {
-            _currentCreatureInfoPanel.Destroy();
-        }
-
         if (_currentTooltip != null)
         {
             _currentTooltip.Destroy();
         }
-        SelectedCreatures.Clear();
     }
 
-    public void DeselectItem()
+    internal void DestroyCreaturePanel()
     {
-        foreach (var item in SelectedItems)
+        if (_currentCreatureInfoPanel != null)
         {
-            item.HideOutline();
+            _currentCreatureInfoPanel.Destroy();
         }
-        SelectedItems.Clear();
+    }
+
+    internal void DestroyItemInfoPanel()
+    {
         if (_currentItemInfoPanel != null)
         {
             _currentItemInfoPanel.Destroy();
-        }
-    }
-
-    public void DeselectStructure(bool stopGhost)
-    {
-        if (stopGhost)
-        {
-            Cursor.Disable();
-        }
-
-        foreach (var structure in SelectedStructures)
-        {
-            structure.HideOutline();
-        }
-        if (_currentStructureInfoPanel != null)
-        {
-            _currentStructureInfoPanel.Destroy();
-        }
-        SelectedStructures.Clear();
-    }
-
-    public void DeselectZone()
-    {
-        if (_currentZoneInfoPanel != null)
-        {
-            _currentZoneInfoPanel.Destroy();
         }
     }
 
@@ -436,346 +341,73 @@ public class Game : MonoBehaviour
         }
     }
 
-    public List<Cell> GetSelectedCells()
+    internal void DestroyZonePanel()
     {
-        if (SelectionStartWorld == Vector3.zero)
-        {
-            return new List<Cell>();
-        }
-        var worldStartPoint = SelectionStartWorld;
-        var worldEndPoint = GetWorldMousePosition().Value;
-
-        var cells = new List<Cell>();
-
-        var startX = Mathf.Clamp(Mathf.Min(worldStartPoint.x, worldEndPoint.x), Map.MinX, Map.MaxX);
-        var endX = Mathf.Clamp(Mathf.Max(worldStartPoint.x, worldEndPoint.x), Map.MinX, Map.MaxX);
-
-        var startZ = Mathf.Clamp(Mathf.Min(worldStartPoint.z, worldEndPoint.z), Map.MinZ, Map.MaxZ);
-        var endZ = Mathf.Clamp(Mathf.Max(worldStartPoint.z, worldEndPoint.z), Map.MinX, Map.MaxZ);
-
-        // not currently used
-        var startY = Mathf.Min(worldStartPoint.y, worldEndPoint.y);
-        var endY = Mathf.Max(worldStartPoint.y, worldEndPoint.y);
-
-        if (startX == endX && startZ == endZ)
-        {
-            var point = new Vector3(startX, startY, startZ);
-
-            var clickedCell = Map.GetCellAtPoint(point);
-            if (clickedCell != null)
-            {
-                cells.Add(clickedCell);
-            }
-        }
-        else
-        {
-            var pollStep = 1f;
-
-            for (var selX = startX; selX < endX; selX += pollStep)
-            {
-                for (var selZ = startZ; selZ < endZ; selZ += pollStep)
-                {
-                    var point = new Vector3(selX, startY, selZ);
-
-                    cells.Add(Map.GetCellAtPoint(point));
-                }
-            }
-        }
-
-        return cells.Distinct().ToList();
-    }
-
-    public Vector3? GetWorldMousePosition()
-    {
-        var inputRay = Instance.CameraController.Camera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(inputRay, out RaycastHit hit))
-        {
-            return hit.point;
-        }
-        return null;
-    }
-
-    public void HandleMouseInput()
-    {
-        if (Input.GetMouseButton(1))
-        {
-            // right mouse deselect all
-
-            DeselectAll();
-            OrderSelectionController.DisableAndReset();
-        }
-        else
-        {
-            var mousePosition = GetWorldMousePosition();
-
-            if (mousePosition != null)
-            {
-                if (Input.GetMouseButtonDown(0))
-                {
-                    if (MouseOverUi())
-                    {
-                        return;
-                    }
-                    SelectionStartWorld = GetWorldMousePosition().Value;
-                }
-
-                if (Input.GetMouseButtonUp(0))
-                {
-                    if (MouseOverUi())
-                    {
-                        return;
-                    }
-
-                    if (!Input.GetKey(KeyCode.LeftShift)
-                        && !Input.GetKey(KeyCode.RightShift)
-                        && OrderSelectionController.CellClickOrder == null)
-                    {
-                        DeselectAll();
-                    }
-
-                    selectSquareImage.gameObject.SetActive(false);
-
-                    SelectedCells = GetSelectedCells();
-
-                    ZoneBase selectedZone = null;
-                    foreach (var cell in SelectedCells)
-                    {
-                        if (cell.Structure != null)
-                        {
-                            SelectedStructures.Add(cell.Structure);
-                        }
-                        SelectedItems.AddRange(cell.Items);
-                        SelectedCreatures.AddRange(cell.Creatures.Select(c => c.CreatureRenderer));
-
-                        var zone = Game.Instance.ZoneController.GetZoneForCell(cell);
-                        if (zone != null)
-                        {
-                            selectedZone = zone;
-                        }
-                    }
-
-                    Select(selectedZone, SelectionPreference);
-
-                    SelectionStartWorld = Vector3.zero;
-                }
-
-                if (Input.GetMouseButton(0))
-                {
-                    if (MouseOverUi())
-                    {
-                        return;
-                    }
-
-                    if (!selectSquareImage.gameObject.activeInHierarchy)
-                    {
-                        selectSquareImage.gameObject.SetActive(true);
-                    }
-
-                    SelectionEndScreen = Input.mousePosition;
-                    var start = Instance.CameraController.Camera.WorldToScreenPoint(SelectionStartWorld);
-                    start.z = 0f;
-
-                    selectSquareImage.position = (start + SelectionEndScreen) / 2;
-
-                    var sizeX = Mathf.Abs(start.x - SelectionEndScreen.x);
-                    var sizeY = Mathf.Abs(start.y - SelectionEndScreen.y);
-
-                    selectSquareImage.sizeDelta = new Vector2(sizeX, sizeY);
-                }
-            }
-        }
-    }
-
-    public bool SelectCreature()
-    {
-        foreach (var creature in SelectedCreatures)
-        {
-            creature.EnableHighlight(ColorConstants.GreenAccent);
-        }
-
-        if (SelectedCreatures?.Count > 0)
-        {
-            DeselectCell();
-            DeselectStructure(true);
-            DeselectItem();
-            DeselectZone();
-
-            if (_currentCreatureInfoPanel != null)
-            {
-                _currentCreatureInfoPanel.Destroy();
-            }
-            _currentCreatureInfoPanel = Instantiate(CreatureInfoPanelPrefab, UI.transform);
-            _currentCreatureInfoPanel.Show(SelectedCreatures.Select(c => c.Data).ToList());
-            return true;
-        }
-
-        return false;
-    }
-
-    internal void SelectZone(ZoneBase zone)
-    {
-        DeselectCell();
-        DeselectCreature();
-        DeselectStructure(true);
-        DeselectItem();
-
         if (_currentZoneInfoPanel != null)
         {
             _currentZoneInfoPanel.Destroy();
         }
+    }
+
+    internal void DestroyStructureInfoPanel()
+    {
+        if (_currentStructureInfoPanel != null)
+        {
+            _currentStructureInfoPanel.Destroy();
+        }
+    }
+
+    private void Update()
+    {
+        OnFirstRun();
+
+        if (MainMenuController.MainMenuActive)
+        {
+            return;
+        }
+
+        if (_lastAutoSave == null)
+        {
+            // make the first autosave actually happen 2 mins after the game starts not on the first call
+            _lastAutoSave = DateTime.Now;
+        }
+        else if ((DateTime.Now - _lastAutoSave.Value).TotalSeconds > 120)
+        {
+            // autosave every two minutes
+            _lastAutoSave = DateTime.Now;
+            SaveManager.Save();
+        }
+
+        HandleHotkeys();
+
+        DestroyItemsInCache();
+    }
+
+    internal void ShowCreaturePanel(List<CreatureRenderer> selectedCreatures)
+    {
+        DestroyCreaturePanel();
+        _currentCreatureInfoPanel = Instantiate(CreatureInfoPanelPrefab, UI.transform);
+        _currentCreatureInfoPanel.Show(selectedCreatures.Select(c => c.Data).ToList());
+    }
+
+    internal void ShowZonePanel(ZoneBase zone)
+    {
+        DestroyZonePanel();
         _currentZoneInfoPanel = Instantiate(ZoneInfoPanelPrefab, UI.transform);
         _currentZoneInfoPanel.Show(zone);
     }
 
-    private bool MouseOverUi()
+    internal void ShowItemPanel(List<Item> selectedItems)
     {
-        if (EventSystem.current == null)
-        {
-            // event system not on yet
-            return false;
-        }
-        var overUI = EventSystem.current.IsPointerOverGameObject() && EventSystem.current.currentSelectedGameObject != null;
-
-        if (overUI)
-        {
-            selectSquareImage.gameObject.SetActive(false);
-        }
-
-        return overUI;
+        DestroyItemInfoPanel();
+        _currentItemInfoPanel = Instantiate(ItemInfoPanelPrefab, UI.transform);
+        _currentItemInfoPanel.Show(selectedItems);
     }
 
-    private bool Select(ZoneBase selectedZone, SelectionPreference selection)
+    internal void ShowStructureInfoPanel(List<Structure> selectedStructures)
     {
-        switch (selection)
-        {
-            case SelectionPreference.Anything:
-
-                for (int i = 0; i < 5; i++)
-                {
-                    switch (LastSelection)
-                    {
-                        case SelectionPreference.Creature:
-                            LastSelection = SelectionPreference.Structure;
-                            break;
-
-                        case SelectionPreference.Structure:
-                            LastSelection = SelectionPreference.Item;
-                            break;
-
-                        case SelectionPreference.Item:
-                            LastSelection = SelectionPreference.Zone;
-                            break;
-
-                        case SelectionPreference.Zone:
-                            LastSelection = SelectionPreference.Creature;
-                            break;
-                    }
-                    if (Select(selectedZone, LastSelection))
-                    {
-                        break;
-                    }
-                }
-                break;
-
-            case SelectionPreference.Cell:
-                if (SelectedCells.Count > 0)
-                {
-                    SelectCell();
-                    return true;
-                }
-                break;
-
-            case SelectionPreference.Item:
-                if (SelectedCells.Count > 0)
-                {
-                    return SelectItem();
-                }
-                break;
-
-            case SelectionPreference.Structure:
-                if (SelectedCells.Count > 0)
-                {
-                    return SelectStructure();
-                }
-                break;
-
-            case SelectionPreference.Creature:
-                if (SelectedCells.Count > 0)
-                {
-                    return SelectCreature();
-                }
-                break;
-
-            case SelectionPreference.Zone:
-                if (selectedZone != null)
-                {
-                    SelectZone(selectedZone);
-                    return true;
-                }
-                break;
-        }
-        return false;
+        DestroyStructureInfoPanel();
+        _currentStructureInfoPanel = Instantiate(StructureInfoPanelPrefab, UI.transform);
+        _currentStructureInfoPanel.Show(selectedStructures.ToList());
     }
-
-    private void SelectCell()
-    {
-        if (OrderSelectionController.CellClickOrder != null)
-        {
-            //Debug.Log($"Clicked: {SelectedCells.Count}: {SelectedCells[0]}");
-            OrderSelectionController.CellClickOrder.Invoke(SelectedCells);
-            DeselectCell();
-        }
-    }
-
-    private bool SelectItem()
-    {
-        foreach (var item in SelectedItems)
-        {
-            item.ShowOutline();
-        }
-
-        if (SelectedItems?.Count > 0)
-        {
-            DeselectCell();
-            DeselectStructure(true);
-            DeselectCreature();
-            DeselectZone();
-
-            if (_currentItemInfoPanel != null)
-            {
-                _currentItemInfoPanel.Destroy();
-            }
-            _currentItemInfoPanel = Instantiate(ItemInfoPanelPrefab, UI.transform);
-            _currentItemInfoPanel.Show(SelectedItems);
-            return true;
-        }
-        return false;
-    }
-
-    private bool SelectStructure()
-    {
-        foreach (var structure in SelectedStructures)
-        {
-            structure.ShowOutline();
-        }
-
-        if (SelectedStructures?.Count > 0)
-        {
-            DeselectCell();
-            DeselectItem();
-            DeselectCreature();
-            DeselectZone();
-
-            if (_currentStructureInfoPanel != null)
-            {
-                _currentStructureInfoPanel.Destroy();
-            }
-            _currentStructureInfoPanel = Instantiate(StructureInfoPanelPrefab, UI.transform);
-            _currentStructureInfoPanel.Show(SelectedStructures.ToList());
-            return true;
-        }
-        return false;
-    }
-
-    #endregion selection
 }

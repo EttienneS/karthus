@@ -12,9 +12,7 @@ public partial class OrderSelectionController : MonoBehaviour
 
     public void DisableAndReset()
     {
-        Game.Instance.SelectionStartWorld = Vector3.zero;
-
-        Game.Instance.SelectionPreference = SelectionPreference.Anything;
+        Game.Instance.Cursor.ResetSelection();
 
         Game.Instance.OrderTrayController.gameObject.SetActive(false);
         CellClickOrder = null;

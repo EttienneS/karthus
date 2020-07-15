@@ -33,7 +33,7 @@ public partial class OrderSelectionController //.Construct
 
     public void ConstructTypeClicked()
     {
-        Game.Instance.SelectionPreference = SelectionPreference.Cell;
+        Game.Instance.Cursor.SelectionPreference = SelectionPreference.Cell;
         if (Game.Instance.OrderTrayController.gameObject.activeInHierarchy)
         {
             DisableAndReset();

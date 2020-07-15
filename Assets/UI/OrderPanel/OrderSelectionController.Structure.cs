@@ -9,7 +9,7 @@ public partial class OrderSelectionController //.Structure
     public void BuildClicked(string structureName)
     {
         var structure = Game.Instance.StructureController.StructureDataReference[structureName];
-        Game.Instance.SelectionPreference = SelectionPreference.Cell;
+        Game.Instance.Cursor.SelectionPreference = SelectionPreference.Cell;
 
         Game.Instance.Cursor.SetMesh(structureName, (cell) => structure.ValidateCellLocationForStructure(cell));
         UpdateStuctureOrder(structureName);
