@@ -31,6 +31,7 @@ namespace Assets
         private Vector3 SelectionStartWorld;
 
         public delegate void RotateDelegate();
+
         public delegate bool ValidateMouseDelegate(Cell cell);
 
         public void Clear()
@@ -192,6 +193,7 @@ namespace Assets
 
                 if (mousePosition != null)
                 {
+                    // clicked the mouse
                     if (Input.GetMouseButtonDown(0))
                     {
                         if (MouseOverUi())
@@ -201,6 +203,7 @@ namespace Assets
                         SelectionStartWorld = GetWorldMousePosition().Value;
                     }
 
+                    // released the mouse
                     if (Input.GetMouseButtonUp(0))
                     {
                         if (MouseOverUi())
@@ -216,31 +219,10 @@ namespace Assets
                         }
 
                         selectSquareImage.gameObject.SetActive(false);
-
-                        SelectedCells = GetSelectedCells();
-
-                        ZoneBase selectedZone = null;
-                        foreach (var cell in SelectedCells)
-                        {
-                            if (cell.Structure != null)
-                            {
-                                SelectedStructures.Add(cell.Structure);
-                            }
-                            SelectedItems.AddRange(cell.Items);
-                            SelectedCreatures.AddRange(cell.Creatures.Select(c => c.CreatureRenderer));
-
-                            var zone = Game.Instance.ZoneController.GetZoneForCell(cell);
-                            if (zone != null)
-                            {
-                                selectedZone = zone;
-                            }
-                        }
-
-                        Select(selectedZone, _selectionPreference);
-
-                        SelectionStartWorld = Vector3.zero;
+                        GetSelectedThingsRefactorMeNow();
                     }
 
+                    // dragging the mouse
                     if (Input.GetMouseButton(0))
                     {
                         if (MouseOverUi())
@@ -450,6 +432,19 @@ namespace Assets
             Game.Instance.Cursor.SetMultiSprite(construct.GetSprite(), (cell) => construct.ValidateStartPos(cell));
         }
 
+        private void GetSelectedThingsRefactorMeNow()
+        {
+            SelectedCells = GetSelectedCells();
+
+            var selectedZone = SelectZoneInCells(SelectedCells);
+            SelectedCreatures = SelectCreaturesInCells(SelectedCells);
+            SelectedStructures = SelectStructuresInCells(SelectedCells);
+            SelectedItems = SelectedItemsInCells(SelectedCells);
+
+            Select(selectedZone, _selectionPreference);
+            SelectionStartWorld = Vector3.zero;
+        }
+
         private bool MouseOverUi()
         {
             if (EventSystem.current == null)
@@ -562,6 +557,28 @@ namespace Assets
             }
         }
 
+        private List<CreatureRenderer> SelectCreaturesInCells(List<Cell> cells)
+        {
+            var creatures = new List<CreatureRenderer>();
+            foreach (var cell in cells)
+            {
+                creatures.AddRange(cell.Creatures.Select(c => c.CreatureRenderer));
+            }
+
+            return creatures;
+        }
+
+        private List<Item> SelectedItemsInCells(List<Cell> cells)
+        {
+            var items = new List<Item>();
+            foreach (var cell in cells)
+            {
+                items.AddRange(cell.Items);
+            }
+
+            return items;
+        }
+
         private bool SelectItem()
         {
             foreach (var item in SelectedItems)
@@ -600,6 +617,34 @@ namespace Assets
                 return true;
             }
             return false;
+        }
+
+        private List<Structure> SelectStructuresInCells(List<Cell> cells)
+        {
+            var structures = new List<Structure>();
+            foreach (var cell in cells)
+            {
+                if (cell.Structure != null)
+                {
+                    structures.Add(cell.Structure);
+                }
+            }
+
+            return structures;
+        }
+
+        private ZoneBase SelectZoneInCells(List<Cell> cells)
+        {
+            foreach (var cell in cells)
+            {
+                var zone = Game.Instance.ZoneController.GetZoneForCell(cell);
+                if (zone != null)
+                {
+                    return zone;
+                }
+            }
+
+            return null;
         }
 
         private void ValidateCursor(Cell startCell)
