@@ -332,8 +332,6 @@ public class Game : MonoBehaviour
     #region selection logic isoloated for refactoring
 
     internal SelectionPreference LastSelection = SelectionPreference.Creature;
-    internal Cell MouseOverCell;
-    internal string MouseSpriteName;
     internal List<Cell> SelectedCells = new List<Cell>();
     internal List<CreatureRenderer> SelectedCreatures = new List<CreatureRenderer>();
     internal List<Item> SelectedItems = new List<Item>();
