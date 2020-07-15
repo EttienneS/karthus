@@ -1,6 +1,5 @@
 ﻿using Assets.Helpers;
 using Assets.Structures;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -22,7 +21,7 @@ namespace Assets
         }
 
         private Sprite _currentSprite;
-        private Dictionary<Cell, MeshRenderer> _draggedRenderers = new Dictionary<Cell, MeshRenderer>();
+        private readonly Dictionary<Cell, MeshRenderer> _draggedRenderers = new Dictionary<Cell, MeshRenderer>();
         private string _meshName;
         private RotateDelegate _rotateLeft;
         private RotateDelegate _rotateRight;
@@ -30,11 +29,12 @@ namespace Assets
         public delegate void RotateDelegate();
 
         public delegate bool ValidateMouseDelegate(Cell cell);
+
         public RectTransform selectSquareImage;
 
         public void Start()
         {
-            //selectSquareImage.gameObject.SetActive(false);
+            selectSquareImage.gameObject.SetActive(false);
         }
 
         public void Clear()
@@ -240,7 +240,7 @@ namespace Assets
             Clear();
             DeselectCreature();
             DeselectCell();
-            DeselectStructure(true);
+            DeselectStructure();
             DeselectItem();
             DeselectZone();
         }
@@ -272,12 +272,9 @@ namespace Assets
             Game.Instance.DestroyItemInfoPanel();
         }
 
-        public void DeselectStructure(bool stopGhost)
+        public void DeselectStructure()
         {
-            if (stopGhost)
-            {
-                Disable();
-            }
+            Disable();
 
             foreach (var structure in SelectedStructures)
             {
@@ -452,7 +449,7 @@ namespace Assets
             if (SelectedCreatures?.Count > 0)
             {
                 DeselectCell();
-                DeselectStructure(true);
+                DeselectStructure();
                 DeselectItem();
                 DeselectZone();
 
@@ -467,7 +464,7 @@ namespace Assets
         {
             DeselectCell();
             DeselectCreature();
-            DeselectStructure(true);
+            DeselectStructure();
             DeselectItem();
 
             Game.Instance.ShowZonePanel(zone);
@@ -583,7 +580,7 @@ namespace Assets
             if (SelectedItems?.Count > 0)
             {
                 DeselectCell();
-                DeselectStructure(true);
+                DeselectStructure();
                 DeselectCreature();
                 DeselectZone();
 
