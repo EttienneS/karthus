@@ -48,7 +48,7 @@ public partial class OrderSelectionController //.Zone
         }
 
         Game.Instance.Cursor.SetSprite(Game.Instance.SpriteStore.GetSprite(sprite), (cell) => CanAddCellToZone(cell));
-        Game.Instance.Cursor.SelectionPreference = SelectionPreference.Cell;
+        Game.Instance.Cursor.SetSelectionPreference(SelectionPreference.Cell);
 
         CellClickOrder = cells =>
         {

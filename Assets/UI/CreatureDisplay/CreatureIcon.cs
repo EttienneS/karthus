@@ -16,8 +16,7 @@ public class CreatureIcon : MonoBehaviour
         if (Creature != null)
         {
             Game.Instance.CameraController.ViewPoint(Creature.Vector);
-            Game.Instance.Cursor.SelectedCreatures = new List<CreatureRenderer> { Creature.CreatureRenderer };
-            Game.Instance.Cursor.SelectCreature();
+            Game.Instance.Cursor.SelectCreature(Creature.CreatureRenderer);
         }
     }
 

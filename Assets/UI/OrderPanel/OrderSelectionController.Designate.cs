@@ -29,7 +29,7 @@ public partial class OrderSelectionController //.Designate
 
     private void MoveClicked()
     {
-        Game.Instance.Cursor.SelectionPreference = SelectionPreference.Cell;
+        Game.Instance.Cursor.SetSelectionPreference(SelectionPreference.Cell);
         Game.Instance.Cursor.SetSprite(Game.Instance.SpriteStore.GetSprite(MoveIcon), (cell) => cell.TravelCost > 0);
 
         CellClickOrder = cells =>
@@ -42,7 +42,7 @@ public partial class OrderSelectionController //.Designate
 
     private void RemoveStructureClicked()
     {
-        Game.Instance.Cursor.SelectionPreference = SelectionPreference.Cell;
+        Game.Instance.Cursor.SetSelectionPreference(SelectionPreference.Cell);
         Game.Instance.Cursor.SetSprite(Game.Instance.SpriteStore.GetSprite(DefaultRemoveIcon), (cell) => cell.Structure != null);
 
         CellClickOrder = cells =>

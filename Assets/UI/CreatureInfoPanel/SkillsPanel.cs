@@ -12,7 +12,7 @@ public class SkillsPanel : MonoBehaviour
 
     private void Update()
     {
-        var creature = Game.Instance.Cursor.SelectedCreatures.FirstOrDefault();
+        var creature = Game.Instance.Cursor.GetSelectedCreatures().FirstOrDefault();
 
         if (creature == null)
         {
