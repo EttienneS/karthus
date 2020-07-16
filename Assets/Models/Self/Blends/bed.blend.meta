@@ -13,12 +13,13 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Pillow
-    second: {fileID: 2100000, guid: d7dd73235a7fcf94b9517a2627a38a7b, type: 2}
+    second: {fileID: -8848810374240701247, guid: d75cd175e6c2bae4fb5989b708cbb462,
+      type: 3}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Top
-    second: {fileID: -4318571312361772713, guid: 03629a22a5779e1428c647e8fe3d4286,
+    second: {fileID: -4318571312361772713, guid: 5b7445dba668d524a871253d918f1b17,
       type: 3}
   materials:
     materialImportMode: 1
