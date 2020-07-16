@@ -98,72 +98,16 @@ namespace Assets
             Game.Instance.Cursor.SetMultiSprite(construct.GetSprite(), (cell) => construct.ValidateStartPos(cell));
         }
 
-        public void Start()
+        internal void Start()
         {
             HideSelectionRectangle();
         }
 
-        public void Update()
+        internal void Update()
         {
+            MoveCursorTransform();
+
             CursorLight.enabled = Game.Instance.TimeManager.Data.Hour > 17 || Game.Instance.TimeManager.Data.Hour < 5;
-
-            var pos = GetWorldMousePosition();
-            if (pos != null)
-            {
-                var startCell = GetCellForWorldPosition(pos);
-                if (startCell == null)
-                {
-                    return;
-                }
-                transform.position = new Vector3(startCell.Vector.x,
-                                                 Game.Instance.MapData.StructureLevel,
-                                                 startCell.Vector.z) + new Vector3(0, 0.25f, 0);
-
-                ValidateCursor(startCell);
-            }
-
-            if (!string.IsNullOrEmpty(_meshName))
-            {
-                var selectedCells = GetSelectedCells();
-
-                if (selectedCells == null || selectedCells.Count == 0)
-                {
-                    return;
-                }
-
-                foreach (var cell in selectedCells)
-                {
-                    MeshRenderer cellRenderer;
-                    if (!_draggedRenderers.ContainsKey(cell))
-                    {
-                        cellRenderer = Game.Instance.StructureController.InstantiateNewStructureMeshRenderer(_meshName, Game.Instance.Map.transform);
-                        cellRenderer.transform.position = new Vector3(cell.Vector.x, Game.Instance.MapData.StructureLevel, cell.Vector.z);
-                        _draggedRenderers.Add(cell, cellRenderer);
-                    }
-                    else
-                    {
-                        cellRenderer = _draggedRenderers[cell];
-                    }
-
-                    if (Validate?.Invoke(cell) == false)
-                    {
-                        cellRenderer.SetAllMaterial(Game.Instance.FileController.InvalidBlueprintMaterial);
-                    }
-                    else
-                    {
-                        cellRenderer.SetAllMaterial(Game.Instance.FileController.BlueprintMaterial);
-                    }
-                }
-
-                foreach (var cell in _draggedRenderers.Keys.ToList())
-                {
-                    if (!selectedCells.Contains(cell))
-                    {
-                        Destroy(_draggedRenderers[cell].gameObject);
-                        _draggedRenderers.Remove(cell);
-                    }
-                }
-            }
 
             HandleMouseInput();
         }
@@ -201,7 +145,6 @@ namespace Assets
 
         private void DeselectAll()
         {
-            Clear();
             DeselectCreature();
             DeselectStructure();
             DeselectItem();
@@ -410,7 +353,7 @@ namespace Assets
 
             if (InputHelper.RightMouseClciked())
             {
-                // right mouse deselect all
+                Clear();
                 DeselectAll();
                 Game.Instance.OrderSelectionController.DisableAndReset();
             }
@@ -448,6 +391,8 @@ namespace Assets
                         var sizeY = Mathf.Abs(start.y - selectionEndScreenPosition.y);
 
                         SelectSquareImage.sizeDelta = new Vector2(sizeX, sizeY);
+
+                        ShowCursorEffects(GetSelectedCells());
                     }
                 }
             }
@@ -473,6 +418,24 @@ namespace Assets
             }
 
             return overUI;
+        }
+
+        private void MoveCursorTransform()
+        {
+            var pos = GetWorldMousePosition();
+            if (pos != null)
+            {
+                var startCell = GetCellForWorldPosition(pos);
+                if (startCell == null)
+                {
+                    return;
+                }
+                transform.position = new Vector3(startCell.Vector.x,
+                                                 Game.Instance.MapData.StructureLevel,
+                                                 startCell.Vector.z) + new Vector3(0, 0.25f, 0);
+
+                ValidateCursor(startCell);
+            }
         }
 
         private void OnDrawGizmos()
@@ -537,6 +500,50 @@ namespace Assets
                 return true;
             }
             return false;
+        }
+
+        private void ShowCursorEffects(List<Cell> selectedCells)
+        {
+            if (!string.IsNullOrEmpty(_meshName))
+            {
+                if (selectedCells == null || selectedCells.Count == 0)
+                {
+                    return;
+                }
+
+                foreach (var cell in selectedCells)
+                {
+                    MeshRenderer cellRenderer;
+                    if (!_draggedRenderers.ContainsKey(cell))
+                    {
+                        cellRenderer = Game.Instance.StructureController.InstantiateNewStructureMeshRenderer(_meshName, Game.Instance.Map.transform);
+                        cellRenderer.transform.position = new Vector3(cell.Vector.x, Game.Instance.MapData.StructureLevel, cell.Vector.z);
+                        _draggedRenderers.Add(cell, cellRenderer);
+                    }
+                    else
+                    {
+                        cellRenderer = _draggedRenderers[cell];
+                    }
+
+                    if (Validate?.Invoke(cell) == false)
+                    {
+                        cellRenderer.SetAllMaterial(Game.Instance.FileController.InvalidBlueprintMaterial);
+                    }
+                    else
+                    {
+                        cellRenderer.SetAllMaterial(Game.Instance.FileController.BlueprintMaterial);
+                    }
+                }
+
+                foreach (var cell in _draggedRenderers.Keys.ToList())
+                {
+                    if (!selectedCells.Contains(cell))
+                    {
+                        Destroy(_draggedRenderers[cell].gameObject);
+                        _draggedRenderers.Remove(cell);
+                    }
+                }
+            }
         }
 
         private void ShowSelectionRectangle()
