@@ -11,18 +11,11 @@ public class HealthPanel : MonoBehaviour
     internal Dictionary<Limb, TitledProgressBar> LimbLinks = new Dictionary<Limb, TitledProgressBar>();
     internal CreatureData Current;
 
-    private void Update()
+    public void Load(CreatureData creature)
     {
-        var creature = Game.Instance.Cursor.GetSelectedCreatures().FirstOrDefault();
-
-        if (creature == null)
+        if (Current != creature)
         {
-            return;
-        }
-
-        if (Current != creature.Data)
-        {
-            Current = creature.Data;
+            Current = creature;
 
             foreach (var prefab in LimbLinks.Values.ToList())
             {
@@ -38,7 +31,10 @@ public class HealthPanel : MonoBehaviour
                 LimbLinks.Add(limb, bar);
             }
         }
+    }
 
+    private void Update()
+    {
         foreach (var limb in Current.Limbs)
         {
             LimbLinks[limb].SetProgress(limb.State);

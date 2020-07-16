@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Creature;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Assets.Creature;
 
 public class SkillsPanel : MonoBehaviour
 {
@@ -10,18 +10,11 @@ public class SkillsPanel : MonoBehaviour
     public CreatureData Current;
     internal Dictionary<Skill, SkillDisplay> SkillLinks = new Dictionary<Skill, SkillDisplay>();
 
-    private void Update()
+    public void Load(CreatureData creature)
     {
-        var creature = Game.Instance.Cursor.GetSelectedCreatures().FirstOrDefault();
-
-        if (creature == null)
+        if (Current != creature)
         {
-            return;
-        }
-
-        if (Current != creature.Data)
-        {
-            Current = creature.Data;
+            Current = creature;
 
             foreach (var prefab in SkillLinks.Values.ToList())
             {

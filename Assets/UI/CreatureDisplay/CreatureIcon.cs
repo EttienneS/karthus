@@ -16,7 +16,7 @@ public class CreatureIcon : MonoBehaviour
         if (Creature != null)
         {
             Game.Instance.CameraController.ViewPoint(Creature.Vector);
-            Game.Instance.Cursor.SelectCreature(Creature.CreatureRenderer);
+            Game.Instance.CreatureInfoPanelPrefab.Show(new List<CreatureData> { Creature });
         }
     }
 

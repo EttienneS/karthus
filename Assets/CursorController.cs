@@ -18,18 +18,11 @@ namespace Assets
 
         private readonly Dictionary<Cell, MeshRenderer> _draggedRenderers = new Dictionary<Cell, MeshRenderer>();
         private Sprite _currentSprite;
+        private SelectionPreference _lastSelection = SelectionPreference.Creature;
         private string _meshName;
         private RotateDelegate _rotateLeft;
         private RotateDelegate _rotateRight;
         private SelectionPreference _selectionPreference;
-        private SelectionPreference _lastSelection = SelectionPreference.Creature;
-
-        //private List<Cell> SelectedCells = new List<Cell>();
-        private List<CreatureRenderer> SelectedCreatures = new List<CreatureRenderer>();
-
-        private List<Item> SelectedItems = new List<Item>();
-        //private List<Structure> SelectedStructures = new List<Structure>();
-
         private Vector3 SelectionEndScreen;
         private Vector3 SelectionStartWorld;
 
@@ -37,214 +30,10 @@ namespace Assets
 
         public delegate bool ValidateMouseDelegate(Cell cell);
 
-        public void Clear()
+        public void ResetSelection()
         {
-            foreach (var meshRenderer in _draggedRenderers.Values)
-            {
-                Destroy(meshRenderer.gameObject);
-            }
-            _draggedRenderers.Clear();
-
-            if (MeshRenderer != null)
-            {
-                Destroy(MeshRenderer.gameObject);
-                MeshRenderer = null;
-            }
-
-            _meshName = string.Empty;
-
-            if (_currentSprite != null)
-            {
-                MouseSpriteRenderer.sprite = null;
-                _currentSprite = null;
-            }
-        }
-
-        public void DeselectAll()
-        {
-            Clear();
-            DeselectCreature();
-            DeselectStructure();
-            DeselectItem();
-            DeselectZone();
-        }
-
-        public void DeselectCreature()
-        {
-            foreach (var creature in SelectedCreatures)
-            {
-                creature.DisableHightlight();
-            }
-
-            Game.Instance.DestroyCreaturePanel();
-            Game.Instance.DestroyToolTip();
-            SelectedCreatures.Clear();
-        }
-
-        public void DeselectItem()
-        {
-            foreach (var item in SelectedItems)
-            {
-                item.HideOutline();
-            }
-            SelectedItems.Clear();
-            Game.Instance.DestroyItemInfoPanel();
-        }
-
-        public void DeselectStructure()
-        {
-            Disable();
-
-            foreach (var structure in Game.Instance.IdService.StructureIdLookup.Values)
-            {
-                structure.HideOutline();
-            }
-            Game.Instance.DestroyStructureInfoPanel();
-        }
-
-        public void DeselectZone()
-        {
-            Game.Instance.DestroyZonePanel();
-        }
-
-        public void Disable()
-        {
-            MouseSpriteRenderer.sprite = null;
-            MouseSpriteRenderer.size = Vector2.one;
-
-            Clear();
-        }
-
-        public List<Cell> GetSelectedCells()
-        {
-            if (SelectionStartWorld == Vector3.zero)
-            {
-                return new List<Cell>();
-            }
-            var worldStartPoint = SelectionStartWorld;
-            var worldEndPoint = GetWorldMousePosition().Value;
-
-            var cells = new List<Cell>();
-
-            var startX = Mathf.Clamp(Mathf.Min(worldStartPoint.x, worldEndPoint.x), Game.Instance.Map.MinX, Game.Instance.Map.MaxX);
-            var endX = Mathf.Clamp(Mathf.Max(worldStartPoint.x, worldEndPoint.x), Game.Instance.Map.MinX, Game.Instance.Map.MaxX);
-
-            var startZ = Mathf.Clamp(Mathf.Min(worldStartPoint.z, worldEndPoint.z), Game.Instance.Map.MinZ, Game.Instance.Map.MaxZ);
-            var endZ = Mathf.Clamp(Mathf.Max(worldStartPoint.z, worldEndPoint.z), Game.Instance.Map.MinX, Game.Instance.Map.MaxZ);
-
-            // not currently used
-            var startY = Mathf.Min(worldStartPoint.y, worldEndPoint.y);
-            var endY = Mathf.Max(worldStartPoint.y, worldEndPoint.y);
-
-            if (startX == endX && startZ == endZ)
-            {
-                var point = new Vector3(startX, startY, startZ);
-
-                var clickedCell = Game.Instance.Map.GetCellAtPoint(point);
-                if (clickedCell != null)
-                {
-                    cells.Add(clickedCell);
-                }
-            }
-            else
-            {
-                var pollStep = 1f;
-
-                for (var selX = startX; selX < endX; selX += pollStep)
-                {
-                    for (var selZ = startZ; selZ < endZ; selZ += pollStep)
-                    {
-                        var point = new Vector3(selX, startY, selZ);
-
-                        cells.Add(Game.Instance.Map.GetCellAtPoint(point));
-                    }
-                }
-            }
-
-            return cells.Distinct().ToList();
-        }
-
-        public Vector3? GetWorldMousePosition()
-        {
-            var inputRay = Game.Instance.CameraController.Camera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(inputRay, out RaycastHit hit))
-            {
-                return hit.point;
-            }
-            return null;
-        }
-
-        public void HandleMouseInput()
-        {
-            if (Input.GetMouseButton(1))
-            {
-                // right mouse deselect all
-
-                DeselectAll();
-                Game.Instance.OrderSelectionController.DisableAndReset();
-            }
-            else
-            {
-                var mousePosition = GetWorldMousePosition();
-
-                if (mousePosition != null)
-                {
-                    // clicked the mouse
-                    if (Input.GetMouseButtonDown(0))
-                    {
-                        if (MouseOverUi())
-                        {
-                            return;
-                        }
-                        SelectionStartWorld = GetWorldMousePosition().Value;
-                    }
-
-                    // released the mouse
-                    if (Input.GetMouseButtonUp(0))
-                    {
-                        if (MouseOverUi())
-                        {
-                            return;
-                        }
-
-                        if (!Input.GetKey(KeyCode.LeftShift)
-                            && !Input.GetKey(KeyCode.RightShift)
-                            && Game.Instance.OrderSelectionController.CellClickOrder == null)
-                        {
-                            DeselectAll();
-                        }
-
-                        selectSquareImage.gameObject.SetActive(false);
-
-                        Select(_selectionPreference, GetSelectedCells());
-                    }
-
-                    // dragging the mouse
-                    if (Input.GetMouseButton(0))
-                    {
-                        if (MouseOverUi())
-                        {
-                            return;
-                        }
-
-                        if (!selectSquareImage.gameObject.activeInHierarchy)
-                        {
-                            selectSquareImage.gameObject.SetActive(true);
-                        }
-
-                        SelectionEndScreen = Input.mousePosition;
-                        var start = Game.Instance.CameraController.Camera.WorldToScreenPoint(SelectionStartWorld);
-                        start.z = 0f;
-
-                        selectSquareImage.position = (start + SelectionEndScreen) / 2;
-
-                        var sizeX = Mathf.Abs(start.x - SelectionEndScreen.x);
-                        var sizeY = Mathf.Abs(start.y - SelectionEndScreen.y);
-
-                        selectSquareImage.sizeDelta = new Vector2(sizeX, sizeY);
-                    }
-                }
-            }
+            SelectionStartWorld = Vector3.zero;
+            SetSelectionPreference(SelectionPreference.Anything);
         }
 
         public void RotateLeft()
@@ -257,23 +46,13 @@ namespace Assets
             _rotateRight?.Invoke();
         }
 
-        public bool SelectCreature()
+        public bool SelectZone(ZoneBase zone)
         {
-            foreach (var creature in SelectedCreatures)
+            if (zone != null)
             {
-                creature.EnableHighlight(ColorConstants.GreenAccent);
-            }
-
-            if (SelectedCreatures?.Count > 0)
-            {
-                DeselectStructure();
-                DeselectItem();
-                DeselectZone();
-
-                Game.Instance.ShowCreaturePanel(SelectedCreatures);
+                Game.Instance.ShowZonePanel(zone);
                 return true;
             }
-
             return false;
         }
 
@@ -312,6 +91,23 @@ namespace Assets
             _currentSprite = sprite;
 
             MouseSpriteRenderer.transform.localPosition = new Vector3(0f, 0.1f, 0f);
+        }
+
+        public void ShowConstructGhost(Construct construct)
+        {
+            _rotateLeft = () =>
+            {
+                construct.RotateRight();
+                Game.Instance.Cursor.SetMultiSprite(construct.GetSprite(), (cell) => construct.ValidateStartPos(cell));
+            };
+            _rotateRight = () =>
+            {
+                construct.RotateLeft();
+                Game.Instance.Cursor.SetMultiSprite(construct.GetSprite(), (cell) => construct.ValidateStartPos(cell));
+            };
+
+            Validate = (cell) => construct.ValidateStartPos(cell);
+            Game.Instance.Cursor.SetMultiSprite(construct.GetSprite(), (cell) => construct.ValidateStartPos(cell));
         }
 
         public void Start()
@@ -384,47 +180,261 @@ namespace Assets
             HandleMouseInput();
         }
 
-        internal List<CreatureRenderer> GetSelectedCreatures()
+        private void Clear()
         {
-            return SelectedCreatures;
+            MouseSpriteRenderer.sprite = null;
+            MouseSpriteRenderer.size = Vector2.one;
+
+            foreach (var meshRenderer in _draggedRenderers.Values)
+            {
+                Destroy(meshRenderer.gameObject);
+            }
+            _draggedRenderers.Clear();
+
+            if (MeshRenderer != null)
+            {
+                Destroy(MeshRenderer.gameObject);
+                MeshRenderer = null;
+            }
+
+            _meshName = string.Empty;
+
+            if (_currentSprite != null)
+            {
+                MouseSpriteRenderer.sprite = null;
+                _currentSprite = null;
+            }
         }
 
-        internal void ResetSelection()
+        private void DeselectAll()
         {
-            SelectionStartWorld = Vector3.zero;
-            SetSelectionPreference(SelectionPreference.Anything);
-        }
-
-        internal void SelectCreature(CreatureRenderer creatureRenderer)
-        {
-            SelectedCreatures = new List<CreatureRenderer> { creatureRenderer };
-            SelectCreature();
-        }
-
-        internal void SelectZone(ZoneBase zone)
-        {
+            Clear();
             DeselectCreature();
             DeselectStructure();
             DeselectItem();
-
-            Game.Instance.ShowZonePanel(zone);
+            DeselectZone();
         }
 
-        internal void ShowConstructGhost(Construct construct)
+        private void DeselectCreature()
         {
-            _rotateLeft = () =>
+            foreach (var creature in Game.Instance.IdService.CreatureIdLookup.Values.Select(v => v.CreatureRenderer))
             {
-                construct.RotateRight();
-                Game.Instance.Cursor.SetMultiSprite(construct.GetSprite(), (cell) => construct.ValidateStartPos(cell));
-            };
-            _rotateRight = () =>
-            {
-                construct.RotateLeft();
-                Game.Instance.Cursor.SetMultiSprite(construct.GetSprite(), (cell) => construct.ValidateStartPos(cell));
-            };
+                creature.DisableHightlight();
+            }
 
-            Validate = (cell) => construct.ValidateStartPos(cell);
-            Game.Instance.Cursor.SetMultiSprite(construct.GetSprite(), (cell) => construct.ValidateStartPos(cell));
+            Game.Instance.DestroyCreaturePanel();
+            Game.Instance.DestroyToolTip();
+        }
+
+        private void DeselectItem()
+        {
+            foreach (var item in Game.Instance.IdService.ItemLookup.Values)
+            {
+                item.HideOutline();
+            }
+            Game.Instance.DestroyItemInfoPanel();
+        }
+
+        private void DeselectStructure()
+        {
+            foreach (var structure in Game.Instance.IdService.StructureIdLookup.Values)
+            {
+                structure.HideOutline();
+            }
+            Game.Instance.DestroyStructureInfoPanel();
+        }
+
+        private void DeselectZone()
+        {
+            Game.Instance.DestroyZonePanel();
+        }
+
+        private List<Cell> GetSelectedCells()
+        {
+            if (SelectionStartWorld == Vector3.zero)
+            {
+                return new List<Cell>();
+            }
+            var worldStartPoint = SelectionStartWorld;
+            var worldEndPoint = GetWorldMousePosition().Value;
+
+            var cells = new List<Cell>();
+
+            var startX = Mathf.Clamp(Mathf.Min(worldStartPoint.x, worldEndPoint.x), Game.Instance.Map.MinX, Game.Instance.Map.MaxX);
+            var endX = Mathf.Clamp(Mathf.Max(worldStartPoint.x, worldEndPoint.x), Game.Instance.Map.MinX, Game.Instance.Map.MaxX);
+
+            var startZ = Mathf.Clamp(Mathf.Min(worldStartPoint.z, worldEndPoint.z), Game.Instance.Map.MinZ, Game.Instance.Map.MaxZ);
+            var endZ = Mathf.Clamp(Mathf.Max(worldStartPoint.z, worldEndPoint.z), Game.Instance.Map.MinX, Game.Instance.Map.MaxZ);
+
+            // not currently used
+            var startY = Mathf.Min(worldStartPoint.y, worldEndPoint.y);
+            var endY = Mathf.Max(worldStartPoint.y, worldEndPoint.y);
+
+            if (startX == endX && startZ == endZ)
+            {
+                var point = new Vector3(startX, startY, startZ);
+
+                var clickedCell = Game.Instance.Map.GetCellAtPoint(point);
+                if (clickedCell != null)
+                {
+                    cells.Add(clickedCell);
+                }
+            }
+            else
+            {
+                var pollStep = 1f;
+
+                for (var selX = startX; selX < endX; selX += pollStep)
+                {
+                    for (var selZ = startZ; selZ < endZ; selZ += pollStep)
+                    {
+                        var point = new Vector3(selX, startY, selZ);
+
+                        cells.Add(Game.Instance.Map.GetCellAtPoint(point));
+                    }
+                }
+            }
+
+            return cells.Distinct().ToList();
+        }
+
+        private bool GetSelection(SelectionPreference selectionPreference, List<Cell> cells)
+        {
+            SelectionStartWorld = Vector3.zero;
+
+            switch (selectionPreference)
+            {
+                case SelectionPreference.Anything:
+
+                    for (int i = 0; i < 5; i++)
+                    {
+                        switch (_lastSelection)
+                        {
+                            case SelectionPreference.Creature:
+                                _lastSelection = SelectionPreference.Structure;
+                                break;
+
+                            case SelectionPreference.Structure:
+                                _lastSelection = SelectionPreference.Item;
+                                break;
+
+                            case SelectionPreference.Item:
+                                _lastSelection = SelectionPreference.Zone;
+                                break;
+
+                            case SelectionPreference.Zone:
+                                _lastSelection = SelectionPreference.Creature;
+                                break;
+                        }
+                        if (GetSelection(_lastSelection, cells))
+                        {
+                            break;
+                        }
+                    }
+                    break;
+
+                case SelectionPreference.Cell:
+                    if (cells.Count > 0)
+                    {
+                        if (Game.Instance.OrderSelectionController.CellClickOrder != null)
+                        {
+                            Game.Instance.OrderSelectionController.CellClickOrder.Invoke(cells);
+                        }
+                        return true;
+                    }
+                    break;
+
+                case SelectionPreference.Item:
+                    return SelectItem(SelectedItemsInCells(cells));
+
+                case SelectionPreference.Structure:
+                    return SelectStructure(SelectStructuresInCells(cells));
+
+                case SelectionPreference.Creature:
+                    return SelectCreature(SelectCreaturesInCells(cells));
+
+                case SelectionPreference.Zone:
+                    return SelectZone(SelectZoneInCells(cells));
+            }
+            return false;
+        }
+
+        private Vector3? GetWorldMousePosition()
+        {
+            var inputRay = Game.Instance.CameraController.Camera.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(inputRay, out RaycastHit hit))
+            {
+                return hit.point;
+            }
+            return null;
+        }
+
+        private void HandleMouseInput()
+        {
+            if (Input.GetMouseButton(1))
+            {
+                // right mouse deselect all
+
+                DeselectAll();
+                Game.Instance.OrderSelectionController.DisableAndReset();
+            }
+            else
+            {
+                var mousePosition = GetWorldMousePosition();
+
+                if (mousePosition != null)
+                {
+                    // clicked the mouse
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        if (MouseOverUi())
+                        {
+                            return;
+                        }
+                        SelectionStartWorld = GetWorldMousePosition().Value;
+                    }
+
+                    // released the mouse
+                    if (Input.GetMouseButtonUp(0))
+                    {
+                        if (MouseOverUi())
+                        {
+                            return;
+                        }
+
+                        DeselectAll();
+
+                        selectSquareImage.gameObject.SetActive(false);
+
+                        GetSelection(_selectionPreference, GetSelectedCells());
+                    }
+
+                    // dragging the mouse
+                    if (Input.GetMouseButton(0))
+                    {
+                        if (MouseOverUi())
+                        {
+                            return;
+                        }
+
+                        if (!selectSquareImage.gameObject.activeInHierarchy)
+                        {
+                            selectSquareImage.gameObject.SetActive(true);
+                        }
+
+                        SelectionEndScreen = Input.mousePosition;
+                        var start = Game.Instance.CameraController.Camera.WorldToScreenPoint(SelectionStartWorld);
+                        start.z = 0f;
+
+                        selectSquareImage.position = (start + SelectionEndScreen) / 2;
+
+                        var sizeX = Mathf.Abs(start.x - SelectionEndScreen.x);
+                        var sizeY = Mathf.Abs(start.y - SelectionEndScreen.y);
+
+                        selectSquareImage.sizeDelta = new Vector2(sizeX, sizeY);
+                    }
+                }
+            }
         }
 
         private bool MouseOverUi()
@@ -456,85 +466,19 @@ namespace Assets
             Gizmos.DrawCube(pos, new Vector3(0.2f, 0.5f, 0.2f));
         }
 
-        private bool Select(SelectionPreference selectionPreference, List<Cell> cells)
+        private bool SelectCreature(List<CreatureRenderer> creatures)
         {
-            var selectedZone = SelectZoneInCells(cells);
-            SelectedCreatures = SelectCreaturesInCells(cells);
-            SelectedItems = SelectedItemsInCells(cells);
-
-            SelectionStartWorld = Vector3.zero;
-
-            switch (selectionPreference)
+            foreach (var creature in creatures)
             {
-                case SelectionPreference.Anything:
-
-                    for (int i = 0; i < 5; i++)
-                    {
-                        switch (_lastSelection)
-                        {
-                            case SelectionPreference.Creature:
-                                _lastSelection = SelectionPreference.Structure;
-                                break;
-
-                            case SelectionPreference.Structure:
-                                _lastSelection = SelectionPreference.Item;
-                                break;
-
-                            case SelectionPreference.Item:
-                                _lastSelection = SelectionPreference.Zone;
-                                break;
-
-                            case SelectionPreference.Zone:
-                                _lastSelection = SelectionPreference.Creature;
-                                break;
-                        }
-                        if (Select(_lastSelection, cells))
-                        {
-                            break;
-                        }
-                    }
-                    break;
-
-                case SelectionPreference.Cell:
-                    if (cells.Count > 0)
-                    {
-                        if (Game.Instance.OrderSelectionController.CellClickOrder != null)
-                        {
-                            Game.Instance.OrderSelectionController.CellClickOrder.Invoke(cells);
-                        }
-                        return true;
-                    }
-                    break;
-
-                case SelectionPreference.Item:
-                    if (cells.Count > 0)
-                    {
-                        return SelectItem();
-                    }
-                    break;
-
-                case SelectionPreference.Structure:
-                    if (cells.Count > 0)
-                    {
-                        return SelectStructure(SelectStructuresInCells(cells));
-                    }
-                    break;
-
-                case SelectionPreference.Creature:
-                    if (cells.Count > 0)
-                    {
-                        return SelectCreature();
-                    }
-                    break;
-
-                case SelectionPreference.Zone:
-                    if (selectedZone != null)
-                    {
-                        SelectZone(selectedZone);
-                        return true;
-                    }
-                    break;
+                creature.EnableHighlight(ColorConstants.GreenAccent);
             }
+
+            if (creatures?.Count > 0)
+            {
+                Game.Instance.ShowCreaturePanel(creatures);
+                return true;
+            }
+
             return false;
         }
 
@@ -560,20 +504,16 @@ namespace Assets
             return items;
         }
 
-        private bool SelectItem()
+        private bool SelectItem(List<Item> items)
         {
-            foreach (var item in SelectedItems)
+            foreach (var item in items)
             {
                 item.ShowOutline();
             }
 
-            if (SelectedItems?.Count > 0)
+            if (items?.Count > 0)
             {
-                DeselectStructure();
-                DeselectCreature();
-                DeselectZone();
-
-                Game.Instance.ShowItemPanel(SelectedItems);
+                Game.Instance.ShowItemPanel(items);
                 return true;
             }
             return false;
@@ -588,10 +528,6 @@ namespace Assets
 
             if (structures.Count > 0)
             {
-                DeselectItem();
-                DeselectCreature();
-                DeselectZone();
-
                 Game.Instance.ShowStructureInfoPanel(structures);
                 return true;
             }

@@ -215,10 +215,7 @@ namespace Assets.Structures
 
         internal void HideOutline()
         {
-            if (_outline != null)
-            {
-                _outline.Kill();
-            }
+            _outline?.Kill();
         }
 
         internal bool IsFloor()

@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Creature;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using Assets.Creature;
 
 public class CreatureInfoPanel : MonoBehaviour
 {
@@ -15,6 +15,10 @@ public class CreatureInfoPanel : MonoBehaviour
     public Text PropertiesPanel;
     public GameObject TabPanel;
     private List<ImageButton> _contextButtons = new List<ImageButton>();
+
+    public HealthPanel HealthPanel;
+    public NeedsPanel NeedsPanel;
+    public SkillsPanel SkillsPanel;
 
     public ImageButton AddButton(string spriteName)
     {
@@ -56,6 +60,10 @@ public class CreatureInfoPanel : MonoBehaviour
             // creatures
             var creatures = entities.OfType<CreatureData>();
 
+            HealthPanel.Load(creature);
+            SkillsPanel.Load(creature);
+            NeedsPanel.Load(creature);
+
             AddButton(OrderSelectionController.MoveIcon).SetOnClick(() => MoveClicked(creatures));
             AddButton(OrderSelectionController.AttackIcon).SetOnClick(() => AttackClicked(creatures));
             AddButton(OrderSelectionController.DefaultRemoveIcon).SetOnClick(() =>
@@ -89,7 +97,7 @@ public class CreatureInfoPanel : MonoBehaviour
 
                 foreach (var property in currentEntity.ValueProperties)
                 {
-                    PropertiesPanel.text += $"{property.Key}:\t{property.Value.ToString("N0")}\n";
+                    PropertiesPanel.text += $"{property.Key}:\t{property.Value:N0}\n";
                 }
 
                 foreach (var property in currentEntity.Properties)

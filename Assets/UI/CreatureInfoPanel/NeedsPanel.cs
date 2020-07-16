@@ -12,18 +12,11 @@ public class NeedsPanel : MonoBehaviour
     internal Dictionary<NeedBase, TitledProgressBar> NeedProgressLinks = new Dictionary<NeedBase, TitledProgressBar>();
     internal CreatureData Current;
 
-    private void Update()
+    public void Load(CreatureData creature)
     {
-        var creature = Game.Instance.Cursor.GetSelectedCreatures().FirstOrDefault();
-
-        if (creature == null)
+        if (Current != creature)
         {
-            return;
-        }
-
-        if (Current != creature.Data)
-        {
-            Current = creature.Data;
+            Current = creature;
 
             foreach (var prefab in NeedProgressLinks.Values.ToList())
             {
@@ -39,7 +32,10 @@ public class NeedsPanel : MonoBehaviour
                 NeedProgressLinks.Add(need, bar);
             }
         }
+    }
 
+    private void Update()
+    {
         foreach (var need in Current.Needs)
         {
             NeedProgressLinks[need].SetProgress(need.Current / need.Max);
