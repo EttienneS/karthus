@@ -303,11 +303,6 @@ public class Map : MonoBehaviour
         return GetCellAtCoordinate(pos.x, pos.z);
     }
 
-    internal Cell GetCellAtCoordinate(Vector2 pos)
-    {
-        return GetCellAtCoordinate(pos.x, pos.y);
-    }
-
     internal Cell GetCellAttRadian(Cell center, int radius, int angle)
     {
         var mineX = Mathf.Clamp(Mathf.FloorToInt(center.X + (radius * Mathf.Cos(angle))), 0, MaxX);

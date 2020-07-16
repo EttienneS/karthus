@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class ItemController : MonoBehaviour
 {
@@ -88,6 +87,6 @@ public class ItemController : MonoBehaviour
 
         IndexItem(data);
 
-        data.Cell = Game.Instance.Map.GetCellAtCoordinate(new Vector2(data.Coords.X, data.Coords.Z));
+        data.Cell = Game.Instance.Map.GetCellAtCoordinate(new Vector3(data.Coords.X, 0, data.Coords.Z));
     }
 }
