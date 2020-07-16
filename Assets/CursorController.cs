@@ -283,24 +283,7 @@ namespace Assets
 
                     for (int i = 0; i < 5; i++)
                     {
-                        switch (_lastSelection)
-                        {
-                            case SelectionPreference.Creature:
-                                _lastSelection = SelectionPreference.Structure;
-                                break;
-
-                            case SelectionPreference.Structure:
-                                _lastSelection = SelectionPreference.Item;
-                                break;
-
-                            case SelectionPreference.Item:
-                                _lastSelection = SelectionPreference.Zone;
-                                break;
-
-                            case SelectionPreference.Zone:
-                                _lastSelection = SelectionPreference.Creature;
-                                break;
-                        }
+                        _lastSelection = CycleSelectionMode(_lastSelection);
                         if (GetSelection(_lastSelection, cells))
                         {
                             break;
@@ -311,10 +294,7 @@ namespace Assets
                 case SelectionPreference.Cell:
                     if (cells.Count > 0)
                     {
-                        if (Game.Instance.OrderSelectionController.CellClickOrder != null)
-                        {
-                            Game.Instance.OrderSelectionController.CellClickOrder.Invoke(cells);
-                        }
+                        InvokeCellClickMethod(cells);
                         return true;
                     }
                     break;
@@ -332,6 +312,35 @@ namespace Assets
                     return SelectZone(FindZoneInCells(cells));
             }
             return false;
+        }
+
+        private static void InvokeCellClickMethod(List<Cell> cells)
+        {
+            if (Game.Instance.OrderSelectionController.CellClickOrder != null)
+            {
+                Game.Instance.OrderSelectionController.CellClickOrder.Invoke(cells);
+            }
+        }
+
+        private SelectionPreference CycleSelectionMode(SelectionPreference selection)
+        {
+            switch (selection)
+            {
+                case SelectionPreference.Creature:
+                    return SelectionPreference.Structure;
+
+                case SelectionPreference.Structure:
+                    return SelectionPreference.Item;
+
+                case SelectionPreference.Item:
+                    return SelectionPreference.Zone;
+
+                case SelectionPreference.Zone:
+                    return SelectionPreference.Creature;
+
+                default:
+                    throw new System.Exception("Unkown selection type!");
+            }
         }
 
         private Vector3? GetWorldMousePosition()
