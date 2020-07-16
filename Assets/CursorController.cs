@@ -22,7 +22,6 @@ namespace Assets
         private RotateDelegate _rotateLeft;
         private RotateDelegate _rotateRight;
         private SelectionPreference _selectionPreference;
-        private Vector3 SelectionEndScreen;
         private Vector3 SelectionStartWorld;
 
         public delegate void RotateDelegate();
@@ -111,7 +110,7 @@ namespace Assets
             var pos = GetWorldMousePosition();
             if (pos != null)
             {
-                var startCell = Game.Instance.Map.GetCellAtCoordinate(pos.Value);
+                var startCell = GetCellForWorldPosition(pos);
                 if (startCell == null)
                 {
                     return;
@@ -167,6 +166,11 @@ namespace Assets
             }
 
             HandleMouseInput();
+        }
+
+        private static Cell GetCellForWorldPosition(Vector3? pos)
+        {
+            return Game.Instance.Map.GetCellAtCoordinate(pos.Value - new Vector3(0.5f, 0, 0.5f));
         }
 
         private void Clear()
@@ -305,31 +309,20 @@ namespace Assets
             var startZ = Mathf.Clamp(Mathf.Min(worldStartPoint.z, worldEndPoint.z), Game.Instance.Map.MinZ, Game.Instance.Map.MaxZ);
             var endZ = Mathf.Clamp(Mathf.Max(worldStartPoint.z, worldEndPoint.z), Game.Instance.Map.MinX, Game.Instance.Map.MaxZ);
 
-            // not currently used
-            var startY = Mathf.Min(worldStartPoint.y, worldEndPoint.y);
-            var endY = Mathf.Max(worldStartPoint.y, worldEndPoint.y);
-
             if (startX == endX && startZ == endZ)
             {
-                var point = new Vector3(startX, startY, startZ);
+                var point = new Vector3(startX, 0, startZ);
 
-                var clickedCell = Game.Instance.Map.GetCellAtPoint(point);
-                if (clickedCell != null)
-                {
-                    cells.Add(clickedCell);
-                }
+                cells.Add(GetCellForWorldPosition(point));
             }
             else
             {
-                var pollStep = 1f;
-
-                for (var selX = startX; selX < endX; selX += pollStep)
+                for (var selX = startX; selX < endX; selX++)
                 {
-                    for (var selZ = startZ; selZ < endZ; selZ += pollStep)
+                    for (var selZ = startZ; selZ < endZ; selZ++)
                     {
-                        var point = new Vector3(selX, startY, selZ);
-
-                        cells.Add(Game.Instance.Map.GetCellAtPoint(point));
+                        var point = new Vector3(selX, 0, selZ);
+                        cells.Add(GetCellForWorldPosition(point));
                     }
                 }
             }
@@ -445,14 +438,14 @@ namespace Assets
                     {
                         ShowSelectionRectangle();
 
-                        SelectionEndScreen = Input.mousePosition;
+                        var selectionEndScreenPosition = Input.mousePosition;
                         var start = Game.Instance.CameraController.Camera.WorldToScreenPoint(SelectionStartWorld);
                         start.z = 0f;
 
-                        SelectSquareImage.position = (start + SelectionEndScreen) / 2;
+                        SelectSquareImage.position = (start + selectionEndScreenPosition) / 2;
 
-                        var sizeX = Mathf.Abs(start.x - SelectionEndScreen.x);
-                        var sizeY = Mathf.Abs(start.y - SelectionEndScreen.y);
+                        var sizeX = Mathf.Abs(start.x - selectionEndScreenPosition.x);
+                        var sizeY = Mathf.Abs(start.y - selectionEndScreenPosition.y);
 
                         SelectSquareImage.sizeDelta = new Vector2(sizeX, sizeY);
                     }
@@ -486,12 +479,8 @@ namespace Assets
         {
             var pos = GetWorldMousePosition().Value;
 
-            Gizmos.color = ColorConstants.GreenAccent;
-            var cell = Game.Instance.Map.GetCellAtCoordinate(pos);
-            Gizmos.DrawCube(cell.Vector, new Vector3(1f, 0.01f, 1f));
-
-            Gizmos.color = ColorConstants.RedAccent;
-            Gizmos.DrawCube(pos, new Vector3(0.2f, 0.5f, 0.2f));
+            Gizmos.color = new Color(0, 1, 0, 0.2f);
+            Gizmos.DrawCube(GetCellForWorldPosition(pos).Vector, new Vector3(1f, 0.01f, 1f));
         }
 
         private bool SelectCreatures(List<CreatureRenderer> creatures)

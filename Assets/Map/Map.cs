@@ -159,6 +159,11 @@ public class Map : MonoBehaviour
         return CellLookup[(intx, intz)];
     }
 
+    public Cell GetCellAtCoordinate(Vector3 pos)
+    {
+        return GetCellAtCoordinate(pos.x, pos.z);
+    }
+
     public Cell GetCellAtPoint(Vector3 position)
     {
         // subtract half a unit to compensate for cell offset
@@ -171,6 +176,14 @@ public class Map : MonoBehaviour
             return null;
         }
         return CellLookup[(cell.X, cell.Z)];
+    }
+
+    public Cell GetCellAttRadian(Cell center, int radius, int angle)
+    {
+        var mineX = Mathf.Clamp(Mathf.FloorToInt(center.X + (radius * Mathf.Cos(angle))), 0, MaxX);
+        var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Z + (radius * Mathf.Sin(angle))), 0, MaxZ);
+
+        return GetCellAtCoordinate(mineX, mineY);
     }
 
     public List<Cell> GetCircle(Cell center, int radius)
@@ -239,6 +252,27 @@ public class Map : MonoBehaviour
         return (minx, maxx, minz, maxz);
     }
 
+    public Cell GetNearestEmptyCell(Cell cell)
+    {
+        var circle = GetCircle(cell, 1);
+
+        for (int i = 2; i < 15; i++)
+        {
+            var newCircle = GetCircle(cell, i);
+            newCircle.RemoveAll(c => circle.Contains(c));
+            circle = newCircle;
+
+            var empty = circle.Where(c => c.Structure == null);
+
+            if (empty.Count() > 0)
+            {
+                return empty.GetRandomItem();
+            }
+        }
+
+        return null;
+    }
+
     public float GetNoiseMapPoint(float x, float y)
     {
         return LocalNoiseMap[(int)x, (int)y];
@@ -296,40 +330,6 @@ public class Map : MonoBehaviour
                 Game.Instance.CreatureController.SpawnCreature(creature, spot, Game.Instance.FactionController.MonsterFaction);
             }
         }
-    }
-
-    internal Cell GetCellAtCoordinate(Vector3 pos)
-    {
-        return GetCellAtCoordinate(pos.x, pos.z);
-    }
-
-    internal Cell GetCellAttRadian(Cell center, int radius, int angle)
-    {
-        var mineX = Mathf.Clamp(Mathf.FloorToInt(center.X + (radius * Mathf.Cos(angle))), 0, MaxX);
-        var mineY = Mathf.Clamp(Mathf.FloorToInt(center.Z + (radius * Mathf.Sin(angle))), 0, MaxZ);
-
-        return GetCellAtCoordinate(mineX, mineY);
-    }
-
-    internal Cell GetNearestEmptyCell(Cell cell)
-    {
-        var circle = GetCircle(cell, 1);
-
-        for (int i = 2; i < 15; i++)
-        {
-            var newCircle = GetCircle(cell, i);
-            newCircle.RemoveAll(c => circle.Contains(c));
-            circle = newCircle;
-
-            var empty = circle.Where(c => c.Structure == null);
-
-            if (empty.Count() > 0)
-            {
-                return empty.GetRandomItem();
-            }
-        }
-
-        return null;
     }
 
     internal Cell GetNearestPathableCell(Cell centerPoint, Mobility mobility, int radius)
