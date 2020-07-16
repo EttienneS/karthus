@@ -11,15 +11,14 @@ namespace Assets
     {
         public Light CursorLight;
         public SpriteRenderer MouseSpriteRenderer;
-        public RectTransform selectSquareImage;
+        public RectTransform SelectSquareImage;
         public ValidateMouseDelegate Validate;
-
-        internal MeshRenderer MeshRenderer;
 
         private readonly Dictionary<Cell, MeshRenderer> _draggedRenderers = new Dictionary<Cell, MeshRenderer>();
         private Sprite _currentSprite;
         private SelectionPreference _lastSelection = SelectionPreference.Creature;
         private string _meshName;
+        private MeshRenderer _meshRenderer;
         private RotateDelegate _rotateLeft;
         private RotateDelegate _rotateRight;
         private SelectionPreference _selectionPreference;
@@ -46,16 +45,6 @@ namespace Assets
             _rotateRight?.Invoke();
         }
 
-        public bool SelectZone(ZoneBase zone)
-        {
-            if (zone != null)
-            {
-                Game.Instance.ShowZonePanel(zone);
-                return true;
-            }
-            return false;
-        }
-
         public void SetMesh(string name, ValidateMouseDelegate validationFunction)
         {
             Clear();
@@ -64,7 +53,7 @@ namespace Assets
             var structure = Game.Instance.StructureController.InstantiateNewStructureMeshRenderer(name, transform);
             structure.SetAllMaterial(Game.Instance.FileController.BlueprintMaterial);
 
-            MeshRenderer = structure;
+            _meshRenderer = structure;
             Validate = validationFunction;
         }
 
@@ -112,7 +101,7 @@ namespace Assets
 
         public void Start()
         {
-            selectSquareImage.gameObject.SetActive(false);
+            HideSelectionRectangle();
         }
 
         public void Update()
@@ -191,10 +180,10 @@ namespace Assets
             }
             _draggedRenderers.Clear();
 
-            if (MeshRenderer != null)
+            if (_meshRenderer != null)
             {
-                Destroy(MeshRenderer.gameObject);
-                MeshRenderer = null;
+                Destroy(_meshRenderer.gameObject);
+                _meshRenderer = null;
             }
 
             _meshName = string.Empty;
@@ -247,6 +236,56 @@ namespace Assets
         private void DeselectZone()
         {
             Game.Instance.DestroyZonePanel();
+        }
+
+        private List<CreatureRenderer> FindCreaturesInCells(List<Cell> cells)
+        {
+            var creatures = new List<CreatureRenderer>();
+            foreach (var cell in cells)
+            {
+                creatures.AddRange(cell.Creatures.Select(c => c.CreatureRenderer));
+            }
+
+            return creatures;
+        }
+
+        private List<Item> FindItemsInCells(List<Cell> cells)
+        {
+            var items = new List<Item>();
+            foreach (var cell in cells)
+            {
+                items.AddRange(cell.Items);
+            }
+
+            return items;
+        }
+
+        private List<Structure> FindStructuresInCells(List<Cell> cells)
+        {
+            var structures = new List<Structure>();
+            foreach (var cell in cells)
+            {
+                if (cell.Structure != null)
+                {
+                    structures.Add(cell.Structure);
+                }
+            }
+
+            return structures;
+        }
+
+        private ZoneBase FindZoneInCells(List<Cell> cells)
+        {
+            foreach (var cell in cells)
+            {
+                var zone = Game.Instance.ZoneController.GetZoneForCell(cell);
+                if (zone != null)
+                {
+                    return zone;
+                }
+            }
+
+            return null;
         }
 
         private List<Cell> GetSelectedCells()
@@ -345,16 +384,16 @@ namespace Assets
                     break;
 
                 case SelectionPreference.Item:
-                    return SelectItem(SelectedItemsInCells(cells));
+                    return SelectItems(FindItemsInCells(cells));
 
                 case SelectionPreference.Structure:
-                    return SelectStructure(SelectStructuresInCells(cells));
+                    return SelectStructures(FindStructuresInCells(cells));
 
                 case SelectionPreference.Creature:
-                    return SelectCreature(SelectCreaturesInCells(cells));
+                    return SelectCreatures(FindCreaturesInCells(cells));
 
                 case SelectionPreference.Zone:
-                    return SelectZone(SelectZoneInCells(cells));
+                    return SelectZone(FindZoneInCells(cells));
             }
             return false;
         }
@@ -371,70 +410,59 @@ namespace Assets
 
         private void HandleMouseInput()
         {
-            if (Input.GetMouseButton(1))
+            if (MouseOverUi())
+            {
+                return;
+            }
+
+            if (InputHelper.RightMouseClciked())
             {
                 // right mouse deselect all
-
                 DeselectAll();
                 Game.Instance.OrderSelectionController.DisableAndReset();
             }
             else
             {
-                var mousePosition = GetWorldMousePosition();
+                var worldMousePosition = GetWorldMousePosition();
 
-                if (mousePosition != null)
+                if (worldMousePosition != null)
                 {
-                    // clicked the mouse
-                    if (Input.GetMouseButtonDown(0))
+                    if (InputHelper.LeftMouseButtonStartClick())
                     {
-                        if (MouseOverUi())
-                        {
-                            return;
-                        }
                         SelectionStartWorld = GetWorldMousePosition().Value;
                     }
 
-                    // released the mouse
-                    if (Input.GetMouseButtonUp(0))
+                    if (InputHelper.LeftMouseButtonReleased())
                     {
-                        if (MouseOverUi())
-                        {
-                            return;
-                        }
-
                         DeselectAll();
 
-                        selectSquareImage.gameObject.SetActive(false);
+                        HideSelectionRectangle();
 
                         GetSelection(_selectionPreference, GetSelectedCells());
                     }
 
-                    // dragging the mouse
-                    if (Input.GetMouseButton(0))
+                    if (InputHelper.LeftMouseButtonIsBeingClicked())
                     {
-                        if (MouseOverUi())
-                        {
-                            return;
-                        }
-
-                        if (!selectSquareImage.gameObject.activeInHierarchy)
-                        {
-                            selectSquareImage.gameObject.SetActive(true);
-                        }
+                        ShowSelectionRectangle();
 
                         SelectionEndScreen = Input.mousePosition;
                         var start = Game.Instance.CameraController.Camera.WorldToScreenPoint(SelectionStartWorld);
                         start.z = 0f;
 
-                        selectSquareImage.position = (start + SelectionEndScreen) / 2;
+                        SelectSquareImage.position = (start + SelectionEndScreen) / 2;
 
                         var sizeX = Mathf.Abs(start.x - SelectionEndScreen.x);
                         var sizeY = Mathf.Abs(start.y - SelectionEndScreen.y);
 
-                        selectSquareImage.sizeDelta = new Vector2(sizeX, sizeY);
+                        SelectSquareImage.sizeDelta = new Vector2(sizeX, sizeY);
                     }
                 }
             }
+        }
+
+        private void HideSelectionRectangle()
+        {
+            SelectSquareImage.gameObject.SetActive(false);
         }
 
         private bool MouseOverUi()
@@ -448,7 +476,7 @@ namespace Assets
 
             if (overUI)
             {
-                selectSquareImage.gameObject.SetActive(false);
+                HideSelectionRectangle();
             }
 
             return overUI;
@@ -466,7 +494,7 @@ namespace Assets
             Gizmos.DrawCube(pos, new Vector3(0.2f, 0.5f, 0.2f));
         }
 
-        private bool SelectCreature(List<CreatureRenderer> creatures)
+        private bool SelectCreatures(List<CreatureRenderer> creatures)
         {
             foreach (var creature in creatures)
             {
@@ -482,29 +510,7 @@ namespace Assets
             return false;
         }
 
-        private List<CreatureRenderer> SelectCreaturesInCells(List<Cell> cells)
-        {
-            var creatures = new List<CreatureRenderer>();
-            foreach (var cell in cells)
-            {
-                creatures.AddRange(cell.Creatures.Select(c => c.CreatureRenderer));
-            }
-
-            return creatures;
-        }
-
-        private List<Item> SelectedItemsInCells(List<Cell> cells)
-        {
-            var items = new List<Item>();
-            foreach (var cell in cells)
-            {
-                items.AddRange(cell.Items);
-            }
-
-            return items;
-        }
-
-        private bool SelectItem(List<Item> items)
+        private bool SelectItems(List<Item> items)
         {
             foreach (var item in items)
             {
@@ -519,7 +525,7 @@ namespace Assets
             return false;
         }
 
-        private bool SelectStructure(List<Structure> structures)
+        private bool SelectStructures(List<Structure> structures)
         {
             foreach (var structure in structures)
             {
@@ -534,39 +540,26 @@ namespace Assets
             return false;
         }
 
-        private List<Structure> SelectStructuresInCells(List<Cell> cells)
+        private bool SelectZone(ZoneBase zone)
         {
-            var structures = new List<Structure>();
-            foreach (var cell in cells)
+            if (zone != null)
             {
-                if (cell.Structure != null)
-                {
-                    structures.Add(cell.Structure);
-                }
+                Game.Instance.ShowZonePanel(zone);
+                return true;
             }
-
-            return structures;
+            return false;
         }
 
-        private ZoneBase SelectZoneInCells(List<Cell> cells)
+        private void ShowSelectionRectangle()
         {
-            foreach (var cell in cells)
-            {
-                var zone = Game.Instance.ZoneController.GetZoneForCell(cell);
-                if (zone != null)
-                {
-                    return zone;
-                }
-            }
-
-            return null;
+            SelectSquareImage.gameObject.SetActive(true);
         }
 
         private void ValidateCursor(Cell startCell)
         {
             if (Validate?.Invoke(startCell) == false)
             {
-                MeshRenderer?.SetAllMaterial(Game.Instance.FileController.InvalidBlueprintMaterial);
+                _meshRenderer?.SetAllMaterial(Game.Instance.FileController.InvalidBlueprintMaterial);
                 if (MouseSpriteRenderer != null)
                 {
                     MouseSpriteRenderer.color = ColorConstants.RedAccent;
@@ -574,7 +567,7 @@ namespace Assets
             }
             else
             {
-                MeshRenderer?.SetAllMaterial(Game.Instance.FileController.BlueprintMaterial);
+                _meshRenderer?.SetAllMaterial(Game.Instance.FileController.BlueprintMaterial);
                 if (MouseSpriteRenderer != null)
                 {
                     MouseSpriteRenderer.color = ColorConstants.WhiteAccent;

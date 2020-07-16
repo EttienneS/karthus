@@ -53,7 +53,7 @@ public partial class OrderSelectionController //.Zone
         CellClickOrder = cells =>
         {
             var newZone = Game.Instance.ZoneController.Create(purpose, FactionConstants.Player, cells.Where(c => CanAddCellToZone(c)).ToArray());
-            Game.Instance.Cursor.SelectZone(newZone);
+            Game.Instance.ShowZonePanel(newZone);
         };
     }
 

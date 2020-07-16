@@ -83,7 +83,6 @@ MonoBehaviour:
   OrderInfoPanel: {fileID: 0}
   OrderSelectionController: {fileID: 0}
   OrderTrayController: {fileID: 0}
-  selectSquareImage: {fileID: 0}
   SpriteStore: {fileID: 0}
   StructureController: {fileID: 4631098556713372945}
   StructureInfoPanelPrefab: {fileID: 7669023713727672724, guid: c79f6ed3be40f1d4c9a0537ef36d2828,
@@ -1135,6 +1134,36 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8018683700823851824, guid: 77a1e169d62701b45bb52d6f1697a1a9,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 8018683700823851824, guid: 77a1e169d62701b45bb52d6f1697a1a9,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8018683700823851824, guid: 77a1e169d62701b45bb52d6f1697a1a9,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8018683700823851824, guid: 77a1e169d62701b45bb52d6f1697a1a9,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 8018683700823851824, guid: 77a1e169d62701b45bb52d6f1697a1a9,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8018683700823851824, guid: 77a1e169d62701b45bb52d6f1697a1a9,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 90
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 77a1e169d62701b45bb52d6f1697a1a9, type: 3}
