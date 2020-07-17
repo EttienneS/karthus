@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Assets.Creature;
+using Assets.Item;
 
 public class Pickup : CreatureTask
 {
@@ -22,7 +23,7 @@ public class Pickup : CreatureTask
     {
     }
 
-    public Pickup(Item item, int amount = -1)
+    public Pickup(ItemData item, int amount = -1)
     {
         ItemId = item.Id;
         Amount = amount;

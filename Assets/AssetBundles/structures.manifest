@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 1815219883
+CRC: 1359618819
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: c8d7b3ab99dad8b5bd13a1e78bb74370
+    Hash: 2dda7fddb462511f820e5ca99c9a08de
   TypeTreeHash:
     serializedVersion: 2
     Hash: 6a3eba316372b2f69b09604b127ff833
@@ -52,7 +52,6 @@ Assets:
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/Birch_9.blend
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/Pine_1.blend
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/DeadBirch_10.blend
-- Assets/Models/Kenney Assets/Nature Kit/logs_stack.fbx
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/DeadTree_9.blend
 - Assets/Models/Kenney Assets/Nature Kit/flower_red3.fbx
 - Assets/Models/Kenney Assets/Nature Kit/campfire_small.fbx
@@ -90,7 +89,6 @@ Assets:
 - Assets/Models/Kenney Assets/Nature Kit/stone_tall1.fbx
 - Assets/Models/Kenney Assets/Nature Kit/stone_statue.fbx
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/DeadBirch_6.blend
-- Assets/Models/Kenney Assets/Nature Kit/log_small.fbx
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/Tree_5.blend
 - Assets/Models/Kenney Assets/Nature Kit/stone_smallFlat3.fbx
 - Assets/Models/Self/Wall.prefab
@@ -103,7 +101,6 @@ Assets:
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/Tree_1.blend
 - Assets/Models/Self/DefaultCube.prefab
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/Tree_3.blend
-- Assets/Models/Kenney Assets/Nature Kit/logs_stackLarge.fbx
 - Assets/Models/Kenney Assets/Nature Kit/stone_tall10.fbx
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/DeadBirch_9.blend
 - Assets/Models/Kenney Assets/Nature Kit/stone_tall8.fbx
@@ -148,4 +145,5 @@ Assets:
 - Assets/Models/Kenney Assets/Nature Kit/plant_flatLarge.fbx
 - Assets/Models/Kenney Assets/Nature Kit/flower_red1.fbx
 - Assets/Models/Kenney Assets/Nature Kit/flower_red2.fbx
-Dependencies: []
+Dependencies:
+- C:/Users/ettiennes/source/repos/karthus/Assets/AssetBundles/items

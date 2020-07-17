@@ -1,4 +1,5 @@
 ﻿using Assets.Creature;
+using Assets.Item;
 using Needs;
 using System.Linq;
 
@@ -26,7 +27,7 @@ public class Eat : CreatureTask
     {
     }
 
-    public Eat(Item food) : this()
+    public Eat(ItemData food) : this()
     {
         AddSubTask(new Pickup(food, 1));
     }

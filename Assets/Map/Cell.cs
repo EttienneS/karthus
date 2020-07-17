@@ -1,5 +1,6 @@
 ﻿using Assets.Creature;
 using Assets.Helpers;
+using Assets.Item;
 using Assets.Structures;
 using Newtonsoft.Json;
 using System;
@@ -47,7 +48,7 @@ public class Cell : IEquatable<Cell>
     }
 
     [JsonIgnore]
-    public IEnumerable<Item> Items
+    public IEnumerable<ItemData> Items
     {
         get
         {

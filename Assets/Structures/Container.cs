@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using Assets.Item;
 
 namespace Assets.Structures
 {
@@ -17,7 +18,7 @@ namespace Assets.Structures
             return GetContainedItemTemplate()?.IsType(type) == true;
         }
 
-        public Item GetContainedItemTemplate()
+        public ItemData GetContainedItemTemplate()
         {
             if (string.IsNullOrEmpty(ItemType))
             {
@@ -58,7 +59,7 @@ namespace Assets.Structures
             }
         }
 
-        internal bool AddItem(Item item)
+        internal bool AddItem(ItemData item)
         {
             item.Cell = Cell;
             item.Free();
@@ -92,7 +93,7 @@ namespace Assets.Structures
             }
         }
 
-        internal bool CanHold(Item item)
+        internal bool CanHold(ItemData item)
         {
             if (!Empty)
             {
@@ -109,7 +110,7 @@ namespace Assets.Structures
             return StringHelper.FilterMatch(Filter, item.Name, item.Categories);
         }
 
-        internal Item GetItem(int amount)
+        internal ItemData GetItem(int amount)
         {
             if (Count <= amount)
             {

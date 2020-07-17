@@ -1,4 +1,5 @@
 ﻿using Assets.Helpers;
+using Assets.Item;
 using Assets.Structures;
 using System.Collections.Generic;
 using System.Linq;
@@ -196,9 +197,9 @@ namespace Assets
             return creatures;
         }
 
-        private List<Item> FindItemsInCells(List<Cell> cells)
+        private List<ItemData> FindItemsInCells(List<Cell> cells)
         {
-            var items = new List<Item>();
+            var items = new List<ItemData>();
             foreach (var cell in cells)
             {
                 items.AddRange(cell.Items);
@@ -471,7 +472,7 @@ namespace Assets
             return false;
         }
 
-        private bool SelectItems(List<Item> items)
+        private bool SelectItems(List<ItemData> items)
         {
             foreach (var item in items)
             {

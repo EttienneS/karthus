@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Item;
+using System.Collections.Generic;
 
 public class Save
 {
@@ -6,7 +7,7 @@ public class Save
 
     public List<Faction> Factions;
 
-    public List<Item> Items;
+    public List<ItemData> Items;
 
     public List<RoomZone> Rooms;
     public List<StorageZone> Stores;

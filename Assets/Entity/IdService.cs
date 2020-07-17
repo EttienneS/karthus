@@ -1,4 +1,5 @@
 ﻿using Assets.Creature;
+using Assets.Item;
 using Assets.Structures;
 using System;
 using System.Collections.Generic;
@@ -8,8 +9,8 @@ public class IdService
 {
     public Dictionary<string, CreatureData> CreatureIdLookup = new Dictionary<string, CreatureData>();
     public Dictionary<IEntity, CreatureData> CreatureLookup = new Dictionary<IEntity, CreatureData>();
-    public Dictionary<string, Item> ItemIdLookup = new Dictionary<string, Item>();
-    public Dictionary<IEntity, Item> ItemLookup = new Dictionary<IEntity, Item>();
+    public Dictionary<string, ItemData> ItemIdLookup = new Dictionary<string, ItemData>();
+    public Dictionary<IEntity, ItemData> ItemLookup = new Dictionary<IEntity, ItemData>();
     public Dictionary<string, Structure> StructureIdLookup = new Dictionary<string, Structure>();
     public Dictionary<IEntity, Structure> StructureLookup = new Dictionary<IEntity, Structure>();
     public Dictionary<Cell, List<Structure>> StructureCellLookup = new Dictionary<Cell, List<Structure>>();
@@ -47,7 +48,7 @@ public class IdService
             CreatureLookup.Add(entity, creature);
             CreatureIdLookup.Add(entity.Id, creature);
         }
-        else if (entity is Item item)
+        else if (entity is ItemData item)
         {
             ItemLookup.Add(entity, item);
             ItemIdLookup.Add(entity.Id, item);
@@ -99,7 +100,7 @@ public class IdService
 
         if (ItemLookup.ContainsKey(entity))
         {
-            Game.Instance.ItemController.DestroyItem(entity as Item);
+            Game.Instance.ItemController.DestroyItem(entity as ItemData);
         }
     }
 
@@ -147,7 +148,7 @@ public static class IdExtensions
         return creature;
     }
 
-    public static Item GetItem(this string id)
+    public static ItemData GetItem(this string id)
     {
         if (!Game.Instance.IdService.ItemIdLookup.TryGetValue(id, out var item))
         {

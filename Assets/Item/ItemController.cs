@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Item;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -8,9 +9,9 @@ public class ItemController : MonoBehaviour
     public ItemRenderer ItemPrefab;
 
     private Dictionary<string, string> _itemTypeFileMap;
-    private Dictionary<string, Item> _itemDataReference;
+    private Dictionary<string, ItemData> _itemDataReference;
 
-    internal Dictionary<string, Item> ItemDataReference
+    internal Dictionary<string, ItemData> ItemDataReference
     {
         get
         {
@@ -26,12 +27,12 @@ public class ItemController : MonoBehaviour
             if (_itemTypeFileMap == null)
             {
                 _itemTypeFileMap = new Dictionary<string, string>();
-                _itemDataReference = new Dictionary<string, Item>();
+                _itemDataReference = new Dictionary<string, ItemData>();
                 foreach (var itemFile in Game.Instance.FileController.ItemFiles)
                 {
                     try
                     {
-                        var data = Item.GetFromJson(itemFile.text);
+                        var data = ItemData.GetFromJson(itemFile.text);
                         _itemTypeFileMap.Add(data.Name, itemFile.text);
                         _itemDataReference.Add(data.Name, data);
                     }
@@ -45,14 +46,14 @@ public class ItemController : MonoBehaviour
         }
     }
 
-    public Item SpawnItem(string name, Cell cell, int amount = 1)
+    public ItemData SpawnItem(string name, Cell cell, int amount = 1)
     {
         if (!ItemTypeFileMap.ContainsKey(name))
         {
             Debug.LogError($"Item not found: {name}");
         }
 
-        var data = Item.GetFromJson(ItemTypeFileMap[name]);
+        var data = ItemData.GetFromJson(ItemTypeFileMap[name]);
         data.Cell = cell;
         data.Amount = amount;
 
@@ -60,7 +61,7 @@ public class ItemController : MonoBehaviour
         return data;
     }
 
-    internal void DestroyItem(Item item)
+    internal void DestroyItem(ItemData item)
     {
         if (item != null)
         {
@@ -70,12 +71,12 @@ public class ItemController : MonoBehaviour
         }
     }
 
-    private void IndexItem(Item item)
+    private void IndexItem(ItemData item)
     {
         Game.Instance.IdService.EnrollEntity(item);
     }
 
-    internal void SpawnItem(Item data)
+    internal void SpawnItem(ItemData data)
     {
         var renderer = Instantiate(ItemPrefab, transform);
 

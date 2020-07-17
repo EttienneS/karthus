@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Item;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,9 +10,9 @@ namespace UI
         public Text Title;
         public Text Description;
 
-        public List<Item> Items;
+        public List<ItemData> Items;
 
-        public void Show(List<Item> items)
+        public void Show(List<ItemData> items)
         {
             gameObject.SetActive(true);
 

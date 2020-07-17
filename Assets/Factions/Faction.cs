@@ -1,4 +1,5 @@
 ﻿using Assets.Creature;
+using Assets.Item;
 using Assets.Structures;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -170,7 +171,7 @@ public class Faction
         }
     }
 
-    public Container GetStorageFor(Item item)
+    public Container GetStorageFor(ItemData item)
     {
         var pendingStorage = AvailableTasks.OfType<StoreItem>().ToList();
         var options = new List<Container>();
@@ -262,12 +263,12 @@ public class Faction
         return entity;
     }
 
-    public Item FindItem(string criteria, CreatureData creature)
+    public ItemData FindItem(string criteria, CreatureData creature)
     {
         var items = HomeCells.SelectMany(c => c?.Items.Where(item => item.IsType(criteria) && !item.InUseByAnyone)).ToList();
         items.AddRange(Game.Instance.IdService.ItemLookup.Values.Where(i => i.FactionName == FactionName && i.IsType(criteria)));
 
-        Item targetItem = null;
+        ItemData targetItem = null;
         var bestDistance = float.MaxValue;
 
         foreach (var item in items)

@@ -1,4 +1,5 @@
 ﻿using Assets.Creature.Behaviour;
+using Assets.Item;
 using Needs;
 using Newtonsoft.Json;
 using System;
@@ -122,7 +123,7 @@ namespace Assets.Creature
         public string FactionName { get; set; }
 
         [JsonIgnore]
-        public Item HeldItem
+        public ItemData HeldItem
         {
             get
             {
@@ -252,7 +253,7 @@ namespace Assets.Creature
             Limbs.Add(limb);
         }
 
-        public Item DropItem(Cell cell)
+        public ItemData DropItem(Cell cell)
         {
             if (HeldItem == null)
             {
@@ -417,7 +418,7 @@ namespace Assets.Creature
             // Say(message);
         }
 
-        public void PickUpItem(Item item, int amount)
+        public void PickUpItem(ItemData item, int amount)
         {
             if (HeldItem != null)
             {

@@ -2,47 +2,50 @@
 using TMPro;
 using UnityEngine;
 
-public class ItemRenderer : MonoBehaviour
+namespace Assets.Item
 {
-    internal Item Data = new Item();
-    internal TextMeshPro Text;
-
-    public void Start()
+    public class ItemRenderer : MonoBehaviour
     {
-        Text = GetComponentInChildren<TextMeshPro>();
-    }
+        internal ItemData Data = new ItemData();
+        internal TextMeshPro Text;
 
-    [JsonIgnore]
-    private SpriteRenderer _spriteRenderer;
-
-    [JsonIgnore]
-    public SpriteRenderer SpriteRenderer
-    {
-        get
+        public void Start()
         {
-            if (_spriteRenderer == null)
+            Text = GetComponentInChildren<TextMeshPro>();
+        }
+
+        [JsonIgnore]
+        private SpriteRenderer _spriteRenderer;
+
+        [JsonIgnore]
+        public SpriteRenderer SpriteRenderer
+        {
+            get
             {
-                _spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+                if (_spriteRenderer == null)
+                {
+                    _spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+                }
+
+                return _spriteRenderer;
             }
-
-            return _spriteRenderer;
         }
-    }
 
-    internal void UpdatePosition()
-    {
-        transform.position = Data.Vector;
-    }
-
-    public void Update()
-    {
-        if (Data.Amount <= 0)
+        internal void UpdatePosition()
         {
-            Game.Instance.ItemController.DestroyItem(Data);
+            transform.position = Data.Vector;
         }
-        else
+
+        public void Update()
         {
-            Text.text = Data.Amount.ToString();
+            if (Data.Amount <= 0)
+            {
+                Game.Instance.ItemController.DestroyItem(Data);
+            }
+            else
+            {
+                Text.text = Data.Amount.ToString();
+            }
         }
     }
 }

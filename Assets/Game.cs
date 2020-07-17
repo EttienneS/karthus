@@ -1,4 +1,5 @@
 ﻿using Assets;
+using Assets.Item;
 using Assets.Models;
 using Assets.Structures;
 using Assets.UI.TaskPanel;
@@ -397,7 +398,7 @@ public class Game : MonoBehaviour
         _currentZoneInfoPanel.Show(zone);
     }
 
-    internal void ShowItemPanel(List<Item> selectedItems)
+    internal void ShowItemPanel(List<ItemData> selectedItems)
     {
         DestroyItemInfoPanel();
         _currentItemInfoPanel = Instantiate(ItemInfoPanelPrefab, UI.transform);

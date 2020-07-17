@@ -86,7 +86,7 @@ namespace Assets.Structures
 
         public void CreateRoof(Cell cell)
         {
-            var roof = Instantiate(Game.Instance.MeshRendererFactory.GetMesh("Roof"), RoofContainer.transform);
+            var roof = Instantiate(Game.Instance.MeshRendererFactory.GetStructureMesh("Roof"), RoofContainer.transform);
             roof.transform.position = new Vector3(cell.X, cell.Y, cell.Z) + new Vector3(0.5f, 2.05f, 0.5f);
         }
 
@@ -102,7 +102,7 @@ namespace Assets.Structures
 
         public MeshRenderer GetMeshForStructure(Structure structure)
         {
-            return Game.Instance.MeshRendererFactory.GetMesh(structure.Mesh.Split(',').GetRandomItem());
+            return Game.Instance.MeshRendererFactory.GetStructureMesh(structure.Mesh.Split(',').GetRandomItem());
         }
 
         public MeshRenderer InstantiateNewStructureMeshRenderer(string structureName, Transform parent)

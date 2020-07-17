@@ -3,6 +3,7 @@ using Newtonsoft.Json.Converters;
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Structures;
+using Assets.Item;
 
 [JsonConverter(typeof(StringEnumConverter))]
 public enum Purpose
@@ -56,7 +57,7 @@ public abstract class ZoneBase
 
     [JsonIgnore]
     // get items in cells from id service
-    public List<Item> Items
+    public List<ItemData> Items
     {
         get
         {

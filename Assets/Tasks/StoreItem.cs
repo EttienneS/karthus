@@ -1,4 +1,5 @@
 ﻿using Assets.Creature;
+using Assets.Item;
 using Assets.Structures;
 
 public class StoreItem : CreatureTask
@@ -24,7 +25,7 @@ public class StoreItem : CreatureTask
     {
     }
 
-    public StoreItem(Item item, Structure storageStructure) : this()
+    public StoreItem(ItemData item, Structure storageStructure) : this()
     {
         ItemToStoreId = item.Id;
         StorageStructureId = storageStructure.Id;

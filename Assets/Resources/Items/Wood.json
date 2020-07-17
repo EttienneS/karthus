@@ -1,6 +1,6 @@
 {
   "Name": "Wood",
-  "SpriteName": "Wood",
+  "MeshName": "Wood",
   "Cost": {
     "Items": {
       "Wood": "1"
