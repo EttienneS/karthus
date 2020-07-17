@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 1359618819
+CRC: 894929864
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 2dda7fddb462511f820e5ca99c9a08de
+    Hash: 80f7559f73b4915daf025e1e8b1cb8b4
   TypeTreeHash:
     serializedVersion: 2
     Hash: 6a3eba316372b2f69b09604b127ff833
@@ -141,7 +141,6 @@ Assets:
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/DeadTree_4.blend
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/DeadTree_1.blend
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/Birch_6.blend
-- Assets/Models/Kenney Assets/Nature Kit/stone_block.fbx
 - Assets/Models/Kenney Assets/Nature Kit/plant_flatLarge.fbx
 - Assets/Models/Kenney Assets/Nature Kit/flower_red1.fbx
 - Assets/Models/Kenney Assets/Nature Kit/flower_red2.fbx

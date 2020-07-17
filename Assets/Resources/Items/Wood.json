@@ -1,6 +1,6 @@
 {
   "Name": "Wood",
-  "MeshName": "Wood",
+  "Mesh": "logs_stack",
   "Cost": {
     "Items": {
       "Wood": "1"

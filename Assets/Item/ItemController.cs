@@ -6,8 +6,6 @@ using UnityEngine;
 
 public class ItemController : MonoBehaviour
 {
-    public ItemRenderer ItemPrefab;
-
     private Dictionary<string, string> _itemTypeFileMap;
     private Dictionary<string, ItemData> _itemDataReference;
 
@@ -78,16 +76,18 @@ public class ItemController : MonoBehaviour
 
     internal void SpawnItem(ItemData data)
     {
-        var renderer = Instantiate(ItemPrefab, transform);
+        var mesh = Game.Instance.MeshRendererFactory
+                                .GetItemMesh(data.Mesh);
+
+        var renderer = Instantiate(mesh, transform).gameObject
+                                                   .AddComponent<ItemRenderer>();
 
         renderer.Data = data;
         data.Renderer = renderer;
 
-        //renderer.SpriteRenderer.sprite = Game.Instance.SpriteStore.GetSprite(data.SpriteName);
-        renderer.UpdatePosition();
-
         IndexItem(data);
 
         data.Cell = Game.Instance.Map.GetCellAtCoordinate(new Vector3(data.Coords.X, 0, data.Coords.Z));
+        renderer.UpdatePosition();
     }
 }

@@ -45,9 +45,7 @@ namespace Assets.Item
 
         public Cost Cost { get; set; } = new Cost();
         public string FactionName { get; set; }
-
         public string Id { get; set; }
-
         [JsonIgnore]
         public bool InUseByAnyone
         {
@@ -58,9 +56,8 @@ namespace Assets.Item
         }
 
         public string InUseById { get; set; }
-
         public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
-
+        public string Mesh { get; set; }
         public string Name { get; set; }
 
         public Dictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();

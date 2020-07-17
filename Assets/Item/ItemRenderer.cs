@@ -7,33 +7,14 @@ namespace Assets.Item
     public class ItemRenderer : MonoBehaviour
     {
         internal ItemData Data = new ItemData();
-        internal TextMeshPro Text;
+
+        private MeshRenderer _meshRenderer;
+        //private TextMeshPro _text;
 
         public void Start()
         {
-            Text = GetComponentInChildren<TextMeshPro>();
-        }
-
-        [JsonIgnore]
-        private SpriteRenderer _spriteRenderer;
-
-        [JsonIgnore]
-        public SpriteRenderer SpriteRenderer
-        {
-            get
-            {
-                if (_spriteRenderer == null)
-                {
-                    _spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-                }
-
-                return _spriteRenderer;
-            }
-        }
-
-        internal void UpdatePosition()
-        {
-            transform.position = Data.Vector;
+            //_text = GetComponentInChildren<TextMeshPro>();
+            _meshRenderer = gameObject.GetComponent<MeshRenderer>();
         }
 
         public void Update()
@@ -44,8 +25,13 @@ namespace Assets.Item
             }
             else
             {
-                Text.text = Data.Amount.ToString();
+                //_text.text = Data.Amount.ToString();
             }
+        }
+
+        internal void UpdatePosition()
+        {
+            transform.position = Data.Vector;
         }
     }
 }

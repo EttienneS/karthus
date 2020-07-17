@@ -1,6 +1,6 @@
 {
   "Name": "Berries",
-  "MeshName": "Berries",
+  "Mesh": "BushBerries_Crop",
   "Cost": {
     "Items": {
       "Berries": "1"
