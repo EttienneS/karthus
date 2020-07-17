@@ -1,6 +1,6 @@
 {
   "Name": "Stone Floor",
-  "Mesh": "Floor",
+  "Mesh": "StoneFloor",
   "Icon": "StoneFloor",
   "TravelCost": "0.5",
   "Description": "Floor made from stone blocks. Move speed is much faster on roads and floors than other surfaces.",

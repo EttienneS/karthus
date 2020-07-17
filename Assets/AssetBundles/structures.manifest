@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3196270952
+CRC: 3857644543
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 32098a3cbd723ebd7f5c4e59274a76ee
+    Hash: ec538065ded9fddcdc8ccb2024b9f218
   TypeTreeHash:
     serializedVersion: 2
     Hash: 6a3eba316372b2f69b09604b127ff833
@@ -91,7 +91,7 @@ Assets:
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/DeadBirch_6.blend
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/Tree_5.blend
 - Assets/Models/Kenney Assets/Nature Kit/stone_smallFlat3.fbx
-- Assets/Models/Self/Wall.prefab
+- Assets/Models/Self/WoodWall.prefab
 - Assets/Models/Self/Bed.prefab
 - Assets/Models/Kenney Assets/Nature Kit/stone_column.fbx
 - Assets/Models/Kenney Assets/Nature Kit/stone_small2.fbx
@@ -112,19 +112,21 @@ Assets:
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/Tree_2.blend
 - Assets/Models/Kenney Assets/Nature Kit/stone_small3.fbx
 - Assets/Models/Kenney Assets/Nature Kit/flower_blue3.fbx
+- Assets/Models/Self/StoneWall.prefab
 - Assets/Models/Kenney Assets/Nature Kit/stone_large1.fbx
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/DeadBirch_7.blend
 - Assets/Models/Kenney Assets/Nature Kit/stone_smallTop1.fbx
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/DeadBirch_2.blend
 - Assets/Models/Kenney Assets/Nature Kit/mushroom_brownGroup.fbx
 - Assets/Models/Self/Roof.prefab
+- Assets/Models/Self/StoneFloor.prefab
 - Assets/Models/Kenney Assets/Nature Kit/stone_smallFlat1.fbx
 - Assets/Models/Kenney Assets/Nature Kit/campfire_large.fbx
 - Assets/Models/Kenney Assets/Nature Kit/flower_beige2.fbx
 - Assets/Models/Self/Chair.prefab
 - Assets/Models/Kenney Assets/Nature Kit/plant_flatSmall.fbx
 - Assets/Models/Kenney Assets/Nature Kit/mushroom_brownTall.fbx
-- Assets/Models/Self/Floor.prefab
+- Assets/Models/Self/WoodFloor.prefab
 - Assets/Models/Kenney Assets/Nature Kit/plant_bushLarge.fbx
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/DeadBirch_8.blend
 - Assets/Models/Kenney Assets/Nature Kit/campfireStones_blocks.fbx
