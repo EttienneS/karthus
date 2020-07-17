@@ -1,6 +1,6 @@
 {
   "Name": "Stone",
-  "Mesh": "stone_block",
+  "Mesh": "Blocks",
   "Cost": {
     "Items": {
       "Stone": "1"

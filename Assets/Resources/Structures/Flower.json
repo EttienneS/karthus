@@ -1,0 +1,7 @@
+{
+  "Name": "Flower",
+  "Mesh": "flower_beige1,flower_beige1,flower_beige2,flower_beige2,flower_beige3,flower_beige3,flower_blue1,flower_blue1,flower_blue2,flower_blue2,flower_blue3,flower_blue3,flower_red1,flower_red1,flower_red2,flower_red2,flower_red3,flower_red3",
+  "TravelCost": "1",
+  "Buildable": "False",
+  "SpawnRotation": "True"
+}

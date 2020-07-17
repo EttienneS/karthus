@@ -37,7 +37,8 @@
     {
       "Content": {
         "Rock": 0.03,
-        "Grass": 0.05
+        "Grass": 0.05,
+        "Flower": 0.05
       },
       "Min": 0.35,
       "Max": 0.45,
@@ -53,6 +54,7 @@
         "Bush": 0.05,
         "Birch": 0.01,
         "Grass": 0.1,
+        "Flower": 0.1,
         "Tree": 0.01
       },
       "Min": 0.45,

@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 2965564866
+CRC: 488912648
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: b28be0f3770542de90e9578fd0626287
+    Hash: b7dfd8e81a28e69c9e89f6842b97c0a2
   TypeTreeHash:
     serializedVersion: 2
-    Hash: ae2cf77de671e115b4e55d2b65767202
+    Hash: 6a3eba316372b2f69b09604b127ff833
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -16,6 +16,8 @@ ClassTypes:
 - Class: 21
   Script: {instanceID: 0}
 - Class: 23
+  Script: {instanceID: 0}
+- Class: 28
   Script: {instanceID: 0}
 - Class: 33
   Script: {instanceID: 0}
@@ -124,6 +126,7 @@ Assets:
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/Rice_4.blend
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/Bamboo_Crop.blend
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/Tomato_2.blend
+- Assets/Models/Self/Blocks.prefab
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/Watermelon_Crop.blend
 - Assets/Models/Kenney Assets/Nature Kit/stone_block.fbx
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/Bamboo_4.blend
