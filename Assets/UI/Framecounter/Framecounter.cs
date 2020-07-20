@@ -2,9 +2,9 @@
 using TMPro;
 using UnityEngine;
 
-namespace Assets.UI.Framecounter
+namespace Assets.UI.FrameCounter
 {
-    public class Framecounter : MonoBehaviour
+    public class FrameCounter : MonoBehaviour
     {
         public float RefreshInterval = 1f;
         private const int _bufferSize = 1000;
