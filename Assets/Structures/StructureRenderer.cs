@@ -12,5 +12,15 @@ namespace Assets.Structures
             transform.position = Data.Vector;
             transform.eulerAngles = new Vector3(transform.eulerAngles.x, Data.Rotation, transform.eulerAngles.z);
         }
+
+        internal MeshRenderer InstantiateSubMesh(MeshRenderer mesh)
+        {
+            return Instantiate(mesh, transform);
+        }
+
+        internal void DestroySubMesh(MeshRenderer plantMesh)
+        {
+            Destroy(plantMesh);
+        }
     }
 }

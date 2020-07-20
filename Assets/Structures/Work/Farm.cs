@@ -1,23 +1,21 @@
-﻿using Assets.Structures;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Structures.Work
 {
     public class Farm : WorkStructureBase
     {
-        [JsonIgnore]
-        public const float MaxGrowth = 100f;
+        private readonly float _growthRateDivisor = 10f;
+        private readonly float _growthWhenMature = 100f;
+        private readonly int _maxGrowthPhases = 4;
 
-        [JsonIgnore]
-        public VisualEffect PlantEffect;
+        private int _lastGrowthIndex = -1;
+        private MeshRenderer _plantMesh;
 
-        [JsonIgnore]
-        private float _lastGrowthIndex = -1;
         public float CurrentGrowth { get; set; }
 
         [JsonIgnore]
-        public float GrowthIndex
+        public int GrowthIndex
         {
             get
             {
@@ -27,7 +25,6 @@ namespace Structures.Work
 
         public string PlantName { get; set; }
         public float Quality { get; set; }
-        public string Sprite { get; set; }
 
         public override string ToString()
         {
@@ -36,43 +33,112 @@ namespace Structures.Work
                 return "\n** No crop selected. Choose one of the options and click the Select button. **\n";
             }
 
+            if (IsMature())
+            {
+                return "\n** Ready to harvest! **\n";
+            }
+
             return "Farm:\n" +
                    $"  Growing: {PlantName}\n" +
                    $"  Quality: {Quality:0,0}\n" +
-                   $"  Grown: {(CurrentGrowth / MaxGrowth) * 100:0,0}%\n";
+                   $"  Grown: {(CurrentGrowth / _growthWhenMature) * 100:0,0}%\n";
         }
 
         public override void Update(float delta)
         {
             if (!string.IsNullOrEmpty(PlantName))
             {
-                CurrentGrowth += delta / 10;
-                Quality += Random.Range(0, 0.001f);
+                ProcessPlantGrowth(delta);
             }
             else if (AutoOrder != null)
             {
                 AutoCooldown = 0.01f;
             }
+        }
 
-            if (!string.IsNullOrEmpty(PlantName))
+        public void UpdatePlantMesh()
+        {
+            if (_lastGrowthIndex < 0 || _lastGrowthIndex != GrowthIndex)
             {
-                if (PlantEffect == null)
-                {
-                    _lastGrowthIndex = GrowthIndex;
-                    PlantEffect = Game.Instance.VisualEffectController.SpawnSpriteEffect(this, Vector, Sprite + "_" + _lastGrowthIndex, 10);
-                }
-                else if (GrowthIndex != _lastGrowthIndex)
-                {
-                    _lastGrowthIndex = GrowthIndex;
-                    PlantEffect.Sprite.sprite = Game.Instance.SpriteStore.GetSprite(Sprite + "_" + _lastGrowthIndex);
-                }
+                _lastGrowthIndex = GrowthIndex;
 
-                if (CurrentGrowth >= MaxGrowth)
+                if (_lastGrowthIndex < _maxGrowthPhases)
                 {
-                    Game.Instance.ItemController.SpawnItem(PlantName, Cell, (int)Quality);
-                    CurrentGrowth = 0;
+                    DestroyPlantMesh();
+                    InstantiateNewPlantMesh();
+                    SetPlantMeshRotation();
                 }
             }
+        }
+
+        internal bool IsMature()
+        {
+            return CurrentGrowth >= _growthWhenMature;
+        }
+
+        internal void ResetGrowth()
+        {
+            CurrentGrowth = 0;
+            Quality = 0;
+        }
+
+        internal void SpawnYield()
+        {
+            Game.Instance.ItemController.SpawnItem(PlantName, Cell, (int)Quality);
+        }
+
+        private void DestroyPlantMesh()
+        {
+            if (_plantMesh != null)
+            {
+                Renderer.DestroySubMesh(_plantMesh);
+            }
+        }
+
+        private float GetTimeBasedQualityChange()
+        {
+            // small change not based of tend quality
+            // also used when plant is mature to slowly decline quality
+            return Random.Range(0.001f, 0.0025f);
+        }
+
+        private void InstantiateNewPlantMesh()
+        {
+            var meshName = PlantName + "_" + (_lastGrowthIndex + 1);
+            var mesh = Game.Instance.MeshRendererFactory.GetItemMesh(meshName);
+            _plantMesh = Renderer.InstantiateSubMesh(mesh);
+        }
+
+        private void ProcessPlantGrowth(float delta)
+        {
+            if (IsMature())
+            {
+                // done growing wait for harvest
+                Quality -= GetTimeBasedQualityChange();
+
+                if (Quality < 1)
+                {
+                    ClearPlant();
+                }
+            }
+            else
+            {
+                CurrentGrowth += delta / _growthRateDivisor;
+                Quality += GetTimeBasedQualityChange();
+                UpdatePlantMesh();
+            }
+        }
+
+        private void ClearPlant()
+        {
+            ResetGrowth();
+            DestroyPlantMesh();
+            PlantName = null;
+        }
+
+        private void SetPlantMeshRotation()
+        {
+            _plantMesh.transform.localEulerAngles = new Vector3(0, 0, UnityEngine.Random.Range(0f, 360f));
         }
     }
 }

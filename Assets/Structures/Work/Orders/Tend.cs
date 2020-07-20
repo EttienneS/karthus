@@ -23,13 +23,21 @@
             // change to new plant
             if (farmPlot.PlantName != Option.Name)
             {
-                farmPlot.Sprite = Option.Sprite;
                 farmPlot.PlantName = Option.Name;
-                farmPlot.CurrentGrowth = 0;
-                farmPlot.Quality = 0;
+                farmPlot.ResetGrowth();
             }
-
-            farmPlot.Quality += quality;
+            else
+            {
+                if (farmPlot.IsMature())
+                {
+                    farmPlot.SpawnYield();
+                    farmPlot.ResetGrowth();
+                }
+                else
+                {
+                    farmPlot.Quality += quality;
+                }
+            }
         }
     }
 }

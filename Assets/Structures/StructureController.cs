@@ -84,17 +84,16 @@ namespace Assets.Structures
             return structure;
         }
 
-        public void CreateRoof(Cell cell)
-        {
-            var roof = Instantiate(Game.Instance.MeshRendererFactory.GetStructureMesh("Roof"), RoofContainer.transform);
-            roof.transform.position = new Vector3(cell.X, cell.Y, cell.Z) + new Vector3(0.5f, 2.05f, 0.5f);
-        }
-
         public Structure CreateNewStructure(string structureName)
         {
             return LoadStructureFromJson(StructureTypeFileMap[structureName]);
         }
 
+        public void CreateRoof(Cell cell)
+        {
+            var roof = Instantiate(Game.Instance.MeshRendererFactory.GetStructureMesh("Roof"), RoofContainer.transform);
+            roof.transform.position = new Vector3(cell.X, cell.Y, cell.Z) + new Vector3(0.5f, 2.05f, 0.5f);
+        }
         public MeshRenderer GetMeshForStructure(string name)
         {
             return GetMeshForStructure(_structureDataReference[name]);
@@ -174,16 +173,7 @@ namespace Assets.Structures
             if (Game.Instance.TimeManager.Paused)
                 return;
 
-            _lastUpdate += Time.deltaTime;
-
-            if (_lastUpdate > Game.Instance.TimeManager.CreatureTick)
-            {
-                _lastUpdate = 0;
-                foreach (var structure in Game.Instance.IdService.StructureLookup.Values.OfType<WorkStructureBase>())
-                {
-                    structure.Process(Game.Instance.TimeManager.CreatureTick);
-                }
-            }
+            UpdateWorkStructures();
         }
 
         internal void DestroyBlueprint(Blueprint blueprint)
@@ -226,6 +216,20 @@ namespace Assets.Structures
         private void IndexStructure(Structure structure)
         {
             Game.Instance.IdService.EnrollEntity(structure);
+        }
+
+        private void UpdateWorkStructures()
+        {
+            _lastUpdate += Time.deltaTime;
+
+            if (_lastUpdate > Game.Instance.TimeManager.CreatureTick)
+            {
+                _lastUpdate = 0;
+                foreach (var structure in Game.Instance.IdService.StructureLookup.Values.OfType<WorkStructureBase>())
+                {
+                    structure.Process(Game.Instance.TimeManager.CreatureTick);
+                }
+            }
         }
     }
 }

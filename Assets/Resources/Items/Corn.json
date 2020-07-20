@@ -1,0 +1,13 @@
+{
+  "Name": "Corn",
+  "Mesh": "Corn_Crop",
+  "Cost": {
+    "Items": {
+      "Corn": "1"
+    }
+  },
+  "Categories": [ "Food" ],
+  "ValueProperties": {
+    "Nutrition": 50
+  }
+}

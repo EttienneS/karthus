@@ -19,12 +19,30 @@
     "AutoCooldown": 100,
     "Options": [
       {
-        "Name": "Berries",
-        "Sprite": "BerryBush",
-        "Description": "Berry bushes grow quickly but do not handle bad weather well.",
+        "Name": "Corn",
+        "Icon": "Corn",
+        "Description": "Mielies!",
         "RequiredSkillLevel": 1,
         "TimeToComplete": 10
       }
     ]
   }
 }
+
+//Apple
+//Bamboo
+//Beet
+//BushBerries
+//Cactus
+//Carrot
+//Corn
+//Flowers
+//Lettuce
+//Mushroom
+//Orange
+//PalmTree
+//Pumpkin
+//Rice
+//Tomato
+//Watermelon
+//Wheat

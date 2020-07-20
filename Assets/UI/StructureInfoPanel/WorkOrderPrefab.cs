@@ -29,7 +29,7 @@ namespace UI
             Definition = definition;
             Option = option;
 
-            Image.sprite = Game.Instance.SpriteStore.GetSprite(Option.Sprite);
+            Image.sprite = Game.Instance.SpriteStore.GetSprite(Option.Icon);
             Title.text = $"{definition.Name}: {option.Name}";
         }
     }
