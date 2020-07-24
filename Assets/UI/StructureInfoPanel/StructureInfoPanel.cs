@@ -112,22 +112,6 @@ namespace UI
                 {
                     StructureInfo.text += $"In use by:\t{Current.InUseBy.Name}\n";
                 }
-                else if (Current is Container container)
-                {
-                    StructureInfo.text += $"\nContainer:\n";
-
-                    if (container.Empty)
-                    {
-                        StructureInfo.text += $"Contains:\tNothing\n";
-                    }
-                    else
-                    {
-                        StructureInfo.text += $"Contains:\t{container.ItemType}\n";
-                    }
-
-                    StructureInfo.text += $"Capacity:\t{container.Count}/{container.Capacity}\n";
-                    StructureInfo.text += $"Filter:\t{container.Filter}\n";
-                }
                 else if (Current is WorkStructureBase workStructure)
                 {
                     StructureInfo.text += workStructure.ToString();

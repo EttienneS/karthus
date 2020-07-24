@@ -41,7 +41,8 @@ public class ZoneController : MonoBehaviour
                 break;
 
             case Purpose.Storage:
-                newZone = new StorageZone();
+                newZone = new StorageZone() { Filter = "*" };
+
                 StorageZones.Add((StorageZone)newZone);
                 name = $"Store {StorageZones.Count}";
                 break;

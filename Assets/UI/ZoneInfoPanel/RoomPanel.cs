@@ -16,12 +16,6 @@ public class RoomPanel : MonoBehaviour
         foreach (var structure in Zone.Structures)
         {
             RoomInfo.text += $"{structure.Name}";
-
-            if (structure is Container container)
-            {
-                RoomInfo.text += $": {container.ItemType} {container.Count}/{container.Capacity}";
-            }
-
             RoomInfo.text += "\n";
         }
 

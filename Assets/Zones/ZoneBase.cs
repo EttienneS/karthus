@@ -56,7 +56,6 @@ public abstract class ZoneBase
     public float[] Color { get; set; } = ColorExtensions.GetRandomColor().ToFloatArray();
 
     [JsonIgnore]
-    // get items in cells from id service
     public List<ItemData> Items
     {
         get

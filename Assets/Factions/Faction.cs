@@ -36,14 +36,6 @@ public class Faction
     public float LastRetry;
     public List<Structure> Structures = new List<Structure>();
 
-    public IEnumerable<Container> Containers
-    {
-        get
-        {
-            return Structures.OfType<Container>();
-        }
-    }
-
     [JsonIgnore]
     public List<Cell> HomeCells = new List<Cell>();
 
@@ -110,54 +102,6 @@ public class Faction
                     AddTask(new Build(blueprint));
                 }
             }
-
-            if (FactionName == FactionConstants.Player)
-            {
-                var storageTasks = AvailableTasks.OfType<StoreItem>().ToList();
-
-                if (storageTasks.Count < 10)
-                {
-                    foreach (var cell in HomeCells)
-                    {
-                        foreach (var item in cell.Items)
-                        {
-                            if (!item.InUseByAnyone && !storageTasks.Any(t => t.ItemToStoreId == item.Id))
-                            {
-                                var storage = GetStorageFor(item);
-                                if (storage != null)
-                                {
-                                    AddTask(new StoreItem(item, storage));
-                                }
-                            }
-                        }
-                    }
-                }
-
-                var emptyTasks = AvailableTasks.OfType<EmptyContainer>().ToList();
-                foreach (var zone in Game.Instance.ZoneController.StorageZones.Where(z => z.FactionName == FactionName))
-                {
-                    foreach (var container in zone.Containers)
-                    {
-                        if (emptyTasks.Any(t => t.ContainerId == container.Id))
-                        {
-                            continue;
-                        }
-                        if (!container.FilterValid())
-                        {
-                            AddTask(new EmptyContainer(container));
-                        }
-                    }
-                }
-            }
-
-            foreach (var creature in Creatures)
-            {
-                // lost
-                if (creature.Cell == null)
-                {
-                    creature.Cell = Game.Instance.Map.Center;
-                }
-            }
         }
 
         LastRetry += Time.deltaTime;
@@ -169,32 +113,6 @@ public class Faction
                 task.ToggleSuspended(false);
             }
         }
-    }
-
-    public Container GetStorageFor(ItemData item)
-    {
-        var pendingStorage = AvailableTasks.OfType<StoreItem>().ToList();
-        var options = new List<Container>();
-        foreach (var container in Containers)
-        {
-            if (pendingStorage.Any(p => p.StorageStructureId == container.Id))
-            {
-                // already allocated skip structure
-                continue;
-            }
-
-            if (container.CanHold(item))
-            {
-                options.Add(container);
-            }
-        }
-
-        if (options.Count > 0)
-        {
-            return options.OrderBy(n => n.Cell.DistanceTo(item.Cell)).First();
-        }
-
-        return null;
     }
 
     internal void AddBlueprint(Blueprint blueprint)
@@ -251,18 +169,6 @@ public class Faction
         }
     }
 
-    public IEntity FindItemOrContainer(string criteria, CreatureData creature)
-    {
-        IEntity entity = FindContainerWithItem(criteria, creature);
-
-        if (entity == null)
-        {
-            entity = FindItem(criteria, creature);
-        }
-
-        return entity;
-    }
-
     public ItemData FindItem(string criteria, CreatureData creature)
     {
         var items = HomeCells.SelectMany(c => c?.Items.Where(item => item.IsType(criteria) && !item.InUseByAnyone)).ToList();
@@ -295,36 +201,4 @@ public class Faction
 
         return targetItem;
     }
-
-    public Structure FindContainerWithItem(string criteria, CreatureData creature)
-    {
-        var containers = StorageZones.SelectMany(zone => zone.Containers.Where(container => container.HasItemOfType(criteria) && !container.InUseByAnyone));
-
-        Structure targetContainer = null;
-        var bestDistance = float.MaxValue;
-
-        foreach (var container in containers)
-        {
-            var best = false;
-            var cell = container.Cell;
-            var distance = Pathfinder.Distance(creature.Cell, container.Cell, creature.Mobility);
-
-            if (targetContainer == null)
-            {
-                best = true;
-            }
-            else
-            {
-                best = distance > bestDistance;
-            }
-
-            if (best)
-            {
-                targetContainer = container;
-                bestDistance = distance;
-            }
-        }
-
-        return targetContainer;
-    }
-}
+   }

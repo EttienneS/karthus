@@ -153,16 +153,6 @@ namespace Assets.Structures
 
             faction?.AddStructure(structure);
 
-            if (structure is Container container)
-            {
-                var zone = Game.Instance.ZoneController.GetZoneForCell(cell);
-
-                if (zone != null && zone is StorageZone store)
-                {
-                    container.Filter = store.Filter;
-                }
-            }
-
             structureRenderer.transform.name = structure.Name + " " + structure.Id;
 
             return structure;

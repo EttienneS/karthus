@@ -37,7 +37,7 @@ public class FindAndGetItem : CreatureTask
             {
                 if (string.IsNullOrEmpty(TargetId))
                 {
-                    IEntity targetEntity = creature.Faction.FindItemOrContainer(ItemCriteria, creature);
+                    IEntity targetEntity = creature.Faction.FindItem(ItemCriteria, creature);
 
                     if (targetEntity == null)
                     {
@@ -75,16 +75,6 @@ public class FindAndGetItem : CreatureTask
                         if (creature.HeldItem == null)
                         {
                             creature.PickUpItem(targetItem, requiredAmount);
-                        }
-                        else
-                        {
-                            var container = TargetId.GetContainer();
-                            var item = container.GetItem(requiredAmount);
-                            if (item != null)
-                            {
-                                creature.PickUpItem(item, requiredAmount);
-                            }
-                            container.Free();
                         }
                         TargetId = null;
                     }

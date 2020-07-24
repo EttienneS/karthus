@@ -166,11 +166,6 @@ public static class IdExtensions
         return null;
     }
 
-    public static Container GetContainer(this string id)
-    {
-        return GetStructure(id) as Container;
-    }
-
     internal static IEntity GetEntity(this string id)
     {
         if (Game.Instance.IdService.IsCreature(id))
