@@ -1,43 +1,52 @@
-﻿using Newtonsoft.Json;
+﻿using Assets.Item;
 using System.Collections.Generic;
 using System.Linq;
-using Assets.Structures;
 
 public class StorageZone : ZoneBase
 {
-    public Dictionary<string, int> StorageDefinition = new Dictionary<string, int>();
+    public StorageFilter Filter;
 
-    public string Filter = "*";
+    private readonly List<Cell> _reservedCells = new List<Cell>();
 
-    [JsonIgnore]
-    public int Fill
+    public bool CanStore(ItemData item)
     {
-        get
+        return Filter.Allows(item);
+    }
+
+    public Cell ReserveCellFor(ItemData item)
+    {
+        if (!CanStore(item))
         {
-            var total = 0;
-          
-            return total;
+            throw new ItemNotAllowedInStoreException(item);
         }
-    }
 
-    [JsonIgnore]
-    public int Capacity
-    {
-        get
+        foreach (var cell in GetOpenCells().Where(c => !c.Items.Any()))
         {
-            var total = 0;
-        
-            return total;
+            _reservedCells.Add(cell);
+            return cell;
         }
+
+        throw new NoCellFoundException($"No cell found to store {item}");
     }
 
-    public bool CanStore(string name, string category, int amount)
+    public int GetFreeCellCount()
     {
-        return true;
+        return GetItemCapacity() - GetOpenCells().Count();
     }
-    
-    public void SetFilter(string filter)
+
+    public int GetItemCapacity()
     {
-        Filter = filter;
+        return GetCells().Count;
+    }
+
+    public IEnumerable<Cell> GetOpenCells()
+    {
+        FreeFilledReservedCells();
+        return GetCells().Except(_reservedCells);
+    }
+
+    private void FreeFilledReservedCells()
+    {
+        _reservedCells.RemoveAll(c => c.Items.Any());
     }
 }

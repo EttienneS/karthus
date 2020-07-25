@@ -135,27 +135,9 @@ public class Game : MonoBehaviour
                 faction.LoadHomeCells();
             }
 
-            if (SaveManager.SaveToLoad.Stores != null)
-            {
-                foreach (var zone in SaveManager.SaveToLoad.Stores)
-                {
-                    ZoneController.Load(zone);
-                }
-            }
-            if (SaveManager.SaveToLoad.Rooms != null)
-            {
-                foreach (var zone in SaveManager.SaveToLoad.Rooms)
-                {
-                    ZoneController.Load(zone);
-                }
-            }
-            if (SaveManager.SaveToLoad.Areas != null)
-            {
-                foreach (var zone in SaveManager.SaveToLoad.Areas)
-                {
-                    ZoneController.Load(zone);
-                }
-            }
+            SaveManager.SaveToLoad.Stores.ForEach(ZoneController.LoadStore);
+            SaveManager.SaveToLoad.Rooms.ForEach(ZoneController.LoadRoom);
+            SaveManager.SaveToLoad.Areas.ForEach(ZoneController.LoadArea);
 
             SaveManager.SaveToLoad.CameraData.Load(CameraController.Camera);
             SaveManager.SaveToLoad = null;

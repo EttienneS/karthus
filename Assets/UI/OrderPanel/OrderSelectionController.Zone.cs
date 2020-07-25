@@ -6,9 +6,45 @@ public partial class OrderSelectionController //.Zone
 
     internal OrderButton ZonesButton;
 
-    public void ShowRoomInfo()
+    public void AddAreaClicked()
     {
-        Game.Instance.OrderInfoPanel.Show("Define Room", "Select a location to place the Room, must be enclosed by walls.");
+        ShowAreaInfo();
+        SetCursorAndSpriteForZone(Game.Instance.ZoneController.ZoneSprite);
+
+        CellClickOrder = cells =>
+        {
+            var newZone = Game.Instance.ZoneController.CreateArea(FactionConstants.Player, cells.Where(c => CanAddCellToZone(c)).ToArray());
+            Game.Instance.ShowZonePanel(newZone);
+        };
+    }
+
+    public void AddRoomClicked()
+    {
+        ShowRoomInfo();
+        SetCursorAndSpriteForZone(Game.Instance.ZoneController.RoomSprite);
+
+        CellClickOrder = cells =>
+        {
+            var newZone = Game.Instance.ZoneController.CreateRoom(FactionConstants.Player, cells.Where(c => CanAddCellToZone(c)).ToArray());
+            Game.Instance.ShowZonePanel(newZone);
+        };
+    }
+
+    public void AddStoreClicked()
+    {
+        ShowStorageInfo();
+        SetCursorAndSpriteForZone(Game.Instance.ZoneController.StorageSprite);
+
+        CellClickOrder = cells =>
+        {
+            var newZone = Game.Instance.ZoneController.CreateStore(FactionConstants.Player, cells.Where(c => CanAddCellToZone(c)).ToArray());
+            Game.Instance.ShowZonePanel(newZone);
+        };
+    }
+
+    public bool CanAddCellToZone(Cell cell)
+    {
+        return true;
     }
 
     public void ShowAreaInfo()
@@ -16,7 +52,7 @@ public partial class OrderSelectionController //.Zone
         Game.Instance.OrderInfoPanel.Show("Define Area", "Select a location to place the Area.  Can be used to limit access to locations or designate areas for certain uses.");
     }
 
-    public void ShowZoneInfo()
+    public void ShowRoomInfo()
     {
         Game.Instance.OrderInfoPanel.Show("Define Room", "Select a location to place the Room, must be enclosed by walls.");
     }
@@ -26,40 +62,9 @@ public partial class OrderSelectionController //.Zone
         Game.Instance.OrderInfoPanel.Show("Define Storage", "Select a location to place the store.  Can be used to designate an area for storage of certain items.");
     }
 
-    public void AddZoneClicked(Purpose purpose)
+    public void ShowZoneInfo()
     {
-        var sprite = Game.Instance.ZoneController.ZoneSprite;
-
-        switch (purpose)
-        {
-            case Purpose.Room:
-                sprite = "Room";
-                ShowRoomInfo();
-                break;
-
-            case Purpose.Area:
-                ShowAreaInfo();
-                break;
-
-            case Purpose.Storage:
-                sprite = "Storage";
-                ShowStorageInfo();
-                break;
-        }
-
-        Game.Instance.Cursor.SetSprite(Game.Instance.SpriteStore.GetSprite(sprite), CanAddCellToZone);
-        Game.Instance.Cursor.SetSelectionPreference(SelectionPreference.Cell);
-
-        CellClickOrder = cells =>
-        {
-            var newZone = Game.Instance.ZoneController.Create(purpose, FactionConstants.Player, cells.Where(c => CanAddCellToZone(c)).ToArray());
-            Game.Instance.ShowZonePanel(newZone);
-        };
-    }
-
-    public bool CanAddCellToZone(Cell cell)
-    {
-        return true;
+        Game.Instance.OrderInfoPanel.Show("Define Room", "Select a location to place the Room, must be enclosed by walls.");
     }
 
     public void ZoneTypeClicked()
@@ -72,9 +77,15 @@ public partial class OrderSelectionController //.Zone
         {
             EnableAndClear();
 
-            CreateOrderButton(() => AddZoneClicked(Purpose.Room), () => ShowRoomInfo(), "beer_t");
-            CreateOrderButton(() => AddZoneClicked(Purpose.Storage), () => ShowStorageInfo(), "box");
-            CreateOrderButton(() => AddZoneClicked(Purpose.Area), () => ShowAreaInfo(), "plate_t");
+            CreateOrderButton(() => AddRoomClicked(), () => ShowRoomInfo(), "beer_t");
+            CreateOrderButton(() => AddStoreClicked(), () => ShowStorageInfo(), "box");
+            CreateOrderButton(() => AddAreaClicked(), () => ShowAreaInfo(), "plate_t");
         }
+    }
+
+    private void SetCursorAndSpriteForZone(string sprite)
+    {
+        Game.Instance.Cursor.SetSprite(Game.Instance.SpriteStore.GetSprite(sprite), CanAddCellToZone);
+        Game.Instance.Cursor.SetSelectionPreference(SelectionPreference.Cell);
     }
 }

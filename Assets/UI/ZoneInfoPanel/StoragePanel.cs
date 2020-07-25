@@ -22,6 +22,6 @@ public class StoragePanel : MonoBehaviour
 
     public void Update()
     {
-        ZoneInfoText.text = $"Capacity: {Zone.Fill}/{Zone.Capacity}\n"; ;
+        ZoneInfoText.text = $"Capacity: {Zone.GetFreeCellCount()}/{Zone.GetCells().Count}\n"; ;
     }
 }

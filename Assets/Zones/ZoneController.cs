@@ -12,6 +12,7 @@ public class ZoneController : MonoBehaviour
     internal Sprite Sprite;
     internal string StorageSprite = "Storage";
     internal string ZoneSprite = "Zone";
+
     internal List<AreaZone> AreaZones { get; set; } = new List<AreaZone>();
     internal List<RoomZone> RoomZones { get; set; } = new List<RoomZone>();
     internal List<StorageZone> StorageZones { get; set; } = new List<StorageZone>();
@@ -21,49 +22,48 @@ public class ZoneController : MonoBehaviour
     {
         Sprite = Game.Instance.SpriteStore.GetSprite(ZoneSprite);
     }
-
-    public ZoneBase Create(Purpose purpose, string faction, params Cell[] cells)
+    public AreaZone CreateArea(string faction, params Cell[] cells)
     {
-        ZoneBase newZone;
-        var name = "New Zone";
-        switch (purpose)
-        {
-            case Purpose.Room:
-                newZone = new RoomZone();
-                RoomZones.Add((RoomZone)newZone);
-                name = $"Room {RoomZones.Count}";
-                break;
+        var newZone =  new AreaZone();
+        AreaZones.Add(newZone);
+        name = $"Area {AreaZones.Count}";
+        AssignAndPopulateZone(faction, cells, newZone);
+        return newZone;
+    }
 
-            case Purpose.Area:
-                newZone = new AreaZone();
-                AreaZones.Add((AreaZone)newZone);
-                name = $"Area {AreaZones.Count}";
-                break;
+    public StorageZone CreateStore(string faction, params Cell[] cells)
+    {
+        var newZone = new StorageZone();
+        StorageZones.Add(newZone);
+        name = $"Store {StorageZones.Count}";
+        AssignAndPopulateZone(faction, cells, newZone);
+        return newZone;
+    }
 
-            case Purpose.Storage:
-                newZone = new StorageZone() { Filter = "*" };
+    public RoomZone CreateRoom(string faction, params Cell[] cells)
+    {
+        var newZone = new RoomZone();
+        RoomZones.Add(newZone);
+        name = $"Room {RoomZones.Count}";
+        AssignAndPopulateZone(faction, cells, newZone);
 
-                StorageZones.Add((StorageZone)newZone);
-                name = $"Store {StorageZones.Count}";
-                break;
-
-            default:
-                throw new NotImplementedException();
-        }
-
-        newZone.Cells = cells.ToList();
-        newZone.Name = name;
-        newZone.FactionName = faction;
-        newZone.Purpose = purpose;
-
-        Zones.Add(newZone, DrawZone(newZone));
 
         return newZone;
     }
 
+    private void AssignAndPopulateZone(string faction, Cell[] cells, ZoneBase newZone)
+    {
+        newZone.AddCells(cells.ToList());
+        newZone.Name = name;
+        newZone.FactionName = faction;
+
+        Zones.Add(newZone, DrawZone(newZone));
+
+    }
+
     public void Delete(ZoneBase zone)
     {
-        foreach (var cell in zone.Cells)
+        foreach (var cell in zone.GetCells())
         {
             ZoneTilemap.SetTile(new Vector3Int(cell.X, cell.Z, 0), null);
         }
@@ -90,13 +90,9 @@ public class ZoneController : MonoBehaviour
         Zones[zone] = DrawZone(zone);
     }
 
-    public void Update()
-    {
-    }
-
     internal ZoneBase GetZoneForCell(Cell cell)
     {
-        return Zones.Keys.FirstOrDefault(z => z.Cells.Contains(cell));
+        return Zones.Keys.FirstOrDefault(z => z.GetCells().Contains(cell));
     }
 
     private ZoneLabel DrawZone(ZoneBase newZone)
@@ -113,7 +109,7 @@ public class ZoneController : MonoBehaviour
             sprite = Game.Instance.ZoneController.StorageSprite;
         }
 
-        foreach (var cell in newZone.Cells)
+        foreach (var cell in newZone.GetCells())
         {
             SetZoneCellTile(newZone, sprite, cell);
             if (room)
@@ -126,7 +122,7 @@ public class ZoneController : MonoBehaviour
         label.name = newZone.Name;
         label.Text.text = newZone.Name;
 
-        var (bottomLeft, bottomRight, topLeft, topRight) = Game.Instance.Map.GetCorners(newZone.Cells);
+        var (bottomLeft, bottomRight, topLeft, topRight) = Game.Instance.Map.GetCorners(newZone.GetCells());
         label.transform.localPosition = new Vector3((bottomLeft.X + bottomRight.X + topLeft.X + topRight.X) / 4f,
                                                     (bottomLeft.Z + bottomRight.Z + topLeft.Z + topRight.Z) / 4f, 0);
         label.transform.localPosition += new Vector3(0.5f, 0.5f);
@@ -142,26 +138,22 @@ public class ZoneController : MonoBehaviour
         ZoneTilemap.SetTile(new Vector3Int(cell.X, cell.Z, 0), tile);
     }
 
-    internal void Load(ZoneBase zone)
+    internal void LoadArea(AreaZone area)
     {
-        switch (zone.Purpose)
-        {
-            case Purpose.Area:
-                var area = zone as AreaZone;
-                AreaZones.Add(area);
-                Zones.Add(area, DrawZone(area));
-                break;
-            case Purpose.Room:
-                var room = zone as RoomZone;
-                RoomZones.Add(room);
-                Zones.Add(room, DrawZone(room));
-                break;
-            case Purpose.Storage:
-                var storage = zone as StorageZone;
-                StorageZones.Add(storage);
-                Zones.Add(storage, DrawZone(storage));
-                break;
-        }
-
+        AreaZones.Add(area);
+        Zones.Add(area, DrawZone(area));
     }
+
+    internal void LoadRoom(RoomZone room)
+    {
+        RoomZones.Add(room);
+        Zones.Add(room, DrawZone(room));
+    }
+
+    internal void LoadStore(StorageZone storage)
+    {
+        StorageZones.Add(storage);
+        Zones.Add(storage, DrawZone(storage));
+    }
+     
 }

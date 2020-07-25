@@ -1,39 +1,14 @@
-﻿using Newtonsoft.Json;
+﻿using Assets.Item;
+using Assets.Structures;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.Collections.Generic;
 using System.Linq;
-using Assets.Structures;
-using Assets.Item;
 
-[JsonConverter(typeof(StringEnumConverter))]
-public enum Purpose
-{
-    Room, Storage, Area
-}
 
 public abstract class ZoneBase
 {
-    [JsonIgnore]
-    private List<Cell> _cells;
-
-    public Purpose Purpose;
-
-    [JsonIgnore]
-    public List<Cell> Cells
-    {
-        get
-        {
-            if (_cells == null)
-            {
-                _cells = new List<Cell>();
-            }
-            return _cells;
-        }
-        set
-        {
-            _cells = value;
-        }
-    }
+    private List<Cell> _cells = new List<Cell>();
 
     public string CellString
     {
@@ -54,6 +29,8 @@ public abstract class ZoneBase
 
     [JsonIgnore]
     public float[] Color { get; set; } = ColorExtensions.GetRandomColor().ToFloatArray();
+
+    public string FactionName { get; set; }
 
     [JsonIgnore]
     public List<ItemData> Items
@@ -82,8 +59,6 @@ public abstract class ZoneBase
 
     public string OwnerId { get; set; }
 
-    public string FactionName { get; set; }
-
     [JsonIgnore]
     // get structures in cells from id service
     public List<Structure> Structures
@@ -101,8 +76,23 @@ public abstract class ZoneBase
         }
     }
 
+    public void AddCells(List<Cell> cells)
+    {
+        _cells.AddRange(cells);
+        _cells.Distinct();
+    }
+
     public bool CanUse(IEntity entity)
     {
         return string.IsNullOrEmpty(OwnerId) || OwnerId.Equals(entity.Id);
+    }
+
+    public List<Cell> GetCells()
+    {
+        if (_cells == null)
+        {
+            _cells = new List<Cell>();
+        }
+        return _cells;
     }
 }
