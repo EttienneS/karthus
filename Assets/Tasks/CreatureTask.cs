@@ -61,7 +61,7 @@ public abstract class CreatureTask
         return subTask;
     }
 
-    public abstract void Complete();
+    public abstract void FinalizeTask();
 
     public void Destroy()
     {
@@ -104,7 +104,7 @@ public abstract class CreatureTask
         if (current.Done(creature))
         {
             SubTasks.Dequeue();
-            current.Complete();
+            current.FinalizeTask();
         }
         return false;
     }

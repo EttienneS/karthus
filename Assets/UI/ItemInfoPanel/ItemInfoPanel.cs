@@ -1,4 +1,5 @@
 ﻿using Assets.Item;
+using Assets.Tasks;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,6 +20,14 @@ namespace UI
             Items = items;
         }
 
+        public void StoreItems()
+        {
+            foreach (var item in Items)
+            {
+                Game.Instance.FactionController.PlayerFaction.AddTask(new StoreItem(item));
+            }
+        }
+
         public void Update()
         {
             var current = Items[0];
@@ -34,7 +43,6 @@ namespace UI
             Description.text += $"Amount: {current.Amount}\n";
 
             Description.text += $"\n{current.Cell}\n";
-
         }
 
         public void Destroy()

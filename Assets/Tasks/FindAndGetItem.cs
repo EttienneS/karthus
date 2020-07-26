@@ -21,7 +21,7 @@ public class FindAndGetItem : CreatureTask
         Amount = amount;
     }
 
-    public override void Complete()
+    public override void FinalizeTask()
     {
     }
 

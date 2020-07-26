@@ -20,7 +20,7 @@ public class Wash : CreatureTask
         BusyEmote = "**Scrub, scrub, scrub**";
     }
 
-    public override void Complete()
+    public override void FinalizeTask()
     {
     }
 

@@ -19,7 +19,7 @@ public class FindAndHaulItem : CreatureTask
         }
     }
 
-    public override void Complete()
+    public override void FinalizeTask()
     {
     }
 

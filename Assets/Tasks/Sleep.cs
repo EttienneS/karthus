@@ -36,7 +36,7 @@ public class Sleep : CreatureTask
 
     public bool Sleeping { get; set; }
 
-    public override void Complete()
+    public override void FinalizeTask()
     {
         var bed = Bed;
 

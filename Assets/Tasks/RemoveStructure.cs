@@ -21,7 +21,7 @@ public class RemoveStructure : CreatureTask
         RequiredSkillLevel = 1;
     }
 
-    public override void Complete()
+    public override void FinalizeTask()
     {
     }
 

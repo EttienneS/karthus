@@ -532,7 +532,7 @@ namespace Assets.Creature
                 Log($"Canceled {Task} task");
 
                 Faction.RemoveTask(Task);
-                Task.Complete();
+                Task.FinalizeTask();
                 Task.Destroy();
                 Task = null;
             }
@@ -1071,7 +1071,7 @@ namespace Assets.Creature
                     if (Task.Done(this))
                     {
                         Task.ShowDoneEmote(this);
-                        Task.Complete();
+                        Task.FinalizeTask();
 
                         Faction.RemoveTask(Task);
                         Task = null;

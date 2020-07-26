@@ -16,7 +16,7 @@ public class Idle : CreatureTask
     {
     }
 
-    public override void Complete()
+    public override void FinalizeTask()
     {
     }
 

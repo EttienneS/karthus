@@ -11,7 +11,7 @@ public class Build : CreatureTask
 
     private int _waitCount = 0;
 
-    public override void Complete()
+    public override void FinalizeTask()
     {
     }
 

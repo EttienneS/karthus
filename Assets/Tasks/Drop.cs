@@ -23,7 +23,7 @@ public class Drop : CreatureTask
         AddSubTask(new Move(target));
     }
 
-    public override void Complete()
+    public override void FinalizeTask()
     {
     }
 

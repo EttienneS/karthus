@@ -7,6 +7,6 @@ public class StorageFilter
 
     internal bool Allows(ItemData item)
     {
-        throw new NotImplementedException();
+        return true;
     }
 }

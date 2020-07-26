@@ -23,7 +23,7 @@ public class Eat : CreatureTask
     {
     }
 
-    public override void Complete()
+    public override void FinalizeTask()
     {
     }
 

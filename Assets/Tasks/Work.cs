@@ -43,7 +43,7 @@ public class DoWork : CreatureTask
         }
     }
 
-    public override void Complete()
+    public override void FinalizeTask()
     {
         Structure.Free();
     }

@@ -13,7 +13,7 @@ public class StorageZone : ZoneBase
         return Filter.Allows(item);
     }
 
-    public Cell ReserveCellFor(ItemData item)
+    public Cell GetReservedCellFor(ItemData item)
     {
         if (!CanStore(item))
         {
