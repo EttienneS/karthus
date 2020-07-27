@@ -4,13 +4,13 @@ using System.Linq;
 
 public class StorageZone : ZoneBase
 {
-    public StorageFilter Filter;
+    internal StorageFilter Filter = new StorageFilter();
 
     private readonly List<Cell> _reservedCells = new List<Cell>();
 
     public bool CanStore(ItemData item)
     {
-        return Filter.Allows(item);
+        return GetFreeCellCount() > 0 && Filter.Allows(item);
     }
 
     public Cell GetReservedCellFor(ItemData item)
@@ -20,7 +20,7 @@ public class StorageZone : ZoneBase
             throw new ItemNotAllowedInStoreException(item);
         }
 
-        foreach (var cell in GetOpenCells().Where(c => !c.Items.Any()))
+        foreach (var cell in GetOpenCells())
         {
             _reservedCells.Add(cell);
             return cell;
@@ -31,10 +31,10 @@ public class StorageZone : ZoneBase
 
     public int GetFreeCellCount()
     {
-        return GetItemCapacity() - GetOpenCells().Count();
+        return GetOpenCells().Count();
     }
 
-    public int GetItemCapacity()
+    public int GetMaxItemCapacity()
     {
         return GetCells().Count;
     }
@@ -42,11 +42,14 @@ public class StorageZone : ZoneBase
     public IEnumerable<Cell> GetOpenCells()
     {
         FreeFilledReservedCells();
-        return GetCells().Except(_reservedCells);
+
+        return GetCells()
+                    .Where(c => !c.ContainsItems())
+                    .Except(_reservedCells);
     }
 
     private void FreeFilledReservedCells()
     {
-        _reservedCells.RemoveAll(c => c.Items.Any());
+        _reservedCells.RemoveAll(c => c.ContainsItems());
     }
 }

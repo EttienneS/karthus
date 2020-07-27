@@ -1,7 +1,6 @@
-﻿using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using Structures;
+
 public class StoragePanel : MonoBehaviour
 {
     internal StorageZone Zone;
@@ -22,6 +21,6 @@ public class StoragePanel : MonoBehaviour
 
     public void Update()
     {
-        ZoneInfoText.text = $"Capacity: {Zone.GetFreeCellCount()}/{Zone.GetCells().Count}\n"; ;
+        ZoneInfoText.text = $"Capacity: {Zone.GetFreeCellCount()}/{Zone.GetMaxItemCapacity()}\n";
     }
 }

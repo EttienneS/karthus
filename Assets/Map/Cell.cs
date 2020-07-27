@@ -56,6 +56,11 @@ public class Cell : IEquatable<Cell>
         }
     }
 
+    internal bool ContainsItems()
+    {
+        return Items.Any();
+    }
+
     [JsonIgnore]
     public Cell NextWithSamePriority { get; set; }
 

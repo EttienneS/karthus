@@ -6,7 +6,7 @@ namespace Assets.Tasks
 {
     public class StoreItem : CreatureTask
     {
-        private readonly ItemData _item;
+        private readonly string _itemId;
         private (int x, int z) _targetCellCoordinate;
 
         public StoreItem()
@@ -15,12 +15,7 @@ namespace Assets.Tasks
 
         public StoreItem(ItemData item) : this()
         {
-            _item = item;
-        }
-
-        public StoreItem(ItemData item, Cell cell) : this(item)
-        {
-            _targetCellCoordinate = (cell.X, cell.Z);
+            _itemId = item.Id;
         }
 
         public override string Message
@@ -35,28 +30,30 @@ namespace Assets.Tasks
         {
             if (SubTasksComplete(creature))
             {
-                if (creature.HeldItem != _item)
+                var item = _itemId.GetItem();
+                if (creature.HeldItem != item)
                 {
-                    if (_item.Cell == creature.Cell)
+                    if (item.Cell == creature.Cell)
                     {
-                        creature.PickUpItem(_item, _item.Amount);
+                        creature.PickUpItem(item, item.Amount);
                     }
                     else
                     {
-                        AddSubTask(new Move(_item.Cell));
+                        AddSubTask(new Move(item.Cell));
                     }
                 }
                 else if (_targetCellCoordinate == (0, 0))
                 {
-                    FindStoreCellForItem(creature);
-                    AddSubTask(new Move(GetTargetCell()));
+                    _targetCellCoordinate = FindStoreCellForItem(creature, item);
+                    AddSubTask(new Move(Game.Instance.Map.GetCellAtCoordinate(_targetCellCoordinate)));
                 }
                 else
                 {
-                    var targetCell = GetTargetCell();
+                    var targetCell = Game.Instance.Map.GetCellAtCoordinate(_targetCellCoordinate);
                     if (creature.Cell == targetCell)
                     {
                         creature.DropItem(targetCell);
+                        return true;
                     }
                     else
                     {
@@ -65,30 +62,25 @@ namespace Assets.Tasks
                 }
             }
 
-            return true;
+            return false;
         }
 
         public override void FinalizeTask()
         {
         }
 
-        internal Cell GetTargetCell()
-        {
-            return Game.Instance.Map.GetCellAtCoordinate(_targetCellCoordinate);
-        }
-
-        private Cell FindStoreCellForItem(CreatureData creature)
+        private (int x, int z) FindStoreCellForItem(CreatureData creature, ItemData item)
         {
             foreach (var store in creature.Faction.StorageZones)
             {
-                if (store.CanStore(_item))
+                if (store.CanStore(item))
                 {
-                    var cell = store.GetReservedCellFor(_item);
-                    _targetCellCoordinate = (cell.X, cell.Z);
+                    var cell = store.GetReservedCellFor(item);
+                    return (cell.X, cell.Z);
                 }
             }
 
-            throw new NoCellFoundException($"No cell found to store {_item}");
+            throw new NoCellFoundException($"No cell found to store {item}");
         }
     }
 }
