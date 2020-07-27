@@ -42,8 +42,6 @@ namespace Assets.Creature
 
         public bool UnableToFindPath;
 
-        internal int Frame;
-
         internal float InternalTick = float.MaxValue;
 
         [JsonIgnore]
