@@ -1,10 +1,11 @@
-﻿using Assets.Item;
+﻿using Assets;
+using Assets.Item;
 using System.Collections.Generic;
 using System.Linq;
 
 public class StorageZone : ZoneBase
 {
-    internal StorageFilter Filter = new StorageFilter();
+    internal Filter Filter = new Filter();
 
     private readonly List<Cell> _reservedCells = new List<Cell>();
 
