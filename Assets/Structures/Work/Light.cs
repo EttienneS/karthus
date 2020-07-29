@@ -6,8 +6,6 @@ namespace Structures.Work
     {
         [JsonIgnore]
         public VisualEffect LightEffect { get; set; }
-
-        public string ColorHex { get; set; } = "FFFFFF";
         public float Radius { get; set; } = 3f;
         public float Intensity { get; set; } = 1f;
 

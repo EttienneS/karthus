@@ -97,6 +97,8 @@ MonoBehaviour:
   ZoneController: {fileID: 3031215097329078977}
   ZoneInfoPanelPrefab: {fileID: 6224699677946717344, guid: 7e644716772d30044a157517133287c5,
     type: 3}
+  FilterViewPrefab: {fileID: 6605581421693691597, guid: 37d811e85dfbfb84b8315023712b8d5e,
+    type: 3}
 --- !u!1001 &606839150816351063
 PrefabInstance:
   m_ObjectHideFlags: 0

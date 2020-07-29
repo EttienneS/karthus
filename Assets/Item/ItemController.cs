@@ -1,4 +1,5 @@
 ﻿using Assets.Item;
+using Assets.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,16 @@ public class ItemController : MonoBehaviour
             ItemTypeFileMap.First();
             return _itemDataReference;
         }
+    }
+
+    internal List<FilterViewOption> GetAllItemOptions()
+    {
+        var options = new List<FilterViewOption>();
+        foreach (var item in ItemDataReference.Values)
+        {
+            options.Add(new FilterViewOption(item.Name, null, item.Categories));
+        }
+        return options;
     }
 
     internal Dictionary<string, string> ItemTypeFileMap

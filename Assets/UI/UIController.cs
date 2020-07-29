@@ -1,9 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using Assets.UI;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class UIController : MonoBehaviour
 {
+    public FilterViewController FilterViewPrefab;
     internal List<GameObject> UIControls;
+
+    private FilterViewController _currentFilterViewController;
 
     public void Awake()
     {
@@ -27,6 +31,22 @@ public class UIController : MonoBehaviour
         foreach (var child in UIControls)
         {
             child.SetActive(true);
+        }
+    }
+
+    public void ShowFilterView(string title, List<FilterViewOption> options, OnOptionSelectedDelegate onOptionSelectedDelegate)
+    {
+        DestroyCurrentFilterViewController();
+
+        _currentFilterViewController = Instantiate(FilterViewPrefab, transform);
+        _currentFilterViewController.Load(title, options, onOptionSelectedDelegate);
+    }
+
+    private void DestroyCurrentFilterViewController()
+    {
+        if (_currentFilterViewController != null)
+        {
+            Destroy(_currentFilterViewController.gameObject);
         }
     }
 }

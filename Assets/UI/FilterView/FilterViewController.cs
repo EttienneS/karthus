@@ -6,6 +6,8 @@ using UnityEngine;
 
 namespace Assets.UI
 {
+    public delegate void OnOptionSelectedDelegate(FilterViewOption option);
+
     public class FilterViewController : MonoBehaviour
     {
         public ImageButton CategoryButtonPrefab;
@@ -17,6 +19,8 @@ namespace Assets.UI
         private List<string> _activeCategories = new List<string>();
 
         private IEnumerable<FilterViewOption> _allOptions;
+
+        private OnOptionSelectedDelegate _onOptionSelected;
 
         public void CategoryClicked(ImageButton clickedButton, string category)
         {
@@ -34,32 +38,35 @@ namespace Assets.UI
             PopulateOptions(GetFilteredOptions());
         }
 
-        public void Load(IEnumerable<FilterViewOption> filterViewOptions)
+        public void Hide()
         {
+            gameObject.SetActive(false);
+        }
+
+        public void Load(string title, IEnumerable<FilterViewOption> filterViewOptions, OnOptionSelectedDelegate onOptionSelected)
+        {
+            TitleText.text = title;
             _allOptions = filterViewOptions;
+            _onOptionSelected = onOptionSelected;
 
             PopulateCategories(_allOptions);
             PopulateOptions(_allOptions);
+
+            Show();
         }
 
         public void OptionClicked(FilterViewOption option)
         {
             Debug.Log($"Clicked {option.Name}");
+            _onOptionSelected.Invoke(option);
+            Hide();
         }
 
-        public void Start()
+        public void Show()
         {
-            var options = new List<FilterViewOption>
-            {
-                new FilterViewOption(null, "Dog", null, "Pet", "Fluffy", "Loyal", "Loud"),
-                new FilterViewOption(null, "Cat", null, "Pet", "Fluffy", "Aloof", "Quiet"),
-                new FilterViewOption(null, "Snake", null, "Pet", "Scaly", "Sneaky", "Quiet"),
-                new FilterViewOption(null, "Fish", null, "Pet", "Scaly", "Quiet"),
-                new FilterViewOption(null, "Bird", null, "Pet", "Feathery", "Cool", "Loud"),
-            };
-
-            Load(options);
+            gameObject.SetActive(true);
         }
+
         public void TextChanged()
         {
             PopulateOptions(GetFilteredOptions());

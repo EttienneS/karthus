@@ -2,6 +2,7 @@
 using Assets.Item;
 using Assets.Models;
 using Assets.Structures;
+using Assets.UI;
 using Assets.UI.TaskPanel;
 using Camera;
 using System;
@@ -9,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UI;
 using UnityEngine;
+using UnityEngine.Apple;
 using Debug = UnityEngine.Debug;
 
 
@@ -258,7 +260,6 @@ public class Game : MonoBehaviour
     private void Start()
     {
         UIController.Hide();
-
 
         if (SaveManager.SaveToLoad != null)
         {
