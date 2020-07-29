@@ -8,14 +8,14 @@ public class StoragePanel : MonoBehaviour
 
     public void AddAllowed()
     {
-        Game.Instance.UIController.ShowFilterView("Choose items to allow:",
+        Game.Instance.UIController.ShowFilterView("Choose item to allow:",
                                                   Game.Instance.ItemController.GetAllItemOptions(),
                                                   (option) => Zone.Filter.AddAllowedItem(option.Name));
     }
 
     public void AddBlocked()
     {
-        Game.Instance.UIController.ShowFilterView("Choose items to allow:",
+        Game.Instance.UIController.ShowFilterView("Choose item to block:",
                                                   Game.Instance.ItemController.GetAllItemOptions(),
                                                   (option) => Zone.Filter.AddBlockedItem(option.Name));
     }
