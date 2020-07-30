@@ -873,7 +873,7 @@ namespace Assets.Creature
             var targetX = nextCell.Vector.x;
             var targetZ = nextCell.Vector.z;
 
-            if (!nextCell.Pathable(Mobility))
+            if (!nextCell.PathableWith(Mobility))
             {
                 UnableToFindPath = true;
                 StopMoving();
@@ -1079,7 +1079,7 @@ namespace Assets.Creature
                 {
                     Debug.LogError($"Task failed: {ex}");
 
-                    if (!Cell.Pathable(Mobility))
+                    if (!Cell.PathableWith(Mobility))
                     {
                         // unstuck
                         Debug.LogError("Unstuck!");

@@ -53,7 +53,7 @@ public class Pickup : CreatureTask
             }
             if (creature.Cell.NonNullNeighbors.Contains(item.Cell))
             {
-                if (item.Cell.Pathable(Mobility.Walk))
+                if (item.Cell.PathableWith(Mobility.Walk))
                 {
                     AddSubTask(new Move(item.Cell));
                 }

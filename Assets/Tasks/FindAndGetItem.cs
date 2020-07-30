@@ -45,7 +45,7 @@ public class FindAndGetItem : CreatureTask
                     }
                     else
                     {
-                        if (targetEntity.Cell.Pathable(creature.Mobility))
+                        if (targetEntity.Cell.PathableWith(creature.Mobility))
                         {
                             AddSubTask(new Move(targetEntity.Cell));
                         }

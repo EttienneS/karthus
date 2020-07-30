@@ -296,7 +296,7 @@ public class Map : MonoBehaviour
 
         Game.Instance.FactionController.PlayerFaction.HomeCells.AddRange(Game.Instance.Map.GetCircle(Game.Instance.Map.Center, 15));
 
-        var open = Game.Instance.Map.GetCircle(center, 5).Where(c => c.Pathable(Mobility.Walk) && c.Structure == null);
+        var open = Game.Instance.Map.GetCircle(center, 5).Where(c => c.PathableWith(Mobility.Walk) && c.Structure == null);
         Game.Instance.ItemController.SpawnItem("Berries", open.GetRandomItem(), 250);
         Game.Instance.ItemController.SpawnItem("Wood", open.GetRandomItem(), 250);
         Game.Instance.ItemController.SpawnItem("Stone", open.GetRandomItem(), 250);
@@ -336,7 +336,7 @@ public class Map : MonoBehaviour
     {
         var circle = GetCircle(centerPoint, radius);
 
-        return circle.Where(c => c != centerPoint && c.Pathable(mobility))
+        return circle.Where(c => c != centerPoint && c.PathableWith(mobility))
                            .OrderBy(c => c.DistanceTo(centerPoint))
                            .First();
     }

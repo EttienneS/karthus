@@ -203,7 +203,7 @@ public class Cell : IEquatable<Cell>
         return neighbor.Structure.IsWall();
     }
 
-    public bool Pathable(Mobility mobility)
+    public bool PathableWith(Mobility mobility)
     {
         switch (mobility)
         {

@@ -133,7 +133,7 @@ public static class Pathfinder
                 {
                     var neighbor = current.GetNeighbor(d);
 
-                    if (neighbor?.Pathable(mobility) != true)
+                    if (neighbor?.PathableWith(mobility) != true)
                     {
                         continue;
                     }

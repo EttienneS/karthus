@@ -45,8 +45,13 @@ public class StorageZone : ZoneBase
         FreeFilledReservedCells();
 
         return GetCells()
-                    .Where(c => !c.ContainsItems())
+                    .Where(CellCanHoldItem)
                     .Except(_reservedCells);
+    }
+
+    public bool CellCanHoldItem(Cell cell)
+    {
+        return cell.PathableWith(Mobility.Walk) && !cell.ContainsItems();
     }
 
     private void FreeFilledReservedCells()
