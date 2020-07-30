@@ -42,9 +42,22 @@ public partial class OrderSelectionController //.Zone
         };
     }
 
+    public void DeleteZoneClicked()
+    {
+        ShowDeleteInfo();
+        SetCursorAndSpriteForZone(Game.Instance.ZoneController.RemoveSprite);
+
+        CellClickOrder = cells => Game.Instance.ZoneController.ClearZonesFromCells(cells);
+    }
+
     public bool CanAddCellToZone(Cell cell)
     {
         return true;
+    }
+
+    public void ShowDeleteInfo()
+    {
+        Game.Instance.OrderInfoPanel.Show("Define Area", "Select cells to delete Zones from.");
     }
 
     public void ShowAreaInfo()
@@ -80,6 +93,7 @@ public partial class OrderSelectionController //.Zone
             CreateOrderButton(() => AddRoomClicked(), () => ShowRoomInfo(), "beer_t");
             CreateOrderButton(() => AddStoreClicked(), () => ShowStorageInfo(), "box");
             CreateOrderButton(() => AddAreaClicked(), () => ShowAreaInfo(), "plate_t");
+            CreateOrderButton(() => DeleteZoneClicked(), () => ShowDeleteInfo(), "cancel");
         }
     }
 

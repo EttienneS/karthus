@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -8,10 +7,13 @@ public class ZoneController : MonoBehaviour
 {
     public ZoneLabel ZoneLabelPrefab;
     public Tilemap ZoneTilemap;
-    internal string RoomSprite = "Room";
+
     internal Sprite Sprite;
+
+    internal string RoomSprite = "Room";
     internal string StorageSprite = "Storage";
     internal string ZoneSprite = "Zone";
+    internal string RemoveSprite = "RemoveZone";
 
     internal List<AreaZone> AreaZones { get; set; } = new List<AreaZone>();
     internal List<RoomZone> RoomZones { get; set; } = new List<RoomZone>();
@@ -22,9 +24,10 @@ public class ZoneController : MonoBehaviour
     {
         Sprite = Game.Instance.SpriteStore.GetSprite(ZoneSprite);
     }
+
     public AreaZone CreateArea(string faction, params Cell[] cells)
     {
-        var newZone =  new AreaZone();
+        var newZone = new AreaZone();
         AreaZones.Add(newZone);
         name = $"Area {AreaZones.Count}";
         AssignAndPopulateZone(faction, cells, newZone);
@@ -47,18 +50,39 @@ public class ZoneController : MonoBehaviour
         name = $"Room {RoomZones.Count}";
         AssignAndPopulateZone(faction, cells, newZone);
 
-
         return newZone;
     }
 
     private void AssignAndPopulateZone(string faction, Cell[] cells, ZoneBase newZone)
     {
+        ClearZonesFromCells(cells);
         newZone.AddCells(cells.ToList());
         newZone.Name = name;
         newZone.FactionName = faction;
 
         Zones.Add(newZone, DrawZone(newZone));
+    }
 
+    public void ClearZonesFromCells(IEnumerable<Cell> cells)
+    {
+        foreach (var cell in cells)
+        {
+            var current = Game.Instance.ZoneController.GetZoneForCell(cell);
+            if (current != null)
+            {
+                current.RemoveCell(cell);
+                ClearZoneCellTile(cell);
+
+                if (current.GetCells().Count == 0)
+                {
+                    Delete(current);
+                }
+                else
+                {
+                    MoveZoneLabel(current);
+                }
+            }
+        }
     }
 
     public void Delete(ZoneBase zone)
@@ -121,12 +145,21 @@ public class ZoneController : MonoBehaviour
         var label = Instantiate(ZoneLabelPrefab, transform);
         label.name = newZone.Name;
         label.Text.text = newZone.Name;
+        MoveZoneLabel(newZone, label);
+        return label;
+    }
 
-        var (bottomLeft, bottomRight, topLeft, topRight) = Game.Instance.Map.GetCorners(newZone.GetCells());
+    private void MoveZoneLabel(ZoneBase zone)
+    {
+        MoveZoneLabel(zone, Zones[zone]);
+    }
+
+    private void MoveZoneLabel(ZoneBase zone, ZoneLabel label)
+    {
+        var (bottomLeft, bottomRight, topLeft, topRight) = Game.Instance.Map.GetCorners(zone.GetCells());
         label.transform.localPosition = new Vector3((bottomLeft.X + bottomRight.X + topLeft.X + topRight.X) / 4f,
                                                     (bottomLeft.Z + bottomRight.Z + topLeft.Z + topRight.Z) / 4f, 0);
         label.transform.localPosition += new Vector3(0.5f, 0.5f);
-        return label;
     }
 
     private void SetZoneCellTile(ZoneBase newZone, string sprite, Cell cell)
@@ -136,6 +169,11 @@ public class ZoneController : MonoBehaviour
         tile.color = newZone.ColorString.GetColorFromHex();
 
         ZoneTilemap.SetTile(new Vector3Int(cell.X, cell.Z, 0), tile);
+    }
+
+    private void ClearZoneCellTile(Cell cell)
+    {
+        ZoneTilemap.SetTile(new Vector3Int(cell.X, cell.Z, 0), null);
     }
 
     internal void LoadArea(AreaZone area)
@@ -155,5 +193,4 @@ public class ZoneController : MonoBehaviour
         StorageZones.Add(storage);
         Zones.Add(storage, DrawZone(storage));
     }
-     
 }

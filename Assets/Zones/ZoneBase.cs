@@ -2,6 +2,7 @@
 using Assets.Structures;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -80,6 +81,11 @@ public abstract class ZoneBase
     {
         _cells.AddRange(cells);
         _cells.Distinct();
+    }
+
+    internal void RemoveCell(Cell cell)
+    {
+        _cells.Remove(cell);
     }
 
     public bool CanUse(IEntity entity)

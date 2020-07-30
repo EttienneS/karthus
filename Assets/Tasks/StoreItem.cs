@@ -23,7 +23,12 @@ namespace Assets.Tasks
         {
             get
             {
-                return "Moving item to store";
+                var message = $"Moving item '{_itemId}' to store";
+                if (_targetCellCoordinate != (0, 0))
+                {
+                    message += $" at {_targetCellCoordinate.x}:{_targetCellCoordinate.z}";
+                }
+                return message;
             }
         }
 
