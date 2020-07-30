@@ -24,7 +24,7 @@ public class ItemController : MonoBehaviour
         var options = new List<FilterViewOption>();
         foreach (var item in ItemDataReference.Values)
         {
-            options.Add(new FilterViewOption(item.Name, null, item.Categories));
+            options.Add(new FilterViewOption(item.Name, Game.Instance.SpriteStore.GetSprite(item.Icon), item.Categories));
         }
         return options;
     }

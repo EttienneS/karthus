@@ -51,7 +51,7 @@ public class VisualEffect : MonoBehaviour
         }
         if (Data.Properties.ContainsKey("Color"))
         {
-            Sprite.color = Data.GetProperty("Color").FromFloatArrayString();
+            Sprite.color = Data.GetProperty("Color").GetColorFromHex();
         }
 
         var x = float.Parse(Data.GetProperty("X"));

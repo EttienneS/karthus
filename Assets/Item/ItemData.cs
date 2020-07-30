@@ -55,6 +55,8 @@ namespace Assets.Item
             }
         }
 
+        public string Icon { get; set; }
+
         public string InUseById { get; set; }
         public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
         public string Mesh { get; set; }

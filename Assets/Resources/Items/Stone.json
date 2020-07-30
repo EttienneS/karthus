@@ -1,6 +1,7 @@
 {
   "Name": "Stone",
   "Mesh": "Blocks",
+  "Icon": "Stone",
   "Cost": {
     "Items": {
       "Stone": "1"

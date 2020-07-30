@@ -1,6 +1,7 @@
 {
   "Name": "Corn",
   "Mesh": "Corn_Crop",
+  "Icon": "Corn",
   "Cost": {
     "Items": {
       "Corn": "1"

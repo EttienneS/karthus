@@ -28,9 +28,9 @@ public abstract class ZoneBase
     }
 
     [JsonIgnore]
-    public float[] Color { get; set; } = ColorExtensions.GetRandomColor().ToFloatArray();
+    public string ColorString { get; set; } = ColorExtensions.GetRandomColor().ToColorHexString();
 
-    public string FactionName { get; set; }
+    public string FactionName { get; set; } 
 
     [JsonIgnore]
     public List<ItemData> Items

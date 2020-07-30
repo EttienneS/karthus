@@ -1,6 +1,7 @@
 {
   "Name": "Berries",
   "Mesh": "BushBerries_Crop",
+  "Icon": "Berry",
   "Cost": {
     "Items": {
       "Berries": "1"

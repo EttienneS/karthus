@@ -80,7 +80,7 @@ public class VisualEffectController : MonoBehaviour
         var effect = GetBase(EffectType.Sprite, holder);
 
         effect.Data.SetProperty("Sprite", sprite);
-        effect.Data.SetProperty("Color", color.ToFloatArrayString());
+        effect.Data.SetProperty("Color", color.ToColorHexString());
         effect.Data.LifeSpan = lifeSpan;
 
         effect.Data.SetProperty("X", vector.x.ToString());

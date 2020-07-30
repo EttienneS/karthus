@@ -133,7 +133,7 @@ public class ZoneController : MonoBehaviour
     {
         var tile = ScriptableObject.CreateInstance<Tile>();
         tile.sprite = Game.Instance.SpriteStore.GetSprite(sprite);
-        tile.color = newZone.Color.ToColor();
+        tile.color = newZone.ColorString.GetColorFromHex();
 
         ZoneTilemap.SetTile(new Vector3Int(cell.X, cell.Z, 0), tile);
     }
