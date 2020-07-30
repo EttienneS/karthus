@@ -1,5 +1,6 @@
 ﻿using Assets;
 using Assets.Item;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -57,5 +58,10 @@ public class StorageZone : ZoneBase
     private void FreeFilledReservedCells()
     {
         _reservedCells.RemoveAll(c => c.ContainsItems());
+    }
+
+    internal Cell GetLocation()
+    {
+        return GetCells()[0];
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Assets.Creature;
 using Assets.Item;
-using UnityEditorInternal.Profiling.Memory.Experimental;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Assets.Tasks
 {
@@ -71,16 +72,40 @@ namespace Assets.Tasks
 
         private (int x, int z) FindStoreCellForItem(CreatureData creature, ItemData item)
         {
-            foreach (var store in creature.Faction.StorageZones)
+            var zones = creature.Faction.StorageZones.Where(z => z.CanStore(item));
+
+            if (!zones.Any())
             {
-                if (store.CanStore(item))
+                throw new NoCellFoundException($"No cell found to store {item}");
+            }
+            else
+            {
+                var closestZone = FindClosestZone(item.Cell, zones.ToList());
+                var cell = closestZone.GetReservedCellFor(item);
+                return (cell.X, cell.Z);
+            }
+        }
+
+        private StorageZone FindClosestZone(Cell itemCell, List<StorageZone> zones)
+        {
+            var closestZone = zones[0];
+            var closestZoneDistance = itemCell.DistanceTo(closestZone.GetLocation());
+            foreach (var zone in zones)
+            {
+                if (zone == closestZone)
                 {
-                    var cell = store.GetReservedCellFor(item);
-                    return (cell.X, cell.Z);
+                    continue;
+                }
+
+                var distance = itemCell.DistanceTo(zone.GetLocation());
+                if (distance < closestZoneDistance)
+                {
+                    closestZone = zone;
+                    closestZoneDistance = distance;
                 }
             }
 
-            throw new NoCellFoundException($"No cell found to store {item}");
+            return closestZone;
         }
     }
 }
