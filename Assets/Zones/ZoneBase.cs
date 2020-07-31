@@ -1,11 +1,8 @@
 ﻿using Assets.Item;
 using Assets.Structures;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-
 
 public abstract class ZoneBase
 {
@@ -31,7 +28,7 @@ public abstract class ZoneBase
     [JsonIgnore]
     public string ColorString { get; set; } = ColorExtensions.GetRandomColor().ToColorHexString();
 
-    public string FactionName { get; set; } 
+    public string FactionName { get; set; }
 
     [JsonIgnore]
     public List<ItemData> Items
