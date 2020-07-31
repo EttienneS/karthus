@@ -56,7 +56,6 @@ public class Game : MonoBehaviour
     private Tooltip _currentTooltip;
     private ZoneInfoPanel _currentZoneInfoPanel;
     private DateTime? _lastAutoSave = null;
-    private TimeStep _oldTimeStep = TimeStep.Normal;
     private bool _shownOnce;
 
     public static Game Instance
@@ -146,74 +145,7 @@ public class Game : MonoBehaviour
         }
     }
 
-    private void HandleHotkeys()
-    {
-        if (Typing)
-        {
-            return;
-        }
-
-        if (Input.GetKeyDown("`"))
-        {
-            Game.Instance.DeveloperConsole.Toggle();
-        }
-        else if (Input.GetKeyDown("space"))
-        {
-            if (TimeManager.TimeStep == TimeStep.Paused)
-            {
-                TimeManager.TimeStep = _oldTimeStep;
-            }
-            else
-            {
-                _oldTimeStep = TimeManager.TimeStep;
-                TimeManager.Pause();
-            }
-        }
-        else if (Input.GetKeyDown("escape"))
-        {
-            MainMenuController.Toggle();
-        }
-        else if (Input.GetKeyDown("1"))
-        {
-            TimeManager.TimeStep = TimeStep.Slow;
-        }
-        else if (Input.GetKeyDown("2"))
-        {
-            TimeManager.TimeStep = TimeStep.Normal;
-        }
-        else if (Input.GetKeyDown("3"))
-        {
-            TimeManager.TimeStep = TimeStep.Fast;
-        }
-        else if (Input.GetKeyDown("4"))
-        {
-            TimeManager.TimeStep = TimeStep.Hyper;
-        }
-        else if (Input.GetKeyDown("b"))
-        {
-            OrderSelectionController.BuildTypeClicked();
-        }
-        else if (Input.GetKeyDown("n"))
-        {
-            OrderSelectionController.DesignateTypeClicked();
-        }
-        else if (Input.GetKeyDown("z"))
-        {
-            OrderSelectionController.ZoneTypeClicked();
-        }
-        else if (Input.GetKeyDown("c"))
-        {
-            OrderSelectionController.ConstructTypeClicked();
-        }
-        else if (Input.GetKeyDown("e"))
-        {
-            Cursor.RotateRight();
-        }
-        else if (Input.GetKeyDown("q"))
-        {
-            Cursor.RotateLeft();
-        }
-    }
+   
 
     private void InitFactions()
     {
@@ -362,7 +294,7 @@ public class Game : MonoBehaviour
             SaveManager.Save();
         }
 
-        HandleHotkeys();
+        HotkeyHandler.HandleHotkeys();
 
         DestroyItemsInCache();
     }

@@ -1,37 +1,22 @@
 ﻿using Assets.UI;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class UIController : MonoBehaviour
 {
     public FilterViewController FilterViewPrefab;
-    internal List<GameObject> UIControls;
-
     private FilterViewController _currentFilterViewController;
 
-    public void Awake()
-    {
-        UIControls = new List<GameObject>();
-        foreach (Transform child in transform)
-        {
-            UIControls.Add(child.gameObject);
-        }
-    }
 
     public void Hide()
     {
-        foreach (var child in UIControls)
-        {
-            child.SetActive(false);
-        }
+        gameObject.SetActive(false);
     }
 
     public void Show()
     {
-        foreach (var child in UIControls)
-        {
-            child.SetActive(true);
-        }
+        gameObject.SetActive(true);
     }
 
     public void ShowFilterView(string title, List<FilterViewOption> options, OnOptionSelectedDelegate onOptionSelectedDelegate)
@@ -48,5 +33,10 @@ public class UIController : MonoBehaviour
         {
             Destroy(_currentFilterViewController.gameObject);
         }
+    }
+
+    internal void Toggle()
+    {
+        gameObject.SetActive(!gameObject.activeInHierarchy);
     }
 }
