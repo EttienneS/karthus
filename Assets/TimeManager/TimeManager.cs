@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -23,17 +22,13 @@ public class TimeManager : MonoBehaviour
     };
 
     public float LightAngleY = 30f;
-
     public float LightAngleZ = 30f;
-
     public float MaxLightAngle = 160f;
-
     public float MinLightAngle = 20f;
 
     internal float CreatureTick = 0.05f;
 
-    private TimeStep _timeStep;
-
+    private TimeStep _targetTimeStep;
     private float _timeTicks;
 
     public string Now
@@ -44,42 +39,17 @@ public class TimeManager : MonoBehaviour
         }
     }
 
-    public TimeStep TimeStep
-    {
-        get
-        {
-            return _timeStep;
-        }
-        set
-        {
-            _timeStep = value;
-            if (_timeStep == TimeStep.Paused)
-            {
-                // camera and other systems run on fixedDeltaTime, ensure they are always set to something
-                Time.timeScale = 0.000000001f;
-                Time.fixedDeltaTime = 0.02f;
-                Game.Instance.Paused = true;
-            }
-            else
-            {
-                Time.timeScale = ((int)_timeStep) * 0.25f;
-                Time.fixedDeltaTime = 0.02f * Time.timeScale;
-                Game.Instance.Paused = false;
-            }
-        }
-    }
-
     internal bool Paused
     {
         get
         {
-            return TimeStep == TimeStep.Paused;
+            return _targetTimeStep == TimeStep.Paused;
         }
     }
 
     public void Awake()
     {
-        TimeStep = TimeStep.Normal;
+        SetTimeStep(TimeStep.Normal);
 
         var light = Color.white;
         var dark = ColorConstants.DarkBlueAccent;
@@ -93,6 +63,50 @@ public class TimeManager : MonoBehaviour
         };
     }
 
+    public TimeStep GetTimeStep()
+    {
+        return _targetTimeStep;
+    }
+
+
+    public void SetTimeStep(TimeStep timeStep)
+    {
+        _targetTimeStep = timeStep;
+
+    }
+
+    private void UpdateTime()
+    {
+        if (_targetTimeStep == TimeStep.Paused && Time.timeScale.AlmostEquals(0, 0.000000001f))
+        {
+            Time.timeScale = 0.000000001f;
+            Time.fixedDeltaTime = 0.02f;
+
+            Game.Instance.Paused = true;
+        }
+        else
+        {
+            Game.Instance.Paused = false;
+            if (Time.timeScale.AlmostEquals((float)_targetTimeStep, 0.05f))
+            {
+                Time.timeScale = (float)_targetTimeStep;
+            }
+            else
+            {
+                var targetTime = (float)_targetTimeStep;
+                if (Time.timeScale < targetTime)
+                {
+                    Time.timeScale += Time.deltaTime;
+                }
+                else if (Time.timeScale > targetTime)
+                {
+                    Time.timeScale -= Time.deltaTime;
+                }
+            }
+            Time.fixedDeltaTime = 0.02f * Time.timeScale;
+        }
+    }
+
     public int StartTimer(int totalMinutes)
     {
         return Data.CreateTimer(totalMinutes);
@@ -101,6 +115,8 @@ public class TimeManager : MonoBehaviour
     public void Update()
     {
         _timeTicks += Time.deltaTime;
+
+        UpdateTime();
 
         if (_timeTicks >= 1)
         {
@@ -127,9 +143,10 @@ public class TimeManager : MonoBehaviour
     {
         return Data.GetTimer(timerId);
     }
+
     internal void Pause()
     {
-        TimeStep = TimeStep.Paused;
+        SetTimeStep(TimeStep.Paused);
     }
 
     private void UpdateGlobalLight()

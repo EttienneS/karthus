@@ -379,7 +379,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 5246461426214547476}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 5246461426214547477}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d8f11b996f1fcc24cae4378c6bee835e, type: 3}
@@ -572,10 +572,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: Main Camera
       objectReference: {fileID: 0}
+    - target: {fileID: 5246461426590746730, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5246461426590746731, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
         type: 3}
       propertyPath: m_ClearFlags
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5246461426590746731, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
+        type: 3}
+      propertyPath: field of view
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 5246461426590746772, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
         type: 3}
@@ -634,6 +644,71 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f, type: 3}
+--- !u!1 &5246461426214547477 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5246461426590746728, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
+    type: 3}
+  m_PrefabInstance: {fileID: 5246461426214547476}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5246461426214547478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5246461426214547477}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28ef8c68bade09b41aca258d42a632f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lastTab: 0
+  movementSettingsFoldout: 0
+  zoomingSettingsFoldout: 0
+  rotationSettingsFoldout: 0
+  heightSettingsFoldout: 0
+  mapLimitSettingsFoldout: 0
+  targetingSettingsFoldout: 0
+  inputSettingsFoldout: 0
+  m_Transform: {fileID: 0}
+  useFixedUpdate: 0
+  keyboardMovementSpeed: 5
+  screenEdgeMovementSpeed: 3
+  followingSpeed: 5
+  rotationSped: 3
+  panningSpeed: 10
+  mouseRotationSpeed: 10
+  autoHeight: 1
+  groundMask:
+    m_Bits: 4294967295
+  maxHeight: 10
+  minHeight: 15
+  heightDampening: 5
+  keyboardZoomingSensitivity: 2
+  scrollWheelZoomingSensitivity: 25
+  zoomPos: 0
+  limitMap: 1
+  limitX: 50
+  limitY: 50
+  targetFollow: {fileID: 0}
+  targetOffset: {x: 0, y: 0, z: 0}
+  useScreenEdgeInput: 1
+  screenEdgeBorder: 25
+  useKeyboardInput: 1
+  horizontalAxis: Horizontal
+  verticalAxis: Vertical
+  usePanning: 1
+  panningKey: 325
+  useKeyboardZooming: 1
+  zoomInKey: 101
+  zoomOutKey: 113
+  useScrollwheelZooming: 1
+  zoomingAxis: Mouse ScrollWheel
+  useKeyboardRotation: 1
+  rotateRightKey: 120
+  rotateLeftKey: 122
+  useMouseRotation: 1
+  mouseRotationKey: 324
 --- !u!1001 &6943260559078519373
 PrefabInstance:
   m_ObjectHideFlags: 0

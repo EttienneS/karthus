@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,11 +15,11 @@ public class TimePanel : MonoBehaviour
 
     public void Start()
     {
-        PauseButton.onClick.AddListener(() => Game.Instance.TimeManager.TimeStep = TimeStep.Paused);
-        SlowButton.onClick.AddListener(() => Game.Instance.TimeManager.TimeStep = TimeStep.Slow);
-        NormalButton.onClick.AddListener(() => Game.Instance.TimeManager.TimeStep = TimeStep.Normal);
-        FastButton.onClick.AddListener(() => Game.Instance.TimeManager.TimeStep = TimeStep.Fast);
-        FasterButton.onClick.AddListener(() => Game.Instance.TimeManager.TimeStep = TimeStep.Hyper);
+        PauseButton.onClick.AddListener(() => Game.Instance.TimeManager.SetTimeStep(TimeStep.Paused));
+        SlowButton.onClick.AddListener(() => Game.Instance.TimeManager.SetTimeStep(TimeStep.Slow));
+        NormalButton.onClick.AddListener(() => Game.Instance.TimeManager.SetTimeStep(TimeStep.Normal));
+        FastButton.onClick.AddListener(() => Game.Instance.TimeManager.SetTimeStep(TimeStep.Fast));
+        FasterButton.onClick.AddListener(() => Game.Instance.TimeManager.SetTimeStep(TimeStep.Hyper));
 
         AllButtons = new Dictionary<TimeStep, Button>
         {
@@ -36,7 +35,7 @@ public class TimePanel : MonoBehaviour
     {
         foreach (var step in AllButtons)
         {
-            step.Value.GetComponent<Image>().color = step.Key == Game.Instance.TimeManager.TimeStep ? ColorConstants.BlueBase : ColorConstants.GreyBase;
+            step.Value.GetComponent<Image>().color = step.Key == Game.Instance.TimeManager.GetTimeStep() ? ColorConstants.BlueBase : ColorConstants.GreyBase;
         }
 
         TimeDisplay.text = $"{Game.Instance.TimeManager.Data.Hour.ToString().PadLeft(2, '0')}:{Game.Instance.TimeManager.Data.Minute.ToString().PadLeft(2, '0')}";

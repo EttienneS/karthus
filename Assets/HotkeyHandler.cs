@@ -19,13 +19,13 @@ namespace Assets
             }
             else if (Input.GetKeyDown("space"))
             {
-                if (Game.Instance.TimeManager.TimeStep == TimeStep.Paused)
+                if (Game.Instance.TimeManager.GetTimeStep() == TimeStep.Paused)
                 {
-                    Game.Instance.TimeManager.TimeStep = _oldTimeStep;
+                    Game.Instance.TimeManager.SetTimeStep(_oldTimeStep);
                 }
                 else
                 {
-                    _oldTimeStep = Game.Instance.TimeManager.TimeStep;
+                    _oldTimeStep = Game.Instance.TimeManager.GetTimeStep();
                     Game.Instance.TimeManager.Pause();
                 }
             }
@@ -35,19 +35,19 @@ namespace Assets
             }
             else if (Input.GetKeyDown("1"))
             {
-                Game.Instance.TimeManager.TimeStep = TimeStep.Slow;
+                Game.Instance.TimeManager.SetTimeStep(TimeStep.Slow);
             }
             else if (Input.GetKeyDown("2"))
             {
-                Game.Instance.TimeManager.TimeStep = TimeStep.Normal;
+                Game.Instance.TimeManager.SetTimeStep(TimeStep.Normal);
             }
             else if (Input.GetKeyDown("3"))
             {
-                Game.Instance.TimeManager.TimeStep = TimeStep.Fast;
+                Game.Instance.TimeManager.SetTimeStep(TimeStep.Fast);
             }
             else if (Input.GetKeyDown("4"))
             {
-                Game.Instance.TimeManager.TimeStep = TimeStep.Hyper;
+                Game.Instance.TimeManager.SetTimeStep(TimeStep.Hyper);
             }
             else if (Input.GetKeyDown("b"))
             {
