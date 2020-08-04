@@ -28,7 +28,7 @@ public class TimeManager : MonoBehaviour
 
     internal float CreatureTick = 0.05f;
 
-    private TimeStep _targetTimeStep;
+    private TimeStep _timeStep;
     private float _timeTicks;
 
     public string Now
@@ -43,7 +43,7 @@ public class TimeManager : MonoBehaviour
     {
         get
         {
-            return _targetTimeStep == TimeStep.Paused;
+            return _timeStep == TimeStep.Paused;
         }
     }
 
@@ -65,44 +65,23 @@ public class TimeManager : MonoBehaviour
 
     public TimeStep GetTimeStep()
     {
-        return _targetTimeStep;
+        return _timeStep;
     }
-
 
     public void SetTimeStep(TimeStep timeStep)
     {
-        _targetTimeStep = timeStep;
+        _timeStep = timeStep;
 
-    }
-
-    private void UpdateTime()
-    {
-        if (_targetTimeStep == TimeStep.Paused && Time.timeScale.AlmostEquals(0, 0.000000001f))
+        if (_timeStep == TimeStep.Paused)
         {
+            Game.Instance.Paused = true;
             Time.timeScale = 0.000000001f;
             Time.fixedDeltaTime = 0.02f;
-
-            Game.Instance.Paused = true;
         }
         else
         {
             Game.Instance.Paused = false;
-            if (Time.timeScale.AlmostEquals((float)_targetTimeStep, 0.05f))
-            {
-                Time.timeScale = (float)_targetTimeStep;
-            }
-            else
-            {
-                var targetTime = (float)_targetTimeStep;
-                if (Time.timeScale < targetTime)
-                {
-                    Time.timeScale += Time.deltaTime;
-                }
-                else if (Time.timeScale > targetTime)
-                {
-                    Time.timeScale -= Time.deltaTime;
-                }
-            }
+            Time.timeScale = (int)_timeStep;
             Time.fixedDeltaTime = 0.02f * Time.timeScale;
         }
     }
@@ -115,8 +94,6 @@ public class TimeManager : MonoBehaviour
     public void Update()
     {
         _timeTicks += Time.deltaTime;
-
-        UpdateTime();
 
         if (_timeTicks >= 1)
         {

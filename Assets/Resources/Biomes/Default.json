@@ -53,7 +53,7 @@
         "Rock": 0.01,
         "Bush": 0.05,
         "Birch": 0.01,
-        "Grass": 0.1,
+        "Grass": 0.3,
         "Flower": 0.1,
         "Tree": 0.01
       },
@@ -77,19 +77,6 @@
       "Blue": 0,
       "Alpha": 1
     }
-    //,
-    //{
-    //  "Content": {
-    //    "Mountain": 0.8
-    //  },
-    //  "Min": 0.85,
-    //  "Max": 1,
-    //  "Name": "Stone",
-    //  "Red": 0,
-    //  "Green": 0,
-    //  "Blue": 1,
-    //  "Alpha": 0
-    //}
   ],
   "Name": "Default",
   "Rarity": 1
