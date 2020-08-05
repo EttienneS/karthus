@@ -5,6 +5,7 @@ public partial class OrderSelectionController //.Designate
     internal const string AttackIcon = "war_t";
     internal const string DefaultRemoveIcon = "cancel";
     internal const string MoveIcon = "location_t";
+    internal const string FollowIcon = "magnifier_t";
 
     internal OrderButton TaskButton;
 

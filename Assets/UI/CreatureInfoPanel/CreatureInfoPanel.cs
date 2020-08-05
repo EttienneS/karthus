@@ -64,6 +64,7 @@ public class CreatureInfoPanel : MonoBehaviour
             SkillsPanel.Load(creature);
             NeedsPanel.Load(creature);
 
+            AddButton(OrderSelectionController.FollowIcon).SetOnClick(() => Game.Instance.CameraController.FollowTransform(creatures.First().CreatureRenderer.transform));
             AddButton(OrderSelectionController.MoveIcon).SetOnClick(() => MoveClicked(creatures));
             AddButton(OrderSelectionController.AttackIcon).SetOnClick(() => AttackClicked(creatures));
             AddButton(OrderSelectionController.DefaultRemoveIcon).SetOnClick(() =>

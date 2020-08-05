@@ -1,83 +1,189 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Camera
 {
     public class CameraController : MonoBehaviour
     {
-        public UnityEngine.Camera Camera;
-        public float MaxAngle = 90;
-        public float MinAngle = 20;
-        public float SpeedMax = 2f;
-        public float SpeedMin = 0.1f;
-        public int ZoomMax = 15;
-        public int ZoomMin = 2;
-        public float ZoomSpeed = 5;
+        private Transform _followTransform;
 
-        private const int _zoomBound = 12;
+        public UnityEngine.Camera Camera;
+
+        public float normalSpeed;
+        public float fastSpeed;
+        public float movementSpeed;
+        public float movementTime;
+        public float rotationAmount;
+        public Vector3 zoomAmount;
+
+        public Vector3 newPosition;
+        public Quaternion newRotation;
+        public Vector3 newZoom;
+
+        public Vector3 dragStartPosition;
+        public Vector3 dragCurrentPosition;
+
+        public Vector3 rotateStartPosition;
+        public Vector3 rotateCurrentPosition;
 
         public void Start()
         {
-            Camera = GetComponent<UnityEngine.Camera>();
+            newPosition = transform.position;
+            newRotation = transform.rotation;
+            newZoom = Camera.transform.localPosition;
         }
 
         public void Update()
         {
-            if (Game.Instance == null || Game.Instance.Typing)
+            if (_followTransform != null)
             {
-                return;
+                transform.position = _followTransform.position;
             }
-
-            //var rotation = new Vector3(0, 15, 0);
-            //if (Input.GetKeyDown(KeyCode.E))
-            //{
-            //    Camera.transform.eulerAngles += rotation;
-            //}
-            //else if (Input.GetKeyDown(KeyCode.Q))
-            //{
-            //    Camera.transform.eulerAngles -= rotation;
-            //}
-
-            (float xAxisInput, float zAxisInput, float yAxisInput) = GetCameraInput();
-
-            if (xAxisInput != 0 || zAxisInput != 0 || yAxisInput != 0)
+            else
             {
-                var newY = Mathf.Clamp(Camera.transform.position.y - (yAxisInput * ZoomSpeed), ZoomMin, ZoomMax);
-
-                var yScaledSpeed = MathHelper.ScaleValueInRange(SpeedMin, SpeedMax, ZoomMin, ZoomMax, newY);
-
-                var newX = Mathf.Clamp(transform.position.x + (xAxisInput * yScaledSpeed), Game.Instance.Map.MinX - _zoomBound, Game.Instance.Map.MaxX);
-                var newZ = Mathf.Clamp(transform.position.z + (zAxisInput * yScaledSpeed), Game.Instance.Map.MinZ - _zoomBound, Game.Instance.Map.MaxZ);
-
-                Camera.transform.position = new Vector3(newX, newY, newZ);
+                HandleMouseInput();
+                HandleMovementInput();
             }
-
-            var scaledCameraTiltAngleX = Mathf.Lerp(MinAngle, MaxAngle, (transform.position.y - ZoomMin) / (ZoomMax - ZoomMin));
-            Camera.transform.eulerAngles = new Vector3(scaledCameraTiltAngleX, Camera.transform.eulerAngles.y, 0);
+            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+            {
+                StopFollowing();
+            }
         }
 
-        private (float horizontal, float vertical, float zoom) GetCameraInput()
+        public void FollowTransform(Transform transform)
         {
-            var horizontal = Input.GetAxis("Horizontal") / Time.timeScale;
-            var vertical = Input.GetAxis("Vertical") / Time.timeScale;
-            var zoom = Input.GetAxis("Mouse ScrollWheel");
+            if (_followTransform == transform)
+            {
+                StopFollowing();
+            }
+            else
+            {
+                _followTransform = transform;
+            }
+        }
 
-            return (horizontal, vertical, zoom);
+        public void StopFollowing()
+        {
+            _followTransform = null;
+        }
+
+        private void HandleMouseInput()
+        {
+            // https://www.youtube.com/watch?v=rnqF6S7PfFA&t=212s (from 12:00)
+
+            if (Input.mouseScrollDelta.y != 0)
+            {
+                newZoom += Input.mouseScrollDelta.y * zoomAmount;
+            }
+
+
+            if (Input.GetMouseButtonDown(1))
+            {
+                Plane plane = new Plane(Vector3.up, Vector3.zero);
+                Ray ray = Camera.ScreenPointToRay(Input.mousePosition);
+
+                if (plane.Raycast(ray, out float entry))
+                {
+                    dragStartPosition = ray.GetPoint(entry);
+                }
+            }
+
+            if (Input.GetMouseButton(1))
+            {
+                Plane plane = new Plane(Vector3.up, Vector3.zero);
+                Ray ray = Camera.ScreenPointToRay(Input.mousePosition);
+
+                if (plane.Raycast(ray, out float entry))
+                {
+                    dragCurrentPosition = ray.GetPoint(entry);
+                    newPosition = transform.position + dragStartPosition - dragCurrentPosition;
+                }
+            }
+
+            if (Input.GetMouseButtonDown(2))
+            {
+                rotateStartPosition = Input.mousePosition;
+            }
+
+            if (Input.GetMouseButton(2))
+            {
+                rotateCurrentPosition = Input.mousePosition;
+
+                var diff = rotateStartPosition - rotateCurrentPosition;
+                rotateStartPosition = rotateCurrentPosition;
+
+                newRotation *= Quaternion.Euler(Vector3.up * (-diff.x / 5));
+            }
+        }
+
+        private void HandleMovementInput()
+        {
+            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+            {
+                movementSpeed = fastSpeed;
+            }
+            else
+            {
+                movementSpeed = normalSpeed;
+            }
+
+            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+            {
+                newPosition += (transform.forward * movementSpeed);
+            }
+            if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+            {
+                newPosition += (transform.forward * -movementSpeed);
+            }
+            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+            {
+                newPosition += (transform.right * movementSpeed);
+            }
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+            {
+                newPosition += (transform.right * -movementSpeed);
+            }
+
+            if (Input.GetKey(KeyCode.Q))
+            {
+                newRotation *= Quaternion.Euler(Vector3.up * rotationAmount);
+            }
+            if (Input.GetKey(KeyCode.E))
+            {
+                newRotation *= Quaternion.Euler(Vector3.up * -rotationAmount);
+            }
+
+            if (Input.GetKey(KeyCode.R))
+            {
+                newZoom += zoomAmount;
+            }
+            if (Input.GetKey(KeyCode.F))
+            {
+                newZoom -= zoomAmount;
+            }
+
+            transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * movementTime);
+            transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, Time.deltaTime * movementTime);
+            Camera.transform.localPosition = Vector3.Lerp(Camera.transform.localPosition, newZoom, Time.deltaTime * movementTime);
         }
 
         public void ViewPoint(Vector3 point)
         {
-            var x = Mathf.Clamp(point.x, Game.Instance.Map.MinX - _zoomBound, Game.Instance.Map.MaxX);
-            var y = Mathf.Clamp(point.y, ZoomMin, ZoomMax);
-            var z = Mathf.Clamp(point.z - _zoomBound, Game.Instance.Map.MinZ - _zoomBound, Game.Instance.Map.MaxZ);
+            const int zoomBound = 12;
+            var x = Mathf.Clamp(point.x, Game.Instance.Map.MinX - zoomBound, Game.Instance.Map.MaxX);
+            var y = 10;
+            var z = Mathf.Clamp(point.z - zoomBound, Game.Instance.Map.MinZ - zoomBound, Game.Instance.Map.MaxZ);
 
-            Camera.transform.position = new Vector3(x, y, z);
+            transform.position = new Vector3(x, y, z);
         }
 
         internal void MoveToWorldCenter()
         {
             transform.position = new Vector3((Game.Instance.MapData.ChunkSize * Game.Instance.MapData.Size) / 2,
-                                              20,
+                                              10,
                                              (Game.Instance.MapData.ChunkSize * Game.Instance.MapData.Size) / 2);
+
+            newPosition = transform.position;
         }
     }
 }
