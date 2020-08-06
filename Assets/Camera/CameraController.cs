@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Camera
 {
@@ -15,6 +14,9 @@ namespace Camera
         public float movementTime;
         public float rotationAmount;
         public Vector3 zoomAmount;
+
+        public float minZoom;
+        public float maxZoom;
 
         public Vector3 newPosition;
         public Quaternion newRotation;
@@ -70,17 +72,15 @@ namespace Camera
         private void HandleMouseInput()
         {
             // https://www.youtube.com/watch?v=rnqF6S7PfFA&t=212s (from 12:00)
-
             if (Input.mouseScrollDelta.y != 0)
             {
                 newZoom += Input.mouseScrollDelta.y * zoomAmount;
             }
 
-
             if (Input.GetMouseButtonDown(1))
             {
-                Plane plane = new Plane(Vector3.up, Vector3.zero);
-                Ray ray = Camera.ScreenPointToRay(Input.mousePosition);
+                var plane = new Plane(Vector3.up, Vector3.zero);
+                var ray = Camera.ScreenPointToRay(Input.mousePosition);
 
                 if (plane.Raycast(ray, out float entry))
                 {
@@ -90,8 +90,8 @@ namespace Camera
 
             if (Input.GetMouseButton(1))
             {
-                Plane plane = new Plane(Vector3.up, Vector3.zero);
-                Ray ray = Camera.ScreenPointToRay(Input.mousePosition);
+                var plane = new Plane(Vector3.up, Vector3.zero);
+                var ray = Camera.ScreenPointToRay(Input.mousePosition);
 
                 if (plane.Raycast(ray, out float entry))
                 {
@@ -162,16 +162,36 @@ namespace Camera
                 newZoom -= zoomAmount;
             }
 
-            transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * movementTime);
+            transform.position = ClampPosition(Vector3.Lerp(transform.position, newPosition, Time.deltaTime * movementTime));
             transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, Time.deltaTime * movementTime);
-            Camera.transform.localPosition = Vector3.Lerp(Camera.transform.localPosition, newZoom, Time.deltaTime * movementTime);
+            Camera.transform.localPosition = ClampZoom(Vector3.Lerp(Camera.transform.localPosition, newZoom, Time.deltaTime * movementTime));
+        }
+
+        private Vector3 ClampPosition(Vector3 position)
+        {
+            return new Vector3(Mathf.Clamp(position.x, Game.Instance.Map.MinX - 5f, Game.Instance.Map.MaxX),
+                               position.y,
+                               Mathf.Clamp(position.z, Game.Instance.Map.MinZ - 5f, Game.Instance.Map.MaxZ));
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = new Color(1, 0, 0, 0.75f);
+            Gizmos.DrawCube(transform.position, new Vector3(0.25f, 0.25f, 0.25f));
+        }
+
+        private Vector3 ClampZoom(Vector3 zoom)
+        {
+            return new Vector3(zoom.x,
+                               Mathf.Clamp(zoom.y, minZoom, maxZoom),
+                               Mathf.Clamp(zoom.z, -maxZoom, -minZoom));
         }
 
         public void ViewPoint(Vector3 point)
         {
             const int zoomBound = 12;
             var x = Mathf.Clamp(point.x, Game.Instance.Map.MinX - zoomBound, Game.Instance.Map.MaxX);
-            var y = 10;
+            var y = 1;
             var z = Mathf.Clamp(point.z - zoomBound, Game.Instance.Map.MinZ - zoomBound, Game.Instance.Map.MaxZ);
 
             transform.position = new Vector3(x, y, z);
@@ -180,7 +200,7 @@ namespace Camera
         internal void MoveToWorldCenter()
         {
             transform.position = new Vector3((Game.Instance.MapData.ChunkSize * Game.Instance.MapData.Size) / 2,
-                                              10,
+                                              1,
                                              (Game.Instance.MapData.ChunkSize * Game.Instance.MapData.Size) / 2);
 
             newPosition = transform.position;
