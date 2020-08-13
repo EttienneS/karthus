@@ -29,7 +29,6 @@ public class Game : MonoBehaviour
     public ItemInfoPanel ItemInfoPanelPrefab;
     public LoadPanel LoadPanelPrefab;
     public MainMenuController MainMenuController;
-    public Map Map;
     public MapData MapData;
     public MeshRendererFactory MeshRendererFactory;
     public OrderInfoPanel OrderInfoPanel;
@@ -62,7 +61,8 @@ public class Game : MonoBehaviour
     {
         get
         {
-            return _instance != null ? _instance : (_instance = GameObject.Find("GameController").GetComponent<Game>());
+            
+            return _instance != null ? _instance : (_instance = FindObjectOfType<Game>());
         }
         set
         {
@@ -166,7 +166,7 @@ public class Game : MonoBehaviour
 
     private void Initialize()
     {
-        Map.GenerateMap();
+        Map.Instance.GenerateMap();
         FinalizeMap();
     }
 

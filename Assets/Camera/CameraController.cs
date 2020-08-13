@@ -169,9 +169,9 @@ namespace Camera
 
         private Vector3 ClampPosition(Vector3 position)
         {
-            return new Vector3(Mathf.Clamp(position.x, Game.Instance.Map.MinX - 5f, Game.Instance.Map.MaxX),
+            return new Vector3(Mathf.Clamp(position.x, Map.Instance.MinX - 5f, Map.Instance.MaxX),
                                position.y,
-                               Mathf.Clamp(position.z, Game.Instance.Map.MinZ - 5f, Game.Instance.Map.MaxZ));
+                               Mathf.Clamp(position.z, Map.Instance.MinZ - 5f, Map.Instance.MaxZ));
         }
 
         private void OnDrawGizmos()
@@ -190,9 +190,9 @@ namespace Camera
         public void ViewPoint(Vector3 point)
         {
             const int zoomBound = 12;
-            var x = Mathf.Clamp(point.x, Game.Instance.Map.MinX - zoomBound, Game.Instance.Map.MaxX);
+            var x = Mathf.Clamp(point.x, Map.Instance.MinX - zoomBound, Map.Instance.MaxX);
             var y = 1;
-            var z = Mathf.Clamp(point.z - zoomBound, Game.Instance.Map.MinZ - zoomBound, Game.Instance.Map.MaxZ);
+            var z = Mathf.Clamp(point.z - zoomBound, Map.Instance.MinZ - zoomBound, Map.Instance.MaxZ);
 
             transform.position = new Vector3(x, y, z);
         }

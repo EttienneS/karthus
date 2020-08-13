@@ -8,6 +8,21 @@ using UnityEngine;
 
 public class Map : MonoBehaviour
 {
+    private static Map _instance;
+
+    public static Map Instance
+    {
+        get
+        {
+
+            return _instance != null ? _instance : (_instance = FindObjectOfType<Map>());
+        }
+        set
+        {
+            _instance = value;
+        }
+    }
+
     public const int PixelsPerCell = 64;
     public Dictionary<(int x, int z), Cell> CellLookup = new Dictionary<(int x, int z), Cell>();
     public List<Cell> Cells = new List<Cell>();
@@ -91,8 +106,8 @@ public class Map : MonoBehaviour
 
     public Cell CreateCell(int x, int z)
     {
-        var noiseMapHeight = Game.Instance.Map.GetNoiseMapPoint(x, z);
-        var biome = Game.Instance.Map.GetBiome(x, z).GetRegion(noiseMapHeight);
+        var noiseMapHeight = Map.Instance.GetNoiseMapPoint(x, z);
+        var biome = Map.Instance.GetBiome(x, z).GetRegion(noiseMapHeight);
 
         var y = Game.Instance.MapData.StructureLevel;
 
@@ -105,7 +120,7 @@ public class Map : MonoBehaviour
             SearchPhase = 0
         };
 
-        Game.Instance.Map.CellLookup.Add((x, z), cell);
+        Map.Instance.CellLookup.Add((x, z), cell);
 
         return cell;
     }
@@ -114,7 +129,7 @@ public class Map : MonoBehaviour
     {
         var size = Game.Instance.MaxSize;
         MakeCells(size);
-        Game.Instance.Map.Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
+        Map.Instance.Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
 
         if (SaveManager.SaveToLoad == null)
         {
@@ -122,7 +137,7 @@ public class Map : MonoBehaviour
             {
                 for (var y = 0; y < Game.Instance.MapData.Size; y++)
                 {
-                    Game.Instance.Map.MakeChunk(new Chunk(x, y));
+                    Map.Instance.MakeChunk(new Chunk(x, y));
                 }
             }
             PopulateCells();
@@ -131,7 +146,7 @@ public class Map : MonoBehaviour
         {
             foreach (var chunk in SaveManager.SaveToLoad.Chunks)
             {
-                Game.Instance.Map.MakeChunk(chunk);
+                Map.Instance.MakeChunk(chunk);
             }
         }
     }
@@ -213,12 +228,12 @@ public class Map : MonoBehaviour
 
     public (Cell bottomLeft, Cell bottomRight, Cell topLeft, Cell topRight) GetCorners(List<Cell> square)
     {
-        var (minx, maxx, minz, maxz) = Game.Instance.Map.GetMinMax(square);
+        var (minx, maxx, minz, maxz) = Map.Instance.GetMinMax(square);
 
-        return (Game.Instance.Map.GetCellAtCoordinate(minx, minz),
-                Game.Instance.Map.GetCellAtCoordinate(maxx, minz),
-                Game.Instance.Map.GetCellAtCoordinate(minx, maxz),
-                Game.Instance.Map.GetCellAtCoordinate(maxx, maxz));
+        return (Map.Instance.GetCellAtCoordinate(minx, minz),
+                Map.Instance.GetCellAtCoordinate(maxx, minz),
+                Map.Instance.GetCellAtCoordinate(minx, maxz),
+                Map.Instance.GetCellAtCoordinate(maxx, maxz));
     }
 
     public (int minx, int maxx, int minz, int maxz) GetMinMax(List<Cell> cells)
@@ -285,18 +300,18 @@ public class Map : MonoBehaviour
         chunk.name = $"Chunk: {data.X}_{data.Z}";
         chunk.Data = data;
 
-        Game.Instance.Map.Chunks.Add((data.X, data.Z), chunk);
+        Map.Instance.Chunks.Add((data.X, data.Z), chunk);
 
         return chunk;
     }
 
     public void MakeFactionBootStrap(Faction faction)
     {
-        var center = Game.Instance.Map.GetNearestPathableCell(Game.Instance.Map.Center, Mobility.Walk, 10);
+        var center = Map.Instance.GetNearestPathableCell(Map.Instance.Center, Mobility.Walk, 10);
 
-        Game.Instance.FactionController.PlayerFaction.HomeCells.AddRange(Game.Instance.Map.GetCircle(Game.Instance.Map.Center, 15));
+        Game.Instance.FactionController.PlayerFaction.HomeCells.AddRange(Map.Instance.GetCircle(Map.Instance.Center, 15));
 
-        var open = Game.Instance.Map.GetCircle(center, 5).Where(c => c.PathableWith(Mobility.Walk) && c.Structure == null);
+        var open = Map.Instance.GetCircle(center, 5).Where(c => c.PathableWith(Mobility.Walk) && c.Structure == null);
         Game.Instance.ItemController.SpawnItem("Berries", open.GetRandomItem(), 250);
         Game.Instance.ItemController.SpawnItem("Wood", open.GetRandomItem(), 250);
         Game.Instance.ItemController.SpawnItem("Stone", open.GetRandomItem(), 250);
@@ -304,7 +319,7 @@ public class Map : MonoBehaviour
         for (int i = 0; i < Game.Instance.MapData.CreaturesToSpawn; i++)
         {
             var c = Game.Instance.CreatureController.SpawnCreature(Game.Instance.CreatureController.GetCreatureOfType("Person"),
-                                                                   Game.Instance.Map.GetNearestPathableCell(center, Mobility.Walk, 10),
+                                                                   Map.Instance.GetNearestPathableCell(center, Mobility.Walk, 10),
                                                                    faction);
         }
     }
@@ -322,10 +337,10 @@ public class Map : MonoBehaviour
             {
                 var creature = Game.Instance.CreatureController.GetCreatureOfType(monster.Key);
 
-                var spot = Game.Instance.Map.GetCircle(Game.Instance.Map.Center, 25).GetRandomItem();
+                var spot = Map.Instance.GetCircle(Map.Instance.Center, 25).GetRandomItem();
                 if (spot.TravelCost <= 0 && creature.Mobility != Mobility.Fly)
                 {
-                    spot = Game.Instance.Map.CellLookup.Values.Where(c => c.TravelCost > 0).GetRandomItem();
+                    spot = Map.Instance.CellLookup.Values.Where(c => c.TravelCost > 0).GetRandomItem();
                 }
                 Game.Instance.CreatureController.SpawnCreature(creature, spot, Game.Instance.FactionController.MonsterFaction);
             }
@@ -345,12 +360,12 @@ public class Map : MonoBehaviour
     {
         using (Instrumenter.Start())
         {
-            Game.Instance.Map.Cells = new List<Cell>();
+            Map.Instance.Cells = new List<Cell>();
             for (var y = 0; y < 0 + size; y++)
             {
                 for (var x = 0; x < 0 + size; x++)
                 {
-                    Game.Instance.Map.Cells.Add(CreateCell(x, y));
+                    Map.Instance.Cells.Add(CreateCell(x, y));
                 }
             }
 
@@ -359,25 +374,25 @@ public class Map : MonoBehaviour
             {
                 for (var x = 0; x < 0 + size; x++)
                 {
-                    var cell = Game.Instance.Map.CellLookup[(x, z)];
+                    var cell = Map.Instance.CellLookup[(x, z)];
                     if (x > 0)
                     {
-                        cell.SetNeighbor(Direction.W, Game.Instance.Map.CellLookup[(x - 1, z)]);
+                        cell.SetNeighbor(Direction.W, Map.Instance.CellLookup[(x - 1, z)]);
 
                         if (z > 0)
                         {
-                            cell.SetNeighbor(Direction.SW, Game.Instance.Map.CellLookup[(x - 1, z - 1)]);
+                            cell.SetNeighbor(Direction.SW, Map.Instance.CellLookup[(x - 1, z - 1)]);
 
                             if (x < size - 1)
                             {
-                                cell.SetNeighbor(Direction.SE, Game.Instance.Map.CellLookup[(x + 1, z - 1)]);
+                                cell.SetNeighbor(Direction.SE, Map.Instance.CellLookup[(x + 1, z - 1)]);
                             }
                         }
                     }
 
                     if (z > 0)
                     {
-                        cell.SetNeighbor(Direction.S, Game.Instance.Map.CellLookup[(x, z - 1)]);
+                        cell.SetNeighbor(Direction.S, Map.Instance.CellLookup[(x, z - 1)]);
                     }
                 }
             }
@@ -403,7 +418,7 @@ public class Map : MonoBehaviour
         {
             if (Game.Instance.MapData.Populate)
             {
-                foreach (var cell in Game.Instance.Map.Cells)
+                foreach (var cell in Map.Instance.Cells)
                 {
                     cell.Populate();
                 }

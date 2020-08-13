@@ -242,7 +242,7 @@ namespace Assets.Structures
                         continue;
                     }
 
-                    var cell = Game.Instance.Map.GetCellAtCoordinate(origin.X + x, origin.Z + y);
+                    var cell = Map.Instance.GetCellAtCoordinate(origin.X + x, origin.Z + y);
 
                     Game.Instance.StructureController.SpawnBlueprint(GetStructure(character), cell, faction);
                     x++;
@@ -266,7 +266,7 @@ namespace Assets.Structures
                         x++;
                         continue;
                     }
-                    var cell = Game.Instance.Map.GetCellAtCoordinate(cellData.X + x, cellData.Z + z);
+                    var cell = Map.Instance.GetCellAtCoordinate(cellData.X + x, cellData.Z + z);
 
                     if (cell.TravelCost > 0)
                     {

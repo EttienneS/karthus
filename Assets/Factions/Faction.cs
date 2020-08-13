@@ -142,7 +142,7 @@ public class Faction
 
         if (FactionName != FactionConstants.World)
         {
-            HomeCells.AddRange(Game.Instance.Map.GetCircle(structure.Cell, 5));
+            HomeCells.AddRange(Map.Instance.GetCircle(structure.Cell, 5));
             HomeCells = HomeCells.Distinct().ToList();
         }
     }
@@ -151,7 +151,7 @@ public class Faction
     {
         foreach (var structure in Structures)
         {
-            HomeCells.AddRange(Game.Instance.Map.GetCircle(structure.Cell, 5));
+            HomeCells.AddRange(Map.Instance.GetCircle(structure.Cell, 5));
         }
         HomeCells = HomeCells.Distinct().ToList();
     }

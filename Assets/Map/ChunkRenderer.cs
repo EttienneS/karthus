@@ -49,7 +49,7 @@ public class ChunkRenderer : MonoBehaviour
             {
                 for (var x = 0; x < MeshVertexWidth; x++)
                 {
-                    var cell = Game.Instance.Map.GetCellAtCoordinate(x + (Data.X * MeshVertexWidth), y + (Data.Z * MeshVertexWidth));
+                    var cell = Map.Instance.GetCellAtCoordinate(x + (Data.X * MeshVertexWidth), y + (Data.Z * MeshVertexWidth));
                     if (cell != null)
                     {
                         height = cell.Y;
@@ -115,7 +115,7 @@ public class ChunkRenderer : MonoBehaviour
         {
             for (int x = 0; x < MeshVertexWidth * scale; x++)
             {
-                var cell = Game.Instance.Map.GetCellAtCoordinate(Mathf.Floor((x + (Data.X * MeshVertexWidth)) / scale),
+                var cell = Map.Instance.GetCellAtCoordinate(Mathf.Floor((x + (Data.X * MeshVertexWidth)) / scale),
                                                                  Mathf.Floor((y + (Data.Z * MeshVertexWidth)) / scale));
                 colors[x, y] = GetColor(cell);
             }
@@ -131,7 +131,7 @@ public class ChunkRenderer : MonoBehaviour
     {
         using (Instrumenter.Start())
         {
-            var waterSize = Game.Instance.Map.WaterPrefab.transform.localScale.x * 10;
+            var waterSize = Map.Instance.WaterPrefab.transform.localScale.x * 10;
             var offset = waterSize / 2;
             var waterLevel = Game.Instance.MapData.WaterLevel;
 
@@ -139,7 +139,7 @@ public class ChunkRenderer : MonoBehaviour
             {
                 for (int x = 0; x < Game.Instance.MapData.ChunkSize / waterSize; x++)
                 {
-                    var water = Instantiate(Game.Instance.Map.WaterPrefab, transform);
+                    var water = Instantiate(Map.Instance.WaterPrefab, transform);
                     water.transform.localPosition = new Vector3((x * waterSize) + offset, waterLevel, (y * waterSize) + offset);
                 }
             }

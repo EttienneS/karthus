@@ -20,7 +20,7 @@ public abstract class ZoneBase
             foreach (var xy in value.Split(','))
             {
                 var split = xy.Split(':').Select(i => float.Parse(i)).ToList();
-                _cells.Add(Game.Instance.Map.GetCellAtCoordinate(split[0], split.Last()));
+                _cells.Add(Map.Instance.GetCellAtCoordinate(split[0], split.Last()));
             }
         }
     }

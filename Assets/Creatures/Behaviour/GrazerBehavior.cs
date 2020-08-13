@@ -14,12 +14,12 @@ namespace Assets.Creature.Behaviour
 
             if (enemies.Any())
             {
-                var target = Game.Instance.Map.GetCellAttRadian(enemies.GetRandomItem().Cell, 10, Random.Range(1, 360));
+                var target = Map.Instance.GetCellAttRadian(enemies.GetRandomItem().Cell, 10, Random.Range(1, 360));
                 return new Move(target);
             }
             else if (herd.Any())
             {
-                return new Move(Game.Instance.Map.GetCircle(herd.GetRandomItem().Cell, 3).GetRandomItem());
+                return new Move(Map.Instance.GetCircle(herd.GetRandomItem().Cell, 3).GetRandomItem());
             }
 
             return null;

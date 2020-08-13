@@ -153,7 +153,7 @@ public class DeveloperConsole : MonoBehaviour
             var parts = args.Split(' ');
             var entity = GetEntity(parts[0]);
 
-            var cell = Game.Instance.Map.GetCellAtCoordinate(float.Parse(parts[1]), float.Parse(parts[2]));
+            var cell = Map.Instance.GetCellAtCoordinate(float.Parse(parts[1]), float.Parse(parts[2]));
             if (entity is CreatureData creature)
             {
                 creature.X = cell.X;

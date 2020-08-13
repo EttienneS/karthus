@@ -120,7 +120,7 @@ public class Cell : IEquatable<Cell>
     {
         // add half a unit to each position to account for offset (cells are at point 0,0 in the very center)
         position += new Vector3(0.5f, 0, 0.5f);
-        return Game.Instance.Map.GetCellAtCoordinate(Mathf.FloorToInt(position.x), Mathf.FloorToInt(position.z));
+        return Map.Instance.GetCellAtCoordinate(Mathf.FloorToInt(position.x), Mathf.FloorToInt(position.z));
     }
 
     public static bool operator !=(Cell obj1, Cell obj2)

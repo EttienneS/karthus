@@ -133,7 +133,7 @@ public class CreatureRenderer : MonoBehaviour
             }
         }
 
-        Gizmos.DrawCube(Game.Instance.Map.GetCellAtCoordinate(Data.TargetCoordinate).Vector + new Vector3(0, 1, 0), new Vector3(0.1f, 0.1f, 0.1f));
+        Gizmos.DrawCube(Map.Instance.GetCellAtCoordinate(Data.TargetCoordinate).Vector + new Vector3(0, 1, 0), new Vector3(0.1f, 0.1f, 0.1f));
     }
 
     private void UpdateFloatingText()

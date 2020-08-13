@@ -21,7 +21,7 @@ namespace Assets.Item
         {
             get
             {
-                return Game.Instance.Map.GetCellAtCoordinate(Coords);
+                return Map.Instance.GetCellAtCoordinate(Coords);
             }
             set
             {

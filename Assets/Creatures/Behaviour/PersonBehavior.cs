@@ -12,7 +12,7 @@
             else if (creature.Cell.Creatures.Count > 1)
             {
                 // split up
-                return new Move(Game.Instance.Map.TryGetPathableNeighbour(creature.Cell));
+                return new Move(Map.Instance.TryGetPathableNeighbour(creature.Cell));
             }
 
             return null;

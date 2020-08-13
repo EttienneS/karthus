@@ -132,15 +132,15 @@ public class TimeManager : MonoBehaviour
         var range = max - min;
         var total = range * 60f;
         var current = ((Data.Hour - min) * 60) + Data.Minute;
-        Game.Instance.Map.GlobalLight.color = Color.Lerp(start, end, current / total);
+        Map.Instance.GlobalLight.color = Color.Lerp(start, end, current / total);
 
         if (Data.Hour < 4 || Data.Hour > 20)
         {
-            Game.Instance.Map.GlobalLight.transform.localEulerAngles = new Vector3(MaxLightAngle, LightAngleY, LightAngleZ);
+            Map.Instance.GlobalLight.transform.localEulerAngles = new Vector3(MaxLightAngle, LightAngleY, LightAngleZ);
         }
         else
         {
-            Game.Instance.Map.GlobalLight.transform.localEulerAngles = new Vector3(Mathf.Lerp(MinLightAngle, MaxLightAngle, ((Data.Hour * 60) + Data.Minute) / 1440f), LightAngleY, LightAngleZ);
+            Map.Instance.GlobalLight.transform.localEulerAngles = new Vector3(Mathf.Lerp(MinLightAngle, MaxLightAngle, ((Data.Hour * 60) + Data.Minute) / 1440f), LightAngleY, LightAngleZ);
         }
     }
 }

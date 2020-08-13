@@ -21,7 +21,7 @@ public class WorldCanvasController : MonoBehaviour
         //{
         //    for (var z = startZ; z < endZ; z += 10)
         //    {
-        //        var cell = Game.Instance.Map.GetCellAtCoordinate(x, z);
+        //        var cell = Map.Instance.GetCellAtCoordinate(x, z);
         //        AddCellLabel(cell, $"{x}\n{z}");
         //    }
         //}

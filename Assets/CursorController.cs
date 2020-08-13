@@ -115,7 +115,7 @@ namespace Assets
 
         private static Cell GetCellForWorldPosition(Vector3? pos)
         {
-            return Game.Instance.Map.GetCellAtCoordinate(pos.Value - new Vector3(0.5f, 0, 0.5f));
+            return Map.Instance.GetCellAtCoordinate(pos.Value - new Vector3(0.5f, 0, 0.5f));
         }
 
         private void Clear()
@@ -247,11 +247,11 @@ namespace Assets
 
             var cells = new List<Cell>();
 
-            var startX = Mathf.Clamp(Mathf.Min(worldStartPoint.x, worldEndPoint.x), Game.Instance.Map.MinX, Game.Instance.Map.MaxX);
-            var endX = Mathf.Clamp(Mathf.Max(worldStartPoint.x, worldEndPoint.x), Game.Instance.Map.MinX, Game.Instance.Map.MaxX);
+            var startX = Mathf.Clamp(Mathf.Min(worldStartPoint.x, worldEndPoint.x), Map.Instance.MinX, Map.Instance.MaxX);
+            var endX = Mathf.Clamp(Mathf.Max(worldStartPoint.x, worldEndPoint.x), Map.Instance.MinX, Map.Instance.MaxX);
 
-            var startZ = Mathf.Clamp(Mathf.Min(worldStartPoint.z, worldEndPoint.z), Game.Instance.Map.MinZ, Game.Instance.Map.MaxZ);
-            var endZ = Mathf.Clamp(Mathf.Max(worldStartPoint.z, worldEndPoint.z), Game.Instance.Map.MinX, Game.Instance.Map.MaxZ);
+            var startZ = Mathf.Clamp(Mathf.Min(worldStartPoint.z, worldEndPoint.z), Map.Instance.MinZ, Map.Instance.MaxZ);
+            var endZ = Mathf.Clamp(Mathf.Max(worldStartPoint.z, worldEndPoint.z), Map.Instance.MinX, Map.Instance.MaxZ);
 
             if (startX == endX && startZ == endZ)
             {
@@ -526,7 +526,7 @@ namespace Assets
                     MeshRenderer cellRenderer;
                     if (!_draggedRenderers.ContainsKey(cell))
                     {
-                        cellRenderer = Game.Instance.StructureController.InstantiateNewStructureMeshRenderer(_meshName, Game.Instance.Map.transform);
+                        cellRenderer = Game.Instance.StructureController.InstantiateNewStructureMeshRenderer(_meshName, Map.Instance.transform);
                         cellRenderer.transform.position = new Vector3(cell.Vector.x, Game.Instance.MapData.StructureLevel, cell.Vector.z);
                         _draggedRenderers.Add(cell, cellRenderer);
                     }

@@ -67,7 +67,7 @@ namespace Assets.Creature
             {
                 if (_awareness == null && Cell != null)
                 {
-                    _awareness = Game.Instance.Map.GetCircle(Cell, Perception);
+                    _awareness = Map.Instance.GetCircle(Cell, Perception);
                 }
 
                 return _awareness;
@@ -81,7 +81,7 @@ namespace Assets.Creature
         {
             get
             {
-                return Game.Instance.Map.GetCellAtCoordinate(X, Z);
+                return Map.Instance.GetCellAtCoordinate(X, Z);
             }
             set
             {
@@ -852,8 +852,8 @@ namespace Assets.Creature
                 return;
             }
 
-            var src = Game.Instance.Map.GetCellAtCoordinate(X, Z);
-            var tgt = Game.Instance.Map.GetCellAtCoordinate(TargetCoordinate.x, TargetCoordinate.z);
+            var src = Map.Instance.GetCellAtCoordinate(X, Z);
+            var tgt = Map.Instance.GetCellAtCoordinate(TargetCoordinate.x, TargetCoordinate.z);
             if (Path == null || Path.Count == 0)
             {
                 Path = Pathfinder.FindPath(src, tgt, Mobility);
@@ -1083,7 +1083,7 @@ namespace Assets.Creature
                     {
                         // unstuck
                         Debug.LogError("Unstuck!");
-                        var c = Game.Instance.Map.GetNearestPathableCell(Cell, Mobility, 10);
+                        var c = Map.Instance.GetNearestPathableCell(Cell, Mobility, 10);
 
                         X = c.X;
                         Z = c.Z;
