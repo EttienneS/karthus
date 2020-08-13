@@ -404,11 +404,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2307170058788640168, guid: fe0386d55f57809419b5c5913eec9386,
-        type: 3}
-      propertyPath: minZoom
-      value: 25
-      objectReference: {fileID: 0}
     - target: {fileID: 2307170058788640169, guid: fe0386d55f57809419b5c5913eec9386,
         type: 3}
       propertyPath: m_LocalPosition.x
