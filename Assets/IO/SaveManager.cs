@@ -81,8 +81,8 @@ public static class SaveManager
 
             Directory.CreateDirectory(SaveDir);
 
-            var file = $"{SaveDir}\\{DateTime.Now.ToString("yy-MM-dd_HH-mm-ss")}";
-            GetSaveScreenshot(file);
+            var file = $"{SaveDir}\\{DateTime.Now:yy-MM-dd_HH-mm-ss}";
+            ScreenCapture.CaptureScreenshot($"{file}.png");
             using (var sw = new StreamWriter($"{file}.json"))
             {
                 using (var writer = new JsonTextWriter(sw))
@@ -97,10 +97,5 @@ public static class SaveManager
         }
     }
 
-    private static void GetSaveScreenshot(string file)
-    {
-        Game.Instance.UI.SetActive(false);
-        ScreenCapture.CaptureScreenshot($"{file}.png");
-        Game.Instance.UI.SetActive(true);
-    }
+   
 }

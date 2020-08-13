@@ -287,7 +287,7 @@ public class Game : MonoBehaviour
             // make the first autosave actually happen 2 mins after the game starts not on the first call
             _lastAutoSave = DateTime.Now;
         }
-        else if ((DateTime.Now - _lastAutoSave.Value).TotalSeconds > 120)
+        else if ((DateTime.Now - _lastAutoSave.Value).TotalSeconds > 600)
         {
             // autosave every two minutes
             _lastAutoSave = DateTime.Now;
