@@ -53,7 +53,7 @@ public class Eat : CreatureTask
                 FoundSeating = true;
                 var chair = creature.Faction.Structures
                                  .Where(s => s.IsType("Chair") && !s.InUseByAnyone)
-                                 .OrderBy(c => Pathfinder.Distance(c.Cell, creature.Cell, creature.Mobility))
+                                 .OrderBy(c => c.Cell.DistanceTo(creature.Cell))
                                  .FirstOrDefault();
                 if (chair != null)
                 {

@@ -29,7 +29,7 @@ namespace Needs
                                 .Faction
                                 .Structures
                                 .Where(s => s.HasValue("Hygiene"))
-                                .OrderBy(b => Pathfinder.Distance(b.Cell, Creature.Cell, Creature.Mobility))
+                                .OrderBy(b => b.Cell.DistanceTo(Creature.Cell))
                                 .FirstOrDefault();
 
                     if (bath != null)

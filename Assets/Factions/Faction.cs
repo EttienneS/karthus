@@ -181,7 +181,7 @@ public class Faction
         {
             var best = false;
             var cell = item.Cell;
-            var distance = Pathfinder.Distance(creature.Cell, item.Cell, creature.Mobility);
+            var distance = creature.Cell.DistanceTo(item.Cell);
 
             if (targetItem == null)
             {
