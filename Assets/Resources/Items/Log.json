@@ -1,11 +1,11 @@
 {
-  "Name": "Wood",
+  "Name": "Log",
   "Mesh": "logs_stack",
   "Icon": "Wood",
   "Cost": {
     "Items": {
-      "Wood": "1"
+      "Log": "1"
     }
   },
-  "Categories": [ "Raw Resources" ]
+  "Categories": [ "Wood", "Raw Resources" ]
 }

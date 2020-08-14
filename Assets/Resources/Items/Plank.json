@@ -1,0 +1,11 @@
+{
+  "Name": "Plank",
+  "Mesh": "DefaultCube",
+  "Icon": "Plank",
+  "Cost": {
+    "Items": {
+      "Plank": "1"
+    }
+  },
+  "Categories": [ "Wood", "Processed Resources" ]
+}

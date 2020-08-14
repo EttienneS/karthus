@@ -6,9 +6,9 @@
   "Description": "A general purpose table, can be used as a place to eat or a workbench.",
   "Cost": {
     "Items": {
-      "Wood": "3"
+      "Plank": "3"
     }
   },
   "Buildable": "True",
-  "Type": "Table",
+  "Type": "Table"
 }

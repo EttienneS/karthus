@@ -6,7 +6,7 @@
   "Description": "A place to wash off the grime.",
   "Cost": {
     "Items": {
-      "Wood": "3"
+      "Plank": "3"
     }
   },
   "Buildable": "True",

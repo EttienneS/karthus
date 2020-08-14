@@ -6,7 +6,7 @@
   "Description": "A structure where a creature will sleep.  Sleeping in a bed recovers energy quicker.",
   "Cost": {
     "Items": {
-      "Wood": "3"
+      "Plank": "3"
     }
   },
   "Buildable": "True",

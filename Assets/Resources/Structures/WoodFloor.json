@@ -6,7 +6,7 @@
   "Description": "Floor made from wood planks, visually appealing but flammable. Move speed is much faster on roads and floors than other surfaces.",
   "Cost": {
     "Items": {
-      "Wood": "1"
+      "Plank": "1"
     }
   },
   "Buildable": "True",

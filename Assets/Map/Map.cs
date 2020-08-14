@@ -312,9 +312,12 @@ public class Map : MonoBehaviour
         Game.Instance.FactionController.PlayerFaction.HomeCells.AddRange(Map.Instance.GetCircle(Map.Instance.Center, 15));
 
         var open = Map.Instance.GetCircle(center, 5).Where(c => c.PathableWith(Mobility.Walk) && c.Structure == null);
-        Game.Instance.ItemController.SpawnItem("Berries", open.GetRandomItem(), 250);
-        Game.Instance.ItemController.SpawnItem("Wood", open.GetRandomItem(), 250);
-        Game.Instance.ItemController.SpawnItem("Stone", open.GetRandomItem(), 250);
+        Game.Instance.ItemController.SpawnItem("Berries", open.GetRandomItem(), 50);
+        Game.Instance.ItemController.SpawnItem("Berries", open.GetRandomItem(), 50);
+        Game.Instance.ItemController.SpawnItem("Plank", open.GetRandomItem(), 50);
+        Game.Instance.ItemController.SpawnItem("Plank", open.GetRandomItem(), 50);
+        Game.Instance.ItemController.SpawnItem("Stone", open.GetRandomItem(), 50);
+        Game.Instance.ItemController.SpawnItem("Stone", open.GetRandomItem(), 50);
 
         for (int i = 0; i < Game.Instance.MapData.CreaturesToSpawn; i++)
         {

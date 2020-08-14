@@ -6,7 +6,7 @@
   "Description": "A place to sit, creatures will gain comfort when sitting while working and eating.",
   "Cost": {
     "Items": {
-      "Wood": "3"
+      "Plank": "3"
     }
   },
   "Buildable": "True",

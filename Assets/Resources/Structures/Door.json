@@ -6,7 +6,7 @@
   "TravelCost": "1",
   "Cost": {
     "Items": {
-      "Wood": "1"
+      "Plank": "3"
     }
   },
   "Buildable": "True",

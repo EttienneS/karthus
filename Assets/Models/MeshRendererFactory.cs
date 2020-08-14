@@ -21,7 +21,7 @@ namespace Assets.Models
             {
                 return _itemMeshLookup[name];
             }
-            throw new MeshNotFoundException($"No mesh with the name {name} found.");
+            return _structureMeshLookup["DefaultCube"];
         }
 
         public MeshRenderer GetStructureMesh(string name)

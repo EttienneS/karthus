@@ -6,7 +6,7 @@
   "Description": "Floor made from stone blocks. Move speed is much faster on roads and floors than other surfaces.",
   "Cost": {
     "Items": {
-      "Wood": "1"
+      "Stone": "1"
     }
   },
   "Buildable": "True",

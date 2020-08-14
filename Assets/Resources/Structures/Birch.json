@@ -6,7 +6,7 @@
   "SpawnRotation": "True",
   "Cost": {
     "Items": {
-      "Wood": "15"
+      "Log": "3"
     }
   }
 }

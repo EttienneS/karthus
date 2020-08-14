@@ -6,7 +6,7 @@
   "Description": "A structure that emits light at night.",
   "Cost": {
     "Items": {
-      "Wood": "3"
+      "Stone": "3"
     }
   },
   "Buildable": "True",
