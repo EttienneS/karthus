@@ -1,9 +1,9 @@
 ﻿using Assets.Creature;
 using Assets.Structures;
-using Structures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class Build : CreatureTask
 {
@@ -13,10 +13,14 @@ public class Build : CreatureTask
 
     public override void FinalizeTask()
     {
+        Game.Instance.StructureController.DestroyBlueprint(Blueprint);
     }
 
     public Build()
     {
+        OnResume += () => Blueprint.BlueprintRenderer.SetDefaultMaterial();
+        OnSuspended += () => Blueprint.BlueprintRenderer.SetSuspendedMaterial();
+
         RequiredSkill = SkillConstants.Build;
         RequiredSkillLevel = 1;
     }
@@ -43,18 +47,27 @@ public class Build : CreatureTask
             throw new TaskFailedException();
         }
 
-        if (SubTasksComplete(creature))
+        try
         {
-            if (!Clean()) return false;
-            if (!HasItems()) return false;
-            if (!InPosition(creature)) return false;
-            if (!CellOpen()) return false;
-            if (!BuildComplete(creature)) return false;
+            if (SubTasksComplete(creature))
+            {
+                if (!Clean()) return false;
+                if (!HasItems()) return false;
+                if (!InPosition(creature)) return false;
+                if (!CellOpen()) return false;
+                if (!BuildComplete(creature)) return false;
 
-            FinishStructure(creature.GetFaction());
+                FinishStructure(creature.GetFaction());
 
-            return true;
+                return true;
+            }
         }
+        catch (Exception ex)
+        {
+            Debug.Log($"Suspend task: {ex}");
+            throw new SuspendTaskException();
+        }
+
         return false;
     }
 
@@ -77,9 +90,10 @@ public class Build : CreatureTask
         {
             _waitCount++;
 
-            if (_waitCount > 10)
+            if (_waitCount > 20)
             {
-                throw new TaskFailedException("Cannot build, cell occupied");
+                _waitCount = 0;
+                throw new Exception("Cannot build, cell occupied");
             }
             AddSubTask(new Wait(1, "Cell occupied", AnimationType.Interact));
             return false;

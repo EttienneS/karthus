@@ -519,11 +519,6 @@ namespace Assets.Creature
         {
             if (Task != null)
             {
-                if (Task is Build build)
-                {
-                    Game.Instance.StructureController.DestroyBlueprint(build.Blueprint);
-                }
-
                 DropItem(Cell);
                 Log($"Canceled {Task} task");
 
@@ -639,14 +634,14 @@ namespace Assets.Creature
             TargetCoordinate = (Cell.X, Cell.Z);
         }
 
-        internal void SuspendTask(bool autoRetry = true)
+        internal void SuspendTask(bool autoRetry)
         {
             if (Task != null)
             {
                 DropItem(Cell);
                 Log($"Suspended {Task} task");
 
-                Task.ToggleSuspended(autoRetry);
+                Task.Suspend(autoRetry);
                 Faction.AddTask(Task);
 
                 Task = null;
@@ -1087,6 +1082,11 @@ namespace Assets.Creature
                         Faction.RemoveTask(Task);
                         Task = null;
                     }
+                }
+                catch (SuspendTaskException suspend)
+                {
+                    Debug.Log($"Task paused: {suspend}");
+                    SuspendTask(true);
                 }
                 catch (Exception ex)
                 {

@@ -10,11 +10,13 @@ public abstract class CreatureTask
     public string BusyEmote;
     public bool Destroyed;
     public string DoneEmote;
+
     [JsonIgnore]
     public CreatureTask Parent;
 
     public Queue<CreatureTask> SubTasks = new Queue<CreatureTask>();
-    public bool AutoRetry { get; set; }
+    public bool AutoResume { get; set; }
+
     [JsonIgnore]
     public List<Badge> Badges { get; set; } = new List<Badge>();
 
@@ -24,7 +26,7 @@ public abstract class CreatureTask
 
     public float RequiredSkillLevel { get; set; }
 
-    public bool Suspended { get; set; }
+    private bool _suspended;
 
     [JsonIgnore]
     public Cost TotalCost
@@ -109,9 +111,31 @@ public abstract class CreatureTask
         return false;
     }
 
-    internal void ToggleSuspended(bool autoRetry)
+    public delegate void SuspendedDelegate();
+
+    public SuspendedDelegate OnSuspended;
+
+    public delegate void ResumeDelegate();
+
+    public ResumeDelegate OnResume;
+
+    public bool IsSupended()
     {
-        Suspended = !Suspended;
-        AutoRetry = true;
+        return _suspended;
+    }
+
+    internal void Resume()
+    {
+        _suspended = false;
+        OnResume?.Invoke();
+    }
+
+    internal void Suspend(bool autoResume)
+    {
+        _suspended = true;
+        AutoResume = autoResume;
+        SubTasks.Clear();
+
+        OnSuspended?.Invoke();
     }
 }

@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Assets.Helpers;
+using System;
+using UnityEngine;
 
 namespace Assets.Structures
 {
@@ -12,5 +14,17 @@ namespace Assets.Structures
             Blueprint.BlueprintRenderer = this;
             transform.position = new Vector3(Blueprint.Cell.Vector.x, Game.Instance.MapData.StructureLevel, Blueprint.Cell.Vector.z);
         }
+
+        internal void SetSuspendedMaterial()
+        {
+            GetComponent<MeshRenderer>().SetAllMaterial(Game.Instance.FileController.SuspendedBlueprintMaterial);
+        }
+
+        internal void SetDefaultMaterial()
+        {
+            GetComponent<MeshRenderer>().SetAllMaterial(Game.Instance.FileController.BlueprintMaterial);
+        }
+
+
     }
 }

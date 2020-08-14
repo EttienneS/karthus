@@ -33,13 +33,14 @@ public class Faction
     public List<Blueprint> Blueprints = new List<Blueprint>();
     public string FactionName;
     public float LastUpdate;
-    public float LastRetry;
+    public float ResumeDelta;
     public List<Structure> Structures = new List<Structure>();
 
     [JsonIgnore]
     public List<Cell> HomeCells = new List<Cell>();
 
     public float UpdateTick = 1;
+    public float AutoResumeTime = 50;
 
     [JsonIgnore]
     public IEnumerable<StorageZone> StorageZones
@@ -62,7 +63,7 @@ public class Faction
         if (task == null)
         {
             var highestPriority = int.MinValue;
-            foreach (var availableTask in AvailableTasks.Where(t => !t.Suspended && creature.CanDo(t)))
+            foreach (var availableTask in AvailableTasks.Where(t => !t.IsSupended() && creature.CanDo(t)))
             {
                 if (creature.CanDo(availableTask))
                 {
@@ -104,13 +105,13 @@ public class Faction
             }
         }
 
-        LastRetry += Time.deltaTime;
-        if (LastRetry > UpdateTick * 10)
+        ResumeDelta += Time.deltaTime;
+        if (ResumeDelta > AutoResumeTime)
         {
-            LastRetry = 0;
-            foreach (var task in AvailableTasks.Where(t => t.Suspended && t.AutoRetry))
+            ResumeDelta = 0;
+            foreach (var task in AvailableTasks.Where(t => t.IsSupended() && t.AutoResume))
             {
-                task.ToggleSuspended(false);
+                task.Resume();
             }
         }
     }

@@ -51,7 +51,7 @@ namespace Assets.UI.TaskPanel
         {
             if (Game.Instance.FactionController.PlayerFaction.AvailableTasks.Contains(_task))
             {
-                _task.ToggleSuspended(false);
+                _task.Suspend(false);
                 Game.Instance.FactionController.PlayerFaction.AvailableTasks.Remove(_task);
                 Game.Instance.FactionController.PlayerFaction.AvailableTasks.Add(_task);
 
@@ -79,7 +79,7 @@ namespace Assets.UI.TaskPanel
                 SuspendButton.image.color = ColorConstants.YellowAccent;
             }
 
-            if (_task.Suspended)
+            if (_task.IsSupended())
             {
                 Background.color = ColorConstants.YellowAccent;
                 Title.text = "Suspended: " + Title.text;

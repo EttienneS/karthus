@@ -46,7 +46,7 @@ public class RemoveStructure : CreatureTask
                 }
                 else
                 {
-                    creature.SuspendTask();
+                    creature.SuspendTask(true);
                     return false;
                 }
             }

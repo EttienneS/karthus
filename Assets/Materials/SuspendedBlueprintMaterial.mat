@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: BlueprintMaterial
+  m_Name: SuspendedBlueprintMaterial
   m_Shader: {fileID: -6465566751694194690, guid: 890e8162d5db3344da97f977603a56e8,
     type: 3}
   m_ShaderKeywords: 
@@ -62,7 +62,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - Vector1_FF08CAA0: 0.06
+    - Vector1_FF08CAA0: 0.064
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -85,8 +85,8 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - Color_11875E48: {r: 0, g: 2.9862783, b: 14.259479, a: 0}
-    - Color_CB682B7: {r: 0.28893736, g: 0.3531735, b: 0.4056604, a: 0}
+    - Color_11875E48: {r: 28.518957, g: 23.890226, b: 0, a: 0}
+    - Color_CB682B7: {r: 0.26927596, g: 0.2735849, b: 0.019357419, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

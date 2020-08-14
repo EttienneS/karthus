@@ -23,11 +23,9 @@ public class FileController : MonoBehaviour
     internal TextAsset[] StructureJson;
     private List<Type> _allBehaviours;
     private Material _blueprintMaterial;
-
     private List<Construct> _constructs;
-
     private Material _invalidBlueprintMaterial;
-
+    private Material _suspendedBlueprintMaterial;
     public List<Type> AllBehaviourTypes
     {
         get
@@ -81,6 +79,17 @@ public class FileController : MonoBehaviour
         }
     }
 
+    public Material SuspendedBlueprintMaterial
+    {
+        get
+        {
+            if (_suspendedBlueprintMaterial == null)
+            {
+                _suspendedBlueprintMaterial = GetMaterial("SuspendedBlueprintMaterial");
+            }
+            return _suspendedBlueprintMaterial;
+        }
+    }
     public void Awake()
     {
         StructureJson = Resources.LoadAll<TextAsset>(StructureFolder);
