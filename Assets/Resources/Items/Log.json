@@ -1,6 +1,6 @@
 {
   "Name": "Log",
-  "Mesh": "logs_stack",
+  "Mesh": "logs",
   "Icon": "Wood",
   "Cost": {
     "Items": {

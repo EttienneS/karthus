@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3067296524
+CRC: 2539031292
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 173e7dd353002ae1b609aca3332cfd2c
+    Hash: be00deb4002a1c37147857c296e45f02
   TypeTreeHash:
     serializedVersion: 2
     Hash: 18d9bb4d47b424ec9fb3afa70ce56f07
@@ -33,6 +33,7 @@ Assets:
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/Flower_4.blend
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/Tomato_1.blend
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/Lettuce_3.blend
+- Assets/Models/Self/logs.prefab
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/PalmTree_2.blend
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/Pumpkin_4.blend
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/Rice_3.blend
@@ -104,6 +105,7 @@ Assets:
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/Watermelon_3.blend
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/Corn_4.blend
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/Lettuce_1.blend
+- Assets/Models/Self/planks.prefab
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/Flowers_Crop.blend
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/Tomato_3.blend
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/Cactus_2.blend

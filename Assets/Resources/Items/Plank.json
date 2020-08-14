@@ -1,6 +1,6 @@
 {
   "Name": "Plank",
-  "Mesh": "DefaultCube",
+  "Mesh": "planks",
   "Icon": "Plank",
   "Cost": {
     "Items": {
