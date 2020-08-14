@@ -119,18 +119,23 @@ public class CreatureRenderer : MonoBehaviour
         {
             Gizmos.color = ColorConstants.GreenBase;
         }
-
-        if (Data.Path != null)
+        try
         {
-            Cell lastNode = null;
-            foreach (var cell in Data.Path)
+            if (Data.CurrentPathRequest.Ready())
             {
-                if (lastNode != null)
+                Cell lastNode = null;
+                foreach (var cell in Data.CurrentPathRequest.GetPath())
                 {
-                    Gizmos.DrawLine(lastNode.Vector + new Vector3(0, 1, 0), cell.Vector + new Vector3(0, 1, 0));
+                    if (lastNode != null)
+                    {
+                        Gizmos.DrawLine(lastNode.Vector + new Vector3(0, 1, 0), cell.Vector + new Vector3(0, 1, 0));
+                    }
+                    lastNode = cell;
                 }
-                lastNode = cell;
             }
+        }
+        catch 
+        {
         }
 
         Gizmos.DrawCube(Map.Instance.GetCellAtCoordinate(Data.TargetCoordinate).Vector + new Vector3(0, 1, 0), new Vector3(0.1f, 0.1f, 0.1f));

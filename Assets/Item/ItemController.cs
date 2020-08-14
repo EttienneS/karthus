@@ -74,7 +74,6 @@ public class ItemController : MonoBehaviour
     {
         if (item != null)
         {
-            Debug.Log($"Destroying: {item.Name}");
             Game.Instance.IdService.RemoveEntity(item);
             Game.Instance.AddItemToDestroy(item.Renderer.gameObject);
         }

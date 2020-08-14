@@ -1,38 +1,90 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
-public static class Pathfinder
+public class Pathfinder : MonoBehaviour
 {
-    private static CellPriorityQueue _searchFrontier;
-    private static int _searchFrontierPhase;
+    private static Pathfinder _instance;
 
-    public static List<Cell> FindPath(Cell fromCell, Cell toCell, Mobility mobility)
+    public static Pathfinder Instance
     {
-        if (fromCell != null && toCell != null)
+        get
         {
-            if (Search(fromCell, toCell, mobility))
-            {
-                var path = new List<Cell> { toCell };
-
-                var current = toCell;
-                while (current != fromCell)
-                {
-                    current = current.PathFrom;
-                    path.Add(current);
-                }
-
-                return path;
-            }
+            return _instance != null ? _instance : (_instance = FindObjectOfType<Pathfinder>());
         }
-
-        return null;
+        set
+        {
+            _instance = value;
+        }
     }
 
-    private static bool Search(Cell fromCell, Cell toCell, Mobility mobility)
+    private CellPriorityQueue _searchFrontier;
+    private int _searchFrontierPhase;
+
+    private Queue<PathRequest> _pathQueue = new Queue<PathRequest>();
+    private Task _currentTask;
+
+    public void Update()
+    {
+        if (_currentTask == null || _currentTask.IsCompleted)
+        {
+            if (_pathQueue.Count != 0)
+            {
+                _currentTask = new Task(() => ResolvePathRequest(_pathQueue.Dequeue()));
+                _currentTask.Start();
+            }
+        }
+    }
+
+    private void ResolvePathRequest(PathRequest request)
     {
         try
         {
+            if (SearchForPath(request))
+            {
+                var fromCell = request.From;
+                var toCell = request.To;
+                if (fromCell != null && toCell != null)
+                {
+                    var path = new List<Cell> { toCell };
+                    var current = toCell;
+                    while (current != fromCell)
+                    {
+                        current = current.PathFrom;
+                        path.Add(current);
+                    }
+                    path.Reverse();
+                    request.PopulatePath(path);
+                }
+            }
+            else
+            {
+                request.MarkPathInvalid();
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError(ex);
+            _currentTask = null;
+        }
+    }
+
+    public PathRequest CreatePathRequest(Cell source, Cell target, Mobility mobility)
+    {
+        var request = new PathRequest(source, target, mobility);
+        _pathQueue.Enqueue(request);
+        return request;
+    }
+
+    private bool SearchForPath(PathRequest request)
+    {
+        try
+        {
+            var fromCell = request.From;
+            var toCell = request.To;
+            var mobility = request.Mobility;
+
             _searchFrontierPhase += 2;
 
             if (_searchFrontier == null)
@@ -105,10 +157,52 @@ public static class Pathfinder
 
             return false;
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
             Debug.LogWarning("Pathing error: " + ex.ToString());
             throw;
         }
+    }
+}
+
+public class PathRequest
+{
+    private bool _invalid;
+    private List<Cell> _path;
+
+    public PathRequest(Cell from, Cell to, Mobility mobility)
+    {
+        From = from;
+        To = to;
+        Mobility = mobility;
+    }
+
+    public Cell From { get; set; }
+    public Mobility Mobility { get; set; }
+    public Cell To { get; set; }
+
+    public List<Cell> GetPath()
+    {
+        return _path;
+    }
+
+    public void MarkPathInvalid()
+    {
+        Debug.LogWarning($"No path found from {From} to {To} for an entity that {Mobility}s");
+        _invalid = true;
+    }
+
+    public void PopulatePath(List<Cell> path)
+    {
+        _path = path;
+    }
+
+    public bool Ready()
+    {
+        if (_invalid)
+        {
+            throw new InvalidPathException(this);
+        }
+        return _path != null;
     }
 }

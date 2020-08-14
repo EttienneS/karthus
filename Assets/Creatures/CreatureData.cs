@@ -33,9 +33,6 @@ namespace Assets.Creature
 
         public string Model;
 
-        [JsonIgnore]
-        public List<Cell> Path = new List<Cell>();
-
         public List<Relationship> Relationships = new List<Relationship>();
 
         public (float x, float z) TargetCoordinate;
@@ -43,6 +40,7 @@ namespace Assets.Creature
         public bool UnableToFindPath;
 
         internal float InternalTick = float.MaxValue;
+        internal PathRequest CurrentPathRequest;
 
         [JsonIgnore]
         internal Cell LastPercievedCoordinate;
@@ -474,7 +472,7 @@ namespace Assets.Creature
             if (TargetCoordinate.x != targetX || TargetCoordinate.z != targetZ)
             {
                 TargetCoordinate = (targetX, targetZ);
-                Path = null;
+                CurrentPathRequest = null;
             }
         }
 
@@ -852,54 +850,69 @@ namespace Assets.Creature
                 return;
             }
 
-            var src = Map.Instance.GetCellAtCoordinate(X, Z);
-            var tgt = Map.Instance.GetCellAtCoordinate(TargetCoordinate.x, TargetCoordinate.z);
-            if (Path == null || Path.Count == 0)
+            if (CurrentPathRequest == null)
             {
-                Path = Pathfinder.FindPath(src, tgt, Mobility);
-                Path?.Reverse();
-            }
+                var src = Map.Instance.GetCellAtCoordinate(X, Z);
+                var tgt = Map.Instance.GetCellAtCoordinate(TargetCoordinate.x, TargetCoordinate.z);
 
-            if (Path == null || Path.Count == 0)
-            {
-                UnableToFindPath = true;
-                StopMoving();
-
-                Debug.LogWarning($"Unable to find path! ({X}:{Z}) >> ({TargetCoordinate.x}:{TargetCoordinate.z})");
-                return;
-            }
-
-            var nextCell = Path[0];
-            var targetX = nextCell.Vector.x;
-            var targetZ = nextCell.Vector.z;
-
-            if (!nextCell.PathableWith(Mobility))
-            {
-                UnableToFindPath = true;
-                StopMoving();
-
-                Say("...");
-                return;
-            }
-
-            if (X.AlmostEquals(targetX) && Z.AlmostEquals(targetZ))
-            {
-                // reached the cell
-                Path.RemoveAt(0);
-
-                if (Path.Count > 0)
+                if (src != tgt)
                 {
-                    nextCell = Path[0];
-                    targetX = nextCell.Vector.x;
-                    targetZ = nextCell.Vector.z;
-                }
-                else
-                {
-                    // reached end of path
-                    return;
+                    CurrentPathRequest = Pathfinder.Instance.CreatePathRequest(src, tgt, Mobility);
                 }
             }
+            else
+            {
+                try
+                {
+                    if (CurrentPathRequest.Ready())
+                    {
+                        var path = CurrentPathRequest.GetPath();
 
+                        var nextCell = path[0];
+                        var targetX = nextCell.Vector.x;
+                        var targetZ = nextCell.Vector.z;
+
+                        if (!nextCell.PathableWith(Mobility))
+                        {
+                            UnableToFindPath = true;
+                            StopMoving();
+                            Say("...");
+                            return;
+                        }
+
+                        if (X.AlmostEquals(targetX) && Z.AlmostEquals(targetZ))
+                        {
+                            // reached the cell
+                            path.RemoveAt(0);
+
+                            if (path.Count > 0)
+                            {
+                                nextCell = path[0];
+                                targetX = nextCell.Vector.x;
+                                targetZ = nextCell.Vector.z;
+                            }
+                            else
+                            {
+                                // reached end of path
+                                return;
+                            }
+                        }
+
+                        UpdateRendererPosition(targetX, targetZ);
+                    }
+                }
+                catch (InvalidPathException invalidPath)
+                {
+                    UnableToFindPath = true;
+                    StopMoving();
+                    Debug.LogWarning(invalidPath.ToString());
+                    Debug.LogWarning($"Unable to find path! ({X}:{Z}) >> ({TargetCoordinate.x}:{TargetCoordinate.z})");
+                }
+            }
+        }
+
+        private void UpdateRendererPosition(float targetX, float targetZ)
+        {
             var maxX = Mathf.Max(targetX, X);
             var minX = Mathf.Min(targetX, X);
 
@@ -1117,7 +1130,7 @@ namespace Assets.Creature
 
         private void StopMoving()
         {
-            Path = null;
+            CurrentPathRequest = null;
             TargetCoordinate = (X, Z);
 
             _combatMoving = false;

@@ -7,7 +7,7 @@ public class MapData
     public int ChunkSize = 240;
     public bool CreateWater = true;
 
-    [Range(0, 10)]
+    [Range(0, 100)]
     public int CreaturesToSpawn = 3;
 
     public bool Flat = false;

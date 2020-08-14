@@ -333,17 +333,17 @@ public class Map : MonoBehaviour
                 continue;
             }
 
-            for (int i = 0; i < Game.Instance.MapData.CreaturesToSpawn; i++)
-            {
-                var creature = Game.Instance.CreatureController.GetCreatureOfType(monster.Key);
+            //for (int i = 0; i < Game.Instance.MapData.CreaturesToSpawn; i++)
+            //{
+            //    var creature = Game.Instance.CreatureController.GetCreatureOfType(monster.Key);
 
-                var spot = Map.Instance.GetCircle(Map.Instance.Center, 25).GetRandomItem();
-                if (spot.TravelCost <= 0 && creature.Mobility != Mobility.Fly)
-                {
-                    spot = Map.Instance.CellLookup.Values.Where(c => c.TravelCost > 0).GetRandomItem();
-                }
-                Game.Instance.CreatureController.SpawnCreature(creature, spot, Game.Instance.FactionController.MonsterFaction);
-            }
+            //    var spot = Map.Instance.GetCircle(Map.Instance.Center, 25).GetRandomItem();
+            //    if (spot.TravelCost <= 0 && creature.Mobility != Mobility.Fly)
+            //    {
+            //        spot = Map.Instance.CellLookup.Values.Where(c => c.TravelCost > 0).GetRandomItem();
+            //    }
+            //    Game.Instance.CreatureController.SpawnCreature(creature, spot, Game.Instance.FactionController.MonsterFaction);
+            //}
         }
     }
 

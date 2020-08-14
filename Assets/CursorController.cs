@@ -450,10 +450,21 @@ namespace Assets
 
         private void OnDrawGizmos()
         {
-            var pos = GetWorldMousePosition().Value;
+            var worldPos = GetWorldMousePosition();
 
-            Gizmos.color = new Color(0, 1, 0, 0.2f);
-            Gizmos.DrawCube(GetCellForWorldPosition(pos).Vector, new Vector3(1f, 0.01f, 1f));
+            if (worldPos.HasValue)
+            {
+                var pos = worldPos.Value;
+
+                Gizmos.color = new Color(0, 1, 0, 0.2f);
+
+                var cell = GetCellForWorldPosition(pos);
+
+                if (cell != null)
+                {
+                    Gizmos.DrawCube(cell.Vector, new Vector3(1f, 0.01f, 1f));
+                }
+            }
         }
 
         private bool SelectCreatures(List<CreatureRenderer> creatures)
