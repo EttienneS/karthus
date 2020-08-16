@@ -1,0 +1,53 @@
+{
+  "Name": "CarpentryBench",
+  "Mesh": "Table",
+  "Icon": "CarpentryBench",
+  "TravelCost": "10",
+  "Description": "A structure where a person with the carpentry skill can craft things from wood.",
+  "Cost": {
+    "Items": {
+      "Log": "1"
+    }
+  },
+  "Buildable": "True",
+  "Type": "CraftingStructure",
+  "Definition": {
+    "Name": "Craft",
+    "RequiredSkillName": "Carpentry",
+    "WorkOrderType": "Craft",
+    "Auto": "false",
+    "Options": [
+      {
+        "Name": "Plank",
+        "Icon": "Plank",
+        "Description": "Make planks from logs",
+        "RequiredSkillLevel": 1,
+        "Amount": 5,
+        "TimeToComplete": 1,
+        "Cost": {
+          "Items": {
+            "Log": "1"
+          }
+        }
+      }
+    ]
+  }
+}
+
+//Apple
+//Bamboo
+//Beet
+//BushBerries
+//Cactus
+//Carrot
+//Corn
+//Flowers
+//Lettuce
+//Mushroom
+//Orange
+//PalmTree
+//Pumpkin
+//Rice
+//Tomato
+//Watermelon
+//Wheat

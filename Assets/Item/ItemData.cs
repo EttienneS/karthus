@@ -83,6 +83,8 @@ namespace Assets.Item
             return json.LoadJson<ItemData>();
         }
 
+        
+
         public bool CanUse(IEntity entity)
         {
             if (string.IsNullOrEmpty(InUseById))

@@ -1,14 +1,12 @@
 ﻿using Assets.Creature;
-using Assets.Structures;
 using Structures.Work;
-using System.Linq;
 
 public class DoWork : CreatureTask
 {
     public WorkOrderBase Order;
     public string StructureId;
 
-    private Structure _structure;
+    private WorkStructureBase _structure;
 
     public override string Message
     {
@@ -22,7 +20,7 @@ public class DoWork : CreatureTask
     {
     }
 
-    public DoWork(Structure structure, WorkOrderBase order)
+    public DoWork(WorkStructureBase structure, WorkOrderBase order)
     {
         _structure = structure;
         StructureId = structure.Id;
@@ -31,13 +29,13 @@ public class DoWork : CreatureTask
         RequiredSkillLevel = order.Option.RequiredSkillLevel;
     }
 
-    public Structure Structure
+    public WorkStructureBase WorkStructure
     {
         get
         {
             if (_structure == null)
             {
-                _structure = StructureId.GetStructure();
+                _structure = StructureId.GetStructure() as WorkStructureBase;
             }
             return _structure;
         }
@@ -45,38 +43,49 @@ public class DoWork : CreatureTask
 
     public override void FinalizeTask()
     {
-        Structure.Free();
+        WorkStructure.Free();
     }
 
     public override bool Done(CreatureData creature)
     {
         if (SubTasksComplete(creature))
         {
-            if (!creature.Cell.NonNullNeighbors.Contains(Structure.Cell))
+            var workCell = WorkStructure.GetWorkCell();
+            if (creature.Cell != workCell)
             {
-                AddSubTask(new Move(Structure.Cell.GetPathableNeighbour()));
+                AddSubTask(new Move(workCell));
             }
             else
             {
-                Structure.Reserve(creature);
+                WorkStructure.Reserve(creature);
 
-                creature.SetAnimation(AnimationType.Interact);
-                creature.Face(Structure.Cell);
-                Order.Progress += Game.Instance.TimeManager.CreatureTick;
-
-                if (Order.Progress >= Order.Option.TimeToComplete)
+                if (Order.HasMaterial())
                 {
-                    Order.UnitComplete(creature.GetSkillLevel(Order.Skill));
-                    creature.GainSkill(Order.Skill, 0.1f);
-                    Order.Amount--;
-                    Order.Progress = 0;
+                    creature.SetAnimation(AnimationType.Interact);
+                    creature.Face(WorkStructure.Cell);
+                    Order.Progress += Game.Instance.TimeManager.CreatureTick;
+
+                    if (Order.Progress >= Order.Option.TimeToComplete)
+                    {
+                        Order.UnitComplete(creature.GetSkillLevel(Order.Skill));
+                        creature.GainSkill(Order.Skill, 0.1f);
+                        Order.Amount--;
+                        Order.Progress = 0;
+                    }
+
+                    if (Order.Amount <= 0)
+                    {
+                        Order.OrderComplete();
+                        creature.SetAnimation(AnimationType.Idle);
+                        return true;
+                    }
                 }
-
-                if (Order.Amount <= 0)
+                else
                 {
-                    Order.OrderComplete();
-                    creature.SetAnimation(AnimationType.Idle);
-                    return true;
+                    foreach (var material in Order.GetRequiredMaterial())
+                    {
+                        AddSubTask(new FindAndHaulItem(material.Key, material.Value, WorkStructure.Cell));
+                    }
                 }
             }
         }

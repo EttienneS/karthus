@@ -62,12 +62,21 @@ public class ItemController : MonoBehaviour
             Debug.LogError($"Item not found: {name}");
         }
 
-        var data = ItemData.GetFromJson(ItemTypeFileMap[name]);
-        data.Cell = cell;
-        data.Amount = amount;
+        var itemToMerge = cell.Items.FirstOrDefault(i => i.Name == name);
+        if (itemToMerge != null)
+        {
+            itemToMerge.Amount += amount;
+            return itemToMerge;
+        }
+        else
+        {
+            var data = ItemData.GetFromJson(ItemTypeFileMap[name]);
+            data.Cell = cell;
+            data.Amount = amount;
 
-        SpawnItem(data);
-        return data;
+            SpawnItem(data);
+            return data;
+        }
     }
 
     internal void DestroyItem(ItemData item)

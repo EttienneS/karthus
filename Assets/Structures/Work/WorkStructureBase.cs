@@ -40,6 +40,17 @@ namespace Structures.Work
             }
         }
 
+        internal Cell GetWorkCell()
+        {
+            return Cell.NonNullNeighbors.First(c => c.PathableWith(Mobility.Walk));
+        }
+
+        internal Cell GetOutputCell()
+        {
+            var workcell = GetWorkCell();
+            return Cell.NonNullNeighbors.First(c => c != workcell && c.PathableWith(Mobility.Walk));
+        }
+
         public WorkOrderBase GetOrder(WorkOption option, int amount)
         {
             var type = WorkHelper.GetTypeFor(Definition.WorkOrderType);

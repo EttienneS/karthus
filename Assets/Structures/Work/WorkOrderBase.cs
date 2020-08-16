@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Structures.Work
 {
@@ -35,5 +37,35 @@ namespace Structures.Work
         public abstract void OrderComplete();
 
         public abstract void UnitComplete(float quality);
+
+        public bool HasMaterial()
+        {
+            return GetRequiredMaterial().Count == 0;
+        }
+
+        internal Dictionary<string, int> GetRequiredMaterial()
+        {
+            var missingItems = new Dictionary<string, int>();
+            if (Option.Cost == null)
+            {
+                return missingItems;
+            }
+
+            var itemsInCell = Structure.Cell.Items;
+            foreach (var costItem in Option.Cost.Items)
+            {
+                var amountNeeded = costItem.Value;
+                foreach (var itemInCell in itemsInCell.Where(i => i.IsType(costItem.Key)))
+                {
+                    amountNeeded -= itemInCell.Amount;
+                }
+
+                if (amountNeeded > 0)
+                {
+                    missingItems.Add(costItem.Key, amountNeeded);
+                }
+            }
+            return missingItems;
+        }
     }
 }

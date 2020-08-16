@@ -44,6 +44,11 @@
       "Name": "Mining",
       "Level": 1,
       "Priority": 5
+    },
+    {
+      "Name": "Carpentry",
+      "Level": 1,
+      "Priority": 5
     }
   ],
   "Limbs": [
