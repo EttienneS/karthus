@@ -159,10 +159,19 @@ public class Build : CreatureTask
     public void FinishStructure(Faction faction)
     {
         Game.Instance.StructureController.SpawnStructure(Blueprint.StructureName, Blueprint.Cell, Blueprint.Faction);
-        foreach (var item in Blueprint.Cell.Items.ToList())
+        var cellItems = Blueprint.Cell.Items.ToList();
+        foreach (var costItem in Blueprint.Cost.Items)
         {
-            Game.Instance.ItemController.DestroyItem(item);
+            foreach (var item in cellItems.Where(c => c.Name == costItem.Key))
+            {
+                item.Amount -= costItem.Value;
+                if (item.Amount < 0)
+                {
+                    Game.Instance.ItemController.DestroyItem(item);
+                }
+            }
         }
+       
         Game.Instance.StructureController.DestroyBlueprint(Blueprint);
     }
 

@@ -40,7 +40,7 @@ public class Faction
     public List<Cell> HomeCells = new List<Cell>();
 
     public float UpdateTick = 1;
-    public float AutoResumeTime = 50;
+    public float AutoResumeTime = 500;
 
     [JsonIgnore]
     public IEnumerable<StorageZone> StorageZones

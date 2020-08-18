@@ -256,10 +256,18 @@ namespace Assets.Creature
                 return null;
             }
             var item = HeldItem;
-
-            HeldItem.Free();
-            HeldItem.Cell = cell;
             HeldItem = null;
+            item.Free();
+            var cellItem = cell.Items.FirstOrDefault(c => c != item && c.Name == item.Name);
+            if (cellItem != null)
+            {
+                cellItem.Amount += item.Amount;
+                Game.Instance.ItemController.DestroyItem(item);
+            }
+            else
+            {
+                item.Cell = cell;
+            }
             return item;
         }
 

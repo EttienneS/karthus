@@ -83,7 +83,7 @@ namespace Assets.Item
             return json.LoadJson<ItemData>();
         }
 
-        
+
 
         public bool CanUse(IEntity entity)
         {
@@ -140,7 +140,7 @@ namespace Assets.Item
         internal ItemData Split(int amount)
         {
             Amount -= amount;
-            return Game.Instance.ItemController.SpawnItem(Name, Cell, amount);
+            return Game.Instance.ItemController.SpawnItem(Name, Cell, amount, false);
         }
     }
 }

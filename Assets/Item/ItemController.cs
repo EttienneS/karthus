@@ -55,28 +55,29 @@ public class ItemController : MonoBehaviour
         }
     }
 
-    public ItemData SpawnItem(string name, Cell cell, int amount = 1)
+    public ItemData SpawnItem(string name, Cell cell, int amount = 1, bool automerge = true)
     {
         if (!ItemTypeFileMap.ContainsKey(name))
         {
             Debug.LogError($"Item not found: {name}");
         }
 
-        var itemToMerge = cell.Items.FirstOrDefault(i => i.Name == name);
-        if (itemToMerge != null)
+        if (automerge)
         {
-            itemToMerge.Amount += amount;
-            return itemToMerge;
+            var itemToMerge = cell.Items.FirstOrDefault(i => i.Name == name);
+            if (itemToMerge != null)
+            {
+                itemToMerge.Amount += amount;
+                return itemToMerge;
+            }
         }
-        else
-        {
-            var data = ItemData.GetFromJson(ItemTypeFileMap[name]);
-            data.Cell = cell;
-            data.Amount = amount;
 
-            SpawnItem(data);
-            return data;
-        }
+        var data = ItemData.GetFromJson(ItemTypeFileMap[name]);
+        data.Cell = cell;
+        data.Amount = amount;
+
+        SpawnItem(data);
+        return data;
     }
 
     internal void DestroyItem(ItemData item)
