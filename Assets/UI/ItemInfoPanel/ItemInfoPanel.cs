@@ -39,7 +39,7 @@ namespace UI
             Description.text = string.Empty;
 
             Description.text += $"ID: {current.Id}\n";
-            if (current.InUseByAnyone)
+            if (current.IsReserved())
             {
                 Description.text += $"In use by: {current.InUseById.GetEntity().Name}\n";
             }

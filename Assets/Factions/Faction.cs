@@ -1,6 +1,7 @@
 ﻿using Assets.Creature;
 using Assets.Item;
 using Assets.Structures;
+using Assets.Tasks;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +40,7 @@ public class Faction
     [JsonIgnore]
     public List<Cell> HomeCells = new List<Cell>();
 
-    public float UpdateTick = 1;
+    public float UpdateTick = 100;
     public float AutoResumeTime = 500;
 
     [JsonIgnore]
@@ -101,6 +102,33 @@ public class Faction
                 if (blueprint.AssociatedBuildTask == null)
                 {
                     AddTask(new Build(blueprint));
+                }
+            }
+
+            const int maxStoreTasks = 2;
+
+            var storeTasks = AllTasks.OfType<StoreItem>().ToList();
+            if (storeTasks.Count < maxStoreTasks)
+            {
+                if (StorageZones.Any(s => s.GetFreeCellCount() > 0))
+                {
+                    var items = HomeCells.SelectMany(c => c.Items)
+                                         .Where(i => !i.IsReserved()
+                                                     && !i.IsStored()
+                                                     && !storeTasks.Any(t => t.GetItemId() == i.Id))
+                                         .ToList();
+
+                    foreach (var storageZone in StorageZones)
+                    {
+                        foreach (var item in items)
+                        {
+                            if (storageZone.CanStore(item))
+                            {
+                                AddTask(new StoreItem(item));
+                                break;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -172,7 +200,7 @@ public class Faction
 
     public ItemData FindItem(string criteria, CreatureData creature)
     {
-        var items = HomeCells.SelectMany(c => c?.Items.Where(item => item.IsType(criteria) && !item.InUseByAnyone)).ToList();
+        var items = HomeCells.SelectMany(c => c?.Items.Where(item => item.IsType(criteria) && !item.IsReserved())).ToList();
         items.AddRange(Game.Instance.IdService.ItemLookup.Values.Where(i => i.FactionName == FactionName && i.IsType(criteria)));
 
         ItemData targetItem = null;
@@ -202,4 +230,4 @@ public class Faction
 
         return targetItem;
     }
-   }
+}

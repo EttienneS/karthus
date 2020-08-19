@@ -10,6 +10,11 @@ namespace Assets.Tasks
         private readonly string _itemId;
         private (int x, int z) _targetCellCoordinate;
 
+        public string GetItemId()
+        {
+            return _itemId;
+        }
+
         public StoreItem()
         {
         }

@@ -46,13 +46,20 @@ namespace Assets.Item
         public Cost Cost { get; set; } = new Cost();
         public string FactionName { get; set; }
         public string Id { get; set; }
-        [JsonIgnore]
-        public bool InUseByAnyone
+
+        public bool IsReserved()
         {
-            get
+            return !string.IsNullOrEmpty(InUseById);
+        }
+
+        public bool IsStored()
+        {
+            var storageZone = Game.Instance.ZoneController.GetZoneForCell(Cell) as StorageZone;
+            if (storageZone != null)
             {
-                return !string.IsNullOrEmpty(InUseById);
+                return storageZone.Filter.Allows(this);
             }
+            return false;
         }
 
         public string Icon { get; set; }
@@ -82,8 +89,6 @@ namespace Assets.Item
         {
             return json.LoadJson<ItemData>();
         }
-
-
 
         public bool CanUse(IEntity entity)
         {
