@@ -563,36 +563,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 667879368938610748, guid: 50c5056d9f4c1364194358eaa321df8e,
-        type: 3}
-      propertyPath: MeshList.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 667879368938610748, guid: 50c5056d9f4c1364194358eaa321df8e,
-        type: 3}
-      propertyPath: Materials.Array.size
-      value: 17
-      objectReference: {fileID: 0}
-    - target: {fileID: 667879368938610748, guid: 50c5056d9f4c1364194358eaa321df8e,
-        type: 3}
-      propertyPath: MeshList.Array.data[0]
-      value: 
-      objectReference: {fileID: 4300000, guid: 0974a575bd9f6c84b99d7dc87984d119, type: 3}
-    - target: {fileID: 667879368938610748, guid: 50c5056d9f4c1364194358eaa321df8e,
-        type: 3}
-      propertyPath: MeshList.Array.data[1]
-      value: 
-      objectReference: {fileID: 4300000, guid: 0974a575bd9f6c84b99d7dc87984d119, type: 3}
-    - target: {fileID: 667879368938610748, guid: 50c5056d9f4c1364194358eaa321df8e,
-        type: 3}
-      propertyPath: MeshList.Array.data[2]
-      value: 
-      objectReference: {fileID: 4300000, guid: 65b767591973d6a4aa2a53cccc54f144, type: 3}
-    - target: {fileID: 667879368938610748, guid: 50c5056d9f4c1364194358eaa321df8e,
-        type: 3}
-      propertyPath: Materials.Array.data[16]
-      value: 
-      objectReference: {fileID: 2100000, guid: 38c938bcd1f512d498c6426d7da59270, type: 2}
     - target: {fileID: 680293437352031431, guid: 50c5056d9f4c1364194358eaa321df8e,
         type: 3}
       propertyPath: m_Name

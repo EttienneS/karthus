@@ -139,11 +139,14 @@ Material:
     - _Blend: 0
     - _BlendMode: 0
     - _BumpScale: 1
+    - _CelShadeMidPoint: -0.5
+    - _CelShadeSoftness: 0
     - _Cull: 2
     - _CullMode: 2
     - _Cutoff: 0.5
     - _DebugMode: 0
     - _DetailNormalMapScale: 1
+    - _DirectLightMultiplier: 0.25
     - _DstBlend: 0
     - _Enableemission: 0
     - _Enablerimlight: 1
@@ -154,6 +157,7 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 1
     - _IndirectLightIntensity: 0.1
+    - _IndirectLightMultiplier: 1
     - _LightColorAttenuation: 0
     - _MToonVersion: 32
     - _Metallic: 0.1
@@ -174,6 +178,7 @@ Material:
     - _QueueOffset: 0
     - _RampSmooth: 0.1
     - _RampThreshold: 0.5
+    - _ReceiveShadowMappingAmount: 0
     - _ReceiveShadowRate: 1
     - _ReceiveShadows: 1
     - _RemoveDiag: 1
@@ -197,6 +202,8 @@ Material:
     - _TexLod: 5
     - _Thickness: 3
     - _UVSec: 0
+    - _UseAlphaClipping: 1
+    - _UseEmission: 0
     - _UvAnimRotation: 0
     - _UvAnimScrollX: 0
     - _UvAnimScrollY: 0
@@ -213,9 +220,11 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
+    - _EmissionMapChannelMask: {r: 1, g: 1, b: 1, a: 1}
     - _Emissiontintcolor: {r: 0, g: 0, b: 0, a: 1}
     - _FrontColor: {r: 1, g: 1, b: 1, a: 1}
     - _HColor: {r: 0.785, g: 0.785, b: 0.785, a: 1}
+    - _IndirectLightConstColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _Mainoffset: {r: 0, g: 0, b: 0, a: 0}
     - _Maintiling: {r: 1, g: 1, b: 0, a: 0}
     - _Noisespeed: {r: 0, g: 0, b: 0, a: 0}

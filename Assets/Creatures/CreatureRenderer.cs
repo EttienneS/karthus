@@ -62,7 +62,7 @@ public class CreatureRenderer : MonoBehaviour
         if (Data.Dead)
         {
             SetAnimation(AnimationType.Dead);
-            
+
             Destroy(this);
         }
     }
@@ -79,7 +79,7 @@ public class CreatureRenderer : MonoBehaviour
     {
         if (Highlight != null)
         {
-            Highlight.color = color; 
+            Highlight.color = color;
             Highlight.gameObject.SetActive(true);
         }
     }
@@ -134,7 +134,7 @@ public class CreatureRenderer : MonoBehaviour
                 }
             }
         }
-        catch 
+        catch
         {
         }
 
