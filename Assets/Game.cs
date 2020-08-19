@@ -37,7 +37,6 @@ public class Game : MonoBehaviour
     public SpriteStore SpriteStore;
     public StructureController StructureController;
     public StructureInfoPanel StructureInfoPanelPrefab;
-    public TaskPanel TaskPanel;
     public TimeManager TimeManager;
     public Tooltip TooltipPrefab;
     public GameObject UI;
@@ -177,7 +176,6 @@ public class Game : MonoBehaviour
             UIController.Show();
 
             OrderSelectionController.DisableAndReset();
-            TaskPanel.Hide();
 
             DeveloperConsole.gameObject.SetActive(false);
 

@@ -11,11 +11,6 @@ namespace Assets.UI.TaskPanel
 
         public GameObject TaskView;
 
-        private void Start()
-        {
-            gameObject.SetActive(false);
-        }
-
         private void Update()
         {
             var tasks = Game.Instance.FactionController.PlayerFaction.AssignedTasks.Keys.ToList();
@@ -39,28 +34,6 @@ namespace Assets.UI.TaskPanel
                     Tasks.Remove(task);
                 }
             }
-        }
-
-        public void Toggle()
-        {
-            if (gameObject.activeInHierarchy)
-            {
-                Hide();
-            }
-            else
-            {
-                Show();
-            }
-        }
-
-        public void Show()
-        {
-            gameObject.SetActive(true);
-        }
-
-        public void Hide()
-        {
-            gameObject.SetActive(false);
         }
 
         internal void Reload()

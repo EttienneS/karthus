@@ -104,7 +104,7 @@ public class CreatureController : MonoBehaviour
         Game.Instance.IdService.EnrollEntity(creature.Data);
         creature.name = $"{creature.Data.Name} ({creature.Data.Id})";
 
-        if (creatureData.BehaviourName == "Person")
+        if (creatureData.BehaviourName == "PersonBehavior")
         {
             creature.Data.Name = NameHelper.GetRandomName();
         }

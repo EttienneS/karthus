@@ -43,7 +43,7 @@ namespace Assets.UI.TaskPanel
                 Game.Instance.FactionController.PlayerFaction.AvailableTasks.Remove(_task);
                 Game.Instance.FactionController.PlayerFaction.AvailableTasks.Insert(0, _task);
 
-                Game.Instance.TaskPanel.Reload();
+                Game.Instance.UIController.ReloadTaskPanel();
             }
         }
 
@@ -55,7 +55,7 @@ namespace Assets.UI.TaskPanel
                 Game.Instance.FactionController.PlayerFaction.AvailableTasks.Remove(_task);
                 Game.Instance.FactionController.PlayerFaction.AvailableTasks.Add(_task);
 
-                Game.Instance.TaskPanel.Reload();
+                Game.Instance.UIController.ReloadTaskPanel();
             }
         }
 
