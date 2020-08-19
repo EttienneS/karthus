@@ -326,6 +326,12 @@ PrefabInstance:
       propertyPath: SelectSquareImage
       value: 
       objectReference: {fileID: 1640372943}
+    - target: {fileID: 8296573314717617545, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: TextMeshPrefab
+      value: 
+      objectReference: {fileID: 7770415903545060489, guid: 11784c8016f135640800c67fa5df8ff9,
+        type: 3}
     - target: {fileID: 9043323423647380584, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
       propertyPath: m_LocalPosition.x

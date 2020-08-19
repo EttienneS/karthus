@@ -9,11 +9,11 @@ namespace Assets.Item
         internal ItemData Data = new ItemData();
 
         private MeshRenderer _meshRenderer;
-        //private TextMeshPro _text;
+        private TextMeshPro _text;
 
         public void Start()
         {
-            //_text = GetComponentInChildren<TextMeshPro>();
+            _text = Game.Instance.VisualEffectController.AddTextPrefab(gameObject);
             _meshRenderer = gameObject.GetComponent<MeshRenderer>();
         }
 
@@ -25,7 +25,8 @@ namespace Assets.Item
             }
             else
             {
-                //_text.text = Data.Amount.ToString();
+                _text.text = Data.Amount.ToString();
+                _text.transform.localRotation = Quaternion.Euler(Game.Instance.CameraController.GetPerpendicularRotation(), -90, -90);
             }
         }
 

@@ -3,6 +3,7 @@ using Assets.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 public class ItemController : MonoBehaviour
@@ -99,15 +100,16 @@ public class ItemController : MonoBehaviour
         var mesh = Game.Instance.MeshRendererFactory
                                 .GetItemMesh(data.Mesh);
 
-        var renderer = Instantiate(mesh, transform).gameObject
-                                                   .AddComponent<ItemRenderer>();
+        var meshObject = Instantiate(mesh, transform);
 
-        renderer.Data = data;
-        data.Renderer = renderer;
+        var itemRenderer = meshObject.gameObject.AddComponent<ItemRenderer>();
+
+        itemRenderer.Data = data;
+        data.Renderer = itemRenderer;
 
         IndexItem(data);
 
         data.Cell = Map.Instance.GetCellAtCoordinate(new Vector3(data.Coords.X, 0, data.Coords.Z));
-        renderer.UpdatePosition();
+        itemRenderer.UpdatePosition();
     }
 }

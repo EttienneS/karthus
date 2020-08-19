@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 [Flags]
@@ -15,6 +15,7 @@ public class VisualEffectController : MonoBehaviour
 {
     public Badge BadgePrefab;
     public VisualEffect EffectPrefab;
+    public TextMeshPro TextMeshPrefab;
 
     public VisualEffect GetBase(EffectType effectType, IEntity holder)
     {
@@ -93,6 +94,11 @@ public class VisualEffectController : MonoBehaviour
     public VisualEffect SpawnSpriteEffect(IEntity holder, Vector3 vector, string sprite, float lifeSpan)
     {
         return SpawnSpriteEffect(holder, vector, sprite, lifeSpan, ColorConstants.WhiteBase);
+    }
+
+    internal TextMeshPro AddTextPrefab(GameObject gameObject)
+    {
+        return Instantiate(TextMeshPrefab, gameObject.transform);
     }
 
     public void Update()

@@ -1,7 +1,7 @@
 ﻿{
   "Name": "Person",
   "Model": "Character",
-  "Speed": 0.2,
+  "Speed": 0.1,
 
   "Strenght": 16,
   "Perception": 5,
@@ -18,7 +18,7 @@
     {
       "Name": "Build",
       "Level": 1,
-      "Priority": 5
+      "Priority": 6
     },
     {
       "Name": "Arcana",
@@ -33,7 +33,7 @@
     {
       "Name": "Haul",
       "Level": 1,
-      "Priority": 5
+      "Priority": 4
     },
     {
       "Name": "Farming",

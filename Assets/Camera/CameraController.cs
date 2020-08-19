@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Camera
 {
@@ -33,6 +34,11 @@ namespace Camera
             newPosition = transform.position;
             newRotation = transform.rotation;
             newZoom = Camera.transform.localPosition;
+        }
+
+        internal float GetPerpendicularRotation()
+        {
+            return 90 + transform.rotation.eulerAngles.y;
         }
 
         public void Update()
