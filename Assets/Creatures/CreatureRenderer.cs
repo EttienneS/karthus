@@ -3,6 +3,7 @@ using System;
 using TMPro;
 using UnityEngine;
 
+[Serializable]
 public enum AnimationType
 {
     Idle, Running, Dead, Attack, Interact
@@ -11,8 +12,10 @@ public enum AnimationType
 public class CreatureRenderer : MonoBehaviour
 {
     internal Animator Animator;
-    internal CreatureData Data = new CreatureData();
-    internal float RemainingTextDuration;
+
+    public CreatureData Data = new CreatureData();
+    public float RemainingTextDuration;
+
     private SpriteRenderer Highlight;
     private TextMeshPro Text;
 
@@ -53,8 +56,6 @@ public class CreatureRenderer : MonoBehaviour
 
     public void Update()
     {
-        UpdateFloatingText();
-
         if (Data.Update(Time.deltaTime))
         {
         }
@@ -65,6 +66,11 @@ public class CreatureRenderer : MonoBehaviour
 
             Destroy(this);
         }
+    }
+
+    public void LateUpdate()
+    {
+        UpdateFloatingText();
     }
 
     internal void DisableHightlight()
@@ -145,6 +151,10 @@ public class CreatureRenderer : MonoBehaviour
     {
         if (Text != null)
         {
+            var cameraPerpendicular = Game.Instance.CameraController.GetPerpendicularRotation();
+
+            Text.transform.rotation = Quaternion.Euler(45, cameraPerpendicular -90, 0);
+
             if (RemainingTextDuration > 0)
             {
                 RemainingTextDuration -= Time.deltaTime;
@@ -156,7 +166,7 @@ public class CreatureRenderer : MonoBehaviour
             }
             else
             {
-                Text.text = "";
+                Text.text = Data.Name;
             }
         }
     }

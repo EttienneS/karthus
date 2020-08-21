@@ -125,11 +125,6 @@ public class Game : MonoBehaviour
                 foreach (var structure in faction.Structures.ToList())
                 {
                     IdService.EnrollEntity(structure);
-
-                    foreach (var effect in structure.LinkedVisualEffects)
-                    {
-                        VisualEffectController.Load(effect);
-                    }
                 }
 
                 faction.LoadHomeCells();

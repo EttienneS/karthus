@@ -62,16 +62,6 @@ public class VisualEffect : MonoBehaviour
 
     internal void DestroySelf()
     {
-        if (!string.IsNullOrEmpty(Data.HolderId))
-        {
-            var holder = Data.Holder;
-
-            if (holder?.LinkedVisualEffects.Contains(Data) == true)
-            {
-                Data.Holder.LinkedVisualEffects.Remove(Data);
-            }
-        }
-
         Data.Destroyed = true;
         Destroy(gameObject);
     }
@@ -156,16 +146,6 @@ public class VisualEffectData
     public EffectType EffectType { get; set; }
     public bool Fade { get; set; }
 
-    [JsonIgnore]
-    public IEntity Holder
-    {
-        get
-        {
-            return HolderId.GetEntity();
-        }
-    }
-
-    public string HolderId { get; set; }
     public float Intensity { get; set; } = -1;
 
     [JsonIgnore]

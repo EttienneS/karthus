@@ -15,7 +15,7 @@ namespace Structures.Work
             {
                 if (LightEffect == null)
                 {
-                    LightEffect = Game.Instance.VisualEffectController.SpawnLightEffect(this, Cell.Vector, ColorHex.GetColorFromHex(), Radius, Intensity, float.MaxValue);
+                    LightEffect = Game.Instance.VisualEffectController.SpawnLightEffect(Cell.Vector, ColorHex.GetColorFromHex(), Radius, Intensity, float.MaxValue);
                 }
             }
             else

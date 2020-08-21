@@ -6,7 +6,7 @@ namespace Assets.Item
 {
     public class ItemRenderer : MonoBehaviour
     {
-        internal ItemData Data = new ItemData();
+        public ItemData Data = new ItemData();
 
         private MeshRenderer _meshRenderer;
         private TextMeshPro _text;

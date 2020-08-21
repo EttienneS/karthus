@@ -35,7 +35,7 @@ public class Triage : StatusActionBase
 
     internal override void StartBuff()
     {
-        Game.Instance.VisualEffectController.SpawnLightEffect(Owner, Owner.Vector, ColorConstants.WhiteBase, 2, 1, 1).Fades();
+        Game.Instance.VisualEffectController.SpawnLightEffect(Owner.Vector, ColorConstants.WhiteBase, 2, 1, 1).Fades();
 
         Owner.Log($"{Owner.Name} channels some magic to .");
     }

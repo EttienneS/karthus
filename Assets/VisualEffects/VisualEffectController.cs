@@ -17,7 +17,7 @@ public class VisualEffectController : MonoBehaviour
     public VisualEffect EffectPrefab;
     public TextMeshPro TextMeshPrefab;
 
-    public VisualEffect GetBase(EffectType effectType, IEntity holder)
+    public VisualEffect GetBase(EffectType effectType)
     {
         var effect = Instantiate(EffectPrefab, transform);
         effect.Data = new VisualEffectData
@@ -25,11 +25,6 @@ public class VisualEffectController : MonoBehaviour
             EffectType = effectType
         };
 
-        if (holder != null)
-        {
-            effect.Data.HolderId = holder.Id;
-            holder.LinkedVisualEffects.Add(effect.Data);
-        }
         return effect;
     }
 
@@ -47,12 +42,12 @@ public class VisualEffectController : MonoBehaviour
 
     public VisualEffect SpawnEffect(VisualEffectData data)
     {
-        return GetBase(data.EffectType, data.Holder);
+        return GetBase(data.EffectType);
     }
 
-    public VisualEffect SpawnEffect(IEntity holder, Vector3 vector, float lifeSpan)
+    public VisualEffect SpawnEffect(Vector3 vector, float lifeSpan)
     {
-        var effect = GetBase(EffectType.Particle, holder);
+        var effect = GetBase(EffectType.Particle);
         effect.Data.LifeSpan = lifeSpan;
         effect.Data.SetProperty("X", vector.x.ToString());
         effect.Data.SetProperty("Y", vector.y.ToString());
@@ -60,9 +55,9 @@ public class VisualEffectController : MonoBehaviour
         return effect;
     }
 
-    public VisualEffect SpawnLightEffect(IEntity holder, Vector3 vector, Color color, float radius, float intensity, float lifeSpan)
+    public VisualEffect SpawnLightEffect(Vector3 vector, Color color, float radius, float intensity, float lifeSpan)
     {
-        var effect = GetBase(EffectType.Light, holder);
+        var effect = GetBase(EffectType.Light);
 
         effect.Light.color = color;
         effect.Data.Intensity = intensity;
@@ -76,9 +71,9 @@ public class VisualEffectController : MonoBehaviour
         return effect;
     }
 
-    public VisualEffect SpawnSpriteEffect(IEntity holder, Vector3 vector, string sprite, float lifeSpan, Color color)
+    public VisualEffect SpawnSpriteEffect(Vector3 vector, string sprite, float lifeSpan, Color color)
     {
-        var effect = GetBase(EffectType.Sprite, holder);
+        var effect = GetBase(EffectType.Sprite);
 
         effect.Data.SetProperty("Sprite", sprite);
         effect.Data.SetProperty("Color", color.ToColorHexString());
@@ -91,9 +86,9 @@ public class VisualEffectController : MonoBehaviour
         return effect;
     }
 
-    public VisualEffect SpawnSpriteEffect(IEntity holder, Vector3 vector, string sprite, float lifeSpan)
+    public VisualEffect SpawnSpriteEffect(Vector3 vector, string sprite, float lifeSpan)
     {
-        return SpawnSpriteEffect(holder, vector, sprite, lifeSpan, ColorConstants.WhiteBase);
+        return SpawnSpriteEffect(vector, sprite, lifeSpan, ColorConstants.WhiteBase);
     }
 
     internal TextMeshPro AddTextPrefab(GameObject gameObject)

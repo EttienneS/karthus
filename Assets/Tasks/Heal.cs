@@ -29,7 +29,7 @@ public class Heal : CreatureTask
             var wound = creature.GetWorstWound();
             if (wound != null)
             {
-                Game.Instance.VisualEffectController.SpawnLightEffect(creature, creature.Vector, ColorConstants.WhiteAccent, 2, 1, 1).Fades();
+                Game.Instance.VisualEffectController.SpawnLightEffect(creature.Vector, ColorConstants.WhiteAccent, 2, 1, 1).Fades();
 
                 wound.Treated = true;
                 wound.HealRate /= 2;

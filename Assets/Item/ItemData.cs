@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace Assets.Item
 {
+    [Serializable]
     public class ItemData : IEntity
     {
         private (float X, float Z) _coords;
@@ -65,7 +66,6 @@ namespace Assets.Item
         public string Icon { get; set; }
 
         public string InUseById { get; set; }
-        public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
         public string Mesh { get; set; }
         public string Name { get; set; }
 
@@ -138,7 +138,7 @@ namespace Assets.Item
         internal void ShowOutline()
         {
             _outline = Game.Instance.VisualEffectController
-                           .SpawnSpriteEffect(this, Vector, "CellOutline", float.MaxValue);
+                           .SpawnSpriteEffect(Vector, "CellOutline", float.MaxValue);
             _outline.Regular();
         }
 

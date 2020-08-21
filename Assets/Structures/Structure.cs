@@ -1,10 +1,12 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 namespace Assets.Structures
 {
+    [Serializable]
     public class Structure : IEntity
     {
         public bool Buildable;
@@ -127,8 +129,6 @@ namespace Assets.Structures
         }
 
         public string InUseById { get; set; }
-
-        public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
 
         public string Name { get; set; }
 
@@ -254,7 +254,7 @@ namespace Assets.Structures
         internal void ShowOutline()
         {
             _outline = Game.Instance.VisualEffectController
-                           .SpawnSpriteEffect(this, Vector, "CellOutline", float.MaxValue);
+                           .SpawnSpriteEffect(Vector, "CellOutline", float.MaxValue);
             _outline.Regular();
         }
     }

@@ -15,6 +15,7 @@ public enum Mobility
 
 namespace Assets.Creature
 {
+    [Serializable]
     public class CreatureData : IEntity
     {
         [JsonIgnore]
@@ -157,7 +158,6 @@ namespace Assets.Creature
 
         public List<Limb> Limbs { get; set; }
 
-        public List<VisualEffectData> LinkedVisualEffects { get; set; } = new List<VisualEffectData>();
 
         public List<string> LogHistory { get; set; }
 

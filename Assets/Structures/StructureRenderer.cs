@@ -4,7 +4,7 @@ namespace Assets.Structures
 {
     public class StructureRenderer : MonoBehaviour
     {
-        internal Structure Data;
+        public Structure Data;
         internal MeshRenderer Renderer;
 
         internal void UpdatePosition()
