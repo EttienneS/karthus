@@ -6,7 +6,7 @@ using UnityEngine;
 [Serializable]
 public enum AnimationType
 {
-    Idle, Running, Dead, Attack, Interact
+    Idle, Running, Dead, Attack, Interact, Sleeping
 }
 
 public class CreatureRenderer : MonoBehaviour

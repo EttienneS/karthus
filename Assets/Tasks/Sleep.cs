@@ -1,12 +1,13 @@
-﻿using Needs;
-using Newtonsoft.Json;
-using Assets.Creature;
+﻿using Assets.Creature;
 using Assets.Structures;
+using Needs;
+using Newtonsoft.Json;
 
 public class Sleep : CreatureTask
 {
     public string BedId;
     public float RecoveryRate = 1.25f;
+    public string CreatureID;
 
     public override string Message
     {
@@ -19,6 +20,8 @@ public class Sleep : CreatureTask
     public Sleep()
     {
         BusyEmote = "Zzzz...";
+
+        OnSuspended += () => ResetCreatureState(CreatureID.GetCreature());
     }
 
     [JsonIgnore]
@@ -48,12 +51,12 @@ public class Sleep : CreatureTask
 
     public override bool Done(CreatureData creature)
     {
+        CreatureID = creature.Id;
         if (SubTasksComplete(creature))
         {
             if (string.IsNullOrEmpty(BedId) && !Sleeping)
             {
                 var bed = creature.Faction.Structures.Find(s => !s.InUseByAnyone && s.ValueProperties.ContainsKey("RecoveryRate"));
-
                 if (bed != null)
                 {
                     bed.Reserve(creature);
@@ -62,16 +65,26 @@ public class Sleep : CreatureTask
                     return false;
                 }
             }
+
             Sleeping = true;
             creature.GetNeed<Energy>().CurrentChangeRate = RecoveryRate;
-
+            creature.SetAnimation(AnimationType.Sleeping);
             if (creature.GetCurrentNeed<Energy>() > 90f)
             {
-                creature.GetNeed<Energy>().ResetRate();
+                ResetCreatureState(creature);
                 return true;
             }
         }
 
         return false;
+    }
+
+    private static void ResetCreatureState(CreatureData creature)
+    {
+        if (creature != null)
+        {
+            creature.SetAnimation(AnimationType.Idle);
+            creature.GetNeed<Energy>().ResetRate();
+        }
     }
 }
