@@ -10,7 +10,6 @@ namespace Assets
 {
     public class CursorController : MonoBehaviour
     {
-        public Light CursorLight;
         public SpriteRenderer MouseSpriteRenderer;
         public RectTransform SelectSquareImage;
         public ValidateMouseDelegate Validate;
@@ -107,8 +106,6 @@ namespace Assets
         internal void Update()
         {
             MoveCursorTransform();
-
-            CursorLight.enabled = Game.Instance.TimeManager.Data.Hour > 17 || Game.Instance.TimeManager.Data.Hour < 5;
 
             HandleMouseInput();
         }

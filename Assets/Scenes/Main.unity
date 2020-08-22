@@ -276,11 +276,6 @@ PrefabInstance:
       objectReference: {fileID: 603724562}
     - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
-      propertyPath: TaskPanel
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
-        type: 3}
       propertyPath: UI
       value: 
       objectReference: {fileID: 1541317927}
@@ -289,21 +284,6 @@ PrefabInstance:
       propertyPath: UIController
       value: 
       objectReference: {fileID: 1541317929}
-    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
-        type: 3}
-      propertyPath: MapData.Size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
-        type: 3}
-      propertyPath: MapData.CreaturesToSpawn
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
-        type: 3}
-      propertyPath: MapData.ChunkSize
-      value: 240
-      objectReference: {fileID: 0}
     - target: {fileID: 4791717066980201731, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
       propertyPath: m_Name
@@ -311,15 +291,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4826167629218043048, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
+      propertyPath: CursorLight
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4826167629218043048, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
       propertyPath: SelectSquareImage
       value: 
       objectReference: {fileID: 1640372943}
-    - target: {fileID: 8296573314717617545, guid: 8d3d47b53068341448ff13732aef998e,
-        type: 3}
-      propertyPath: TextMeshPrefab
-      value: 
-      objectReference: {fileID: 7770415903545060489, guid: 11784c8016f135640800c67fa5df8ff9,
-        type: 3}
     - target: {fileID: 9043323423647380584, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
       propertyPath: m_LocalPosition.x

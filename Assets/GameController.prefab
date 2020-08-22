@@ -68,11 +68,10 @@ MonoBehaviour:
   LoadPanelPrefab: {fileID: 1995320794631331998, guid: e23b1cba055c1324f823db6d383df22d,
     type: 3}
   MainMenuController: {fileID: 0}
-  Map: {fileID: 17666008}
   MapData:
     ChunkSize: 240
     CreateWater: 1
-    CreaturesToSpawn: 2
+    CreaturesToSpawn: 1
     Flat: 0
     Populate: 1
     Seed: 
@@ -87,7 +86,6 @@ MonoBehaviour:
   StructureController: {fileID: 4631098556713372945}
   StructureInfoPanelPrefab: {fileID: 7669023713727672724, guid: c79f6ed3be40f1d4c9a0537ef36d2828,
     type: 3}
-  TaskPanel: {fileID: 0}
   TimeManager: {fileID: 211605833}
   TooltipPrefab: {fileID: 7554671541487698571, guid: 5dcc672705c467847af5264efd228893,
     type: 3}
@@ -96,8 +94,6 @@ MonoBehaviour:
   VisualEffectController: {fileID: 8296573314717617545}
   ZoneController: {fileID: 3031215097329078977}
   ZoneInfoPanelPrefab: {fileID: 6224699677946717344, guid: 7e644716772d30044a157517133287c5,
-    type: 3}
-  FilterViewPrefab: {fileID: 6605581421693691597, guid: 37d811e85dfbfb84b8315023712b8d5e,
     type: 3}
 --- !u!1001 &606839150816351063
 PrefabInstance:
@@ -288,6 +284,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1f3bbfb9d49d8964c9a1953cac20d915, type: 3}
+--- !u!4 &211605832 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1145644537760836016, guid: 1f3bbfb9d49d8964c9a1953cac20d915,
+    type: 3}
+  m_PrefabInstance: {fileID: 1145644537969193208}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &211605833 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1145644537760836017, guid: 1f3bbfb9d49d8964c9a1953cac20d915,
@@ -300,12 +302,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b115dad0c6b75bb4fb230f24fcd394ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &211605832 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1145644537760836016, guid: 1f3bbfb9d49d8964c9a1953cac20d915,
-    type: 3}
-  m_PrefabInstance: {fileID: 1145644537969193208}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2607921892871126715
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -846,18 +842,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 5952559972816651186}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &17666008 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5952559972800760938, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
-    type: 3}
-  m_PrefabInstance: {fileID: 5952559972816651186}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a2e50b14c390774ea0feb5aaa8185b3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &3031215097329078977 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8685956952262168947, guid: fd9fe2ef5313abb4aa06105b1ebd9a97,
@@ -985,6 +969,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 745926433271330849, guid: f4fad3fa4b7404b40a8dc17eae6af77a,
         type: 3}
+    - target: {fileID: 2872971961215447772, guid: ffe42bc49a7e309479ff71bc89d1d0bd,
+        type: 3}
+      propertyPath: TextMeshPrefab
+      value: 
+      objectReference: {fileID: 7770415903545060489, guid: 11784c8016f135640800c67fa5df8ff9,
+        type: 3}
     - target: {fileID: 7449035809356891847, guid: ffe42bc49a7e309479ff71bc89d1d0bd,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1067,6 +1057,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 9043323423647380584}
     m_Modifications:
+    - target: {fileID: 1839390060392042451, guid: 77a1e169d62701b45bb52d6f1697a1a9,
+        type: 3}
+      propertyPath: CursorLight
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 3110035418348401182, guid: 77a1e169d62701b45bb52d6f1697a1a9,
         type: 3}
       propertyPath: m_Name
@@ -1167,7 +1162,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.x
       value: 90
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8816767959854847230, guid: 77a1e169d62701b45bb52d6f1697a1a9, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 77a1e169d62701b45bb52d6f1697a1a9, type: 3}
 --- !u!4 &2280500959476278093 stripped
 Transform:

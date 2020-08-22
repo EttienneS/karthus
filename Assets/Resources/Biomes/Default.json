@@ -67,15 +67,17 @@
     },
     {
       "Content": {
-        "Pine": 0.20
+        "Birch": 0.05,
+        "Rock": 0.02,
+        "Grass": 0.05
       },
       "Min": 0.75,
       "Max": 1,
-      "Name": "Forest",
+      "Name": "Bush",
       "Red": 0,
       "Green": 1,
       "Blue": 0,
-      "Alpha": 1
+      "Alpha": 0.5
     }
   ],
   "Name": "Default",
