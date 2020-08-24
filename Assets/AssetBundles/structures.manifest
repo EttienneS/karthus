@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3554373579
+CRC: 2717691210
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: c49eb6bf5e859713ee25f85c530f0cb5
+    Hash: 6f203b9cd7d70b5d93755ae4e6385957
   TypeTreeHash:
     serializedVersion: 2
     Hash: 18d9bb4d47b424ec9fb3afa70ce56f07
@@ -46,6 +46,7 @@ Assets:
 - Assets/Models/Kenney Assets/Nature Kit/stone_smallFlat2.fbx
 - Assets/Models/Kenney Assets/Nature Kit/flower_beige3.fbx
 - Assets/Models/Self/Door.prefab
+- Assets/Models/Self/grass.prefab
 - Assets/Models/Kenney Assets/Nature Kit/campfireStones_rocks.fbx
 - Assets/Models/Self/Bucket.prefab
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/Birch_9.blend
@@ -92,7 +93,6 @@ Assets:
 - Assets/Models/Kenney Assets/Nature Kit/stone_smallFlat3.fbx
 - Assets/Models/Self/WoodWall.prefab
 - Assets/Models/Self/Bed.prefab
-- Assets/Models/Self/Blends/grass.fbx
 - Assets/Models/Kenney Assets/Nature Kit/stone_column.fbx
 - Assets/Models/Kenney Assets/Nature Kit/stone_small2.fbx
 - Assets/Models/Self/Table.prefab

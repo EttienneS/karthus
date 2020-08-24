@@ -2,17 +2,13 @@
 using Assets.Item;
 using Assets.Models;
 using Assets.Structures;
-using Assets.UI;
-using Assets.UI.TaskPanel;
 using Camera;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UI;
 using UnityEngine;
-using UnityEngine.Apple;
 using Debug = UnityEngine.Debug;
-
 
 public class Game : MonoBehaviour
 {
@@ -60,7 +56,6 @@ public class Game : MonoBehaviour
     {
         get
         {
-            
             return _instance != null ? _instance : (_instance = FindObjectOfType<Game>());
         }
         set
@@ -138,8 +133,6 @@ public class Game : MonoBehaviour
             SaveManager.SaveToLoad = null;
         }
     }
-
-   
 
     private void InitFactions()
     {

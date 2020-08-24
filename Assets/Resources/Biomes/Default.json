@@ -69,7 +69,7 @@
       "Content": {
         "Birch": 0.05,
         "Rock": 0.02,
-        "Grass": 0.05
+        "Grass": 0.25
       },
       "Min": 0.75,
       "Max": 1,

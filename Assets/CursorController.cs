@@ -107,7 +107,7 @@ namespace Assets
         {
             MoveCursorTransform();
 
-            HandleMouseInput();
+            HandleMouseInput(); 
         }
 
         private static Cell GetCellForWorldPosition(Vector3? pos)
