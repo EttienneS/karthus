@@ -63,7 +63,7 @@ public class DoWork : CreatureTask
                 {
                     creature.SetAnimation(AnimationType.Interact);
                     creature.Face(WorkStructure.Cell);
-                    Order.Progress += Game.Instance.TimeManager.CreatureTick;
+                    Order.Progress += 0.5f;
 
                     if (Order.Progress >= Order.Option.TimeToComplete)
                     {

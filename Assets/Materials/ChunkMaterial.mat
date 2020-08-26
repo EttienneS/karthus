@@ -25,7 +25,7 @@ Material:
     type: 3}
   m_ShaderKeywords: _SPECULAR_SETUP
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -99,10 +99,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - Vector1_4B4266A3: 40
-    - Vector1_5D86DB9E: 40
+    - Vector1_5D86DB9E: 50
     - Vector1_9A4184A8: 5
-    - Vector1_C2335042: 40
-    - Vector1_CDB304A8: 40
+    - Vector1_C2335042: 50
+    - Vector1_CDB304A8: 50
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1

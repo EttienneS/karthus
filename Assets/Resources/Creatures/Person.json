@@ -1,7 +1,7 @@
 ﻿{
   "Name": "Person",
   "Model": "Character",
-  "Speed": 0.1,
+  "Speed": 2,
 
   "Strenght": 16,
   "Perception": 5,

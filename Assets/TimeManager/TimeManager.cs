@@ -26,8 +26,6 @@ public class TimeManager : MonoBehaviour
     public float MaxLightAngle = 160f;
     public float MinLightAngle = 20f;
 
-    internal float CreatureTick = 0.05f;
-
     private TimeStep _timeStep;
     private float _timeTicks;
 

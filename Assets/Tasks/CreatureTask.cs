@@ -134,6 +134,7 @@ public abstract class CreatureTask
     {
         _suspended = true;
         AutoResume = autoResume;
+
         SubTasks.Clear();
 
         OnSuspended?.Invoke();

@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 public class Sleep : CreatureTask
 {
     public string BedId;
-    public float RecoveryRate = 1.25f;
+    public float RecoveryRate = 0.1f;
     public string CreatureID;
 
     public override string Message
@@ -68,6 +68,7 @@ public class Sleep : CreatureTask
 
             Sleeping = true;
             creature.GetNeed<Energy>().CurrentChangeRate = RecoveryRate;
+            creature.GetNeed<Hunger>().CurrentChangeRate = NeedConstants.BaseDegrateRate / 2;
             creature.SetAnimation(AnimationType.Sleeping);
             if (creature.GetCurrentNeed<Energy>() > 90f)
             {
@@ -85,6 +86,7 @@ public class Sleep : CreatureTask
         {
             creature.SetAnimation(AnimationType.Idle);
             creature.GetNeed<Energy>().ResetRate();
+            creature.GetNeed<Hunger>().ResetRate();
         }
     }
 }

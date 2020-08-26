@@ -56,9 +56,7 @@ public class CreatureRenderer : MonoBehaviour
 
     public void Update()
     {
-        if (Data.Update(Time.deltaTime))
-        {
-        }
+        Data.Update(Time.deltaTime);
 
         if (Data.Dead)
         {

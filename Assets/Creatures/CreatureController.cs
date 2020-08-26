@@ -117,8 +117,6 @@ public class CreatureController : MonoBehaviour
         creature.Data.Z = cell.Vector.z + Random.Range(-0.25f, 0.25f);
         creature.UpdatePosition();
 
-        creature.Data.InternalTick = Random.Range(0, Game.Instance.TimeManager.CreatureTick);
-
         creature.Data.Behaviour = BehaviourController.GetBehaviour(creature.Data.BehaviourName);
 
         creature.Data.Needs = BehaviourController.GetNeedsFor(creature.Data.BehaviourName);

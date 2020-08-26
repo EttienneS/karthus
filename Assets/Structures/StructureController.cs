@@ -212,13 +212,13 @@ namespace Assets.Structures
         {
             _lastUpdate += Time.deltaTime;
 
-            if (_lastUpdate > Game.Instance.TimeManager.CreatureTick)
+            if (_lastUpdate > 0.5f)
             {
-                _lastUpdate = 0;
                 foreach (var structure in Game.Instance.IdService.StructureLookup.Values.OfType<WorkStructureBase>())
                 {
-                    structure.Process(Game.Instance.TimeManager.CreatureTick);
+                    structure.Process(_lastUpdate);
                 }
+                _lastUpdate = 0;
             }
         }
     }

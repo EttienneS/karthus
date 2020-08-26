@@ -253,6 +253,7 @@ namespace Assets.Structures
 
         internal void ShowOutline()
         {
+            HideOutline();
             _outline = Game.Instance.VisualEffectController
                            .SpawnSpriteEffect(Vector, "CellOutline", float.MaxValue);
             _outline.Regular();

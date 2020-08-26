@@ -20,13 +20,13 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.9245283, g: 0.8991771, b: 0.8242257, a: 1}
+  m_AmbientSkyColor: {r: 0.6509434, g: 0.5060761, b: 0.40837488, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
-  m_AmbientMode: 1
-  m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 73324b55f67f54c7bbf43204788b8bbe, type: 2}
+  m_AmbientMode: 3
+  m_SubtractiveShadowColor: {r: 0.16286932, g: 0.170174, b: 0.18867922, a: 1}
+  m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -37,8 +37,8 @@ RenderSettings:
   m_ReflectionBounces: 1
   m_ReflectionIntensity: 0.8
   m_CustomReflection: {fileID: 0}
-  m_Sun: {fileID: 1877656348}
-  m_IndirectSpecularColor: {r: 0.091281705, g: 0.263584, b: 0.56875265, a: 0.8}
+  m_Sun: {fileID: 0}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -97,8 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000000, guid: fbdea286ee6aa6e4e944fdf260c7b3ca,
-    type: 2}
+  m_LightingDataAsset: {fileID: 0}
   m_LightingSettings: {fileID: 4890085278179872738, guid: 541e1d3c69fcbac4792e28607d92a00d,
     type: 2}
 --- !u!196 &4
@@ -221,12 +220,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19fd0571a54af6e46b88842df81d56f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!108 &1877656348 stripped
-Light:
-  m_CorrespondingSourceObject: {fileID: 1611348142, guid: 8d3d47b53068341448ff13732aef998e,
-    type: 3}
-  m_PrefabInstance: {fileID: 1910422787}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1910422787
 PrefabInstance:
   m_ObjectHideFlags: 0

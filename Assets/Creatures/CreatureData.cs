@@ -40,7 +40,6 @@ namespace Assets.Creature
 
         public bool UnableToFindPath;
 
-        internal float InternalTick = float.MaxValue;
         internal PathRequest CurrentPathRequest;
 
         [JsonIgnore]
@@ -157,7 +156,6 @@ namespace Assets.Creature
         }
 
         public List<Limb> Limbs { get; set; }
-
 
         public List<string> LogHistory { get; set; }
 
@@ -588,11 +586,16 @@ namespace Assets.Creature
 
         internal void Perceive()
         {
-            if (LastPercievedCoordinate != Cell)
+            if (_perceptionTicks > 10)
             {
-                _awareness = null;
-                LastPercievedCoordinate = Cell;
+                if (LastPercievedCoordinate != Cell)
+                {
+                    _awareness = null;
+                    LastPercievedCoordinate = Cell;
+                    _perceptionTicks = 0;
+                }
             }
+            _perceptionTicks++;
         }
 
         internal void ProcessSelf(float delta)
@@ -656,52 +659,38 @@ namespace Assets.Creature
             }
         }
 
-        internal bool Update(float timeDelta)
+        private int _perceptionTicks;
+
+        internal void Update(float timeDelta)
         {
             if (Game.Instance.TimeManager.Paused)
-                return false;
+                return;
 
             if (Dead)
             {
-                return true;
+                return;
             }
 
-            InternalTick += timeDelta;
-            if (InternalTick >= Game.Instance.TimeManager.CreatureTick)
+            Perceive();
+            ProcessSelf(timeDelta);
+            Move(timeDelta);
+
+            if (InCombat)
             {
-                _selfTicks++;
-                if (_selfTicks > SelfTickCount)
-                {
-                    _selfTicks = 0;
-                    Perceive();
-                    ProcessSelf(Game.Instance.TimeManager.CreatureTick * SelfTickCount);
-                }
-
-                Move();
-
-                InternalTick = 0;
-
-                if (InCombat)
-                {
-                    ProcessCombat();
-                }
-                else
-                {
-                    ProcessTask();
-                }
-
-                ResolveIncomingAttacks(timeDelta);
-                Combatants.RemoveAll(c => c.Dead);
-
-                if (HeldItem != null)
-                {
-                    HeldItem.Coords = (X, Z);
-                }
-
-                return true;
+                ProcessCombat();
+            }
+            else
+            {
+                ProcessTask();
             }
 
-            return false;
+            ResolveIncomingAttacks(timeDelta);
+            Combatants.RemoveAll(c => c.Dead);
+
+            if (HeldItem != null)
+            {
+                HeldItem.Coords = (X, Z);
+            }
         }
 
         private OffensiveActionBase GetBestAttack(CreatureData target)
@@ -845,7 +834,7 @@ namespace Assets.Creature
             return (outgoingDamage, bestAttack);
         }
 
-        private void Move()
+        private void Move(float deltaTime)
         {
             if (X.AlmostEquals(TargetCoordinate.x) && Z.AlmostEquals(TargetCoordinate.z))
             {
@@ -901,7 +890,7 @@ namespace Assets.Creature
                             }
                         }
 
-                        UpdateRendererPosition(targetX, targetZ);
+                        MoveToPosition(deltaTime, targetX, targetZ);
                     }
                 }
                 catch (InvalidPathException invalidPath)
@@ -914,7 +903,7 @@ namespace Assets.Creature
             }
         }
 
-        private void UpdateRendererPosition(float targetX, float targetZ)
+        private void MoveToPosition(float deltaTime, float targetX, float targetZ)
         {
             var maxX = Mathf.Max(targetX, X);
             var minX = Mathf.Min(targetX, X);
@@ -922,8 +911,8 @@ namespace Assets.Creature
             var maxZ = Mathf.Max(targetZ, Z);
             var minZ = Mathf.Min(targetZ, Z);
 
-            var yspeed = Mathf.Min(Speed + Random.Range(0f, 0.01f), maxZ - minZ);
-            var xspeed = Mathf.Min(Speed + Random.Range(0f, 0.01f), maxX - minX);
+            var yspeed = Mathf.Min(Speed * deltaTime, maxZ - minZ);
+            var xspeed = Mathf.Min(Speed * deltaTime, maxX - minX);
 
             if (targetZ > Z)
             {
