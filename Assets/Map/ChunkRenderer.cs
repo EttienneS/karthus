@@ -2,6 +2,7 @@
 using Assets.Sprites;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class ChunkRenderer : MonoBehaviour
@@ -152,4 +153,5 @@ public class ChunkRenderer : MonoBehaviour
         mesh.name = $"Mesh {name}";
         meshCollider = gameObject.AddComponent<MeshCollider>();
     }
+
 }

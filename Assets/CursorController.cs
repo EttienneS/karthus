@@ -14,6 +14,7 @@ namespace Assets
         public RectTransform SelectSquareImage;
         public ValidateMouseDelegate Validate;
 
+        private const int DoubleClickRadius = 10;
         private readonly Dictionary<Cell, MeshRenderer> _draggedRenderers = new Dictionary<Cell, MeshRenderer>();
         private Sprite _currentSprite;
         private SelectionPreference _lastSelection = SelectionPreference.Creature;
@@ -22,7 +23,7 @@ namespace Assets
         private RotateDelegate _rotateLeft;
         private RotateDelegate _rotateRight;
         private SelectionPreference _selectionPreference;
-        private Vector3 SelectionStartWorld;
+        private Vector3 _selectionStartWorld;
 
         public delegate void RotateDelegate();
 
@@ -30,7 +31,7 @@ namespace Assets
 
         public void ResetSelection()
         {
-            SelectionStartWorld = Vector3.zero;
+            _selectionStartWorld = Vector3.zero;
             SetSelectionPreference(SelectionPreference.Anything);
         }
 
@@ -105,14 +106,22 @@ namespace Assets
 
         internal void Update()
         {
-            MoveCursorTransform();
+            HandleMouseInput();
 
-            HandleMouseInput(); 
+            MoveCursorTransform();
         }
 
         private static Cell GetCellForWorldPosition(Vector3? pos)
         {
             return Map.Instance.GetCellAtCoordinate(pos.Value - new Vector3(0.5f, 0, 0.5f));
+        }
+
+        private static void InvokeCellClickMethod(List<Cell> cells)
+        {
+            if (Game.Instance.OrderSelectionController.CellClickOrder != null)
+            {
+                Game.Instance.OrderSelectionController.CellClickOrder.Invoke(cells);
+            }
         }
 
         private void Clear()
@@ -138,6 +147,33 @@ namespace Assets
             {
                 MouseSpriteRenderer.sprite = null;
                 _currentSprite = null;
+            }
+        }
+
+        private void ClearSelection()
+        {
+            DeselectAll();
+            HideSelectionRectangle();
+        }
+
+        private SelectionPreference CycleSelectionMode(SelectionPreference selection)
+        {
+            switch (selection)
+            {
+                case SelectionPreference.Creature:
+                    return SelectionPreference.Structure;
+
+                case SelectionPreference.Structure:
+                    return SelectionPreference.Item;
+
+                case SelectionPreference.Item:
+                    return SelectionPreference.Zone;
+
+                case SelectionPreference.Zone:
+                    return SelectionPreference.Creature;
+
+                default:
+                    throw new System.Exception("Unkown selection type!");
             }
         }
 
@@ -235,11 +271,11 @@ namespace Assets
 
         private List<Cell> GetSelectedCells()
         {
-            if (SelectionStartWorld == Vector3.zero)
+            if (_selectionStartWorld == Vector3.zero)
             {
                 return new List<Cell>();
             }
-            var worldStartPoint = SelectionStartWorld;
+            var worldStartPoint = _selectionStartWorld;
             var worldEndPoint = GetWorldMousePosition().Value;
 
             var cells = new List<Cell>();
@@ -271,9 +307,9 @@ namespace Assets
             return cells.Distinct().ToList();
         }
 
-        private bool GetSelection(SelectionPreference selectionPreference, List<Cell> cells)
+        private bool GetSelection(SelectionPreference selectionPreference, List<Cell> cells, bool selectSimilar)
         {
-            SelectionStartWorld = Vector3.zero;
+            _selectionStartWorld = Vector3.zero;
 
             switch (selectionPreference)
             {
@@ -282,7 +318,7 @@ namespace Assets
                     for (int i = 0; i < 5; i++)
                     {
                         _lastSelection = CycleSelectionMode(_lastSelection);
-                        if (GetSelection(_lastSelection, cells))
+                        if (GetSelection(_lastSelection, cells, selectSimilar))
                         {
                             break;
                         }
@@ -298,47 +334,18 @@ namespace Assets
                     break;
 
                 case SelectionPreference.Item:
-                    return SelectItems(FindItemsInCells(cells));
+                    return SelectItems(FindItemsInCells(cells), selectSimilar);
 
                 case SelectionPreference.Structure:
-                    return SelectStructures(FindStructuresInCells(cells));
+                    return SelectStructures(FindStructuresInCells(cells), selectSimilar);
 
                 case SelectionPreference.Creature:
-                    return SelectCreatures(FindCreaturesInCells(cells));
+                    return SelectCreatures(FindCreaturesInCells(cells), selectSimilar);
 
                 case SelectionPreference.Zone:
-                    return SelectZone(FindZoneInCells(cells));
+                    return SelectZone(FindZoneInCells(cells), selectSimilar);
             }
             return false;
-        }
-
-        private static void InvokeCellClickMethod(List<Cell> cells)
-        {
-            if (Game.Instance.OrderSelectionController.CellClickOrder != null)
-            {
-                Game.Instance.OrderSelectionController.CellClickOrder.Invoke(cells);
-            }
-        }
-
-        private SelectionPreference CycleSelectionMode(SelectionPreference selection)
-        {
-            switch (selection)
-            {
-                case SelectionPreference.Creature:
-                    return SelectionPreference.Structure;
-
-                case SelectionPreference.Structure:
-                    return SelectionPreference.Item;
-
-                case SelectionPreference.Item:
-                    return SelectionPreference.Zone;
-
-                case SelectionPreference.Zone:
-                    return SelectionPreference.Creature;
-
-                default:
-                    throw new System.Exception("Unkown selection type!");
-            }
         }
 
         private Vector3? GetWorldMousePosition()
@@ -370,36 +377,41 @@ namespace Assets
 
                 if (worldMousePosition != null)
                 {
-                    if (InputHelper.LeftMouseButtonStartClick())
+                    if (InputHelper.LeftMouseButtonDoubleClicked())
                     {
-                        SelectionStartWorld = GetWorldMousePosition().Value;
+                        ClearSelection();
+                        GetSelection(_selectionPreference, GetSelectedCells(), true);
                     }
-
-                    if (InputHelper.LeftMouseButtonReleased())
+                    else
                     {
-                        DeselectAll();
+                        if (InputHelper.LeftMouseButtonStartClick())
+                        {
+                            _selectionStartWorld = GetWorldMousePosition().Value;
+                        }
 
-                        HideSelectionRectangle();
+                        if (InputHelper.LeftMouseButtonReleased())
+                        {
+                            ClearSelection();
+                            GetSelection(_selectionPreference, GetSelectedCells(), false);
+                        }
 
-                        GetSelection(_selectionPreference, GetSelectedCells());
-                    }
+                        if (InputHelper.LeftMouseButtonIsBeingClicked())
+                        {
+                            ShowSelectionRectangle();
 
-                    if (InputHelper.LeftMouseButtonIsBeingClicked())
-                    {
-                        ShowSelectionRectangle();
+                            var selectionEndScreenPosition = Input.mousePosition;
+                            var start = Game.Instance.CameraController.Camera.WorldToScreenPoint(_selectionStartWorld);
+                            start.z = 0f;
 
-                        var selectionEndScreenPosition = Input.mousePosition;
-                        var start = Game.Instance.CameraController.Camera.WorldToScreenPoint(SelectionStartWorld);
-                        start.z = 0f;
+                            SelectSquareImage.position = (start + selectionEndScreenPosition) / 2;
 
-                        SelectSquareImage.position = (start + selectionEndScreenPosition) / 2;
+                            var sizeX = Mathf.Abs(start.x - selectionEndScreenPosition.x);
+                            var sizeY = Mathf.Abs(start.y - selectionEndScreenPosition.y);
 
-                        var sizeX = Mathf.Abs(start.x - selectionEndScreenPosition.x);
-                        var sizeY = Mathf.Abs(start.y - selectionEndScreenPosition.y);
+                            SelectSquareImage.sizeDelta = new Vector2(sizeX, sizeY);
 
-                        SelectSquareImage.sizeDelta = new Vector2(sizeX, sizeY);
-
-                        ShowCursorEffects(GetSelectedCells());
+                            ShowCursorEffects(GetSelectedCells());
+                        }
                     }
                 }
             }
@@ -462,10 +474,22 @@ namespace Assets
                     Gizmos.DrawCube(cell.Vector, new Vector3(1f, 0.01f, 1f));
                 }
             }
+
+            Gizmos.DrawCube(_selectionStartWorld, new Vector3(1f, 0.01f, 1f));
         }
 
-        private bool SelectCreatures(List<CreatureRenderer> creatures)
+        private bool SelectCreatures(List<CreatureRenderer> creatures, bool selectSimilar)
         {
+            if (creatures.Count == 1 && selectSimilar)
+            {
+                var creature = creatures[0].Data;
+                creatures = Map.Instance.GetCircle(creature.Cell, DoubleClickRadius)
+                                        .SelectMany(c => c.Creatures)
+                                        .Where(c => c.BehaviourName == creature.BehaviourName)
+                                        .Select(c => c.CreatureRenderer)
+                                        .ToList();
+            }
+
             foreach (var creature in creatures)
             {
                 creature.EnableHighlight(ColorConstants.GreenAccent);
@@ -480,8 +504,17 @@ namespace Assets
             return false;
         }
 
-        private bool SelectItems(List<ItemData> items)
+        private bool SelectItems(List<ItemData> items, bool selectSimilar)
         {
+            if (items.Count == 1 && selectSimilar)
+            {
+                var item = items[0];
+                items = Map.Instance.GetCircle(item.Cell, DoubleClickRadius)
+                                    .SelectMany(c => c.Items)
+                                    .Where(i => i.Name == item.Name)
+                                    .ToList();
+            }
+
             foreach (var item in items)
             {
                 item.ShowOutline();
@@ -495,8 +528,17 @@ namespace Assets
             return false;
         }
 
-        private bool SelectStructures(List<Structure> structures)
+        private bool SelectStructures(List<Structure> structures, bool selectSimilar)
         {
+            if (structures.Count == 1 && selectSimilar)
+            {
+                var structure = structures[0];
+                structures = Map.Instance.GetCircle(structure.Cell, DoubleClickRadius)
+                                         .Select(c => c.Structure)
+                                         .Where(s => s != null && s.Name == structure.Name)
+                                         .ToList();
+            }
+
             foreach (var structure in structures)
             {
                 structure.ShowOutline();
@@ -510,7 +552,7 @@ namespace Assets
             return false;
         }
 
-        private bool SelectZone(ZoneBase zone)
+        private bool SelectZone(ZoneBase zone, bool selectSimilar)
         {
             if (zone != null)
             {
