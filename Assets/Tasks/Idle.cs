@@ -32,7 +32,7 @@ public class Idle : CreatureTask
         }
         else
         {
-            AddSubTask(new Wait(Random.Range(3, 10), "Wait"));
+            AddSubTask(new Wait(Random.Range(2, 4), "Wait"));
         }
     }
 

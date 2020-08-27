@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 2717691210
+CRC: 218540347
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 6f203b9cd7d70b5d93755ae4e6385957
+    Hash: f0397b2c2e3f12f0647576796439c06e
   TypeTreeHash:
     serializedVersion: 2
     Hash: 18d9bb4d47b424ec9fb3afa70ce56f07
@@ -38,6 +38,7 @@ Assets:
 - Assets/Models/Kenney Assets/Nature Kit/plant_bush.fbx
 - Assets/Models/Kenney Assets/Nature Kit/plant_bushDetailed.fbx
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/Birch_7.blend
+- Assets/Models/Self/Flames.prefab
 - Assets/Models/Kenney Assets/Nature Kit/stone_tall4.fbx
 - Assets/Models/Self/FarmPlot.prefab
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/DeadTree_7.blend
@@ -47,14 +48,12 @@ Assets:
 - Assets/Models/Kenney Assets/Nature Kit/flower_beige3.fbx
 - Assets/Models/Self/Door.prefab
 - Assets/Models/Self/grass.prefab
-- Assets/Models/Kenney Assets/Nature Kit/campfireStones_rocks.fbx
 - Assets/Models/Self/Bucket.prefab
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/Birch_9.blend
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/Pine_1.blend
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/DeadBirch_10.blend
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/DeadTree_9.blend
 - Assets/Models/Kenney Assets/Nature Kit/flower_red3.fbx
-- Assets/Models/Kenney Assets/Nature Kit/campfire_small.fbx
 - Assets/Models/Kenney Assets/Nature Kit/stone_small8.fbx
 - Assets/Models/Self/Box.prefab
 - Assets/Models/Kenney Assets/Nature Kit/stone_tall6.fbx
@@ -70,6 +69,7 @@ Assets:
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/Birch_3.blend
 - Assets/Models/Kenney Assets/Nature Kit/lily_small.fbx
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/Tree_8.blend
+- Assets/Models/Self/Campfire.prefab
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/DeadBirch_1.blend
 - Assets/Models/Kenney Assets/Nature Kit/mushroom_red.fbx
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/Pine_5.blend
@@ -121,7 +121,6 @@ Assets:
 - Assets/Models/Self/Roof.prefab
 - Assets/Models/Self/StoneFloor.prefab
 - Assets/Models/Kenney Assets/Nature Kit/stone_smallFlat1.fbx
-- Assets/Models/Kenney Assets/Nature Kit/campfire_large.fbx
 - Assets/Models/Kenney Assets/Nature Kit/flower_beige2.fbx
 - Assets/Models/Self/Chair.prefab
 - Assets/Models/Kenney Assets/Nature Kit/plant_flatSmall.fbx
@@ -129,7 +128,6 @@ Assets:
 - Assets/Models/Self/WoodFloor.prefab
 - Assets/Models/Kenney Assets/Nature Kit/plant_bushLarge.fbx
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/DeadBirch_8.blend
-- Assets/Models/Kenney Assets/Nature Kit/campfireStones_blocks.fbx
 - Assets/Models/Kenney Assets/Nature Kit/stone_large2.fbx
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/Tree_7.blend
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/Birch_2.blend

@@ -145,11 +145,11 @@ MonoBehaviour:
     min: 0
   intensity:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 0.5
     min: 0
   scatter:
     m_OverrideState: 0
-    m_Value: 0.694
+    m_Value: 0.57
     min: 0
     max: 1
   clamp:
@@ -158,13 +158,13 @@ MonoBehaviour:
     min: 0
   tint:
     m_OverrideState: 0
-    m_Value: {r: 1, g: 0.6901961, b: 1, a: 1}
+    m_Value: {r: 0.26864696, g: 1, b: 0, a: 1}
     hdr: 0
     showAlpha: 0
     showEyeDropper: 1
   highQualityFiltering:
     m_OverrideState: 0
-    m_Value: 0
+    m_Value: 1
   dirtTexture:
     m_OverrideState: 0
     m_Value: {fileID: 0}

@@ -33,6 +33,11 @@ namespace Assets.Models
             return _structureMeshLookup["DefaultCube"];
         }
 
+        public MeshRenderer InstantiateMesh(MeshRenderer renderer, Transform parent)
+        {
+            return Instantiate(renderer, parent);
+        }
+
         private static AssetBundle GetAssetBundle(string bundleName)
         {
             var path = $@"{Environment.CurrentDirectory}\Assets\AssetBundles\{bundleName}";
