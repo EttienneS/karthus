@@ -91,7 +91,7 @@ public class ChunkRenderer : MonoBehaviour
         var red = biomes.Average(b => b.Red);
         var green = biomes.Average(b => b.Green);
         var blue = biomes.Average(b => b.Blue);
-        var alpha = biomes.Average(b => b.Alpha) + Random.Range(-0.2f, 0.2f);
+        var alpha = biomes.Average(b => b.Alpha);
 
         return new Color(red, green, blue, alpha);
     }
