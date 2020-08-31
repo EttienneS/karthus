@@ -282,6 +282,11 @@ PrefabInstance:
       propertyPath: MapData.CreaturesToSpawn
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 4716349726037566006, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: MapData.WaterLevel
+      value: 0.15
+      objectReference: {fileID: 0}
     - target: {fileID: 4791717066980201731, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
       propertyPath: m_Name
@@ -385,6 +390,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2307170057727703788, guid: fe0386d55f57809419b5c5913eec9386,
+        type: 3}
+      propertyPath: far clip plane
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 2307170058788640168, guid: fe0386d55f57809419b5c5913eec9386,
+        type: 3}
+      propertyPath: maxZoom
+      value: 130
+      objectReference: {fileID: 0}
+    - target: {fileID: 2307170058788640168, guid: fe0386d55f57809419b5c5913eec9386,
+        type: 3}
+      propertyPath: minZoom
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 2307170058788640169, guid: fe0386d55f57809419b5c5913eec9386,
         type: 3}
       propertyPath: m_LocalPosition.x

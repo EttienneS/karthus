@@ -19,6 +19,5 @@ public class MapData
     [Range(1, 10)]
     public int Size = 2;
 
-    public float StructureLevel = 2f;
-    public float WaterLevel = 1.5f;
+    public float WaterLevel = 0.15f;
 }

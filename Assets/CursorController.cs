@@ -450,7 +450,7 @@ namespace Assets
                     return;
                 }
                 transform.position = new Vector3(startCell.Vector.x,
-                                                 Game.Instance.MapData.StructureLevel,
+                                                 startCell.Vector.y,
                                                  startCell.Vector.z) + new Vector3(0, 0.25f, 0);
 
                 ValidateCursor(startCell);
@@ -577,7 +577,7 @@ namespace Assets
                     if (!_draggedRenderers.ContainsKey(cell))
                     {
                         cellRenderer = Game.Instance.StructureController.InstantiateNewStructureMeshRenderer(_meshName, Map.Instance.transform);
-                        cellRenderer.transform.position = new Vector3(cell.Vector.x, Game.Instance.MapData.StructureLevel, cell.Vector.z);
+                        cellRenderer.transform.position = new Vector3(cell.Vector.x, cell.Vector.y, cell.Vector.z);
                         _draggedRenderers.Add(cell, cellRenderer);
                     }
                     else

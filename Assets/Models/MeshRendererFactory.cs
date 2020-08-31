@@ -6,13 +6,20 @@ namespace Assets.Models
 {
     public class MeshRendererFactory : MonoBehaviour
     {
-        private Dictionary<string, MeshRenderer> _itemMeshLookup;
-        private Dictionary<string, MeshRenderer> _structureMeshLookup;
+        private static Dictionary<string, MeshRenderer> _itemMeshLookup;
+        private static Dictionary<string, MeshRenderer> _structureMeshLookup;
 
         public void Awake()
         {
-            _structureMeshLookup = LoadMeshesFromBundle("structures");
-            _itemMeshLookup = LoadMeshesFromBundle("items");
+            if (_structureMeshLookup == null)
+            {
+                _structureMeshLookup = LoadMeshesFromBundle("structures");
+            }
+
+            if (_itemMeshLookup == null)
+            {
+                _itemMeshLookup = LoadMeshesFromBundle("items");
+            }
         }
 
         public MeshRenderer GetItemMesh(string name)

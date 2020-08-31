@@ -5,11 +5,11 @@
       },
       "Min": 0.0,
       "Max": 0.15,
-      "Name": "Sand",
+      "Name": "Water",
       "Red": 1,
       "Green": 0,
-      "Blue": 0.2,
-      "Alpha": 0.2
+      "Blue": 0,
+      "Alpha": 0.3
     },
     {
       "Content": {
@@ -20,7 +20,7 @@
       "Red": 0.5,
       "Green": 0,
       "Blue": 0,
-      "Alpha": 0.2
+      "Alpha": 0.1
     },
     {
       "Content": {

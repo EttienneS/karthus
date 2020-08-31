@@ -12,15 +12,20 @@ public abstract class ZoneBase
     {
         get
         {
+            if (_cells.Count == 0)
+            {
+                return "";
+            }
+            _cells = _cells.Distinct().ToList();
             return _cells.Select(c => c.X + ":" + c.Z).Aggregate((s1, s2) => s1 + "," + s2);
         }
         set
         {
             _cells = new List<Cell>();
-            foreach (var xy in value.Split(','))
+            foreach (var xy in value.Split(new[] { ',' }, System.StringSplitOptions.RemoveEmptyEntries))
             {
-                var split = xy.Split(':').Select(i => float.Parse(i)).ToList();
-                _cells.Add(Map.Instance.GetCellAtCoordinate(split[0], split.Last()));
+                var split = xy.Split(':').Select(i => int.Parse(i)).ToList();
+                _cells.Add(Map.Instance.GetCellAtCoordinate(split[0], split[1]));
             }
         }
     }

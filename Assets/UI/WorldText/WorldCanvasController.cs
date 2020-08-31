@@ -32,6 +32,6 @@ public class WorldCanvasController : MonoBehaviour
         var label = Instantiate(WorldTextPrefab, transform);
         label.name = $"Label {cell.X}:{cell.Z}";
         label.text = text;
-        label.transform.position = new Vector3(cell.Vector.x, Game.Instance.MapData.StructureLevel + 0.1f, cell.Vector.z);
+        label.transform.position = new Vector3(cell.Vector.x, cell.Vector.y + 0.1f, cell.Vector.z);
     }
 }

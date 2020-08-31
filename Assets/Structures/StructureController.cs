@@ -121,14 +121,19 @@ namespace Assets.Structures
 
         public BlueprintRenderer SpawnBlueprint(string name, Cell cell, Faction faction)
         {
-            var meshRenderer = InstantiateNewStructureMeshRenderer(name, transform);
-            meshRenderer.SetAllMaterial(Game.Instance.FileController.BlueprintMaterial);
-            meshRenderer.transform.name = $"Blueprint: {name}";
-
-            var blueprintRenderer = meshRenderer.gameObject.AddComponent<BlueprintRenderer>();
             var blueprint = new Blueprint(name, cell, faction);
             faction.AddBlueprint(blueprint);
 
+            return SpawnBlueprint(blueprint);
+        }
+
+        public BlueprintRenderer SpawnBlueprint(Blueprint blueprint)
+        {
+            var meshRenderer = InstantiateNewStructureMeshRenderer(blueprint.StructureName, transform);
+            meshRenderer.SetAllMaterial(Game.Instance.FileController.BlueprintMaterial);
+            meshRenderer.transform.name = $"Blueprint: {blueprint.StructureName}";
+
+            var blueprintRenderer = meshRenderer.gameObject.AddComponent<BlueprintRenderer>();
             blueprintRenderer.Load(blueprint);
             return blueprintRenderer;
         }
@@ -136,6 +141,19 @@ namespace Assets.Structures
         public Structure SpawnStructure(string name, Cell cell, Faction faction)
         {
             var structure = CreateNewStructure(name);
+            structure.Cell = cell;
+            faction?.AddStructure(structure);
+
+            if (structure.SpawnRotation)
+            {
+                structure.Rotation = Random.Range(1, 360);
+            }
+
+            return SpawnStructure(structure);
+        }
+
+        public Structure SpawnStructure(Structure structure)
+        {
             var renderer = InstantiateNewStructureMeshRenderer(structure, transform);
 
             var structureRenderer = renderer.gameObject.AddComponent<StructureRenderer>();
@@ -143,17 +161,10 @@ namespace Assets.Structures
             structureRenderer.Data = structure;
             structureRenderer.Renderer = renderer;
 
-            if (structure.SpawnRotation)
-            {
-                structure.Rotation = Random.Range(1, 360);
-            }
-
-            structure.Cell = cell;
             IndexStructure(structure);
 
-            faction?.AddStructure(structure);
-
             structureRenderer.transform.name = structure.Name + " " + structure.Id;
+            structureRenderer.UpdatePosition();
 
             return structure;
         }
@@ -202,7 +213,6 @@ namespace Assets.Structures
         {
             return _structureDataReference[structureName].Cost;
         }
-
         private void IndexStructure(Structure structure)
         {
             Game.Instance.IdService.EnrollEntity(structure);

@@ -26,12 +26,14 @@ public class Limb
         DefensiveActions = new List<DefensiveActionBase>();
         BuffActions = new List<StatusActionBase>();
         Wounds = new List<Wound>();
-        DamageThreshold = new DamageThreshold();
     }
 
     public List<StatusActionBase> BuffActions { get; set; }
     public bool Busy { get; set; }
-    public DamageThreshold DamageThreshold { get; set; }
+
+    [JsonIgnore]
+    public DamageThreshold DamageThreshold { get; set; } = new DamageThreshold();
+
     public List<DefensiveActionBase> DefensiveActions { get; set; }
 
     public bool Disabled { get; set; }

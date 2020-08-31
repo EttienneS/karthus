@@ -134,7 +134,7 @@ public class ChunkRenderer : MonoBehaviour
         {
             var waterSize = Map.Instance.WaterPrefab.transform.localScale.x * 10;
             var offset = waterSize / 2;
-            var waterLevel = Game.Instance.MapData.WaterLevel;
+            var waterLevel = 0 - Game.Instance.MapData.WaterLevel;
 
             for (int y = 0; y < Game.Instance.MapData.ChunkSize / waterSize; y++)
             {

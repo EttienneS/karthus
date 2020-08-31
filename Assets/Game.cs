@@ -119,7 +119,12 @@ public class Game : MonoBehaviour
 
                 foreach (var structure in faction.Structures.ToList())
                 {
-                    IdService.EnrollEntity(structure);
+                    StructureController.SpawnStructure(structure);
+                }
+
+                foreach (var blueprint in faction.Blueprints.ToList())
+                {
+                    StructureController.SpawnBlueprint(blueprint);
                 }
 
                 faction.LoadHomeCells();
@@ -270,7 +275,7 @@ public class Game : MonoBehaviour
 
         if (_lastAutoSave == null)
         {
-            // make the first autosave actually happen 2 mins after the game starts not on the first call
+            // make the first autosave actually happen 5 mins after the game starts not on the first call
             _lastAutoSave = DateTime.Now;
         }
         else if ((DateTime.Now - _lastAutoSave.Value).TotalSeconds > 600)

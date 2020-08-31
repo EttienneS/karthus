@@ -109,8 +109,7 @@ public class Map : MonoBehaviour
         var noiseMapHeight = Map.Instance.GetNoiseMapPoint(x, z);
         var biome = Map.Instance.GetBiome(x, z).GetRegion(noiseMapHeight);
 
-        var y = Game.Instance.MapData.StructureLevel;
-
+        var y = 0f;
         var cell = new Cell
         {
             X = x,

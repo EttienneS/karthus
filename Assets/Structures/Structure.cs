@@ -62,7 +62,6 @@ namespace Assets.Structures
                 {
                     _cell = value;
                     Coords = (_cell.X, _cell.Z);
-                    Renderer.UpdatePosition();
                 }
             }
         }
@@ -144,7 +143,7 @@ namespace Assets.Structures
         {
             get
             {
-                return new Vector3(Cell.Vector.x, Game.Instance.MapData.StructureLevel, Cell.Vector.z);
+                return new Vector3(Cell.Vector.x, Cell.Vector.y, Cell.Vector.z);
             }
         }
 

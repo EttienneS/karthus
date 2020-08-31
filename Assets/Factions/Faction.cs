@@ -11,6 +11,7 @@ public class Faction
 {
     public List<CreatureTask> AvailableTasks = new List<CreatureTask>();
 
+    [JsonIgnore]
     public Dictionary<CreatureTask, CreatureData> AssignedTasks
     {
         get
@@ -19,6 +20,7 @@ public class Faction
         }
     }
 
+    [JsonIgnore]
     public List<CreatureTask> AllTasks
     {
         get
@@ -39,6 +41,28 @@ public class Faction
 
     [JsonIgnore]
     public List<Cell> HomeCells = new List<Cell>();
+
+    public string HomeCellString
+    {
+        get
+        {
+            if (HomeCells.Count == 0)
+            {
+                return "";
+            }
+            HomeCells = HomeCells.Distinct().ToList();
+            return HomeCells.Select(c => c.X + ":" + c.Z).Aggregate((s1, s2) => s1 + "," + s2);
+        }
+        set
+        {
+            HomeCells = new List<Cell>();
+            foreach (var xy in value.Split(new[] { ',' }, System.StringSplitOptions.RemoveEmptyEntries))
+            {
+                var split = xy.Split(':').Select(i => int.Parse(i)).ToList();
+                HomeCells.Add(Map.Instance.GetCellAtCoordinate(split[0], split[1]));
+            }
+        }
+    }
 
     public float UpdateTick = 100;
     public float AutoResumeTime = 500;
