@@ -38,14 +38,14 @@ public class StorageZone : ZoneBase
 
     public int GetMaxItemCapacity()
     {
-        return GetCells().Count;
+        return ZoneCells.GetCells().Count;
     }
 
     public IEnumerable<Cell> GetOpenCells()
     {
         FreeFilledReservedCells();
 
-        return GetCells()
+        return ZoneCells.GetCells()
                     .Where(CellCanHoldItem)
                     .Except(_reservedCells);
     }
@@ -62,6 +62,6 @@ public class StorageZone : ZoneBase
 
     internal Cell GetLocation()
     {
-        return GetCells()[0];
+        return ZoneCells.GetCells()[0];
     }
 }

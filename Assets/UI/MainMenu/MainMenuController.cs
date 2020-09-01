@@ -35,7 +35,7 @@ public class MainMenuController : MonoBehaviour
 
     public void Save()
     {
-        SaveManager.Save();
+        SaveManager.SaveGame();
     }
 
     public void Quit()

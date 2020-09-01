@@ -1,24 +1,50 @@
 ﻿using System.Collections;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class WelcomeScreenController : MonoBehaviour
 {
+    public Image background;
     public CanvasGroup canvas;
     public GameObject mainUiPanel;
-    public Image background;
-
     public string sceneToLoad;
+
+    private float _delta;
+    private string _lastSave;
+    private Color _targetColor;
+
+    public Button StartButton;
+    public Button ContinueButton;
+
+    public void ContinueGame()
+    {
+        Game.Instance = null;
+        SaveManager.SaveToLoad = Save.FromFile(_lastSave);
+
+        StartCoroutine(StartLoad());
+    }
 
     public void Start()
     {
         _targetColor = ColorExtensions.GetRandomColor();
+
+        try
+        {
+            _lastSave = SaveManager.GetLastSave();
+        }
+        catch (FileNotFoundException)
+        {
+            ContinueButton.enabled = false;
+        }
         DontDestroyOnLoad(gameObject);
     }
 
-    private Color _targetColor;
-    private float _delta;
+    public void StartGame()
+    {
+        StartCoroutine(StartLoad());
+    }
 
     public void Update()
     {
@@ -35,11 +61,6 @@ public class WelcomeScreenController : MonoBehaviour
             _targetColor = ColorExtensions.GetRandomColor();
             _delta = 0;
         }
-    }
-
-    public void StartGame()
-    {
-        StartCoroutine(StartLoad());
     }
 
     private IEnumerator FadeLoadingScreen(float targetValue, float duration)

@@ -12,9 +12,21 @@ public abstract class CreatureTask
     public string DoneEmote;
 
     [JsonIgnore]
+    public ResumeDelegate OnResume;
+
+    [JsonIgnore]
+    public SuspendedDelegate OnSuspended;
+
+    [JsonIgnore]
     public CreatureTask Parent;
 
     public Queue<CreatureTask> SubTasks = new Queue<CreatureTask>();
+    private bool _suspended;
+
+    public delegate void ResumeDelegate();
+
+    public delegate void SuspendedDelegate();
+
     public bool AutoResume { get; set; }
 
     [JsonIgnore]
@@ -25,8 +37,6 @@ public abstract class CreatureTask
     public string RequiredSkill { get; set; }
 
     public float RequiredSkillLevel { get; set; }
-
-    private bool _suspended;
 
     [JsonIgnore]
     public Cost TotalCost
@@ -63,8 +73,6 @@ public abstract class CreatureTask
         return subTask;
     }
 
-    public abstract void FinalizeTask();
-
     public void Destroy()
     {
         foreach (var badge in Badges.Where(b => b != null))
@@ -79,6 +87,13 @@ public abstract class CreatureTask
     }
 
     public abstract bool Done(CreatureData creature);
+
+    public abstract void FinalizeTask();
+
+    public bool IsSuspended()
+    {
+        return _suspended;
+    }
 
     public void ShowBusyEmote(CreatureData creature)
     {
@@ -109,19 +124,6 @@ public abstract class CreatureTask
             current.FinalizeTask();
         }
         return false;
-    }
-
-    public delegate void SuspendedDelegate();
-
-    public SuspendedDelegate OnSuspended;
-
-    public delegate void ResumeDelegate();
-
-    public ResumeDelegate OnResume;
-
-    public bool IsSupended()
-    {
-        return _suspended;
     }
 
     internal void Resume()

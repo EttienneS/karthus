@@ -126,15 +126,13 @@ public class Game : MonoBehaviour
                 {
                     StructureController.SpawnBlueprint(blueprint);
                 }
-
-                faction.LoadHomeCells();
             }
 
             SaveManager.SaveToLoad.Stores.ForEach(ZoneController.LoadStore);
             SaveManager.SaveToLoad.Rooms.ForEach(ZoneController.LoadRoom);
             SaveManager.SaveToLoad.Areas.ForEach(ZoneController.LoadArea);
 
-            SaveManager.SaveToLoad.CameraData.Load(CameraController.Camera);
+            //SaveManager.SaveToLoad.CameraData.Load(CameraController);
             SaveManager.SaveToLoad = null;
         }
     }
@@ -282,7 +280,7 @@ public class Game : MonoBehaviour
         {
             // autosave every two minutes
             _lastAutoSave = DateTime.Now;
-            SaveManager.Save();
+            SaveManager.SaveGame();
         }
 
         HotkeyHandler.HandleHotkeys();

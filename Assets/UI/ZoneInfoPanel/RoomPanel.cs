@@ -11,7 +11,7 @@ public class RoomPanel : MonoBehaviour
     public void Update()
     {
         RoomInfo.text = "Zone Info:\n\n";
-        RoomInfo.text += $"Size: {Zone.GetCells().Count}\n\nStructures:\n\n";
+        RoomInfo.text += $"Size: {Zone.ZoneCells.GetCells().Count}\n\nStructures:\n\n";
 
         foreach (var structure in Zone.Structures)
         {

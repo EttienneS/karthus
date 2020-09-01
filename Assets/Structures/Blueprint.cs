@@ -33,6 +33,11 @@ namespace Assets.Structures
         [JsonIgnore]
         public BlueprintRenderer BlueprintRenderer;
 
+        public Blueprint()
+        {
+
+        }
+
         public Blueprint(string structureName, Cell cell, Faction faction)
         {
             StructureName = structureName;

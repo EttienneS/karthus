@@ -302,6 +302,11 @@ PrefabInstance:
       propertyPath: SelectSquareImage
       value: 
       objectReference: {fileID: 1640372943}
+    - target: {fileID: 7830704719994839174, guid: 8d3d47b53068341448ff13732aef998e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 9043323423647380584, guid: 8d3d47b53068341448ff13732aef998e,
         type: 3}
       propertyPath: m_LocalPosition.x

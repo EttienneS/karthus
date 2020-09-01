@@ -7,11 +7,13 @@ using UnityEngine.SceneManagement;
 
 public static class SaveManager
 {
+    private const string RootSaveDir = "Saves";
+
     public static string SaveDir
     {
         get
         {
-            return $"Saves\\{Game.Instance.MapData.Seed}\\";
+            return $"{RootSaveDir}\\{Game.Instance.MapData.Seed}\\";
         }
     }
 
@@ -26,14 +28,10 @@ public static class SaveManager
             saveFile = Directory.EnumerateFiles(SaveDir).Last();
         }
 
-        var save = JsonConvert.DeserializeObject<Save>(File.ReadAllText(saveFile), new JsonSerializerSettings
-        {
-            TypeNameHandling = TypeNameHandling.Auto,
-            NullValueHandling = NullValueHandling.Ignore,
-        });
-
-        Restart(save);
+        Restart(Save.FromFile(saveFile));
     }
+
+ 
 
     public static Save MakeSave()
     {
@@ -43,23 +41,21 @@ public static class SaveManager
             Factions = Game.Instance.FactionController.Factions.Values.ToList(),
             Time = Game.Instance.TimeManager.Data,
             Items = Game.Instance.IdService.ItemLookup.Values.ToList(),
-            CameraData = new CameraData(Game.Instance.CameraController.Camera),
+            CameraData = new CameraData(Game.Instance.CameraController),
             Rooms = Game.Instance.ZoneController.RoomZones,
             Stores = Game.Instance.ZoneController.StorageZones,
             Areas = Game.Instance.ZoneController.AreaZones,
             Chunks = Map.Instance.Chunks.Values.Select(s => s.Data).ToList(),
         };
     }
-
     public static void Restart(Save save = null)
     {
         Game.Instance = null;
         SaveToLoad = save;
-
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
+        SceneManager.LoadScene(1, LoadSceneMode.Single);
     }
 
-    public static void Save()
+    public static void SaveGame()
     {
         try
         {
@@ -97,5 +93,20 @@ public static class SaveManager
         }
     }
 
-   
+    public static string GetLastSave()
+    {
+        var dir = new DirectoryInfo(RootSaveDir);
+        var latest = dir.GetFiles("*.json", SearchOption.AllDirectories)
+                        .OrderByDescending(f => f.LastWriteTime)
+                        .FirstOrDefault();
+
+        if (latest == null)
+        {
+            throw new FileNotFoundException("No save found!");
+        }
+        else
+        {
+            return latest.FullName;
+        }
+    }
 }

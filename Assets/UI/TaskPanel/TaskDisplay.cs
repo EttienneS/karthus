@@ -79,7 +79,7 @@ namespace Assets.UI.TaskPanel
                 SuspendButton.image.color = ColorConstants.YellowAccent;
             }
 
-            if (_task.IsSupended())
+            if (_task.IsSuspended())
             {
                 Background.color = ColorConstants.YellowAccent;
                 Title.text = "Suspended: " + Title.text;

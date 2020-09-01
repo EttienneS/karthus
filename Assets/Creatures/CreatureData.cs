@@ -8,25 +8,14 @@ using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public enum Mobility
-{
-    Walk, Fly
-}
-
 namespace Assets.Creature
 {
     [Serializable]
     public class CreatureData : IEntity
     {
-        [JsonIgnore]
-        public List<CreatureData> Combatants = new List<CreatureData>();
-
         public Direction Facing = Direction.S;
 
         public List<Feeling> Feelings = new List<Feeling>();
-
-        [JsonIgnore]
-        public IBehaviour Behaviour;
 
         public List<OffensiveActionBase> IncomingAttacks = new List<OffensiveActionBase>();
 
@@ -39,6 +28,11 @@ namespace Assets.Creature
         public (float x, float z) TargetCoordinate;
 
         public bool UnableToFindPath;
+
+        [JsonIgnore]
+        internal IBehaviour Behaviour;
+        [JsonIgnore]
+        internal List<CreatureData> Combatants = new List<CreatureData>();
 
         internal PathRequest CurrentPathRequest;
 
@@ -54,6 +48,7 @@ namespace Assets.Creature
 
         private Faction _faction;
 
+        private int _perceptionTicks;
         private int _selfTicks;
 
         public float Aggression { get; set; }
@@ -659,8 +654,6 @@ namespace Assets.Creature
             }
         }
 
-        private int _perceptionTicks;
-
         internal void Update(float timeDelta)
         {
             if (Game.Instance.TimeManager.Paused)
@@ -1146,4 +1139,9 @@ namespace Assets.Creature
             }
         }
     }
+}
+
+public enum Mobility
+{
+    Walk, Fly
 }

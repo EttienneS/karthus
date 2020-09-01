@@ -56,7 +56,7 @@ public class ZoneController : MonoBehaviour
     private void AssignAndPopulateZone(string faction, Cell[] cells, ZoneBase newZone)
     {
         ClearZonesFromCells(cells);
-        newZone.AddCells(cells.ToList());
+        newZone.ZoneCells.AddCells(cells.ToList());
         newZone.Name = name;
         newZone.FactionName = faction;
 
@@ -70,10 +70,10 @@ public class ZoneController : MonoBehaviour
             var current = Game.Instance.ZoneController.GetZoneForCell(cell);
             if (current != null)
             {
-                current.RemoveCell(cell);
+                current.ZoneCells.RemoveCell(cell);
                 ClearZoneCellTile(cell);
 
-                if (current.GetCells().Count == 0)
+                if (current.ZoneCells.GetCells().Count == 0)
                 {
                     Delete(current);
                 }
@@ -87,7 +87,7 @@ public class ZoneController : MonoBehaviour
 
     public void Delete(ZoneBase zone)
     {
-        foreach (var cell in zone.GetCells())
+        foreach (var cell in zone.ZoneCells.GetCells())
         {
             ZoneTilemap.SetTile(new Vector3Int(cell.X, cell.Z, 0), null);
         }
@@ -116,7 +116,7 @@ public class ZoneController : MonoBehaviour
 
     internal ZoneBase GetZoneForCell(Cell cell)
     {
-        return Zones.Keys.FirstOrDefault(z => z.GetCells().Contains(cell));
+        return Zones.Keys.FirstOrDefault(z => z.ZoneCells.GetCells().Contains(cell));
     }
 
     private ZoneLabel DrawZone(ZoneBase newZone)
@@ -133,7 +133,7 @@ public class ZoneController : MonoBehaviour
             sprite = Game.Instance.ZoneController.StorageSprite;
         }
 
-        foreach (var cell in newZone.GetCells())
+        foreach (var cell in newZone.ZoneCells.GetCells())
         {
             SetZoneCellTile(newZone, sprite, cell);
             if (room)
@@ -156,7 +156,7 @@ public class ZoneController : MonoBehaviour
 
     private void MoveZoneLabel(ZoneBase zone, ZoneLabel label)
     {
-        var (bottomLeft, bottomRight, topLeft, topRight) = Map.Instance.GetCorners(zone.GetCells());
+        var (bottomLeft, bottomRight, topLeft, topRight) = Map.Instance.GetCorners(zone.ZoneCells.GetCells());
         label.transform.localPosition = new Vector3((bottomLeft.X + bottomRight.X + topLeft.X + topRight.X) / 4f,
                                                     (bottomLeft.Z + bottomRight.Z + topLeft.Z + topRight.Z) / 4f, 0);
         label.transform.localPosition += new Vector3(0.5f, 0.5f);

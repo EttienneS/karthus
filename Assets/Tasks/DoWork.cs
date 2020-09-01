@@ -1,4 +1,5 @@
 ﻿using Assets.Creature;
+using Newtonsoft.Json;
 using Structures.Work;
 
 public class DoWork : CreatureTask
@@ -29,6 +30,7 @@ public class DoWork : CreatureTask
         RequiredSkillLevel = order.Option.RequiredSkillLevel;
     }
 
+    [JsonIgnore]
     public WorkStructureBase WorkStructure
     {
         get

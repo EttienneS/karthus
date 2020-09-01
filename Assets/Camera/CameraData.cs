@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Camera;
+using UnityEngine;
 
 public class CameraData
 {
@@ -6,24 +7,37 @@ public class CameraData
     public float Y;
     public float Z;
 
-    public float Zoom;
+    public float RotationX;
+    public float RotationY;
+    public float RotationZ;
+
+    public float ZoomX;
+    public float ZoomY;
+    public float ZoomZ;
 
     public CameraData()
     {
     }
 
-    public CameraData(UnityEngine.Camera c)
+    public CameraData(CameraController cameraRig)
     {
-        X = c.transform.position.x;
-        Y = c.transform.position.y;
-        Z = c.transform.position.z;
+        X = cameraRig.transform.position.x;
+        Y = cameraRig.transform.position.y;
+        Z = cameraRig.transform.position.z;
 
-        Zoom = c.orthographicSize;
+        RotationX = cameraRig.transform.eulerAngles.x;
+        RotationY = cameraRig.transform.eulerAngles.y;
+        RotationZ = cameraRig.transform.eulerAngles.z;
+
+        ZoomX = cameraRig.Camera.transform.position.x;
+        ZoomY = cameraRig.Camera.transform.position.y;
+        ZoomZ = cameraRig.Camera.transform.position.z;
     }
 
-    public void Load(UnityEngine.Camera c)
+    public void Load(CameraController c)
     {
         c.transform.position = new Vector3(X, Y, Z);
-        c.orthographicSize = Zoom;
+        c.transform.eulerAngles = new Vector3(X, Y, Z);
+        c.Camera.transform.position = new Vector3(ZoomX, ZoomY, ZoomZ);
     }
 }

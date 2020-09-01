@@ -1,4 +1,5 @@
-﻿using Assets.Creature;
+﻿using Assets;
+using Assets.Creature;
 using Assets.Item;
 using Assets.Structures;
 using Assets.Tasks;
@@ -9,16 +10,23 @@ using UnityEngine;
 
 public class Faction
 {
+    public float AutoResumeTime = 500;
     public List<CreatureTask> AvailableTasks = new List<CreatureTask>();
 
-    [JsonIgnore]
-    public Dictionary<CreatureTask, CreatureData> AssignedTasks
-    {
-        get
-        {
-            return Creatures.Where(c => c.Task != null).ToDictionary(t => t.Task, c => c);
-        }
-    }
+    public List<Blueprint> Blueprints = new List<Blueprint>();
+
+    public List<CreatureData> Creatures = new List<CreatureData>();
+
+    public ManagedCellCollection DomainCells = new ManagedCellCollection();
+    public string FactionName;
+
+    public float LastUpdate;
+
+    public float ResumeDelta;
+
+    public List<Structure> Structures = new List<Structure>();
+
+    public float UpdateTick = 100;
 
     [JsonIgnore]
     public List<CreatureTask> AllTasks
@@ -32,40 +40,14 @@ public class Faction
         }
     }
 
-    public List<CreatureData> Creatures = new List<CreatureData>();
-    public List<Blueprint> Blueprints = new List<Blueprint>();
-    public string FactionName;
-    public float LastUpdate;
-    public float ResumeDelta;
-    public List<Structure> Structures = new List<Structure>();
-
     [JsonIgnore]
-    public List<Cell> HomeCells = new List<Cell>();
-
-    public string HomeCellString
+    public Dictionary<CreatureTask, CreatureData> AssignedTasks
     {
         get
         {
-            if (HomeCells.Count == 0)
-            {
-                return "";
-            }
-            HomeCells = HomeCells.Distinct().ToList();
-            return HomeCells.Select(c => c.X + ":" + c.Z).Aggregate((s1, s2) => s1 + "," + s2);
-        }
-        set
-        {
-            HomeCells = new List<Cell>();
-            foreach (var xy in value.Split(new[] { ',' }, System.StringSplitOptions.RemoveEmptyEntries))
-            {
-                var split = xy.Split(':').Select(i => int.Parse(i)).ToList();
-                HomeCells.Add(Map.Instance.GetCellAtCoordinate(split[0], split[1]));
-            }
+            return Creatures.Where(c => c.Task != null).ToDictionary(t => t.Task, c => c);
         }
     }
-
-    public float UpdateTick = 100;
-    public float AutoResumeTime = 500;
 
     [JsonIgnore]
     public IEnumerable<StorageZone> StorageZones
@@ -82,13 +64,46 @@ public class Faction
         return task;
     }
 
+    public ItemData FindItem(string criteria, CreatureData creature)
+    {
+        var items = DomainCells.GetCells().SelectMany(c => c?.Items.Where(item => item.IsType(criteria) && !item.IsReserved())).ToList();
+        items.AddRange(Game.Instance.IdService.ItemLookup.Values.Where(i => i.FactionName == FactionName && i.IsType(criteria)));
+
+        ItemData targetItem = null;
+        var bestDistance = float.MaxValue;
+
+        foreach (var item in items)
+        {
+            var best = false;
+            var cell = item.Cell;
+            var distance = creature.Cell.DistanceTo(item.Cell);
+
+            if (targetItem == null)
+            {
+                best = true;
+            }
+            else
+            {
+                best = distance > bestDistance;
+            }
+
+            if (best)
+            {
+                targetItem = item;
+                bestDistance = distance;
+            }
+        }
+
+        return targetItem;
+    }
+
     public CreatureTask TakeTask(CreatureData creature)
     {
         var task = creature.Behaviour.GetTask(creature);
         if (task == null)
         {
             var highestPriority = int.MinValue;
-            foreach (var availableTask in AvailableTasks.Where(t => !t.IsSupended() && creature.CanDo(t)))
+            foreach (var availableTask in AvailableTasks.Where(t => !t.IsSuspended() && creature.CanDo(t)))
             {
                 if (creature.CanDo(availableTask))
                 {
@@ -136,11 +151,11 @@ public class Faction
             {
                 if (StorageZones.Any(s => s.GetFreeCellCount() > 0))
                 {
-                    var items = HomeCells.SelectMany(c => c.Items)
-                                         .Where(i => !i.IsReserved()
-                                                     && !i.IsStored()
-                                                     && !storeTasks.Any(t => t.GetItemId() == i.Id))
-                                         .ToList();
+                    var items = DomainCells.GetCells().SelectMany(c => c.Items)
+                                                      .Where(i => !i.IsReserved()
+                                                                   && !i.IsStored()
+                                                                   && !storeTasks.Any(t => t.GetItemId() == i.Id))
+                                                      .ToList();
 
                     foreach (var storageZone in StorageZones)
                     {
@@ -161,7 +176,7 @@ public class Faction
         if (ResumeDelta > AutoResumeTime)
         {
             ResumeDelta = 0;
-            foreach (var task in AvailableTasks.Where(t => t.IsSupended() && t.AutoResume))
+            foreach (var task in AvailableTasks.Where(t => t.IsSuspended() && t.AutoResume))
             {
                 task.Resume();
             }
@@ -195,22 +210,12 @@ public class Faction
 
         if (FactionName != FactionConstants.World)
         {
-            HomeCells.AddRange(Map.Instance.GetCircle(structure.Cell, 5));
-            HomeCells = HomeCells.Distinct().ToList();
+            DomainCells.AddCells(Map.Instance.GetCircle(structure.Cell, 5));
         }
-    }
-
-    public void LoadHomeCells()
-    {
-        foreach (var structure in Structures)
-        {
-            HomeCells.AddRange(Map.Instance.GetCircle(structure.Cell, 5));
-        }
-        HomeCells = HomeCells.Distinct().ToList();
     }
 
     internal void RemoveTask(CreatureTask task)
-    {
+    { 
         if (task != null)
         {
             if (AvailableTasks.Contains(task))
@@ -220,38 +225,5 @@ public class Faction
 
             task.Destroy();
         }
-    }
-
-    public ItemData FindItem(string criteria, CreatureData creature)
-    {
-        var items = HomeCells.SelectMany(c => c?.Items.Where(item => item.IsType(criteria) && !item.IsReserved())).ToList();
-        items.AddRange(Game.Instance.IdService.ItemLookup.Values.Where(i => i.FactionName == FactionName && i.IsType(criteria)));
-
-        ItemData targetItem = null;
-        var bestDistance = float.MaxValue;
-
-        foreach (var item in items)
-        {
-            var best = false;
-            var cell = item.Cell;
-            var distance = creature.Cell.DistanceTo(item.Cell);
-
-            if (targetItem == null)
-            {
-                best = true;
-            }
-            else
-            {
-                best = distance > bestDistance;
-            }
-
-            if (best)
-            {
-                targetItem = item;
-                bestDistance = distance;
-            }
-        }
-
-        return targetItem;
     }
 }
