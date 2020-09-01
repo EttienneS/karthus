@@ -138,7 +138,7 @@ public class DeveloperConsole : MonoBehaviour
                                                    .PlayerFaction
                                                    .AvailableTasks.OfType<Build>().ToList())
             {
-                build.FinishStructure(Game.Instance.FactionController.PlayerFaction);
+                build.FinishStructure();
                 ids += $"{build.Blueprint.StructureName},";
 
                 Game.Instance.FactionController.PlayerFaction.AvailableTasks.Remove(build);

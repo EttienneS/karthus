@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.IO;
+using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -33,6 +35,7 @@ public class WelcomeScreenController : MonoBehaviour
         try
         {
             _lastSave = SaveManager.GetLastSave();
+            ContinueButton.GetComponentInChildren<TMP_Text>().text += " - " + Path.GetDirectoryName(_lastSave).Split('\\').Last();
         }
         catch (FileNotFoundException)
         {

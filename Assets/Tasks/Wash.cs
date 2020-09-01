@@ -5,13 +5,13 @@ using Assets.Structures;
 public class Wash : CreatureTask
 {
     public float RecoveryRate = 0.25f;
-    public (float X, float Y) WashCoords;
+    public (float X, float Z) WashCoords;
 
     public override string Message
     {
         get
         {
-            return $"Wash at {WashCoords.X}:{WashCoords.Y}";
+            return $"Wash at {WashCoords.X}:{WashCoords.Z}";
         }
     }
 
@@ -42,7 +42,7 @@ public class Wash : CreatureTask
         if (SubTasksComplete(creature))
         {
             var need = creature.GetNeed<Hygiene>();
-            creature.Face(Map.Instance.GetCellAtCoordinate(WashCoords));
+            creature.Face(Map.Instance.GetCellAtCoordinate(WashCoords.X, WashCoords.Z));
             need.CurrentChangeRate = RecoveryRate;
 
             if (need.Current > 99f)

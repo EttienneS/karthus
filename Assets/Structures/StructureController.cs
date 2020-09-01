@@ -13,6 +13,13 @@ namespace Assets.Structures
     {
         public GameObject RoofContainer;
 
+        internal Blueprint GetBlueprintById(string blueprintId)
+        {
+            return Game.Instance.FactionController.Factions
+                                .SelectMany(f => f.Value.Blueprints)
+                                .FirstOrDefault(b => b.ID == blueprintId);
+        }
+
         private static List<Type> _structureTypes;
         private float _lastUpdate;
         private Dictionary<string, Structure> _structureDataReference;

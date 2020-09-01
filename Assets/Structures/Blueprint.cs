@@ -7,10 +7,27 @@ namespace Assets.Structures
     public class Blueprint
     {
         public Cost Cost;
-        public Cell Cell;
+
+        [JsonIgnore]
+        public Cell Cell
+        {
+            get
+            {
+                return Map.Instance.GetCellAtCoordinate(Coords.x, Coords.z);
+            }
+            set
+            {
+                Coords = (value.X, value.Z);
+            }
+        }
+
+        public (int x, int z) Coords;
+        
         public string StructureName;
 
         public string FactionName;
+
+        public string ID;
 
         [JsonIgnore]
         public Build AssociatedBuildTask
@@ -35,7 +52,6 @@ namespace Assets.Structures
 
         public Blueprint()
         {
-
         }
 
         public Blueprint(string structureName, Cell cell, Faction faction)
@@ -44,6 +60,7 @@ namespace Assets.Structures
             Cost = Game.Instance.StructureController.GetStructureCost(structureName);
             Cell = cell;
             FactionName = faction.FactionName;
+            ID = Game.Instance.IdService.GetId();
         }
     }
 }

@@ -20,8 +20,7 @@ public class IdService
     {
         if (string.IsNullOrEmpty(entity.Id))
         {
-            entity.Id = _idCounter.ToString();
-            _idCounter++;
+            entity.Id = GetId();
         }
         else
         {
@@ -57,6 +56,12 @@ public class IdService
         {
             throw new NotImplementedException("Unknown entity type!");
         }
+    }
+
+    public string GetId()
+    {
+        _idCounter++;
+        return _idCounter.ToString();
     }
 
     public bool IsCreature(string id)

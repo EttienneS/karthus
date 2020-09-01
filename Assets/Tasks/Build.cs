@@ -1,5 +1,6 @@
 ﻿using Assets.Creature;
 using Assets.Structures;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,14 +8,11 @@ using UnityEngine;
 
 public class Build : CreatureTask
 {
-    public Blueprint Blueprint;
+    public string BlueprintId;
+    public bool Built;
 
+    private Blueprint _blueprint;
     private int _waitCount = 0;
-
-    public override void FinalizeTask()
-    {
-        Game.Instance.StructureController.DestroyBlueprint(Blueprint);
-    }
 
     public Build()
     {
@@ -30,7 +28,23 @@ public class Build : CreatureTask
         Blueprint = blueprint;
     }
 
-    public bool Built = false;
+    [JsonIgnore]
+    public Blueprint Blueprint
+    {
+        get
+        {
+            if (_blueprint == null)
+            {
+                _blueprint = Game.Instance.StructureController.GetBlueprintById(BlueprintId);
+            }
+            return _blueprint;
+        }
+        set
+        {
+            _blueprint = value;
+            BlueprintId = _blueprint.ID;
+        }
+    }
 
     public override string Message
     {
@@ -57,7 +71,7 @@ public class Build : CreatureTask
                 if (!CellOpen()) return false;
                 if (!BuildComplete(creature)) return false;
 
-                FinishStructure(creature.GetFaction());
+                FinishStructure();
 
                 return true;
             }
@@ -69,6 +83,51 @@ public class Build : CreatureTask
         }
 
         return false;
+    }
+
+    public override void FinalizeTask()
+    {
+        Game.Instance.StructureController.DestroyBlueprint(Blueprint);
+    }
+
+    public void FinishStructure()
+    {
+        Game.Instance.StructureController.SpawnStructure(Blueprint.StructureName, Blueprint.Cell, Blueprint.Faction);
+        var cellItems = Blueprint.Cell.Items.ToList();
+        foreach (var costItem in Blueprint.Cost.Items)
+        {
+            foreach (var item in cellItems.Where(c => c.Name == costItem.Key))
+            {
+                item.Amount -= costItem.Value;
+                if (item.Amount < 0)
+                {
+                    Game.Instance.ItemController.DestroyItem(item);
+                }
+            }
+        }
+
+        Game.Instance.StructureController.DestroyBlueprint(Blueprint);
+    }
+
+    public Dictionary<string, int> GetNeededItems()
+    {
+        var current = Blueprint.Cell.Items.ToList();
+        var desired = new Dictionary<string, int>();
+        foreach (var item in Blueprint.Cost.Items)
+        {
+            var desiredAmount = item.Value;
+            foreach (var existing in current.Where(i => i.Name.Equals(item.Key, StringComparison.OrdinalIgnoreCase)))
+            {
+                desiredAmount -= existing.Amount;
+            }
+
+            if (desiredAmount > 0)
+            {
+                desired.Add(item.Key, desiredAmount);
+            }
+        }
+
+        return desired;
     }
 
     private bool BuildComplete(CreatureData creature)
@@ -96,31 +155,6 @@ public class Build : CreatureTask
                 throw new Exception("Cannot build, cell occupied");
             }
             AddSubTask(new Wait(1, "Cell occupied", AnimationType.Interact));
-            return false;
-        }
-        return true;
-    }
-
-    private bool InPosition(CreatureData creature)
-    {
-        if (!creature.Cell.NonNullNeighbors.Contains(Blueprint.Cell))
-        {
-            AddSubTask(new Move(Blueprint.Cell.GetPathableNeighbour()));
-            return false;
-        }
-        return true;
-    }
-
-    private bool HasItems()
-    {
-        var needed = GetNeededItems();
-
-        if (needed.Count > 0)
-        {
-            foreach (var item in needed)
-            {
-                AddSubTask(new FindAndHaulItem(item.Key, item.Value, Blueprint.Cell));
-            }
             return false;
         }
         return true;
@@ -156,43 +190,28 @@ public class Build : CreatureTask
         return true;
     }
 
-    public void FinishStructure(Faction faction)
+    private bool HasItems()
     {
-        Game.Instance.StructureController.SpawnStructure(Blueprint.StructureName, Blueprint.Cell, Blueprint.Faction);
-        var cellItems = Blueprint.Cell.Items.ToList();
-        foreach (var costItem in Blueprint.Cost.Items)
+        var needed = GetNeededItems();
+
+        if (needed.Count > 0)
         {
-            foreach (var item in cellItems.Where(c => c.Name == costItem.Key))
+            foreach (var item in needed)
             {
-                item.Amount -= costItem.Value;
-                if (item.Amount < 0)
-                {
-                    Game.Instance.ItemController.DestroyItem(item);
-                }
+                AddSubTask(new FindAndHaulItem(item.Key, item.Value, Blueprint.Cell));
             }
+            return false;
         }
-       
-        Game.Instance.StructureController.DestroyBlueprint(Blueprint);
+        return true;
     }
 
-    public Dictionary<string, int> GetNeededItems()
+    private bool InPosition(CreatureData creature)
     {
-        var current = Blueprint.Cell.Items.ToList();
-        var desired = new Dictionary<string, int>();
-        foreach (var item in Blueprint.Cost.Items)
+        if (!creature.Cell.NonNullNeighbors.Contains(Blueprint.Cell))
         {
-            var desiredAmount = item.Value;
-            foreach (var existing in current.Where(i => i.Name.Equals(item.Key, StringComparison.OrdinalIgnoreCase)))
-            {
-                desiredAmount -= existing.Amount;
-            }
-
-            if (desiredAmount > 0)
-            {
-                desired.Add(item.Key, desiredAmount);
-            }
+            AddSubTask(new Move(Blueprint.Cell.GetPathableNeighbour()));
+            return false;
         }
-
-        return desired;
+        return true;
     }
 }

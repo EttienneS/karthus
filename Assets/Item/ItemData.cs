@@ -22,7 +22,7 @@ namespace Assets.Item
         {
             get
             {
-                return Map.Instance.GetCellAtCoordinate(Coords);
+                return Map.Instance.GetCellAtCoordinate(Coords.X, Coords.Z);
             }
             set
             {
