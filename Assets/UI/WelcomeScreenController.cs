@@ -8,17 +8,17 @@ using UnityEngine.UI;
 
 public class WelcomeScreenController : MonoBehaviour
 {
-    public Image background;
-    public CanvasGroup canvas;
-    public GameObject mainUiPanel;
-    public string sceneToLoad;
+    public Image Background;
+    public CanvasGroup Canvas;
+    public Button ContinueButton;
+    public GameObject DeleteOnLoad;
+    public GameObject MainUiPanel;
+    public string SceneToLoad;
+    public Button StartButton;
 
     private float _delta;
     private string _lastSave;
     private Color _targetColor;
-
-    public Button StartButton;
-    public Button ContinueButton;
 
     public void ContinueGame()
     {
@@ -57,7 +57,7 @@ public class WelcomeScreenController : MonoBehaviour
     private void CycleColor()
     {
         _delta += Time.deltaTime / 2f;
-        background.color = Color.Lerp(background.color, _targetColor, _delta);
+        Background.color = Color.Lerp(Background.color, _targetColor, _delta);
 
         if (_delta > 1f)
         {
@@ -68,23 +68,23 @@ public class WelcomeScreenController : MonoBehaviour
 
     private IEnumerator FadeLoadingScreen(float targetValue, float duration)
     {
-        float startValue = canvas.alpha;
+        float startValue = Canvas.alpha;
         float time = 0;
 
         while (time < duration)
         {
-            canvas.alpha = Mathf.Lerp(startValue, targetValue, time / duration);
+            Canvas.alpha = Mathf.Lerp(startValue, targetValue, time / duration);
             time += Time.deltaTime;
             yield return null;
         }
-        canvas.alpha = targetValue;
+        Canvas.alpha = targetValue;
     }
 
     private IEnumerator StartLoad()
     {
-        mainUiPanel.SetActive(false);
+        MainUiPanel.SetActive(false);
 
-        var operation = SceneManager.LoadSceneAsync(sceneToLoad, LoadSceneMode.Additive);
+        var operation = SceneManager.LoadSceneAsync(SceneToLoad, LoadSceneMode.Additive);
         while (!operation.isDone)
         {
             CycleColor();
@@ -93,6 +93,7 @@ public class WelcomeScreenController : MonoBehaviour
 
         yield return StartCoroutine(FadeLoadingScreen(0, 5));
 
+        Destroy(DeleteOnLoad);
         Destroy(gameObject);
     }
 }
