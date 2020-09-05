@@ -18,7 +18,7 @@ public class Save
 
     public TimeData Time;
 
-    public string Seed;
+    public MapGenerationData MapGenerationData;
 
     public static Save FromFile(string filename)
     {

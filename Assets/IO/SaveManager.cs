@@ -13,7 +13,7 @@ public static class SaveManager
     {
         get
         {
-            return $"{RootSaveDir}\\{Game.Instance.MapData.Seed}\\";
+            return $"{RootSaveDir}\\{Game.MapGenerationData.Seed}\\";
         }
     }
 
@@ -37,7 +37,7 @@ public static class SaveManager
     {
         return new Save
         {
-            Seed = Game.Instance.MapData.Seed,
+            MapGenerationData = Game.MapGenerationData,
             Factions = Game.Instance.FactionController.Factions.Values.ToList(),
             Time = Game.Instance.TimeManager.Data,
             Items = Game.Instance.IdService.ItemLookup.Values.ToList(),
@@ -48,6 +48,7 @@ public static class SaveManager
             Chunks = Map.Instance.Chunks.Values.Select(s => s.Data).ToList(),
         };
     }
+
     public static void Restart(Save save = null)
     {
         Game.Instance = null;

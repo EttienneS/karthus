@@ -12,6 +12,8 @@ using Debug = UnityEngine.Debug;
 
 public class Game : MonoBehaviour
 {
+    internal static MapGenerationData MapGenerationData;
+
     public CameraController CameraController;
     public CreatureController CreatureController;
     public CreatureInfoPanel CreatureInfoPanelPrefab;
@@ -25,7 +27,6 @@ public class Game : MonoBehaviour
     public ItemInfoPanel ItemInfoPanelPrefab;
     public LoadPanel LoadPanelPrefab;
     public MainMenuController MainMenuController;
-    public MapData MapData;
     public MeshRendererFactory MeshRendererFactory;
     public OrderInfoPanel OrderInfoPanel;
     public OrderSelectionController OrderSelectionController;
@@ -64,7 +65,7 @@ public class Game : MonoBehaviour
         }
     }
 
-    public int MaxSize => MapData.Size * MapData.ChunkSize;
+    public int MaxSize => MapGenerationData.Size * MapGenerationData.ChunkSize;
 
     public bool Paused { get; set; }
 
@@ -78,6 +79,69 @@ public class Game : MonoBehaviour
         }
     }
 
+    public void DestroyItemsInCache()
+    {
+        try
+        {
+            lock (_destroyCache)
+            {
+                while (_destroyCache.Any())
+                {
+                    var item = _destroyCache[0];
+                    _destroyCache.RemoveAt(0);
+                    if (item != null)
+                    {
+                        Destroy(item);
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.Log($"Destroy failed: {ex}");
+        }
+    }
+
+    internal void DestroyCreaturePanel()
+    {
+        if (_currentCreatureInfoPanel != null)
+        {
+            _currentCreatureInfoPanel.Destroy();
+        }
+    }
+
+    internal void DestroyItemInfoPanel()
+    {
+        if (_currentItemInfoPanel != null)
+        {
+            _currentItemInfoPanel.Destroy();
+        }
+    }
+
+    internal void DestroyStructureInfoPanel()
+    {
+        if (_currentStructureInfoPanel != null)
+        {
+            _currentStructureInfoPanel.Destroy();
+        }
+    }
+
+    internal void DestroyToolTip()
+    {
+        if (_currentTooltip != null)
+        {
+            _currentTooltip.Destroy();
+        }
+    }
+
+    internal void DestroyZonePanel()
+    {
+        if (_currentZoneInfoPanel != null)
+        {
+            _currentZoneInfoPanel.Destroy();
+        }
+    }
+
     internal void HideTooltip()
     {
         if (_currentTooltip != null)
@@ -86,9 +150,30 @@ public class Game : MonoBehaviour
         }
     }
 
+    internal void ShowCreaturePanel(List<CreatureRenderer> selectedCreatures)
+    {
+        DestroyCreaturePanel();
+        _currentCreatureInfoPanel = Instantiate(CreatureInfoPanelPrefab, UI.transform);
+        _currentCreatureInfoPanel.Show(selectedCreatures.Select(c => c.Data).ToList());
+    }
+
+    internal void ShowItemPanel(List<ItemData> selectedItems)
+    {
+        DestroyItemInfoPanel();
+        _currentItemInfoPanel = Instantiate(ItemInfoPanelPrefab, UI.transform);
+        _currentItemInfoPanel.Show(selectedItems);
+    }
+
     internal void ShowLoadPanel()
     {
         CurrentLoadPanel = Instantiate(LoadPanelPrefab, UI.transform);
+    }
+
+    internal void ShowStructureInfoPanel(List<Structure> selectedStructures)
+    {
+        DestroyStructureInfoPanel();
+        _currentStructureInfoPanel = Instantiate(StructureInfoPanelPrefab, UI.transform);
+        _currentStructureInfoPanel.Show(selectedStructures.ToList());
     }
 
     internal Tooltip ShowTooltip(string tooltipTitle, string tooltipText)
@@ -96,6 +181,13 @@ public class Game : MonoBehaviour
         _currentTooltip = Instantiate(TooltipPrefab, UI.transform);
         _currentTooltip.Load(tooltipTitle, tooltipText);
         return _currentTooltip;
+    }
+
+    internal void ShowZonePanel(ZoneBase zone)
+    {
+        DestroyZonePanel();
+        _currentZoneInfoPanel = Instantiate(ZoneInfoPanelPrefab, UI.transform);
+        _currentZoneInfoPanel.Show(zone);
     }
 
     private void FinalizeMap()
@@ -184,13 +276,13 @@ public class Game : MonoBehaviour
 
         if (SaveManager.SaveToLoad != null)
         {
-            MapData.Seed = SaveManager.SaveToLoad.Seed;
+            MapGenerationData = SaveManager.SaveToLoad.MapGenerationData;
         }
         else
         {
-            if (string.IsNullOrEmpty(MapData.Seed))
+            if (MapGenerationData == null)
             {
-                MapData.Seed = NameHelper.GetRandomName() + " " + NameHelper.GetRandomName();
+                MapGenerationData = new MapGenerationData(NameHelper.GetRandomName() + " " + NameHelper.GetRandomName());
             }
             InitFactions();
         }
@@ -198,70 +290,6 @@ public class Game : MonoBehaviour
 
         Initialize();
     }
-
-    internal void DestroyToolTip()
-    {
-        if (_currentTooltip != null)
-        {
-            _currentTooltip.Destroy();
-        }
-    }
-
-    internal void DestroyCreaturePanel()
-    {
-        if (_currentCreatureInfoPanel != null)
-        {
-            _currentCreatureInfoPanel.Destroy();
-        }
-    }
-
-    internal void DestroyItemInfoPanel()
-    {
-        if (_currentItemInfoPanel != null)
-        {
-            _currentItemInfoPanel.Destroy();
-        }
-    }
-
-    public void DestroyItemsInCache()
-    {
-        try
-        {
-            lock (_destroyCache)
-            {
-                while (_destroyCache.Any())
-                {
-                    var item = _destroyCache[0];
-                    _destroyCache.RemoveAt(0);
-                    if (item != null)
-                    {
-                        Destroy(item);
-                    }
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Debug.Log($"Destroy failed: {ex}");
-        }
-    }
-
-    internal void DestroyZonePanel()
-    {
-        if (_currentZoneInfoPanel != null)
-        {
-            _currentZoneInfoPanel.Destroy();
-        }
-    }
-
-    internal void DestroyStructureInfoPanel()
-    {
-        if (_currentStructureInfoPanel != null)
-        {
-            _currentStructureInfoPanel.Destroy();
-        }
-    }
-
     private void Update()
     {
         OnFirstRun();
@@ -286,33 +314,5 @@ public class Game : MonoBehaviour
         HotkeyHandler.HandleHotkeys();
 
         DestroyItemsInCache();
-    }
-
-    internal void ShowCreaturePanel(List<CreatureRenderer> selectedCreatures)
-    {
-        DestroyCreaturePanel();
-        _currentCreatureInfoPanel = Instantiate(CreatureInfoPanelPrefab, UI.transform);
-        _currentCreatureInfoPanel.Show(selectedCreatures.Select(c => c.Data).ToList());
-    }
-
-    internal void ShowZonePanel(ZoneBase zone)
-    {
-        DestroyZonePanel();
-        _currentZoneInfoPanel = Instantiate(ZoneInfoPanelPrefab, UI.transform);
-        _currentZoneInfoPanel.Show(zone);
-    }
-
-    internal void ShowItemPanel(List<ItemData> selectedItems)
-    {
-        DestroyItemInfoPanel();
-        _currentItemInfoPanel = Instantiate(ItemInfoPanelPrefab, UI.transform);
-        _currentItemInfoPanel.Show(selectedItems);
-    }
-
-    internal void ShowStructureInfoPanel(List<Structure> selectedStructures)
-    {
-        DestroyStructureInfoPanel();
-        _currentStructureInfoPanel = Instantiate(StructureInfoPanelPrefab, UI.transform);
-        _currentStructureInfoPanel.Show(selectedStructures.ToList());
     }
 }

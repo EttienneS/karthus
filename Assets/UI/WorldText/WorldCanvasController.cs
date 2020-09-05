@@ -10,8 +10,8 @@ public class WorldCanvasController : MonoBehaviour
     private void Start()
     {
         var rect = Canvas.GetComponent<RectTransform>();
-        rect.sizeDelta = new Vector2(Game.Instance.MapData.ChunkSize, Game.Instance.MapData.ChunkSize);
-        transform.position = new Vector3(Game.Instance.MapData.ChunkSize / 2, 0, Game.Instance.MapData.ChunkSize / 2);
+        rect.sizeDelta = new Vector2(Game.MapGenerationData.ChunkSize, Game.MapGenerationData.ChunkSize);
+        transform.position = new Vector3(Game.MapGenerationData.ChunkSize / 2, 0, Game.MapGenerationData.ChunkSize / 2);
 
         //var startX = ChunkRenderer.Data.X * Game.Instance.MapData.ChunkSize;
         //var endX = startX + Game.Instance.MapData.ChunkSize;

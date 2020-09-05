@@ -14,6 +14,9 @@ public class WelcomeScreenController : MonoBehaviour
     public GameObject DeleteOnLoad;
     public GameObject MainUiPanel;
     public string SceneToLoad;
+    public TMP_InputField SeedInput;
+    public Slider SizeSlider;
+    public Slider SpawnSlider;
     public Button StartButton;
 
     private float _delta;
@@ -40,12 +43,25 @@ public class WelcomeScreenController : MonoBehaviour
         catch (FileNotFoundException)
         {
             ContinueButton.enabled = false;
+            ContinueButton.image.color = ColorConstants.GreyAccent;
         }
+
+        SeedInput.text = NameHelper.GetRandomName() + " " + NameHelper.GetRandomName();
         DontDestroyOnLoad(gameObject);
     }
 
     public void StartGame()
     {
+        if (string.IsNullOrEmpty(SeedInput.text))
+        {
+            SeedInput.text = NameHelper.GetRandomName() + " " + NameHelper.GetRandomName();
+        }
+
+        Game.MapGenerationData = new MapGenerationData(SeedInput.text)
+        {
+            Size = (int)SizeSlider.value,
+            CreaturesToSpawn = (int)SpawnSlider.value,
+        };
         StartCoroutine(StartLoad());
     }
 

@@ -205,9 +205,9 @@ namespace Camera
 
         internal void MoveToWorldCenter()
         {
-            transform.position = new Vector3((Game.Instance.MapData.ChunkSize * Game.Instance.MapData.Size) / 2,
+            transform.position = new Vector3((Game.MapGenerationData.ChunkSize * Game.MapGenerationData.Size) / 2,
                                               1,
-                                             (Game.Instance.MapData.ChunkSize * Game.Instance.MapData.Size) / 2);
+                                             (Game.MapGenerationData.ChunkSize * Game.MapGenerationData.Size) / 2);
 
             newPosition = transform.position;
         }

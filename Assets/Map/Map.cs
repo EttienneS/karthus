@@ -59,8 +59,8 @@ public class Map : MonoBehaviour
     {
         get
         {
-            var x = Game.Instance.MapData.Size * Game.Instance.MapData.ChunkSize / 2;
-            var z = Game.Instance.MapData.Size * Game.Instance.MapData.ChunkSize / 2;
+            var x = Game.MapGenerationData.Size * Game.MapGenerationData.ChunkSize / 2;
+            var z = Game.MapGenerationData.Size * Game.MapGenerationData.ChunkSize / 2;
             return CellLookup[(x, z)];
         }
     }
@@ -89,7 +89,7 @@ public class Map : MonoBehaviour
             if (!_seedValue.HasValue)
             {
                 var md5Hasher = MD5.Create();
-                var hashed = md5Hasher.ComputeHash(Encoding.UTF8.GetBytes(Game.Instance.MapData.Seed));
+                var hashed = md5Hasher.ComputeHash(Encoding.UTF8.GetBytes(Game.MapGenerationData.Seed));
                 _seedValue = BitConverter.ToInt32(hashed, 0);
             }
             return _seedValue.Value;
@@ -132,9 +132,9 @@ public class Map : MonoBehaviour
 
         if (SaveManager.SaveToLoad == null)
         {
-            for (var x = 0; x < Game.Instance.MapData.Size; x++)
+            for (var x = 0; x < Game.MapGenerationData.Size; x++)
             {
-                for (var y = 0; y < Game.Instance.MapData.Size; y++)
+                for (var y = 0; y < Game.MapGenerationData.Size; y++)
                 {
                     Instance.MakeChunk(new Chunk(x, y));
                 }
@@ -290,7 +290,7 @@ public class Map : MonoBehaviour
     public ChunkRenderer MakeChunk(Chunk data)
     {
         var chunk = Instantiate(ChunkPrefab, transform);
-        chunk.transform.position = new Vector2(data.X * Game.Instance.MapData.ChunkSize, data.Z * Game.Instance.MapData.ChunkSize);
+        chunk.transform.position = new Vector2(data.X * Game.MapGenerationData.ChunkSize, data.Z * Game.MapGenerationData.ChunkSize);
         chunk.name = $"Chunk: {data.X}_{data.Z}";
         chunk.Data = data;
 
@@ -316,7 +316,7 @@ public class Map : MonoBehaviour
         Game.Instance.ItemController.SpawnItem("Stone", open.GetRandomItem(), 50);
         Game.Instance.ItemController.SpawnItem("Stone", open.GetRandomItem(), 50);
 
-        for (int i = 0; i < Game.Instance.MapData.CreaturesToSpawn; i++)
+        for (int i = 0; i < Game.MapGenerationData.CreaturesToSpawn; i++)
         {
             var c = Game.Instance.CreatureController.SpawnCreature(Game.Instance.CreatureController.GetCreatureOfType("Person"),
                                                                    Instance.GetNearestPathableCell(center, Mobility.Walk, 10),
@@ -416,7 +416,7 @@ public class Map : MonoBehaviour
     {
         using (Instrumenter.Start())
         {
-            if (Game.Instance.MapData.Populate)
+            if (Game.MapGenerationData.Populate)
             {
                 foreach (var cell in Instance.Cells)
                 {
