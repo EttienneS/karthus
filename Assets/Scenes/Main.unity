@@ -400,21 +400,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2307170057727703788, guid: fe0386d55f57809419b5c5913eec9386,
-        type: 3}
-      propertyPath: far clip plane
-      value: 300
-      objectReference: {fileID: 0}
-    - target: {fileID: 2307170058788640168, guid: fe0386d55f57809419b5c5913eec9386,
-        type: 3}
-      propertyPath: maxZoom
-      value: 130
-      objectReference: {fileID: 0}
-    - target: {fileID: 2307170058788640168, guid: fe0386d55f57809419b5c5913eec9386,
-        type: 3}
-      propertyPath: minZoom
-      value: 20
-      objectReference: {fileID: 0}
     - target: {fileID: 2307170058788640169, guid: fe0386d55f57809419b5c5913eec9386,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -438,7 +423,7 @@ PrefabInstance:
     - target: {fileID: 2307170058788640169, guid: fe0386d55f57809419b5c5913eec9386,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.38268343
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2307170058788640169, guid: fe0386d55f57809419b5c5913eec9386,
         type: 3}
@@ -448,7 +433,7 @@ PrefabInstance:
     - target: {fileID: 2307170058788640169, guid: fe0386d55f57809419b5c5913eec9386,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.92387956
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2307170058788640169, guid: fe0386d55f57809419b5c5913eec9386,
         type: 3}
@@ -463,7 +448,7 @@ PrefabInstance:
     - target: {fileID: 2307170058788640169, guid: fe0386d55f57809419b5c5913eec9386,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 45
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2307170058788640169, guid: fe0386d55f57809419b5c5913eec9386,
         type: 3}

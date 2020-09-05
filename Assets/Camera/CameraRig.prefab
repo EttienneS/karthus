@@ -51,8 +51,8 @@ MonoBehaviour:
   movementTime: 5
   rotationAmount: 1
   zoomAmount: {x: 0, y: -5, z: 5}
-  minZoom: 25
-  maxZoom: 100
+  minZoom: 20
+  maxZoom: 130
   newPosition: {x: 0, y: 0, z: 0}
   newRotation: {x: 0, y: 0, z: 0, w: 0}
   newZoom: {x: 0, y: 0, z: 0}
@@ -86,6 +86,11 @@ PrefabInstance:
         type: 3}
       propertyPath: field of view
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5246461426590746731, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
+        type: 3}
+      propertyPath: far clip plane
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 5246461426590746772, guid: 9e886c7d1fd56824f9c0c8b1975d4e9f,
         type: 3}
