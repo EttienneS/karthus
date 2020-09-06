@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MainMenuController : MonoBehaviour
 {
@@ -36,6 +37,13 @@ public class MainMenuController : MonoBehaviour
     public void Save()
     {
         SaveManager.SaveGame();
+    }
+
+    public void ReturnToTile()
+    {
+        Game.Instance = null;
+        SaveManager.SaveToLoad = null;
+        SceneManager.LoadScene(0, LoadSceneMode.Single);
     }
 
     public void Quit()

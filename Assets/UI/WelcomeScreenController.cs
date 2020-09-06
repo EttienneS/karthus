@@ -65,6 +65,15 @@ public class WelcomeScreenController : MonoBehaviour
         StartCoroutine(StartLoad());
     }
 
+    public void ExitGame()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit ();
+#endif
+    }
+
     public void Update()
     {
         CycleColor();
