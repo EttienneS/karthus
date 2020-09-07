@@ -3,7 +3,7 @@
 [Serializable]
 public class MapGenerationData
 {
-    public int ChunkSize = 240;
+    public int ChunkSize = 60;
     public bool CreateWater = true;
     public int CreaturesToSpawn = 3;
     public bool Populate = true;

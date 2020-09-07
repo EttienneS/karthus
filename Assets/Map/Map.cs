@@ -315,6 +315,9 @@ public class Map : MonoBehaviour
         Game.Instance.ItemController.SpawnItem("Plank", open.GetRandomItem(), 50);
         Game.Instance.ItemController.SpawnItem("Stone", open.GetRandomItem(), 50);
         Game.Instance.ItemController.SpawnItem("Stone", open.GetRandomItem(), 50);
+        Game.Instance.ItemController.SpawnItem("Stone", open.GetRandomItem(), 50);
+
+        Game.Instance.StructureController.SpawnStructure("Campfire", open.GetRandomItem(), Game.Instance.FactionController.PlayerFaction);
 
         for (int i = 0; i < Game.MapGenerationData.CreaturesToSpawn; i++)
         {

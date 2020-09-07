@@ -14,8 +14,6 @@ public class ChunkRenderer : MonoBehaviour
     private Mesh mesh;
     private MeshCollider meshCollider;
 
-    public WorldCanvasController WorldCanvasController;
-
     private int triangleIndex;
     private int[] triangles;
     private Vector2[] uvs;
