@@ -33,7 +33,7 @@ public class WelcomeScreenController : MonoBehaviour
 
     public void Start()
     {
-        _targetColor = ColorExtensions.GetRandomColor();
+        _targetColor = ColorExtensions.GetRandomGray(0.8f,1f);
 
         try
         {
@@ -81,12 +81,12 @@ public class WelcomeScreenController : MonoBehaviour
 
     private void CycleColor()
     {
-        _delta += Time.deltaTime / 2f;
+        _delta += Time.deltaTime / 5f;
         Background.color = Color.Lerp(Background.color, _targetColor, _delta);
 
         if (_delta > 1f)
         {
-            _targetColor = ColorExtensions.GetRandomColor();
+            _targetColor = ColorExtensions.GetRandomGray(0.8f, 1f);
             _delta = 0;
         }
     }

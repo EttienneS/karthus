@@ -27,7 +27,7 @@ public class TimeManager : MonoBehaviour
     public float MinLightAngle = 20f;
 
     private TimeStep _timeStep;
-    private float _timeTicks;
+    private float _timeTicks = int.MaxValue;
 
     public string Now
     {
@@ -59,6 +59,11 @@ public class TimeManager : MonoBehaviour
             (17,22, light, dark),
             (22,24, dark, dark)
         };
+    }
+
+    private void Start()
+    {
+        UpdateGlobalLight();
     }
 
     public TimeStep GetTimeStep()
@@ -130,6 +135,7 @@ public class TimeManager : MonoBehaviour
         var range = max - min;
         var total = range * 60f;
         var current = ((Data.Hour - min) * 60) + Data.Minute;
+
         Map.Instance.GlobalLight.color = Color.Lerp(start, end, current / total);
 
         if (Data.Hour < 4 || Data.Hour > 20)
