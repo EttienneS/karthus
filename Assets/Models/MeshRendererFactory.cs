@@ -22,6 +22,8 @@ namespace Assets.Models
             }
         }
 
+        
+
         public MeshRenderer GetItemMesh(string name)
         {
             if (_itemMeshLookup.ContainsKey(name))

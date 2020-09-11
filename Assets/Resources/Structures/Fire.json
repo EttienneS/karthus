@@ -1,0 +1,13 @@
+﻿{
+  "Name": "Fire",
+  "Mesh": "Flames",
+  "Icon": "Fire",
+  "TravelCost": "25",
+  "Description": "A burning structure",
+  "Cost": {
+  },
+  "Buildable": "True",
+  "Type": "Wildfire",
+  "ColorHex": "F5810E",
+  "SpawnRotation": "True"
+}

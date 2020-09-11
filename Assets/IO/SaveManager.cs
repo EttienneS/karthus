@@ -69,13 +69,6 @@ public static class SaveManager
 
             serializer.Converters.Add(new Newtonsoft.Json.Converters.JavaScriptDateTimeConverter());
 
-            var serializeSettings = new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                DefaultValueHandling = DefaultValueHandling.Ignore,
-                Formatting = Formatting.Indented
-            };
-
             Directory.CreateDirectory(SaveDir);
 
             var file = $"{SaveDir}\\{DateTime.Now:yy-MM-dd_HH-mm-ss}";

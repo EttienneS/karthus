@@ -10,8 +10,10 @@
     }
   },
   "Buildable": "True",
-  "Type": "Fire",
+  "Type": "ContainedFire",
   "ColorHex": "F5810E",
   "Radius": 10,
-  "Intensity": 5
+  "Intensity": 5,
+  "SpawnRotation": "True"
+
 }
