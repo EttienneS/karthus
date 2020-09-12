@@ -7,5 +7,7 @@
     "Items": {
       "Wheat": "10"
     }
-  }
+  },
+  "BaseFlammability": 25
+
 }

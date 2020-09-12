@@ -10,5 +10,6 @@
     }
   },
   "Buildable": "True",
-  "Type": "Door"
+  "Type": "Door",
+  "BaseFlammability": 50
 }

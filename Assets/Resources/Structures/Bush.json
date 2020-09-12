@@ -3,5 +3,6 @@
   "Mesh": "plant_bush,plant_bushDetailed,plant_bushLarge,plant_bushSmall",
   "TravelCost": "3",
   "Buildable": "False",
-  "SpawnRotation": "True"
+  "SpawnRotation": "True",
+  "BaseFlammability": 50
 }

@@ -1,0 +1,7 @@
+{
+  "Name": "Debris",
+  "Mesh": "Debris",
+  "TravelCost": "10",
+  "Buildable": "False",
+  "SpawnRotation": "True"
+}

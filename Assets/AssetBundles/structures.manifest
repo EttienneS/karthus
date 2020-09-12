@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 4253033735
+CRC: 926211076
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 417eb9f797bc5e5f7313a57b2d62f806
+    Hash: c3374e59cc522ceb51dd16d14a4b1597
   TypeTreeHash:
     serializedVersion: 2
     Hash: 18d9bb4d47b424ec9fb3afa70ce56f07
@@ -37,6 +37,7 @@ Assets:
 - Assets/Models/Kenney Assets/Nature Kit/stone_large6.fbx
 - Assets/Models/Kenney Assets/Nature Kit/plant_bush.fbx
 - Assets/Models/Kenney Assets/Nature Kit/plant_bushDetailed.fbx
+- Assets/Models/Self/Debris.prefab
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/Birch_7.blend
 - Assets/Models/Self/Flames.prefab
 - Assets/Models/Kenney Assets/Nature Kit/stone_tall4.fbx

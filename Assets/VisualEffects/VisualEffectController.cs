@@ -55,8 +55,12 @@ public class VisualEffectController : MonoBehaviour
         return effect;
     }
 
-    internal void CreateFireLight(GameObject lightObject, Color color, float range, float intensity)
+    internal void CreateFireLight(Transform parent, Color color, float range, float intensity, float height)
     {
+        var lightObject = new GameObject("Fire Light");
+        lightObject.transform.SetParent(parent);
+        lightObject.transform.localPosition = new Vector3(0, height, 0);
+
         var light = lightObject.AddComponent<Light>();
         light.color = color;
         light.range = range;

@@ -22,8 +22,6 @@ namespace Assets.Models
             }
         }
 
-        
-
         public MeshRenderer GetItemMesh(string name)
         {
             if (_itemMeshLookup.ContainsKey(name))
@@ -31,6 +29,12 @@ namespace Assets.Models
                 return _itemMeshLookup[name];
             }
             return _structureMeshLookup["DefaultCube"];
+        }
+
+        internal MeshRenderer CreateFlameMesh(Transform parent)
+        {
+            return Game.Instance.MeshRendererFactory
+                                     .InstantiateMesh(Game.Instance.MeshRendererFactory.GetStructureMesh("Flames"), parent);
         }
 
         public MeshRenderer GetStructureMesh(string name)

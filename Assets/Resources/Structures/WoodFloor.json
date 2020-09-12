@@ -10,5 +10,6 @@
     }
   },
   "Buildable": "True",
+  "BaseFlammability": 25,
   "Type": "Floor"
 }

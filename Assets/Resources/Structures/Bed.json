@@ -9,6 +9,7 @@
       "Plank": "3"
     }
   },
+  "BaseFlammability": 50,
   "Buildable": "True",
   "ValueProperties": {
     "RecoveryRate": 0.125

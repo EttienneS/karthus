@@ -14,6 +14,6 @@
   "ColorHex": "F5810E",
   "Radius": 10,
   "Intensity": 5,
-  "SpawnRotation": "True"
-
+  "SpawnRotation": "True",
+  "BaseFlammability": -1
 }

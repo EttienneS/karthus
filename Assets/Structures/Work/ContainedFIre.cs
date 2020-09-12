@@ -1,9 +1,7 @@
-﻿using Assets.Structures;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Structures.Work
 {
-
     public class ContainedFire : WorkStructureBase
     {
         private MeshRenderer _flameMesh;
@@ -19,21 +17,14 @@ namespace Structures.Work
             }
         }
 
-        internal MeshRenderer CreateFlameMeshWithLight(float range, float intensity, Color color, Transform parent)
+        internal static MeshRenderer CreateFlameMeshWithLight(float range, float intensity, Color color, Transform parent)
         {
-            var mesh = Game.Instance.MeshRendererFactory
-                                          .InstantiateMesh(Game.Instance.MeshRendererFactory.GetStructureMesh("Flames"),
-                                                           parent);
+            var mesh = Game.Instance.MeshRendererFactory.CreateFlameMesh(parent);
             mesh.transform.localPosition += new Vector3(0, -0.2f, 0);
 
-            var lightObject = new GameObject("Fire Light");
-            lightObject.transform.SetParent(mesh.transform);
-            lightObject.transform.localPosition = new Vector3(0, 1f, 0);
-
-            Game.Instance.VisualEffectController.CreateFireLight(lightObject, color, range, intensity);
+            Game.Instance.VisualEffectController.CreateFireLight(mesh.transform, color, range, intensity, 1f);
 
             return mesh;
         }
-
     }
 }

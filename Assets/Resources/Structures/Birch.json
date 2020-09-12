@@ -4,6 +4,7 @@
   "TravelCost": "7",
   "Buildable": "False",
   "SpawnRotation": "True",
+  "BaseFlammability": 200,
   "Cost": {
     "Items": {
       "Log": "3"

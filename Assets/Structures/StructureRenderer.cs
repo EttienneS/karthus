@@ -22,5 +22,13 @@ namespace Assets.Structures
         {
             Destroy(plantMesh);
         }
+
+        public void Update()
+        {
+            if (!Game.Instance.Paused)
+            {
+                Data.Update(Time.deltaTime);
+            }
+        }
     }
 }

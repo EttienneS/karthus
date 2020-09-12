@@ -8,5 +8,7 @@
     "Items": {
       "Log": "3"
     }
-  }
+  },
+  "BaseFlammability": 225
+
 }

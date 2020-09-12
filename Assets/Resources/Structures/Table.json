@@ -10,5 +10,6 @@
     }
   },
   "Buildable": "True",
-  "Type": "Table"
+  "Type": "Table",
+  "BaseFlammability": 125
 }

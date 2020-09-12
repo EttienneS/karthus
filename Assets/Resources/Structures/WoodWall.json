@@ -11,5 +11,6 @@
   },
   "Buildable": "True",
   "ColorHex": "#fbc531",
-  "Type": "Wall"
+  "Type": "Wall",
+  "BaseFlammability": 100
 }

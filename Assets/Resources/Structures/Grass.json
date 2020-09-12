@@ -3,5 +3,6 @@
   "Mesh": "grass",
   "TravelCost": "1",
   "Buildable": "False",
-  "SpawnRotation": "True"
+  "SpawnRotation": "True",
+  "BaseFlammability": 50
 }

@@ -1,5 +1,6 @@
 ﻿using Arg;
 using Assets.Creature;
+using Assets.Structures.Behaviour;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -130,6 +131,7 @@ public class DeveloperConsole : MonoBehaviour
         Commands.Add("Structures", (_) => List("Structures"));
         Commands.Add("Zones", (_) => List("Zones"));
         Commands.Add("Factions", (_) => List("Factions"));
+        Commands.Add("Burn", (_) => Burn());
 
         Commands.Add("CompleteStructures", (args) =>
         {
@@ -185,6 +187,14 @@ public class DeveloperConsole : MonoBehaviour
         {
             Parser.ArgumentDefinitions.Add(new StringArgument(command.Key));
         }
+    }
+
+    private string Burn()
+    {
+        var structure = Game.Instance.IdService.StructureLookup.Values.Where(s => s.Flammable()).GetRandomItem();
+        structure.AddBehaviour<Wildfire>();
+
+        return $"Started a fire at {structure.Cell}";
     }
 
     public void Toggle()

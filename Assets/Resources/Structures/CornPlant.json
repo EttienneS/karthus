@@ -3,6 +3,7 @@
   "Mesh": "CornPlant",
   "TravelCost": "3",
   "Buildable": "False",
+  "BaseFlammability": 50,
   "Cost": {
     "Items": {
       "Corn": "10"

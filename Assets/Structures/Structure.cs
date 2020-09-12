@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Assets.Structures.Behaviour;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,9 @@ namespace Assets.Structures
         public float TravelCost;
 
         public string Type;
+        public float BaseFlammability = -1f;
+        public float Flammability;
+
         private Cell _cell;
 
         private Faction _faction;
@@ -39,7 +43,17 @@ namespace Assets.Structures
         {
         }
 
-        public Structure(string name, string mesh)
+        internal bool HasBehaviour<T>() where T : StructureBehaviour
+        {
+            return StructureBehaviours.Any(s => s is T);
+        }
+
+        public void Load()
+        {
+            Flammability = BaseFlammability;
+        }
+
+        public Structure(string name, string mesh) : this()
         {
             Name = name;
             Mesh = mesh;
@@ -250,12 +264,32 @@ namespace Assets.Structures
             ValueProperties[valueName] = value;
         }
 
+        internal bool Flammable()
+        {
+            return Flammability > 0 && !HasBehaviour<Wildfire>();
+        }
+
+        internal void AddBehaviour<T>() where T : StructureBehaviour
+        {
+            StructureBehaviours.Add((T)Activator.CreateInstance(typeof(T), this));
+        }
+
         internal void ShowOutline()
         {
             HideOutline();
             _outline = Game.Instance.VisualEffectController
                            .SpawnSpriteEffect(Vector, "CellOutline", float.MaxValue);
             _outline.Regular();
+        }
+
+        public List<StructureBehaviour> StructureBehaviours = new List<StructureBehaviour>();
+
+        public void Update(float delta)
+        {
+            foreach (var behaviour in StructureBehaviours.ToList())
+            {
+                behaviour.Update(delta);
+            }
         }
     }
 }

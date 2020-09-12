@@ -88,6 +88,7 @@ namespace Assets.Structures
                 return json.LoadJson(type) as Structure;
             }
 
+            structure.Load();
             return structure;
         }
 
