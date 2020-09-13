@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 public class Save
 {
@@ -22,10 +23,12 @@ public class Save
 
     public static Save FromFile(string filename)
     {
-        return JsonConvert.DeserializeObject<Save>(File.ReadAllText(filename), new JsonSerializerSettings
+        var save = JsonConvert.DeserializeObject<Save>(File.ReadAllText(filename), new JsonSerializerSettings
         {
             TypeNameHandling = TypeNameHandling.Auto,
             NullValueHandling = NullValueHandling.Ignore,
         });
+
+        return save;
     }
 }

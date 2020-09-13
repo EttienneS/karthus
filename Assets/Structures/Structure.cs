@@ -271,7 +271,9 @@ namespace Assets.Structures
 
         internal void AddBehaviour<T>() where T : StructureBehaviour
         {
-            StructureBehaviours.Add((T)Activator.CreateInstance(typeof(T), this));
+            var behaviour = (T)Activator.CreateInstance(typeof(T));
+            StructureBehaviours.Add(behaviour);
+            behaviour.Link(this);
         }
 
         internal void ShowOutline()

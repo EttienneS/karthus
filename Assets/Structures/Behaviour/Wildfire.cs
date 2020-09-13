@@ -16,29 +16,20 @@ namespace Assets.Structures.Behaviour
         public float SpreadDelta;
         private MeshRenderer _flameMesh;
 
-        public Wildfire(Structure structure) : base(structure)
-        {
-            RefreshSpreadDelta();
-        }
-
         public override void Update(float delta)
         {
+            var structure = GetStructure();
             if (_flameMesh == null)
             {
-                InstantiateFlames();
-
-                if (Structure.BaseFlammability > 150)
-                {
-                    Game.Instance.VisualEffectController.CreateFireLight(_flameMesh.transform, ColorExtensions.GetColorFromHex("F5810E"), 25, 25, 0.5f);
-                }
+                Initialize(structure);
             }
 
             SpreadDelta -= delta;
             if (SpreadDelta <= 0)
             {
-                RefreshSpreadDelta();
+                RefreshSpreadDelta(structure);
 
-                var open = GetFlammableNeighbours(Structure.Cell);
+                var open = GetFlammableNeighbours(structure.Cell);
 
                 if (open.Count > 0)
                 {
@@ -48,7 +39,19 @@ namespace Assets.Structures.Behaviour
                 }
             }
 
-            UpdateRemainingFlammability(delta);
+            UpdateRemainingFlammability(structure, delta);
+        }
+
+        private void Initialize(Structure structure)
+        {
+            RefreshSpreadDelta(structure);
+
+            InstantiateFlames(structure);
+
+            if (structure.BaseFlammability > 150)
+            {
+                Game.Instance.VisualEffectController.CreateFireLight(_flameMesh.transform, ColorExtensions.GetColorFromHex("F5810E"), 25, 25, 0.5f);
+            }
         }
 
         private static List<Cell> GetFlammableNeighbours(Cell cell)
@@ -59,26 +62,26 @@ namespace Assets.Structures.Behaviour
                                    .ToList();
         }
 
-        private void InstantiateFlames()
+        private void InstantiateFlames(Structure structure)
         {
-            _flameMesh = Game.Instance.MeshRendererFactory.CreateFlameMesh(Structure.Renderer.transform);
-            var scale = Structure.BaseFlammability / 100f * 5f * Random.Range(0.75f, 1.25f);
+            _flameMesh = Game.Instance.MeshRendererFactory.CreateFlameMesh(structure.Renderer.transform);
+            var scale = structure.BaseFlammability / 100f * 5f * Random.Range(0.75f, 1.25f);
             _flameMesh.transform.localScale = new Vector3(scale, scale, scale);
             _flameMesh.transform.rotation = Quaternion.Euler(0, Random.Range(0f, 360f), 0);
         }
 
-        private void RefreshSpreadDelta()
+        private void RefreshSpreadDelta(Structure structure)
         {
-            SpreadDelta = Random.Range(25f, 50f) / (Structure.BaseFlammability / 10);
+            SpreadDelta = Random.Range(25f, 50f) / (structure.BaseFlammability / 10);
         }
 
-        private void UpdateRemainingFlammability(float delta)
+        private void UpdateRemainingFlammability(Structure structure, float delta)
         {
-            Structure.Flammability -= delta / 2;
-            if (Structure.Flammability <= 0)
+            structure.Flammability -= delta / 2;
+            if (structure.Flammability <= 0)
             {
-                Game.Instance.StructureController.SpawnStructure("Debris", Structure.Cell, Game.Instance.FactionController.WorldFaction);
-                Game.Instance.StructureController.DestroyStructure(Structure);
+                Game.Instance.StructureController.SpawnStructure("Debris", structure.Cell, Game.Instance.FactionController.WorldFaction);
+                Game.Instance.StructureController.DestroyStructure(structure);
             }
         }
     }
