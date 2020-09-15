@@ -193,9 +193,8 @@ public class CreatureInfoPanel : MonoBehaviour
                 }
                 var cell = cells[0];
 
-                var faction = creature.GetFaction();
+                var faction = creature.Faction;
                 var task = new Move(cell);
-                task.AddCellBadge(cell, OrderSelectionController.MoveIcon);
                 creature.AbandonTask();
                 creature.Task = task;
             }

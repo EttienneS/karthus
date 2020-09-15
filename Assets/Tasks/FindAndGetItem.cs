@@ -37,7 +37,7 @@ public class FindAndGetItem : CreatureTask
             {
                 if (string.IsNullOrEmpty(TargetId))
                 {
-                    IEntity targetEntity = creature.Faction.FindItem(ItemCriteria, creature);
+                    var targetEntity = creature.Faction.FindItem(ItemCriteria, creature);
 
                     if (targetEntity == null)
                     {

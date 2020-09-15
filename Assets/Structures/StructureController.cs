@@ -211,7 +211,7 @@ namespace Assets.Structures
                     Debug.Log("Unbound structure");
                 }
 
-                Game.Instance.IdService.RemoveEntity(structure);
+                Game.Instance.IdService.RemoveStructure(structure);
                 Game.Instance.FactionController.Factions[structure.FactionName].Structures.Remove(structure);
                 Game.Instance.AddItemToDestroy(structure.Renderer.gameObject);
             }
@@ -223,7 +223,7 @@ namespace Assets.Structures
         }
         private void IndexStructure(Structure structure)
         {
-            Game.Instance.IdService.EnrollEntity(structure);
+            Game.Instance.IdService.EnrollStructure(structure);
         }
 
         private void UpdateWorkStructures()
@@ -232,7 +232,7 @@ namespace Assets.Structures
 
             if (_lastUpdate > 0.5f)
             {
-                foreach (var structure in Game.Instance.IdService.StructureLookup.Values.OfType<WorkStructureBase>())
+                foreach (var structure in Game.Instance.IdService.StructureIdLookup.Values.OfType<WorkStructureBase>())
                 {
                     structure.Process(_lastUpdate);
                 }

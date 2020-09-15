@@ -11,7 +11,7 @@ using Random = UnityEngine.Random;
 namespace Assets.Creature
 {
     [Serializable]
-    public class CreatureData : IEntity
+    public class CreatureData 
     {
         public Direction Facing = Direction.S;
 
@@ -65,6 +65,11 @@ namespace Assets.Creature
 
                 return _awareness;
             }
+        }
+
+        internal bool IsPlayerControlled()
+        {
+            return FactionName == Game.Instance.FactionController.PlayerFaction.FactionName;
         }
 
         public string BehaviourName { get; set; }
@@ -507,7 +512,7 @@ namespace Assets.Creature
 
         internal void AddRelationshipEvent(CreatureData creature, string name, float value)
         {
-            var relation = Relationships.Find(r => r.Entity == creature);
+            var relation = Relationships.Find(r => r.Creature == creature);
             if (relation == null)
             {
                 relation = new Relationship(creature);

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Assets.Creature;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using UnityEngine;
 namespace Assets.Item
 {
     [Serializable]
-    public class ItemData : IEntity
+    public class ItemData 
     {
         private (float X, float Z) _coords;
 
@@ -90,13 +91,13 @@ namespace Assets.Item
             return json.LoadJson<ItemData>();
         }
 
-        public bool CanUse(IEntity entity)
+        public bool CanUse(CreatureData entity)
         {
             if (string.IsNullOrEmpty(InUseById))
             {
                 return true;
             }
-            return InUseById.GetEntity() == entity;
+            return InUseById.GetCreature() == entity;
         }
 
         public void Free()
@@ -104,7 +105,7 @@ namespace Assets.Item
             InUseById = null;
         }
 
-        public void Reserve(IEntity entity)
+        public void Reserve(CreatureData entity)
         {
             InUseById = entity.Id;
         }

@@ -85,14 +85,14 @@ public class ItemController : MonoBehaviour
     {
         if (item != null)
         {
-            Game.Instance.IdService.RemoveEntity(item);
+            Game.Instance.IdService.RemoveItem(item);
             Game.Instance.AddItemToDestroy(item.Renderer.gameObject);
         }
     }
 
     private void IndexItem(ItemData item)
     {
-        Game.Instance.IdService.EnrollEntity(item);
+        Game.Instance.IdService.EnrollItem(item);
     }
 
     internal void SpawnItem(ItemData data)

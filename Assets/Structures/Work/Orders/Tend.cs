@@ -18,7 +18,7 @@
                 return;
             }
 
-            var farmPlot = StructureId.GetEntity() as Farm;
+            var farmPlot = StructureId.GetStructure() as Farm;
 
             // change to new plant
             if (farmPlot.PlantName != Option.Name)

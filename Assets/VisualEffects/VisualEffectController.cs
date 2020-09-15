@@ -13,7 +13,6 @@ public enum EffectType
 
 public class VisualEffectController : MonoBehaviour
 {
-    public Badge BadgePrefab;
     public VisualEffect EffectPrefab;
     public TextMeshPro TextMeshPrefab;
 
@@ -33,11 +32,6 @@ public class VisualEffectController : MonoBehaviour
         var effect = Instantiate(EffectPrefab, transform);
         effect.Data = data;
         return effect;
-    }
-
-    public Badge Spawn()
-    {
-        return Instantiate(BadgePrefab, transform);
     }
 
     public VisualEffect SpawnEffect(VisualEffectData data)
@@ -110,37 +104,7 @@ public class VisualEffectController : MonoBehaviour
 
     public void Update()
     {
-        //foreach (var badge in _activeBadges)
-        //{
-        //    if (badge.Entity == null)
-        //    {
-        //        Destroy(badge.gameObject);
-        //    }
-        //}
-
-        //foreach (var visualEffect in _activeVisualEffects)
-        //{
-        //    if (visualEffect.Entity == null)
-        //    {
-        //        Destroy(visualEffect.gameObject);
-        //    }
-        //}
+       
     }
 
-    internal Badge AddBadge(IEntity entity, string iconName)
-    {
-        var badge = Spawn();
-        badge.SetSprite(iconName);
-        badge.Follow(entity);
-        return badge;
-    }
-
-    internal Badge AddBadge(Cell cell, string iconName)
-    {
-        var badge = Spawn();
-        badge.SetSprite(iconName);
-        badge.transform.position = cell.Vector + new Vector3(0, 0.2f, 0);
-
-        return badge;
-    }
 }

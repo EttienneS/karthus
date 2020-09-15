@@ -40,7 +40,7 @@ public class CreatureController : MonoBehaviour
 
     public CreatureRenderer GetCreatureAtPoint(Vector2 point)
     {
-        foreach (var creature in Game.Instance.IdService.CreatureLookup.Values)
+        foreach (var creature in Game.Instance.IdService.CreatureIdLookup.Values)
         {
             var rect = new Rect(creature.CreatureRenderer.transform.position.x - 0.5f, creature.CreatureRenderer.transform.position.y - 0.5f, 1f, 1f);
             if (rect.Contains(point))
@@ -61,7 +61,7 @@ public class CreatureController : MonoBehaviour
                 creature.Data.AbandonTask();
 
             Game.Instance.FactionController.Factions[creature.Data.FactionName].Creatures.Remove(creature.Data);
-            Game.Instance.IdService.RemoveEntity(creature.Data);
+            Game.Instance.IdService.RemoveCreature(creature.Data);
             Game.Instance.AddItemToDestroy(creature.gameObject);
         }
     }
@@ -101,7 +101,7 @@ public class CreatureController : MonoBehaviour
         creature.Data = creatureData;
         creature.Data.CreatureRenderer = creature;
 
-        Game.Instance.IdService.EnrollEntity(creature.Data);
+        Game.Instance.IdService.EnrollCreature(creature.Data);
         creature.name = $"{creature.Data.Name} ({creature.Data.Id})";
 
         if (creatureData.BehaviourName == "PersonBehavior")

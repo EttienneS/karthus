@@ -1,4 +1,5 @@
-﻿using Assets.Creature.Behaviour;
+﻿using Assets.Creature;
+using Assets.Creature.Behaviour;
 using Needs;
 using Newtonsoft.Json;
 using System;
@@ -15,25 +16,25 @@ public class Relationship
     {
     }
 
-    public Relationship(IEntity entity) : this()
+    public Relationship(CreatureData creature) : this()
     {
-        Entity = entity;
+        Creature = creature;
     }
 
     [JsonIgnore]
-    public IEntity Entity
+    public CreatureData Creature
     {
         get
         {
-            return EntityId.GetEntity();
+            return CreatureId.GetCreature();
         }
         set
         {
-            EntityId = value.Id;
+            CreatureId = value.Id;
         }
     }
 
-    public string EntityId { get; set; }
+    public string CreatureId { get; set; }
 
     [JsonIgnore]
     public float Value

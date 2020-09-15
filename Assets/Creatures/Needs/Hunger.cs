@@ -22,7 +22,7 @@ namespace Needs
         {
             if (Creature.GetNeed<Hunger>().Current < 50 && Creature.IsIdle())
             {
-                var food = Creature.GetFaction().FindItem(Eat.FoodCriteria, Creature);
+                var food = Creature.Faction.FindItem(Eat.FoodCriteria, Creature);
                 if (food != null)
                 {
                     Creature.Task = new Eat(food);

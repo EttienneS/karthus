@@ -198,7 +198,7 @@ namespace Assets
 
         private void DeselectItem()
         {
-            foreach (var item in Game.Instance.IdService.ItemLookup.Values)
+            foreach (var item in Game.Instance.IdService.ItemIdLookup.Values)
             {
                 item.HideOutline();
             }

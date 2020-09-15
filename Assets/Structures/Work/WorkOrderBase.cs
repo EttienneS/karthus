@@ -21,7 +21,7 @@ namespace Structures.Work
             {
                 if (_structure == null)
                 {
-                    _structure = StructureId.GetEntity() as WorkStructureBase;
+                    _structure = StructureId.GetStructure() as WorkStructureBase;
                 }
                 return _structure;
             }

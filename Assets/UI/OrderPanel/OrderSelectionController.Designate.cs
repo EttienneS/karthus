@@ -20,7 +20,7 @@ public partial class OrderSelectionController //.Designate
             EnableAndClear();
 
             CreateOrderButton(MoveClicked,
-                              () => Game.Instance.OrderInfoPanel.Show("Move to Cell","Place a move order, a creature will take the order and move to the cell."),
+                              () => Game.Instance.OrderInfoPanel.Show("Move to Cell", "Place a move order, a creature will take the order and move to the cell."),
                               MoveIcon);
             CreateOrderButton(RemoveStructureClicked,
                               () => Game.Instance.OrderInfoPanel.Show("Remove structures", "Designate structures to be removed."),
@@ -36,8 +36,7 @@ public partial class OrderSelectionController //.Designate
         CellClickOrder = cells =>
         {
             var cell = cells[0];
-            Game.Instance.FactionController.PlayerFaction.AddTask(new Move(cell))
-                                                .AddCellBadge(cell, MoveIcon);
+            Game.Instance.FactionController.PlayerFaction.AddTask(new Move(cell));
         };
     }
 
@@ -54,40 +53,11 @@ public partial class OrderSelectionController //.Designate
                 {
                     var structure = cell.Structure;
 
-                    //if (structure.IsBlueprint)
-                    //{
-                    //    //var task = structure.Faction.AvailableTasks.OfType<Build>().FirstOrDefault(b => b.TargetStructure == structure);
-                    //    //if (task != null)
-                    //    //{
-                    //    //    structure.Faction.RemoveTask(task);
-                    //    //    task.Destroy();
-                    //    //}
-                    //    //else
-                    //    //{
-                    //    //    foreach (var creature in structure.Faction.Creatures)
-                    //    //    {
-                    //    //        if (creature.Task != null && task is Build build)
-                    //    //        {
-                    //    //            if (build.TargetStructure == structure)
-                    //    //            {
-                    //    //                creature.CancelTask();
-                    //    //            }
-                    //    //        }
-                    //    //    }
-                    //    //}
-
-                    //    //Game.Instance.StructureController.DestroyStructure(structure);
-                    //}
-                    //else
+                    if (Game.Instance.FactionController.PlayerFaction.AvailableTasks.OfType<RemoveStructure>().Any(t => t.StructureToRemove == structure))
                     {
-                        if (Game.Instance.FactionController.PlayerFaction.AvailableTasks.OfType<RemoveStructure>().Any(t => t.StructureToRemove == structure))
-                        {
-                            continue;
-                        }
-                        Game.Instance.FactionController.PlayerFaction
-                                              .AddTask(new RemoveStructure(structure))
-                                              .AddCellBadge(structure.Cell, DefaultRemoveIcon);
+                        continue;
                     }
+                    Game.Instance.FactionController.PlayerFaction.AddTask(new RemoveStructure(structure));
                 }
             }
         };

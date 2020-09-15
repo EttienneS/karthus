@@ -41,8 +41,7 @@ namespace UI
             {
                 if (!Game.Instance.FactionController.PlayerFaction.AvailableTasks.OfType<RemoveStructure>().Any(r => r.StructureToRemove == structure))
                 {
-                    Game.Instance.FactionController.PlayerFaction.AddTask(new RemoveStructure(structure))
-                                                        .AddCellBadge(structure.Cell, OrderSelectionController.DefaultRemoveIcon);
+                    Game.Instance.FactionController.PlayerFaction.AddTask(new RemoveStructure(structure));
                 }
                 else
                 {

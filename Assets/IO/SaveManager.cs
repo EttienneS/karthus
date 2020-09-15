@@ -40,7 +40,7 @@ public static class SaveManager
             MapGenerationData = Game.MapGenerationData,
             Factions = Game.Instance.FactionController.Factions.Values.ToList(),
             Time = Game.Instance.TimeManager.Data,
-            Items = Game.Instance.IdService.ItemLookup.Values.ToList(),
+            Items = Game.Instance.IdService.ItemIdLookup.Values.ToList(),
             CameraData = new CameraData(Game.Instance.CameraController),
             Rooms = Game.Instance.ZoneController.RoomZones,
             Stores = Game.Instance.ZoneController.StorageZones,

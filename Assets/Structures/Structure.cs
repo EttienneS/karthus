@@ -1,4 +1,5 @@
-﻿using Assets.Structures.Behaviour;
+﻿using Assets.Creature;
+using Assets.Structures.Behaviour;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using UnityEngine;
 namespace Assets.Structures
 {
     [Serializable]
-    public class Structure : IEntity
+    public class Structure 
     {
         public bool Buildable;
 
@@ -113,7 +114,7 @@ namespace Assets.Structures
         public string Id { get; set; }
 
         [JsonIgnore]
-        public IEntity InUseBy
+        public CreatureData InUseBy
         {
             get
             {
@@ -121,7 +122,7 @@ namespace Assets.Structures
                 {
                     return null;
                 }
-                return InUseById.GetEntity();
+                return InUseById.GetCreature();
             }
             set
             {
@@ -241,7 +242,7 @@ namespace Assets.Structures
             return IsWall();
         }
 
-        internal void Reserve(IEntity reservedBy)
+        internal void Reserve(CreatureData reservedBy)
         {
             InUseBy = reservedBy;
         }

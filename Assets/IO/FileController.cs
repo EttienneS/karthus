@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class FileController : MonoBehaviour
 {
-    public Dictionary<string, TextAsset> ItemLookup;
+    public Dictionary<string, TextAsset> ItemIdLookup;
     public Material[] Materials;
 
     internal const string BiomeFolder = "Biomes";

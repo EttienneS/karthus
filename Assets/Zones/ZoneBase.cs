@@ -19,25 +19,11 @@ public abstract class ZoneBase
     {
         get
         {
-            return Game.Instance.IdService.ItemLookup.Values.Where(i => ZoneCells.GetCells().Contains(i.Cell)).ToList();
+            return Game.Instance.IdService.ItemIdLookup.Values.Where(i => ZoneCells.GetCells().Contains(i.Cell)).ToList();
         }
     }
 
     public string Name { get; set; }
-
-    [JsonIgnore]
-    public IEntity Owner
-    {
-        get
-        {
-            if (string.IsNullOrEmpty(OwnerId))
-            {
-                return null;
-            }
-
-            return OwnerId.GetEntity();
-        }
-    }
 
     public string OwnerId { get; set; }
 
@@ -58,8 +44,4 @@ public abstract class ZoneBase
         }
     }
 
-    public bool CanUse(IEntity entity)
-    {
-        return string.IsNullOrEmpty(OwnerId) || OwnerId.Equals(entity.Id);
-    }
 }

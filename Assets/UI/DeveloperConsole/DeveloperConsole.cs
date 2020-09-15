@@ -18,16 +18,6 @@ public class DeveloperConsole : MonoBehaviour
 
     public delegate string Execute(string args);
 
-    public IEntity GetEntity(string id)
-    {
-        var entity = id.GetEntity();
-        if (entity == null)
-        {
-            entity = Game.Instance.IdService.CreatureLookup.Values.ToList().Find(c => c.Name.Equals(id, StringComparison.OrdinalIgnoreCase));
-        }
-        return entity;
-    }
-
     public void Hide()
     {
         gameObject.SetActive(false);
@@ -108,79 +98,17 @@ public class DeveloperConsole : MonoBehaviour
 
     public void Start()
     {
-        Commands.Add("Log", (args) =>
-        {
-            Debug.Log($"{args}");
-            return args;
-        });
-        Commands.Add("SetTime", (args) =>
-        {
-            var split = args.Split(':');
-            Game.Instance.TimeManager.Data.Hour = int.Parse(split[0]);
-            Game.Instance.TimeManager.Data.Minute = int.Parse(split[1]);
-            return $"Time Set To: {Game.Instance.TimeManager.Data.Hour}:{Game.Instance.TimeManager.Data.Minute}";
-        });
-        Commands.Add("Load", (args) =>
-        {
-            SaveManager.Load(args);
-            return "Loading...";
-        });
-
+        Commands.Add("SetTime", SetTime);
         Commands.Add("Creatures", (_) => List("Creatures"));
         Commands.Add("Items", (_) => List("Items"));
         Commands.Add("Structures", (_) => List("Structures"));
         Commands.Add("Zones", (_) => List("Zones"));
         Commands.Add("Factions", (_) => List("Factions"));
         Commands.Add("Burn", (_) => Burn());
-
-        Commands.Add("CompleteStructures", (args) =>
-        {
-            var ids = "";
-            foreach (var build in Game.Instance.FactionController
-                                                   .PlayerFaction
-                                                   .AvailableTasks.OfType<Build>().ToList())
-            {
-                build.FinishStructure();
-                ids += $"{build.Blueprint.StructureName},";
-
-                Game.Instance.FactionController.PlayerFaction.AvailableTasks.Remove(build);
-            }
-            return ids.Trim(',');
-        });
-
+        Commands.Add("CompleteStructures", (args) => CompleteStructures());
         Commands.Add("List", List);
-        Commands.Add("Inspect", (args) => GetEntity(args).ToString());
-        Commands.Add("Move", (args) =>
-        {
-            var parts = args.Split(' ');
-            var entity = GetEntity(parts[0]);
-
-            var cell = Map.Instance.GetCellAtCoordinate(float.Parse(parts[1]), float.Parse(parts[2]));
-            if (entity is CreatureData creature)
-            {
-                creature.X = cell.X;
-                creature.Z = cell.Z;
-                creature.CreatureRenderer.UpdatePosition();
-            }
-            else
-            {
-                entity.Cell = cell;
-            }
-
-            return $"Move {entity.Name} to {entity.Cell}";
-        });
-        Commands.Add("Set", (args) =>
-        {
-            var parts = args.Split(' ');
-            var entity = GetEntity(parts[0]) as CreatureData;
-
-            var need = entity.Needs.Find(n => n.Name.Equals(parts[1], StringComparison.OrdinalIgnoreCase));
-
-            var msg = $"Changed ({entity.Id}){entity.Name}'s {need.Name} from '{need.Current}' to '{parts[2]}'";
-            need.Current = int.Parse(parts[2]);
-
-            return msg;
-        });
+        Commands.Add("Move", MoveCreature);
+        Commands.Add("Set", SetNeed);
 
         Parser = new ArgsParser();
         foreach (var command in Commands)
@@ -189,9 +117,72 @@ public class DeveloperConsole : MonoBehaviour
         }
     }
 
+    private static string Load(string args)
+    {
+        SaveManager.Load(args);
+        return "Loading...";
+    }
+
+    private static string SetTime(string args)
+    {
+        var split = args.Split(':');
+        Game.Instance.TimeManager.Data.Hour = int.Parse(split[0]);
+        Game.Instance.TimeManager.Data.Minute = int.Parse(split[1]);
+        return $"Time Set To: {Game.Instance.TimeManager.Data.Hour}:{Game.Instance.TimeManager.Data.Minute}";
+    }
+
+    private static string CompleteStructures()
+    {
+        var ids = "";
+        foreach (var build in Game.Instance.FactionController
+                                               .PlayerFaction
+                                               .AvailableTasks.OfType<Build>().ToList())
+        {
+            build.FinishStructure();
+            ids += $"{build.Blueprint.StructureName},";
+
+            Game.Instance.FactionController.PlayerFaction.AvailableTasks.Remove(build);
+        }
+        return ids.Trim(',');
+    }
+
+    private static string SetNeed(string args)
+    {
+        var parts = args.Split(' ');
+        var creature = GetCreature(parts[0]);
+        var need = creature.Needs.Find(n => n.Name.Equals(parts[1], StringComparison.OrdinalIgnoreCase));
+        var msg = $"Changed ({creature.Id}){creature.Name}'s {need.Name} from '{need.Current}' to '{parts[2]}'";
+        need.Current = int.Parse(parts[2]);
+
+        return msg;
+    }
+
+    private static string MoveCreature(string args)
+    {
+        var parts = args.Split(' ');
+        var creature = GetCreature(parts[0]);
+        var cell = Map.Instance.GetCellAtCoordinate(float.Parse(parts[1]), float.Parse(parts[2]));
+        creature.X = cell.X;
+        creature.Z = cell.Z;
+        creature.CreatureRenderer.UpdatePosition();
+
+        return $"Move {creature.Name} to {creature.Cell}";
+    }
+
+    private static CreatureData GetCreature(string nameOrId)
+    {
+        var creature = nameOrId.GetCreature();
+        if (creature == null)
+        {
+            creature = Game.Instance.IdService.CreatureIdLookup.Values.ToList().Find(c => c.Name.Equals(nameOrId, StringComparison.OrdinalIgnoreCase));
+        }
+
+        return creature;
+    }
+
     private string Burn()
     {
-        var structure = Game.Instance.IdService.StructureLookup.Values.Where(s => s.Flammable()).GetRandomItem();
+        var structure = Game.Instance.IdService.StructureIdLookup.Values.Where(s => s.Flammable()).GetRandomItem();
         structure.AddBehaviour<Wildfire>();
 
         return $"Started a fire at {structure.Cell}";

@@ -1,61 +1,72 @@
 ﻿using Assets.Creature;
 using Assets.Item;
 using Assets.Structures;
-using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class IdService
 {
     public Dictionary<string, CreatureData> CreatureIdLookup = new Dictionary<string, CreatureData>();
-    public Dictionary<IEntity, CreatureData> CreatureLookup = new Dictionary<IEntity, CreatureData>();
     public Dictionary<string, ItemData> ItemIdLookup = new Dictionary<string, ItemData>();
-    public Dictionary<IEntity, ItemData> ItemLookup = new Dictionary<IEntity, ItemData>();
     public Dictionary<string, Structure> StructureIdLookup = new Dictionary<string, Structure>();
-    public Dictionary<IEntity, Structure> StructureLookup = new Dictionary<IEntity, Structure>();
     public Dictionary<Cell, List<Structure>> StructureCellLookup = new Dictionary<Cell, List<Structure>>();
     private int _idCounter;
 
-    public void EnrollEntity(IEntity entity)
+    public void EnrollItem(ItemData item)
     {
-        if (string.IsNullOrEmpty(entity.Id))
+        if (string.IsNullOrEmpty(item.Id))
         {
-            entity.Id = GetId();
+            item.Id = GetId();
         }
         else
         {
-            var id = int.Parse(entity.Id);
+            var id = int.Parse(item.Id);
+            if (id > _idCounter)
+            {
+                _idCounter = id + 1;
+            }
+        }
+        ItemIdLookup.Add(item.Id, item);
+    }
+
+    public void EnrollCreature(CreatureData creature)
+    {
+        if (string.IsNullOrEmpty(creature.Id))
+        {
+            creature.Id = GetId();
+        }
+        else
+        {
+            var id = int.Parse(creature.Id);
+            if (id > _idCounter)
+            {
+                _idCounter = id + 1;
+            }
+        }
+        CreatureIdLookup.Add(creature.Id, creature);
+    }
+
+    public void EnrollStructure(Structure structure)
+    {
+        if (string.IsNullOrEmpty(structure.Id))
+        {
+            structure.Id = GetId();
+        }
+        else
+        {
+            var id = int.Parse(structure.Id);
             if (id > _idCounter)
             {
                 _idCounter = id + 1;
             }
         }
 
-        if (entity is Structure structure)
-        {
-            StructureLookup.Add(entity, structure);
-            StructureIdLookup.Add(entity.Id, structure);
+        StructureIdLookup.Add(structure.Id, structure);
 
-            if (!StructureCellLookup.ContainsKey(structure.Cell))
-            {
-                StructureCellLookup.Add(structure.Cell, new List<Structure>());
-            }
-            StructureCellLookup[structure.Cell].Add(structure);
-        }
-        else if (entity is CreatureData creature)
+        if (!StructureCellLookup.ContainsKey(structure.Cell))
         {
-            CreatureLookup.Add(entity, creature);
-            CreatureIdLookup.Add(entity.Id, creature);
+            StructureCellLookup.Add(structure.Cell, new List<Structure>());
         }
-        else if (entity is ItemData item)
-        {
-            ItemLookup.Add(entity, item);
-            ItemIdLookup.Add(entity.Id, item);
-        }
-        else
-        {
-            throw new NotImplementedException("Unknown entity type!");
-        }
+        StructureCellLookup[structure.Cell].Add(structure);
     }
 
     public string GetId()
@@ -81,54 +92,33 @@ public class IdService
 
     internal void Clear()
     {
-        StructureLookup.Clear();
         StructureIdLookup.Clear();
-
-        CreatureLookup.Clear();
         CreatureIdLookup.Clear();
-
-        ItemLookup.Clear();
         ItemIdLookup.Clear();
     }
 
-    internal void DestroyEntity(IEntity entity)
+    internal void RemoveStructure(Structure structure)
     {
-        if (StructureLookup.ContainsKey(entity))
+        if (StructureIdLookup.ContainsKey(structure.Id))
         {
-            Game.Instance.StructureController.DestroyStructure(entity as Structure);
-        }
-
-        if (CreatureLookup.ContainsKey(entity))
-        {
-            Game.Instance.CreatureController.DestroyCreature((entity as CreatureData).CreatureRenderer);
-        }
-
-        if (ItemLookup.ContainsKey(entity))
-        {
-            Game.Instance.ItemController.DestroyItem(entity as ItemData);
+            StructureIdLookup.Remove(structure.Id);
+            StructureCellLookup[structure.Cell].Remove(structure);
         }
     }
 
-    internal void RemoveEntity(IEntity entity)
+    internal void RemoveCreature(CreatureData creature)
     {
-        if (StructureLookup.ContainsKey(entity))
+        if (CreatureIdLookup.ContainsKey(creature.Id))
         {
-            StructureLookup.Remove(entity);
-            StructureIdLookup.Remove(entity.Id);
-
-            StructureCellLookup[entity.Cell].Remove(entity as Structure);
+            CreatureIdLookup.Remove(creature.Id);
         }
+    }
 
-        if (CreatureLookup.ContainsKey(entity))
+    internal void RemoveItem(ItemData item)
+    {
+        if (ItemIdLookup.ContainsKey(item.Id))
         {
-            CreatureLookup.Remove(entity);
-            CreatureIdLookup.Remove(entity.Id);
-        }
-
-        if (ItemLookup.ContainsKey(entity))
-        {
-            ItemLookup.Remove(entity);
-            ItemIdLookup.Remove(entity.Id);
+            ItemIdLookup.Remove(item.Id);
         }
     }
 
@@ -168,25 +158,6 @@ public static class IdExtensions
         {
             return structure;
         }
-        return null;
-    }
-
-    internal static IEntity GetEntity(this string id)
-    {
-        if (Game.Instance.IdService.IsCreature(id))
-        {
-            return GetCreature(id);
-        }
-        if (Game.Instance.IdService.IsStructure(id))
-        {
-            return GetStructure(id);
-        }
-        if (Game.Instance.IdService.IsItem(id))
-        {
-            return GetItem(id);
-        }
-
-        Debug.LogWarning("Unknown entity type!");
         return null;
     }
 }

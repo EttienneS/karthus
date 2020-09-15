@@ -29,9 +29,6 @@ public abstract class CreatureTask
 
     public bool AutoResume { get; set; }
 
-    [JsonIgnore]
-    public List<Badge> Badges { get; set; } = new List<Badge>();
-
     public Cost Cost { get; set; } = new Cost();
     public abstract string Message { get; }
     public string RequiredSkill { get; set; }
@@ -54,16 +51,6 @@ public abstract class CreatureTask
         }
     }
 
-    public void AddCellBadge(Cell cell, string badgeIcon)
-    {
-        Badges.Add(Game.Instance.VisualEffectController.AddBadge(cell, badgeIcon));
-    }
-
-    public void AddEntityBadge(IEntity badgedEntity, string badgeIcon)
-    {
-        Badges.Add(Game.Instance.VisualEffectController.AddBadge(badgedEntity, badgeIcon));
-    }
-
     public CreatureTask AddSubTask(CreatureTask subTask)
     {
         subTask.Parent = this;
@@ -75,10 +62,6 @@ public abstract class CreatureTask
 
     public void Destroy()
     {
-        foreach (var badge in Badges.Where(b => b != null))
-        {
-            badge.Destroy();
-        }
         foreach (var task in SubTasks.Where(b => b != null))
         {
             task.Destroy();
