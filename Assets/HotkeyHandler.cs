@@ -9,13 +9,13 @@ namespace Assets
         public static void HandleHotkeys()
         {
             if (Game.Instance.Typing)
-            {
+            {              
                 return;
             }
 
             if (Input.GetKeyDown("`"))
             {
-                Game.Instance.DeveloperConsole.Toggle();
+                DeveloperConsole.Instance.Show();
             }
             else if (Input.GetKeyDown("space"))
             {

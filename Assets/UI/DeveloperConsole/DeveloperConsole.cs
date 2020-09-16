@@ -4,25 +4,44 @@ using Assets.Structures.Behaviour;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class DeveloperConsole : MonoBehaviour
 {
     public Dictionary<string, Execute> Commands = new Dictionary<string, Execute>();
-    public TMP_InputField InputField;
-    public TMP_Text OutputField;
-
     internal ArgsParser Parser;
+    private static DeveloperConsole _instance;
+
+    private string _input;
+
+    private string _output;
+
+    private Vector2 _scroll = Vector2.zero;
+    private bool _showingConsole;
 
     public delegate string Execute(string args);
 
+    public static DeveloperConsole Instance
+    {
+        get
+        {
+            return _instance != null ? _instance : (_instance = FindObjectOfType<DeveloperConsole>());
+        }
+        set
+        {
+            _instance = value;
+        }
+    }
+
     public void Hide()
     {
-        gameObject.SetActive(false);
-        InputField.ActivateInputField();
         Game.Instance.Typing = false;
+        _showingConsole = false;
+    }
+
+    public bool IsActive()
+    {
+        return _showingConsole;
     }
 
     public string List(string type)
@@ -64,40 +83,48 @@ public class DeveloperConsole : MonoBehaviour
                     list += $"{zone.Key.Name}: {zone.Key.FactionName}\n";
                 }
                 break;
+
+            default:
+                list = "Provide type of list:\n-items\n-creatures\n-structures\n-factions\n-zones";
+                break;
         }
         return list;
     }
 
     public void ProcessCommand()
     {
-        Debug.Log($"Process command: {InputField.text}");
+        if (string.IsNullOrEmpty(_input))
+        {
+            Hide();
+            return;
+        }
 
-        var input = "-" + InputField.text.TrimStart(new[] { '-', '/' });
+        Debug.Log($"Process command: {_input}");
+
+        var input = "-" + _input.TrimStart(new[] { '-', '/' });
 
         if (input.Contains(" "))
         {
-            input = input.Insert(InputField.text.IndexOf(" ") + 1, ":'") + "'";
+            input = input.Insert(_input.IndexOf(" ") + 1, ":'") + "'";
         }
 
         foreach (var command in Parser.Parse(input))
         {
-            OutputField.text = Commands[command.Name].Invoke(command.Value.Trim());
+            SetOutput(Commands[command.Name].Invoke(command.Value.Trim()));
         }
-        //Hide();
     }
 
     public void Show()
     {
-        gameObject.SetActive(true);
         Game.Instance.TimeManager.Pause();
         Game.Instance.Typing = true;
 
-        EventSystem.current.SetSelectedGameObject(InputField.gameObject, null);
-        InputField.OnPointerClick(new PointerEventData(EventSystem.current));
+        _showingConsole = true;
     }
 
     public void Start()
     {
+        Commands.Add("Help", (_) => PrintHelp());
         Commands.Add("SetTime", SetTime);
         Commands.Add("Creatures", (_) => List("Creatures"));
         Commands.Add("Items", (_) => List("Items"));
@@ -105,7 +132,7 @@ public class DeveloperConsole : MonoBehaviour
         Commands.Add("Zones", (_) => List("Zones"));
         Commands.Add("Factions", (_) => List("Factions"));
         Commands.Add("Burn", (_) => Burn());
-        Commands.Add("CompleteStructures", (args) => CompleteStructures());
+        Commands.Add("CompleteStructures", (_) => CompleteStructures());
         Commands.Add("List", List);
         Commands.Add("Move", MoveCreature);
         Commands.Add("Set", SetNeed);
@@ -117,18 +144,14 @@ public class DeveloperConsole : MonoBehaviour
         }
     }
 
-    private static string Load(string args)
+    internal void OnGUI()
     {
-        SaveManager.Load(args);
-        return "Loading...";
-    }
+        if (!_showingConsole)
+        {
+            return;
+        }
 
-    private static string SetTime(string args)
-    {
-        var split = args.Split(':');
-        Game.Instance.TimeManager.Data.Hour = int.Parse(split[0]);
-        Game.Instance.TimeManager.Data.Minute = int.Parse(split[1]);
-        return $"Time Set To: {Game.Instance.TimeManager.Data.Hour}:{Game.Instance.TimeManager.Data.Minute}";
+        DrawDebugConsole();
     }
 
     private static string CompleteStructures()
@@ -146,15 +169,21 @@ public class DeveloperConsole : MonoBehaviour
         return ids.Trim(',');
     }
 
-    private static string SetNeed(string args)
+    private static CreatureData GetCreature(string nameOrId)
     {
-        var parts = args.Split(' ');
-        var creature = GetCreature(parts[0]);
-        var need = creature.Needs.Find(n => n.Name.Equals(parts[1], StringComparison.OrdinalIgnoreCase));
-        var msg = $"Changed ({creature.Id}){creature.Name}'s {need.Name} from '{need.Current}' to '{parts[2]}'";
-        need.Current = int.Parse(parts[2]);
+        var creature = nameOrId.GetCreature();
+        if (creature == null)
+        {
+            creature = Game.Instance.IdService.CreatureIdLookup.Values.ToList().Find(c => c.Name.Equals(nameOrId, StringComparison.OrdinalIgnoreCase));
+        }
 
-        return msg;
+        return creature;
+    }
+
+    private static string Load(string args)
+    {
+        SaveManager.Load(args);
+        return "Loading...";
     }
 
     private static string MoveCreature(string args)
@@ -169,15 +198,23 @@ public class DeveloperConsole : MonoBehaviour
         return $"Move {creature.Name} to {creature.Cell}";
     }
 
-    private static CreatureData GetCreature(string nameOrId)
+    private static string SetNeed(string args)
     {
-        var creature = nameOrId.GetCreature();
-        if (creature == null)
-        {
-            creature = Game.Instance.IdService.CreatureIdLookup.Values.ToList().Find(c => c.Name.Equals(nameOrId, StringComparison.OrdinalIgnoreCase));
-        }
+        var parts = args.Split(' ');
+        var creature = GetCreature(parts[0]);
+        var need = creature.Needs.Find(n => n.Name.Equals(parts[1], StringComparison.OrdinalIgnoreCase));
+        var msg = $"Changed ({creature.Id}){creature.Name}'s {need.Name} from '{need.Current}' to '{parts[2]}'";
+        need.Current = int.Parse(parts[2]);
 
-        return creature;
+        return msg;
+    }
+
+    private static string SetTime(string args)
+    {
+        var split = args.Split(':');
+        Game.Instance.TimeManager.Data.Hour = int.Parse(split[0]);
+        Game.Instance.TimeManager.Data.Minute = int.Parse(split[1]);
+        return $"Time Set To: {Game.Instance.TimeManager.Data.Hour}:{Game.Instance.TimeManager.Data.Minute}";
     }
 
     private string Burn()
@@ -188,16 +225,72 @@ public class DeveloperConsole : MonoBehaviour
         return $"Started a fire at {structure.Cell}";
     }
 
-    public void Toggle()
+    private void DrawDebugConsole()
     {
-        if (gameObject.activeInHierarchy)
+        var e = Event.current;
+        if (e.keyCode == KeyCode.Return)
+        {
+            ProcessCommand();
+        }
+        else if (e.keyCode == KeyCode.Escape)
         {
             Hide();
         }
         else
         {
-            Show();
+            var y = 0f;
+            y = DrawInputBox(y);
+
+            DrawOutputBox(y);
         }
+    }
+
+    private float DrawInputBox(float y)
+    {
+        var height = 30f;
+        GUI.Box(new Rect(0, y, Screen.width, height), "");
+        GUI.SetNextControlName("Command");
+        _input = GUI.TextField(new Rect(10f, y + 5f, Screen.width - 20f, 20), _input);
+        GUI.FocusControl("Command");
+
+        return y + height;
+    }
+
+    private void DrawOutputBox(float y)
+    {
+        if (!string.IsNullOrEmpty(_output))
+        {
+            var lines = _output.Split('\n');
+            var height = 20 * lines.Length;
+            var viewPort = new Rect(0, 0, Screen.width - 30, height);
+
+            var rect = new Rect(0, y + 5f, Screen.width, Mathf.Min(100, height));
+            GUI.Box(rect, "");
+            _scroll = GUI.BeginScrollView(rect, _scroll, viewPort);
+
+            for (var i = 0; i < lines.Length; i++)
+            {
+                var labelRect = new Rect(5, 20 * i, viewPort.width - 100, 20);
+                GUI.Label(labelRect, lines[i]);
+            }
+
+            GUI.EndScrollView();
+        }
+    }
+
+    private string PrintHelp()
+    {
+        var commandList = "Available commands:\n";
+        foreach (var command in Commands)
+        {
+            commandList += $"\t-{command.Key}\n";
+        }
+        return commandList;
+    }
+
+    private void SetOutput(string output)
+    {
+        _output = output;
     }
 
     private void Update()

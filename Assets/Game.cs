@@ -19,7 +19,6 @@ public class Game : MonoBehaviour
     public CreatureInfoPanel CreatureInfoPanelPrefab;
     public LoadPanel CurrentLoadPanel;
     public CursorController Cursor;
-    public DeveloperConsole DeveloperConsole;
     public FactionController FactionController;
     public FileController FileController;
     public IdService IdService;
@@ -260,7 +259,6 @@ public class Game : MonoBehaviour
 
             OrderSelectionController.DisableAndReset();
 
-            DeveloperConsole.gameObject.SetActive(false);
 
             _shownOnce = true;
 
