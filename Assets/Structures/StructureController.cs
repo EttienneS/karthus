@@ -85,10 +85,9 @@ namespace Assets.Structures
 
             if (type != null)
             {
-                return json.LoadJson(type) as Structure;
+                structure = json.LoadJson(type) as Structure;
             }
 
-            structure.Load();
             return structure;
         }
 
@@ -152,10 +151,9 @@ namespace Assets.Structures
             structure.Cell = cell;
             faction?.AddStructure(structure);
 
-            if (structure.SpawnRotation)
-            {
-                structure.Rotation = Random.Range(1, 360);
-            }
+            
+
+            structure.Load();
 
             return SpawnStructure(structure);
         }
@@ -211,6 +209,7 @@ namespace Assets.Structures
                     Debug.Log("Unbound structure");
                 }
 
+                structure.OnDestroy();
                 Game.Instance.IdService.RemoveStructure(structure);
                 Game.Instance.FactionController.Factions[structure.FactionName].Structures.Remove(structure);
                 Game.Instance.AddItemToDestroy(structure.Renderer.gameObject);

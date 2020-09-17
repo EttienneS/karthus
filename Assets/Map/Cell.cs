@@ -24,7 +24,17 @@ public class Cell : IEquatable<Cell>
 
     public int Z;
 
-   
+    internal Direction GetDirectionOfNeighbor(Cell cell)
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            if (Neighbors[i] != null && Neighbors[i] == cell)
+            {
+                return (Direction)i;
+            }
+        }
+        throw new KeyNotFoundException("Cell is not a neighour!");
+    }
 
     [JsonIgnore]
     public List<CreatureData> Creatures
@@ -38,12 +48,27 @@ public class Cell : IEquatable<Cell>
     [JsonIgnore]
     public float Distance { get; set; }
 
+    internal bool HasStructureValue(string v)
+    {
+        return Structures.Any(s => s.HasValue(v));
+    }
+
+    internal float GetStructureValue(string name)
+    {
+        var total = 0f;
+        foreach (var structure in Structures)
+        {
+            total += structure.GetValue(name);
+        }
+        return total;
+    }
+
     [JsonIgnore]
     public Structure Floor
     {
         get
         {
-            return Game.Instance.IdService.StructureCellLookup.ContainsKey(this) ? Game.Instance.IdService.StructureCellLookup[this].Find(s => s.IsFloor()) : null;
+            return Structures.Find(s => s.IsFloor());
         }
     }
 
@@ -86,12 +111,12 @@ public class Cell : IEquatable<Cell>
     public int SearchPriority => (int)Distance + SearchHeuristic;
 
     [JsonIgnore]
-    public Structure Structure
+    public List<Structure> Structures
     {
         get
         {
-            return Game.Instance.IdService.StructureCellLookup.ContainsKey(this) 
-                    ? Game.Instance.IdService.StructureCellLookup[this].Find(s => !s.IsFloor()) : null;
+            return Game.Instance.IdService.StructureCellLookup.ContainsKey(this)
+                    ? Game.Instance.IdService.StructureCellLookup[this] : new List<Structure>();
         }
     }
 
@@ -100,11 +125,11 @@ public class Cell : IEquatable<Cell>
     {
         get
         {
-            if (Structure == null)
+            if (Structures.Count == 0)
             {
                 return BiomeRegion.TravelCost;
             }
-            return Structure.TravelCost;
+            return Structures.Sum(s => s.TravelCost);
         }
     }
 
@@ -152,7 +177,7 @@ public class Cell : IEquatable<Cell>
             return 1;
         }
 
-        return (X < other.X ? other.X - X : X - other.X) + 
+        return (X < other.X ? other.X - X : X - other.X) +
                (Z < other.Z ? other.Z - Z : Z - other.Z);
     }
 
@@ -187,23 +212,6 @@ public class Cell : IEquatable<Cell>
         return Neighbors[(int)direction];
     }
 
-    public bool IsInterlocking(Direction direction)
-    {
-        var neighbor = Neighbors[(int)direction];
-
-        if (neighbor == null)
-        {
-            return false;
-        }
-
-        if (neighbor.Structure == null)
-        {
-            return false;
-        }
-
-        return neighbor.Structure.IsWall();
-    }
-
     public bool PathableWith(Mobility mobility)
     {
         switch (mobility)
@@ -236,14 +244,9 @@ public class Cell : IEquatable<Cell>
 
     internal void Clear()
     {
-        if (Structure != null)
+        foreach (var structure in Structures)
         {
-            Game.Instance.StructureController.DestroyStructure(Structure);
-        }
-
-        if (Floor != null)
-        {
-            Game.Instance.StructureController.DestroyStructure(Floor);
+            Game.Instance.StructureController.DestroyStructure(structure);
         }
     }
 
@@ -255,7 +258,7 @@ public class Cell : IEquatable<Cell>
 
     internal bool Empty()
     {
-        return Structure == null && Floor == null;
+        return Structures.Count == 0;
     }
 
     internal IEnumerable<CreatureData> GetEnemyCreaturesOf(string faction)
@@ -279,11 +282,6 @@ public class Cell : IEquatable<Cell>
         if (SaveManager.SaveToLoad != null)
         {
             return;
-        }
-
-        if (Structure?.Name == "Reserved")
-        {
-            Game.Instance.StructureController.DestroyStructure(Structure);
         }
 
         if (!Empty())

@@ -270,7 +270,7 @@ namespace Assets.Structures
 
                     if (cell.TravelCost > 0)
                     {
-                        var currentStructure = cell.Structure;
+                        var currentStructure = cell.Structures.FirstOrDefault();
                         if (currentStructure != null)
                         {
                             var characterStructure = GetStructure(character);

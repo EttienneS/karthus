@@ -44,14 +44,23 @@ namespace Assets.Structures
         {
         }
 
+        public virtual void OnDestroy()
+        {
+
+        }
+
         internal bool HasBehaviour<T>() where T : StructureBehaviour
         {
             return StructureBehaviours.Any(s => s is T);
         }
 
-        public void Load()
+        public virtual void Load()
         {
             Flammability = BaseFlammability;
+            if (SpawnRotation)
+            {
+                Rotation = UnityEngine.Random.Range(1, 360);
+            }
         }
 
         public Structure(string name, string mesh) : this()
@@ -195,7 +204,7 @@ namespace Assets.Structures
                 {
                     return false;
                 }
-                return cell.Structure?.Buildable != true;
+                return cell.Structures.All(s => !s.Buildable);
             }
         }
 

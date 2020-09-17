@@ -43,15 +43,15 @@ public partial class OrderSelectionController //.Designate
     private void RemoveStructureClicked()
     {
         Game.Instance.Cursor.SetSelectionPreference(SelectionPreference.Cell);
-        Game.Instance.Cursor.SetSprite(Game.Instance.SpriteStore.GetSprite(DefaultRemoveIcon), (cell) => cell.Structure != null);
+        Game.Instance.Cursor.SetSprite(Game.Instance.SpriteStore.GetSprite(DefaultRemoveIcon), (cell) => cell.Structures != null);
 
         CellClickOrder = cells =>
         {
             foreach (var cell in cells)
             {
-                if (cell.Structure != null)
+                if (cell.Structures.Count > 0)
                 {
-                    var structure = cell.Structure;
+                    var structure = cell.Structures.First();
 
                     if (Game.Instance.FactionController.PlayerFaction.AvailableTasks.OfType<RemoveStructure>().Any(t => t.StructureToRemove == structure))
                     {

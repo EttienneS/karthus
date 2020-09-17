@@ -33,7 +33,7 @@ namespace Assets.Structures.Behaviour
 
                 if (open.Count > 0)
                 {
-                    var spreadStructure = open.GetRandomItem().Structure;
+                    var spreadStructure = open.GetRandomItem().Structures.GetRandomItem();
                     var meshName = spreadStructure.Mesh;
                     spreadStructure.AddBehaviour<Wildfire>();
                 }
@@ -57,8 +57,7 @@ namespace Assets.Structures.Behaviour
         private static List<Cell> GetFlammableNeighbours(Cell cell)
         {
             return Map.Instance.GetCircle(cell, 3)
-                                   .Where(c => c.Structure != null && c.Structure.Flammable())
-                                   .OrderByDescending(c => c.Structure.Flammability)
+                                   .Where(c => c.Structures.Any(s => s.Flammable()))
                                    .ToList();
         }
 

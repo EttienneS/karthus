@@ -19,12 +19,8 @@ namespace Needs
 
         public override void Update()
         {
-            var comfort = Creature.Cell.Structure?.GetValue("Comfort");
-
-            if (comfort.HasValue && comfort != 0)
-            {
-                Current += comfort.Value;
-            }
+            var comfort = Creature.Cell.GetStructureValue("Comfort");
+            Current += comfort;
         }
 
         public override string GetDescription()

@@ -271,7 +271,7 @@ public class Map : MonoBehaviour
             newCircle.RemoveAll(c => circle.Contains(c));
             circle = newCircle;
 
-            var empty = circle.Where(c => c.Structure == null);
+            var empty = circle.Where(c => c.Structures.Count == 0);
 
             if (empty.Count() > 0)
             {
@@ -308,7 +308,7 @@ public class Map : MonoBehaviour
                      .DomainCells
                      .AddCells(Instance.GetCircle(Instance.Center, 15));
 
-        var open = Instance.GetCircle(center, 5).Where(c => c.PathableWith(Mobility.Walk) && c.Structure == null);
+        var open = Instance.GetCircle(center, 5).Where(c => c.PathableWith(Mobility.Walk));
         Game.Instance.ItemController.SpawnItem("Berries", open.GetRandomItem(), 50);
         Game.Instance.ItemController.SpawnItem("Berries", open.GetRandomItem(), 50);
         Game.Instance.ItemController.SpawnItem("Plank", open.GetRandomItem(), 50);

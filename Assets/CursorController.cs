@@ -246,10 +246,7 @@ namespace Assets
             var structures = new List<Structure>();
             foreach (var cell in cells)
             {
-                if (cell.Structure != null)
-                {
-                    structures.Add(cell.Structure);
-                }
+                structures.AddRange(cell.Structures);
             }
 
             return structures;
@@ -534,8 +531,8 @@ namespace Assets
             {
                 var structure = structures[0];
                 structures = Map.Instance.GetCircle(structure.Cell, DoubleClickRadius)
-                                         .Select(c => c.Structure)
-                                         .Where(s => s != null && s.Name == structure.Name)
+                                         .SelectMany(c => c.Structures)
+                                         .Where(s => s.Name == structure.Name)
                                          .ToList();
             }
 
