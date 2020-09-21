@@ -38,7 +38,7 @@ public class RemoveStructure : CreatureTask
         {
             if (!creature.Cell.Neighbors.Contains(StructureToRemove.Cell))
             {
-                var pathable = Map.Instance.TryGetPathableNeighbour(StructureToRemove.Cell);
+                var pathable = MapController.Instance.TryGetPathableNeighbour(StructureToRemove.Cell);
 
                 if (pathable != null)
                 {

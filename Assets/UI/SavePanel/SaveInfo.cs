@@ -24,13 +24,12 @@ public class SaveInfo : MonoBehaviour
             var tex = new Texture2D(0, 0);
             tex.LoadImage(File.ReadAllBytes(imageFile));
             Image.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height),
-                                              new Vector2(0, 0), Map.PixelsPerCell);
+                                              new Vector2(0, 0), MapController.PixelsPerCell);
         }
     }
 
     public void Select()
     {
-        Game.Instance.CurrentLoadPanel.SetSelected(_saveFile);
         This.GetComponent<Image>().color = new Color(1, 0, 0, 0.3f);
     }
 

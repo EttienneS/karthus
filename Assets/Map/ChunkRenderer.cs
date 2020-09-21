@@ -1,8 +1,6 @@
 ﻿using Assets.Helpers;
-using Assets.Sprites;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class ChunkRenderer : MonoBehaviour
@@ -48,7 +46,7 @@ public class ChunkRenderer : MonoBehaviour
             {
                 for (var x = 0; x < MeshVertexWidth; x++)
                 {
-                    var cell = Map.Instance.GetCellAtCoordinate(x + (Data.X * MeshVertexWidth), y + (Data.Z * MeshVertexWidth));
+                    var cell = MapController.Instance.GetCellAtCoordinate(x + (Data.X * MeshVertexWidth), y + (Data.Z * MeshVertexWidth));
                     if (cell != null)
                     {
                         height = cell.Y;
@@ -106,31 +104,11 @@ public class ChunkRenderer : MonoBehaviour
         }
     }
 
-    public void UpdateTexture()
-    {
-        var scale = 10;
-        var colors = new Color[MeshVertexWidth * scale, MeshVertexWidth * scale];
-        for (int y = 0; y < MeshVertexWidth * scale; y++)
-        {
-            for (int x = 0; x < MeshVertexWidth * scale; x++)
-            {
-                var cell = Map.Instance.GetCellAtCoordinate(Mathf.Floor((x + (Data.X * MeshVertexWidth)) / scale),
-                                                                 Mathf.Floor((y + (Data.Z * MeshVertexWidth)) / scale));
-                colors[x, y] = GetColor(cell);
-            }
-        }
-
-        var mats = MeshRenderer.materials;
-        mats[0].mainTexture = TextureCreator.CreateTextureFromColorMap(MeshVertexWidth * scale, MeshVertexWidth * scale, colors);
-
-        MeshRenderer.materials = mats;
-    }
-
     private void AddWaterLevel()
     {
         using (Instrumenter.Start())
         {
-            var waterSize = Map.Instance.WaterPrefab.transform.localScale.x * 10;
+            var waterSize = MapController.Instance.WaterPrefab.transform.localScale.x * 10;
             var offset = waterSize / 2;
             var waterLevel = 0 - Game.MapGenerationData.WaterLevel;
 
@@ -138,7 +116,7 @@ public class ChunkRenderer : MonoBehaviour
             {
                 for (int x = 0; x < Game.MapGenerationData.ChunkSize / waterSize; x++)
                 {
-                    var water = Instantiate(Map.Instance.WaterPrefab, transform);
+                    var water = Instantiate(MapController.Instance.WaterPrefab, transform);
                     water.transform.localPosition = new Vector3((x * waterSize) + offset, waterLevel, (y * waterSize) + offset);
                 }
             }
@@ -151,5 +129,4 @@ public class ChunkRenderer : MonoBehaviour
         mesh.name = $"Mesh {name}";
         meshCollider = gameObject.AddComponent<MeshCollider>();
     }
-
 }

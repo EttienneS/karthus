@@ -61,8 +61,8 @@ namespace Assets
         {
             SetSprite(sprite, validationFunction);
 
-            var offsetX = ((sprite.texture.width / Map.PixelsPerCell) - 1) / 2f;
-            var offsetZ = ((sprite.texture.height / Map.PixelsPerCell) - 1) / 2f;
+            var offsetX = ((sprite.texture.width / MapController.PixelsPerCell) - 1) / 2f;
+            var offsetZ = ((sprite.texture.height / MapController.PixelsPerCell) - 1) / 2f;
 
             MouseSpriteRenderer.transform.localPosition = new Vector3(offsetX, 0.1f, offsetZ);
         }
@@ -113,7 +113,7 @@ namespace Assets
 
         private static Cell GetCellForWorldPosition(Vector3? pos)
         {
-            return Map.Instance.GetCellAtCoordinate(pos.Value - new Vector3(0.5f, 0, 0.5f));
+            return MapController.Instance.GetCellAtCoordinate(pos.Value - new Vector3(0.5f, 0, 0.5f));
         }
 
         private static void InvokeCellClickMethod(List<Cell> cells)
@@ -277,11 +277,11 @@ namespace Assets
 
             var cells = new List<Cell>();
 
-            var startX = Mathf.Clamp(Mathf.Min(worldStartPoint.x, worldEndPoint.x), Map.Instance.MinX, Map.Instance.MaxX);
-            var endX = Mathf.Clamp(Mathf.Max(worldStartPoint.x, worldEndPoint.x), Map.Instance.MinX, Map.Instance.MaxX);
+            var startX = Mathf.Clamp(Mathf.Min(worldStartPoint.x, worldEndPoint.x), MapController.Instance.MinX, MapController.Instance.MaxX);
+            var endX = Mathf.Clamp(Mathf.Max(worldStartPoint.x, worldEndPoint.x), MapController.Instance.MinX, MapController.Instance.MaxX);
 
-            var startZ = Mathf.Clamp(Mathf.Min(worldStartPoint.z, worldEndPoint.z), Map.Instance.MinZ, Map.Instance.MaxZ);
-            var endZ = Mathf.Clamp(Mathf.Max(worldStartPoint.z, worldEndPoint.z), Map.Instance.MinX, Map.Instance.MaxZ);
+            var startZ = Mathf.Clamp(Mathf.Min(worldStartPoint.z, worldEndPoint.z), MapController.Instance.MinZ, MapController.Instance.MaxZ);
+            var endZ = Mathf.Clamp(Mathf.Max(worldStartPoint.z, worldEndPoint.z), MapController.Instance.MinX, MapController.Instance.MaxZ);
 
             if (startX == endX && startZ == endZ)
             {
@@ -480,7 +480,7 @@ namespace Assets
             if (creatures.Count == 1 && selectSimilar)
             {
                 var creature = creatures[0].Data;
-                creatures = Map.Instance.GetCircle(creature.Cell, DoubleClickRadius)
+                creatures = MapController.Instance.GetCircle(creature.Cell, DoubleClickRadius)
                                         .SelectMany(c => c.Creatures)
                                         .Where(c => c.BehaviourName == creature.BehaviourName)
                                         .Select(c => c.CreatureRenderer)
@@ -506,7 +506,7 @@ namespace Assets
             if (items.Count == 1 && selectSimilar)
             {
                 var item = items[0];
-                items = Map.Instance.GetCircle(item.Cell, DoubleClickRadius)
+                items = MapController.Instance.GetCircle(item.Cell, DoubleClickRadius)
                                     .SelectMany(c => c.Items)
                                     .Where(i => i.Name == item.Name)
                                     .ToList();
@@ -530,7 +530,7 @@ namespace Assets
             if (structures.Count == 1 && selectSimilar)
             {
                 var structure = structures[0];
-                structures = Map.Instance.GetCircle(structure.Cell, DoubleClickRadius)
+                structures = MapController.Instance.GetCircle(structure.Cell, DoubleClickRadius)
                                          .SelectMany(c => c.Structures)
                                          .Where(s => s.Name == structure.Name)
                                          .ToList();
@@ -573,7 +573,7 @@ namespace Assets
                     MeshRenderer cellRenderer;
                     if (!_draggedRenderers.ContainsKey(cell))
                     {
-                        cellRenderer = Game.Instance.StructureController.InstantiateNewStructureMeshRenderer(_meshName, Map.Instance.transform);
+                        cellRenderer = Game.Instance.StructureController.InstantiateNewStructureMeshRenderer(_meshName, MapController.Instance.transform);
                         cellRenderer.transform.position = new Vector3(cell.Vector.x, cell.Vector.y, cell.Vector.z);
                         _draggedRenderers.Add(cell, cellRenderer);
                     }

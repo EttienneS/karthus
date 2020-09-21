@@ -109,7 +109,7 @@ public class ItemController : MonoBehaviour
 
         IndexItem(data);
 
-        data.Cell = Map.Instance.GetCellAtCoordinate(new Vector3(data.Coords.X, 0, data.Coords.Z));
+        data.Cell = MapController.Instance.GetCellAtCoordinate(new Vector3(data.Coords.X, 0, data.Coords.Z));
         itemRenderer.UpdatePosition();
     }
 }

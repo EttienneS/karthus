@@ -397,8 +397,47 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 17666008, guid: 8d3d47b53068341448ff13732aef998e, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 8d3d47b53068341448ff13732aef998e, type: 3}
+--- !u!1 &1910422788 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 17666011, guid: 8d3d47b53068341448ff13732aef998e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1910422787}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1910422789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1910422788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99a3a332336434c4fb3a51619e6c6666, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ChunkPrefab: {fileID: 1942139927005994989, guid: 92e798fcdd174d54a9f8e2eb6ce7983c,
+    type: 3}
+  GlobalLight: {fileID: 7197091654747599497, guid: 51f8f7551b747f542986eafcecd157b5,
+    type: 3}
+  LocalNoise:
+    normalizeMode: 0
+    scale: 50
+    octaves: 6
+    persistance: 0.6
+    lacunarity: 2
+    offset: {x: 0, y: 0}
+  WaterPrefab: {fileID: 5369181534908231928, guid: 756070b2a2b3bbe4097a4735990dcc49,
+    type: 3}
+  WorldNoise:
+    normalizeMode: 0
+    scale: 50
+    octaves: 6
+    persistance: 0.6
+    lacunarity: 2
+    offset: {x: 0, y: 0}
 --- !u!114 &1922741280 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7702933895562079566, guid: 21216dc22b576ec4785cf4c518463eaa,

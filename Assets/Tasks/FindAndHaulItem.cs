@@ -45,7 +45,7 @@ public class FindAndHaulItem : CreatureTask
     {
         get
         {
-            return Map.Instance.GetCellAtCoordinate(TargetX, TargetZ);
+            return MapController.Instance.GetCellAtCoordinate(TargetX, TargetZ);
         }
     }
 

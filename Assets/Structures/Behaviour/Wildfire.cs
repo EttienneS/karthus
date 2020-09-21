@@ -56,7 +56,7 @@ namespace Assets.Structures.Behaviour
 
         private static List<Cell> GetFlammableNeighbours(Cell cell)
         {
-            return Map.Instance.GetCircle(cell, 3)
+            return MapController.Instance.GetCircle(cell, 3)
                                    .Where(c => c.Structures.Any(s => s.Flammable()))
                                    .ToList();
         }

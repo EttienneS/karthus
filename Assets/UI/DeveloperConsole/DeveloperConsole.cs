@@ -190,7 +190,7 @@ public class DeveloperConsole : MonoBehaviour
     {
         var parts = args.Split(' ');
         var creature = GetCreature(parts[0]);
-        var cell = Map.Instance.GetCellAtCoordinate(float.Parse(parts[1]), float.Parse(parts[2]));
+        var cell = MapController.Instance.GetCellAtCoordinate(float.Parse(parts[1]), float.Parse(parts[2]));
         creature.X = cell.X;
         creature.Z = cell.Z;
         creature.CreatureRenderer.UpdatePosition();

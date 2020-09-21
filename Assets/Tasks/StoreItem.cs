@@ -56,11 +56,11 @@ namespace Assets.Tasks
                 else if (_targetCellCoordinate == (0, 0))
                 {
                     _targetCellCoordinate = FindStoreCellForItem(creature, item);
-                    AddSubTask(new Move(Map.Instance.GetCellAtCoordinate(_targetCellCoordinate.x, _targetCellCoordinate.z)));
+                    AddSubTask(new Move(MapController.Instance.GetCellAtCoordinate(_targetCellCoordinate.x, _targetCellCoordinate.z)));
                 }
                 else
                 {
-                    var targetCell = Map.Instance.GetCellAtCoordinate(_targetCellCoordinate.x, _targetCellCoordinate.z);
+                    var targetCell = MapController.Instance.GetCellAtCoordinate(_targetCellCoordinate.x, _targetCellCoordinate.z);
                     if (creature.Cell == targetCell)
                     {
                         creature.DropItem(targetCell);

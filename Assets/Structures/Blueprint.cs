@@ -13,7 +13,7 @@ namespace Assets.Structures
         {
             get
             {
-                return Map.Instance.GetCellAtCoordinate(Coords.x, Coords.z);
+                return MapController.Instance.GetCellAtCoordinate(Coords.x, Coords.z);
             }
             set
             {

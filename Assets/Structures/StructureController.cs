@@ -42,7 +42,7 @@ namespace Assets.Structures
         {
             get
             {
-                StructureTypeFileMap.First();
+                _structureTypeFileMap.First();
                 return _structureDataReference;
             }
         }

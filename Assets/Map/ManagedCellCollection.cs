@@ -58,7 +58,7 @@ namespace Assets
                 foreach (var xy in _cellString.Split(new[] { ',' }, System.StringSplitOptions.RemoveEmptyEntries))
                 {
                     var split = xy.Split(':').Select(i => int.Parse(i)).ToList();
-                    _cells.Add(Map.Instance.GetCellAtCoordinate(split[0], split[1]));
+                    _cells.Add(MapController.Instance.GetCellAtCoordinate(split[0], split[1]));
                 }
             }
         }

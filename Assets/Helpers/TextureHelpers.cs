@@ -14,6 +14,6 @@ public static class TextureHelpers
 
     public static void ScaleToGridSize(this Texture2D texture, int width, int height)
     {
-        TextureScale.scale(texture, width * Map.PixelsPerCell, height * Map.PixelsPerCell);
+        TextureScale.scale(texture, width * MapController.PixelsPerCell, height * MapController.PixelsPerCell);
     }
 }

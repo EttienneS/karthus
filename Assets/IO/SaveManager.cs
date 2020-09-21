@@ -45,7 +45,7 @@ public static class SaveManager
             Rooms = Game.Instance.ZoneController.RoomZones,
             Stores = Game.Instance.ZoneController.StorageZones,
             Areas = Game.Instance.ZoneController.AreaZones,
-            Chunks = Map.Instance.Chunks.Values.Select(s => s.Data).ToList(),
+            Chunks = MapController.Instance.Chunks.Values.Select(s => s.Data).ToList(),
         };
     }
 

@@ -112,7 +112,7 @@ namespace Assets.Structures
             var texture = GetTexture();
             return Sprite.Create(texture,
                                  new Rect(0, 0, texture.width, texture.height),
-                                 new Vector2(0.5f, 0.5f), Map.PixelsPerCell);
+                                 new Vector2(0.5f, 0.5f), MapController.PixelsPerCell);
         }
 
         public string GetStructure(char character)
@@ -180,7 +180,7 @@ namespace Assets.Structures
             {
                 return this._texture;
             }
-            _texture = new Texture2D(Width * Map.PixelsPerCell, Height * Map.PixelsPerCell);
+            _texture = new Texture2D(Width * MapController.PixelsPerCell, Height * MapController.PixelsPerCell);
 
             var z = 0;
             var x = 0;
@@ -189,8 +189,8 @@ namespace Assets.Structures
             {
                 foreach (var character in line)
                 {
-                    var startX = x * Map.PixelsPerCell;
-                    var startZ = z * Map.PixelsPerCell;
+                    var startX = x * MapController.PixelsPerCell;
+                    var startZ = z * MapController.PixelsPerCell;
 
                     Texture2D sourceTexture;
                     if (character == '.')
@@ -207,9 +207,9 @@ namespace Assets.Structures
                     var constructTexture = sourceTexture.Clone();
                     constructTexture.ScaleToGridSize(1, 1);
 
-                    for (var subTexX = 0; subTexX < Map.PixelsPerCell; subTexX++)
+                    for (var subTexX = 0; subTexX < MapController.PixelsPerCell; subTexX++)
                     {
-                        for (var subTexY = 0; subTexY < Map.PixelsPerCell; subTexY++)
+                        for (var subTexY = 0; subTexY < MapController.PixelsPerCell; subTexY++)
                         {
                             var pixel = constructTexture.GetPixel(subTexX, subTexY);
                             _texture.SetPixel(startX + subTexX,
@@ -242,7 +242,7 @@ namespace Assets.Structures
                         continue;
                     }
 
-                    var cell = Map.Instance.GetCellAtCoordinate(origin.X + x, origin.Z + y);
+                    var cell = MapController.Instance.GetCellAtCoordinate(origin.X + x, origin.Z + y);
 
                     Game.Instance.StructureController.SpawnBlueprint(GetStructure(character), cell, faction);
                     x++;
@@ -266,7 +266,7 @@ namespace Assets.Structures
                         x++;
                         continue;
                     }
-                    var cell = Map.Instance.GetCellAtCoordinate(cellData.X + x, cellData.Z + z);
+                    var cell = MapController.Instance.GetCellAtCoordinate(cellData.X + x, cellData.Z + z);
 
                     if (cell.TravelCost > 0)
                     {

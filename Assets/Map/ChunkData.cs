@@ -30,7 +30,7 @@ public class Chunk
     {
         get
         {
-            return Map.Instance.Chunks[Coords];
+            return MapController.Instance.Chunks[Coords];
         }
     }
 }

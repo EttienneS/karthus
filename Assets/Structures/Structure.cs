@@ -76,7 +76,7 @@ namespace Assets.Structures
             {
                 if (_cell == null && Coords.X >= 0 && Coords.Y >= 0)
                 {
-                    _cell = Map.Instance.GetCellAtCoordinate(Coords.X, Coords.Y);
+                    _cell = MapController.Instance.GetCellAtCoordinate(Coords.X, Coords.Y);
                 }
                 return _cell;
             }

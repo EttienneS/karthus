@@ -60,7 +60,7 @@ namespace Assets.Creature
             {
                 if (_awareness == null && Cell != null)
                 {
-                    _awareness = Map.Instance.GetCircle(Cell, Perception);
+                    _awareness = MapController.Instance.GetCircle(Cell, Perception);
                 }
 
                 return _awareness;
@@ -79,7 +79,7 @@ namespace Assets.Creature
         {
             get
             {
-                return Map.Instance.GetCellAtCoordinate(X, Z);
+                return MapController.Instance.GetCellAtCoordinate(X, Z);
             }
             set
             {
@@ -842,8 +842,8 @@ namespace Assets.Creature
 
             if (CurrentPathRequest == null)
             {
-                var src = Map.Instance.GetCellAtCoordinate(X, Z);
-                var tgt = Map.Instance.GetCellAtCoordinate(TargetCoordinate.x, TargetCoordinate.z);
+                var src = MapController.Instance.GetCellAtCoordinate(X, Z);
+                var tgt = MapController.Instance.GetCellAtCoordinate(TargetCoordinate.x, TargetCoordinate.z);
 
                 if (src != tgt)
                 {
@@ -1091,7 +1091,7 @@ namespace Assets.Creature
                     {
                         // unstuck
                         Debug.LogError("Unstuck!");
-                        var c = Map.Instance.GetNearestPathableCell(Cell, Mobility, 10);
+                        var c = MapController.Instance.GetNearestPathableCell(Cell, Mobility, 10);
 
                         X = c.X;
                         Z = c.Z;

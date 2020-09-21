@@ -210,7 +210,7 @@ public class Faction
 
         if (FactionName != FactionConstants.World)
         {
-            DomainCells.AddCells(Map.Instance.GetCircle(structure.Cell, 5));
+            DomainCells.AddCells(MapController.Instance.GetCircle(structure.Cell, 5));
         }
     }
 

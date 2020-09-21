@@ -12,12 +12,9 @@ using Debug = UnityEngine.Debug;
 
 public class Game : MonoBehaviour
 {
-    internal static MapGenerationData MapGenerationData;
-
     public CameraController CameraController;
     public CreatureController CreatureController;
     public CreatureInfoPanel CreatureInfoPanelPrefab;
-    public LoadPanel CurrentLoadPanel;
     public CursorController Cursor;
     public FactionController FactionController;
     public FileController FileController;
@@ -40,7 +37,8 @@ public class Game : MonoBehaviour
     public VisualEffectController VisualEffectController;
     public ZoneController ZoneController;
     public ZoneInfoPanel ZoneInfoPanelPrefab;
-
+    internal static MapGenerationData MapGenerationData;
+    internal LoadPanel CurrentLoadPanel;
     private static Game _instance;
 
     private readonly List<GameObject> _destroyCache = new List<GameObject>();
@@ -247,7 +245,7 @@ public class Game : MonoBehaviour
 
     private void Initialize()
     {
-        Map.Instance.GenerateMap();
+        MapController.Instance.GenerateMap();
         FinalizeMap();
     }
 
@@ -258,7 +256,6 @@ public class Game : MonoBehaviour
             UIController.Show();
 
             OrderSelectionController.DisableAndReset();
-
 
             _shownOnce = true;
 
@@ -288,6 +285,7 @@ public class Game : MonoBehaviour
 
         Initialize();
     }
+
     private void Update()
     {
         OnFirstRun();
