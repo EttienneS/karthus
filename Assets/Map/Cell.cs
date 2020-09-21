@@ -278,33 +278,4 @@ public class Cell : IEquatable<Cell>
         return neighbors[Random.Range(0, neighbors.Count - 1)];
     }
 
-    internal void Populate()
-    {
-        if (SaveManager.SaveToLoad != null)
-        {
-            return;
-        }
-
-        if (!Empty())
-        {
-            return;
-        }
-
-        var content = BiomeRegion.GetContent();
-
-        if (!string.IsNullOrEmpty(content))
-        {
-            if (Game.Instance.StructureController.StructureTypeFileMap.ContainsKey(content))
-            {
-                var structure = Game.Instance.StructureController
-                                    .SpawnStructure(content,
-                                                    this,
-                                                    Game.Instance.FactionController.Factions[FactionConstants.World]);
-            }
-            else
-            {
-                Game.Instance.ItemController.SpawnItem(content, this);
-            }
-        }
-    }
 }

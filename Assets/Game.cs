@@ -188,44 +188,7 @@ public class Game : MonoBehaviour
         _currentZoneInfoPanel.Show(zone);
     }
 
-    private void FinalizeMap()
-    {
-        if (SaveManager.SaveToLoad != null)
-        {
-            TimeManager.Data = SaveManager.SaveToLoad.Time;
-            foreach (var item in SaveManager.SaveToLoad.Items)
-            {
-                ItemController.SpawnItem(item);
-            }
-
-            foreach (var faction in SaveManager.SaveToLoad.Factions)
-            {
-                FactionController.Factions.Add(faction.FactionName, faction);
-
-                foreach (var creature in faction.Creatures.ToList())
-                {
-                    CreatureController.SpawnCreature(creature, creature.Cell, faction);
-                }
-
-                foreach (var structure in faction.Structures.ToList())
-                {
-                    StructureController.SpawnStructure(structure);
-                }
-
-                foreach (var blueprint in faction.Blueprints.ToList())
-                {
-                    StructureController.SpawnBlueprint(blueprint);
-                }
-            }
-
-            SaveManager.SaveToLoad.Stores.ForEach(ZoneController.LoadStore);
-            SaveManager.SaveToLoad.Rooms.ForEach(ZoneController.LoadRoom);
-            SaveManager.SaveToLoad.Areas.ForEach(ZoneController.LoadArea);
-
-            //SaveManager.SaveToLoad.CameraData.Load(CameraController);
-            SaveManager.SaveToLoad = null;
-        }
-    }
+    
 
     private void InitFactions()
     {
@@ -247,7 +210,7 @@ public class Game : MonoBehaviour
     private void Initialize()
     {
         MapController.Instance.GenerateMap();
-        FinalizeMap();
+       
     }
 
     private void OnFirstRun()

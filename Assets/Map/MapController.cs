@@ -148,7 +148,44 @@ namespace Assets.Map
                 {
                     Instance.MakeChunk(chunk);
                 }
+                PopulateMapFromSave();
             }
+        }
+
+        private void PopulateMapFromSave()
+        {
+            Game.Instance.TimeManager.Data = SaveManager.SaveToLoad.Time;
+            foreach (var item in SaveManager.SaveToLoad.Items)
+            {
+                Game.Instance.ItemController.SpawnItem(item);
+            }
+
+            foreach (var faction in SaveManager.SaveToLoad.Factions)
+            {
+                Game.Instance.FactionController.Factions.Add(faction.FactionName, faction);
+
+                foreach (var creature in faction.Creatures.ToList())
+                {
+                    Game.Instance.CreatureController.SpawnCreature(creature, creature.Cell, faction);
+                }
+
+                foreach (var structure in faction.Structures.ToList())
+                {
+                    Game.Instance.StructureController.SpawnStructure(structure);
+                }
+
+                foreach (var blueprint in faction.Blueprints.ToList())
+                {
+                    Game.Instance.StructureController.SpawnBlueprint(blueprint);
+                }
+            }
+
+            SaveManager.SaveToLoad.Stores.ForEach(Game.Instance.ZoneController.LoadStore);
+            SaveManager.SaveToLoad.Rooms.ForEach(Game.Instance.ZoneController.LoadRoom);
+            SaveManager.SaveToLoad.Areas.ForEach(Game.Instance.ZoneController.LoadArea);
+
+            //SaveManager.SaveToLoad.CameraData.Load(CameraController);
+            SaveManager.SaveToLoad = null;
         }
 
         public Biome GetBiome(int x, int y)
@@ -364,41 +401,50 @@ namespace Assets.Map
         {
             using (Instrumenter.Start())
             {
-                Instance.Cells = new List<Cell>();
-                for (var y = 0; y < 0 + size; y++)
+                InstantiateCells(size);
+                LinkCellsToNeighbors(size);
+            }
+        }
+
+        private static void LinkCellsToNeighbors(int size)
+        {
+            // link cell to the others in the chunk
+            for (var z = 0; z < 0 + size; z++)
+            {
+                for (var x = 0; x < 0 + size; x++)
                 {
-                    for (var x = 0; x < 0 + size; x++)
+                    var cell = Instance.CellLookup[(x, z)];
+                    if (x > 0)
                     {
-                        Instance.Cells.Add(CreateCell(x, y));
-                    }
-                }
-
-                // link cell to the others in the chunk
-                for (var z = 0; z < 0 + size; z++)
-                {
-                    for (var x = 0; x < 0 + size; x++)
-                    {
-                        var cell = Instance.CellLookup[(x, z)];
-                        if (x > 0)
-                        {
-                            cell.SetNeighbor(Direction.W, Instance.CellLookup[(x - 1, z)]);
-
-                            if (z > 0)
-                            {
-                                cell.SetNeighbor(Direction.SW, Instance.CellLookup[(x - 1, z - 1)]);
-
-                                if (x < size - 1)
-                                {
-                                    cell.SetNeighbor(Direction.SE, Instance.CellLookup[(x + 1, z - 1)]);
-                                }
-                            }
-                        }
+                        cell.SetNeighbor(Direction.W, Instance.CellLookup[(x - 1, z)]);
 
                         if (z > 0)
                         {
-                            cell.SetNeighbor(Direction.S, Instance.CellLookup[(x, z - 1)]);
+                            cell.SetNeighbor(Direction.SW, Instance.CellLookup[(x - 1, z - 1)]);
+
+                            if (x < size - 1)
+                            {
+                                cell.SetNeighbor(Direction.SE, Instance.CellLookup[(x + 1, z - 1)]);
+                            }
                         }
                     }
+
+                    if (z > 0)
+                    {
+                        cell.SetNeighbor(Direction.S, Instance.CellLookup[(x, z - 1)]);
+                    }
+                }
+            }
+        }
+
+        private void InstantiateCells(int size)
+        {
+            Instance.Cells = new List<Cell>();
+            for (var y = 0; y < 0 + size; y++)
+            {
+                for (var x = 0; x < 0 + size; x++)
+                {
+                    Instance.Cells.Add(CreateCell(x, y));
                 }
             }
         }
@@ -424,11 +470,33 @@ namespace Assets.Map
                 {
                     foreach (var cell in Instance.Cells)
                     {
-                        cell.Populate();
+                        Populate(cell);
                     }
 
                     MakeFactionBootStrap(Game.Instance.FactionController.PlayerFaction);
                     SpawnCreatures();
+                }
+            }
+        }
+
+        internal void Populate(Cell cell)
+        {
+            if (!cell.Empty())
+            {
+                return;
+            }
+
+            var content = cell.BiomeRegion.GetContent();
+
+            if (!string.IsNullOrEmpty(content))
+            {
+                if (Game.Instance.StructureController.StructureTypeFileMap.ContainsKey(content))
+                {
+                    Game.Instance.StructureController.SpawnStructure(content, cell, Game.Instance.FactionController.Factions[FactionConstants.World]);
+                }
+                else
+                {
+                    Game.Instance.ItemController.SpawnItem(content, cell);
                 }
             }
         }
