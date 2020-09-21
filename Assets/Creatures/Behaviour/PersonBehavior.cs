@@ -1,4 +1,6 @@
-﻿namespace Assets.Creature.Behaviour
+﻿using Assets.Map;
+
+namespace Assets.Creature.Behaviour
 {
     public class PersonBehavior : IBehaviour
     {

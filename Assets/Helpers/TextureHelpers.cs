@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Map;
+using UnityEngine;
 
 public static class TextureHelpers
 {

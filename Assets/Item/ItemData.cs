@@ -1,4 +1,5 @@
 ﻿using Assets.Creature;
+using Assets.Map;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

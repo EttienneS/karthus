@@ -1,5 +1,6 @@
 ﻿using Assets;
 using Assets.Item;
+using Assets.Map;
 using Assets.Models;
 using Assets.Structures;
 using Camera;

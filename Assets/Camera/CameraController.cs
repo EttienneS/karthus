@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Map;
+using System;
 using UnityEngine;
 
 namespace Camera

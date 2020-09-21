@@ -1,6 +1,7 @@
 ﻿using Needs;
 using Assets.Creature;
 using Assets.Structures;
+using Assets.Map;
 
 public class Wash : CreatureTask
 {

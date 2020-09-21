@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Assets.Map;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 public class Chunk

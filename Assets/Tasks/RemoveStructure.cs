@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Assets.Creature;
+using Assets.Map;
 using Assets.Structures;
 
 public class RemoveStructure : CreatureTask

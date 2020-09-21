@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using Assets.Map;
+using System.Linq;
 using Random = UnityEngine.Random;
 
 namespace Assets.Creature.Behaviour

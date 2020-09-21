@@ -1,5 +1,6 @@
 ﻿using Assets.Creature.Behaviour;
 using Assets.Item;
+using Assets.Map;
 using Needs;
 using Newtonsoft.Json;
 using System;

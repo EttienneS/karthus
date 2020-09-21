@@ -1,5 +1,6 @@
 ﻿using Arg;
 using Assets.Creature;
+using Assets.Map;
 using Assets.Structures.Behaviour;
 using System;
 using System.Collections.Generic;

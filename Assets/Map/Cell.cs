@@ -1,6 +1,7 @@
 ﻿using Assets.Creature;
 using Assets.Helpers;
 using Assets.Item;
+using Assets.Map;
 using Assets.Structures;
 using Newtonsoft.Json;
 using System;

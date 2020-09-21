@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using UnityEngine;
 using Assets.Creature;
+using Assets.Map;
 
 public class Idle : CreatureTask
 {

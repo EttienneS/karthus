@@ -1,4 +1,5 @@
 ﻿using Assets.Creature;
+using Assets.Map;
 using Assets.Structures.Behaviour;
 using Newtonsoft.Json;
 using System;

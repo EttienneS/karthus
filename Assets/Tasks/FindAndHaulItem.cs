@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Assets.Creature;
+using Assets.Map;
 
 public class FindAndHaulItem : CreatureTask
 {
