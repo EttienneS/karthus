@@ -83,7 +83,7 @@ public class Game : MonoBehaviour
         {
             lock (_destroyCache)
             {
-                while (_destroyCache.Any())
+                while (_destroyCache.Count > 0)
                 {
                     var item = _destroyCache[0];
                     _destroyCache.RemoveAt(0);
@@ -188,8 +188,6 @@ public class Game : MonoBehaviour
         _currentZoneInfoPanel.Show(zone);
     }
 
-    
-
     private void InitFactions()
     {
         foreach (var factionName in new[]
@@ -210,7 +208,6 @@ public class Game : MonoBehaviour
     private void Initialize()
     {
         MapController.Instance.GenerateMap();
-       
     }
 
     private void OnFirstRun()

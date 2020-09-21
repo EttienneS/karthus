@@ -1,5 +1,4 @@
 ﻿using Assets.Creature;
-using Assets.Helpers;
 using Assets.Item;
 using Assets.Map;
 using Assets.Structures;
@@ -25,18 +24,6 @@ public class Cell : IEquatable<Cell>
 
     public int Z;
 
-    internal Direction GetDirectionOfNeighbor(Cell cell)
-    {
-        for (int i = 0; i < 8; i++)
-        {
-            if (Neighbors[i] != null && Neighbors[i] == cell)
-            {
-                return (Direction)i;
-            }
-        }
-        throw new KeyNotFoundException("Cell is not a neighour!");
-    }
-
     [JsonIgnore]
     public List<CreatureData> Creatures
     {
@@ -48,21 +35,6 @@ public class Cell : IEquatable<Cell>
 
     [JsonIgnore]
     public float Distance { get; set; }
-
-    internal bool HasStructureValue(string v)
-    {
-        return Structures.Any(s => s.HasValue(v));
-    }
-
-    internal float GetStructureValue(string name)
-    {
-        var total = 0f;
-        foreach (var structure in Structures)
-        {
-            total += structure.GetValue(name);
-        }
-        return total;
-    }
 
     [JsonIgnore]
     public Structure Floor
@@ -80,11 +52,6 @@ public class Cell : IEquatable<Cell>
         {
             return Game.Instance.IdService.ItemIdLookup.Values.Where(i => i.Cell == this);
         }
-    }
-
-    internal bool ContainsItems()
-    {
-        return Items.Any();
     }
 
     [JsonIgnore]
@@ -251,6 +218,11 @@ public class Cell : IEquatable<Cell>
         }
     }
 
+    internal bool ContainsItems()
+    {
+        return Items.Any();
+    }
+
     internal Structure CreateStructure(string structureName, string faction = FactionConstants.World)
     {
         var structure = Game.Instance.StructureController.SpawnStructure(structureName, this, Game.Instance.FactionController.Factions[faction]);
@@ -278,4 +250,18 @@ public class Cell : IEquatable<Cell>
         return neighbors[Random.Range(0, neighbors.Count - 1)];
     }
 
+    internal float GetStructureValue(string name)
+    {
+        var total = 0f;
+        foreach (var structure in Structures)
+        {
+            total += structure.GetValue(name);
+        }
+        return total;
+    }
+
+    internal bool HasStructureValue(string v)
+    {
+        return Structures.Any(s => s.HasValue(v));
+    }
 }
