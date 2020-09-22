@@ -1,9 +1,10 @@
 ﻿using Assets.Creature;
 using Assets.Item;
+using Assets.ServiceLocator;
 using Assets.Structures;
 using System.Collections.Generic;
 
-public class IdService
+public class IdService : IGameService
 {
     public Dictionary<string, CreatureData> CreatureIdLookup = new Dictionary<string, CreatureData>();
     public Dictionary<string, ItemData> ItemIdLookup = new Dictionary<string, ItemData>();
@@ -129,6 +130,11 @@ public class IdService
             return Game.Instance.IdService.StructureCellLookup[cell];
         }
         return new List<Structure>();
+    }
+
+    public void Initialize()
+    {
+        
     }
 }
 

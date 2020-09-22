@@ -1,10 +1,11 @@
 ﻿using Assets.Map;
+using Assets.ServiceLocator;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class ZoneController : MonoBehaviour
+public class ZoneController : MonoBehaviour, IGameService
 {
     public ZoneLabel ZoneLabelPrefab;
     public Tilemap ZoneTilemap;
@@ -20,11 +21,6 @@ public class ZoneController : MonoBehaviour
     internal List<RoomZone> RoomZones { get; set; } = new List<RoomZone>();
     internal List<StorageZone> StorageZones { get; set; } = new List<StorageZone>();
     internal Dictionary<ZoneBase, ZoneLabel> Zones { get; set; } = new Dictionary<ZoneBase, ZoneLabel>();
-
-    public void Awake()
-    {
-        Sprite = Game.Instance.SpriteStore.GetSprite(ZoneSprite);
-    }
 
     public AreaZone CreateArea(string faction, params Cell[] cells)
     {
@@ -193,5 +189,10 @@ public class ZoneController : MonoBehaviour
     {
         StorageZones.Add(storage);
         Zones.Add(storage, DrawZone(storage));
+    }
+
+    public void Initialize()
+    {
+        Sprite = Game.Instance.SpriteStore.GetSprite(ZoneSprite);
     }
 }

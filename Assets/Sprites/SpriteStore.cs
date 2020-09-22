@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Assets.ServiceLocator;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class SpriteStore : MonoBehaviour
+public class SpriteStore : MonoBehaviour, IGameService
 {
     private Dictionary<string, Sprite> _iconSprites;
 
@@ -26,6 +27,10 @@ public class SpriteStore : MonoBehaviour
 
             return _iconSprites;
         }
+    }
+
+    public void Initialize()
+    {
     }
 
     internal bool FacingUp(Direction facing)

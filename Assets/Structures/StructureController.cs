@@ -1,15 +1,15 @@
 ﻿using Assets.Helpers;
+using Assets.ServiceLocator;
 using Structures.Work;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
-using Random = UnityEngine.Random;
 
 namespace Assets.Structures
 {
-    public class StructureController : MonoBehaviour
+    public class StructureController : MonoBehaviour, IGameService
     {
         public GameObject RoofContainer;
 
@@ -101,6 +101,7 @@ namespace Assets.Structures
             var roof = Instantiate(Game.Instance.MeshRendererFactory.GetStructureMesh("Roof"), RoofContainer.transform);
             roof.transform.position = new Vector3(cell.X, cell.Y, cell.Z) + new Vector3(0.5f, 2.05f, 0.5f);
         }
+
         public MeshRenderer GetMeshForStructure(string name)
         {
             return GetMeshForStructure(_structureDataReference[name]);
@@ -150,8 +151,6 @@ namespace Assets.Structures
             var structure = CreateNewStructure(name);
             structure.Cell = cell;
             faction?.AddStructure(structure);
-
-            
 
             structure.Load();
 
@@ -220,6 +219,7 @@ namespace Assets.Structures
         {
             return _structureDataReference[structureName].Cost;
         }
+
         private void IndexStructure(Structure structure)
         {
             Game.Instance.IdService.EnrollStructure(structure);
@@ -237,6 +237,10 @@ namespace Assets.Structures
                 }
                 _lastUpdate = 0;
             }
+        }
+
+        public void Initialize()
+        {
         }
     }
 }

@@ -1,15 +1,16 @@
-﻿using System;
+﻿using Assets.ServiceLocator;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Models
 {
-    public class MeshRendererFactory : MonoBehaviour
+    public class MeshRendererFactory : MonoBehaviour, IGameService
     {
         private static Dictionary<string, MeshRenderer> _itemMeshLookup;
         private static Dictionary<string, MeshRenderer> _structureMeshLookup;
 
-        public void Awake()
+        public void Initialize()
         {
             if (_structureMeshLookup == null)
             {
@@ -78,5 +79,7 @@ namespace Assets.Models
 
             return meshes;
         }
+
+       
     }
 }

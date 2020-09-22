@@ -1,6 +1,7 @@
 ﻿using Assets.Helpers;
 using Assets.Item;
 using Assets.Map;
+using Assets.ServiceLocator;
 using Assets.Structures;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using UnityEngine.EventSystems;
 
 namespace Assets
 {
-    public class CursorController : MonoBehaviour
+    public class CursorController : MonoBehaviour, IGameService
     {
         public SpriteRenderer MouseSpriteRenderer;
         public RectTransform SelectSquareImage;
@@ -100,10 +101,7 @@ namespace Assets
             Game.Instance.Cursor.SetMultiSprite(construct.GetSprite(), (cell) => construct.ValidateStartPos(cell));
         }
 
-        internal void Start()
-        {
-            HideSelectionRectangle();
-        }
+       
 
         internal void Update()
         {
@@ -627,6 +625,11 @@ namespace Assets
                     MouseSpriteRenderer.color = ColorConstants.WhiteAccent;
                 }
             }
+        }
+
+        public void Initialize()
+        {
+            HideSelectionRectangle();
         }
     }
 }

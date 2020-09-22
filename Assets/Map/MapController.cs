@@ -1,4 +1,5 @@
 ﻿using Assets.Helpers;
+using Assets.ServiceLocator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using UnityEngine;
 
 namespace Assets.Map
 {
-    public class MapController : MonoBehaviour
+    public class MapController : MonoBehaviour, IGameService
     {
         private static MapController _instance;
 
@@ -499,6 +500,10 @@ namespace Assets.Map
                     Game.Instance.ItemController.SpawnItem(content, cell);
                 }
             }
+        }
+
+        public void Initialize()
+        {
         }
     }
 }

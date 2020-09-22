@@ -1,11 +1,12 @@
 ﻿using Assets.Creature.Behaviour;
+using Assets.ServiceLocator;
 using Assets.Structures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class FileController : MonoBehaviour
+public class FileController : MonoBehaviour, IGameService
 {
     public Dictionary<string, TextAsset> ItemIdLookup;
     public Material[] Materials;
@@ -127,5 +128,9 @@ public class FileController : MonoBehaviour
         {
             return materials.Split(',').Select(GetMaterial).ToArray();
         }
+    }
+
+    public void Initialize()
+    {
     }
 }

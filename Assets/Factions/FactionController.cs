@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Assets.ServiceLocator;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class FactionController : MonoBehaviour
+public class FactionController : MonoBehaviour, IGameService
 {
     internal Dictionary<string, Faction> Factions = new Dictionary<string, Faction>();
 
@@ -27,6 +28,10 @@ public class FactionController : MonoBehaviour
         {
             return Factions[FactionConstants.World];
         }
+    }
+
+    public void Initialize()
+    {
     }
 
     public void Update()

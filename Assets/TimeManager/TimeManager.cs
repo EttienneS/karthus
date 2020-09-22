@@ -1,4 +1,5 @@
 ﻿using Assets.Map;
+using Assets.ServiceLocator;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -12,7 +13,7 @@ public enum TimeStep
     Hyper = 50
 }
 
-public class TimeManager : MonoBehaviour
+public class TimeManager : MonoBehaviour, IGameService
 {
     public List<(int min, int max, Color start, Color end)> ColorZones;
 
@@ -44,27 +45,6 @@ public class TimeManager : MonoBehaviour
         {
             return _timeStep == TimeStep.Paused;
         }
-    }
-
-    public void Awake()
-    {
-        SetTimeStep(TimeStep.Normal);
-
-        var light = Color.white;
-        var dark = ColorConstants.DarkBlueAccent;
-        ColorZones = new List<(int min, int max, Color start, Color end)>
-        {
-            (0,4, dark, dark),
-            (4,7, dark, light),
-            (7,17, light, light),
-            (17,22, light, dark),
-            (22,24, dark, dark)
-        };
-    }
-
-    private void Start()
-    {
-        UpdateGlobalLight();
     }
 
     public TimeStep GetTimeStep()
@@ -147,5 +127,23 @@ public class TimeManager : MonoBehaviour
         {
             MapController.Instance.GlobalLight.transform.localEulerAngles = new Vector3(Mathf.Lerp(MinLightAngle, MaxLightAngle, ((Data.Hour * 60) + Data.Minute) / 1440f), LightAngleY, LightAngleZ);
         }
+    }
+
+    public void Initialize()
+    {
+        SetTimeStep(TimeStep.Normal);
+
+        var light = Color.white;
+        var dark = ColorConstants.DarkBlueAccent;
+        ColorZones = new List<(int min, int max, Color start, Color end)>
+        {
+            (0,4, dark, dark),
+            (4,7, dark, light),
+            (7,17, light, light),
+            (17,22, light, dark),
+            (22,24, dark, dark)
+        };
+
+        UpdateGlobalLight();
     }
 }

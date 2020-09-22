@@ -1,10 +1,10 @@
 ﻿using Assets.Map;
-using System;
+using Assets.ServiceLocator;
 using UnityEngine;
 
 namespace Camera
 {
-    public class CameraController : MonoBehaviour
+    public class CameraController : MonoBehaviour, IGameService
     {
         private Transform _followTransform;
 
@@ -29,13 +29,6 @@ namespace Camera
 
         public Vector3 rotateStartPosition;
         public Vector3 rotateCurrentPosition;
-
-        public void Start()
-        {
-            newPosition = transform.position;
-            newRotation = transform.rotation;
-            newZoom = Camera.transform.localPosition;
-        }
 
         internal float GetPerpendicularRotation()
         {
@@ -211,6 +204,13 @@ namespace Camera
                                              (Game.MapGenerationData.ChunkSize * Game.MapGenerationData.Size) / 2);
 
             newPosition = transform.position;
+        }
+
+        public void Initialize()
+        {
+            newPosition = transform.position;
+            newRotation = transform.rotation;
+            newZoom = Camera.transform.localPosition;
         }
     }
 }

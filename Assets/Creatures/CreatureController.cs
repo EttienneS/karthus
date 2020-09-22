@@ -5,8 +5,9 @@ using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using Assets.Creature.Behaviour;
+using Assets.ServiceLocator;
 
-public class CreatureController : MonoBehaviour
+public class CreatureController : MonoBehaviour, IGameService
 {
     //public CreatureRenderer CreaturePrefab;
     public SpriteRenderer HightlightPrefab;
@@ -124,5 +125,9 @@ public class CreatureController : MonoBehaviour
         faction.AddCreature(creatureData);
 
         return creature;
+    }
+
+    public void Initialize()
+    {
     }
 }

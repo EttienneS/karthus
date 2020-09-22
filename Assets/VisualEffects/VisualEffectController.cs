@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Assets.ServiceLocator;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using TMPro;
@@ -11,7 +12,7 @@ public enum EffectType
     Light = 1, Sprite = 2, Particle = 4
 }
 
-public class VisualEffectController : MonoBehaviour
+public class VisualEffectController : MonoBehaviour, IGameService
 {
     public VisualEffect EffectPrefab;
     public TextMeshPro TextMeshPrefab;
@@ -25,6 +26,10 @@ public class VisualEffectController : MonoBehaviour
         };
 
         return effect;
+    }
+
+    public void Initialize()
+    {
     }
 
     public VisualEffect Load(VisualEffectData data)
@@ -47,18 +52,6 @@ public class VisualEffectController : MonoBehaviour
         effect.Data.SetProperty("Y", vector.y.ToString());
         effect.Data.SetProperty("Z", vector.z.ToString());
         return effect;
-    }
-
-    internal void CreateFireLight(Transform parent, Color color, float range, float intensity, float height)
-    {
-        var lightObject = new GameObject("Fire Light");
-        lightObject.transform.SetParent(parent);
-        lightObject.transform.localPosition = new Vector3(0, height, 0);
-
-        var light = lightObject.AddComponent<Light>();
-        light.color = color;
-        light.range = range;
-        light.intensity = intensity;
     }
 
     public VisualEffect SpawnLightEffect(Vector3 vector, Color color, float radius, float intensity, float lifeSpan)
@@ -102,9 +95,15 @@ public class VisualEffectController : MonoBehaviour
         return Instantiate(TextMeshPrefab, gameObject.transform);
     }
 
-    public void Update()
+    internal void CreateFireLight(Transform parent, Color color, float range, float intensity, float height)
     {
-       
-    }
+        var lightObject = new GameObject("Fire Light");
+        lightObject.transform.SetParent(parent);
+        lightObject.transform.localPosition = new Vector3(0, height, 0);
 
+        var light = lightObject.AddComponent<Light>();
+        light.color = color;
+        light.range = range;
+        light.intensity = intensity;
+    }
 }
