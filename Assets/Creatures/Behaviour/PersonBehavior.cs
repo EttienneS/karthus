@@ -1,4 +1,5 @@
 ﻿using Assets.Map;
+using Assets.ServiceLocator;
 
 namespace Assets.Creature.Behaviour
 {
@@ -14,7 +15,7 @@ namespace Assets.Creature.Behaviour
             else if (creature.Cell.Creatures.Count > 1)
             {
                 // split up
-                return new Move(MapController.Instance.TryGetPathableNeighbour(creature.Cell));
+                return new Move(Loc.GetMap().TryGetPathableNeighbour(creature.Cell));
             }
 
             return null;

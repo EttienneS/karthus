@@ -1,5 +1,6 @@
 ﻿using Needs;
 using Assets.Creature;
+using Assets.ServiceLocator;
 using Assets.Structures;
 using Assets.Map;
 
@@ -43,7 +44,7 @@ public class Wash : CreatureTask
         if (SubTasksComplete(creature))
         {
             var need = creature.GetNeed<Hygiene>();
-            creature.Face(MapController.Instance.GetCellAtCoordinate(WashCoords.X, WashCoords.Z));
+            creature.Face(Loc.GetMap().GetCellAtCoordinate(WashCoords.X, WashCoords.Z));
             need.CurrentChangeRate = RecoveryRate;
 
             if (need.Current > 99f)

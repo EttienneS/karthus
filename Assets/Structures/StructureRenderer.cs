@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.ServiceLocator;
+using UnityEngine;
 
 namespace Assets.Structures
 {
@@ -25,7 +26,7 @@ namespace Assets.Structures
 
         public void Update()
         {
-            if (!Game.Instance.Paused)
+            if (!Loc.GetGameController().Paused)
             {
                 Data.Update(Time.deltaTime);
             }

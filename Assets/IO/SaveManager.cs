@@ -1,4 +1,5 @@
 ﻿using Assets.Map;
+using Assets.ServiceLocator;
 using Newtonsoft.Json;
 using System;
 using System.IO;
@@ -22,7 +23,7 @@ public static class SaveManager
 
     public static void Load(string saveFile)
     {
-        Game.Instance.TimeManager.Pause();
+        Loc.GetTimeManager().Pause();
 
         if (string.IsNullOrEmpty(saveFile))
         {
@@ -39,20 +40,20 @@ public static class SaveManager
         return new Save
         {
             MapGenerationData = Game.MapGenerationData,
-            Factions = Game.Instance.FactionController.Factions.Values.ToList(),
-            Time = Game.Instance.TimeManager.Data,
-            Items = Game.Instance.IdService.ItemIdLookup.Values.ToList(),
-            CameraData = new CameraData(Game.Instance.CameraController),
-            Rooms = Game.Instance.ZoneController.RoomZones,
-            Stores = Game.Instance.ZoneController.StorageZones,
-            Areas = Game.Instance.ZoneController.AreaZones,
-            Chunks = MapController.Instance.Chunks.Values.Select(s => s.Data).ToList(),
+            Factions = Loc.GetFactionController().Factions.Values.ToList(),
+            Time = Loc.GetTimeManager().Data,
+            Items = Loc.GetIdService().ItemIdLookup.Values.ToList(),
+            CameraData = new CameraData(Loc.GetCamera()),
+            Rooms = Loc.GetZoneController().RoomZones,
+            Stores = Loc.GetZoneController().StorageZones,
+            Areas = Loc.GetZoneController().AreaZones,
+            Chunks = Loc.GetMap().Chunks.Values.Select(s => s.Data).ToList(),
         };
     }
 
     public static void Restart(Save save = null)
     {
-        Game.Instance = null;
+        Loc.Reset();
         SaveToLoad = save;
         SceneManager.LoadScene(1, LoadSceneMode.Single);
     }

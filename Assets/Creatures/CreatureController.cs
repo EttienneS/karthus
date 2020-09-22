@@ -22,7 +22,7 @@ public class CreatureController : MonoBehaviour, IGameService
             if (_beastiary == null)
             {
                 _beastiary = new Dictionary<string, CreatureData>();
-                foreach (var creatureFile in Game.Instance.FileController.CreatureFiles)
+                foreach (var creatureFile in Loc.GetFileController().CreatureFiles)
                 {
                     try
                     {
@@ -41,7 +41,7 @@ public class CreatureController : MonoBehaviour, IGameService
 
     public CreatureRenderer GetCreatureAtPoint(Vector2 point)
     {
-        foreach (var creature in Game.Instance.IdService.CreatureIdLookup.Values)
+        foreach (var creature in Loc.GetIdService().CreatureIdLookup.Values)
         {
             var rect = new Rect(creature.CreatureRenderer.transform.position.x - 0.5f, creature.CreatureRenderer.transform.position.y - 0.5f, 1f, 1f);
             if (rect.Contains(point))
@@ -61,9 +61,9 @@ public class CreatureController : MonoBehaviour, IGameService
             if (creature.Data.Task != null)
                 creature.Data.AbandonTask();
 
-            Game.Instance.FactionController.Factions[creature.Data.FactionName].Creatures.Remove(creature.Data);
-            Game.Instance.IdService.RemoveCreature(creature.Data);
-            Game.Instance.AddItemToDestroy(creature.gameObject);
+            Loc.GetFactionController().Factions[creature.Data.FactionName].Creatures.Remove(creature.Data);
+            Loc.GetIdService().RemoveCreature(creature.Data);
+            Loc.GetGameController().AddItemToDestroy(creature.gameObject);
         }
     }
 
@@ -102,7 +102,7 @@ public class CreatureController : MonoBehaviour, IGameService
         creature.Data = creatureData;
         creature.Data.CreatureRenderer = creature;
 
-        Game.Instance.IdService.EnrollCreature(creature.Data);
+        Loc.GetIdService().EnrollCreature(creature.Data);
         creature.name = $"{creature.Data.Name} ({creature.Data.Id})";
 
         if (creatureData.BehaviourName == "PersonBehavior")

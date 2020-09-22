@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.ServiceLocator;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Assets.UI.TaskPanel
@@ -17,16 +18,16 @@ namespace Assets.UI.TaskPanel
         {
             if (_task is Build build)
             {
-                Game.Instance.StructureController.DestroyBlueprint(build.Blueprint);
+                Loc.GetStructureController().DestroyBlueprint(build.Blueprint);
             }
 
-            if (Game.Instance.FactionController.PlayerFaction.AssignedTasks.ContainsKey(_task))
+            if (Loc.GetFactionController().PlayerFaction.AssignedTasks.ContainsKey(_task))
             {
-                Game.Instance.FactionController.PlayerFaction.AssignedTasks[_task].CancelTask();
+                Loc.GetFactionController().PlayerFaction.AssignedTasks[_task].CancelTask();
             }
             else
             {
-                Game.Instance.FactionController.PlayerFaction.AvailableTasks.Remove(_task);
+                Loc.GetFactionController().PlayerFaction.AvailableTasks.Remove(_task);
             }
             _task.Destroy();
         }
@@ -38,24 +39,24 @@ namespace Assets.UI.TaskPanel
 
         public void MoveUp()
         {
-            if (Game.Instance.FactionController.PlayerFaction.AvailableTasks.Contains(_task))
+            if (Loc.GetFactionController().PlayerFaction.AvailableTasks.Contains(_task))
             {
-                Game.Instance.FactionController.PlayerFaction.AvailableTasks.Remove(_task);
-                Game.Instance.FactionController.PlayerFaction.AvailableTasks.Insert(0, _task);
+                Loc.GetFactionController().PlayerFaction.AvailableTasks.Remove(_task);
+                Loc.GetFactionController().PlayerFaction.AvailableTasks.Insert(0, _task);
 
-                Game.Instance.UIController.ReloadTaskPanel();
+                Loc.GetGameController().UIController.ReloadTaskPanel();
             }
         }
 
         public void Suspend()
         {
-            if (Game.Instance.FactionController.PlayerFaction.AvailableTasks.Contains(_task))
+            if (Loc.GetFactionController().PlayerFaction.AvailableTasks.Contains(_task))
             {
                 _task.Suspend(false);
-                Game.Instance.FactionController.PlayerFaction.AvailableTasks.Remove(_task);
-                Game.Instance.FactionController.PlayerFaction.AvailableTasks.Add(_task);
+                Loc.GetFactionController().PlayerFaction.AvailableTasks.Remove(_task);
+                Loc.GetFactionController().PlayerFaction.AvailableTasks.Add(_task);
 
-                Game.Instance.UIController.ReloadTaskPanel();
+                Loc.GetGameController().UIController.ReloadTaskPanel();
             }
         }
 
@@ -63,9 +64,9 @@ namespace Assets.UI.TaskPanel
         {
             Title.text = _task.Message;
 
-            if (Game.Instance.FactionController.PlayerFaction.AssignedTasks.ContainsKey(_task))
+            if (Loc.GetFactionController().PlayerFaction.AssignedTasks.ContainsKey(_task))
             {
-                CreatureIcon.Creature = Game.Instance.FactionController.PlayerFaction.AssignedTasks[_task];
+                CreatureIcon.Creature = Loc.GetFactionController().PlayerFaction.AssignedTasks[_task];
                 NowButton.enabled = false;
                 NowButton.image.color = ColorConstants.GreyAccent;
                 SuspendButton.enabled = false;

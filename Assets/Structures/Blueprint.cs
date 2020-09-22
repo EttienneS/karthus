@@ -1,4 +1,5 @@
 ﻿using Assets.Map;
+using Assets.ServiceLocator;
 using Newtonsoft.Json;
 using Structures;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace Assets.Structures
         {
             get
             {
-                return MapController.Instance.GetCellAtCoordinate(Coords.x, Coords.z);
+                return Loc.GetMap().GetCellAtCoordinate(Coords.x, Coords.z);
             }
             set
             {
@@ -44,7 +45,7 @@ namespace Assets.Structures
         {
             get
             {
-                return Game.Instance.FactionController.Factions[FactionName];
+                return Loc.GetFactionController().Factions[FactionName];
             }
         }
 
@@ -58,10 +59,10 @@ namespace Assets.Structures
         public Blueprint(string structureName, Cell cell, Faction faction)
         {
             StructureName = structureName;
-            Cost = Game.Instance.StructureController.GetStructureCost(structureName);
+            Cost = Loc.GetStructureController().GetStructureCost(structureName);
             Cell = cell;
             FactionName = faction.FactionName;
-            ID = Game.Instance.IdService.GetId();
+            ID = Loc.GetIdService().GetId();
         }
     }
 }

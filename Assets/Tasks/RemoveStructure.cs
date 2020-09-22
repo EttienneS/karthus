@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Assets.Creature;
 using Assets.Map;
+using Assets.ServiceLocator;
 using Assets.Structures;
 
 public class RemoveStructure : CreatureTask
@@ -39,7 +40,7 @@ public class RemoveStructure : CreatureTask
         {
             if (!creature.Cell.Neighbors.Contains(StructureToRemove.Cell))
             {
-                var pathable = MapController.Instance.TryGetPathableNeighbour(StructureToRemove.Cell);
+                var pathable = Loc.GetMap().TryGetPathableNeighbour(StructureToRemove.Cell);
 
                 if (pathable != null)
                 {
@@ -62,12 +63,12 @@ public class RemoveStructure : CreatureTask
 
             foreach (var item in StructureToRemove.Cost.Items)
             {
-                var spawnedItem = Game.Instance.ItemController.SpawnItem(item.Key, StructureToRemove.Cell);
+                var spawnedItem = Loc.GetItemController().SpawnItem(item.Key, StructureToRemove.Cell);
                 spawnedItem.Amount = item.Value;
                 spawnedItem.FactionName = creature.FactionName;
             }
 
-            Game.Instance.StructureController.DestroyStructure(StructureToRemove);
+            Loc.GetStructureController().DestroyStructure(StructureToRemove);
             StructureToRemove = null;
             return true;
         }

@@ -64,7 +64,7 @@ public class ZoneController : MonoBehaviour, IGameService
     {
         foreach (var cell in cells)
         {
-            var current = Game.Instance.ZoneController.GetZoneForCell(cell);
+            var current = Loc.GetZoneController().GetZoneForCell(cell);
             if (current != null)
             {
                 current.ZoneCells.RemoveCell(cell);
@@ -118,16 +118,16 @@ public class ZoneController : MonoBehaviour, IGameService
 
     private ZoneLabel DrawZone(ZoneBase newZone)
     {
-        var sprite = Game.Instance.ZoneController.ZoneSprite;
+        var sprite = Loc.GetZoneController().ZoneSprite;
         var room = false;
         if (newZone is RoomZone)
         {
-            sprite = Game.Instance.ZoneController.RoomSprite;
+            sprite = Loc.GetZoneController().RoomSprite;
             room = true;
         }
         else if (newZone is StorageZone)
         {
-            sprite = Game.Instance.ZoneController.StorageSprite;
+            sprite = Loc.GetZoneController().StorageSprite;
         }
 
         foreach (var cell in newZone.ZoneCells.GetCells())
@@ -135,7 +135,7 @@ public class ZoneController : MonoBehaviour, IGameService
             SetZoneCellTile(newZone, sprite, cell);
             if (room)
             {
-                Game.Instance.StructureController.CreateRoof(cell);
+                Loc.GetStructureController().CreateRoof(cell);
             }
         }
 
@@ -153,7 +153,7 @@ public class ZoneController : MonoBehaviour, IGameService
 
     private void MoveZoneLabel(ZoneBase zone, ZoneLabel label)
     {
-        var (bottomLeft, bottomRight, topLeft, topRight) = MapController.Instance.GetCorners(zone.ZoneCells.GetCells());
+        var (bottomLeft, bottomRight, topLeft, topRight) = Loc.GetMap().GetCorners(zone.ZoneCells.GetCells());
         label.transform.localPosition = new Vector3((bottomLeft.X + bottomRight.X + topLeft.X + topRight.X) / 4f,
                                                     (bottomLeft.Z + bottomRight.Z + topLeft.Z + topRight.Z) / 4f, 0);
         label.transform.localPosition += new Vector3(0.5f, 0.5f);
@@ -162,7 +162,7 @@ public class ZoneController : MonoBehaviour, IGameService
     private void SetZoneCellTile(ZoneBase newZone, string sprite, Cell cell)
     {
         var tile = ScriptableObject.CreateInstance<Tile>();
-        tile.sprite = Game.Instance.SpriteStore.GetSprite(sprite);
+        tile.sprite = Loc.GetSpriteStore().GetSprite(sprite);
         tile.color = newZone.ColorString.GetColorFromHex();
 
         ZoneTilemap.SetTile(new Vector3Int(cell.X, cell.Z, 0), tile);
@@ -193,6 +193,6 @@ public class ZoneController : MonoBehaviour, IGameService
 
     public void Initialize()
     {
-        Sprite = Game.Instance.SpriteStore.GetSprite(ZoneSprite);
+        Sprite = Loc.GetSpriteStore().GetSprite(ZoneSprite);
     }
 }

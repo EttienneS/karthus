@@ -1,4 +1,6 @@
-﻿namespace Structures.Work.Orders
+﻿using Assets.ServiceLocator;
+
+namespace Structures.Work.Orders
 {
     public class Dig : WorkOrderBase
     {
@@ -13,7 +15,7 @@
             {
                 return;
             }
-            Game.Instance.ItemController.SpawnItem(Option.Name, Structure.Cell, 1);
+            Loc.GetItemController().SpawnItem(Option.Name, Structure.Cell, 1);
         }
     }
 }

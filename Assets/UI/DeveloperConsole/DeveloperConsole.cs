@@ -1,6 +1,6 @@
 ﻿using Arg;
 using Assets.Creature;
-using Assets.Map;
+using Assets.ServiceLocator;
 using Assets.Structures.Behaviour;
 using System;
 using System.Collections.Generic;
@@ -36,7 +36,7 @@ public class DeveloperConsole : MonoBehaviour
 
     public void Hide()
     {
-        Game.Instance.Typing = false;
+        Loc.GetGameController().Typing = false;
         _showingConsole = false;
     }
 
@@ -51,35 +51,35 @@ public class DeveloperConsole : MonoBehaviour
         switch (type.ToLower())
         {
             case "items":
-                foreach (var item in Game.Instance.IdService.ItemIdLookup)
+                foreach (var item in Loc.GetIdService().ItemIdLookup)
                 {
                     list += $"{item.Key}: {item.Value.Name}\n";
                 }
                 break;
 
             case "creatures":
-                foreach (var creature in Game.Instance.IdService.CreatureIdLookup)
+                foreach (var creature in Loc.GetIdService().CreatureIdLookup)
                 {
                     list += $"{creature.Key}: {creature.Value.Name}\n";
                 }
                 break;
 
             case "structures":
-                foreach (var structure in Game.Instance.IdService.StructureIdLookup)
+                foreach (var structure in Loc.GetIdService().StructureIdLookup)
                 {
                     list += $"{structure.Key}: {structure.Value.Name}\n";
                 }
                 break;
 
             case "factions":
-                foreach (var faction in Game.Instance.FactionController.Factions)
+                foreach (var faction in Loc.GetFactionController().Factions)
                 {
                     list += $"{faction.Key}\n";
                 }
                 break;
 
             case "zones":
-                foreach (var zone in Game.Instance.ZoneController.Zones)
+                foreach (var zone in Loc.GetZoneController().Zones)
                 {
                     list += $"{zone.Key.Name}: {zone.Key.FactionName}\n";
                 }
@@ -117,8 +117,8 @@ public class DeveloperConsole : MonoBehaviour
 
     public void Show()
     {
-        Game.Instance.TimeManager.Pause();
-        Game.Instance.Typing = true;
+        Loc.GetTimeManager().Pause();
+        Loc.GetGameController().Typing = true;
 
         _showingConsole = true;
     }
@@ -158,14 +158,14 @@ public class DeveloperConsole : MonoBehaviour
     private static string CompleteStructures()
     {
         var ids = "";
-        foreach (var build in Game.Instance.FactionController
+        foreach (var build in Loc.GetFactionController()
                                                .PlayerFaction
                                                .AvailableTasks.OfType<Build>().ToList())
         {
             build.FinishStructure();
             ids += $"{build.Blueprint.StructureName},";
 
-            Game.Instance.FactionController.PlayerFaction.AvailableTasks.Remove(build);
+            Loc.GetFactionController().PlayerFaction.AvailableTasks.Remove(build);
         }
         return ids.Trim(',');
     }
@@ -175,7 +175,7 @@ public class DeveloperConsole : MonoBehaviour
         var creature = nameOrId.GetCreature();
         if (creature == null)
         {
-            creature = Game.Instance.IdService.CreatureIdLookup.Values.ToList().Find(c => c.Name.Equals(nameOrId, StringComparison.OrdinalIgnoreCase));
+            creature = Loc.GetIdService().CreatureIdLookup.Values.ToList().Find(c => c.Name.Equals(nameOrId, StringComparison.OrdinalIgnoreCase));
         }
 
         return creature;
@@ -191,7 +191,7 @@ public class DeveloperConsole : MonoBehaviour
     {
         var parts = args.Split(' ');
         var creature = GetCreature(parts[0]);
-        var cell = MapController.Instance.GetCellAtCoordinate(float.Parse(parts[1]), float.Parse(parts[2]));
+        var cell = Loc.GetMap().GetCellAtCoordinate(float.Parse(parts[1]), float.Parse(parts[2]));
         creature.X = cell.X;
         creature.Z = cell.Z;
         creature.CreatureRenderer.UpdatePosition();
@@ -213,14 +213,14 @@ public class DeveloperConsole : MonoBehaviour
     private static string SetTime(string args)
     {
         var split = args.Split(':');
-        Game.Instance.TimeManager.Data.Hour = int.Parse(split[0]);
-        Game.Instance.TimeManager.Data.Minute = int.Parse(split[1]);
-        return $"Time Set To: {Game.Instance.TimeManager.Data.Hour}:{Game.Instance.TimeManager.Data.Minute}";
+        Loc.GetTimeManager().Data.Hour = int.Parse(split[0]);
+        Loc.GetTimeManager().Data.Minute = int.Parse(split[1]);
+        return $"Time Set To: {Loc.GetTimeManager().Data.Hour}:{Loc.GetTimeManager().Data.Minute}";
     }
 
     private string Burn()
     {
-        var structure = Game.Instance.IdService.StructureIdLookup.Values.Where(s => s.Flammable()).GetRandomItem();
+        var structure = Loc.GetIdService().StructureIdLookup.Values.Where(s => s.Flammable()).GetRandomItem();
         structure.AddBehaviour<Wildfire>();
 
         return $"Started a fire at {structure.Cell}";

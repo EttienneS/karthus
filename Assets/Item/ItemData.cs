@@ -1,5 +1,6 @@
 ﻿using Assets.Creature;
 using Assets.Map;
+using Assets.ServiceLocator;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,7 @@ namespace Assets.Item
         {
             get
             {
-                return MapController.Instance.GetCellAtCoordinate(Coords.X, Coords.Z);
+                return Loc.GetMap().GetCellAtCoordinate(Coords.X, Coords.Z);
             }
             set
             {
@@ -57,7 +58,7 @@ namespace Assets.Item
 
         public bool IsStored()
         {
-            var storageZone = Game.Instance.ZoneController.GetZoneForCell(Cell) as StorageZone;
+            var storageZone = Loc.GetZoneController().GetZoneForCell(Cell) as StorageZone;
             if (storageZone != null)
             {
                 return storageZone.Filter.Allows(this);
@@ -140,7 +141,7 @@ namespace Assets.Item
         internal void ShowOutline()
         {
             HideOutline();
-            _outline = Game.Instance.VisualEffectController
+            _outline = Loc.GetVisualEffectController()
                            .SpawnSpriteEffect(Vector, "CellOutline", float.MaxValue);
             _outline.Regular();
         }
@@ -148,7 +149,7 @@ namespace Assets.Item
         internal ItemData Split(int amount)
         {
             Amount -= amount;
-            return Game.Instance.ItemController.SpawnItem(Name, Cell, amount, false);
+            return Loc.GetItemController().SpawnItem(Name, Cell, amount, false);
         }
     }
 }

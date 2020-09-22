@@ -1,9 +1,8 @@
 ﻿using Assets;
 using Assets.Item;
-using Assets.Map;
 using Assets.Models;
+using Assets.ServiceLocator;
 using Assets.Structures;
-using Camera;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,16 +10,9 @@ using UI;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
-public class Game : MonoBehaviour
+public class Game : MonoBehaviour, IGameService
 {
-    public CameraController CameraController;
-    public CreatureController CreatureController;
     public CreatureInfoPanel CreatureInfoPanelPrefab;
-    public CursorController Cursor;
-    public FactionController FactionController;
-    public FileController FileController;
-    public IdService IdService;
-    public ItemController ItemController;
     public ItemInfoPanel ItemInfoPanelPrefab;
     public LoadPanel LoadPanelPrefab;
     public MainMenuController MainMenuController;
@@ -28,19 +20,13 @@ public class Game : MonoBehaviour
     public OrderInfoPanel OrderInfoPanel;
     public OrderSelectionController OrderSelectionController;
     public OrderTrayController OrderTrayController;
-    public SpriteStore SpriteStore;
-    public StructureController StructureController;
     public StructureInfoPanel StructureInfoPanelPrefab;
-    public TimeManager TimeManager;
     public Tooltip TooltipPrefab;
     public GameObject UI;
     public UIController UIController;
-    public VisualEffectController VisualEffectController;
-    public ZoneController ZoneController;
     public ZoneInfoPanel ZoneInfoPanelPrefab;
     internal static MapGenerationData MapGenerationData;
     internal LoadPanel CurrentLoadPanel;
-    private static Game _instance;
 
     private readonly List<GameObject> _destroyCache = new List<GameObject>();
     private CreatureInfoPanel _currentCreatureInfoPanel;
@@ -50,18 +36,6 @@ public class Game : MonoBehaviour
     private ZoneInfoPanel _currentZoneInfoPanel;
     private DateTime? _lastAutoSave = null;
     private bool _shownOnce;
-
-    public static Game Instance
-    {
-        get
-        {
-            return _instance != null ? _instance : (_instance = FindObjectOfType<Game>());
-        }
-        set
-        {
-            _instance = value;
-        }
-    }
 
     public int MaxSize => MapGenerationData.Size * MapGenerationData.ChunkSize;
 
@@ -201,13 +175,8 @@ public class Game : MonoBehaviour
             {
                 FactionName = factionName
             };
-            FactionController.Factions.Add(factionName, faction);
+            Loc.GetFactionController().Factions.Add(factionName, faction);
         }
-    }
-
-    private void Initialize()
-    {
-        MapController.Instance.GenerateMap();
     }
 
     private void OnFirstRun()
@@ -220,31 +189,8 @@ public class Game : MonoBehaviour
 
             _shownOnce = true;
 
-            CameraController.MoveToWorldCenter();
-
             MainMenuController.Toggle();
         }
-    }
-
-    private void Start()
-    {
-        UIController.Hide();
-
-        if (SaveManager.SaveToLoad != null)
-        {
-            MapGenerationData = SaveManager.SaveToLoad.MapGenerationData;
-        }
-        else
-        {
-            if (MapGenerationData == null)
-            {
-                MapGenerationData = new MapGenerationData(NameHelper.GetRandomName() + " " + NameHelper.GetRandomName());
-            }
-            InitFactions();
-        }
-        IdService = new IdService();
-
-        Initialize();
     }
 
     private void Update()
@@ -272,5 +218,24 @@ public class Game : MonoBehaviour
 
         DestroyItemsInCache();
     }
-}
 
+    public void Initialize()
+    {
+        UIController.Hide();
+
+        if (SaveManager.SaveToLoad != null)
+        {
+            MapGenerationData = SaveManager.SaveToLoad.MapGenerationData;
+        }
+        else
+        {
+            if (MapGenerationData == null)
+            {
+                MapGenerationData = new MapGenerationData(NameHelper.GetRandomName() + " " + NameHelper.GetRandomName());
+            }
+            InitFactions();
+        }
+
+        Loc.GetMap().GenerateMap();
+    }
+}

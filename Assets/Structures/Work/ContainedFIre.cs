@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.ServiceLocator;
+using UnityEngine;
 
 namespace Structures.Work
 {
@@ -19,10 +20,10 @@ namespace Structures.Work
 
         internal static MeshRenderer CreateFlameMeshWithLight(float range, float intensity, Color color, Transform parent)
         {
-            var mesh = Game.Instance.MeshRendererFactory.CreateFlameMesh(parent);
+            var mesh = Loc.GetGameController().MeshRendererFactory.CreateFlameMesh(parent);
             mesh.transform.localPosition += new Vector3(0, -0.2f, 0);
 
-            Game.Instance.VisualEffectController.CreateFireLight(mesh.transform, color, range, intensity, 1f);
+            Loc.GetVisualEffectController().CreateFireLight(mesh.transform, color, range, intensity, 1f);
 
             return mesh;
         }

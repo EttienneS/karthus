@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Assets.Creature;
+using Assets.ServiceLocator;
 
 public class CreatureIcon : MonoBehaviour
 {
@@ -15,15 +16,15 @@ public class CreatureIcon : MonoBehaviour
     {
         if (Creature != null)
         {
-            Game.Instance.CameraController.ViewPoint(Creature.Vector);
-            Game.Instance.ShowCreaturePanel(new List<CreatureRenderer> { Creature.CreatureRenderer });
+            Loc.GetCamera().ViewPoint(Creature.Vector);
+            Loc.GetGameController().ShowCreaturePanel(new List<CreatureRenderer> { Creature.CreatureRenderer });
         }
     }
 
     public void Start()
     {
-        Image.sprite = Game.Instance.SpriteStore.GetSprite("Blank");
-        Clothes.sprite = Game.Instance.SpriteStore.GetSprite("Blank");
+        Image.sprite = Loc.GetSpriteStore().GetSprite("Blank");
+        Clothes.sprite = Loc.GetSpriteStore().GetSprite("Blank");
         Text.text = "__";
     }
 

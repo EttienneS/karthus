@@ -1,4 +1,5 @@
 ﻿using Assets.Item;
+using Assets.ServiceLocator;
 using Assets.Tasks;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace UI
             {
                 // todo: a check can be added here to not add double storage tasks for the same item to the
                 // task queue but it seems like it would probably be overkill at this point
-                Game.Instance.FactionController.PlayerFaction.AddTask(new StoreItem(item));
+                Loc.GetFactionController().PlayerFaction.AddTask(new StoreItem(item));
             }
         }
 

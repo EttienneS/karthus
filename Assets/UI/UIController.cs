@@ -1,4 +1,5 @@
-﻿using Assets.UI;
+﻿using Assets.ServiceLocator;
+using Assets.UI;
 using Assets.UI.TaskPanel;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,7 +15,7 @@ public class UIController : MonoBehaviour
     {
         if (_currentTaskPanel == null)
         {
-            _currentTaskPanel = Instantiate(TaskPanelPrefab, Game.Instance.UI.transform);
+            _currentTaskPanel = Instantiate(TaskPanelPrefab, Loc.GetGameController().UI.transform);
         }
         else
         {

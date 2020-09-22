@@ -6,31 +6,19 @@ using UnityEngine;
 
 public class SpriteStore : MonoBehaviour, IGameService
 {
-    private Dictionary<string, Sprite> _iconSprites;
-
-    internal Dictionary<string, Sprite> IconSprites
-    {
-        get
-        {
-            if (_iconSprites == null)
-            {
-                _iconSprites = new Dictionary<string, Sprite>();
-
-                var sprites = Resources.LoadAll<Sprite>("Sprites/Icons").ToList();
-                sprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Gui"));
-
-                foreach (var sprite in sprites)
-                {
-                    _iconSprites.Add(sprite.name, sprite);
-                }
-            }
-
-            return _iconSprites;
-        }
-    }
+    internal Dictionary<string, Sprite> IconSprites { get; set; }
 
     public void Initialize()
     {
+        IconSprites = new Dictionary<string, Sprite>();
+
+        var sprites = Resources.LoadAll<Sprite>("Sprites/Icons").ToList();
+        sprites.AddRange(Resources.LoadAll<Sprite>("Sprites/Gui"));
+
+        foreach (var sprite in sprites)
+        {
+            IconSprites.Add(sprite.name, sprite);
+        }
     }
 
     internal bool FacingUp(Direction facing)

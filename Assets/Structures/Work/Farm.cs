@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Assets.ServiceLocator;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Structures.Work
@@ -84,7 +85,7 @@ namespace Structures.Work
 
         internal void SpawnYield()
         {
-            Game.Instance.ItemController.SpawnItem(PlantName, Cell, (int)Quality);
+            Loc.GetItemController().SpawnItem(PlantName, Cell, (int)Quality);
         }
 
         private void DestroyPlantMesh()
@@ -105,7 +106,7 @@ namespace Structures.Work
         private void InstantiateNewPlantMesh()
         {
             var meshName = PlantName + "_" + (_lastGrowthIndex + 1);
-            var mesh = Game.Instance.MeshRendererFactory.GetItemMesh(meshName);
+            var mesh = Loc.GetGameController().MeshRendererFactory.GetItemMesh(meshName);
             _plantMesh = Renderer.InstantiateSubMesh(mesh);
         }
 

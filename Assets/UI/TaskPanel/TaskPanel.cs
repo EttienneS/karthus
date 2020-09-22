@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Assets.ServiceLocator;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -13,8 +14,8 @@ namespace Assets.UI.TaskPanel
 
         private void Update()
         {
-            var tasks = Game.Instance.FactionController.PlayerFaction.AssignedTasks.Keys.ToList();
-            tasks.AddRange(Game.Instance.FactionController.PlayerFaction.AvailableTasks);
+            var tasks = Loc.GetFactionController().PlayerFaction.AssignedTasks.Keys.ToList();
+            tasks.AddRange(Loc.GetFactionController().PlayerFaction.AvailableTasks);
 
             foreach (var task in tasks)
             {

@@ -1,4 +1,4 @@
-﻿using Assets.Map;
+﻿using Assets.ServiceLocator;
 using System.Linq;
 using Random = UnityEngine.Random;
 
@@ -15,12 +15,12 @@ namespace Assets.Creature.Behaviour
 
             if (enemies.Any())
             {
-                var target = MapController.Instance.GetCellAttRadian(enemies.GetRandomItem().Cell, 10, Random.Range(1, 360));
+                var target = Loc.GetMap().GetCellAttRadian(enemies.GetRandomItem().Cell, 10, Random.Range(1, 360));
                 return new Move(target);
             }
             else if (herd.Any())
             {
-                return new Move(MapController.Instance.GetCircle(herd.GetRandomItem().Cell, 3).GetRandomItem());
+                return new Move(Loc.GetMap().GetCircle(herd.GetRandomItem().Cell, 3).GetRandomItem());
             }
 
             return null;

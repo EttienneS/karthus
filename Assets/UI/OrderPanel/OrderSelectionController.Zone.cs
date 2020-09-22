@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using Assets;
+using Assets.ServiceLocator;
+using System.Linq;
 
 public partial class OrderSelectionController //.Zone
 {
@@ -9,45 +11,45 @@ public partial class OrderSelectionController //.Zone
     public void AddAreaClicked()
     {
         ShowAreaInfo();
-        SetCursorAndSpriteForZone(Game.Instance.ZoneController.ZoneSprite);
+        SetCursorAndSpriteForZone(Loc.GetZoneController().ZoneSprite);
 
         CellClickOrder = cells =>
         {
-            var newZone = Game.Instance.ZoneController.CreateArea(FactionConstants.Player, cells.Where(c => CanAddCellToZone(c)).ToArray());
-            Game.Instance.ShowZonePanel(newZone);
+            var newZone = Loc.GetZoneController().CreateArea(FactionConstants.Player, cells.Where(c => CanAddCellToZone(c)).ToArray());
+            Loc.GetGameController().ShowZonePanel(newZone);
         };
     }
 
     public void AddRoomClicked()
     {
         ShowRoomInfo();
-        SetCursorAndSpriteForZone(Game.Instance.ZoneController.RoomSprite);
+        SetCursorAndSpriteForZone(Loc.GetZoneController().RoomSprite);
 
         CellClickOrder = cells =>
         {
-            var newZone = Game.Instance.ZoneController.CreateRoom(FactionConstants.Player, cells.Where(c => CanAddCellToZone(c)).ToArray());
-            Game.Instance.ShowZonePanel(newZone);
+            var newZone = Loc.GetZoneController().CreateRoom(FactionConstants.Player, cells.Where(c => CanAddCellToZone(c)).ToArray());
+            Loc.GetGameController().ShowZonePanel(newZone);
         };
     }
 
     public void AddStoreClicked()
     {
         ShowStorageInfo();
-        SetCursorAndSpriteForZone(Game.Instance.ZoneController.StorageSprite);
+        SetCursorAndSpriteForZone(Loc.GetZoneController().StorageSprite);
 
         CellClickOrder = cells =>
         {
-            var newZone = Game.Instance.ZoneController.CreateStore(FactionConstants.Player, cells.Where(c => CanAddCellToZone(c)).ToArray());
-            Game.Instance.ShowZonePanel(newZone);
+            var newZone = Loc.GetZoneController().CreateStore(FactionConstants.Player, cells.Where(c => CanAddCellToZone(c)).ToArray());
+            Loc.GetGameController().ShowZonePanel(newZone);
         };
     }
 
     public void DeleteZoneClicked()
     {
         ShowDeleteInfo();
-        SetCursorAndSpriteForZone(Game.Instance.ZoneController.RemoveSprite);
+        SetCursorAndSpriteForZone(Loc.GetZoneController().RemoveSprite);
 
-        CellClickOrder = cells => Game.Instance.ZoneController.ClearZonesFromCells(cells);
+        CellClickOrder = cells => Loc.GetZoneController().ClearZonesFromCells(cells);
     }
 
     public bool CanAddCellToZone(Cell cell)
@@ -57,32 +59,32 @@ public partial class OrderSelectionController //.Zone
 
     public void ShowDeleteInfo()
     {
-        Game.Instance.OrderInfoPanel.Show("Define Area", "Select cells to delete Zones from.");
+        Loc.GetGameController().OrderInfoPanel.Show("Define Area", "Select cells to delete Zones from.");
     }
 
     public void ShowAreaInfo()
     {
-        Game.Instance.OrderInfoPanel.Show("Define Area", "Select a location to place the Area.  Can be used to limit access to locations or designate areas for certain uses.");
+        Loc.GetGameController().OrderInfoPanel.Show("Define Area", "Select a location to place the Area.  Can be used to limit access to locations or designate areas for certain uses.");
     }
 
     public void ShowRoomInfo()
     {
-        Game.Instance.OrderInfoPanel.Show("Define Room", "Select a location to place the Room, must be enclosed by walls.");
+        Loc.GetGameController().OrderInfoPanel.Show("Define Room", "Select a location to place the Room, must be enclosed by walls.");
     }
 
     public void ShowStorageInfo()
     {
-        Game.Instance.OrderInfoPanel.Show("Define Storage", "Select a location to place the store.  Can be used to designate an area for storage of certain items.");
+        Loc.GetGameController().OrderInfoPanel.Show("Define Storage", "Select a location to place the store.  Can be used to designate an area for storage of certain items.");
     }
 
     public void ShowZoneInfo()
     {
-        Game.Instance.OrderInfoPanel.Show("Define Room", "Select a location to place the Room, must be enclosed by walls.");
+        Loc.GetGameController().OrderInfoPanel.Show("Define Room", "Select a location to place the Room, must be enclosed by walls.");
     }
 
     public void ZoneTypeClicked()
     {
-        if (Game.Instance.OrderTrayController.gameObject.activeInHierarchy)
+        if (Loc.GetGameController().OrderTrayController.gameObject.activeInHierarchy)
         {
             DisableAndReset();
         }
@@ -99,7 +101,7 @@ public partial class OrderSelectionController //.Zone
 
     private void SetCursorAndSpriteForZone(string sprite)
     {
-        Game.Instance.Cursor.SetSprite(Game.Instance.SpriteStore.GetSprite(sprite), CanAddCellToZone);
-        Game.Instance.Cursor.SetSelectionPreference(SelectionPreference.Cell);
+        Loc.Current.Get<CursorController>().SetSprite(Loc.GetSpriteStore().GetSprite(sprite), CanAddCellToZone);
+        Loc.Current.Get<CursorController>().SetSelectionPreference(SelectionPreference.Cell);
     }
 }

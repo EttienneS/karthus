@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using Assets;
+using Assets.ServiceLocator;
+using System.Linq;
 
 public partial class OrderSelectionController //.Designate
 {
@@ -11,7 +13,7 @@ public partial class OrderSelectionController //.Designate
 
     public void DesignateTypeClicked()
     {
-        if (Game.Instance.OrderTrayController.gameObject.activeInHierarchy)
+        if (Loc.GetGameController().OrderTrayController.gameObject.activeInHierarchy)
         {
             DisableAndReset();
         }
@@ -20,30 +22,30 @@ public partial class OrderSelectionController //.Designate
             EnableAndClear();
 
             CreateOrderButton(MoveClicked,
-                              () => Game.Instance.OrderInfoPanel.Show("Move to Cell", "Place a move order, a creature will take the order and move to the cell."),
+                              () => Loc.GetGameController().OrderInfoPanel.Show("Move to Cell", "Place a move order, a creature will take the order and move to the cell."),
                               MoveIcon);
             CreateOrderButton(RemoveStructureClicked,
-                              () => Game.Instance.OrderInfoPanel.Show("Remove structures", "Designate structures to be removed."),
+                              () => Loc.GetGameController().OrderInfoPanel.Show("Remove structures", "Designate structures to be removed."),
                               DefaultRemoveIcon);
         }
     }
 
     private void MoveClicked()
     {
-        Game.Instance.Cursor.SetSelectionPreference(SelectionPreference.Cell);
-        Game.Instance.Cursor.SetSprite(Game.Instance.SpriteStore.GetSprite(MoveIcon), (cell) => cell.TravelCost > 0);
+        Loc.Current.Get<CursorController>().SetSelectionPreference(SelectionPreference.Cell);
+        Loc.Current.Get<CursorController>().SetSprite(Loc.GetSpriteStore().GetSprite(MoveIcon), (cell) => cell.TravelCost > 0);
 
         CellClickOrder = cells =>
         {
             var cell = cells[0];
-            Game.Instance.FactionController.PlayerFaction.AddTask(new Move(cell));
+            Loc.GetFactionController().PlayerFaction.AddTask(new Move(cell));
         };
     }
 
     private void RemoveStructureClicked()
     {
-        Game.Instance.Cursor.SetSelectionPreference(SelectionPreference.Cell);
-        Game.Instance.Cursor.SetSprite(Game.Instance.SpriteStore.GetSprite(DefaultRemoveIcon), (cell) => cell.Structures != null);
+        Loc.Current.Get<CursorController>().SetSelectionPreference(SelectionPreference.Cell);
+        Loc.Current.Get<CursorController>().SetSprite(Loc.GetSpriteStore().GetSprite(DefaultRemoveIcon), (cell) => cell.Structures != null);
 
         CellClickOrder = cells =>
         {
@@ -53,11 +55,11 @@ public partial class OrderSelectionController //.Designate
                 {
                     var structure = cell.Structures.First();
 
-                    if (Game.Instance.FactionController.PlayerFaction.AvailableTasks.OfType<RemoveStructure>().Any(t => t.StructureToRemove == structure))
+                    if (Loc.GetFactionController().PlayerFaction.AvailableTasks.OfType<RemoveStructure>().Any(t => t.StructureToRemove == structure))
                     {
                         continue;
                     }
-                    Game.Instance.FactionController.PlayerFaction.AddTask(new RemoveStructure(structure));
+                    Loc.GetFactionController().PlayerFaction.AddTask(new RemoveStructure(structure));
                 }
             }
         };

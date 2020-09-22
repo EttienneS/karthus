@@ -125,9 +125,9 @@ public class IdService : IGameService
 
     internal IEnumerable<Structure> GetStructuresInCell(Cell cell)
     {
-        if (Game.Instance.IdService.StructureCellLookup.ContainsKey(cell))
+        if (Loc.GetIdService().StructureCellLookup.ContainsKey(cell))
         {
-            return Game.Instance.IdService.StructureCellLookup[cell];
+            return Loc.GetIdService().StructureCellLookup[cell];
         }
         return new List<Structure>();
     }
@@ -142,7 +142,7 @@ public static class IdExtensions
 {
     public static CreatureData GetCreature(this string id)
     {
-        if (!Game.Instance.IdService.CreatureIdLookup.TryGetValue(id, out var creature))
+        if (!Loc.GetIdService().CreatureIdLookup.TryGetValue(id, out var creature))
         {
             return null;
         }
@@ -151,7 +151,7 @@ public static class IdExtensions
 
     public static ItemData GetItem(this string id)
     {
-        if (!Game.Instance.IdService.ItemIdLookup.TryGetValue(id, out var item))
+        if (!Loc.GetIdService().ItemIdLookup.TryGetValue(id, out var item))
         {
             return null;
         }
@@ -160,7 +160,7 @@ public static class IdExtensions
 
     public static Structure GetStructure(this string id)
     {
-        if (Game.Instance.IdService.StructureIdLookup.TryGetValue(id, out var structure))
+        if (Loc.GetIdService().StructureIdLookup.TryGetValue(id, out var structure))
         {
             return structure;
         }

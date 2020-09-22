@@ -2,6 +2,7 @@
 using UnityEngine;
 using Assets.Creature;
 using Assets.Map;
+using Assets.ServiceLocator;
 
 public class Idle : CreatureTask
 {
@@ -25,7 +26,7 @@ public class Idle : CreatureTask
     {
         if (Random.value > 0.7)
         {
-            var wanderCircle = MapController.Instance.GetCircle(creature.Cell, 3).Where(c => c.TravelCost == 1).ToList();
+            var wanderCircle = Loc.GetMap().GetCircle(creature.Cell, 3).Where(c => c.TravelCost == 1).ToList();
             if (wanderCircle.Count > 0)
             {
                 AddSubTask(new Move(wanderCircle[Random.Range(0, wanderCircle.Count - 1)]));

@@ -1,4 +1,5 @@
 ﻿using Assets.Map;
+using Assets.ServiceLocator;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
@@ -75,7 +76,7 @@ namespace Assets.Structures
                             continue;
                         }
 
-                        var structure = Game.Instance.StructureController.StructureDataReference[GetStructure(character)];
+                        var structure = Loc.GetStructureController().StructureDataReference[GetStructure(character)];
                         cost = Cost.AddCost(cost, structure.Cost);
                     }
                 }
@@ -202,8 +203,8 @@ namespace Assets.Structures
                     }
                     else
                     {
-                        var structure = Game.Instance.StructureController.StructureDataReference.Values.First(s => s.Name == GetStructure(character));
-                        sourceTexture = Game.Instance.SpriteStore.GetSprite(structure.Icon).texture;
+                        var structure = Loc.GetStructureController().StructureDataReference.Values.First(s => s.Name == GetStructure(character));
+                        sourceTexture = Loc.GetSpriteStore().GetSprite(structure.Icon).texture;
                     }
                     var constructTexture = sourceTexture.Clone();
                     constructTexture.ScaleToGridSize(1, 1);
@@ -243,9 +244,9 @@ namespace Assets.Structures
                         continue;
                     }
 
-                    var cell = MapController.Instance.GetCellAtCoordinate(origin.X + x, origin.Z + y);
+                    var cell = Loc.GetMap().GetCellAtCoordinate(origin.X + x, origin.Z + y);
 
-                    Game.Instance.StructureController.SpawnBlueprint(GetStructure(character), cell, faction);
+                    Loc.GetStructureController().SpawnBlueprint(GetStructure(character), cell, faction);
                     x++;
                 }
                 x = 0;
@@ -267,7 +268,7 @@ namespace Assets.Structures
                         x++;
                         continue;
                     }
-                    var cell = MapController.Instance.GetCellAtCoordinate(cellData.X + x, cellData.Z + z);
+                    var cell = Loc.GetMap().GetCellAtCoordinate(cellData.X + x, cellData.Z + z);
 
                     if (cell.TravelCost > 0)
                     {

@@ -1,4 +1,5 @@
-﻿using Assets.Structures;
+﻿using Assets.ServiceLocator;
+using Assets.Structures;
 using Structures.Work;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,9 +40,9 @@ namespace UI
         {
             foreach (var structure in Structures)
             {
-                if (!Game.Instance.FactionController.PlayerFaction.AvailableTasks.OfType<RemoveStructure>().Any(r => r.StructureToRemove == structure))
+                if (!Loc.GetFactionController().PlayerFaction.AvailableTasks.OfType<RemoveStructure>().Any(r => r.StructureToRemove == structure))
                 {
-                    Game.Instance.FactionController.PlayerFaction.AddTask(new RemoveStructure(structure));
+                    Loc.GetFactionController().PlayerFaction.AddTask(new RemoveStructure(structure));
                 }
                 else
                 {
@@ -86,10 +87,10 @@ namespace UI
         {
             foreach (var structure in Structures)
             {
-                structure.FactionName = Game.Instance.FactionController.PlayerFaction.FactionName;
-                if (!Game.Instance.FactionController.PlayerFaction.Structures.Contains(structure))
+                structure.FactionName = Loc.GetFactionController().PlayerFaction.FactionName;
+                if (!Loc.GetFactionController().PlayerFaction.Structures.Contains(structure))
                 {
-                    Game.Instance.FactionController.PlayerFaction.Structures.Add(structure);
+                    Loc.GetFactionController().PlayerFaction.Structures.Add(structure);
                 }
             }
         }

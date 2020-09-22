@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.ServiceLocator;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class ZoneInfoPanel : MonoBehaviour
@@ -11,26 +12,26 @@ public class ZoneInfoPanel : MonoBehaviour
 
     public void DeleteZone()
     {
-        Game.Instance.ZoneController.Delete(CurrentZone);
+        Loc.GetZoneController().Delete(CurrentZone);
         Destroy();
     }
 
     public void DoneEditing()
     {
-        Game.Instance.Typing = false;
+        Loc.GetGameController().Typing = false;
     }
 
     public void Destroy()
     {
         Destroy(gameObject);
-        Game.Instance.Typing = false;
+        Loc.GetGameController().Typing = false;
     }
 
     public void NameChanged()
     {
-        Game.Instance.Typing = true;
+        Loc.GetGameController().Typing = true;
         CurrentZone.Name = Name.text;
-        Game.Instance.ZoneController.Refresh(CurrentZone);
+        Loc.GetZoneController().Refresh(CurrentZone);
     }
 
     internal void Show(ZoneBase selectedZone)

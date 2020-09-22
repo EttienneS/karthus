@@ -1,4 +1,5 @@
 ﻿using Assets.Creature.Behaviour;
+using Assets.ServiceLocator;
 using Assets.Item;
 using Assets.Map;
 using Needs;
@@ -61,7 +62,7 @@ namespace Assets.Creature
             {
                 if (_awareness == null && Cell != null)
                 {
-                    _awareness = MapController.Instance.GetCircle(Cell, Perception);
+                    _awareness = Loc.GetMap().GetCircle(Cell, Perception);
                 }
 
                 return _awareness;
@@ -70,7 +71,7 @@ namespace Assets.Creature
 
         internal bool IsPlayerControlled()
         {
-            return FactionName == Game.Instance.FactionController.PlayerFaction.FactionName;
+            return FactionName == Loc.GetFactionController().PlayerFaction.FactionName;
         }
 
         public string BehaviourName { get; set; }
@@ -80,7 +81,7 @@ namespace Assets.Creature
         {
             get
             {
-                return MapController.Instance.GetCellAtCoordinate(X, Z);
+                return Loc.GetMap().GetCellAtCoordinate(X, Z);
             }
             set
             {
@@ -110,7 +111,7 @@ namespace Assets.Creature
                         Debug.LogError($"Null faction: {Name}:{Id}");
                     }
 
-                    _faction = Game.Instance.FactionController.Factions[FactionName];
+                    _faction = Loc.GetFactionController().Factions[FactionName];
                 }
 
                 return _faction;
@@ -261,7 +262,7 @@ namespace Assets.Creature
             if (cellItem != null)
             {
                 cellItem.Amount += item.Amount;
-                Game.Instance.ItemController.DestroyItem(item);
+                Loc.GetItemController().DestroyItem(item);
             }
             else
             {
@@ -439,7 +440,7 @@ namespace Assets.Creature
                     else
                     {
                         HeldItem.Amount += item.Amount;
-                        Game.Instance.ItemController.DestroyItem(item);
+                        Loc.GetItemController().DestroyItem(item);
                     }
                 }
             }
@@ -662,7 +663,7 @@ namespace Assets.Creature
 
         internal void Update(float timeDelta)
         {
-            if (Game.Instance.TimeManager.Paused)
+            if (Loc.GetTimeManager().Paused)
                 return;
 
             if (Dead)
@@ -843,8 +844,8 @@ namespace Assets.Creature
 
             if (CurrentPathRequest == null)
             {
-                var src = MapController.Instance.GetCellAtCoordinate(X, Z);
-                var tgt = MapController.Instance.GetCellAtCoordinate(TargetCoordinate.x, TargetCoordinate.z);
+                var src = Loc.GetMap().GetCellAtCoordinate(X, Z);
+                var tgt = Loc.GetMap().GetCellAtCoordinate(TargetCoordinate.x, TargetCoordinate.z);
 
                 if (src != tgt)
                 {
@@ -1092,7 +1093,7 @@ namespace Assets.Creature
                     {
                         // unstuck
                         Debug.LogError("Unstuck!");
-                        var c = MapController.Instance.GetNearestPathableCell(Cell, Mobility, 10);
+                        var c = Loc.GetMap().GetNearestPathableCell(Cell, Mobility, 10);
 
                         X = c.X;
                         Z = c.Z;

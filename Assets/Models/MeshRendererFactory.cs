@@ -34,8 +34,8 @@ namespace Assets.Models
 
         internal MeshRenderer CreateFlameMesh(Transform parent)
         {
-            return Game.Instance.MeshRendererFactory
-                                     .InstantiateMesh(Game.Instance.MeshRendererFactory.GetStructureMesh("Flames"), parent);
+            return Loc.GetGameController().MeshRendererFactory
+                                     .InstantiateMesh(Loc.GetGameController().MeshRendererFactory.GetStructureMesh("Flames"), parent);
         }
 
         public MeshRenderer GetStructureMesh(string name)

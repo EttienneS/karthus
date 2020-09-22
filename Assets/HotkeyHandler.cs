@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Assets.ServiceLocator;
 
 namespace Assets
 {
@@ -8,7 +9,7 @@ namespace Assets
 
         public static void HandleHotkeys()
         {
-            if (Game.Instance.Typing)
+            if (Loc.GetGameController().Typing)
             {              
                 return;
             }
@@ -19,63 +20,63 @@ namespace Assets
             }
             else if (Input.GetKeyDown("space"))
             {
-                if (Game.Instance.TimeManager.GetTimeStep() == TimeStep.Paused)
+                if (Loc.GetTimeManager().GetTimeStep() == TimeStep.Paused)
                 {
-                    Game.Instance.TimeManager.SetTimeStep(_oldTimeStep);
+                    Loc.GetTimeManager().SetTimeStep(_oldTimeStep);
                 }
                 else
                 {
-                    _oldTimeStep = Game.Instance.TimeManager.GetTimeStep();
-                    Game.Instance.TimeManager.Pause();
+                    _oldTimeStep = Loc.GetTimeManager().GetTimeStep();
+                    Loc.GetTimeManager().Pause();
                 }
             }
             else if (Input.GetKeyDown("escape"))
             {
-                Game.Instance.MainMenuController.Toggle();
+                Loc.GetGameController().MainMenuController.Toggle();
             }
             else if (Input.GetKeyDown("1"))
             {
-                Game.Instance.TimeManager.SetTimeStep(TimeStep.Slow);
+                Loc.GetTimeManager().SetTimeStep(TimeStep.Slow);
             }
             else if (Input.GetKeyDown("2"))
             {
-                Game.Instance.TimeManager.SetTimeStep(TimeStep.Normal);
+                Loc.GetTimeManager().SetTimeStep(TimeStep.Normal);
             }
             else if (Input.GetKeyDown("3"))
             {
-                Game.Instance.TimeManager.SetTimeStep(TimeStep.Fast);
+                Loc.GetTimeManager().SetTimeStep(TimeStep.Fast);
             }
             else if (Input.GetKeyDown("4"))
             {
-                Game.Instance.TimeManager.SetTimeStep(TimeStep.Hyper);
+                Loc.GetTimeManager().SetTimeStep(TimeStep.Hyper);
             }
             else if (Input.GetKeyDown("b"))
             {
-                Game.Instance.OrderSelectionController.BuildTypeClicked();
+                Loc.GetGameController().OrderSelectionController.BuildTypeClicked();
             }
             else if (Input.GetKeyDown("n"))
             {
-                Game.Instance.OrderSelectionController.DesignateTypeClicked();
+                Loc.GetGameController().OrderSelectionController.DesignateTypeClicked();
             }
             else if (Input.GetKeyDown("z"))
             {
-                Game.Instance.OrderSelectionController.ZoneTypeClicked();
+                Loc.GetGameController().OrderSelectionController.ZoneTypeClicked();
             }
             else if (Input.GetKeyDown("c"))
             {
-                Game.Instance.OrderSelectionController.ConstructTypeClicked();
+                Loc.GetGameController().OrderSelectionController.ConstructTypeClicked();
             }
             else if (Input.GetKeyDown("e"))
             {
-                Game.Instance.Cursor.RotateRight();
+                Loc.Current.Get<CursorController>().RotateRight();
             }
             else if (Input.GetKeyDown("q"))
             {
-                Game.Instance.Cursor.RotateLeft();
+                Loc.Current.Get<CursorController>().RotateLeft();
             }
             else if (Input.GetKeyDown(KeyCode.Tab))
             {
-                Game.Instance.UIController.Toggle();
+                Loc.GetGameController().UIController.Toggle();
             }
         }
     }

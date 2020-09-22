@@ -27,6 +27,7 @@ public class FileController : MonoBehaviour, IGameService
     private List<Construct> _constructs;
     private Material _invalidBlueprintMaterial;
     private Material _suspendedBlueprintMaterial;
+
     public List<Type> AllBehaviourTypes
     {
         get
@@ -91,24 +92,7 @@ public class FileController : MonoBehaviour, IGameService
             return _suspendedBlueprintMaterial;
         }
     }
-    public void Awake()
-    {
-        StructureJson = Resources.LoadAll<TextAsset>(StructureFolder);
-        CreatureFiles = Resources.LoadAll<TextAsset>(CreatureFolder);
-        BiomeFiles = Resources.LoadAll<TextAsset>(BiomeFolder);
-        ItemFiles = Resources.LoadAll<TextAsset>(ItemsFolder);
-
-        foreach (var material in Materials)
-        {
-            if (MaterialLookup.ContainsKey(material.name))
-            {
-                Debug.LogError($"Dupe material: {material.name}");
-                continue;
-            }
-            MaterialLookup.Add(material.name, material);
-        }
-    }
-
+    
     internal Material GetMaterial(string name)
     {
         if (MaterialLookup.ContainsKey(name))
@@ -132,5 +116,19 @@ public class FileController : MonoBehaviour, IGameService
 
     public void Initialize()
     {
+        StructureJson = Resources.LoadAll<TextAsset>(StructureFolder);
+        CreatureFiles = Resources.LoadAll<TextAsset>(CreatureFolder);
+        BiomeFiles = Resources.LoadAll<TextAsset>(BiomeFolder);
+        ItemFiles = Resources.LoadAll<TextAsset>(ItemsFolder);
+
+        foreach (var material in Materials)
+        {
+            if (MaterialLookup.ContainsKey(material.name))
+            {
+                Debug.LogError($"Dupe material: {material.name}");
+                continue;
+            }
+            MaterialLookup.Add(material.name, material);
+        }
     }
 }

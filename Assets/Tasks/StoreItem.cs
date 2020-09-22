@@ -1,6 +1,7 @@
 ﻿using Assets.Creature;
 using Assets.Item;
 using Assets.Map;
+using Assets.ServiceLocator;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -57,11 +58,11 @@ namespace Assets.Tasks
                 else if (_targetCellCoordinate == (0, 0))
                 {
                     _targetCellCoordinate = FindStoreCellForItem(creature, item);
-                    AddSubTask(new Move(MapController.Instance.GetCellAtCoordinate(_targetCellCoordinate.x, _targetCellCoordinate.z)));
+                    AddSubTask(new Move(Loc.GetMap().GetCellAtCoordinate(_targetCellCoordinate.x, _targetCellCoordinate.z)));
                 }
                 else
                 {
-                    var targetCell = MapController.Instance.GetCellAtCoordinate(_targetCellCoordinate.x, _targetCellCoordinate.z);
+                    var targetCell = Loc.GetMap().GetCellAtCoordinate(_targetCellCoordinate.x, _targetCellCoordinate.z);
                     if (creature.Cell == targetCell)
                     {
                         creature.DropItem(targetCell);

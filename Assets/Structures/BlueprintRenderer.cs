@@ -1,5 +1,5 @@
 ﻿using Assets.Helpers;
-using System;
+using Assets.ServiceLocator;
 using UnityEngine;
 
 namespace Assets.Structures
@@ -17,14 +17,12 @@ namespace Assets.Structures
 
         internal void SetSuspendedMaterial()
         {
-            GetComponent<MeshRenderer>().SetAllMaterial(Game.Instance.FileController.SuspendedBlueprintMaterial);
+            GetComponent<MeshRenderer>().SetAllMaterial(Loc.GetFileController().SuspendedBlueprintMaterial);
         }
 
         internal void SetDefaultMaterial()
         {
-            GetComponent<MeshRenderer>().SetAllMaterial(Game.Instance.FileController.BlueprintMaterial);
+            GetComponent<MeshRenderer>().SetAllMaterial(Loc.GetFileController().BlueprintMaterial);
         }
-
-
     }
 }

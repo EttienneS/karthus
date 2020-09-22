@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.ServiceLocator;
+using System.Collections;
 using System.IO;
 using System.Linq;
 using TMPro;
@@ -25,7 +26,7 @@ public class WelcomeScreenController : MonoBehaviour
 
     public void ContinueGame()
     {
-        Game.Instance = null;
+        Loc.Reset();
         SaveManager.SaveToLoad = Save.FromFile(_lastSave);
 
         StartCoroutine(StartLoad());

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Assets;
+using Assets.ServiceLocator;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -12,18 +14,18 @@ public partial class OrderSelectionController : MonoBehaviour
 
     public void DisableAndReset()
     {
-        Game.Instance.Cursor.ResetSelection();
+        Loc.Current.Get<CursorController>().ResetSelection();
 
-        Game.Instance.OrderTrayController.gameObject.SetActive(false);
+        Loc.GetGameController().OrderTrayController.gameObject.SetActive(false);
         CellClickOrder = null;
 
-        Game.Instance.OrderInfoPanel.Hide();
+        Loc.GetGameController().OrderInfoPanel.Hide();
     }
 
     private static void EnableAndClear()
     {
-        Game.Instance.OrderTrayController.gameObject.SetActive(true);
-        foreach (Transform child in Game.Instance.OrderTrayController.transform)
+        Loc.GetGameController().OrderTrayController.gameObject.SetActive(true);
+        foreach (Transform child in Loc.GetGameController().OrderTrayController.transform)
         {
             Destroy(child.gameObject);
         }
@@ -31,7 +33,7 @@ public partial class OrderSelectionController : MonoBehaviour
 
     private OrderButton CreateOrderButton(UnityAction action, UnityAction onHover, string spriteName, string colorHex = "#ffffff", bool isSubButton = true)
     {
-        var btn = CreateOrderButton(action, onHover, Game.Instance.SpriteStore.GetSprite(spriteName), isSubButton);
+        var btn = CreateOrderButton(action, onHover, Loc.GetSpriteStore().GetSprite(spriteName), isSubButton);
         btn.Button.image.color = colorHex.GetColorFromHex();
         return btn;
     }
@@ -39,7 +41,7 @@ public partial class OrderSelectionController : MonoBehaviour
     private OrderButton CreateOrderButton(UnityAction action, UnityAction onHover, Sprite sprite, bool isSubButton = true)
     {
         // create a top level button for an order type
-        var button = Instantiate(OrderButtonPrefab, isSubButton ? Game.Instance.OrderTrayController.transform : transform);
+        var button = Instantiate(OrderButtonPrefab, isSubButton ? Loc.GetGameController().OrderTrayController.transform : transform);
         button.Button.onClick.AddListener(action);
         button.OnMouseEnter = onHover;
         button.Button.image.sprite = sprite;
@@ -49,8 +51,8 @@ public partial class OrderSelectionController : MonoBehaviour
 
     private void Start()
     {
-        Game.Instance.OrderTrayController.gameObject.SetActive(false);
-        Game.Instance.OrderInfoPanel.Hide();
+        Loc.GetGameController().OrderTrayController.gameObject.SetActive(false);
+        Loc.GetGameController().OrderInfoPanel.Hide();
 
         BuildButton = CreateOrderButton(BuildTypeClicked, null, "hammer", "#ffffff", false);
         ConstructButton = CreateOrderButton(ConstructTypeClicked, null, "construct", "#ffffff", false);

@@ -58,13 +58,13 @@ public class TimeManager : MonoBehaviour, IGameService
 
         if (_timeStep == TimeStep.Paused)
         {
-            Game.Instance.Paused = true;
+            Loc.GetGameController().Paused = true;
             Time.timeScale = 0.000000001f;
             Time.fixedDeltaTime = 0.02f;
         }
         else
         {
-            Game.Instance.Paused = false;
+            Loc.GetGameController().Paused = false;
             Time.timeScale = (int)_timeStep;
             Time.fixedDeltaTime = 0.02f * Time.timeScale;
         }
@@ -117,15 +117,15 @@ public class TimeManager : MonoBehaviour, IGameService
         var total = range * 60f;
         var current = ((Data.Hour - min) * 60) + Data.Minute;
 
-        MapController.Instance.GlobalLight.color = Color.Lerp(start, end, current / total);
+        Loc.GetMap().GlobalLight.color = Color.Lerp(start, end, current / total);
 
         if (Data.Hour < 4 || Data.Hour > 20)
         {
-            MapController.Instance.GlobalLight.transform.localEulerAngles = new Vector3(MaxLightAngle, LightAngleY, LightAngleZ);
+            Loc.GetMap().GlobalLight.transform.localEulerAngles = new Vector3(MaxLightAngle, LightAngleY, LightAngleZ);
         }
         else
         {
-            MapController.Instance.GlobalLight.transform.localEulerAngles = new Vector3(Mathf.Lerp(MinLightAngle, MaxLightAngle, ((Data.Hour * 60) + Data.Minute) / 1440f), LightAngleY, LightAngleZ);
+            Loc.GetMap().GlobalLight.transform.localEulerAngles = new Vector3(Mathf.Lerp(MinLightAngle, MaxLightAngle, ((Data.Hour * 60) + Data.Minute) / 1440f), LightAngleY, LightAngleZ);
         }
     }
 

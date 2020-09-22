@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Assets.Creature;
 using Assets.Map;
+using Assets.ServiceLocator;
 
 public class Move : CreatureTask
 {
@@ -34,7 +35,7 @@ public class Move : CreatureTask
     {
         get
         {
-            return MapController.Instance.GetCellAtCoordinate(TargetX, TargetZ);
+            return Loc.GetMap().GetCellAtCoordinate(TargetX, TargetZ);
         }
     }
 
@@ -55,7 +56,7 @@ public class Move : CreatureTask
         if (creature.X == TargetX && creature.Z == TargetZ)
         {
             // dynamic map expansion
-            // MapController.Instance.ExpandChunksAround(creature.Cell);
+            // Loc.GetMap().ExpandChunksAround(creature.Cell);
             creature.SetAnimation(AnimationType.Idle);
             return true;
         }

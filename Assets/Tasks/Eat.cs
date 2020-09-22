@@ -1,5 +1,6 @@
 ﻿using Assets.Creature;
 using Assets.Item;
+using Assets.ServiceLocator;
 using Needs;
 using System.Linq;
 
@@ -84,7 +85,7 @@ public class Eat : CreatureTask
                 {
                     ChairId.GetStructure().Free();
                 }
-                Game.Instance.ItemController.DestroyItem(food);
+                Loc.GetItemController().DestroyItem(food);
                 Ate = true;
 
                 if (creature.GetNeed<Hunger>().Current < 60)

@@ -1,4 +1,5 @@
 ﻿using Assets.Map;
+using Assets.ServiceLocator;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,20 +52,20 @@ namespace Assets.Structures.Behaviour
 
             if (structure.BaseFlammability > 150)
             {
-                Game.Instance.VisualEffectController.CreateFireLight(_flameMesh.transform, ColorExtensions.GetColorFromHex("F5810E"), 25, 25, 0.5f);
+                Loc.GetVisualEffectController().CreateFireLight(_flameMesh.transform, ColorExtensions.GetColorFromHex("F5810E"), 25, 25, 0.5f);
             }
         }
 
         private static List<Cell> GetFlammableNeighbours(Cell cell)
         {
-            return MapController.Instance.GetCircle(cell, 3)
+            return Loc.GetMap().GetCircle(cell, 3)
                                    .Where(c => c.Structures.Any(s => s.Flammable()))
                                    .ToList();
         }
 
         private void InstantiateFlames(Structure structure)
         {
-            _flameMesh = Game.Instance.MeshRendererFactory.CreateFlameMesh(structure.Renderer.transform);
+            _flameMesh = Loc.GetGameController().MeshRendererFactory.CreateFlameMesh(structure.Renderer.transform);
             var scale = structure.BaseFlammability / 100f * 5f * Random.Range(0.75f, 1.25f);
             _flameMesh.transform.localScale = new Vector3(scale, scale, scale);
             _flameMesh.transform.rotation = Quaternion.Euler(0, Random.Range(0f, 360f), 0);
@@ -80,8 +81,8 @@ namespace Assets.Structures.Behaviour
             structure.Flammability -= delta / 2;
             if (structure.Flammability <= 0)
             {
-                Game.Instance.StructureController.SpawnStructure("Debris", structure.Cell, Game.Instance.FactionController.WorldFaction);
-                Game.Instance.StructureController.DestroyStructure(structure);
+                Loc.GetStructureController().SpawnStructure("Debris", structure.Cell, Loc.GetFactionController().WorldFaction);
+                Loc.GetStructureController().DestroyStructure(structure);
             }
         }
     }

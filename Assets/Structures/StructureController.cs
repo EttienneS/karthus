@@ -15,70 +15,25 @@ namespace Assets.Structures
 
         internal Blueprint GetBlueprintById(string blueprintId)
         {
-            return Game.Instance.FactionController.Factions
+            return Loc.GetFactionController().Factions
                                 .SelectMany(f => f.Value.Blueprints)
                                 .FirstOrDefault(b => b.ID == blueprintId);
         }
 
-        private static List<Type> _structureTypes;
         private float _lastUpdate;
-        private Dictionary<string, Structure> _structureDataReference;
-        private Dictionary<string, string> _structureTypeFileMap;
 
-        public static List<Type> StructureTypes
-        {
-            get
-            {
-                if (_structureTypes == null)
-                {
-                    _structureTypes = ReflectionHelper.GetAllTypes(typeof(Structure));
-                }
+        public List<Type> StructureTypes { get; set; }
 
-                return _structureTypes;
-            }
-        }
+        internal Dictionary<string, Structure> StructureDataReference { get; set; }
 
-        internal Dictionary<string, Structure> StructureDataReference
-        {
-            get
-            {
-                _structureTypeFileMap.First();
-                return _structureDataReference;
-            }
-        }
+        internal Dictionary<string, string> StructureTypeFileMap { get; set; }
 
-        internal Dictionary<string, string> StructureTypeFileMap
-        {
-            get
-            {
-                if (_structureTypeFileMap == null)
-                {
-                    _structureTypeFileMap = new Dictionary<string, string>();
-                    _structureDataReference = new Dictionary<string, Structure>();
-                    foreach (var structureFile in Game.Instance.FileController.StructureJson)
-                    {
-                        try
-                        {
-                            var data = LoadStructureFromJson(structureFile.text);
-                            _structureTypeFileMap.Add(data.Name, structureFile.text);
-                            _structureDataReference.Add(data.Name, data);
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.LogError($"Unable to load structure {structureFile}: {ex.Message}");
-                        }
-                    }
-                }
-                return _structureTypeFileMap;
-            }
-        }
-
-        public static Type GetTypeFor(string name)
+        public Type GetTypeFor(string name)
         {
             return StructureTypes.Find(w => w.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
 
-        public static Structure LoadStructureFromJson(string json)
+        public Structure LoadStructureFromJson(string json)
         {
             var structure = json.LoadJson<Structure>();
             var type = GetTypeFor(structure.Type);
@@ -98,18 +53,18 @@ namespace Assets.Structures
 
         public void CreateRoof(Cell cell)
         {
-            var roof = Instantiate(Game.Instance.MeshRendererFactory.GetStructureMesh("Roof"), RoofContainer.transform);
+            var roof = Instantiate(Loc.GetGameController().MeshRendererFactory.GetStructureMesh("Roof"), RoofContainer.transform);
             roof.transform.position = new Vector3(cell.X, cell.Y, cell.Z) + new Vector3(0.5f, 2.05f, 0.5f);
         }
 
         public MeshRenderer GetMeshForStructure(string name)
         {
-            return GetMeshForStructure(_structureDataReference[name]);
+            return GetMeshForStructure(StructureDataReference[name]);
         }
 
         public MeshRenderer GetMeshForStructure(Structure structure)
         {
-            return Game.Instance.MeshRendererFactory.GetStructureMesh(structure.Mesh.Split(',').GetRandomItem());
+            return Loc.GetGameController().MeshRendererFactory.GetStructureMesh(structure.Mesh.Split(',').GetRandomItem());
         }
 
         public MeshRenderer InstantiateNewStructureMeshRenderer(string structureName, Transform parent)
@@ -138,7 +93,7 @@ namespace Assets.Structures
         public BlueprintRenderer SpawnBlueprint(Blueprint blueprint)
         {
             var meshRenderer = InstantiateNewStructureMeshRenderer(blueprint.StructureName, transform);
-            meshRenderer.SetAllMaterial(Game.Instance.FileController.BlueprintMaterial);
+            meshRenderer.SetAllMaterial(Loc.GetFileController().BlueprintMaterial);
             meshRenderer.transform.name = $"Blueprint: {blueprint.StructureName}";
 
             var blueprintRenderer = meshRenderer.gameObject.AddComponent<BlueprintRenderer>();
@@ -176,7 +131,7 @@ namespace Assets.Structures
 
         public void Update()
         {
-            if (Game.Instance.TimeManager.Paused)
+            if (Loc.GetTimeManager().Paused)
                 return;
 
             UpdateWorkStructures();
@@ -186,9 +141,9 @@ namespace Assets.Structures
         {
             if (blueprint.BlueprintRenderer != null)
             {
-                Game.Instance.AddItemToDestroy(blueprint.BlueprintRenderer.transform.gameObject);
+                Loc.GetGameController().AddItemToDestroy(blueprint.BlueprintRenderer.transform.gameObject);
 
-                foreach (var faction in Game.Instance.FactionController.Factions.Values)
+                foreach (var faction in Loc.GetFactionController().Factions.Values)
                 {
                     if (faction.Blueprints.Contains(blueprint))
                     {
@@ -209,20 +164,20 @@ namespace Assets.Structures
                 }
 
                 structure.OnDestroy();
-                Game.Instance.IdService.RemoveStructure(structure);
-                Game.Instance.FactionController.Factions[structure.FactionName].Structures.Remove(structure);
-                Game.Instance.AddItemToDestroy(structure.Renderer.gameObject);
+                Loc.GetIdService().RemoveStructure(structure);
+                Loc.GetFactionController().Factions[structure.FactionName].Structures.Remove(structure);
+                Loc.GetGameController().AddItemToDestroy(structure.Renderer.gameObject);
             }
         }
 
         internal Cost GetStructureCost(string structureName)
         {
-            return _structureDataReference[structureName].Cost;
+            return StructureDataReference[structureName].Cost;
         }
 
         private void IndexStructure(Structure structure)
         {
-            Game.Instance.IdService.EnrollStructure(structure);
+            Loc.GetIdService().EnrollStructure(structure);
         }
 
         private void UpdateWorkStructures()
@@ -231,7 +186,7 @@ namespace Assets.Structures
 
             if (_lastUpdate > 0.5f)
             {
-                foreach (var structure in Game.Instance.IdService.StructureIdLookup.Values.OfType<WorkStructureBase>())
+                foreach (var structure in Loc.GetIdService().StructureIdLookup.Values.OfType<WorkStructureBase>())
                 {
                     structure.Process(_lastUpdate);
                 }
@@ -241,6 +196,23 @@ namespace Assets.Structures
 
         public void Initialize()
         {
+            StructureTypes = ReflectionHelper.GetAllTypes(typeof(Structure));
+
+            StructureTypeFileMap = new Dictionary<string, string>();
+            StructureDataReference = new Dictionary<string, Structure>();
+            foreach (var structureFile in Loc.GetFileController().StructureJson)
+            {
+                try
+                {
+                    var data = LoadStructureFromJson(structureFile.text);
+                    StructureTypeFileMap.Add(data.Name, structureFile.text);
+                    StructureDataReference.Add(data.Name, data);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"Unable to load structure {structureFile}: {ex.Message}");
+                }
+            }
         }
     }
 }

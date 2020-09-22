@@ -52,8 +52,8 @@ namespace Assets
             Clear();
             _meshName = name;
 
-            var structure = Game.Instance.StructureController.InstantiateNewStructureMeshRenderer(name, transform);
-            structure.SetAllMaterial(Game.Instance.FileController.BlueprintMaterial);
+            var structure = Loc.GetStructureController().InstantiateNewStructureMeshRenderer(name, transform);
+            structure.SetAllMaterial(Loc.GetFileController().BlueprintMaterial);
 
             _meshRenderer = structure;
             Validate = validationFunction;
@@ -89,16 +89,16 @@ namespace Assets
             _rotateLeft = () =>
             {
                 construct.RotateRight();
-                Game.Instance.Cursor.SetMultiSprite(construct.GetSprite(), (cell) => construct.ValidateStartPos(cell));
+                Loc.Current.Get<CursorController>().SetMultiSprite(construct.GetSprite(), (cell) => construct.ValidateStartPos(cell));
             };
             _rotateRight = () =>
             {
                 construct.RotateLeft();
-                Game.Instance.Cursor.SetMultiSprite(construct.GetSprite(), (cell) => construct.ValidateStartPos(cell));
+                Loc.Current.Get<CursorController>().SetMultiSprite(construct.GetSprite(), (cell) => construct.ValidateStartPos(cell));
             };
 
             Validate = (cell) => construct.ValidateStartPos(cell);
-            Game.Instance.Cursor.SetMultiSprite(construct.GetSprite(), (cell) => construct.ValidateStartPos(cell));
+            Loc.Current.Get<CursorController>().SetMultiSprite(construct.GetSprite(), (cell) => construct.ValidateStartPos(cell));
         }
 
        
@@ -112,14 +112,14 @@ namespace Assets
 
         private static Cell GetCellForWorldPosition(Vector3? pos)
         {
-            return MapController.Instance.GetCellAtCoordinate(pos.Value - new Vector3(0.5f, 0, 0.5f));
+            return Loc.GetMap().GetCellAtCoordinate(pos.Value - new Vector3(0.5f, 0, 0.5f));
         }
 
         private static void InvokeCellClickMethod(List<Cell> cells)
         {
-            if (Game.Instance.OrderSelectionController.CellClickOrder != null)
+            if (Loc.GetGameController().OrderSelectionController.CellClickOrder != null)
             {
-                Game.Instance.OrderSelectionController.CellClickOrder.Invoke(cells);
+                Loc.GetGameController().OrderSelectionController.CellClickOrder.Invoke(cells);
             }
         }
 
@@ -186,36 +186,36 @@ namespace Assets
 
         private void DeselectCreature()
         {
-            foreach (var creature in Game.Instance.IdService.CreatureIdLookup.Values.Select(v => v.CreatureRenderer))
+            foreach (var creature in Loc.GetIdService().CreatureIdLookup.Values.Select(v => v.CreatureRenderer))
             {
                 creature.DisableHightlight();
             }
 
-            Game.Instance.DestroyCreaturePanel();
-            Game.Instance.DestroyToolTip();
+            Loc.GetGameController().DestroyCreaturePanel();
+            Loc.GetGameController().DestroyToolTip();
         }
 
         private void DeselectItem()
         {
-            foreach (var item in Game.Instance.IdService.ItemIdLookup.Values)
+            foreach (var item in Loc.GetIdService().ItemIdLookup.Values)
             {
                 item.HideOutline();
             }
-            Game.Instance.DestroyItemInfoPanel();
+            Loc.GetGameController().DestroyItemInfoPanel();
         }
 
         private void DeselectStructure()
         {
-            foreach (var structure in Game.Instance.IdService.StructureIdLookup.Values)
+            foreach (var structure in Loc.GetIdService().StructureIdLookup.Values)
             {
                 structure.HideOutline();
             }
-            Game.Instance.DestroyStructureInfoPanel();
+            Loc.GetGameController().DestroyStructureInfoPanel();
         }
 
         private void DeselectZone()
         {
-            Game.Instance.DestroyZonePanel();
+            Loc.GetGameController().DestroyZonePanel();
         }
 
         private List<CreatureRenderer> FindCreaturesInCells(List<Cell> cells)
@@ -255,7 +255,7 @@ namespace Assets
         {
             foreach (var cell in cells)
             {
-                var zone = Game.Instance.ZoneController.GetZoneForCell(cell);
+                var zone = Loc.GetZoneController().GetZoneForCell(cell);
                 if (zone != null)
                 {
                     return zone;
@@ -276,11 +276,11 @@ namespace Assets
 
             var cells = new List<Cell>();
 
-            var startX = Mathf.Clamp(Mathf.Min(worldStartPoint.x, worldEndPoint.x), MapController.Instance.MinX, MapController.Instance.MaxX);
-            var endX = Mathf.Clamp(Mathf.Max(worldStartPoint.x, worldEndPoint.x), MapController.Instance.MinX, MapController.Instance.MaxX);
+            var startX = Mathf.Clamp(Mathf.Min(worldStartPoint.x, worldEndPoint.x), Loc.GetMap().MinX, Loc.GetMap().MaxX);
+            var endX = Mathf.Clamp(Mathf.Max(worldStartPoint.x, worldEndPoint.x), Loc.GetMap().MinX, Loc.GetMap().MaxX);
 
-            var startZ = Mathf.Clamp(Mathf.Min(worldStartPoint.z, worldEndPoint.z), MapController.Instance.MinZ, MapController.Instance.MaxZ);
-            var endZ = Mathf.Clamp(Mathf.Max(worldStartPoint.z, worldEndPoint.z), MapController.Instance.MinX, MapController.Instance.MaxZ);
+            var startZ = Mathf.Clamp(Mathf.Min(worldStartPoint.z, worldEndPoint.z), Loc.GetMap().MinZ, Loc.GetMap().MaxZ);
+            var endZ = Mathf.Clamp(Mathf.Max(worldStartPoint.z, worldEndPoint.z), Loc.GetMap().MinX, Loc.GetMap().MaxZ);
 
             if (startX == endX && startZ == endZ)
             {
@@ -346,7 +346,7 @@ namespace Assets
 
         private Vector3? GetWorldMousePosition()
         {
-            var inputRay = Game.Instance.CameraController.Camera.ScreenPointToRay(Input.mousePosition);
+            var inputRay = Loc.GetCamera().Camera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(inputRay, out RaycastHit hit))
             {
                 return hit.point;
@@ -365,7 +365,7 @@ namespace Assets
             {
                 Clear();
                 DeselectAll();
-                Game.Instance.OrderSelectionController.DisableAndReset();
+                Loc.GetGameController().OrderSelectionController.DisableAndReset();
             }
             else
             {
@@ -396,7 +396,7 @@ namespace Assets
                             ShowSelectionRectangle();
 
                             var selectionEndScreenPosition = Input.mousePosition;
-                            var start = Game.Instance.CameraController.Camera.WorldToScreenPoint(_selectionStartWorld);
+                            var start = Loc.GetCamera().Camera.WorldToScreenPoint(_selectionStartWorld);
                             start.z = 0f;
 
                             SelectSquareImage.position = (start + selectionEndScreenPosition) / 2;
@@ -479,7 +479,7 @@ namespace Assets
             if (creatures.Count == 1 && selectSimilar)
             {
                 var creature = creatures[0].Data;
-                creatures = MapController.Instance.GetCircle(creature.Cell, DoubleClickRadius)
+                creatures = Loc.GetMap().GetCircle(creature.Cell, DoubleClickRadius)
                                         .SelectMany(c => c.Creatures)
                                         .Where(c => c.BehaviourName == creature.BehaviourName)
                                         .Select(c => c.CreatureRenderer)
@@ -493,7 +493,7 @@ namespace Assets
 
             if (creatures?.Count > 0)
             {
-                Game.Instance.ShowCreaturePanel(creatures);
+                Loc.GetGameController().ShowCreaturePanel(creatures);
                 return true;
             }
 
@@ -505,7 +505,7 @@ namespace Assets
             if (items.Count == 1 && selectSimilar)
             {
                 var item = items[0];
-                items = MapController.Instance.GetCircle(item.Cell, DoubleClickRadius)
+                items = Loc.GetMap().GetCircle(item.Cell, DoubleClickRadius)
                                     .SelectMany(c => c.Items)
                                     .Where(i => i.Name == item.Name)
                                     .ToList();
@@ -518,7 +518,7 @@ namespace Assets
 
             if (items?.Count > 0)
             {
-                Game.Instance.ShowItemPanel(items);
+                Loc.GetGameController().ShowItemPanel(items);
                 return true;
             }
             return false;
@@ -529,7 +529,7 @@ namespace Assets
             if (structures.Count == 1 && selectSimilar)
             {
                 var structure = structures[0];
-                structures = MapController.Instance.GetCircle(structure.Cell, DoubleClickRadius)
+                structures = Loc.GetMap().GetCircle(structure.Cell, DoubleClickRadius)
                                          .SelectMany(c => c.Structures)
                                          .Where(s => s.Name == structure.Name)
                                          .ToList();
@@ -542,7 +542,7 @@ namespace Assets
 
             if (structures.Count > 0)
             {
-                Game.Instance.ShowStructureInfoPanel(structures);
+                Loc.GetGameController().ShowStructureInfoPanel(structures);
                 return true;
             }
             return false;
@@ -552,7 +552,7 @@ namespace Assets
         {
             if (zone != null)
             {
-                Game.Instance.ShowZonePanel(zone);
+                Loc.GetGameController().ShowZonePanel(zone);
                 return true;
             }
             return false;
@@ -572,7 +572,7 @@ namespace Assets
                     MeshRenderer cellRenderer;
                     if (!_draggedRenderers.ContainsKey(cell))
                     {
-                        cellRenderer = Game.Instance.StructureController.InstantiateNewStructureMeshRenderer(_meshName, MapController.Instance.transform);
+                        cellRenderer = Loc.GetStructureController().InstantiateNewStructureMeshRenderer(_meshName, Loc.GetMap().transform);
                         cellRenderer.transform.position = new Vector3(cell.Vector.x, cell.Vector.y, cell.Vector.z);
                         _draggedRenderers.Add(cell, cellRenderer);
                     }
@@ -583,11 +583,11 @@ namespace Assets
 
                     if (Validate?.Invoke(cell) == false)
                     {
-                        cellRenderer.SetAllMaterial(Game.Instance.FileController.InvalidBlueprintMaterial);
+                        cellRenderer.SetAllMaterial(Loc.GetFileController().InvalidBlueprintMaterial);
                     }
                     else
                     {
-                        cellRenderer.SetAllMaterial(Game.Instance.FileController.BlueprintMaterial);
+                        cellRenderer.SetAllMaterial(Loc.GetFileController().BlueprintMaterial);
                     }
                 }
 
@@ -611,7 +611,7 @@ namespace Assets
         {
             if (Validate?.Invoke(startCell) == false)
             {
-                _meshRenderer?.SetAllMaterial(Game.Instance.FileController.InvalidBlueprintMaterial);
+                _meshRenderer?.SetAllMaterial(Loc.GetFileController().InvalidBlueprintMaterial);
                 if (MouseSpriteRenderer != null)
                 {
                     MouseSpriteRenderer.color = ColorConstants.RedAccent;
@@ -619,7 +619,7 @@ namespace Assets
             }
             else
             {
-                _meshRenderer?.SetAllMaterial(Game.Instance.FileController.BlueprintMaterial);
+                _meshRenderer?.SetAllMaterial(Loc.GetFileController().BlueprintMaterial);
                 if (MouseSpriteRenderer != null)
                 {
                     MouseSpriteRenderer.color = ColorConstants.WhiteAccent;

@@ -1,5 +1,6 @@
 ﻿using Assets.Map;
 using Newtonsoft.Json;
+using Assets.ServiceLocator;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -59,7 +60,7 @@ namespace Assets
                 foreach (var xy in _cellString.Split(new[] { ',' }, System.StringSplitOptions.RemoveEmptyEntries))
                 {
                     var split = xy.Split(':').Select(i => int.Parse(i)).ToList();
-                    _cells.Add(MapController.Instance.GetCellAtCoordinate(split[0], split[1]));
+                    _cells.Add(Loc.GetMap().GetCellAtCoordinate(split[0], split[1]));
                 }
             }
         }

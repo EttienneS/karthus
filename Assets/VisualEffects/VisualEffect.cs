@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Assets.ServiceLocator;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -47,7 +48,7 @@ public class VisualEffect : MonoBehaviour
 
         if (Data.Properties.ContainsKey("Sprite"))
         {
-            Sprite.sprite = Game.Instance.SpriteStore.GetSprite(Data.GetProperty("Sprite"));
+            Sprite.sprite = Loc.GetSpriteStore().GetSprite(Data.GetProperty("Sprite"));
         }
         if (Data.Properties.ContainsKey("Color"))
         {
@@ -90,7 +91,7 @@ public class VisualEffect : MonoBehaviour
 
     private void Update()
     {
-        if (Game.Instance.TimeManager.Paused)
+        if (Loc.GetTimeManager().Paused)
             return;
 
         if (Data.FullSpan < 0)
@@ -155,7 +156,7 @@ public class VisualEffectData
         {
             if (_linkedGameObject == null)
             {
-                _linkedGameObject = Game.Instance.VisualEffectController.SpawnEffect(this);
+                _linkedGameObject = Loc.GetVisualEffectController().SpawnEffect(this);
             }
             return _linkedGameObject;
         }

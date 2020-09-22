@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.ServiceLocator;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -26,13 +27,13 @@ namespace UI
         {
             if (!string.IsNullOrEmpty(TooltipTitle))
             {
-                Game.Instance.ShowTooltip(TooltipTitle, TooltipText);
+                Loc.GetGameController().ShowTooltip(TooltipTitle, TooltipText);
             }
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            Game.Instance.HideTooltip();
+            Loc.GetGameController().HideTooltip();
         }
 
         public void SetProgress(float progress)

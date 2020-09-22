@@ -1,6 +1,7 @@
 ﻿using Assets.Creature;
 using Assets.Item;
 using Assets.Map;
+using Assets.ServiceLocator;
 using Assets.Structures;
 using Newtonsoft.Json;
 using System;
@@ -29,7 +30,7 @@ public class Cell : IEquatable<Cell>
     {
         get
         {
-            return Game.Instance.IdService.CreatureIdLookup.Values.Where(c => c.Cell == this).ToList();
+            return Loc.GetIdService().CreatureIdLookup.Values.Where(c => c.Cell == this).ToList();
         }
     }
 
@@ -50,7 +51,7 @@ public class Cell : IEquatable<Cell>
     {
         get
         {
-            return Game.Instance.IdService.ItemIdLookup.Values.Where(i => i.Cell == this);
+            return Loc.GetIdService().ItemIdLookup.Values.Where(i => i.Cell == this);
         }
     }
 
@@ -83,8 +84,8 @@ public class Cell : IEquatable<Cell>
     {
         get
         {
-            return Game.Instance.IdService.StructureCellLookup.ContainsKey(this)
-                    ? Game.Instance.IdService.StructureCellLookup[this] : new List<Structure>();
+            return Loc.GetIdService().StructureCellLookup.ContainsKey(this)
+                    ? Loc.GetIdService().StructureCellLookup[this] : new List<Structure>();
         }
     }
 
@@ -114,7 +115,7 @@ public class Cell : IEquatable<Cell>
     {
         // add half a unit to each position to account for offset (cells are at point 0,0 in the very center)
         position += new Vector3(0.5f, 0, 0.5f);
-        return MapController.Instance.GetCellAtCoordinate(Mathf.FloorToInt(position.x), Mathf.FloorToInt(position.z));
+        return Loc.GetMap().GetCellAtCoordinate(Mathf.FloorToInt(position.x), Mathf.FloorToInt(position.z));
     }
 
     public static bool operator !=(Cell obj1, Cell obj2)
@@ -214,7 +215,7 @@ public class Cell : IEquatable<Cell>
     {
         foreach (var structure in Structures)
         {
-            Game.Instance.StructureController.DestroyStructure(structure);
+            Loc.GetStructureController().DestroyStructure(structure);
         }
     }
 
@@ -225,7 +226,7 @@ public class Cell : IEquatable<Cell>
 
     internal Structure CreateStructure(string structureName, string faction = FactionConstants.World)
     {
-        var structure = Game.Instance.StructureController.SpawnStructure(structureName, this, Game.Instance.FactionController.Factions[faction]);
+        var structure = Loc.GetStructureController().SpawnStructure(structureName, this, Loc.GetFactionController().Factions[faction]);
         return structure;
     }
 

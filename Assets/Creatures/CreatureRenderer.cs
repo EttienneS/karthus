@@ -1,5 +1,6 @@
 ﻿using Assets.Creature;
 using Assets.Map;
+using Assets.ServiceLocator;
 using System;
 using TMPro;
 using UnityEngine;
@@ -38,7 +39,7 @@ public class CreatureRenderer : MonoBehaviour
 
     public void Start()
     {
-        Highlight = Instantiate(Game.Instance.CreatureController.HightlightPrefab, transform);
+        Highlight = Instantiate(Loc.GetCreatureController().HightlightPrefab, transform);
         Highlight.gameObject.SetActive(false);
         Text = GetComponent<TextMeshPro>();
         if (Text == null)
@@ -143,14 +144,14 @@ public class CreatureRenderer : MonoBehaviour
         {
         }
 
-        Gizmos.DrawCube(MapController.Instance.GetCellAtCoordinate(Data.TargetCoordinate.x, Data.TargetCoordinate.z).Vector + new Vector3(0, 1, 0), new Vector3(0.1f, 0.1f, 0.1f));
+        Gizmos.DrawCube(Loc.GetMap().GetCellAtCoordinate(Data.TargetCoordinate.x, Data.TargetCoordinate.z).Vector + new Vector3(0, 1, 0), new Vector3(0.1f, 0.1f, 0.1f));
     }
 
     private void UpdateFloatingText()
     {
         if (Text != null)
         {
-            var cameraPerpendicular = Game.Instance.CameraController.GetPerpendicularRotation();
+            var cameraPerpendicular = Loc.GetCamera().GetPerpendicularRotation();
 
             Text.transform.rotation = Quaternion.Euler(45, cameraPerpendicular -90, 0);
 

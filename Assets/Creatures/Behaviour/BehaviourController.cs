@@ -1,4 +1,5 @@
-﻿using Needs;
+﻿using Assets.ServiceLocator;
+using Needs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace Assets.Creature.Behaviour
         {
             try
             {
-                var type = Game.Instance.FileController.AllBehaviourTypes.First(behaviour => behaviour.Name.Equals(behaviourName, StringComparison.OrdinalIgnoreCase));
+                var type = Loc.GetFileController().AllBehaviourTypes.First(behaviour => behaviour.Name.Equals(behaviourName, StringComparison.OrdinalIgnoreCase));
                 return Activator.CreateInstance(type, null) as IBehaviour;
             }
             catch

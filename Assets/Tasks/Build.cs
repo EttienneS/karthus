@@ -1,4 +1,5 @@
 ﻿using Assets.Creature;
+using Assets.ServiceLocator;
 using Assets.Structures;
 using Newtonsoft.Json;
 using System;
@@ -35,7 +36,7 @@ public class Build : CreatureTask
         {
             if (_blueprint == null)
             {
-                _blueprint = Game.Instance.StructureController.GetBlueprintById(BlueprintId);
+                _blueprint = Loc.GetStructureController().GetBlueprintById(BlueprintId);
             }
             return _blueprint;
         }
@@ -87,12 +88,12 @@ public class Build : CreatureTask
 
     public override void FinalizeTask()
     {
-        Game.Instance.StructureController.DestroyBlueprint(Blueprint);
+        Loc.GetStructureController().DestroyBlueprint(Blueprint);
     }
 
     public void FinishStructure()
     {
-        Game.Instance.StructureController.SpawnStructure(Blueprint.StructureName, Blueprint.Cell, Blueprint.Faction);
+        Loc.GetStructureController().SpawnStructure(Blueprint.StructureName, Blueprint.Cell, Blueprint.Faction);
         var cellItems = Blueprint.Cell.Items.ToList();
         foreach (var costItem in Blueprint.Cost.Items)
         {
@@ -101,12 +102,12 @@ public class Build : CreatureTask
                 item.Amount -= costItem.Value;
                 if (item.Amount < 0)
                 {
-                    Game.Instance.ItemController.DestroyItem(item);
+                    Loc.GetItemController().DestroyItem(item);
                 }
             }
         }
 
-        Game.Instance.StructureController.DestroyBlueprint(Blueprint);
+        Loc.GetStructureController().DestroyBlueprint(Blueprint);
     }
 
     public Dictionary<string, int> GetNeededItems()
@@ -175,7 +176,7 @@ public class Build : CreatureTask
             return false;
         }
 
-        var structuresToClean = Game.Instance.IdService
+        var structuresToClean = Loc.GetIdService()
                                              .GetStructuresInCell(Blueprint.Cell)
                                              .Where(c => !c.Buildable);
 

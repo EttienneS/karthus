@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.ServiceLocator;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MainMenuController : MonoBehaviour
@@ -20,7 +21,7 @@ public class MainMenuController : MonoBehaviour
 
         if (MainMenuActive)
         {
-            Game.Instance.TimeManager.Pause();
+            Loc.GetTimeManager().Pause();
         }
     }
 
@@ -31,7 +32,7 @@ public class MainMenuController : MonoBehaviour
 
     public void Load()
     {
-        Game.Instance.ShowLoadPanel();
+        Loc.GetGameController().ShowLoadPanel();
     }
 
     public void Save()
@@ -41,7 +42,7 @@ public class MainMenuController : MonoBehaviour
 
     public void ReturnToTile()
     {
-        Game.Instance = null;
+        Loc.Reset();
         SaveManager.SaveToLoad = null;
         SceneManager.LoadScene(0, LoadSceneMode.Single);
     }

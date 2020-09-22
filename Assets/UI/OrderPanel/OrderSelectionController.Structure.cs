@@ -1,4 +1,6 @@
-﻿using Structures;
+﻿using Assets;
+using Assets.ServiceLocator;
+using Structures;
 
 public partial class OrderSelectionController //.Structure
 {
@@ -8,10 +10,10 @@ public partial class OrderSelectionController //.Structure
 
     public void BuildClicked(string structureName)
     {
-        var structure = Game.Instance.StructureController.StructureDataReference[structureName];
-        Game.Instance.Cursor.SetSelectionPreference(SelectionPreference.Cell);
+        var structure = Loc.GetStructureController().StructureDataReference[structureName];
+        Loc.Current.Get<CursorController>().SetSelectionPreference(SelectionPreference.Cell);
 
-        Game.Instance.Cursor.SetMesh(structureName, (cell) => structure.ValidateCellLocationForStructure(cell));
+        Loc.Current.Get<CursorController>().SetMesh(structureName, (cell) => structure.ValidateCellLocationForStructure(cell));
         UpdateStuctureOrder(structureName);
 
         CellClickOrder = cells =>
@@ -20,7 +22,7 @@ public partial class OrderSelectionController //.Structure
             {
                 if (structure.ValidateCellLocationForStructure(cell))
                 {
-                    Game.Instance.StructureController.SpawnBlueprint(structureName, cell, Game.Instance.FactionController.PlayerFaction);
+                    Loc.GetStructureController().SpawnBlueprint(structureName, cell, Loc.GetFactionController().PlayerFaction);
                 }
             }
         };
@@ -28,8 +30,8 @@ public partial class OrderSelectionController //.Structure
 
     public void UpdateStuctureOrder(string structureName)
     {
-        var structure = Game.Instance.StructureController.StructureDataReference[structureName];
-        Game.Instance.OrderInfoPanel.Show($"Build {structureName}",
+        var structure = Loc.GetStructureController().StructureDataReference[structureName];
+        Loc.GetGameController().OrderInfoPanel.Show($"Build {structureName}",
                                            "Select a location to place the structure.  A creature with the build skill will gather the required cost of material and then make the structure.",
                                            structure.Description,
                                            $"{structure.Cost}");
@@ -38,7 +40,7 @@ public partial class OrderSelectionController //.Structure
 
     public void BuildTypeClicked()
     {
-        if (Game.Instance.OrderTrayController.gameObject.activeInHierarchy)
+        if (Loc.GetGameController().OrderTrayController.gameObject.activeInHierarchy)
         {
             DisableAndReset();
         }
@@ -46,7 +48,7 @@ public partial class OrderSelectionController //.Structure
         {
             EnableAndClear();
 
-            foreach (var structureData in Game.Instance.StructureController.StructureDataReference.Values)
+            foreach (var structureData in Loc.GetStructureController().StructureDataReference.Values)
             {
                 if (!structureData.Buildable) continue;
 

@@ -1,4 +1,6 @@
-﻿using Assets.Structures;
+﻿using Assets;
+using Assets.ServiceLocator;
+using Assets.Structures;
 using UnityEngine;
 
 public partial class OrderSelectionController //.Construct
@@ -7,7 +9,7 @@ public partial class OrderSelectionController //.Construct
 
     private static void ShowConstructInfo(Construct constuct)
     {
-        Game.Instance.OrderInfoPanel.Show(
+        Loc.GetGameController().OrderInfoPanel.Show(
              $"Place {constuct.Name}",
              "Select a location to place the construct, rotate with E or Q.  A construct is a predefined collection of structures and is built by a creature with the build skill.",
              constuct.Description,
@@ -19,22 +21,22 @@ public partial class OrderSelectionController //.Construct
     {
         Debug.Log($"Construct clicked {constuct.Name}");
 
-        Game.Instance.Cursor.ShowConstructGhost(constuct);
+        Loc.Current.Get<CursorController>().ShowConstructGhost(constuct);
         ShowConstructInfo(constuct);
 
         CellClickOrder = cells =>
         {
             if (constuct.ValidateStartPos(cells[0]))
             {
-                constuct.Place(cells[0], Game.Instance.FactionController.PlayerFaction);
+                constuct.Place(cells[0], Loc.GetFactionController().PlayerFaction);
             }
         };
     }
 
     public void ConstructTypeClicked()
     {
-        Game.Instance.Cursor.SetSelectionPreference(SelectionPreference.Cell);
-        if (Game.Instance.OrderTrayController.gameObject.activeInHierarchy)
+        Loc.Current.Get<CursorController>().SetSelectionPreference(SelectionPreference.Cell);
+        if (Loc.GetGameController().OrderTrayController.gameObject.activeInHierarchy)
         {
             DisableAndReset();
         }
@@ -42,7 +44,7 @@ public partial class OrderSelectionController //.Construct
         {
             EnableAndClear();
 
-            foreach (var construct in Game.Instance.FileController.Constructs)
+            foreach (var construct in Loc.GetFileController().Constructs)
             {
                 var title = $"{construct.Name} ({construct.Height}x{construct.Width})";
                 var button = CreateOrderButton(() => ConstructClicked(construct),

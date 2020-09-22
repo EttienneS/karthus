@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.ServiceLocator;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class StoragePanel : MonoBehaviour
@@ -8,15 +9,15 @@ public class StoragePanel : MonoBehaviour
 
     public void AddAllowed()
     {
-        Game.Instance.UIController.ShowFilterView("Choose item to allow:",
-                                                  Game.Instance.ItemController.GetAllItemOptions(),
+        Loc.GetGameController().UIController.ShowFilterView("Choose item to allow:",
+                                                  Loc.GetItemController().GetAllItemOptions(),
                                                   (option) => Zone.Filter.AddAllowedItem(option.Name));
     }
 
     public void AddBlocked()
     {
-        Game.Instance.UIController.ShowFilterView("Choose item to block:",
-                                                  Game.Instance.ItemController.GetAllItemOptions(),
+        Loc.GetGameController().UIController.ShowFilterView("Choose item to block:",
+                                                  Loc.GetItemController().GetAllItemOptions(),
                                                   (option) => Zone.Filter.AddBlockedItem(option.Name));
     }
 

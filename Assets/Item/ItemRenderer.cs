@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Assets.ServiceLocator;
+using Newtonsoft.Json;
 using TMPro;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ namespace Assets.Item
 
         public void Start()
         {
-            _text = Game.Instance.VisualEffectController.AddTextPrefab(gameObject);
+            _text = Loc.GetVisualEffectController().AddTextPrefab(gameObject);
             _meshRenderer = gameObject.GetComponent<MeshRenderer>();
         }
 
@@ -21,12 +22,12 @@ namespace Assets.Item
         {
             if (Data.Amount <= 0)
             {
-                Game.Instance.ItemController.DestroyItem(Data);
+                Loc.GetItemController().DestroyItem(Data);
             }
             else
             {
                 _text.text = Data.Amount.ToString();
-                _text.transform.localRotation = Quaternion.Euler(Game.Instance.CameraController.GetPerpendicularRotation(), -90, -90);
+                _text.transform.localRotation = Quaternion.Euler(Loc.GetCamera().GetPerpendicularRotation(), -90, -90);
             }
         }
 

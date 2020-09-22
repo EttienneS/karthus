@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using Assets.ServiceLocator;
+using System.Linq;
 
 namespace Structures.Work.Orders
 {
@@ -34,12 +35,12 @@ namespace Structures.Work.Orders
 
                     if (item.Amount == 0)
                     {
-                        Game.Instance.ItemController.DestroyItem(item);
+                        Loc.GetItemController().DestroyItem(item);
                     }
                 }
             }
 
-            Game.Instance.ItemController.SpawnItem(Option.Name, Structure.GetOutputCell(), Option.Amount);
+            Loc.GetItemController().SpawnItem(Option.Name, Structure.GetOutputCell(), Option.Amount);
         }
     }
 }

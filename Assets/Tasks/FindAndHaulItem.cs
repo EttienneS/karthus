@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Assets.Creature;
+using Assets.ServiceLocator;
 using Assets.Map;
 
 public class FindAndHaulItem : CreatureTask
@@ -46,7 +47,7 @@ public class FindAndHaulItem : CreatureTask
     {
         get
         {
-            return MapController.Instance.GetCellAtCoordinate(TargetX, TargetZ);
+            return Loc.GetMap().GetCellAtCoordinate(TargetX, TargetZ);
         }
     }
 

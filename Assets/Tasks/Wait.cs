@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Assets.Creature;
+using Assets.ServiceLocator;
 
 public class Wait : CreatureTask
 {
@@ -27,13 +28,13 @@ public class Wait : CreatureTask
     public Wait(int duration, string reason, AnimationType animation = AnimationType.Idle) : this()
     {
         Animation = animation;
-        TimerId = Game.Instance.TimeManager.StartTimer(duration);
+        TimerId = Loc.GetTimeManager().StartTimer(duration);
         Reason = reason;
     }
 
     public Timer GetTimer()
     {
-        return Game.Instance.TimeManager.GetTimer(TimerId);
+        return Loc.GetTimeManager().GetTimer(TimerId);
     }
 
     public override bool Done(CreatureData creature)

@@ -1,5 +1,6 @@
 ﻿using Assets;
 using Assets.Creature;
+using Assets.ServiceLocator;
 using Assets.Item;
 using Assets.Map;
 using Assets.Structures;
@@ -55,7 +56,7 @@ public class Faction
     {
         get
         {
-            return Game.Instance.ZoneController.StorageZones.Where(z => z.FactionName == FactionName);
+            return Loc.GetZoneController().StorageZones.Where(z => z.FactionName == FactionName);
         }
     }
 
@@ -68,7 +69,7 @@ public class Faction
     public ItemData FindItem(string criteria, CreatureData creature)
     {
         var items = DomainCells.GetCells().SelectMany(c => c?.Items.Where(item => item.IsType(criteria) && !item.IsReserved())).ToList();
-        items.AddRange(Game.Instance.IdService.ItemIdLookup.Values.Where(i => i.FactionName == FactionName && i.IsType(criteria)));
+        items.AddRange(Loc.GetIdService().ItemIdLookup.Values.Where(i => i.FactionName == FactionName && i.IsType(criteria)));
 
         ItemData targetItem = null;
         var bestDistance = float.MaxValue;
@@ -127,7 +128,7 @@ public class Faction
 
     public void Update()
     {
-        if (Game.Instance.TimeManager.Paused)
+        if (Loc.GetTimeManager().Paused)
         {
             return;
         }
@@ -211,7 +212,7 @@ public class Faction
 
         if (FactionName != FactionConstants.World)
         {
-            DomainCells.AddCells(MapController.Instance.GetCircle(structure.Cell, 5));
+            DomainCells.AddCells(Loc.GetMap().GetCircle(structure.Cell, 5));
         }
     }
 

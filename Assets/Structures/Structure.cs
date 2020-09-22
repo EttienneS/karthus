@@ -1,5 +1,6 @@
 ﻿using Assets.Creature;
 using Assets.Map;
+using Assets.ServiceLocator;
 using Assets.Structures.Behaviour;
 using Newtonsoft.Json;
 using System;
@@ -77,7 +78,7 @@ namespace Assets.Structures
             {
                 if (_cell == null && Coords.X >= 0 && Coords.Y >= 0)
                 {
-                    _cell = MapController.Instance.GetCellAtCoordinate(Coords.X, Coords.Y);
+                    _cell = Loc.GetMap().GetCellAtCoordinate(Coords.X, Coords.Y);
                 }
                 return _cell;
             }
@@ -111,7 +112,7 @@ namespace Assets.Structures
             {
                 if (_faction == null)
                 {
-                    _faction = Game.Instance.FactionController.Factions[FactionName];
+                    _faction = Loc.GetFactionController().Factions[FactionName];
                 }
                 return _faction;
             }
@@ -290,7 +291,7 @@ namespace Assets.Structures
         internal void ShowOutline()
         {
             HideOutline();
-            _outline = Game.Instance.VisualEffectController
+            _outline = Loc.GetVisualEffectController()
                            .SpawnSpriteEffect(Vector, "CellOutline", float.MaxValue);
             _outline.Regular();
         }

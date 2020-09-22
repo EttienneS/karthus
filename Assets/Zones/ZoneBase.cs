@@ -1,5 +1,6 @@
 ﻿using Assets;
 using Assets.Item;
+using Assets.ServiceLocator;
 using Assets.Structures;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ public abstract class ZoneBase
     {
         get
         {
-            return Game.Instance.IdService.ItemIdLookup.Values.Where(i => ZoneCells.GetCells().Contains(i.Cell)).ToList();
+            return Loc.GetIdService().ItemIdLookup.Values.Where(i => ZoneCells.GetCells().Contains(i.Cell)).ToList();
         }
     }
 
@@ -35,9 +36,9 @@ public abstract class ZoneBase
         {
             var structures = new List<Structure>();
 
-            foreach (var cell in ZoneCells.GetCells().Where(c => Game.Instance.IdService.StructureCellLookup.ContainsKey(c)))
+            foreach (var cell in ZoneCells.GetCells().Where(c => Loc.GetIdService().StructureCellLookup.ContainsKey(c)))
             {
-                structures.AddRange(Game.Instance.IdService.StructureCellLookup[cell]);
+                structures.AddRange(Loc.GetIdService().StructureCellLookup[cell]);
             }
 
             return structures;

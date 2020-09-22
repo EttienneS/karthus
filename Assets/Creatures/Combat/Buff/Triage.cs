@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.ServiceLocator;
+using UnityEngine;
 
 public class Triage : StatusActionBase
 {
@@ -35,7 +36,7 @@ public class Triage : StatusActionBase
 
     internal override void StartBuff()
     {
-        Game.Instance.VisualEffectController.SpawnLightEffect(Owner.Vector, ColorConstants.WhiteBase, 2, 1, 1).Fades();
+        Loc.GetVisualEffectController().SpawnLightEffect(Owner.Vector, ColorConstants.WhiteBase, 2, 1, 1).Fades();
 
         Owner.Log($"{Owner.Name} channels some magic to .");
     }

@@ -1,4 +1,5 @@
-﻿using Structures.Work;
+﻿using Assets.ServiceLocator;
+using Structures.Work;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,7 +30,7 @@ namespace UI
             Definition = definition;
             Option = option;
 
-            Image.sprite = Game.Instance.SpriteStore.GetSprite(Option.Icon);
+            Image.sprite = Loc.GetSpriteStore().GetSprite(Option.Icon);
             Title.text = $"{definition.Name}: {option.Name}";
         }
     }

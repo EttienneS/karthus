@@ -1,4 +1,5 @@
 ﻿using Assets.Map;
+using Assets.ServiceLocator;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
@@ -31,7 +32,7 @@ public class Chunk
     {
         get
         {
-            return MapController.Instance.Chunks[Coords];
+            return Loc.GetMap().Chunks[Coords];
         }
     }
 }

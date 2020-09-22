@@ -1,5 +1,6 @@
 ﻿using Assets.Helpers;
 using Assets.Map;
+using Assets.ServiceLocator;
 using System.Linq;
 using UnityEngine;
 
@@ -47,7 +48,7 @@ public class ChunkRenderer : MonoBehaviour
             {
                 for (var x = 0; x < MeshVertexWidth; x++)
                 {
-                    var cell = MapController.Instance.GetCellAtCoordinate(x + (Data.X * MeshVertexWidth), y + (Data.Z * MeshVertexWidth));
+                    var cell = Loc.GetMap().GetCellAtCoordinate(x + (Data.X * MeshVertexWidth), y + (Data.Z * MeshVertexWidth));
                     if (cell != null)
                     {
                         height = cell.Y;
@@ -109,7 +110,7 @@ public class ChunkRenderer : MonoBehaviour
     {
         using (Instrumenter.Start())
         {
-            var waterSize = MapController.Instance.WaterPrefab.transform.localScale.x * 10;
+            var waterSize = Loc.GetMap().WaterPrefab.transform.localScale.x * 10;
             var offset = waterSize / 2;
             var waterLevel = 0 - Game.MapGenerationData.WaterLevel;
 
@@ -117,7 +118,7 @@ public class ChunkRenderer : MonoBehaviour
             {
                 for (int x = 0; x < Game.MapGenerationData.ChunkSize / waterSize; x++)
                 {
-                    var water = Instantiate(MapController.Instance.WaterPrefab, transform);
+                    var water = Instantiate(Loc.GetMap().WaterPrefab, transform);
                     water.transform.localPosition = new Vector3((x * waterSize) + offset, waterLevel, (y * waterSize) + offset);
                 }
             }

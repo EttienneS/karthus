@@ -1,4 +1,6 @@
-﻿using Assets.Creature;
+﻿using Assets;
+using Assets.Creature;
+using Assets.ServiceLocator;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -23,7 +25,7 @@ public class CreatureInfoPanel : MonoBehaviour
     public ImageButton AddButton(string spriteName)
     {
         var button = Instantiate(ImageButtonPrefab, ButtonPanel.transform);
-        button.SetImage(Game.Instance.SpriteStore.GetSprite(spriteName));
+        button.SetImage(Loc.GetSpriteStore().GetSprite(spriteName));
 
         _contextButtons.Add(button);
         button.SetOnClick(() => SetActiveButton(button));
@@ -64,7 +66,7 @@ public class CreatureInfoPanel : MonoBehaviour
             SkillsPanel.Load(creature);
             NeedsPanel.Load(creature);
 
-            AddButton(OrderSelectionController.FollowIcon).SetOnClick(() => Game.Instance.CameraController.FollowTransform(creatures.First().CreatureRenderer.transform));
+            AddButton(OrderSelectionController.FollowIcon).SetOnClick(() => Loc.GetCamera().FollowTransform(creatures.First().CreatureRenderer.transform));
             AddButton(OrderSelectionController.MoveIcon).SetOnClick(() => MoveClicked(creatures));
             AddButton(OrderSelectionController.AttackIcon).SetOnClick(() => AttackClicked(creatures));
             AddButton(OrderSelectionController.DefaultRemoveIcon).SetOnClick(() =>
@@ -139,11 +141,11 @@ public class CreatureInfoPanel : MonoBehaviour
 
     private void AttackClicked(IEnumerable<CreatureData> creatures)
     {
-        Game.Instance.Cursor.SetSelectionPreference(SelectionPreference.Cell);
-        Game.Instance.Cursor.SetSprite(Game.Instance.SpriteStore.GetSprite(OrderSelectionController.AttackIcon),
+        Loc.Current.Get<CursorController>().SetSelectionPreference(SelectionPreference.Cell);
+        Loc.Current.Get<CursorController>().SetSprite(Loc.GetSpriteStore().GetSprite(OrderSelectionController.AttackIcon),
                                         (cell) => cell.GetEnemyCreaturesOf(FactionConstants.Player).Any());
 
-        Game.Instance.OrderSelectionController.CellClickOrder = cells =>
+        Loc.GetGameController().OrderSelectionController.CellClickOrder = cells =>
         {
             foreach (var creature in creatures)
             {
@@ -180,10 +182,10 @@ public class CreatureInfoPanel : MonoBehaviour
 
     private void MoveClicked(IEnumerable<CreatureData> creatures)
     {
-        Game.Instance.Cursor.SetSelectionPreference(SelectionPreference.Cell);
-        Game.Instance.Cursor.SetSprite(Game.Instance.SpriteStore.GetSprite(OrderSelectionController.MoveIcon), (cell) => cell.TravelCost > 0);
+        Loc.Current.Get<CursorController>().SetSelectionPreference(SelectionPreference.Cell);
+        Loc.Current.Get<CursorController>().SetSprite(Loc.GetSpriteStore().GetSprite(OrderSelectionController.MoveIcon), (cell) => cell.TravelCost > 0);
 
-        Game.Instance.OrderSelectionController.CellClickOrder = cells =>
+        Loc.GetGameController().OrderSelectionController.CellClickOrder = cells =>
         {
             foreach (var creature in creatures)
             {
