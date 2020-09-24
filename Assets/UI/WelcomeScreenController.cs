@@ -58,7 +58,7 @@ public class WelcomeScreenController : MonoBehaviour
             SeedInput.text = NameHelper.GetRandomName() + " " + NameHelper.GetRandomName();
         }
 
-        Game.MapGenerationData = new MapGenerationData(SeedInput.text)
+        MapGenerationData.Instance = new MapGenerationData(SeedInput.text)
         {
             Size = (int)SizeSlider.value,
             CreaturesToSpawn = (int)SpawnSlider.value,

@@ -9,7 +9,7 @@ public class ChunkRenderer : MonoBehaviour
 {
     public Chunk Data;
     public MeshRenderer MeshRenderer;
-    public int MeshVertexWidth => Game.MapGenerationData.ChunkSize + 1;
+    public int MeshVertexWidth => MapGenerationData.Instance.ChunkSize + 1;
 
     private Mesh mesh;
     private MeshCollider meshCollider;
@@ -96,11 +96,11 @@ public class ChunkRenderer : MonoBehaviour
 
     public void Start()
     {
-        transform.position = new Vector3(Data.X * Game.MapGenerationData.ChunkSize, 0, Data.Z * Game.MapGenerationData.ChunkSize);
+        transform.position = new Vector3(Data.X * MapGenerationData.Instance.ChunkSize, 0, Data.Z * MapGenerationData.Instance.ChunkSize);
 
         CreateMesh();
 
-        if (Game.MapGenerationData.CreateWater)
+        if (MapGenerationData.Instance.CreateWater)
         {
             AddWaterLevel();
         }
@@ -112,11 +112,11 @@ public class ChunkRenderer : MonoBehaviour
         {
             var waterSize = Loc.GetMap().WaterPrefab.transform.localScale.x * 10;
             var offset = waterSize / 2;
-            var waterLevel = 0 - Game.MapGenerationData.WaterLevel;
+            var waterLevel = 0 - MapGenerationData.Instance.WaterLevel;
 
-            for (int y = 0; y < Game.MapGenerationData.ChunkSize / waterSize; y++)
+            for (int y = 0; y < MapGenerationData.Instance.ChunkSize / waterSize; y++)
             {
-                for (int x = 0; x < Game.MapGenerationData.ChunkSize / waterSize; x++)
+                for (int x = 0; x < MapGenerationData.Instance.ChunkSize / waterSize; x++)
                 {
                     var water = Instantiate(Loc.GetMap().WaterPrefab, transform);
                     water.transform.localPosition = new Vector3((x * waterSize) + offset, waterLevel, (y * waterSize) + offset);

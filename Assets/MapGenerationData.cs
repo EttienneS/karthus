@@ -19,4 +19,6 @@ public class MapGenerationData
     {
         Seed = seed;
     }
+
+    public static MapGenerationData Instance { get; set; }
 }

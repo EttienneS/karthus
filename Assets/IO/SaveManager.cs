@@ -15,7 +15,7 @@ public static class SaveManager
     {
         get
         {
-            return $"{RootSaveDir}\\{Game.MapGenerationData.Seed}\\";
+            return $"{RootSaveDir}\\{MapGenerationData.Instance.Seed}\\";
         }
     }
 
@@ -39,7 +39,7 @@ public static class SaveManager
     {
         return new Save
         {
-            MapGenerationData = Game.MapGenerationData,
+            MapGenerationData = MapGenerationData.Instance,
             Factions = Loc.GetFactionController().Factions.Values.ToList(),
             Time = Loc.GetTimeManager().Data,
             Items = Loc.GetIdService().ItemIdLookup.Values.ToList(),

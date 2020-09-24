@@ -47,8 +47,8 @@ namespace Assets.Map
         {
             get
             {
-                var x = Game.MapGenerationData.Size * Game.MapGenerationData.ChunkSize / 2;
-                var z = Game.MapGenerationData.Size * Game.MapGenerationData.ChunkSize / 2;
+                var x = MapGenerationData.Instance.Size * MapGenerationData.Instance.ChunkSize / 2;
+                var z = MapGenerationData.Instance.Size * MapGenerationData.Instance.ChunkSize / 2;
                 return CellLookup[(x, z)];
             }
         }
@@ -59,14 +59,14 @@ namespace Assets.Map
             {
                 if (_localNoiseMap == null)
                 {
-                    _localNoiseMap = Noise.GenerateNoiseMap(SeedValue, Loc.GetGameController().MaxSize, Loc.GetGameController().MaxSize, LocalNoise, Vector2.zero);
+                    _localNoiseMap = Noise.GenerateNoiseMap(SeedValue, MaxSize, MaxSize, LocalNoise, Vector2.zero);
                 }
                 return _localNoiseMap;
             }
         }
 
-        internal int MaxX => Loc.GetGameController().MaxSize;
-        internal int MaxZ => Loc.GetGameController().MaxSize;
+        internal int MaxX => MaxSize;
+        internal int MaxZ => MaxSize;
         internal int MinX => 0;
         internal int MinZ => 0;
 
@@ -77,7 +77,7 @@ namespace Assets.Map
                 if (!_seedValue.HasValue)
                 {
                     var md5Hasher = MD5.Create();
-                    var hashed = md5Hasher.ComputeHash(Encoding.UTF8.GetBytes(Game.MapGenerationData.Seed));
+                    var hashed = md5Hasher.ComputeHash(Encoding.UTF8.GetBytes(MapGenerationData.Instance.Seed));
                     _seedValue = BitConverter.ToInt32(hashed, 0);
                 }
                 return _seedValue.Value;
@@ -114,15 +114,15 @@ namespace Assets.Map
 
         public void GenerateMap()
         {
-            var size = Loc.GetGameController().MaxSize;
+            var size = MaxSize;
             MakeCells(size);
             Loc.GetMap().Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
 
             if (SaveManager.SaveToLoad == null)
             {
-                for (var x = 0; x < Game.MapGenerationData.Size; x++)
+                for (var x = 0; x < MapGenerationData.Instance.Size; x++)
                 {
-                    for (var y = 0; y < Game.MapGenerationData.Size; y++)
+                    for (var y = 0; y < MapGenerationData.Instance.Size; y++)
                     {
                         Loc.GetMap().MakeChunk(new Chunk(x, y));
                     }
@@ -210,6 +210,11 @@ namespace Assets.Map
                 return null;
             }
             return CellLookup[(cell.X, cell.Z)];
+        }
+
+        internal Vector3 GetMapCenter()
+        {
+            return new Vector3((MapGenerationData.Instance.ChunkSize * MapGenerationData.Instance.Size) / 2, 1, (MapGenerationData.Instance.ChunkSize * MapGenerationData.Instance.Size) / 2);
         }
 
         public Cell GetCellAttRadian(Cell center, int radius, int angle)
@@ -315,7 +320,7 @@ namespace Assets.Map
         public ChunkRenderer MakeChunk(Chunk data)
         {
             var chunk = Instantiate(ChunkPrefab, transform);
-            chunk.transform.position = new Vector2(data.X * Game.MapGenerationData.ChunkSize, data.Z * Game.MapGenerationData.ChunkSize);
+            chunk.transform.position = new Vector2(data.X * MapGenerationData.Instance.ChunkSize, data.Z * MapGenerationData.Instance.ChunkSize);
             chunk.name = $"Chunk: {data.X}_{data.Z}";
             chunk.Data = data;
 
@@ -344,7 +349,7 @@ namespace Assets.Map
 
             Loc.GetStructureController().SpawnStructure("Campfire", open.GetRandomItem(), Loc.GetFactionController().PlayerFaction);
 
-            for (int i = 0; i < Game.MapGenerationData.CreaturesToSpawn; i++)
+            for (int i = 0; i < MapGenerationData.Instance.CreaturesToSpawn; i++)
             {
                 var c = Loc.GetCreatureController().SpawnCreature(Loc.GetCreatureController().GetCreatureOfType("Person"),
                                                                        Loc.GetMap().GetNearestPathableCell(center, Mobility.Walk, 10),
@@ -453,7 +458,7 @@ namespace Assets.Map
         {
             using (Instrumenter.Start())
             {
-                if (Game.MapGenerationData.Populate)
+                if (MapGenerationData.Instance.Populate)
                 {
                     foreach (var cell in Loc.GetMap().Cells)
                     {
@@ -488,8 +493,23 @@ namespace Assets.Map
             }
         }
 
+        public int MaxSize => MapGenerationData.Instance.Size * MapGenerationData.Instance.ChunkSize;
+
         public void Initialize()
         {
+            if (SaveManager.SaveToLoad != null)
+            {
+                MapGenerationData.Instance = SaveManager.SaveToLoad.MapGenerationData;
+            }
+            else
+            {
+                if (MapGenerationData.Instance == null)
+                {
+                    MapGenerationData.Instance = new MapGenerationData(NameHelper.GetRandomName() + " " + NameHelper.GetRandomName());
+                }
+            }
+
+            Loc.GetMap().GenerateMap();
         }
     }
 }

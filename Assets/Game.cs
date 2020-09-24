@@ -25,7 +25,6 @@ public class Game : MonoBehaviour, IGameService
     public GameObject UI;
     public UIController UIController;
     public ZoneInfoPanel ZoneInfoPanelPrefab;
-    internal static MapGenerationData MapGenerationData;
     internal LoadPanel CurrentLoadPanel;
 
     private readonly List<GameObject> _destroyCache = new List<GameObject>();
@@ -36,8 +35,6 @@ public class Game : MonoBehaviour, IGameService
     private ZoneInfoPanel _currentZoneInfoPanel;
     private DateTime? _lastAutoSave = null;
     private bool _shownOnce;
-
-    public int MaxSize => MapGenerationData.Size * MapGenerationData.ChunkSize;
 
     public bool Paused { get; set; }
 
@@ -162,23 +159,6 @@ public class Game : MonoBehaviour, IGameService
         _currentZoneInfoPanel.Show(zone);
     }
 
-    private void InitFactions()
-    {
-        foreach (var factionName in new[]
-        {
-            FactionConstants.Player,
-            FactionConstants.Monster,
-            FactionConstants.World
-        })
-        {
-            var faction = new Faction
-            {
-                FactionName = factionName
-            };
-            Loc.GetFactionController().Factions.Add(factionName, faction);
-        }
-    }
-
     private void OnFirstRun()
     {
         if (!_shownOnce)
@@ -222,20 +202,5 @@ public class Game : MonoBehaviour, IGameService
     public void Initialize()
     {
         UIController.Hide();
-
-        if (SaveManager.SaveToLoad != null)
-        {
-            MapGenerationData = SaveManager.SaveToLoad.MapGenerationData;
-        }
-        else
-        {
-            if (MapGenerationData == null)
-            {
-                MapGenerationData = new MapGenerationData(NameHelper.GetRandomName() + " " + NameHelper.GetRandomName());
-            }
-            InitFactions();
-        }
-
-        Loc.GetMap().GenerateMap();
     }
 }
