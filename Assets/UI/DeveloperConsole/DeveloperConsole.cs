@@ -4,8 +4,10 @@ using Assets.ServiceLocator;
 using Assets.Structures.Behaviour;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Timeline;
 
 public class DeveloperConsole : MonoBehaviour
 {
@@ -137,12 +139,20 @@ public class DeveloperConsole : MonoBehaviour
         Commands.Add("List", List);
         Commands.Add("Move", MoveCreature);
         Commands.Add("Set", SetNeed);
+        Commands.Add("Save", (_) => MakeSave());
 
         Parser = new ArgsParser();
         foreach (var command in Commands)
         {
             Parser.ArgumentDefinitions.Add(new StringArgument(command.Key));
         }
+    }
+
+    private string MakeSave()
+    {
+        SaveManager.SaveGame();
+
+        return Directory.EnumerateFiles(SaveManager.SaveDir).Last();
     }
 
     internal void OnGUI()

@@ -18,6 +18,11 @@ namespace Assets
             _cells = new List<Cell>();
         }
 
+        public ManagedCellCollection(IEnumerable<Cell> cells) : this()
+        {
+            AddCells(cells);
+        }
+
         public string CellString
         {
             get

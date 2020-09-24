@@ -26,9 +26,9 @@ namespace Assets.Map
 
         public static MapGenerationData Instance { get; set; }
 
-        internal void AddChange(int x, int z, string regionName, int region, float height)
+        internal void AddChange(IEnumerable<Cell> cells, string biome, string region, float height)
         {
-            MapDiff.Add(new CellDiff(x, z, regionName, region, height));
+            MapDiff.Add(new CellDiff(cells, biome, region, height));
         }
     }
 }

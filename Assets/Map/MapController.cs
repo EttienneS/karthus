@@ -397,9 +397,14 @@ namespace Assets.Map
         {
             foreach (var diff in MapGenerationData.Instance.MapDiff)
             {
-                var cell = GetCellAtCoordinate(diff.X, diff.Z);
-                cell.BiomeRegion = BiomeTemplates[diff.BiomeName].BiomeRegions[diff.BiomeRegion];
-                cell.Y = diff.Height;
+                var biome = BiomeTemplates[diff.Biome];
+                var region = biome.BiomeRegions.Find(b => b.Name.Equals(diff.Region, StringComparison.OrdinalIgnoreCase));
+
+                foreach (var cell in diff.CellCollection.GetCells())
+                {
+                    cell.BiomeRegion = region;
+                    cell.Y = diff.Height;
+                }
             }
         }
         private void CreateChunks()
@@ -418,21 +423,14 @@ namespace Assets.Map
             if (SaveManager.SaveToLoad == null)
             {
                 var center = GetRandomCell();
-                var sand = GetCircle(center, 7);
                 var water = GetCircle(center, 5);
-                sand.RemoveAll(c => water.Contains(c));
+                var sand = GetCircle(center, 7).Except(water);
 
-                foreach (var cell in water)
-                {
-                    MapGenerationData.Instance.AddChange(cell.X, cell.Z, "Water", 0, Random.Range(-2f, -1f));
-                }
-
-                foreach (var cell in sand)
-                {
-                    MapGenerationData.Instance.AddChange(cell.X, cell.Z, "Water", 1, Random.Range(-0.5f, 0f));
-                }
+                MapGenerationData.Instance.AddChange(water, "Dam", "Water", Random.Range(-2f, -1f));
+                MapGenerationData.Instance.AddChange(sand, "Dam", "Sand", Random.Range(-0.5f, 0f));
             }
         }
+
         private void CreateOrLoadChunks()
         {
             Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
