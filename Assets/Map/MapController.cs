@@ -423,11 +423,12 @@ namespace Assets.Map
             if (SaveManager.SaveToLoad == null)
             {
                 var center = GetRandomCell();
-                var water = GetCircle(center, 5);
-                var sand = GetCircle(center, 7).Except(water);
+                var size = Random.Range(4, 8);
+                var water = GetCircle(center, size);
+                var sand = GetCircle(center, size + 2).Except(water);
 
-                MapGenerationData.Instance.AddChange(water, "Dam", "Water", Random.Range(-2f, -1f));
-                MapGenerationData.Instance.AddChange(sand, "Dam", "Sand", Random.Range(-0.5f, 0f));
+                MapGenerationData.Instance.AddChange(water, "Dam", "Water", Random.Range(-3f, -1f));
+                MapGenerationData.Instance.AddChange(sand, "Dam", "Shore", Random.Range(-0.5f, 0f));
             }
         }
 

@@ -17,10 +17,10 @@
       },
       "Min": 0.0,
       "Max": 1,
-      "Name": "Sand",
-      "Red": 1,
+      "Name": "Shore",
+      "Red": 0.8,
       "Green": 0,
-      "Blue": 0,
+      "Blue": 0.2,
       "Alpha": 0.5,
       "TravelCost": 2
     }
