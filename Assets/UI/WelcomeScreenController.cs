@@ -1,4 +1,5 @@
-﻿using Assets.ServiceLocator;
+﻿using Assets.Map;
+using Assets.ServiceLocator;
 using System.Collections;
 using System.IO;
 using System.Linq;

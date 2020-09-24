@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Assets.Map
 {
@@ -22,26 +23,10 @@ namespace Assets.Map
         public NoiseSettings WorldNoise;
 
         internal Dictionary<(int x, int y), ChunkRenderer> Chunks;
-        private Dictionary<string, Biome> _biomeTemplates;
         private float[,] _localNoiseMap;
         private int? _seedValue;
 
-        public Dictionary<string, Biome> BiomeTemplates
-        {
-            get
-            {
-                if (_biomeTemplates == null)
-                {
-                    _biomeTemplates = new Dictionary<string, Biome>();
-                    foreach (var biomeFile in Loc.GetFileController().BiomeFiles)
-                    {
-                        _biomeTemplates.Add(biomeFile.name, biomeFile.text.LoadJson<Biome>());
-                    }
-                }
-
-                return _biomeTemplates;
-            }
-        }
+        public Dictionary<string, Biome> BiomeTemplates { get; set; }
 
         public Cell Center
         {
@@ -65,6 +50,7 @@ namespace Assets.Map
             }
         }
 
+        public int MaxSize => MapGenerationData.Instance.Size * MapGenerationData.Instance.ChunkSize;
         internal int MaxX => MaxSize;
         internal int MaxZ => MaxSize;
         internal int MinX => 0;
@@ -94,8 +80,8 @@ namespace Assets.Map
 
         public Cell CreateCell(int x, int z)
         {
-            var noiseMapHeight = Loc.GetMap().GetNoiseMapPoint(x, z);
-            var biome = Loc.GetMap().GetBiome(x, z).GetRegion(noiseMapHeight);
+            var noiseMapHeight = GetNoiseMapPoint(x, z);
+            var biome = GetBiome(x, z).GetRegion(noiseMapHeight);
 
             var y = 0;
             var cell = new Cell
@@ -107,72 +93,22 @@ namespace Assets.Map
                 SearchPhase = 0
             };
 
-            Loc.GetMap().CellLookup.Add((x, z), cell);
+            CellLookup.Add((x, z), cell);
 
             return cell;
         }
 
         public void GenerateMap()
         {
-            var size = MaxSize;
-            MakeCells(size);
-            Loc.GetMap().Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
+            MakeCells();
 
-            if (SaveManager.SaveToLoad == null)
-            {
-                for (var x = 0; x < MapGenerationData.Instance.Size; x++)
-                {
-                    for (var y = 0; y < MapGenerationData.Instance.Size; y++)
-                    {
-                        Loc.GetMap().MakeChunk(new Chunk(x, y));
-                    }
-                }
-                PopulateCells();
-            }
-            else
-            {
-                foreach (var chunk in SaveManager.SaveToLoad.Chunks)
-                {
-                    Loc.GetMap().MakeChunk(chunk);
-                }
-                PopulateMapFromSave();
-            }
-        }
+            CreateMapDiff();
 
-        private void PopulateMapFromSave()
-        {
-            Loc.GetTimeManager().Data = SaveManager.SaveToLoad.Time;
-            foreach (var item in SaveManager.SaveToLoad.Items)
-            {
-                Loc.GetItemController().SpawnItem(item);
-            }
+            ApplyMapDiff();
 
-            foreach (var faction in SaveManager.SaveToLoad.Factions)
-            {
-                Loc.GetFactionController().Factions.Add(faction.FactionName, faction);
+            CreateOrLoadChunks();
 
-                foreach (var creature in faction.Creatures.ToList())
-                {
-                    Loc.GetCreatureController().SpawnCreature(creature, creature.Cell, faction);
-                }
-
-                foreach (var structure in faction.Structures.ToList())
-                {
-                    Loc.GetStructureController().SpawnStructure(structure);
-                }
-
-                foreach (var blueprint in faction.Blueprints.ToList())
-                {
-                    Loc.GetStructureController().SpawnBlueprint(blueprint);
-                }
-            }
-
-            SaveManager.SaveToLoad.Stores.ForEach(Loc.GetZoneController().LoadStore);
-            SaveManager.SaveToLoad.Rooms.ForEach(Loc.GetZoneController().LoadRoom);
-            SaveManager.SaveToLoad.Areas.ForEach(Loc.GetZoneController().LoadArea);
-
-            //SaveManager.SaveToLoad.CameraData.Load(CameraController);
-            SaveManager.SaveToLoad = null;
+            PopulateOrLoadCellContents();
         }
 
         public Biome GetBiome(int x, int y)
@@ -212,11 +148,6 @@ namespace Assets.Map
             return CellLookup[(cell.X, cell.Z)];
         }
 
-        internal Vector3 GetMapCenter()
-        {
-            return new Vector3((MapGenerationData.Instance.ChunkSize * MapGenerationData.Instance.Size) / 2, 1, (MapGenerationData.Instance.ChunkSize * MapGenerationData.Instance.Size) / 2);
-        }
-
         public Cell GetCellAttRadian(Cell center, int radius, int angle)
         {
             var mineX = Mathf.Clamp(Mathf.FloorToInt(center.X + (radius * Mathf.Cos(angle))), 0, MaxX);
@@ -252,12 +183,12 @@ namespace Assets.Map
 
         public (Cell bottomLeft, Cell bottomRight, Cell topLeft, Cell topRight) GetCorners(List<Cell> square)
         {
-            var (minx, maxx, minz, maxz) = Loc.GetMap().GetMinMax(square);
+            var (minx, maxx, minz, maxz) = GetMinMax(square);
 
-            return (Loc.GetMap().GetCellAtCoordinate(minx, minz),
-                    Loc.GetMap().GetCellAtCoordinate(maxx, minz),
-                    Loc.GetMap().GetCellAtCoordinate(minx, maxz),
-                    Loc.GetMap().GetCellAtCoordinate(maxx, maxz));
+            return (GetCellAtCoordinate(minx, minz),
+                    GetCellAtCoordinate(maxx, minz),
+                    GetCellAtCoordinate(minx, maxz),
+                    GetCellAtCoordinate(maxx, maxz));
         }
 
         public (int minx, int maxx, int minz, int maxz) GetMinMax(List<Cell> cells)
@@ -317,6 +248,15 @@ namespace Assets.Map
             return LocalNoiseMap[(int)x, (int)y];
         }
 
+        public void Initialize()
+        {
+            LoadBiomeTemplates();
+
+            LoadOrInitializeMapgenData();
+
+            GenerateMap();
+        }
+
         public ChunkRenderer MakeChunk(Chunk data)
         {
             var chunk = Instantiate(ChunkPrefab, transform);
@@ -324,21 +264,21 @@ namespace Assets.Map
             chunk.name = $"Chunk: {data.X}_{data.Z}";
             chunk.Data = data;
 
-            Loc.GetMap().Chunks.Add((data.X, data.Z), chunk);
+            Chunks.Add((data.X, data.Z), chunk);
 
             return chunk;
         }
 
         public void MakeFactionBootStrap(Faction faction)
         {
-            var center = Loc.GetMap().GetNearestPathableCell(Loc.GetMap().Center, Mobility.Walk, 10);
+            var center = GetNearestPathableCell(Center, Mobility.Walk, 10);
 
             Loc.GetFactionController()
                          .PlayerFaction
                          .DomainCells
-                         .AddCells(Loc.GetMap().GetCircle(Loc.GetMap().Center, 15));
+                         .AddCells(GetCircle(Center, 15));
 
-            var open = Loc.GetMap().GetCircle(center, 5).Where(c => c.PathableWith(Mobility.Walk));
+            var open = GetCircle(center, 5).Where(c => c.PathableWith(Mobility.Walk));
             Loc.GetItemController().SpawnItem("Berries", open.GetRandomItem(), 50);
             Loc.GetItemController().SpawnItem("Berries", open.GetRandomItem(), 50);
             Loc.GetItemController().SpawnItem("Plank", open.GetRandomItem(), 50);
@@ -352,7 +292,7 @@ namespace Assets.Map
             for (int i = 0; i < MapGenerationData.Instance.CreaturesToSpawn; i++)
             {
                 var c = Loc.GetCreatureController().SpawnCreature(Loc.GetCreatureController().GetCreatureOfType("Person"),
-                                                                       Loc.GetMap().GetNearestPathableCell(center, Mobility.Walk, 10),
+                                                                       GetNearestPathableCell(center, Mobility.Walk, 10),
                                                                        faction);
             }
         }
@@ -370,14 +310,19 @@ namespace Assets.Map
                 //{
                 //    var creature = Loc.GetCreatureController().GetCreatureOfType(monster.Key);
 
-                //    var spot = Loc.GetMap().GetCircle(Instance.Center, 25).GetRandomItem();
+                //    var spot = GetCircle(Instance.Center, 25).GetRandomItem();
                 //    if (spot.TravelCost <= 0 && creature.Mobility != Mobility.Fly)
                 //    {
-                //        spot = Loc.GetMap().CellLookup.Values.Where(c => c.TravelCost > 0).GetRandomItem();
+                //        spot = CellLookup.Values.Where(c => c.TravelCost > 0).GetRandomItem();
                 //    }
                 //    Loc.GetCreatureController().SpawnCreature(creature, spot, Loc.GetFactionController().MonsterFaction);
                 //}
             }
+        }
+
+        internal Vector3 GetMapCenter()
+        {
+            return new Vector3((MapGenerationData.Instance.ChunkSize * MapGenerationData.Instance.Size) / 2, 1, (MapGenerationData.Instance.ChunkSize * MapGenerationData.Instance.Size) / 2);
         }
 
         internal Cell GetNearestPathableCell(Cell centerPoint, Mobility mobility, int radius)
@@ -389,85 +334,12 @@ namespace Assets.Map
                                .First();
         }
 
-        internal void MakeCells(int size)
+        internal void MakeCells()
         {
             using (Instrumenter.Start())
             {
-                InstantiateCells(size);
-                LinkCellsToNeighbors(size);
-            }
-        }
-
-        private static void LinkCellsToNeighbors(int size)
-        {
-            // link cell to the others in the chunk
-            for (var z = 0; z < 0 + size; z++)
-            {
-                for (var x = 0; x < 0 + size; x++)
-                {
-                    var cell = Loc.GetMap().CellLookup[(x, z)];
-                    if (x > 0)
-                    {
-                        cell.SetNeighbor(Direction.W, Loc.GetMap().CellLookup[(x - 1, z)]);
-
-                        if (z > 0)
-                        {
-                            cell.SetNeighbor(Direction.SW, Loc.GetMap().CellLookup[(x - 1, z - 1)]);
-
-                            if (x < size - 1)
-                            {
-                                cell.SetNeighbor(Direction.SE, Loc.GetMap().CellLookup[(x + 1, z - 1)]);
-                            }
-                        }
-                    }
-
-                    if (z > 0)
-                    {
-                        cell.SetNeighbor(Direction.S, Loc.GetMap().CellLookup[(x, z - 1)]);
-                    }
-                }
-            }
-        }
-
-        private void InstantiateCells(int size)
-        {
-            Loc.GetMap().Cells = new List<Cell>();
-            for (var y = 0; y < 0 + size; y++)
-            {
-                for (var x = 0; x < 0 + size; x++)
-                {
-                    Loc.GetMap().Cells.Add(CreateCell(x, y));
-                }
-            }
-        }
-
-        internal Cell TryGetPathableNeighbour(Cell coordinates)
-        {
-            var pathables = coordinates.NonNullNeighbors
-                         .Where(c => c.TravelCost > 0)
-                         .ToList();
-
-            if (pathables.Count > 0)
-            {
-                return pathables.GetRandomItem();
-            }
-            return null;
-        }
-
-        private void PopulateCells()
-        {
-            using (Instrumenter.Start())
-            {
-                if (MapGenerationData.Instance.Populate)
-                {
-                    foreach (var cell in Loc.GetMap().Cells)
-                    {
-                        Populate(cell);
-                    }
-
-                    MakeFactionBootStrap(Loc.GetFactionController().PlayerFaction);
-                    SpawnCreatures();
-                }
+                InstantiateCells();
+                LinkCellsToNeighbors();
             }
         }
 
@@ -493,9 +365,20 @@ namespace Assets.Map
             }
         }
 
-        public int MaxSize => MapGenerationData.Instance.Size * MapGenerationData.Instance.ChunkSize;
+        internal Cell TryGetPathableNeighbour(Cell coordinates)
+        {
+            var pathables = coordinates.NonNullNeighbors
+                         .Where(c => c.TravelCost > 0)
+                         .ToList();
 
-        public void Initialize()
+            if (pathables.Count > 0)
+            {
+                return pathables.GetRandomItem();
+            }
+            return null;
+        }
+
+        private static void LoadOrInitializeMapgenData()
         {
             if (SaveManager.SaveToLoad != null)
             {
@@ -508,8 +391,191 @@ namespace Assets.Map
                     MapGenerationData.Instance = new MapGenerationData(NameHelper.GetRandomName() + " " + NameHelper.GetRandomName());
                 }
             }
+        }
 
-            Loc.GetMap().GenerateMap();
+        private void ApplyMapDiff()
+        {
+            foreach (var diff in MapGenerationData.Instance.MapDiff)
+            {
+                var cell = GetCellAtCoordinate(diff.X, diff.Z);
+                cell.BiomeRegion = BiomeTemplates[diff.BiomeName].BiomeRegions[diff.BiomeRegion];
+                cell.Y = diff.Height;
+            }
+        }
+        private void CreateChunks()
+        {
+            for (var x = 0; x < MapGenerationData.Instance.Size; x++)
+            {
+                for (var y = 0; y < MapGenerationData.Instance.Size; y++)
+                {
+                    MakeChunk(new Chunk(x, y));
+                }
+            }
+        }
+
+        private void CreateMapDiff()
+        {
+            if (SaveManager.SaveToLoad == null)
+            {
+                var center = GetRandomCell();
+                var sand = GetCircle(center, 7);
+                var water = GetCircle(center, 5);
+                sand.RemoveAll(c => water.Contains(c));
+
+                foreach (var cell in water)
+                {
+                    MapGenerationData.Instance.AddChange(cell.X, cell.Z, "Water", 0, Random.Range(-2f, -1f));
+                }
+
+                foreach (var cell in sand)
+                {
+                    MapGenerationData.Instance.AddChange(cell.X, cell.Z, "Water", 1, Random.Range(-0.5f, 0f));
+                }
+            }
+        }
+        private void CreateOrLoadChunks()
+        {
+            Chunks = new Dictionary<(int x, int y), ChunkRenderer>();
+
+            if (SaveManager.SaveToLoad == null)
+            {
+                CreateChunks();
+            }
+            else
+            {
+                LoadChunks();
+            }
+        }
+
+        private Cell GetRandomCell()
+        {
+            return Cells.GetRandomItem();
+        }
+
+        private void InstantiateCells()
+        {
+            Cells = new List<Cell>();
+            for (var y = 0; y < 0 + MaxSize; y++)
+            {
+                for (var x = 0; x < 0 + MaxSize; x++)
+                {
+                    Cells.Add(CreateCell(x, y));
+                }
+            }
+        }
+
+        private void LinkCellsToNeighbors()
+        {
+            var size = MaxSize;
+            // link cell to the others in the chunk
+            for (var z = 0; z < 0 + size; z++)
+            {
+                for (var x = 0; x < 0 + size; x++)
+                {
+                    var cell = CellLookup[(x, z)];
+                    if (x > 0)
+                    {
+                        cell.SetNeighbor(Direction.W, CellLookup[(x - 1, z)]);
+
+                        if (z > 0)
+                        {
+                            cell.SetNeighbor(Direction.SW, CellLookup[(x - 1, z - 1)]);
+
+                            if (x < size - 1)
+                            {
+                                cell.SetNeighbor(Direction.SE, CellLookup[(x + 1, z - 1)]);
+                            }
+                        }
+                    }
+
+                    if (z > 0)
+                    {
+                        cell.SetNeighbor(Direction.S, CellLookup[(x, z - 1)]);
+                    }
+                }
+            }
+        }
+
+        private void LoadBiomeTemplates()
+        {
+            BiomeTemplates = new Dictionary<string, Biome>();
+            foreach (var biomeFile in Loc.GetFileController().BiomeFiles)
+            {
+                BiomeTemplates.Add(biomeFile.name, biomeFile.text.LoadJson<Biome>());
+            }
+        }
+
+        private void LoadChunks()
+        {
+            foreach (var chunk in SaveManager.SaveToLoad.Chunks)
+            {
+                MakeChunk(chunk);
+            }
+        }
+
+        private void PopulateCells()
+        {
+            using (Instrumenter.Start())
+            {
+                if (MapGenerationData.Instance.Populate)
+                {
+                    foreach (var cell in Cells)
+                    {
+                        Populate(cell);
+                    }
+
+                    MakeFactionBootStrap(Loc.GetFactionController().PlayerFaction);
+                    SpawnCreatures();
+                }
+            }
+        }
+
+        private void PopulateMapFromSave()
+        {
+            Loc.GetTimeManager().Data = SaveManager.SaveToLoad.Time;
+            foreach (var item in SaveManager.SaveToLoad.Items)
+            {
+                Loc.GetItemController().SpawnItem(item);
+            }
+
+            foreach (var faction in SaveManager.SaveToLoad.Factions)
+            {
+                Loc.GetFactionController().Factions.Add(faction.FactionName, faction);
+
+                foreach (var creature in faction.Creatures.ToList())
+                {
+                    Loc.GetCreatureController().SpawnCreature(creature, creature.Cell, faction);
+                }
+
+                foreach (var structure in faction.Structures.ToList())
+                {
+                    Loc.GetStructureController().SpawnStructure(structure);
+                }
+
+                foreach (var blueprint in faction.Blueprints.ToList())
+                {
+                    Loc.GetStructureController().SpawnBlueprint(blueprint);
+                }
+            }
+
+            SaveManager.SaveToLoad.Stores.ForEach(Loc.GetZoneController().LoadStore);
+            SaveManager.SaveToLoad.Rooms.ForEach(Loc.GetZoneController().LoadRoom);
+            SaveManager.SaveToLoad.Areas.ForEach(Loc.GetZoneController().LoadArea);
+
+            //SaveManager.SaveToLoad.CameraData.Load(CameraController);
+            SaveManager.SaveToLoad = null;
+        }
+
+        private void PopulateOrLoadCellContents()
+        {
+            if (SaveManager.SaveToLoad == null)
+            {
+                PopulateCells();
+            }
+            else
+            {
+                PopulateMapFromSave();
+            }
         }
     }
 }

@@ -1,24 +1,34 @@
 ﻿using System;
+using System.Collections.Generic;
 
-[Serializable]
-public class MapGenerationData
+namespace Assets.Map
 {
-    public int ChunkSize = 60;
-    public bool CreateWater = true;
-    public int CreaturesToSpawn = 3;
-    public bool Populate = true;
-    public string Seed;
-    public int Size = 1;
-    public float WaterLevel = 0.15f;
-
-    public MapGenerationData()
+    [Serializable]
+    public class MapGenerationData
     {
-    }
+        public int ChunkSize = 60;
+        public bool CreateWater = true;
+        public int CreaturesToSpawn = 3;
+        public List<CellDiff> MapDiff = new List<CellDiff>();
+        public bool Populate = true;
+        public string Seed;
+        public int Size = 1;
+        public float WaterLevel = 0.5f;
 
-    public MapGenerationData(string seed)
-    {
-        Seed = seed;
-    }
+        public MapGenerationData()
+        {
+        }
 
-    public static MapGenerationData Instance { get; set; }
+        public MapGenerationData(string seed)
+        {
+            Seed = seed;
+        }
+
+        public static MapGenerationData Instance { get; set; }
+
+        internal void AddChange(int x, int z, string regionName, int region, float height)
+        {
+            MapDiff.Add(new CellDiff(x, z, regionName, region, height));
+        }
+    }
 }

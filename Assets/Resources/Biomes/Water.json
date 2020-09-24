@@ -1,0 +1,30 @@
+{
+  "BiomeRegions": [
+    {
+      "Content": {
+      },
+      "Min": 0.0,
+      "Max": 1,
+      "Name": "Water",
+      "Red": 1,
+      "Green": 0,
+      "Blue": 0,
+      "Alpha": 0.5,
+      "TravelCost": -1
+    },
+    {
+      "Content": {
+      },
+      "Min": 0.0,
+      "Max": 1,
+      "Name": "Sand",
+      "Red": 1,
+      "Green": 0,
+      "Blue": 0,
+      "Alpha": 0.5,
+      "TravelCost": 2
+    }
+  ],
+  "Name": "Water",
+  "Rarity": 1
+}

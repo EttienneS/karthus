@@ -12,7 +12,6 @@ using Random = UnityEngine.Random;
 
 namespace Assets.Creature
 {
-    [Serializable]
     public class CreatureData 
     {
         public Direction Facing = Direction.S;
