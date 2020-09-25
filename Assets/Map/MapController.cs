@@ -427,7 +427,7 @@ namespace Assets.Map
                 var water = GetCircle(center, size);
                 var sand = GetCircle(center, size + 2).Except(water);
 
-                MapGenerationData.Instance.AddChange(water, "Dam", "Water", Random.Range(-3f, -1f));
+                MapGenerationData.Instance.AddChange(water, "Dam", "Water", Random.Range(-2f, -0.5f));
                 MapGenerationData.Instance.AddChange(sand, "Dam", "Shore", Random.Range(-0.5f, 0f));
             }
         }
