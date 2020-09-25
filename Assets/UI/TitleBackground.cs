@@ -13,7 +13,6 @@ public class TitleBackground : MonoBehaviour
 
     private void Update()
     {
-        //_spriteRenderer.transform.position += new Vector3(1f * Time.deltaTime, 1f * Time.deltaTime, 0);
         _spriteRenderer.transform.eulerAngles += new Vector3(0, 0, 0.25f * Time.deltaTime);
     }
 }

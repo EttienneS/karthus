@@ -1,12 +1,9 @@
 ﻿using Assets.Item;
-using Assets.Map;
-using Assets.ServiceLocator;
 using Assets.ServiceLocator;
 using Assets.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using UnityEngine;
 
 public class ItemController : MonoBehaviour, IGameService
@@ -77,6 +74,7 @@ public class ItemController : MonoBehaviour, IGameService
         }
         return options;
     }
+
     internal void SpawnItem(ItemData data)
     {
         var mesh = Loc.GetGameController().MeshRendererFactory
