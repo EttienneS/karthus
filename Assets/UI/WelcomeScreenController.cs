@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 public class WelcomeScreenController : MonoBehaviour
 {
-    public Image Background;
+    public SpriteRenderer Background;
     public CanvasGroup Canvas;
     public Button ContinueButton;
     public GameObject DeleteOnLoad;
@@ -78,7 +78,7 @@ public class WelcomeScreenController : MonoBehaviour
 
     public void Update()
     {
-        CycleColor();
+    //    CycleColor();
     }
 
     private void CycleColor()
@@ -88,7 +88,7 @@ public class WelcomeScreenController : MonoBehaviour
 
         if (_delta > 1f)
         {
-            _targetColor = ColorExtensions.GetRandomGray(0.8f, 1f);
+            _targetColor = ColorExtensions.GetRandomGray(0.7f, 1f);
             _delta = 0;
         }
     }
@@ -100,11 +100,15 @@ public class WelcomeScreenController : MonoBehaviour
 
         while (time < duration)
         {
-            Canvas.alpha = Mathf.Lerp(startValue, targetValue, time / duration);
+            var alpha = Mathf.Lerp(startValue, targetValue, time / duration);
+            Canvas.alpha = alpha;
+            Background.color = new Color(Background.color.r, Background.color.g, Background.color.b, alpha);
+
             time += Time.deltaTime;
             yield return null;
         }
         Canvas.alpha = targetValue;
+        Background.color = new Color(Background.color.r, Background.color.g, Background.color.b, targetValue);
     }
 
     private IEnumerator StartLoad()
@@ -114,7 +118,7 @@ public class WelcomeScreenController : MonoBehaviour
         var operation = SceneManager.LoadSceneAsync(SceneToLoad, LoadSceneMode.Additive);
         while (!operation.isDone)
         {
-            CycleColor();
+            //CycleColor();
             yield return null;
         }
 
