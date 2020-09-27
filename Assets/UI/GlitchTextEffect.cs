@@ -32,7 +32,7 @@ public class GlitchTextEffect : MonoBehaviour
             {
                 _changeIndexes.Add(Random.Range(0, _baseText.Length));
             }
-            _changesBeforeRevert = Random.Range(4, 8);
+            _changesBeforeRevert = Random.Range(4, 10);
         }
         else
         {
@@ -65,7 +65,9 @@ public class GlitchTextEffect : MonoBehaviour
     {
         _textRenderer = GetComponentInChildren<TextMeshProUGUI>();
         _baseText = _textRenderer.text;
-        ResetUpdateTime();
+
+        _updateDelta = 0;
+        _updateTime = Random.Range(2f, 8f);
     }
 
     private void Update()
@@ -82,11 +84,22 @@ public class GlitchTextEffect : MonoBehaviour
             }
             else
             {
-                _textRenderer.text = _baseText;
-                _updateTime = Random.Range(3f, 5f);
-                _changeIndexes.Clear();
-                _revert = false;
+                Revert();
             }
         }
+    }
+
+    public void SetText(string text)
+    {
+        _textRenderer.text = text;
+        _baseText = text;
+    }
+
+    private void Revert()
+    {
+        _textRenderer.text = _baseText;
+        _updateTime = Random.Range(5f, 10f);
+        _changeIndexes.Clear();
+        _revert = false;
     }
 }

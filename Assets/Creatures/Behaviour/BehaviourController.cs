@@ -32,6 +32,7 @@ namespace Assets.Creature.Behaviour
                     needs = new List<NeedBase>
                 {
                     new Hunger(),
+                    new Thirst(),
                     new Energy(),
                     new Comfort(),
                     new Hygiene(),
@@ -43,9 +44,15 @@ namespace Assets.Creature.Behaviour
                     needs = new List<NeedBase>
                 {
                     new Hunger(),
+                    new Thirst(),
                     new Energy(),
                 };
                     break;
+            }
+
+            foreach (var need in needs)
+            {
+                need.ResetRate();
             }
             return needs;
         }

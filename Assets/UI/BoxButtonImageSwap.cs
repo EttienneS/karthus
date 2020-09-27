@@ -6,20 +6,25 @@ public class BoxButtonImageSwap : MonoBehaviour, IPointerExitHandler, IPointerEn
 {
     private Sprite _selectedSprite;
     private Sprite _unselectedSprite;
-    private Button _button;
+    private Image _image;
+
     public void OnPointerEnter(PointerEventData eventData)
     {
-        _button.image.sprite = _selectedSprite; 
+        _image.sprite = _selectedSprite;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        _button.image.sprite = _unselectedSprite;
+        _image.sprite = _unselectedSprite;
     }
 
     private void Start()
     {
-        _button = GetComponent<Button>();
+        _image = GetComponent<Image>();
+        if (_image == null)
+        {
+            _image = GetComponentInChildren<Image>();
+        }
 
         _unselectedSprite = Resources.Load<Sprite>("uibox");
         _selectedSprite = Resources.Load<Sprite>("uiboxselected");

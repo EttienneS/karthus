@@ -8,18 +8,24 @@ namespace Needs
     public class Social : NeedBase
     {
         [JsonIgnore]
-        public override List<(string description, int impact, float min, float max)> Levels { get => AspirationLevels; }
-
-        [JsonIgnore]
         public static List<(string description, int impact, float min, float max)> AspirationLevels = new List<(string description, int impact, float min, float max)>
         {
             ("Lonely", -5, 0, 10),
         };
 
+        [JsonIgnore]
+        private float _chatDelta;
+
+        public override float BaselineChangeRate { get; set; } = NeedConstants.BaseDegrateRate;
         public override string Icon { get; set; }
 
         [JsonIgnore]
-        private float _chatDelta;
+        public override List<(string description, int impact, float min, float max)> Levels { get => AspirationLevels; }
+
+        public override string GetDescription()
+        {
+            return "The will to do more.";
+        }
 
         public override void Update()
         {
@@ -39,11 +45,6 @@ namespace Needs
                     Current += 25f;
                 }
             }
-        }
-
-        public override string GetDescription()
-        {
-            return "The will to do more.";
         }
     }
 }

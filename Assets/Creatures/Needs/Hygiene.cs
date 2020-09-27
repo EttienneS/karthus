@@ -1,15 +1,11 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
-using Structures;
 
 namespace Needs
 {
     public class Hygiene : NeedBase
     {
-        [JsonIgnore]
-        public override List<(string description, int impact, float min, float max)> Levels { get => AspirationLevels; }
-
         [JsonIgnore]
         public static List<(string description, int impact, float min, float max)> AspirationLevels = new List<(string description, int impact, float min, float max)>
         {
@@ -17,7 +13,16 @@ namespace Needs
             ("Dirty", -5, 0, 25),
         };
 
+        public override float BaselineChangeRate { get; set; } = NeedConstants.BaseDegrateRate;
         public override string Icon { get; set; }
+
+        [JsonIgnore]
+        public override List<(string description, int impact, float min, float max)> Levels { get => AspirationLevels; }
+
+        public override string GetDescription()
+        {
+            return "The will to do more.";
+        }
 
         public override void Update()
         {
@@ -43,11 +48,6 @@ namespace Needs
                     }
                 }
             }
-        }
-
-        public override string GetDescription()
-        {
-            return "The will to do more.";
         }
     }
 }

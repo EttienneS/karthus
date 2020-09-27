@@ -40,7 +40,7 @@ public class WelcomeScreenController : MonoBehaviour
         try
         {
             _lastSave = SaveManager.GetLastSave();
-            ContinueButton.GetComponentInChildren<TMP_Text>().text += " - " + Path.GetDirectoryName(_lastSave).Split('\\').Last();
+            ContinueButton.GetComponentInChildren<GlitchTextEffect>().SetText("Continue - " + Path.GetDirectoryName(_lastSave).Split('\\').Last());
         }
         catch (FileNotFoundException)
         {

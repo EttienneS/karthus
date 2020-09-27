@@ -8,17 +8,20 @@ namespace Needs
 {
     public abstract class NeedBase
     {
-        [JsonIgnore]
-        public abstract List<(string description, int impact, float min, float max)> Levels { get; }
-
-        public float BaselineChangeRate { get; set; } = NeedConstants.BaseDegrateRate;
+        public abstract float BaselineChangeRate { get; set; }
 
         [JsonIgnore]
         public CreatureData Creature { get; set; }
 
         public float Current { get; set; } = 100;
-        public float CurrentChangeRate { get; set; } = NeedConstants.BaseDegrateRate;
+
+        public float CurrentChangeRate { get; set; }
+
         public abstract string Icon { get; set; }
+
+        [JsonIgnore]
+        public abstract List<(string description, int impact, float min, float max)> Levels { get; }
+
         public float Max { get; set; } = 100;
 
         [JsonIgnore]
@@ -26,8 +29,6 @@ namespace Needs
         {
             get => GetType().Name;
         }
-
-        public abstract string GetDescription();
 
         public void ApplyChange(float delta)
         {
@@ -37,17 +38,7 @@ namespace Needs
             SetMoodFeeling();
         }
 
-        public override string ToString()
-        {
-            return $"{Name} [{Current:0}/{Max:0}]";
-        }
-
-        public abstract void Update();
-
-        internal void ResetRate()
-        {
-            CurrentChangeRate = BaselineChangeRate;
-        }
+        public abstract string GetDescription();
 
         public void SetMoodFeeling()
         {
@@ -81,6 +72,18 @@ namespace Needs
                     feeling.MoodImpact = current.Value.impact;
                 }
             }
+        }
+
+        public override string ToString()
+        {
+            return $"{Name} [{Current:0}/{Max:0}]";
+        }
+
+        public abstract void Update();
+
+        internal void ResetRate()
+        {
+            CurrentChangeRate = BaselineChangeRate;
         }
     }
 }
