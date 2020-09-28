@@ -1,6 +1,9 @@
 name: Build Game
 on: push
 
+env:
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+
 jobs:
     build-karthus:
         name: build the project
@@ -20,8 +23,6 @@ jobs:
 
             - name: unity - builder
               uses: webbertakken/unity-builder@v1.4
-              env:
-                UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
               with:
                 unityVersion: 2020.1.2f1
                 targetPlatform: StandaloneWindows64 
