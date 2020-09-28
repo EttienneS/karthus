@@ -1,6 +1,6 @@
 name: build-karthus
 
-on: commit
+on: push
 
 jobs:
 
