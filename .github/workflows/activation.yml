@@ -12,7 +12,7 @@ jobs:
           id: getManualLicenseFile
           uses: webbertakken/unity-request-manual-activation-file@v1.1
           with:
-            unityVersion: 2020.1.2f1
+            unityVersion: 2020.1.6f1
             
         # Upload artifact (Unity_v20XX.X.XXXX.alf)
         - name: Expose as artifact

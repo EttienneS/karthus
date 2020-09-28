@@ -24,7 +24,7 @@ jobs:
               uses: webbertakken/unity-builder@v1.4
               with:
                 versioning: Semantic
-                unityVersion: 2020.1.2f1
+                unityVersion: 2020.1.6f1
                 targetPlatform: StandaloneWindows64
 
             - uses: actions/upload-artifact@v1
