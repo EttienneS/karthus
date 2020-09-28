@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Structures.Work
+namespace Assets.Structures
 {
     public static class WorkHelper
     {

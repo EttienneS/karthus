@@ -1,6 +1,7 @@
 ﻿using Assets.ServiceLocator;
+using Assets.Structures;
 
-namespace Structures.Work.Orders
+namespace Assets.Structures.Orders
 {
     public class Dig : WorkOrderBase
     {

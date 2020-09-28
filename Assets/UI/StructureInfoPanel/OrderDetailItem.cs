@@ -1,4 +1,4 @@
-﻿using Structures.Work;
+﻿using Assets.Structures;
 using UnityEngine;
 using UnityEngine.UI;
 

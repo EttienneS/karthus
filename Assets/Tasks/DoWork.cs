@@ -1,6 +1,6 @@
 ﻿using Assets.Creature;
+using Assets.Structures;
 using Newtonsoft.Json;
-using Structures.Work;
 
 public class DoWork : CreatureTask
 {

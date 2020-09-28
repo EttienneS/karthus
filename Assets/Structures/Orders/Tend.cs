@@ -1,4 +1,4 @@
-﻿namespace Structures.Work.Orders
+﻿namespace Assets.Structures.Orders
 {
     public class Tend : WorkOrderBase
     {

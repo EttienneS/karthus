@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace Assets.Structures.Behaviour
+﻿namespace Assets.Structures.Behaviour
 {
     public abstract class StructureBehaviour
     {

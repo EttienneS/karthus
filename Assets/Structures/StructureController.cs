@@ -1,6 +1,5 @@
 ﻿using Assets.Helpers;
 using Assets.ServiceLocator;
-using Structures.Work;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,9 +1,8 @@
-﻿using Assets.Structures;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Structures.Work
+namespace Assets.Structures
 {
     public abstract class WorkStructureBase : Structure
     {

@@ -1,8 +1,9 @@
 ﻿using Assets.ServiceLocator;
 using UnityEngine;
 
-namespace Structures.Work
+namespace Assets.Structures
 {
+
     public class ContainedFire : WorkStructureBase
     {
         private MeshRenderer _flameMesh;

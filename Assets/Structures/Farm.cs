@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using UnityEngine;
 
-namespace Structures.Work
+namespace Assets.Structures
 {
     public class Farm : WorkStructureBase
     {
@@ -42,7 +42,7 @@ namespace Structures.Work
             return "Farm:\n" +
                    $"  Growing: {PlantName}\n" +
                    $"  Quality: {Quality:0,0}\n" +
-                   $"  Grown: {(CurrentGrowth / _growthWhenMature) * 100:0,0}%\n";
+                   $"  Grown: {CurrentGrowth / _growthWhenMature * 100:0,0}%\n";
         }
 
         public override void Update(float delta)
@@ -139,7 +139,7 @@ namespace Structures.Work
 
         private void SetPlantMeshRotation()
         {
-            _plantMesh.transform.localEulerAngles = new Vector3(0, 0, UnityEngine.Random.Range(0f, 360f));
+            _plantMesh.transform.localEulerAngles = new Vector3(0, 0, Random.Range(0f, 360f));
         }
     }
 }

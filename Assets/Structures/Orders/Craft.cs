@@ -1,7 +1,8 @@
 ﻿using Assets.ServiceLocator;
+using Assets.Structures;
 using System.Linq;
 
-namespace Structures.Work.Orders
+namespace Assets.Structures.Orders
 {
     public class Craft : WorkOrderBase
     {

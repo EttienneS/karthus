@@ -1,4 +1,4 @@
-﻿namespace Structures.Work
+﻿namespace Assets.Structures
 {
     public class WorkOption
     {

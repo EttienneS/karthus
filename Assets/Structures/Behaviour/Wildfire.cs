@@ -1,5 +1,4 @@
-﻿using Assets.Map;
-using Assets.ServiceLocator;
+﻿using Assets.ServiceLocator;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;

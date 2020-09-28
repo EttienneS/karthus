@@ -43,6 +43,9 @@ jobs:
                   Library-${{ matrix.projectPath }}-
                   Library-
 
+            - name: Unity - Activate
+              uses: webbertakken/unity-activate@v1.3
+              
             - uses: webbertakken/unity-builder@v1.4
               with:
                 versioning: Semantic
@@ -54,3 +57,4 @@ jobs:
               with:
                 name: Build
                 path: build
+- name: Unity - Activate
