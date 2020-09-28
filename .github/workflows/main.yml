@@ -17,15 +17,17 @@ jobs:
                 with:
                   lfs: true
 
-            - uses: actions/cache@v1.1.0
-              with:
-                path: Library
-                key: Library
+            - name: cache
+              uses: actions/cache@v1.1.0
+                with:
+                  path: Library
+                  key: Library
 
             - name: unity - builder
               uses: webbertakken/unity-builder@v1.4
-                 unityVersion: 2020.1.2f1
-                 targetPlatform: StandaloneWindows64
+                with:
+                  unityVersion: 2020.1.2f1
+                  targetPlatform: StandaloneWindows64
                  
             - uses: actions/upload-artifact@v1
                 with:
