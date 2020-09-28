@@ -1,2 +1,22 @@
-- name: Unity - Builder
-  uses: webbertakken/unity-builder@v1.4
+name: build-karthus
+
+on: push
+
+jobs:
+
+    build-karthus:
+    
+        name: build the project
+        
+        runs-on: ubuntu-latest
+        
+        steps:
+        
+            - name: checkout
+              uses: actions/checkout@v2.3.3
+              
+            - name: cache
+              uses: actions/cache@v2.1.1
+              
+            - name: unity - builder
+              uses: webbertakken/unity-builder@v1.4
