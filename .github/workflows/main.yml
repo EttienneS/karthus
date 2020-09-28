@@ -1,4 +1,4 @@
-name: build-karthus
+name: Build Game
 on: push
 
 jobs:
