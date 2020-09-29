@@ -43,6 +43,13 @@ namespace Assets.Structures.Behaviour
             UpdateRemainingFlammability(structure, delta);
         }
 
+        private static List<Cell> GetFlammableNeighbours(Cell cell)
+        {
+            return Loc.GetMap().GetCircle(cell, 3)
+                                   .Where(c => c.Structures.Any(s => s.Flammable()))
+                                   .ToList();
+        }
+
         private void Initialize(Structure structure)
         {
             RefreshSpreadDelta(structure);
@@ -54,14 +61,6 @@ namespace Assets.Structures.Behaviour
                 Loc.GetVisualEffectController().CreateFireLight(_flameMesh.transform, ColorExtensions.GetColorFromHex("F5810E"), 25, 25, 0.5f);
             }
         }
-
-        private static List<Cell> GetFlammableNeighbours(Cell cell)
-        {
-            return Loc.GetMap().GetCircle(cell, 3)
-                                   .Where(c => c.Structures.Any(s => s.Flammable()))
-                                   .ToList();
-        }
-
         private void InstantiateFlames(Structure structure)
         {
             _flameMesh = Loc.GetGameController().MeshRendererFactory.CreateFlameMesh(structure.Renderer.transform);
