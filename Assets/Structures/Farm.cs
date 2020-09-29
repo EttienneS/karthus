@@ -141,5 +141,9 @@ namespace Assets.Structures
         {
             _plantMesh.transform.localEulerAngles = new Vector3(0, 0, Random.Range(0f, 360f));
         }
+
+        public override void Initialize()
+        {
+        }
     }
 }

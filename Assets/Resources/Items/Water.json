@@ -1,0 +1,11 @@
+{
+  "Name": "Water",
+  "Mesh": "sand-bucket",
+  "Icon": "Water",
+  "Cost": {
+    "Items": {
+      "Water": "1"
+    }
+  },
+  "Categories": [ "Raw Resources" ]
+}

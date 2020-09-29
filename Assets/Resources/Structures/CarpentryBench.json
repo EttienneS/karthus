@@ -16,7 +16,7 @@
     "Name": "Craft",
     "RequiredSkillName": "Carpentry",
     "WorkOrderType": "Craft",
-    "Auto": "false",
+    "OrderTrigger": "Manual",
     "Options": [
       {
         "Name": "Plank",

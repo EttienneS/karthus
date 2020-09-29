@@ -287,6 +287,8 @@ namespace Assets.Map
             Loc.GetItemController().SpawnItem("Stone", open.GetRandomItem(), 50);
             Loc.GetItemController().SpawnItem("Stone", open.GetRandomItem(), 50);
 
+            Loc.GetItemController().SpawnItem("Water", open.GetRandomItem(), 50);
+
             Loc.GetStructureController().SpawnStructure("Campfire", open.GetRandomItem(), Loc.GetFactionController().PlayerFaction);
 
             for (int i = 0; i < MapGenerationData.Instance.CreaturesToSpawn; i++)

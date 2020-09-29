@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 public class Dodge : DefensiveActionBase
 {
@@ -66,29 +67,8 @@ public class Dodge : DefensiveActionBase
     }
 }
 
+[JsonConverter(typeof(StringEnumConverter))]
 public enum OutcomeLevel
 {
     Critical, Success, Failure, Catastrophe
-}
-
-public static class ContestHelper
-{
-    public static OutcomeLevel Contest(int attacker, int defender)
-    {
-        var diff = attacker - defender;
-        if (diff > 10)
-        {
-            return OutcomeLevel.Critical;
-        }
-        else if (diff >= 0)
-        {
-            return OutcomeLevel.Success;
-        }
-        else if (diff < -10)
-        {
-            return OutcomeLevel.Catastrophe;
-        }
-
-        return OutcomeLevel.Failure;
-    }
 }

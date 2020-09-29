@@ -1,14 +1,44 @@
-﻿using Assets.Map;
-using Assets.ServiceLocator;
+﻿using Assets.ServiceLocator;
 using Newtonsoft.Json;
-using Structures;
 using System.Linq;
 
 namespace Assets.Structures
 {
     public class Blueprint
     {
+        [JsonIgnore]
+        public BlueprintRenderer BlueprintRenderer;
+
+        public (int x, int z) Coords;
         public Cost Cost;
+
+        public string FactionName;
+
+        public string ID;
+
+        public string StructureName;
+
+        public Blueprint()
+        {
+        }
+
+        public Blueprint(string structureName, Cell cell, Faction faction)
+        {
+            StructureName = structureName;
+            Cost = Loc.GetStructureController().GetStructureCost(structureName);
+            Cell = cell;
+            FactionName = faction.FactionName;
+            ID = Loc.GetIdService().GetId();
+        }
+
+        [JsonIgnore]
+        public Build AssociatedBuildTask
+        {
+            get
+            {
+                return Faction.AllTasks.OfType<Build>().FirstOrDefault(b => b.Blueprint == this);
+            }
+        }
 
         [JsonIgnore]
         public Cell Cell
@@ -22,24 +52,6 @@ namespace Assets.Structures
                 Coords = (value.X, value.Z);
             }
         }
-
-        public (int x, int z) Coords;
-        
-        public string StructureName;
-
-        public string FactionName;
-
-        public string ID;
-
-        [JsonIgnore]
-        public Build AssociatedBuildTask
-        {
-            get
-            {
-                return Faction.AllTasks.OfType<Build>().FirstOrDefault(b => b.Blueprint == this);
-            }
-        }
-
         [JsonIgnore]
         public Faction Faction
         {
@@ -47,22 +59,6 @@ namespace Assets.Structures
             {
                 return Loc.GetFactionController().Factions[FactionName];
             }
-        }
-
-        [JsonIgnore]
-        public BlueprintRenderer BlueprintRenderer;
-
-        public Blueprint()
-        {
-        }
-
-        public Blueprint(string structureName, Cell cell, Faction faction)
-        {
-            StructureName = structureName;
-            Cost = Loc.GetStructureController().GetStructureCost(structureName);
-            Cell = cell;
-            FactionName = faction.FactionName;
-            ID = Loc.GetIdService().GetId();
         }
     }
 }

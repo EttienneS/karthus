@@ -125,6 +125,12 @@ namespace Assets.Structures
             structureRenderer.transform.name = structure.Name + " " + structure.Id;
             structureRenderer.UpdatePosition();
 
+            if (structure is WorkStructureBase workStructure)
+            {
+                workStructure.Initialize();
+                workStructure.PlaceDefaultOrder();
+            }
+
             return structure;
         }
 

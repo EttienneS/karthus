@@ -72,7 +72,7 @@ namespace UI
                 if (ActivePrefabs.Count > 0)
                 {
                     SetSelected(ActivePrefabs[0]);
-                    if (workStructure.Definition.Auto)
+                    if (workStructure.Definition.OrderTrigger == OrderTrigger.Auto)
                     {
                         AddButton.GetComponentInChildren<Text>().text = "Select";
                     }

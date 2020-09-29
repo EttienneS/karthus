@@ -13,10 +13,7 @@ namespace Assets.Structures
 
         public override void Update(float delta)
         {
-            if (_flameMesh == null)
-            {
-                _flameMesh = CreateFlameMeshWithLight(Radius, Intensity, ColorHex.GetColorFromHex(), Renderer.transform);
-            }
+            
         }
 
         internal static MeshRenderer CreateFlameMeshWithLight(float range, float intensity, Color color, Transform parent)
@@ -27,6 +24,14 @@ namespace Assets.Structures
             Loc.GetVisualEffectController().CreateFireLight(mesh.transform, color, range, intensity, 1f);
 
             return mesh;
+        }
+
+        public override void Initialize()
+        {
+            if (_flameMesh == null)
+            {
+                _flameMesh = CreateFlameMeshWithLight(Radius, Intensity, ColorHex.GetColorFromHex(), Renderer.transform);
+            }
         }
     }
 }

@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3241323272
+CRC: 1190661169
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: bc95f13a14b8dd8a1f63a174bff01da8
+    Hash: abd78c871ac94d943946b79effcdeaab
   TypeTreeHash:
     serializedVersion: 2
     Hash: 18d9bb4d47b424ec9fb3afa70ce56f07
@@ -79,6 +79,7 @@ Assets:
 - Assets/Models/Kenney Assets/Nature Kit/log_small.fbx
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/Mushroom_Crop.blend
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/BushBerries_1.blend
+- Assets/polyperfect/Low Poly Ultimate Pack/T/- Meshes_T/Beach_T/sand-bucket.fbx
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/Carrot_4.blend
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/Corn_Harvested.blend
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/BushBerries_4.blend

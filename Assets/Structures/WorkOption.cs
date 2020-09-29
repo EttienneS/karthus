@@ -9,5 +9,6 @@
         public string Icon { get; set; }
         public int Amount { get; set; }
         public Cost Cost { get; set; }
+        public bool Default { get; set; }
     }
 }

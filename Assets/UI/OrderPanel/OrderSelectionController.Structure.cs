@@ -1,6 +1,5 @@
 ﻿using Assets;
 using Assets.ServiceLocator;
-using Structures;
 
 public partial class OrderSelectionController //.Structure
 {

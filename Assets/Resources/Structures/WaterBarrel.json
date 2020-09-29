@@ -1,6 +1,6 @@
 {
   "Name": "Water Barrel",
-  "Mesh": "WaterBarrel",
+  "Mesh": "barrel-empty",
   "Icon": "WaterBarrel",
   "TravelCost": "10",
   "Description": "A structure where water can be stored.",
@@ -10,39 +10,28 @@
     }
   },
   "Buildable": "True",
+  "Capacity": 100,
   "Type": "WaterBarrel",
   "Definition": {
     "Name": "Fill",
-    "RequiredSkillName": "Hauling",
+    "RequiredSkillName": "Haul",
     "WorkOrderType": "Fill",
-    "Auto": "true",
-    "AutoCooldown": 100,
+    "OrderTrigger": "AutoCondition",
+    "AutoCooldown": 25,
     "Options": [
       {
         "Name": "Water",
         "Icon": "Water",
         "Description": "Fill with water",
         "RequiredSkillLevel": 1,
-        "TimeToComplete": 1
+        "TimeToComplete": 1,
+        "Default": true,
+        "Cost": {
+          "Items": {
+            "Water": "1"
+          }
+        }
       }
     ]
   }
 }
-
-//Apple
-//Bamboo
-//Beet
-//BushBerries
-//Cactus
-//Carrot
-//Corn
-//Flowers
-//Lettuce
-//Mushroom
-//Orange
-//PalmTree
-//Pumpkin
-//Rice
-//Tomato
-//Watermelon
-//Wheat

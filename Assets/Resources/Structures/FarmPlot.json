@@ -14,7 +14,7 @@
     "Name": "Farm",
     "RequiredSkillName": "Farming",
     "WorkOrderType": "Tend",
-    "Auto": "true",
+    "OrderTrigger": "Auto",
     "AutoCooldown": 100,
     "Options": [
       {

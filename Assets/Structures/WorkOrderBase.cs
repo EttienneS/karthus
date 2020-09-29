@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Assets.ServiceLocator;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,7 +12,9 @@ namespace Assets.Structures
         public bool Complete { get; set; }
         public string Name { get; set; }
         public WorkOption Option { get; set; }
+
         public float Progress { get; set; }
+
         public string Skill { get; set; }
 
         [JsonIgnore]
@@ -34,13 +37,44 @@ namespace Assets.Structures
             return Structure.Orders.Contains(this);
         }
 
+        public bool HasMaterial()
+        {
+            return GetRequiredMaterial().Count == 0;
+        }
+
         public abstract void OrderComplete();
 
         public abstract void UnitComplete(float quality);
 
-        public bool HasMaterial()
+        internal void ConsumeCostItems()
         {
-            return GetRequiredMaterial().Count == 0;
+            foreach (var cost in Option.Cost.Items)
+            {
+                var totalNeeded = cost.Value;
+                foreach (var item in Structure.Cell.Items.Where(i => i.IsType(cost.Key)).ToList())
+                {
+                    if (totalNeeded <= 0)
+                    {
+                        break;
+                    }
+
+                    if (item.Amount >= totalNeeded)
+                    {
+                        item.Amount -= totalNeeded;
+                        totalNeeded = 0;
+                    }
+                    else
+                    {
+                        totalNeeded -= item.Amount;
+                        item.Amount = 0;
+                    }
+
+                    if (item.Amount == 0)
+                    {
+                        Loc.GetItemController().DestroyItem(item);
+                    }
+                }
+            }
         }
 
         internal Dictionary<string, int> GetRequiredMaterial()
