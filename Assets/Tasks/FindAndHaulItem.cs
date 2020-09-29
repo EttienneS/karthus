@@ -1,7 +1,6 @@
-﻿using Newtonsoft.Json;
-using Assets.Creature;
+﻿using Assets.Creature;
 using Assets.ServiceLocator;
-using Assets.Map;
+using Newtonsoft.Json;
 
 public class FindAndHaulItem : CreatureTask
 {
@@ -35,7 +34,7 @@ public class FindAndHaulItem : CreatureTask
     {
         TargetX = target.Vector.x;
         TargetZ = target.Vector.z;
-       
+
         ItemType = itemType;
         Amount = amount;
         AddSubTask(new FindAndGetItem(itemType, amount));

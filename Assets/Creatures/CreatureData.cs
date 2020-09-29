@@ -1,7 +1,7 @@
 ﻿using Assets.Creature.Behaviour;
-using Assets.ServiceLocator;
 using Assets.Item;
-using Assets.Map;
+using Assets.ServiceLocator;
+using Assets.Structures;
 using Needs;
 using Newtonsoft.Json;
 using System;
@@ -12,7 +12,7 @@ using Random = UnityEngine.Random;
 
 namespace Assets.Creature
 {
-    public class CreatureData 
+    public class CreatureData
     {
         public Direction Facing = Direction.S;
 
@@ -21,6 +21,15 @@ namespace Assets.Creature
         public List<OffensiveActionBase> IncomingAttacks = new List<OffensiveActionBase>();
 
         public Mobility Mobility;
+
+        internal bool InRangeOf(Structure structure)
+        {
+            if (structure is WorkStructureBase workStructure)
+            {
+                return Cell == workStructure.GetWorkCell();
+            }
+            return structure.Cell.NonNullNeighbors.Contains(Cell);
+        }
 
         public string Model;
 
@@ -32,6 +41,7 @@ namespace Assets.Creature
 
         [JsonIgnore]
         internal IBehaviour Behaviour;
+
         [JsonIgnore]
         internal List<CreatureData> Combatants = new List<CreatureData>();
 
@@ -266,6 +276,7 @@ namespace Assets.Creature
             else
             {
                 item.Cell = cell;
+                item.Renderer.transform.position = new Vector3(item.Renderer.transform.position.x, 0, item.Renderer.transform.position.z);
             }
             return item;
         }
@@ -689,6 +700,7 @@ namespace Assets.Creature
             if (HeldItem != null)
             {
                 HeldItem.Coords = (X, Z);
+                HeldItem.Renderer.transform.position += new Vector3(0, 1.5f, 0);
             }
         }
 

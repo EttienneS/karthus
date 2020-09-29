@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 1190661169
+CRC: 907322243
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: abd78c871ac94d943946b79effcdeaab
+    Hash: 0de2d99b5620b20d9a6401574dde7013
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 18d9bb4d47b424ec9fb3afa70ce56f07
+    Hash: 8bc783580257cb76ba66a3db5ec0f14a
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -24,6 +24,8 @@ ClassTypes:
 - Class: 43
   Script: {instanceID: 0}
 - Class: 48
+  Script: {instanceID: 0}
+- Class: 64
   Script: {instanceID: 0}
 Assets:
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/Carrot_Crop.blend
@@ -72,6 +74,7 @@ Assets:
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/PalmTree_Harvested.blend
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/Beet_3.blend
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/Carrot_3.blend
+- Assets/Models/polyperfect/Low Poly Ultimate Pack/M/- Prefabs_M/Beach_M/sand-bucket.prefab
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/Corn_3.blend
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/Bamboo_1.blend
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/Wheat_3.blend
@@ -79,7 +82,6 @@ Assets:
 - Assets/Models/Kenney Assets/Nature Kit/log_small.fbx
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/Mushroom_Crop.blend
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/BushBerries_1.blend
-- Assets/polyperfect/Low Poly Ultimate Pack/T/- Meshes_T/Beach_T/sand-bucket.fbx
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/Carrot_4.blend
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/Corn_Harvested.blend
 - Assets/Models/Quaternion/Nature Crops Pack - Jan 2020/Blends/BushBerries_4.blend

@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 3610960437
+CRC: 1817176500
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 59e69a0b78590044d522059dfc00c468
+    Hash: 6f778973049c623f50bd63d33851512c
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 18d9bb4d47b424ec9fb3afa70ce56f07
+    Hash: 8bc783580257cb76ba66a3db5ec0f14a
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -24,6 +24,8 @@ ClassTypes:
 - Class: 43
   Script: {instanceID: 0}
 - Class: 48
+  Script: {instanceID: 0}
+- Class: 64
   Script: {instanceID: 0}
 Assets:
 - Assets/Models/Kenney Assets/Nature Kit/stone_smallTop2.fbx
@@ -53,6 +55,7 @@ Assets:
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/Birch_9.blend
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/Pine_1.blend
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/DeadBirch_10.blend
+- Assets/Models/polyperfect/Low Poly Ultimate Pack/M/- Prefabs_M/Western_M/barrel-old.prefab
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/DeadTree_9.blend
 - Assets/Models/Kenney Assets/Nature Kit/flower_red3.fbx
 - Assets/Models/Kenney Assets/Nature Kit/stone_small8.fbx
@@ -134,7 +137,6 @@ Assets:
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/Birch_2.blend
 - Assets/Models/Kenney Assets/Nature Kit/stone_small5.fbx
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/DeadBirch_3.blend
-- Assets/polyperfect/Low Poly Ultimate Pack/T/- Meshes_T/Apocalypse_T/barrel-empty.fbx
 - Assets/Models/Quaternion/Textured Stylized Trees - May 2020/Blends/Tree_6.blend
 - Assets/Models/Kenney Assets/Nature Kit/log_large.fbx
 - Assets/Models/Kenney Assets/Nature Kit/lily_large.fbx

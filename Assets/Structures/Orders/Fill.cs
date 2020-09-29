@@ -12,7 +12,7 @@
         {
             ConsumeCostItems();
 
-            var barrel = StructureId.GetStructure() as WaterBarrel;
+            var barrel = StructureId.GetStructure() as LiquidContainer;
             barrel.FillLevel += 25;
         }
     }

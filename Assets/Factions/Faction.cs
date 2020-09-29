@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using System;
 
 public class Faction
 {
@@ -64,6 +65,11 @@ public class Faction
     {
         AvailableTasks.Add(task);
         return task;
+    }
+
+    internal IEnumerable<T> GetClosestStructures<T>(Cell origin) where T : Structure
+    {
+        return Structures.OfType<T>().OrderBy(s => s.Cell.DistanceTo(origin));
     }
 
     public ItemData FindItem(string criteria, CreatureData creature)

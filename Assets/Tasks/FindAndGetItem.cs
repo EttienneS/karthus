@@ -37,23 +37,28 @@ public class FindAndGetItem : CreatureTask
             {
                 if (string.IsNullOrEmpty(TargetId))
                 {
-                    var targetEntity = creature.Faction.FindItem(ItemCriteria, creature);
+                    var item = creature.Faction.FindItem(ItemCriteria, creature);
 
-                    if (targetEntity == null)
+                    if (item == null)
                     {
+                        if (ItemCriteria == "Water")
+                        {
+                            AddSubTask(new GetWaterFromSource());
+                            return false;
+                        }
                         throw new TaskFailedException($"No items of required type ({ItemCriteria}) can be found");
                     }
                     else
                     {
-                        if (targetEntity.Cell.PathableWith(creature.Mobility))
+                        if (item.Cell.PathableWith(creature.Mobility))
                         {
-                            AddSubTask(new Move(targetEntity.Cell));
+                            AddSubTask(new Move(item.Cell));
                         }
                         else
                         {
-                            AddSubTask(new Move(targetEntity.Cell.GetPathableNeighbour()));
+                            AddSubTask(new Move(item.Cell.GetPathableNeighbour()));
                         }
-                        TargetId = targetEntity.Id;
+                        TargetId = item.Id;
                     }
                 }
                 else

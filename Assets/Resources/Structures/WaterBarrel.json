@@ -1,8 +1,8 @@
 {
   "Name": "Water Barrel",
-  "Mesh": "barrel-empty",
+  "Mesh": "barrel-old",
   "Icon": "WaterBarrel",
-  "TravelCost": "10",
+  "TravelCost": "99",
   "Description": "A structure where water can be stored.",
   "Cost": {
     "Items": {
@@ -11,7 +11,7 @@
   },
   "Buildable": "True",
   "Capacity": 100,
-  "Type": "WaterBarrel",
+  "Type": "LiquidContainer",
   "Definition": {
     "Name": "Fill",
     "RequiredSkillName": "Haul",

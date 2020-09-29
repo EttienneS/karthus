@@ -1,5 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using Assets.Structures;
+using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Needs
@@ -31,15 +33,37 @@ namespace Needs
         {
             if (Creature.GetNeed<Thirst>().Current < 50 && Creature.IsIdle())
             {
-                var drink = Creature.Faction.FindItem("Drink", Creature);
-                if (drink != null)
+                if (Creature.HeldItem?.Name == "Water")
                 {
-                    Creature.Task = new Consume(drink);
+                    Creature.Task = new Consume(Creature.HeldItem);
                 }
                 else
                 {
-                    Creature.Task = new DrinkWaterFromSource();
-                    Debug.LogWarning("Nothing to drinK!");
+                    var drink = Creature.Faction.FindItem("Drink", Creature);
+                    if (drink != null)
+                    {
+                        Creature.Task = new Consume(drink);
+                    }
+                    else
+                    {
+                        var containers = Creature.Faction.GetClosestStructures<LiquidContainer>(Creature.Cell)
+                                                         .Where(l => l.FillLevel > 0)
+                                                         .ToList();
+
+                        if (containers.Count > 0)
+                        {
+                            var container = containers.First();
+                            Creature.Task = new GetWaterFromContainer(container);
+                            Debug.Log($"Getting water from {container.Name}");
+                        }
+                        else
+                        {
+                            Creature.Task = new GetWaterFromSource();
+                            Debug.LogWarning("Nothing to drink, get water from a source!");
+                        }
+
+                        
+                    }
                 }
             }
         }
