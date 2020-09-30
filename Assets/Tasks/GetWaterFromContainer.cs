@@ -1,6 +1,7 @@
 ﻿using Assets.Creature;
 using Assets.ServiceLocator;
 using Assets.Structures;
+using System.Linq;
 
 public class GetWaterFromContainer : CreatureTask
 {
@@ -21,6 +22,11 @@ public class GetWaterFromContainer : CreatureTask
     {
         if (SubTasksComplete(creature))
         {
+            if (string.IsNullOrEmpty(ContainerId))
+            {
+                FindContainer(creature);
+            }
+
             var container = ContainerId.GetStructure() as LiquidContainer;
             if (!creature.InRangeOf(container))
             {
@@ -28,12 +34,25 @@ public class GetWaterFromContainer : CreatureTask
                 return false;
             }
 
-            var water = Loc.GetItemController().SpawnItem("Water", creature.Cell, 1);
+            var water = Loc.GetItemController().SpawnItem("StoredWater", creature.Cell, 1);
             creature.PickUpItem(water, 1);
             container.FillLevel -= 1;
             return true;
         }
         return false;
+    }
+
+    private void FindContainer(CreatureData creature)
+    {
+        var containers = GetWater.GetFactionWaterContainersWithWater(creature).OrderBy(l => l.Cell.DistanceTo(creature.Cell)).ToList();
+        if (containers.Count > 0)
+        {
+            ContainerId = containers[0].Id;
+        }
+        else
+        {
+            throw new TaskFailedException("No container with water in can be found!");
+        }
     }
 
     public override void FinalizeTask()

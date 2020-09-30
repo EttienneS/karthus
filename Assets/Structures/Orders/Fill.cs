@@ -1,4 +1,6 @@
-﻿namespace Assets.Structures.Orders
+﻿using UnityEngine;
+
+namespace Assets.Structures.Orders
 {
     public class Fill : WorkOrderBase
     {
@@ -13,7 +15,7 @@
             ConsumeCostItems();
 
             var barrel = StructureId.GetStructure() as LiquidContainer;
-            barrel.FillLevel += 25;
+            barrel.FillLevel = Mathf.Min(barrel.Capacity, barrel.FillLevel + 25);
         }
     }
 }

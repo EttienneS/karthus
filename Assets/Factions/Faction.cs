@@ -74,8 +74,7 @@ public class Faction
 
     public ItemData FindItem(string criteria, CreatureData creature)
     {
-        var items = DomainCells.GetCells().SelectMany(c => c?.Items.Where(item => item.IsType(criteria) && !item.IsReserved())).ToList();
-        items.AddRange(Loc.GetIdService().ItemIdLookup.Values.Where(i => i.FactionName == FactionName && i.IsType(criteria)));
+        var items = GetItemsByCriteria(criteria);
 
         ItemData targetItem = null;
         var bestDistance = float.MaxValue;
@@ -103,6 +102,13 @@ public class Faction
         }
 
         return targetItem;
+    }
+
+    private List<ItemData> GetItemsByCriteria(string criteria)
+    {
+        List<ItemData> items = DomainCells.GetCells().SelectMany(c => c?.Items.Where(item => item.IsType(criteria) && !item.IsReserved())).ToList();
+        items.AddRange(Loc.GetIdService().ItemIdLookup.Values.Where(i => i.FactionName == FactionName && i.IsType(criteria)));
+        return items;
     }
 
     public CreatureTask TakeTask(CreatureData creature)

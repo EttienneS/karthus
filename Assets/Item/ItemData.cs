@@ -138,6 +138,11 @@ namespace Assets.Item
             return Categories.Contains(type, StringComparer.OrdinalIgnoreCase);
         }
 
+        internal bool HasValue(string criteria)
+        {
+            throw new NotImplementedException();
+        }
+
         internal void ShowOutline()
         {
             HideOutline();

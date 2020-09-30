@@ -1,7 +1,7 @@
 {
   "Name": "Water Barrel",
   "Mesh": "barrel-old",
-  "Icon": "WaterBarrel",
+  "Icon": "barrel",
   "TravelCost": "99",
   "Description": "A structure where water can be stored.",
   "Cost": {
@@ -17,7 +17,7 @@
     "RequiredSkillName": "Haul",
     "WorkOrderType": "Fill",
     "OrderTrigger": "AutoCondition",
-    "AutoCooldown": 25,
+    "AutoCooldown": 10,
     "Options": [
       {
         "Name": "Water",
@@ -28,7 +28,7 @@
         "Default": true,
         "Cost": {
           "Items": {
-            "Water": "1"
+            "FreshWater": "1"
           }
         }
       }

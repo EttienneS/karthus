@@ -43,9 +43,15 @@ public class FindAndGetItem : CreatureTask
                     {
                         if (ItemCriteria == "Water")
                         {
+                            AddSubTask(new GetWater());
+                            return false;
+                        }
+                        else if (ItemCriteria == "FreshWater")
+                        {
                             AddSubTask(new GetWaterFromSource());
                             return false;
                         }
+
                         throw new TaskFailedException($"No items of required type ({ItemCriteria}) can be found");
                     }
                     else

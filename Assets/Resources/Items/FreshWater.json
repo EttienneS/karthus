@@ -1,0 +1,14 @@
+{
+  "Name": "FreshWater",
+  "Mesh": "sand-bucket",
+  "Icon": "Water",
+  "Cost": {
+    "Items": {
+      "FreshWater": "1"
+    }
+  },
+  "Categories": [ "Water" ],
+  "ValueProperties": {
+    "Quench": 100
+  }
+}

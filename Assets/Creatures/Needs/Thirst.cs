@@ -33,36 +33,20 @@ namespace Needs
         {
             if (Creature.GetNeed<Thirst>().Current < 50 && Creature.IsIdle())
             {
-                if (Creature.HeldItem?.Name == "Water")
+                if (Creature.HeldItem?.ValueProperties.ContainsKey("Quench") == true)
                 {
                     Creature.Task = new Consume(Creature.HeldItem);
                 }
                 else
                 {
-                    var drink = Creature.Faction.FindItem("Drink", Creature);
+                    var drink = Creature.Faction.FindItem("Water", Creature);
                     if (drink != null)
                     {
                         Creature.Task = new Consume(drink);
                     }
                     else
                     {
-                        var containers = Creature.Faction.GetClosestStructures<LiquidContainer>(Creature.Cell)
-                                                         .Where(l => l.FillLevel > 0)
-                                                         .ToList();
-
-                        if (containers.Count > 0)
-                        {
-                            var container = containers.First();
-                            Creature.Task = new GetWaterFromContainer(container);
-                            Debug.Log($"Getting water from {container.Name}");
-                        }
-                        else
-                        {
-                            Creature.Task = new GetWaterFromSource();
-                            Debug.LogWarning("Nothing to drink, get water from a source!");
-                        }
-
-                        
+                        Creature.Task = new FindAndGetItem("Water",1);
                     }
                 }
             }

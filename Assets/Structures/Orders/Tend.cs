@@ -18,6 +18,7 @@
                 return;
             }
 
+            ConsumeCostItems();
             var farmPlot = StructureId.GetStructure() as Farm;
 
             // change to new plant

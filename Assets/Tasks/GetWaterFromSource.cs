@@ -32,7 +32,7 @@ public class GetWaterFromSource : CreatureTask
             {
                 if (MoveToShore(creature))
                 {
-                    var water = Loc.GetItemController().SpawnItem("Water", creature.Cell, 1);
+                    var water = Loc.GetItemController().SpawnItem("FreshWater", creature.Cell, 1);
                     creature.PickUpItem(water, 1);
                     return true;
                 }

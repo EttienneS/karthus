@@ -1,13 +1,13 @@
 {
-  "Name": "Water",
+  "Name": "StoredWater",
   "Mesh": "sand-bucket",
   "Icon": "Water",
   "Cost": {
     "Items": {
-      "Water": "1"
+      "FreshWater": "1"
     }
   },
-  "Categories": [ "Raw Resources" ],
+  "Categories": [ "Water" ],
   "ValueProperties": {
     "Quench": 100
   }

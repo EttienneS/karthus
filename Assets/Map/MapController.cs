@@ -407,6 +407,7 @@ namespace Assets.Map
                 }
             }
         }
+
         private void CreateChunks()
         {
             for (var x = 0; x < MapGenerationData.Instance.Size; x++)
@@ -425,7 +426,17 @@ namespace Assets.Map
                 var center = GetRandomCell();
                 var size = Random.Range(4, 8);
                 var water = GetCircle(center, size);
-                var sand = GetCircle(center, size + 2).Except(water);
+                var sand = GetCircle(center, size + 2);
+
+                var subWater = Random.Range(2, 8);
+                for (int i = 0; i < subWater; i++)
+                {
+                    var locus = water.GetRandomItem();
+                    var subSize = Random.Range(2, 10);
+                    water.AddRange(GetCircle(locus, subSize));
+                    sand.AddRange(GetCircle(locus, subSize + 2));
+                }
+                sand = sand.Except(water).ToList();
 
                 MapGenerationData.Instance.AddChange(water, "Dam", "Water", Random.Range(-2f, -0.5f));
                 MapGenerationData.Instance.AddChange(sand, "Dam", "Shore", Random.Range(-0.5f, 0f));
