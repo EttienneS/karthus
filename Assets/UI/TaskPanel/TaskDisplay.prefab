@@ -67,10 +67,12 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0.8627451, g: 0.8666667, b: 0.88235295, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: c3a54ec89b0a8f840a79599ae2ad1284, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -123,6 +125,7 @@ MonoBehaviour:
   m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &868796466266007042
 GameObject:
   m_ObjectHideFlags: 0
@@ -136,6 +139,7 @@ GameObject:
   - component: {fileID: 476305273171825754}
   - component: {fileID: 4437037700398300635}
   - component: {fileID: 6530873763547467285}
+  - component: {fileID: 121387583587671371}
   m_Layer: 5
   m_Name: SuspendButton
   m_TagString: Untagged
@@ -186,10 +190,12 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 0.776, b: 0, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: c3a54ec89b0a8f840a79599ae2ad1284, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -243,6 +249,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4059657202378429905}
+        m_TargetAssemblyTypeName: 
         m_MethodName: Suspend
         m_Mode: 1
         m_Arguments:
@@ -273,6 +280,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &121387583587671371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 868796466266007042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f43aacd92a2ae345b676df3db49ffd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2529141115255056135
 GameObject:
   m_ObjectHideFlags: 0
@@ -333,6 +352,8 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0.18431373, g: 0.21176471, b: 0.2509804, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -363,6 +384,7 @@ GameObject:
   - component: {fileID: 1618762707300528249}
   - component: {fileID: 4176879811413351924}
   - component: {fileID: 3584429457056450909}
+  - component: {fileID: 5078229411079191487}
   m_Layer: 5
   m_Name: CancelTaskButton
   m_TagString: Untagged
@@ -413,10 +435,12 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 0.3537736, b: 0.3537736, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: c3a54ec89b0a8f840a79599ae2ad1284, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -470,6 +494,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4059657202378429905}
+        m_TargetAssemblyTypeName: 
         m_MethodName: Delete
         m_Mode: 1
         m_Arguments:
@@ -500,6 +525,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &5078229411079191487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2905278215460320826}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f43aacd92a2ae345b676df3db49ffd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4029184848123813585
 GameObject:
   m_ObjectHideFlags: 0
@@ -560,6 +597,8 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0.18431373, g: 0.21176471, b: 0.2509804, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -638,6 +677,8 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0.18431373, g: 0.21176471, b: 0.2509804, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -735,6 +776,8 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0.18431373, g: 0.21176471, b: 0.2509804, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -765,6 +808,7 @@ GameObject:
   - component: {fileID: 6445648398788450980}
   - component: {fileID: 9099289696357033014}
   - component: {fileID: 8340586932623682910}
+  - component: {fileID: 8919289994009867774}
   m_Layer: 5
   m_Name: NowButton
   m_TagString: Untagged
@@ -815,10 +859,12 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0.29803923, g: 0.81960785, b: 0.21568628, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: c3a54ec89b0a8f840a79599ae2ad1284, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -872,6 +918,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4059657202378429905}
+        m_TargetAssemblyTypeName: 
         m_MethodName: MoveUp
         m_Mode: 1
         m_Arguments:
@@ -902,6 +949,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &8919289994009867774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8965115030613335981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f43aacd92a2ae345b676df3db49ffd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4503350087612366237
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1066,12 +1125,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 81d089476334cfb4ebb0af1c60e1d568, type: 3}
---- !u!224 &5856944906906550531 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 8013893131490114718, guid: 81d089476334cfb4ebb0af1c60e1d568,
-    type: 3}
-  m_PrefabInstance: {fileID: 4503350087612366237}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &7978528124578614440 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5820462738834665781, guid: 81d089476334cfb4ebb0af1c60e1d568,
@@ -1084,3 +1137,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bc97a6a0fdf6f54b9b3f5fd1dafe762, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &5856944906906550531 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 8013893131490114718, guid: 81d089476334cfb4ebb0af1c60e1d568,
+    type: 3}
+  m_PrefabInstance: {fileID: 4503350087612366237}
+  m_PrefabAsset: {fileID: 0}
