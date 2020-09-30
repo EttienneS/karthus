@@ -6,6 +6,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using Assets.Creature.Behaviour;
 using Assets.ServiceLocator;
+using Assets.Helpers;
 
 public class CreatureController : MonoBehaviour, IGameService
 {
@@ -99,6 +100,8 @@ public class CreatureController : MonoBehaviour, IGameService
         var prefab = AllPrefabs.First(c => c.name.Equals(creatureData.Model, StringComparison.OrdinalIgnoreCase));
         var creature = Instantiate(prefab, transform);
 
+        OutlineHelper.AddDefaultOutline(creature.gameObject);
+
         creature.Data = creatureData;
         creature.Data.CreatureRenderer = creature;
 
@@ -127,6 +130,7 @@ public class CreatureController : MonoBehaviour, IGameService
         return creature;
     }
 
+   
     public void Initialize()
     {
     }
