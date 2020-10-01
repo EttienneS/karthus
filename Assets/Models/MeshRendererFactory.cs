@@ -1,6 +1,7 @@
 ﻿using Assets.ServiceLocator;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 namespace Assets.Models
@@ -54,7 +55,11 @@ namespace Assets.Models
 
         private static AssetBundle GetAssetBundle(string bundleName)
         {
-            var path = $@"{Environment.CurrentDirectory}\Assets\AssetBundles\{bundleName}";
+            var path = $@"{Environment.CurrentDirectory}\Build\AssetBundles\{bundleName}";
+            if (!File.Exists(path))
+            {
+                path = $@"AssetBundles\{bundleName}";
+            }
             return AssetBundle.LoadFromFile(path);
         }
 
