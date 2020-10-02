@@ -17,7 +17,6 @@ namespace Assets.Map
         public List<Cell> Cells = new List<Cell>();
         public ChunkRenderer ChunkPrefab;
 
-        public Light GlobalLight;
         public NoiseSettings LocalNoise;
         public GameObject WaterPrefab;
         public NoiseSettings WorldNoise;
@@ -438,8 +437,8 @@ namespace Assets.Map
                 }
                 sand = sand.Except(water).ToList();
 
-                MapGenerationData.Instance.AddChange(water, "Dam", "Water", Random.Range(-2f, -0.5f));
-                MapGenerationData.Instance.AddChange(sand, "Dam", "Shore", Random.Range(-0.5f, 0f));
+                MapGenerationData.Instance.AddChange(water, "Dam", "Water", -0.5f);
+                MapGenerationData.Instance.AddChange(sand, "Dam", "Shore", -0.2f);
             }
         }
 

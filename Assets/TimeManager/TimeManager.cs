@@ -1,5 +1,4 @@
-﻿using Assets.Map;
-using Assets.ServiceLocator;
+﻿using Assets.ServiceLocator;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -22,6 +21,8 @@ public class TimeManager : MonoBehaviour, IGameService
         Hour = 6,
         Minute = 0
     };
+
+    public Light GlobalLight;
 
     public float LightAngleY = 30f;
     public float LightAngleZ = 30f;
@@ -117,15 +118,15 @@ public class TimeManager : MonoBehaviour, IGameService
         var total = range * 60f;
         var current = ((Data.Hour - min) * 60) + Data.Minute;
 
-        Loc.GetMap().GlobalLight.color = Color.Lerp(start, end, current / total);
+        GlobalLight.color = Color.Lerp(start, end, current / total);
 
         if (Data.Hour < 4 || Data.Hour > 20)
         {
-            Loc.GetMap().GlobalLight.transform.localEulerAngles = new Vector3(MaxLightAngle, LightAngleY, LightAngleZ);
+            GlobalLight.transform.localEulerAngles = new Vector3(MaxLightAngle, LightAngleY, LightAngleZ);
         }
         else
         {
-            Loc.GetMap().GlobalLight.transform.localEulerAngles = new Vector3(Mathf.Lerp(MinLightAngle, MaxLightAngle, ((Data.Hour * 60) + Data.Minute) / 1440f), LightAngleY, LightAngleZ);
+            GlobalLight.transform.localEulerAngles = new Vector3(Mathf.Lerp(MinLightAngle, MaxLightAngle, ((Data.Hour * 60) + Data.Minute) / 1440f), LightAngleY, LightAngleZ);
         }
     }
 
