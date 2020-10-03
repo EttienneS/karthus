@@ -11,8 +11,9 @@ using UnityEngine;
 namespace Assets.Structures
 {
     [Serializable]
-    public class Structure 
+    public class Structure
     {
+        public float BaseFlammability = -1f;
         public bool Buildable;
 
         public string ColorHex = "#ffffff";
@@ -23,6 +24,7 @@ namespace Assets.Structures
         // rather than serializing the cell object we keep this lazy link for load
         public (int X, int Y) Coords = (-1, -1);
 
+        public float Flammability;
         public string Icon;
         public string Layer;
 
@@ -30,12 +32,10 @@ namespace Assets.Structures
         public float Rotation;
 
         public bool SpawnRotation;
+        public List<StructureBehaviour> StructureBehaviours = new List<StructureBehaviour>();
         public float TravelCost;
 
         public string Type;
-        public float BaseFlammability = -1f;
-        public float Flammability;
-
         private Cell _cell;
 
         private Faction _faction;
@@ -44,25 +44,6 @@ namespace Assets.Structures
 
         public Structure()
         {
-        }
-
-        public virtual void OnDestroy()
-        {
-
-        }
-
-        internal bool HasBehaviour<T>() where T : StructureBehaviour
-        {
-            return StructureBehaviours.Any(s => s is T);
-        }
-
-        public virtual void Load()
-        {
-            Flammability = BaseFlammability;
-            if (SpawnRotation)
-            {
-                Rotation = UnityEngine.Random.Range(1, 360);
-            }
         }
 
         public Structure(string name, string mesh) : this()
@@ -164,13 +145,10 @@ namespace Assets.Structures
 
         public Dictionary<string, float> ValueProperties { get; set; } = new Dictionary<string, float>();
 
-        [JsonIgnore]
-        public Vector3 Vector
+        public Vector3 GetVector()
         {
-            get
-            {
-                return new Vector3(Cell.Vector.x, Cell.Vector.y, Cell.Vector.z);
-            }
+
+            return new Vector3(Cell.Vector.x, Cell.Vector.y, Cell.Vector.z);
         }
 
         public bool IsShadowCaster()
@@ -188,9 +166,31 @@ namespace Assets.Structures
             return IsType("Wall");
         }
 
+        public virtual void Load()
+        {
+            Flammability = BaseFlammability;
+            if (SpawnRotation)
+            {
+                Rotation = UnityEngine.Random.Range(1, 360);
+            }
+        }
+
+        public virtual void OnDestroy()
+        {
+
+        }
+
         public override string ToString()
         {
             return $"{Name}";
+        }
+
+        public void Update(float delta)
+        {
+            foreach (var behaviour in StructureBehaviours.ToList())
+            {
+                behaviour.Update(delta);
+            }
         }
 
         public bool ValidateCellLocationForStructure(Cell cell)
@@ -208,6 +208,18 @@ namespace Assets.Structures
                 }
                 return cell.Structures.All(s => !s.Buildable);
             }
+        }
+
+        internal void AddBehaviour<T>() where T : StructureBehaviour
+        {
+            var behaviour = (T)Activator.CreateInstance(typeof(T));
+            StructureBehaviours.Add(behaviour);
+            behaviour.Link(this);
+        }
+
+        internal bool Flammable()
+        {
+            return Flammability > 0 && !HasBehaviour<Wildfire>();
         }
 
         internal void Free()
@@ -233,6 +245,10 @@ namespace Assets.Structures
             return 0f;
         }
 
+        internal bool HasBehaviour<T>() where T : StructureBehaviour
+        {
+            return StructureBehaviours.Any(s => s is T);
+        }
         internal bool HasValue(string v)
         {
             return ValueProperties.ContainsKey(v);
@@ -275,35 +291,12 @@ namespace Assets.Structures
             }
             ValueProperties[valueName] = value;
         }
-
-        internal bool Flammable()
-        {
-            return Flammability > 0 && !HasBehaviour<Wildfire>();
-        }
-
-        internal void AddBehaviour<T>() where T : StructureBehaviour
-        {
-            var behaviour = (T)Activator.CreateInstance(typeof(T));
-            StructureBehaviours.Add(behaviour);
-            behaviour.Link(this);
-        }
-
         internal void ShowOutline()
         {
             HideOutline();
             _outline = Loc.GetVisualEffectController()
-                           .SpawnSpriteEffect(Vector, "CellOutline", float.MaxValue);
+                           .SpawnSpriteEffect(GetVector(), "CellOutline", float.MaxValue);
             _outline.Regular();
-        }
-
-        public List<StructureBehaviour> StructureBehaviours = new List<StructureBehaviour>();
-
-        public void Update(float delta)
-        {
-            foreach (var behaviour in StructureBehaviours.ToList())
-            {
-                behaviour.Update(delta);
-            }
         }
     }
 }

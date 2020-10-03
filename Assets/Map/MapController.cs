@@ -80,7 +80,7 @@ namespace Assets.Map
         public Cell CreateCell(int x, int z)
         {
             var noiseMapHeight = GetNoiseMapPoint(x, z);
-            var biome = GetBiome(x, z).GetRegion(noiseMapHeight);
+            var biome = GetBiomeRegion(x, z).GetRegion(noiseMapHeight);
 
             var y = 0;
             var cell = new Cell
@@ -110,7 +110,7 @@ namespace Assets.Map
             PopulateOrLoadCellContents();
         }
 
-        public Biome GetBiome(int x, int y)
+        public Biome GetBiomeRegion(int x, int y)
         {
             //return BiomeTemplates["Debug"];
             return BiomeTemplates["Default"];
@@ -585,6 +585,14 @@ namespace Assets.Map
             {
                 PopulateMapFromSave();
             }
+        }
+
+        internal ChunkRenderer GetChunkForCell(Cell cell)
+        {
+            var x = Mathf.FloorToInt(cell.X / MapGenerationData.Instance.ChunkSize);
+            var y = Mathf.FloorToInt(cell.Z / MapGenerationData.Instance.ChunkSize);
+
+            return Chunks[(x, y)];
         }
     }
 }

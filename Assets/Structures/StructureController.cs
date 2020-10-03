@@ -113,7 +113,9 @@ namespace Assets.Structures
 
         public Structure SpawnStructure(Structure structure)
         {
-            var renderer = InstantiateNewStructureMeshRenderer(structure, transform);
+            var chunk = Loc.GetMap().GetChunkForCell(structure.Cell);
+            var renderer = InstantiateNewStructureMeshRenderer(structure, chunk.transform);
+            //var renderer = InstantiateNewStructureMeshRenderer(structure, transform);
 
             var structureRenderer = renderer.gameObject.AddComponent<StructureRenderer>();
             structure.Renderer = structureRenderer;
@@ -123,7 +125,7 @@ namespace Assets.Structures
             IndexStructure(structure);
 
             structureRenderer.transform.name = structure.Name + " " + structure.Id;
-            structureRenderer.UpdatePosition();
+            structureRenderer.UpdatePosition(chunk);
 
             if (structure is WorkStructureBase workStructure)
             {

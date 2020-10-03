@@ -6,7 +6,7 @@ namespace Assets.Map
     [Serializable]
     public class MapGenerationData
     {
-        public int ChunkSize = 60;
+        public int ChunkSize = 30;
         public bool CreateWater = true;
         public int CreaturesToSpawn = 3;
         public List<CellDiff> MapDiff = new List<CellDiff>();
