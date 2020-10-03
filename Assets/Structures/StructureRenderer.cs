@@ -13,7 +13,7 @@ namespace Assets.Structures
         {
             var pos = Data.GetVector();
             pos -= new Vector3(chunk.Data.X * MapGenerationData.Instance.ChunkSize, 0, chunk.Data.Z * MapGenerationData.Instance.ChunkSize);
-            pos += new Vector3(0.5f, 0, 0.5f);
+            pos -= new Vector3(0.5f, 0, 0.5f);
 
             transform.localPosition = pos;
             transform.eulerAngles = new Vector3(transform.eulerAngles.x, Data.Rotation, transform.eulerAngles.z);
