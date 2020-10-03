@@ -6,7 +6,7 @@
   "Description": "A structure where a person with the carpentry skill can craft things from wood.",
   "Cost": {
     "Items": {
-      "Log": "1"
+      "Plank": "1"
     }
   },
   "Buildable": "True",
