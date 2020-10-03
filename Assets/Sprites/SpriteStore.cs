@@ -7,8 +7,26 @@ using UnityEngine;
 public class SpriteStore : MonoBehaviour, IGameService
 {
     internal Dictionary<string, Sprite> IconSprites { get; set; }
+    internal Dictionary<string, Material> SkinMaterials { get; set; }
 
     public void Initialize()
+    {
+        LoadIcons();
+        LoadSkins();
+    }
+
+    private void LoadSkins()
+    {
+        SkinMaterials = new Dictionary<string, Material>();
+
+        var materials = Resources.LoadAll<Material>("Skins").ToList();
+        foreach (var material in materials)
+        {
+            SkinMaterials.Add(material.name, material);
+        }
+    }
+
+    private void LoadIcons()
     {
         IconSprites = new Dictionary<string, Sprite>();
 
@@ -54,6 +72,7 @@ public class SpriteStore : MonoBehaviour, IGameService
                 return IconSprites[spriteName];
             }
 
+
             Debug.LogWarning($"No sprite for: {spriteName}");
             return GetPlaceholder();
         }
@@ -61,5 +80,19 @@ public class SpriteStore : MonoBehaviour, IGameService
         {
             throw new Exception($"No sprite found with name: {spriteName}");
         }
+    }
+
+    public Material GetRandomSkin()
+    {
+        return SkinMaterials.Values.GetRandomItem();
+    }
+
+    public Material GetSkin(string skinName)
+    {
+        if (SkinMaterials.ContainsKey(skinName))
+        {
+            return SkinMaterials[skinName];
+        }
+        throw new Exception($"No skin found with name: {skinName}");
     }
 }

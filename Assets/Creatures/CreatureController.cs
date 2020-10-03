@@ -1,17 +1,18 @@
 ﻿using Assets.Creature;
+using Assets.Creature.Behaviour;
+using Assets.Helpers;
+using Assets.ServiceLocator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
-using Assets.Creature.Behaviour;
-using Assets.ServiceLocator;
-using Assets.Helpers;
 
 public class CreatureController : MonoBehaviour, IGameService
 {
     //public CreatureRenderer CreaturePrefab;
     public SpriteRenderer HightlightPrefab;
+
     public List<CreatureRenderer> AllPrefabs;
 
     private Dictionary<string, CreatureData> _beastiary;
@@ -97,10 +98,14 @@ public class CreatureController : MonoBehaviour, IGameService
 
     internal CreatureRenderer SpawnCreature(CreatureData creatureData, Cell cell, Faction faction)
     {
+        if (creatureData.Model == "Character")
+        {
+            creatureData.Model = Random.value > 0.5f ? creatureData.Model + "Female" : creatureData.Model + "Male";
+        }
+
         var prefab = AllPrefabs.First(c => c.name.Equals(creatureData.Model, StringComparison.OrdinalIgnoreCase));
         var creature = Instantiate(prefab, transform);
 
-        OutlineHelper.AddDefaultOutline(creature.gameObject);
 
         creature.Data = creatureData;
         creature.Data.CreatureRenderer = creature;
@@ -117,6 +122,9 @@ public class CreatureController : MonoBehaviour, IGameService
             creature.Data.Name = creatureData.Name;
         }
 
+        var mesh = creature.GetComponentInChildren<SkinnedMeshRenderer>();
+        mesh.SetMeshMaterial(Loc.GetSpriteStore().GetRandomSkin());
+
         creature.Data.X = cell.Vector.x + Random.Range(-0.25f, 0.25f);
         creature.Data.Z = cell.Vector.z + Random.Range(-0.25f, 0.25f);
         creature.UpdatePosition();
@@ -125,12 +133,12 @@ public class CreatureController : MonoBehaviour, IGameService
 
         creature.Data.Needs = BehaviourController.GetNeedsFor(creature.Data.BehaviourName);
 
-        faction.AddCreature(creatureData);
+        OutlineHelper.AddDefaultOutline(creature.gameObject);
 
+        faction.AddCreature(creatureData);
         return creature;
     }
 
-   
     public void Initialize()
     {
     }
