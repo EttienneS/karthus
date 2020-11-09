@@ -1,0 +1,14 @@
+{
+  "Name": "Foundation",
+  "Mesh": "foundation",
+  "Icon": "Foundation",
+  "TravelCost": "0.5",
+  "Description": "Required base layer for structures to be built on.",
+  "Cost": {
+    "Items": {
+      "Stone": "1"
+    }
+  },
+  "Buildable": "True",
+  "Type": "Floor"
+}

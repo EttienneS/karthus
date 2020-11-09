@@ -18,7 +18,6 @@ namespace Assets.Map
         public ChunkRenderer ChunkPrefab;
 
         public NoiseSettings LocalNoise;
-        public GameObject WaterPrefab;
         public NoiseSettings WorldNoise;
 
         internal Dictionary<(int x, int y), ChunkRenderer> Chunks;
@@ -262,10 +261,44 @@ namespace Assets.Map
             chunk.transform.position = new Vector2(data.X * MapGenerationData.Instance.ChunkSize, data.Z * MapGenerationData.Instance.ChunkSize);
             chunk.name = $"Chunk: {data.X}_{data.Z}";
             chunk.Data = data;
-
             Chunks.Add((data.X, data.Z), chunk);
 
             return chunk;
+        }
+
+        public ChunkCell[,] GetCells(int offsetX, int offsetZ)
+        {
+            var size = MapGenerationData.Instance.ChunkSize;
+            var cells = new ChunkCell[size, size];
+            var map = Loc.GetMap();
+            for (var z = 0; z < size; z++)
+            {
+                for (var x = 0; x < size; x++)
+                {
+                    var cell = map.GetCellAtCoordinate(x + (offsetX * size), z + (offsetZ * size));
+                    cells[x, z] = new ChunkCell(cell.Y, GetColor(cell));
+                }
+            }
+
+            return cells;
+        }
+
+        public Color GetColor(Cell cell)
+        {
+            if (cell == null)
+            {
+                return new Color(0, 0, 0, 0);
+            }
+
+            var biomes = cell.NonNullNeighbors.Select(c => c.BiomeRegion).ToList();
+            biomes.Add(cell.BiomeRegion);
+
+            var red = biomes.Average(b => b.Red);
+            var green = biomes.Average(b => b.Green);
+            var blue = biomes.Average(b => b.Blue);
+            var alpha = biomes.Average(b => b.Alpha);
+
+            return new Color(red, green, blue, alpha);
         }
 
         public void MakeFactionBootStrap(Faction faction)
@@ -413,7 +446,7 @@ namespace Assets.Map
             {
                 for (var y = 0; y < MapGenerationData.Instance.Size; y++)
                 {
-                    MakeChunk(new Chunk(x, y));
+                    MakeChunk(new Chunk(x, y, GetCells(x, y)));
                 }
             }
         }
@@ -518,6 +551,7 @@ namespace Assets.Map
         {
             foreach (var chunk in SaveManager.SaveToLoad.Chunks)
             {
+                chunk.ChunkCells = GetCells(chunk.X, chunk.Z);
                 MakeChunk(chunk);
             }
         }

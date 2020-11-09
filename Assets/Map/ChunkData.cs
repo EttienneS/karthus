@@ -2,16 +2,25 @@
 using Assets.ServiceLocator;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 public class Chunk
 {
-    public List<Cell> Cells;
+    public Chunk(int x, int y, ChunkCell[,] cells) : this(x, y)
+    {
+        ChunkCells = cells;
+    }
 
-
-    public Chunk(int x, int y)
+    public Chunk(int x, int y) : this()
     {
         X = x;
         Z = y;
+    }
+
+    public Chunk()
+    {
+
     }
 
     [JsonIgnore]
@@ -35,4 +44,9 @@ public class Chunk
             return Loc.GetMap().Chunks[Coords];
         }
     }
+
+    [JsonIgnore]
+    public ChunkCell[,] ChunkCells { get; set; }
+
+  
 }
