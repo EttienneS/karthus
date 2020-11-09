@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Helpers;
+using System;
 using UnityEngine;
 
 namespace Assets.Map
@@ -19,21 +20,34 @@ namespace Assets.Map
 
         public void Generate()
         {
-            MapGenerationData.Instance = new MapGenerationData(Guid.NewGuid().ToString());
-
-            var seed = MapGenerationData.Instance.Seed.GetHashCode();
-            _size = MapGenerationData.Instance.MapSize * MapGenerationData.Instance.ChunkSize;
-            _heightMap = GetHeightMap(seed);
-            _temperatureMap = GetTemperatureMap(seed);
-            _moistureMap = GetMoistureMap(seed);
-
-            for (int x = 0; x < MapGenerationData.Instance.MapSize; x++)
+            using (Instrumenter.Start())
             {
-                for (int y = 0; y < MapGenerationData.Instance.MapSize; y++)
+                MapGenerationData.Instance = new MapGenerationData(Guid.NewGuid().ToString());
+
+                var seed = MapGenerationData.Instance.Seed.GetHashCode();
+                _size = MapGenerationData.Instance.MapSize * MapGenerationData.Instance.ChunkSize;
+                _heightMap = GetHeightMap(seed);
+                _temperatureMap = GetTemperatureMap(seed);
+                _moistureMap = GetMoistureMap(seed);
+
+                for (int x = 0; x < MapGenerationData.Instance.MapSize; x++)
                 {
-                    MakeChunk(new Chunk(x, y, GetCells(x, y)));
+                    for (int y = 0; y < MapGenerationData.Instance.MapSize; y++)
+                    {
+                        MakeChunk(new Chunk(x, y, GetCells(x, y)));
+                    }
                 }
             }
+          
+        }
+
+        public void Regenerate()
+        {
+            foreach (Transform child in transform)
+            {
+                Destroy(child.gameObject);
+            }
+            Generate();
         }
 
         public ChunkRenderer MakeChunk(Chunk data)
@@ -185,8 +199,6 @@ namespace Assets.Map
 
         private ChunkCell GetCellAt(int x, int y)
         {
-            Debug.Log($"{x} {y}");
-
             var height = (int)_heightMap[x, y];
 
             if (height <= 0)
