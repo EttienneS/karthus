@@ -13,7 +13,7 @@ namespace Assets.Map
         public bool Populate = true;
         public string Seed;
         public int Size = 1;
-        public int MapSize = 5;
+        public int MapSize = 20;
         public float WaterLevel = 0.25f;
 
         public MapGenerationData()

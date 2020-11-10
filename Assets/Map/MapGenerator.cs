@@ -11,21 +11,23 @@ namespace Assets.Map
         public ChunkRenderer ChunkPrefab;
         public AnimationCurve TerrainFallofCurve;
         public AnimationCurve TemperatureCurve;
+        public AnimationCurve HeightCurve;
+        public MapGenerationData MapGenerationData;
+
 
         private float[,] _heightMap;
         private float[,] _moistureMap;
         private int _size;
         private float[,] _temperatureMap;
 
+
         public void Generate()
         {
             using (Instrumenter.Start())
             {
                 _missCounter = 0;
-                MapGenerationData.Instance = new MapGenerationData(Guid.NewGuid().ToString())
-                {
-                    WaterLevel = 0.5f
-                };
+
+               MapGenerationData.Instance = MapGenerationData;
 
                 var seed = MapGenerationData.Instance.Seed.GetHashCode();
                 _size = MapGenerationData.Instance.MapSize * MapGenerationData.Instance.ChunkSize;
@@ -79,6 +81,7 @@ namespace Assets.Map
             {
                 Destroy(child.gameObject);
             }
+            MapGenerationData.Seed = Guid.NewGuid().ToString();
             Generate();
         }
 
@@ -112,6 +115,7 @@ namespace Assets.Map
         }
 
         private int _missCounter;
+
         private Color GetBiome(float temp, float moisture)
         {
             foreach (var biome in Biomes)
@@ -132,19 +136,19 @@ namespace Assets.Map
         {
             var height = _heightMap[x, y];
 
-            if (height <= 0)
+            if (height < 0)
             {
-                return new ChunkCell(-10f, new Color(0.1f, 0.1f, 0.1f));
+                return new ChunkCell(-0.5f -(HeightCurve.Evaluate(-height) * 25f), ColorExtensions.GetColorFromHex("7f7e7d"));
             }
 
-            return new ChunkCell(height * 10f, GetBiome(_temperatureMap[x, y], _moistureMap[x, y]));
+            return new ChunkCell(HeightCurve.Evaluate(height) * 10f, GetBiome(_temperatureMap[x, y], _moistureMap[x, y]));
         }
 
         private float[,] GetHeightMap(int seed)
         {
             var noise = new FastNoiseLite(seed);
-            noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S);
-            noise.SetFrequency(0.04f);
+            noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
+            noise.SetFrequency(0.01f);
             noise.SetFractalType(FastNoiseLite.FractalType.FBm);
 
             var height = noise.GetNoiseMap(_size);
@@ -200,13 +204,12 @@ namespace Assets.Map
             }
 
             // apply height map to temp map
-            var heightPow = 0.3f;
             for (int y = 0; y < _size; y++)
             {
                 for (int x = 0; x < _size; x++)
                 {
                     var temp = tempMap[x, y];
-                    temp -= (_heightMap[x, y] * heightPow); // subtract height from temp (higher height == lower temp)
+                    temp -= (HeightCurve.Evaluate(_heightMap[x, y])); // subtract height from temp (higher height == lower temp)
 
                     tempMap[x, y] = Mathf.Clamp(temp, 0f, 1f);
                 }
