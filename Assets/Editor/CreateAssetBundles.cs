@@ -1,9 +1,7 @@
 ﻿using UnityEditor;
 using System.IO;
-using Assets.Map;
-using UnityEngine;
 
-public class CreateAssetBundles
+public partial class CreateAssetBundles
 {
     [MenuItem("Build/AssetBundles")]
     static void BuildAllAssetBundles()
@@ -16,19 +14,5 @@ public class CreateAssetBundles
         BuildPipeline.BuildAssetBundles(assetBundleDirectory,
                                         BuildAssetBundleOptions.None,
                                         BuildTarget.StandaloneWindows);
-    }
-
-    [CustomEditor(typeof(MapGenerator))]
-    public class LevelScriptEditor : Editor
-    {
-        public override void OnInspectorGUI()
-        {
-            MapGenerator myTarget = (MapGenerator)target;
-
-            if (GUILayout.Button("Regenerate World"))
-            {
-                myTarget.Regenerate();
-            }
-        }
     }
 }

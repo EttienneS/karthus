@@ -6,23 +6,26 @@ namespace Assets.Map
 {
     public class MapGenerator : MonoBehaviour
     {
+        public BiomeEntry[] Biomes;
+        public Material ChunkMaterial;
         public ChunkRenderer ChunkPrefab;
-
-        public (string name, float maxTemp, float maxMoisture, Color color)[] Biomes;
+        public AnimationCurve TerrainFallofCurve;
+        public AnimationCurve TemperatureCurve;
 
         private float[,] _heightMap;
-
         private float[,] _moistureMap;
-
         private int _size;
-
         private float[,] _temperatureMap;
 
         public void Generate()
         {
             using (Instrumenter.Start())
             {
-                MapGenerationData.Instance = new MapGenerationData(Guid.NewGuid().ToString());
+                _missCounter = 0;
+                MapGenerationData.Instance = new MapGenerationData(Guid.NewGuid().ToString())
+                {
+                    WaterLevel = 0.5f
+                };
 
                 var seed = MapGenerationData.Instance.Seed.GetHashCode();
                 _size = MapGenerationData.Instance.MapSize * MapGenerationData.Instance.ChunkSize;
@@ -37,8 +40,37 @@ namespace Assets.Map
                         MakeChunk(new Chunk(x, y, GetCells(x, y)));
                     }
                 }
+
+                Debug.Log($"Miss: {_missCounter}/{_size * _size}");
             }
-          
+        }
+
+        public float[,] GenerateTerrainCircularFalloffMap()
+        {
+            float[,] grad = new float[_size, _size];
+
+            float cX = _size * 0.5f;
+            float cY = _size * 0.5f;
+
+            for (int y = 0; y < _size; y++)
+            {
+                for (int x = 0; x < _size; x++)
+                {
+                    grad[x, y] = TerrainFallofCurve.Evaluate((float)(DistanceToCenter(cX, cY, x, y) / (_size * 0.55f)));
+                }
+            }
+
+            return grad;
+        }
+
+        public ChunkRenderer MakeChunk(Chunk data)
+        {
+            var chunk = Instantiate(ChunkPrefab, transform);
+            chunk.transform.position = new Vector2(data.X * MapGenerationData.Instance.ChunkSize, data.Z * MapGenerationData.Instance.ChunkSize);
+            chunk.name = $"Chunk: {data.X}_{data.Z}";
+            chunk.Data = data;
+            chunk.MeshRenderer.SetAllMaterial(ChunkMaterial);
+            return chunk;
         }
 
         public void Regenerate()
@@ -48,123 +80,6 @@ namespace Assets.Map
                 Destroy(child.gameObject);
             }
             Generate();
-        }
-
-        public ChunkRenderer MakeChunk(Chunk data)
-        {
-            var chunk = Instantiate(ChunkPrefab, transform);
-            chunk.transform.position = new Vector2(data.X * MapGenerationData.Instance.ChunkSize, data.Z * MapGenerationData.Instance.ChunkSize);
-            chunk.name = $"Chunk: {data.X}_{data.Z}";
-            chunk.Data = data;
-            return chunk;
-        }
-
-        public float[,] GenerateRadialGradient(float normalize, float power)
-        {
-            float[,] grad = new float[_size, _size];
-
-            float cX = _size * 0.5f;
-            float cY = _size * 0.5f;
-
-            for (int y = 0; y < _size; ++y)
-            {
-                for (int x = 0; x < _size; ++x)
-                {
-                    grad[x, y] = Mathf.Clamp(normalize - (float)(DistanceToCenter(cX, cY, x, y) / _size) * normalize * power, 0f, 2f);
-                }
-            }
-
-            return grad;
-        }
-
-        private float DistanceToCenter(float cX, float cY, float x, float y)
-        {
-            return (float)Mathf.Sqrt(Mathf.Pow(x - cX, 2) + Mathf.Pow(y - cY, 2));
-        }
-
-        private float[,] GetHeightMap(int seed)
-        {
-            var noise = new FastNoiseLite(seed);
-            noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S);
-            noise.SetFrequency(0.04f);
-            noise.SetFractalType(FastNoiseLite.FractalType.FBm);
-
-            var height = noise.GetNoiseMap(_size);
-            var radMap = GenerateRadialGradient(1f, 2f);
-            for (int y = 0; y < _size; ++y)
-            {
-                for (int x = 0; x < _size; ++x)
-                {
-                    var value = height[x, y];
-                    value = ((value + 1) / 2) * 9; // normalize to be between 0 and 9
-                    value *= radMap[x, y]; // apply edge gradient
-
-                    height[x, y] = value;
-                }
-            }
-
-            return height;
-        }
-
-        private float[,] GetMoistureMap(int seed)
-        {
-            var noise = new FastNoiseLite(seed);
-            noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
-            noise.SetFractalType(FastNoiseLite.FractalType.PingPong);
-
-            var moistureMap = noise.GetNoiseMap(_size);
-
-            for (int y = 0; y < _size; ++y)
-            {
-                for (int x = 0; x < _size; ++x)
-                {
-                    moistureMap[x, y] = (1 + moistureMap[x, y]) / 2f; // normalize moisture to be between 0 and 1
-                }
-            }
-
-            return moistureMap;
-        }
-
-        private float[,] GetTemperatureMap(int seed)
-        {
-            var noise = new FastNoiseLite(seed);
-            noise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
-            noise.SetFrequency(0.1f);
-
-            var tempMap = noise.GetNoiseMap(_size);
-            var heightPow = 0.1f;
-            for (int y = 0; y < _size; ++y)
-            {
-                for (int x = 0; x < _size; ++x)
-                {
-                    var temp = tempMap[x, y];
-                    temp = (1 + temp) / 2f; // normalize temperature to be between 0 and 1
-                    temp -= _heightMap[x, y] * heightPow; // subtract height from temp (higher height == lower temp)
-
-                    tempMap[x, y] = temp;
-                }
-            }
-
-            return tempMap;
-        }
-
-        private void Start()
-        {
-            Biomes = new (string name, float maxTemp, float maxMoisture, Color color)[]{
-                ("Tundra", 0.2f, 0.4f, Color.white),
-                ("BorealForest", 0.4f, 0.4f, ColorExtensions.GetColorFromHex("2D6A4F")),
-                ("Grassland", 0.6f, 0.4f, ColorExtensions.GetColorFromHex("52B788")),
-                ("TemperateForest", 0.6f, 0.6f, ColorExtensions.GetColorFromHex("1B4332")),
-                ("HighVeld", 0.8f, 0.5f, ColorExtensions.GetColorFromHex("8ea604")),
-                ("Desert", 1f, 0.2f, ColorExtensions.GetColorFromHex("efd6ac")),
-                ("Shrubland", 1f, 0.4f, ColorExtensions.GetColorFromHex("717744")),
-                ("TropicalForest", 1f, 0.8f, ColorExtensions.GetColorFromHex("55a630"))
-            };
-            Generate();
-        }
-
-        private void Update()
-        {
         }
 
         internal ChunkCell[,] GetCells(int offsetX, int offsetY)
@@ -183,30 +98,162 @@ namespace Assets.Map
             return cells;
         }
 
+        private static float CalculateTemperature(float equator, int y)
+        {
+            // calculate the absolute distance to the equator,
+            // then get the proportion of the distance (normalize value to be between 0 and 1)
+            // finally subtract that from 1 to get the inverse value (temp goes down as we move away from the equator)
+            return 1f - (Math.Abs(y - equator) / equator);
+        }
+
+        private float DistanceToCenter(float cX, float cY, float x, float y)
+        {
+            return (float)Mathf.Sqrt(Mathf.Pow(x - cX, 2) + Mathf.Pow(y - cY, 2));
+        }
+
+        private int _missCounter;
         private Color GetBiome(float temp, float moisture)
         {
             foreach (var biome in Biomes)
             {
-                if (temp > biome.maxTemp || moisture > biome.maxMoisture)
+                if (temp >= biome.MinTemp && temp <= biome.MaxTemp &&
+                   moisture >= biome.MinMoisture && moisture <= biome.MaxMoisture)
                 {
-                    continue;
+                    return biome.Color;
                 }
-                return biome.color;
             }
 
+            _missCounter++;
+            Debug.Log($"No value for '{temp}t' '{moisture}m'");
             return Color.magenta;
         }
 
         private ChunkCell GetCellAt(int x, int y)
         {
-            var height = (int)_heightMap[x, y];
+            var height = _heightMap[x, y];
 
             if (height <= 0)
             {
-                return new ChunkCell(-1f, Color.blue);
+                return new ChunkCell(-10f, new Color(0.1f, 0.1f, 0.1f));
             }
 
-            return new ChunkCell(height, GetBiome(_moistureMap[x, y], _temperatureMap[x, y]));
+            return new ChunkCell(height * 10f, GetBiome(_temperatureMap[x, y], _moistureMap[x, y]));
         }
+
+        private float[,] GetHeightMap(int seed)
+        {
+            var noise = new FastNoiseLite(seed);
+            noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S);
+            noise.SetFrequency(0.04f);
+            noise.SetFractalType(FastNoiseLite.FractalType.FBm);
+
+            var height = noise.GetNoiseMap(_size);
+            var radMap = GenerateTerrainCircularFalloffMap();
+            for (int y = 0; y < _size; y++)
+            {
+                for (int x = 0; x < _size; x++)
+                {
+                    var value = height[x, y];
+                    var rad = radMap[x, y];
+
+                    value -= rad; // apply edge gradient
+
+                    height[x, y] = value;
+                }
+            }
+
+            return height;
+        }
+
+        private float[,] GetMoistureMap(int seed)
+        {
+            var noise = new FastNoiseLite(seed);
+            noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
+            noise.SetFractalType(FastNoiseLite.FractalType.PingPong);
+
+            var moistureMap = noise.GetNoiseMap(_size);
+
+            for (int y = 0; y < _size; y++)
+            {
+                for (int x = 0; x < _size; x++)
+                {
+                    var value = Mathf.Clamp((1 + moistureMap[x, y]) / 2f, 0f, 1f); // normalize moisture to be between 0 and 1
+                    moistureMap[x, y] = value;
+                }
+            }
+
+            return moistureMap;
+        }
+
+        private float[,] GetTemperatureMap(int seed)
+        {
+            var tempMap = new float[_size, _size];
+            var equator = _size / 2f;
+            for (int y = 0; y < _size; y++)
+            {
+                var temperature = CalculateTemperature(equator, y);
+
+                for (int x = 0; x < _size; x++)
+                {
+                    tempMap[x, y] = TemperatureCurve.Evaluate(temperature);
+                }
+            }
+
+            // apply height map to temp map
+            var heightPow = 0.3f;
+            for (int y = 0; y < _size; y++)
+            {
+                for (int x = 0; x < _size; x++)
+                {
+                    var temp = tempMap[x, y];
+                    temp -= (_heightMap[x, y] * heightPow); // subtract height from temp (higher height == lower temp)
+
+                    tempMap[x, y] = Mathf.Clamp(temp, 0f, 1f);
+                }
+            }
+
+            return tempMap;
+        }
+
+        private void Start()
+        {
+            Generate();
+        }
+
+        private void Update()
+        {
+        }
+    }
+}
+
+[Serializable]
+public class BiomeEntry
+{
+    public string Name;
+
+    [Range(0f, 1f)]
+    public float MinTemp;
+
+    [Range(0f, 1f)]
+    public float MaxTemp;
+
+    [Range(0f, 1f)]
+    public float MinMoisture;
+
+    [Range(0f, 1f)]
+    public float MaxMoisture;
+
+    public Color Color;
+
+    public BiomeEntry()
+    {
+    }
+
+    public BiomeEntry(string name, float maxTemp, float maxMoisture, Color color) : this()
+    {
+        Name = name;
+        MaxTemp = maxTemp;
+        MaxMoisture = maxMoisture;
+        Color = color;
     }
 }

@@ -201,7 +201,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1902607819}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 75, y: 100, z: 75}
+  m_LocalPosition: {x: 75, y: 150, z: 75}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -359,8 +359,118 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34fc0ecc846ead94eb935de2e1726005, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Biomes:
+  - Name: Ice
+    MinTemp: 0
+    MaxTemp: 0.3
+    MinMoisture: 0
+    MaxMoisture: 1
+    Color: {r: 1, g: 1, b: 1, a: 0}
+  - Name: Tundra
+    MinTemp: 0.3
+    MaxTemp: 0.4
+    MinMoisture: 0
+    MaxMoisture: 0.4
+    Color: {r: 0.5849056, g: 0.5849056, b: 0.5849056, a: 0}
+  - Name: Grassland
+    MinTemp: 0.4
+    MaxTemp: 1
+    MinMoisture: 0.2
+    MaxMoisture: 0.4
+    Color: {r: 0.71340454, g: 1, b: 0, a: 0}
+  - Name: Forest
+    MinTemp: 0.3
+    MaxTemp: 0.8
+    MinMoisture: 0.4
+    MaxMoisture: 0.8
+    Color: {r: 0.28678918, g: 0.4811321, b: 0.2246796, a: 0}
+  - Name: Desert
+    MinTemp: 0.4
+    MaxTemp: 1
+    MinMoisture: 0
+    MaxMoisture: 0.2
+    Color: {r: 0.5188679, g: 0.5188679, b: 0.374466, a: 0}
+  - Name: Marshland
+    MinTemp: 0.3
+    MaxTemp: 0.7
+    MinMoisture: 0.5
+    MaxMoisture: 1
+    Color: {r: 0.3301887, g: 0.126157, b: 0.2567209, a: 0}
+  - Name: Tropical Forest
+    MinTemp: 0.7
+    MaxTemp: 1
+    MinMoisture: 0.4
+    MaxMoisture: 1
+    Color: {r: 0.044054832, g: 0.2830189, b: 0.06942945, a: 0}
+  ChunkMaterial: {fileID: 2100000, guid: c1a6f23f4d65f744faf89f12c4191275, type: 2}
   ChunkPrefab: {fileID: 1942139927005994989, guid: 92e798fcdd174d54a9f8e2eb6ce7983c,
     type: 3}
+  TerrainFallofCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0.0018501282
+      value: -0.2203064
+      inSlope: -0.058542017
+      outSlope: -0.058542017
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.09609658
+    - serializedVersion: 3
+      time: 0.75433475
+      value: 0.22942775
+      inSlope: 2.879851
+      outSlope: 2.879851
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.14050928
+    - serializedVersion: 3
+      time: 0.9999728
+      value: 0.995283
+      inSlope: 2.9619792
+      outSlope: 2.9619792
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.017555356
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  TemperatureCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.4988217
+      value: 0.49823254
+      inSlope: -1.621355
+      outSlope: -1.621355
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.07909334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!4 &2108871688
 Transform:
   m_ObjectHideFlags: 0
