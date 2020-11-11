@@ -1,4 +1,5 @@
 ﻿using Assets.Helpers;
+using Camera;
 using System;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ namespace Assets.Map
         public AnimationCurve TemperatureCurve;
         public AnimationCurve HeightCurve;
         public MapGenerationData MapGenerationData;
-
+        public CameraController Camera;
 
         private float[,] _heightMap;
         private float[,] _moistureMap;
@@ -44,6 +45,9 @@ namespace Assets.Map
                 }
 
                 Debug.Log($"Miss: {_missCounter}/{_size * _size}");
+
+                Camera.ConfigureMinMax(0, _size, 0, (int)(_size * 1.5f));
+                Camera.MoveToWorldCenter();
             }
         }
 

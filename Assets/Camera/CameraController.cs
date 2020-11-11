@@ -1,38 +1,70 @@
-﻿using Assets.Map;
-using Assets.ServiceLocator;
+﻿using Assets.ServiceLocator;
 using UnityEngine;
 
 namespace Camera
 {
     public class CameraController : MonoBehaviour, IGameService
     {
-        private Transform _followTransform;
-
         public UnityEngine.Camera Camera;
-
-        public float normalSpeed;
         public float fastSpeed;
+        public float maxZoom;
+        public float minZoom;
         public float movementSpeed;
         public float movementTime;
+        public float normalSpeed;
         public float rotationAmount;
         public Vector3 zoomAmount;
 
-        public float minZoom;
-        public float maxZoom;
+        internal Vector3 dragCurrentPosition;
+        internal Vector3 dragStartPosition;
+        internal Vector3 newPosition;
+        internal Quaternion newRotation;
+        internal Vector3 newZoom;
+        internal Vector3 rotateCurrentPosition;
+        internal Vector3 rotateStartPosition;
 
-        public Vector3 newPosition;
-        public Quaternion newRotation;
-        public Vector3 newZoom;
+        private Transform _followTransform;
 
-        public Vector3 dragStartPosition;
-        public Vector3 dragCurrentPosition;
+        private int _maxX;
+        private int _maxZ;
+        private int _minX;
+        private int _minZ;
 
-        public Vector3 rotateStartPosition;
-        public Vector3 rotateCurrentPosition;
-
-        internal float GetPerpendicularRotation()
+        public void ConfigureMinMax(int minx, int maxx, int minz, int maxz)
         {
-            return 90 + transform.rotation.eulerAngles.y;
+            _minX = minx;
+            _maxX = maxx;
+            _minZ = minz;
+            _maxZ = maxz;
+        }
+
+        public void FollowTransform(Transform transform)
+        {
+            if (_followTransform == transform)
+            {
+                StopFollowing();
+            }
+            else
+            {
+                _followTransform = transform;
+            }
+        }
+
+        public void Initialize()
+        {
+            var map = Loc.GetMap();
+            ConfigureMinMax(map.MinX, map.MinX, map.MinX, map.MinX);
+
+            newPosition = transform.position;
+            newRotation = transform.rotation;
+            newZoom = Camera.transform.localPosition;
+
+            MoveToWorldCenter();
+        }
+
+        public void StopFollowing()
+        {
+            _followTransform = null;
         }
 
         public void Update()
@@ -52,21 +84,41 @@ namespace Camera
             }
         }
 
-        public void FollowTransform(Transform transform)
+        public void ViewPoint(Vector3 point)
         {
-            if (_followTransform == transform)
-            {
-                StopFollowing();
-            }
-            else
-            {
-                _followTransform = transform;
-            }
+            const int zoomBound = 12;
+            var x = Mathf.Clamp(point.x, _minX - zoomBound, _maxX);
+            var y = 1;
+            var z = Mathf.Clamp(point.z - zoomBound, _minZ - zoomBound, Loc.GetMap().MaxZ);
+
+            transform.position = new Vector3(x, y, z);
         }
 
-        public void StopFollowing()
+        internal float GetPerpendicularRotation()
         {
-            _followTransform = null;
+            return 90 + transform.rotation.eulerAngles.y;
+        }
+
+        internal void MoveToWorldCenter()
+        {
+            transform.position = new Vector3((_maxX - _minX) / 2f, 1f, (_maxZ - _minZ) / 2f);
+
+            newPosition = transform.position;
+            newZoom = new Vector3(0, (minZoom + maxZoom) / 2f, -((minZoom + maxZoom) / 2f));
+        }
+
+        private Vector3 ClampPosition(Vector3 position)
+        {
+            return new Vector3(Mathf.Clamp(position.x, _minX, _maxX),
+                               position.y,
+                               Mathf.Clamp(position.z, _minZ, _maxZ));
+        }
+
+        private Vector3 ClampZoom(Vector3 zoom)
+        {
+            return new Vector3(zoom.x,
+                               Mathf.Clamp(zoom.y, minZoom, maxZoom),
+                               Mathf.Clamp(zoom.z, -maxZoom, -minZoom));
         }
 
         private void HandleMouseInput()
@@ -75,6 +127,9 @@ namespace Camera
             if (Input.mouseScrollDelta.y != 0)
             {
                 newZoom += Input.mouseScrollDelta.y * zoomAmount;
+                newZoom = new Vector3(newZoom.x,
+                                      Mathf.Clamp(newZoom.y, minZoom, maxZoom),
+                                      Mathf.Clamp(newZoom.z, -maxZoom, -minZoom));
             }
 
             if (Input.GetMouseButtonDown(1))
@@ -167,50 +222,10 @@ namespace Camera
             Camera.transform.localPosition = ClampZoom(Vector3.Lerp(Camera.transform.localPosition, newZoom, Time.deltaTime * movementTime));
         }
 
-        private Vector3 ClampPosition(Vector3 position)
-        {
-            return new Vector3(Mathf.Clamp(position.x, Loc.GetMap().MinX - 5f, Loc.GetMap().MaxX),
-                               position.y,
-                               Mathf.Clamp(position.z, Loc.GetMap().MinZ - 5f, Loc.GetMap().MaxZ));
-        }
-
         private void OnDrawGizmos()
         {
             Gizmos.color = new Color(1, 0, 0, 0.75f);
             Gizmos.DrawCube(transform.position, new Vector3(0.25f, 0.25f, 0.25f));
-        }
-
-        private Vector3 ClampZoom(Vector3 zoom)
-        {
-            return new Vector3(zoom.x,
-                               Mathf.Clamp(zoom.y, minZoom, maxZoom),
-                               Mathf.Clamp(zoom.z, -maxZoom, -minZoom));
-        }
-
-        public void ViewPoint(Vector3 point)
-        {
-            const int zoomBound = 12;
-            var x = Mathf.Clamp(point.x, Loc.GetMap().MinX - zoomBound, Loc.GetMap().MaxX);
-            var y = 1;
-            var z = Mathf.Clamp(point.z - zoomBound, Loc.GetMap().MinZ - zoomBound, Loc.GetMap().MaxZ);
-
-            transform.position = new Vector3(x, y, z);
-        }
-
-        internal void MoveToWorldCenter()
-        {
-            transform.position = Loc.GetMap().GetMapCenter();
-
-            newPosition = transform.position;
-        }
-
-        public void Initialize()
-        {
-            newPosition = transform.position;
-            newRotation = transform.rotation;
-            newZoom = Camera.transform.localPosition;
-
-            MoveToWorldCenter();
         }
     }
 }

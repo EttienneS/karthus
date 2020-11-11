@@ -255,6 +255,8 @@ namespace Assets.Map
             GenerateMap();
         }
 
+       
+
         public ChunkRenderer MakeChunk(Chunk data)
         {
             var chunk = Instantiate(ChunkPrefab, transform);
@@ -350,11 +352,6 @@ namespace Assets.Map
                 //    Loc.GetCreatureController().SpawnCreature(creature, spot, Loc.GetFactionController().MonsterFaction);
                 //}
             }
-        }
-
-        internal Vector3 GetMapCenter()
-        {
-            return new Vector3((MapGenerationData.Instance.ChunkSize * MapGenerationData.Instance.Size) / 2, 1, (MapGenerationData.Instance.ChunkSize * MapGenerationData.Instance.Size) / 2);
         }
 
         internal Cell GetNearestPathableCell(Cell centerPoint, Mobility mobility, int radius)
@@ -628,5 +625,6 @@ namespace Assets.Map
 
             return Chunks[(x, y)];
         }
+
     }
 }
