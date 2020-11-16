@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Map;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -27,6 +28,11 @@ public class Pathfinder : MonoBehaviour
 
     public void Update()
     {
+        ResolvePaths();
+    }
+
+    private void ResolvePaths()
+    {
         if (_currentTask == null || _currentTask.IsCompleted)
         {
             if (_pathQueue.Count != 0)
@@ -47,7 +53,7 @@ public class Pathfinder : MonoBehaviour
                 var toCell = request.To;
                 if (fromCell != null && toCell != null)
                 {
-                    var path = new List<Cell> { toCell };
+                    var path = new List<IPathFindableCell> { toCell };
                     var current = toCell;
                     while (current != fromCell)
                     {
@@ -70,7 +76,7 @@ public class Pathfinder : MonoBehaviour
         }
     }
 
-    public PathRequest CreatePathRequest(Cell source, Cell target, Mobility mobility)
+    public PathRequest CreatePathRequest(IPathFindableCell source, IPathFindableCell target, Mobility mobility)
     {
         var request = new PathRequest(source, target, mobility);
         _pathQueue.Enqueue(request);
@@ -97,7 +103,7 @@ public class Pathfinder : MonoBehaviour
             }
 
             fromCell.SearchPhase = _searchFrontierPhase;
-            fromCell.Distance = 0;
+            fromCell.SearchDistance = 0;
             _searchFrontier.Enqueue(fromCell);
 
             while (_searchFrontier.Count > 0)
@@ -136,19 +142,19 @@ public class Pathfinder : MonoBehaviour
                         continue;
                     }
 
-                    var distance = current.Distance + neighborTravelCost;
+                    var distance = current.SearchDistance + neighborTravelCost;
                     if (neighbor.SearchPhase < _searchFrontierPhase)
                     {
                         neighbor.SearchPhase = _searchFrontierPhase;
-                        neighbor.Distance = distance;
+                        neighbor.SearchDistance = distance;
                         neighbor.PathFrom = current;
                         neighbor.SearchHeuristic = neighbor.DistanceTo(toCell);
                         _searchFrontier.Enqueue(neighbor);
                     }
-                    else if (distance < neighbor.Distance)
+                    else if (distance < neighbor.SearchDistance)
                     {
                         var oldPriority = neighbor.SearchPriority;
-                        neighbor.Distance = distance;
+                        neighbor.SearchDistance = distance;
                         neighbor.PathFrom = current;
                         _searchFrontier.Change(neighbor, oldPriority);
                     }
@@ -163,46 +169,42 @@ public class Pathfinder : MonoBehaviour
             throw;
         }
     }
-}
 
-public class PathRequest
-{
-    private bool _invalid;
-    private List<Cell> _path;
-
-    public PathRequest(Cell from, Cell to, Mobility mobility)
+    internal void ResolveAll()
     {
-        From = from;
-        To = to;
-        Mobility = mobility;
-    }
-
-    public Cell From { get; set; }
-    public Mobility Mobility { get; set; }
-    public Cell To { get; set; }
-
-    public List<Cell> GetPath()
-    {
-        return _path;
-    }
-
-    public void MarkPathInvalid()
-    {
-        Debug.LogWarning($"No path found from {From} to {To} for an entity that {Mobility}s");
-        _invalid = true;
-    }
-
-    public void PopulatePath(List<Cell> path)
-    {
-        _path = path;
-    }
-
-    public bool Ready()
-    {
-        if (_invalid)
+        while (_pathQueue.Count > 0)
         {
-            throw new InvalidPathException(this);
+            ResolvePaths();
         }
-        return _path != null;
+    }
+
+    public static void LinkCellsToNeighbors(PathableCell[,] cells, int lenght)
+    {
+        for (var z = 0; z < 0 + lenght; z++)
+        {
+            for (var x = 0; x < 0 + lenght; x++)
+            {
+                var cell = cells[x, z];
+                if (x > 0)
+                {
+                    cell.SetNeighbor(Direction.W, cells[x, z]);
+
+                    if (z > 0)
+                    {
+                        cell.SetNeighbor(Direction.SW, cells[x - 1, z - 1]);
+
+                        if (x < lenght - 1)
+                        {
+                            cell.SetNeighbor(Direction.SE, cells[x + 1, z - 1]);
+                        }
+                    }
+                }
+
+                if (z > 0)
+                {
+                    cell.SetNeighbor(Direction.S, cells[x, z - 1]);
+                }
+            }
+        }
     }
 }

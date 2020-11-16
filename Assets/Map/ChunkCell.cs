@@ -1,15 +1,39 @@
-﻿using UnityEngine;
+﻿using Assets.Map;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
-public class ChunkCell
+public class ChunkCell : PathableCell
 {
+    private List<ChunkCell> _nonNullNeighbours;
 
-    public ChunkCell(float height, Color color)
+    public new List<ChunkCell> NonNullNeighbors
     {
-        Height = height;
+        get
+        {
+            if (_nonNullNeighbours == null)
+            {
+                _nonNullNeighbours = base.NonNullNeighbors.ConvertAll(c => c as ChunkCell).ToList();
+            }
+            return _nonNullNeighbours;
+        }
+    }
+
+    public ChunkCell(int x, int z, float height, Color color)
+    {
+        X = x;
+        Z = z;
+        Y = height;
         Color = color;
     }
 
-    public float Height { get; set; }
-
     public Color Color { get; set; }
+
+    public override float TravelCost
+    {
+        get
+        {
+            return Y;
+        }
+    }
 }

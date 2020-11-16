@@ -3,29 +3,16 @@ using Assets.Item;
 using Assets.Map;
 using Assets.ServiceLocator;
 using Assets.Structures;
-using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
-public class Cell : IEquatable<Cell>
+public class Cell : PathableCell
 {
-    [JsonIgnore]
     public BiomeRegion BiomeRegion;
 
-    [JsonIgnore]
-    public Cell[] Neighbors = new Cell[8];
+    private List<Cell> _nonNullNeighbours;
 
-    public int X;
-
-    [JsonIgnore]
-    public float Y;
-
-    public int Z;
-
-    [JsonIgnore]
     public List<CreatureData> Creatures
     {
         get
@@ -34,10 +21,6 @@ public class Cell : IEquatable<Cell>
         }
     }
 
-    [JsonIgnore]
-    public float Distance { get; set; }
-
-    [JsonIgnore]
     public Structure Floor
     {
         get
@@ -46,7 +29,6 @@ public class Cell : IEquatable<Cell>
         }
     }
 
-    [JsonIgnore]
     public IEnumerable<ItemData> Items
     {
         get
@@ -55,31 +37,18 @@ public class Cell : IEquatable<Cell>
         }
     }
 
-    [JsonIgnore]
-    public Cell NextWithSamePriority { get; set; }
-
-    [JsonIgnore]
-    public IEnumerable<Cell> NonNullNeighbors
+    public new List<Cell> NonNullNeighbors
     {
         get
         {
-            return Neighbors.Where(n => n != null);
+            if (_nonNullNeighbours == null)
+            {
+                _nonNullNeighbours = base.NonNullNeighbors.ConvertAll(c => c as Cell).ToList();
+            }
+            return _nonNullNeighbours;
         }
     }
 
-    [JsonIgnore]
-    public Cell PathFrom { get; set; }
-
-    [JsonIgnore]
-    public int SearchHeuristic { private get; set; }
-
-    [JsonIgnore]
-    public int SearchPhase { get; set; }
-
-    [JsonIgnore]
-    public int SearchPriority => (int)Distance + SearchHeuristic;
-
-    [JsonIgnore]
     public List<Structure> Structures
     {
         get
@@ -89,8 +58,7 @@ public class Cell : IEquatable<Cell>
         }
     }
 
-    [JsonIgnore]
-    public float TravelCost
+    public override float TravelCost
     {
         get
         {
@@ -102,7 +70,6 @@ public class Cell : IEquatable<Cell>
         }
     }
 
-    [JsonIgnore]
     public Vector3 Vector
     {
         get
@@ -116,89 +83,6 @@ public class Cell : IEquatable<Cell>
         // add half a unit to each position to account for offset (cells are at point 0,0 in the very center)
         position += new Vector3(0.5f, 0, 0.5f);
         return Loc.GetMap().GetCellAtCoordinate(Mathf.FloorToInt(position.x), Mathf.FloorToInt(position.z));
-    }
-
-    public static bool operator !=(Cell obj1, Cell obj2)
-    {
-        if (ReferenceEquals(obj1, null))
-        {
-            return !ReferenceEquals(obj2, null);
-        }
-
-        return !obj1.Equals(obj2);
-    }
-
-    public static bool operator ==(Cell obj1, Cell obj2)
-    {
-        if (ReferenceEquals(obj1, null))
-        {
-            return ReferenceEquals(obj2, null);
-        }
-
-        return obj1.Equals(obj2);
-    }
-
-    public int DistanceTo(Cell other)
-    {
-        // to handle cases where a diagonal does not count as adjecent
-        if (Neighbors.Contains(other))
-        {
-            return 1;
-        }
-
-        return (X < other.X ? other.X - X : X - other.X) +
-               (Z < other.Z ? other.Z - Z : Z - other.Z);
-    }
-
-    public bool Equals(Cell other)
-    {
-        if (ReferenceEquals(other, null))
-        {
-            return false;
-        }
-
-        return X == other.X && Z == other.Z;
-    }
-
-    public override bool Equals(object obj)
-    {
-        var other = obj as Cell;
-        if (other == null)
-        {
-            return false;
-        }
-
-        return this == other;
-    }
-
-    public override int GetHashCode()
-    {
-        return $"{X}:{Z}".GetHashCode();
-    }
-
-    public Cell GetNeighbor(Direction direction)
-    {
-        return Neighbors[(int)direction];
-    }
-
-    public bool PathableWith(Mobility mobility)
-    {
-        switch (mobility)
-        {
-            case Mobility.Walk:
-                return TravelCost > 0;
-
-            case Mobility.Fly:
-                return true;
-        }
-
-        return false;
-    }
-
-    public void SetNeighbor(Direction direction, Cell cell)
-    {
-        Neighbors[(int)direction] = cell;
-        cell.Neighbors[(int)direction.Opposite()] = this;
     }
 
     public override string ToString()
@@ -243,12 +127,6 @@ public class Cell : IEquatable<Cell>
     internal Cell GetPathableNeighbour()
     {
         return NonNullNeighbors.Where(n => n.TravelCost > 0).GetRandomItem();
-    }
-
-    internal Cell GetRandomNeighbor()
-    {
-        var neighbors = Neighbors.Where(n => n != null).ToList();
-        return neighbors[Random.Range(0, neighbors.Count - 1)];
     }
 
     internal float GetStructureValue(string name)

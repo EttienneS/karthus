@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Map;
+using System.Collections.Generic;
 
 public class CellPriorityQueue
 {
-    private readonly List<Cell> list = new List<Cell>();
+    private readonly List<IPathFindableCell> list = new List<IPathFindableCell>();
     private int minimum = int.MaxValue;
 
     public CellPriorityQueue()
@@ -12,7 +13,7 @@ public class CellPriorityQueue
 
     public int Count { get; private set; }
 
-    public void Enqueue(Cell cell)
+    public void Enqueue(IPathFindableCell cell)
     {
         Count++;
         var priority = cell.SearchPriority;
@@ -32,7 +33,7 @@ public class CellPriorityQueue
         list[priority] = cell;
     }
 
-    public Cell Dequeue()
+    public IPathFindableCell Dequeue()
     {
         Count--;
 
@@ -49,7 +50,7 @@ public class CellPriorityQueue
         return null;
     }
 
-    public void Change(Cell cell, int oldPriority)
+    public void Change(IPathFindableCell cell, int oldPriority)
     {
         var current = list[oldPriority];
         var next = current.NextWithSamePriority;

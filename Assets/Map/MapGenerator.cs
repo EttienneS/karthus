@@ -1,6 +1,7 @@
 ﻿using Assets.Helpers;
 using Camera;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Map
@@ -8,19 +9,21 @@ namespace Assets.Map
     public class MapGenerator : MonoBehaviour
     {
         public BiomeEntry[] Biomes;
+        public CameraController Camera;
         public Material ChunkMaterial;
         public ChunkRenderer ChunkPrefab;
-        public AnimationCurve TerrainFallofCurve;
-        public AnimationCurve TemperatureCurve;
         public AnimationCurve HeightCurve;
         public MapGenerationData MapGenerationData;
-        public CameraController Camera;
+        public Pathfinder Pathfinder;
+        public AnimationCurve TemperatureCurve;
+        public AnimationCurve TerrainFallofCurve;
+        private ChunkCell[,] _cells;
 
         private float[,] _heightMap;
+        private int _missCounter;
         private float[,] _moistureMap;
         private int _size;
         private float[,] _temperatureMap;
-
 
         public void Generate()
         {
@@ -28,21 +31,18 @@ namespace Assets.Map
             {
                 _missCounter = 0;
 
-               MapGenerationData.Instance = MapGenerationData;
+                MapGenerationData.Instance = MapGenerationData;
 
                 var seed = MapGenerationData.Instance.Seed.GetHashCode();
                 _size = MapGenerationData.Instance.MapSize * MapGenerationData.Instance.ChunkSize;
+
                 _heightMap = GetHeightMap(seed);
-                _temperatureMap = GetTemperatureMap(seed);
+                _temperatureMap = GetTemperatureMap();
                 _moistureMap = GetMoistureMap(seed);
 
-                for (int x = 0; x < MapGenerationData.Instance.MapSize; x++)
-                {
-                    for (int y = 0; y < MapGenerationData.Instance.MapSize; y++)
-                    {
-                        MakeChunk(new Chunk(x, y, GetCells(x, y)));
-                    }
-                }
+                _cells = GetCells();
+
+                DrawChunks();
 
                 Debug.Log($"Miss: {_missCounter}/{_size * _size}");
 
@@ -79,12 +79,29 @@ namespace Assets.Map
             return chunk;
         }
 
+        public void MakeRivers()
+        {
+            var point = _cells[1, 1];
+
+            var searcher = new JoinedAreaSearcher(point, (cell) => cell.Color == point.Color, int.MaxValue);
+            var ocean = searcher.Resolve();
+            foreach (var cell in ocean)
+            {
+                cell.Color = Color.black;
+            }
+
+            //var req1 = Pathfinder.Instance.CreatePathRequest(_cells[22, 5], _cells[41, 2], Mobility.Walk);
+            //var req2 = Pathfinder.Instance.CreatePathRequest(_cells[5, 53], _cells[1, 12], Mobility.Walk);
+            //var req3 = Pathfinder.Instance.CreatePathRequest(_cells[15, 5], _cells[11, 2], Mobility.Walk);
+            //Pathfinder.Instance.ResolveAll();
+            
+            DestroyChunks();
+            DrawChunks();
+        }
+
         public void Regenerate()
         {
-            foreach (Transform child in transform)
-            {
-                Destroy(child.gameObject);
-            }
+            DestroyChunks();
             MapGenerationData.Seed = Guid.NewGuid().ToString();
             Generate();
         }
@@ -98,7 +115,7 @@ namespace Assets.Map
             {
                 for (var y = 0; y < MapGenerationData.Instance.ChunkSize; y++)
                 {
-                    cells[x, y] = GetCellAt(offsetX + x, offsetY + y);
+                    cells[x, y] = _cells[offsetX + x, offsetY + y];
                 }
             }
 
@@ -113,12 +130,29 @@ namespace Assets.Map
             return 1f - (Math.Abs(y - equator) / equator);
         }
 
+        private void DestroyChunks()
+        {
+            foreach (Transform child in transform)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+
         private float DistanceToCenter(float cX, float cY, float x, float y)
         {
             return (float)Mathf.Sqrt(Mathf.Pow(x - cX, 2) + Mathf.Pow(y - cY, 2));
         }
 
-        private int _missCounter;
+        private void DrawChunks()
+        {
+            for (int x = 0; x < MapGenerationData.Instance.MapSize; x++)
+            {
+                for (int y = 0; y < MapGenerationData.Instance.MapSize; y++)
+                {
+                    MakeChunk(new Chunk(x, y, GetCells(x, y)));
+                }
+            }
+        }
 
         private Color GetBiome(float temp, float moisture)
         {
@@ -136,16 +170,23 @@ namespace Assets.Map
             return Color.magenta;
         }
 
-        private ChunkCell GetCellAt(int x, int y)
+        private ChunkCell[,] GetCells()
         {
-            var height = _heightMap[x, y];
+            var cells = new ChunkCell[_size, _size];
 
-            if (height < 0)
+            var waterCol = ColorExtensions.GetColorFromHex("7f7e7d");
+            for (int x = 0; x < _size; x++)
             {
-                return new ChunkCell(-0.5f -(HeightCurve.Evaluate(-height) * 25f), ColorExtensions.GetColorFromHex("7f7e7d"));
+                for (int y = 0; y < _size; y++)
+                {
+                    var height = _heightMap[x, y];
+                    cells[x, y] = new ChunkCell(x, y, height, height > 0 ? GetBiome(_temperatureMap[x, y], _moistureMap[x, y]) : waterCol);
+                }
             }
 
-            return new ChunkCell(HeightCurve.Evaluate(height) * 10f, GetBiome(_temperatureMap[x, y], _moistureMap[x, y]));
+            Pathfinder.LinkCellsToNeighbors(cells, _size);
+
+            return cells;
         }
 
         private float[,] GetHeightMap(int seed)
@@ -166,6 +207,15 @@ namespace Assets.Map
 
                     value -= rad; // apply edge gradient
 
+                    if (value < 0)
+                    {
+                        value = -0.5f - (HeightCurve.Evaluate(-value) * 25f);
+                    }
+                    else
+                    {
+                        value = HeightCurve.Evaluate(value) * 10f;
+                    }
+
                     height[x, y] = value;
                 }
             }
@@ -185,15 +235,15 @@ namespace Assets.Map
             {
                 for (int x = 0; x < _size; x++)
                 {
-                    var value = Mathf.Clamp((1 + moistureMap[x, y]) / 2f, 0f, 1f); // normalize moisture to be between 0 and 1
-                    moistureMap[x, y] = value;
+                    // normalize moisture to be between 0 and 1
+                    moistureMap[x, y] = Mathf.Clamp((1 + moistureMap[x, y]) / 2f, 0f, 1f);
                 }
             }
 
             return moistureMap;
         }
 
-        private float[,] GetTemperatureMap(int seed)
+        private float[,] GetTemperatureMap()
         {
             var tempMap = new float[_size, _size];
             var equator = _size / 2f;
@@ -208,12 +258,15 @@ namespace Assets.Map
             }
 
             // apply height map to temp map
+            // subtract height from temp (higher height == lower temp)
+            // divide height by this to determine influence
+            var heightPower = 10f;
             for (int y = 0; y < _size; y++)
             {
                 for (int x = 0; x < _size; x++)
                 {
                     var temp = tempMap[x, y];
-                    temp -= (HeightCurve.Evaluate(_heightMap[x, y])); // subtract height from temp (higher height == lower temp)
+                    temp -= _heightMap[x, y] / heightPower;
 
                     tempMap[x, y] = Mathf.Clamp(temp, 0f, 1f);
                 }
@@ -230,37 +283,5 @@ namespace Assets.Map
         private void Update()
         {
         }
-    }
-}
-
-[Serializable]
-public class BiomeEntry
-{
-    public string Name;
-
-    [Range(0f, 1f)]
-    public float MinTemp;
-
-    [Range(0f, 1f)]
-    public float MaxTemp;
-
-    [Range(0f, 1f)]
-    public float MinMoisture;
-
-    [Range(0f, 1f)]
-    public float MaxMoisture;
-
-    public Color Color;
-
-    public BiomeEntry()
-    {
-    }
-
-    public BiomeEntry(string name, float maxTemp, float maxMoisture, Color color) : this()
-    {
-        Name = name;
-        MaxTemp = maxTemp;
-        MaxMoisture = maxMoisture;
-        Color = color;
     }
 }

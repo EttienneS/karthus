@@ -99,7 +99,7 @@ public class ChunkRenderer : MonoBehaviour
             {
                 var cell = cells[x, z];
 
-                var height = cell.Height;
+                var height = cell.Y;
                 AddVert(x - 0.5f, height, z - 0.5f, cell.Color);
                 AddVert(x + 0.5f, height, z - 0.5f, cell.Color);
                 AddVert(x + 0.5f, height, z + 0.5f, cell.Color);

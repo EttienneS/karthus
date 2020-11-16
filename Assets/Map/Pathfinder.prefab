@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8724241796951497557}
-  - component: {fileID: 8724241796951497556}
+  - component: {fileID: 6559444636944992276}
   m_Layer: 0
   m_Name: Pathfinder
   m_TagString: Untagged
@@ -31,7 +31,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8724241796951497556
+--- !u!114 &6559444636944992276
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -40,6 +40,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 8724241796951497555}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 574ea509adb6a9c45872e38c10c08bdc, type: 3}
+  m_Script: {fileID: 11500000, guid: 6e19d78b5ee1ca14990bd5d2a5b21000, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

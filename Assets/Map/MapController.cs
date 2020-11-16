@@ -255,7 +255,7 @@ namespace Assets.Map
             GenerateMap();
         }
 
-       
+
 
         public ChunkRenderer MakeChunk(Chunk data)
         {
@@ -278,7 +278,7 @@ namespace Assets.Map
                 for (var x = 0; x < size; x++)
                 {
                     var cell = map.GetCellAtCoordinate(x + (offsetX * size), z + (offsetZ * size));
-                    cells[x, z] = new ChunkCell(cell.Y, GetColor(cell));
+                    cells[x, z] = new ChunkCell(cell.X, cell.Z, cell.Y, GetColor(cell));
                 }
             }
 

@@ -130,7 +130,7 @@ public class CreatureRenderer : MonoBehaviour
             if (Data.CurrentPathRequest.Ready())
             {
                 Cell lastNode = null;
-                foreach (var cell in Data.CurrentPathRequest.GetPath())
+                foreach (var cell in Data.CurrentPathRequest.GetPath().ConvertAll(c => c as Cell))
                 {
                     if (lastNode != null)
                     {

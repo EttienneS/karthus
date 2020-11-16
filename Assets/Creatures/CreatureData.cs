@@ -869,7 +869,7 @@ namespace Assets.Creature
                 {
                     if (CurrentPathRequest.Ready())
                     {
-                        var path = CurrentPathRequest.GetPath();
+                        var path = CurrentPathRequest.GetPath().ConvertAll(c => c as Cell);
 
                         var nextCell = path[0];
                         var targetX = nextCell.Vector.x;

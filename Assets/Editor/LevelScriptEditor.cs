@@ -17,6 +17,11 @@ public partial class CreateAssetBundles
             {
                 myTarget.Regenerate();
             }
+
+            if (GUILayout.Button("Make Rivers"))
+            {
+                myTarget.MakeRivers();
+            }
         }
     }
 }
